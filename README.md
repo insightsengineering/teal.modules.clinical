@@ -10,12 +10,20 @@ do not use these modules for production work.
 
 # Installation
 
-You need to install the `teal` version that is currently located on the `beta`
-branch.
+You need to install the `teal`, `rtables`, and `tern` package:
 
 ``` r
 devtools::install_git(
   url = "http://github.roche.com/Rpackages/teal.git",
+  build_vignettes = TRUE,
+  upgrade_dependencies = FALSE,
+  branch = "beta"
+)
+
+devtools::install_github("Roche/rtables")
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/tern.git",
   build_vignettes = TRUE,
   upgrade_dependencies = FALSE,
   branch = "beta"
