@@ -13,8 +13,7 @@
 #' @param strata_var_choices options for \code{strata_var}
 #' @param plot_height plot height specification
 #' 
-#' @import shiny
-#' @import teal
+#' @importFrom survival Surv strata
 #' 
 #' @export
 #' 
