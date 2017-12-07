@@ -13,24 +13,30 @@ do not use these modules for production work.
 You need to install `teal.oncology` and all its dependencies as follows:
 
 ``` r
-devtools::install_github("Roche/rtables")
+devtools::install_github("Roche/rtables", upgrade_dependencies = FALSE, build_vignettes = FALSE)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/random.cdisc.data.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/tern.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
 
 devtools::install_git(
   url = "http://github.roche.com/Rpackages/teal.git",
-  build_vignettes = TRUE,
+  build_vignettes = FALSE,
   upgrade_dependencies = FALSE,
   branch = "beta"
 )
 
 devtools::install_git(
-  url = "http://github.roche.com/Rpackages/tern.git",
-  build_vignettes = TRUE,
-  upgrade_dependencies = FALSE
-)
-
-devtools::install_git(
   url = "http://github.roche.com/Rpackages/teal.oncology.git",
-  build_vignettes = TRUE,
+  build_vignettes = FALSE,
   upgrade_dependencies = FALSE,
   branch = "tern"
 )
@@ -214,7 +220,7 @@ x <- teal::init(
   header = div(
     class="",
     style="margin-bottom: 2px;",
-    tags$h1("Example App", tags$span("SPA", class="pull-right"))
+    tags$h1("Example App With teal.oncology Teal Modules", tags$span("SPA", class="pull-right"))
   ),
   footer = tags$p(class="text-muted", "Info About Authors")
 )  
