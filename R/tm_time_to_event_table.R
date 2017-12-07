@@ -201,11 +201,14 @@ srv_time_to_event_table <- function(input, output, session, datasets, ref_arm = 
       time_points <- setNames(as.numeric(time_points), paste(time_points, time_points_unit))
     }
     
+    early_cntr_events <- ATE_f$EVNTDESC
+    early_cntr_events[ATE_f$CNSR != 0] <- NA
+    
     tbl <- try(time_to_event_table(
       time_to_event = ATE_f$AVAL,
       event = ATE_f$CNSR == 0,
       arm = arm,
-      earliest_contributing_event = ATE_f$EVNTDESC,
+      earliest_contributing_event = early_cntr_events,
       strata_data = ATE_f[strata_var],
       time_points = time_points
     ))
