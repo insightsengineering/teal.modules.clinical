@@ -3,6 +3,7 @@
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #' 
 #' @param label unique name for tabpanel
+#' @param dataname dataset name
 #' @param treatment_var parameter for seperating curves
 #' @param treatment_var_choices options for \code{treatment_var}
 #' @param endpoint selected endpoint from ADaM variable \code{PARAMCD}
@@ -53,6 +54,7 @@
 #'   modules = root_modules(
 #'     tm_kmplot(
 #'        label = "KM PLOT",
+#'        dataname = 'ATE',
 #'        treatment_var_choices = c("ARM", "ARMCD"),
 #'        endpoint_choices = c("OS", "PFS"),
 #'        facet_var = "SEX",
@@ -67,6 +69,7 @@
 #' }
 #' 
 tm_kmplot <- function(label,
+                      dataname,
                       treatment_var = "ARM",
                       treatment_var_choices = treatment_var,
                       endpoint = "OS",
@@ -84,8 +87,9 @@ tm_kmplot <- function(label,
   
   module(
     label = label,
-    filters = "ATE",
+    filters = dataname,
     server = srv_kmplot,
+    server_args = list(dataname = dataname),
     ui = ui_kmplot,
     ui_args = args
   )
@@ -94,6 +98,7 @@ tm_kmplot <- function(label,
 ui_kmplot <- function(
   id, 
   label,
+  dataname,
   treatment_var = "ARM",
   treatment_var_choices = treatment_var,
   endpoint = "OS",
@@ -113,17 +118,17 @@ ui_kmplot <- function(
     output = uiOutput(ns("plot_ui")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis Data: ", tags$code("ATE")),
+      helpText("Analysis Data: ", tags$code(dataname)),
       optionalSelectInput(ns("var_arm"), "Treatment Variable", choices = treatment_var_choices,
                           selected = treatment_var, multiple = FALSE),
       optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = endpoint_choices, 
                           selected = endpoint, multiple = FALSE),
       optionalSelectInput(ns("strat"), "Stratify by", choices = strata_var_choices, 
                           selected = strata_var, multiple = TRUE,
-                          label_help = helpText("currently taken from", tags$code("ATE"))),
+                          label_help = helpText("currently taken from", tags$code(dataname))),
       optionalSelectInput(ns("facetby"), "Facet Plots by:", choices = facet_var_choices, 
                           selected = facet_var, multiple = TRUE,
-                          label_help = helpText("currently taken from", tags$code("ATE"))),
+                          label_help = helpText("currently taken from", tags$code(dataname))),
       selectInput(ns("ref_arm"), "Reference Arm", choices = NULL, 
                   selected = NULL, multiple = TRUE),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
@@ -140,7 +145,7 @@ ui_kmplot <- function(
 }
 
 
-srv_kmplot <- function(input, output, session, datasets) {
+srv_kmplot <- function(input, output, session, datasets, dataname) {
   
   
   ## dynamic plot height
@@ -151,7 +156,7 @@ srv_kmplot <- function(input, output, session, datasets) {
   })
   
   ATE_Filtered <- reactive({
-    ATE_F <- datasets$get_data("ATE", filtered = TRUE, reactive = TRUE)
+    ATE_F <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
     validate(need(ATE_F, "Need ATE data"))
     ATE_F
   })
