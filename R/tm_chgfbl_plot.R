@@ -239,7 +239,9 @@ srv_chgfbl_plot <- function(input, output, session, datasets) {
     ASL_f <- ASL_filtered[c("STUDYID", "USUBJID", arm_var)]
     AQS_f <- AQS_filtered %>% filter(PARAMCD == paramcd) 
     
-    ANL <- left_join(ASL_f, AQS_f, by = c("STUDYID", "USUBJID"))
+    commonvars <- intersect(names(ASL_f), names(AQS_f))
+    ANL <- left_join(ASL_f, AQS_f, by = commonvars)
+    
     validate(need(nrow(ANL) > 0, "no data left"))
     
     #If refernece lines are requested
