@@ -4,11 +4,11 @@
 \alias{tm_time_to_event_table}
 \title{Time To Event Table teal module}
 \usage{
-tm_time_to_event_table(label, time_points, time_points_choices = time_points,
-  time_points_unit = "months", arm_var = "ARM", arm_var_choices = arm_var,
-  ref_arm = NULL, strata_var = NULL, strata_var_choices = strata_var,
-  paramcd = "OS", paramcd_choices = paramcd, pre_output = NULL,
-  post_output = NULL)
+tm_time_to_event_table(label, dataname, time_points,
+  time_points_choices = time_points, time_points_unit = "months",
+  arm_var = "ARM", arm_var_choices = arm_var, ref_arm = NULL,
+  strata_var = NULL, strata_var_choices = strata_var, paramcd = "OS",
+  paramcd_choices = paramcd, pre_output = NULL, post_output = NULL)
 }
 \description{
 Time To Event Table teal module
@@ -30,6 +30,7 @@ x <- teal::init(
   modules = root_modules(
     tm_time_to_event_table(
        label = "Time To Event Table",
+       dataname = 'ATE',
        time_points = 6,
        time_points_choices = c(6, 8),
        time_points_unit = "months",
