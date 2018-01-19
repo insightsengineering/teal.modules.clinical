@@ -55,12 +55,11 @@ group.
 \examples{
  
 
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(dplyr)
 library(teal.oncology)
 library(forcats)
-library(epiR)
 
 
 ARS <- ars(com.roche.cdt30019.go29436.re)

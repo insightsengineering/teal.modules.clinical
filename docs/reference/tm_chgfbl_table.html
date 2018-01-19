@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Response Table Teal Module — tm_response_table • teal.oncology</title>
+<title>Change from Baseline Table Teal Module — tm_chgfbl_table • teal.oncology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -83,17 +83,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Response Table Teal Module</h1>
+    <h1>Change from Baseline Table Teal Module</h1>
     </div>
 
     
-    <p>This module produces a response summary table that matches the STREAM 
-template rspt01</p>
+    <p>This module produces a summary table for test results and change
+from baseline by visit, that matches STREAM template LBT01</p>
     
 
-    <pre class="usage"><span class='fu'>tm_response_table</span>(<span class='no'>label</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OVRSPI"</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>,
-  <span class='kw'>arm.var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm.var_choices</span> <span class='kw'>=</span> <span class='no'>arm.var</span>, <span class='kw'>strata.var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strata.var_choices</span> <span class='kw'>=</span> <span class='no'>strata.var</span>, <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tm_chgfbl_table</span>(<span class='no'>label</span>, <span class='no'>paramcd</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
+  <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>, <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -104,27 +103,19 @@ template rspt01</p>
     </tr>
     <tr>
       <th>paramcd</th>
-      <td><p>filter the rows in ARS given the paramcd value</p></td>
+      <td><p>filter the rows in AQS given the paramcd value</p></td>
     </tr>
     <tr>
       <th>paramcd_choices</th>
       <td><p>choices of possible poaramcd</p></td>
     </tr>
     <tr>
-      <th>arm.var</th>
+      <th>arm_var</th>
       <td><p>selected variable to use as arms</p></td>
     </tr>
     <tr>
-      <th>arm.var_choices</th>
+      <th>arm_var_choices</th>
       <td><p>choices of arm variables</p></td>
-    </tr>
-    <tr>
-      <th>strata.var</th>
-      <td><p>categorical variable name(s) for stratified model</p></td>
-    </tr>
-    <tr>
-      <th>strata.var_choices</th>
-      <td><p>choices of stratification factors</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -146,15 +137,7 @@ output to put the output into context. For example the
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Additional standard UI inputs include <code>responders</code>,
-<code>incl_missing</code> (default TRUE), <code>ref_arm</code>, <code>comp_arm</code> and
-<code>combine_arm</code> (default FALSE)</p>
-<p>Default values of the inputs <code>var_arm</code>, <code>ref_arm</code> and
-<code>comp_arm</code> are set to NULL, and updated accordingly based on seletion of
-<code>paramcd</code> and <code>arm.var</code></p>
-<p>Package <code>forcats</code> used to re-format arm data into leveled factors.</p>
-<p>Reference arms automatically combined if multiple arms selected as reference
-group.</p>
+    <p>Package <code>forcats</code> used to re-format arm data into leveled factors.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -163,34 +146,36 @@ group.</p>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>atezo.data</span>)
 <span class='fu'>library</span>(<span class='no'>dplyr</span>)
+<span class='fu'>library</span>(<span class='no'>tidyr</span>)
 <span class='fu'>library</span>(<span class='no'>teal.oncology</span>)
 <span class='fu'>library</span>(<span class='no'>forcats</span>)
 
-
-<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'>ars</span>(<span class='no'>com.roche.cdt30019.go29436.re</span>)
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'>asl</span>(<span class='no'>com.roche.cdt30019.go29436.re</span>)
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'>asl</span>(<span class='no'>com.roche.cdpt7722.wo29637.rl</span>)
+<span class='no'>AQS</span> <span class='kw'>&lt;-</span> <span class='fu'>aqs</span>(<span class='no'>com.roche.cdpt7722.wo29637.rl</span>)
 
 <span class='fu'>options</span>(<span class='kw'>teal_logging</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
+<span class='no'>parammap</span> <span class='kw'>&lt;-</span> <span class='fu'>unique</span>(<span class='no'>AQS</span>[<span class='fu'>c</span>(<span class='st'>"PARAM"</span>, <span class='st'>"PARAMCD"</span>)])
+<span class='no'>paramcd_choices_labelled</span> <span class='kw'>&lt;-</span> <span class='fu'>setNames</span>(<span class='no'>parammap</span>$<span class='no'>PARAMCD</span>, <span class='fu'>paste</span>(<span class='no'>parammap</span>$<span class='no'>PARAMCD</span>, <span class='no'>parammap</span>$<span class='no'>PARAM</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" - "</span>))
+
+<span class='no'>arm_var_choices_list</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>, <span class='st'>"AGE65"</span>, <span class='st'>"SEX"</span>, <span class='st'>"HSTSTYP"</span>, <span class='st'>"PMETA"</span>,
+                          <span class='st'>"IC"</span>,<span class='st'>"ICC"</span>, <span class='st'>"TCC"</span>, <span class='st'>"ICCAT1"</span>, <span class='st'>"ICCAT2"</span>, <span class='st'>"ICCAT3"</span>, <span class='st'>"BIO2ICL"</span>)
+<span class='no'>arm_var_choices_labelled</span> <span class='kw'>&lt;-</span> <span class='fu'>setNames</span>(<span class='no'>arm_var_choices_list</span>,
+                            <span class='fu'>paste</span>(<span class='no'>arm_var_choices_list</span>, <span class='fu'><a href='labels_over_names.html'>labels_over_names</a></span>(<span class='no'>ASL</span>[<span class='no'>arm_var_choices_list</span>]), <span class='kw'>sep</span><span class='kw'>=</span><span class='st'>" - "</span>))
+
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>ARS</span> <span class='kw'>=</span> <span class='no'>ARS</span>),
+  <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>AQS</span> <span class='kw'>=</span> <span class='no'>AQS</span>),
   <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'>root_modules</span>(
-    <span class='fu'>tm_variable_browser</span>(),
-    <span class='fu'>tm_data_table</span>(),
-    <span class='fu'>tm_response_table</span>(
-       <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Response Table"</span>,
-       <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OVRSPI"</span>,
-       <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BESRSPI"</span>,<span class='st'>"LSTASDI"</span>,<span class='st'>"MBESRSPI"</span>,<span class='st'>"MLSTASDI"</span>,<span class='st'>"OVRSPI"</span>),
-       <span class='co'>#paramcd_choices = unique(ARS$PARAMCD),</span>
-       <span class='kw'>arm.var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
-       <span class='kw'>arm.var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
-       <span class='co'>#arm.var_choices = names(ARS),</span>
-       <span class='kw'>strata.var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-       <span class='kw'>strata.var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"TC1IC1"</span>, <span class='st'>"TC2IC2"</span>, <span class='st'>"TC3IC3"</span>, <span class='st'>"TCIC4GRP"</span>,
-                              <span class='st'>"AGE4CAT"</span>, <span class='st'>"AGEGRP"</span>, <span class='st'>"AGE65"</span>, <span class='st'>"TOBHX"</span>)
-   )
-  )
+    <span class='co'>#tm_variable_browser(),</span>
+    <span class='co'>#tm_data_table(),</span>
+    <span class='fu'>tm_chgfbl_table</span>(
+       <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Change from Baseline Table"</span>,
+       <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"FATIGI"</span>,
+       <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd_choices_labelled</span>,
+       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
+       <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var_choices_labelled</span>,
+   ))
 )
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
@@ -208,6 +193,10 @@ group.</p>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Chendi Liao (liaoc10), <a href='mailto:chendi.liao@roche.com'>chendi.liao@roche.com</a>
 
   </div>
 </div>

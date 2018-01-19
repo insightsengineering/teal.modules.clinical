@@ -3,7 +3,7 @@
 #' @param x boolean has biomarker or not
 #' @param y boolean has biomarker of not
 #' 
-#' @export
+#' @noRd
 #' 
 #' @return  list with absolute and percentage cross table
 #' 
@@ -70,6 +70,8 @@ venn2 <- function(x, y, xlab, ylab) {
 #' plot venn2 object
 #' 
 #' @param x an object returned by \code{\link{venn2}}
+#' 
+#' @noRd
 #' 
 #' @import grid
 #' @export 
@@ -228,7 +230,7 @@ plot.venn2 <- function(x, ...) {
 
 #' Venn2 teal module
 #' 
-#' @export
+#' @noRd
 #' 
 #' @examples  
 #' 

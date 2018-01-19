@@ -1,6 +1,6 @@
 Package: teal.oncology
 Title: Teal Modules useful for analyzing clinical oncology trials data
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
   person("Heng", "Wang", email = "", role = c("aut")),
@@ -12,17 +12,13 @@ Authors@R: c(
 Description: Teal modules
 Depends:
   R (>= 3.3),
-  teal
+  teal,
+  tern
 Imports:
-  grid,
   dplyr,
   shiny,
-  PropCIs,
   forcats,
-  ggplot2,
-  gridExtra,
-  tidyr,
-  forcats
+  tidyr
 Suggests:
   testthat,
   knitr,
@@ -34,3 +30,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+Additional_repositories: 
+  https://github.roche.com/Rpackages/teal,
+  https://github.roche.com/Rpackages/tern

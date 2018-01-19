@@ -61,7 +61,7 @@ factors.
 \examples{
  
 
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(dplyr)
 library(tidyr)
@@ -103,8 +103,8 @@ x <- teal::init(
 )   
 shinyApp(x$ui, x$server)
 
-   
-} 
+}
+
 }
 \author{
 Chendi Liao (liaoc10), \email{chendi.liao@roche.com}

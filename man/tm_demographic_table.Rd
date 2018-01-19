@@ -12,7 +12,7 @@ tm_demographic_table(label, arm_var, arm_var_choices = arm_var,
 Demographic Table Teal Module
 }
 \examples{
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(dplyr)
 library(survival)
