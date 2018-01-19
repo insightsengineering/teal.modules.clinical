@@ -36,10 +36,10 @@ devtools::install_git(
 devtools::install_git(
   url = "http://github.roche.com/Rpackages/teal.oncology.git",
   build_vignettes = FALSE,
-  upgrade_dependencies = FALSE,
-  branch = "tern"
+  upgrade_dependencies = FALSE
 )
 ```
+
 
 # Getting Started
 
@@ -230,6 +230,62 @@ shinyApp(x$ui, x$server)
 
 Each teal module in `teal.oncology` will be explained in a separate vignette and
 is accessile via the articles tab on the [project site][ghs].
+
+
+# Local installation
+
+Save the following code in a file `install.R` and run this to reinstall all the
+dependencies local relative to the working directory (also on the shiny server).
+Then execute the script with `Rscript install.R`.
+
+```r
+## clone this project here:
+project.path <- getwd() #"/srv/shiny-server/users/..."
+
+path.teal.libs <-  file.path(project.path, "libs")
+
+if (!dir.exists(path.teal.libs)) dir.create(path.teal.libs)
+
+# delete all current versions of teal and teal.oncology in path.teal.libs
+lapply(list.dirs(path.teal.libs, recursive = FALSE), unlink, recursive = TRUE, force = TRUE)
+
+orig_libpaths <- .libPaths()
+
+
+.libPaths(c(
+    path.teal.libs,
+    as.vector(Filter(function(x) !grepl("^/opt/bee/home", x), orig_libpaths))
+))
+
+
+devtools::install_github("Roche/rtables", upgrade_dependencies = FALSE, build_vignettes = FALSE)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/random.cdisc.data.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/tern.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/teal.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
+
+devtools::install_git(
+  url = "http://github.roche.com/Rpackages/teal.oncology.git",
+  build_vignettes = FALSE,
+  upgrade_dependencies = FALSE
+)
+
+.libPaths(orig_libpaths)
+```
 
 
 [ghs]: http://pages.github.roche.com/Rpackages/teal.oncology
