@@ -30,7 +30,7 @@
 #' 
 #' @examples  
 #' 
-#' \donotrun{
+#' \dontrun{
 #' library(atezo.data)
 #' library(dplyr)
 #' library(tidyr)
@@ -72,8 +72,8 @@
 #' )   
 #' shinyApp(x$ui, x$server)
 #' 
-#'    
-#' } 
+#' }
+#' 
 tm_chgfbl_plot <- function(label,
                            paramcd,
                            paramcd_choices = paramcd,

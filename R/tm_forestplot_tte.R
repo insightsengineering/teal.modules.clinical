@@ -19,7 +19,7 @@
 #' 
 #' @examples  
 #' 
-#' \donotrun{
+#' \dontrun{
 #' library(atezo.data)
 #' library(teal.oncology)
 #' library(dplyr)

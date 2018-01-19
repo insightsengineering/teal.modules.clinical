@@ -55,7 +55,7 @@ group.
 \examples{
  
 
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(dplyr)
 library(teal.oncology)

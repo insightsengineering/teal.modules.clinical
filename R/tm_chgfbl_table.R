@@ -21,7 +21,7 @@
 #' 
 #' @examples  
 #' 
-#' \donotrun{
+#' \dontrun{
 #' library(atezo.data)
 #' library(dplyr)
 #' library(tidyr)

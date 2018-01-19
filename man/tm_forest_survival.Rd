@@ -39,7 +39,7 @@ Forest Survival Plot Teal Module
 \examples{
  
 
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(teal.oncology)
 library(dplyr)

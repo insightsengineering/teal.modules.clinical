@@ -39,7 +39,7 @@ Package \code{forcats} used to re-format arm data into leveled factors.
 \examples{
  
 
-\\donotrun{
+\dontrun{
 library(atezo.data)
 library(dplyr)
 library(tidyr)
