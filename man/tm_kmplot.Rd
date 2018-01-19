@@ -4,7 +4,7 @@
 \alias{tm_kmplot}
 \title{teal module for Kaplan-Meier Plot from grid}
 \usage{
-tm_kmplot(label, treatment_var = "ARM",
+tm_kmplot(label, dataname, treatment_var = "ARM",
   treatment_var_choices = treatment_var, endpoint = "OS",
   endpoint_choices = endpoint, facet_var = NULL,
   facet_var_choices = facet_var, strata_var = NULL,
@@ -14,6 +14,8 @@ tm_kmplot(label, treatment_var = "ARM",
 }
 \arguments{
 \item{label}{unique name for tabpanel}
+
+\item{dataname}{dataset name}
 
 \item{treatment_var}{parameter for seperating curves}
 
@@ -71,6 +73,7 @@ x <- teal::init(
   modules = root_modules(
     tm_kmplot(
        label = "KM PLOT",
+       dataname = 'ATE',
        treatment_var_choices = c("ARM", "ARMCD"),
        endpoint_choices = c("OS", "PFS"),
        facet_var = "SEX",

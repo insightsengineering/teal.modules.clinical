@@ -23,6 +23,7 @@
 #'   modules = root_modules(
 #'     tm_time_to_event_table(
 #'        label = "Time To Event Table",
+#'        dataname = 'ATE',
 #'        time_points = 6,
 #'        time_points_choices = c(6, 8),
 #'        time_points_unit = "months",
@@ -41,6 +42,7 @@
 #'   
 #' } 
 tm_time_to_event_table <- function(label,
+                                   dataname, 
                                    time_points,
                                    time_points_choices = time_points,
                                    time_points_unit = "months",
@@ -60,12 +62,12 @@ tm_time_to_event_table <- function(label,
     server = srv_time_to_event_table,
     ui = ui_time_to_event_table,
     ui_args = args,
-    server_args = list(ref_arm = ref_arm, time_points_unit = time_points_unit),
-    filters = "ATE"
+    server_args = list(ref_arm = ref_arm, time_points_unit = time_points_unit, dataname = dataname),
+    filters = dataname
   )
 }
 
-ui_time_to_event_table <- function(id, label,
+ui_time_to_event_table <- function(id, label, dataname,
                                    time_points,
                                    time_points_choices,
                                    time_points_unit = "months",
@@ -83,7 +85,7 @@ ui_time_to_event_table <- function(id, label,
     output = whiteSmallWell(uiOutput(ns("tte_table"))),
     encoding = div(
       tags$label("Encodings", class="text-primary"),
-      helpText("Analysis data:", tags$code("ATE")),
+      helpText("Analysis data:", tags$code(dataname)),
       optionalSelectInput(ns("paramcd"), "PARAMCD", paramcd_choices, paramcd, multiple = FALSE),
       helpText("PARAMCD selects the endpoint"),
       optionalSelectInput(ns("arm_var"), "ARM", arm_var_choices, arm_var, multiple = FALSE),
@@ -93,7 +95,7 @@ ui_time_to_event_table <- function(id, label,
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       optionalSelectInput(ns("strata_var"), "Stratify by",
                           strata_var_choices, strata_var, multiple = TRUE,
-                          label_help = helpText("crrently taken from ", tags$code("ATE"))),
+                          label_help = helpText("crrently taken from ", tags$code(dataname))),
       optionalSelectInput(ns("time_points"), "Time Points", time_points_choices, time_points, multiple = TRUE)
     ),
     #forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
@@ -102,13 +104,13 @@ ui_time_to_event_table <- function(id, label,
   )
 } 
 
-srv_time_to_event_table <- function(input, output, session, datasets, ref_arm = NULL, time_points_unit = "months") {
+srv_time_to_event_table <- function(input, output, session, datasets, dataname, ref_arm = NULL, time_points_unit = "months") {
   
   
   observe({
     arm_var <- input$arm_var
     
-    ATE <- datasets$get_data("ATE", filtered = FALSE, reactive = "FALSE")
+    ATE <- datasets$get_data(dataname, filtered = FALSE, reactive = "FALSE")
     
     arm <- ATE[[arm_var]]
     arms <- if (is.factor(arm)) levels(arm) else unique(arm)
@@ -133,7 +135,7 @@ srv_time_to_event_table <- function(input, output, session, datasets, ref_arm = 
   output$tte_table <- renderUI({
 
     # resolve all reactive expressions    
-    ATE_filtered <- datasets$get_data("ATE", reactive = TRUE, filtered = TRUE)
+    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
     strata_var <- input$strata_var
