@@ -30,8 +30,7 @@ devtools::install_git(
 devtools::install_git(
   url = "http://github.roche.com/Rpackages/teal.git",
   build_vignettes = FALSE,
-  upgrade_dependencies = FALSE,
-  branch = "beta"
+  upgrade_dependencies = FALSE
 )
 
 devtools::install_git(
