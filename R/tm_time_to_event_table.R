@@ -10,18 +10,15 @@
 #' @examples  
 #' 
 #' \dontrun{
-#' library(atezo.data)
-#' library(dplyr)
-#' library(survival)
-#' 
-#' 
-#' ATE <- ate(com.roche.cdt30019.go29436.re)
-#' ASL <- asl(com.roche.cdt30019.go29436.re)
+#' library(random.cdisc.data)
+#'
+#' ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
+#' ATE <- radam('ATE', ADSL = ASL)
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
-#'     tm_time_to_event_table(
+#'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
 #'        time_points = 6,
@@ -33,27 +30,26 @@
 #'        paramcd = "OS",
 #'        paramcd_choices = unique(ATE$PARAMCD),
 #'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER", "TCICLVL2")
+#'        strata_var_choices = c("SEX", "MLIVER")
 #'    )
 #'   )
 #' )   
 #' shinyApp(x$ui, x$server) 
-#' 
 #'   
 #' } 
-tm_time_to_event_table <- function(label,
-                                   dataname, 
-                                   time_points,
-                                   time_points_choices = time_points,
-                                   time_points_unit = "months",
-                                   arm_var = "ARM",
-                                   arm_var_choices = arm_var,
-                                   ref_arm = NULL,
-                                   strata_var = NULL,
-                                   strata_var_choices = strata_var,
-                                   paramcd = "OS",
-                                   paramcd_choices = paramcd,
-                                   pre_output = NULL, post_output = NULL) {
+tm_t_tte <- function(label,
+                     dataname,
+                     arm_var = "ARM",
+                     arm_var_choices = arm_var,
+                     ref_arm = NULL,                     
+                     time_points,
+                     time_points_choices = time_points,
+                     time_points_unit = "months",
+                     strata_var = NULL,
+                     strata_var_choices = strata_var,
+                     paramcd = "OS",
+                     paramcd_choices = paramcd,
+                     pre_output = NULL, post_output = NULL) {
   
   args <- as.list(environment())
   
@@ -134,89 +130,82 @@ srv_time_to_event_table <- function(input, output, session, datasets, dataname, 
   
   output$tte_table <- renderUI({
 
-    # resolve all reactive expressions    
-    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
-
-    paramcd <- input$paramcd
-    strata_var <- input$strata_var
-    arm_var <- input$arm_var
-    ref_arm <- input$ref_arm
-    comp_arm <- input$comp_arm
-    combine_comp_arms <- input$combine_comp_arms
-    time_points <- input$time_points
+#    # resolve all reactive expressions    
+#    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+#
+#    paramcd <- input$paramcd
+#    strata_var <- input$strata_var
+#    arm_var <- input$arm_var
+#    ref_arm <- input$ref_arm
+#    comp_arm <- input$comp_arm
+#    combine_comp_arms <- input$combine_comp_arms
+#    time_points <- input$time_points
+#    
+#    
+#    # then validate your input values
+#    validate(need(!is.null(ATE_filtered) && is.data.frame(ATE_filtered), "no data left"))
+#    validate(need(nrow(ATE_filtered) > 10 , "need more than 10 observations to calculate the table"))
+#    
+#    validate(need(ATE_filtered[[arm_var]], "no valid arm selected"))
+#    
+#    validate(need(!is.null(strata_var), "need strata variables"))
+#             
+#    validate(need(!is.null(ref_arm) && !is.null(comp_arm),
+#                  "need at least one reference and one comparison arm"))
+#    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
+#                  "reference and treatment group cannot overlap"))
+#    
+#    validate(need(paramcd %in% ATE_filtered$PARAMCD, "selected PARAMCD not in ATE"))
+#    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
+#    
+#    validate(need(all(strata_var %in% names(ATE_filtered)),
+#                  "some baseline risk variables are not valid"))
+#    
+#    
+#    ## Now comes the static analysis code
+#   
+#    ## you need to add the encodings
+#    ATE_f <- ATE_filtered %>%
+#      filter(PARAMCD == paramcd)
+#    
+#    ATE_f <- ATE_f[ATE_f[[arm_var]] %in% c(ref_arm, comp_arm), ]
+#    
+#    validate(need(nrow(ATE_f) > 15, "need at least 15 data points"))
+#    
+#    
+#    arm <- ATE_f[[arm_var]]
+#    
+#    if (length(ref_arm)>1) {
+#      new_ref_arm <- paste(ref_arm, collapse = "/")
+#      arm <- do.call(fct_collapse, setNames(list(arm, ref_arm), c("f", new_ref_arm)))
+#      ref_arm <- new_ref_arm
+#    }
+#    
+#    if (combine_comp_arms) {
+#      arm <- do.call(fct_collapse, setNames(list(arm, comp_arm), c("f", paste(comp_arm, collapse = "/"))))
+#    }
+#    
+#    arm <- fct_relevel(arm, ref_arm)
+#    
+#    if (!is.null(time_points)) {
+#      time_points <- setNames(as.numeric(time_points), paste(time_points, time_points_unit))
+#    }
+#    
+#    early_cntr_events <- ATE_f$EVNTDESC
+#    early_cntr_events[ATE_f$CNSR != 0] <- NA
+#    
+#    # tbl <- try(time_to_event_table(
+#    #   time_to_event = ATE_f$AVAL,
+#    #   event = ATE_f$CNSR == 0,
+#    #   arm = arm,
+#    #   earliest_contributing_event = early_cntr_events,
+#    #   strata_data = ATE_f[strata_var],
+#    #   time_points = time_points
+#    # ))
+#    
+#    # if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
     
-    # teal:::as.global(ATE_filtered)
-    # teal:::as.global(paramcd)
-    # teal:::as.global(strata_var)
-    # teal:::as.global(arm_var)
-    # teal:::as.global(ref_arm)
-    # teal:::as.global(comp_arm)
-    # teal:::as.global(combine_comp_arms)
-    # teal:::as.global(time_points)
-    
-    # then validate your input values
-    validate(need(!is.null(ATE_filtered) && is.data.frame(ATE_filtered), "no data left"))
-    validate(need(nrow(ATE_filtered) > 10 , "need more than 10 observations to calculate the table"))
-    
-    validate(need(ATE_filtered[[arm_var]], "no valid arm selected"))
-    
-    validate(need(!is.null(strata_var), "need strata variables"))
-             
-    validate(need(!is.null(ref_arm) && !is.null(comp_arm),
-                  "need at least one reference and one comparison arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    
-    validate(need(paramcd %in% ATE_filtered$PARAMCD, "selected PARAMCD not in ATE"))
-    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    
-    validate(need(all(strata_var %in% names(ATE_filtered)),
-                  "some baseline risk variables are not valid"))
-    
-    
-    ## Now comes the static analysis code
-   
-    ## you need to add the encodings
-    ATE_f <- ATE_filtered %>%
-      filter(PARAMCD == paramcd)
-    
-    ATE_f <- ATE_f[ATE_f[[arm_var]] %in% c(ref_arm, comp_arm), ]
-    
-    validate(need(nrow(ATE_f) > 15, "need at least 15 data points"))
-    
-    
-    arm <- ATE_f[[arm_var]]
-    
-    if (length(ref_arm)>1) {
-      new_ref_arm <- paste(ref_arm, collapse = "/")
-      arm <- do.call(fct_collapse, setNames(list(arm, ref_arm), c("f", new_ref_arm)))
-      ref_arm <- new_ref_arm
-    }
-    
-    if (combine_comp_arms) {
-      arm <- do.call(fct_collapse, setNames(list(arm, comp_arm), c("f", paste(comp_arm, collapse = "/"))))
-    }
-    
-    arm <- fct_relevel(arm, ref_arm)
-    
-    if (!is.null(time_points)) {
-      time_points <- setNames(as.numeric(time_points), paste(time_points, time_points_unit))
-    }
-    
-    early_cntr_events <- ATE_f$EVNTDESC
-    early_cntr_events[ATE_f$CNSR != 0] <- NA
-    
-    tbl <- try(time_to_event_table(
-      time_to_event = ATE_f$AVAL,
-      event = ATE_f$CNSR == 0,
-      arm = arm,
-      earliest_contributing_event = early_cntr_events,
-      strata_data = ATE_f[strata_var],
-      time_points = time_points
-    ))
-    
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
-    
+    tbl <- as.rtable(table(iris$Species))
     as_html(tbl)
   })
 }
