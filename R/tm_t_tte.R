@@ -12,6 +12,11 @@
 #'   \code{\link[tern]{col_by}} argument.
 #' @param arm_var_choices vector with variable names that can be used as
 #'   \code{arm_var}
+#' @param arm_ref_comp optional, if specified it must be a named list with each
+#'   element corresponding to an arm variable in \code{ASL} and the element must
+#'   be another list with the elements named \code{ref} and \code{comp} that the
+#'   defined the default reference and comparison arms when the arm variable is
+#'   changed.
 #' @param paramcd single selected endpoint filtered with \code{PARAMCD} variable
 #' @param paramcd_choices vector with \code{paramcd} choices
 #' @param strata_var vector with variable names that should be used for
@@ -50,10 +55,7 @@
 #'
 #' ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
 #' ATE <- radam('ATE', ADSL = ASL)
-#' 
 #' ASL$ARMCD <- gsub(" ", "_", ASL$ARM, fixed = TRUE)
-#' 
-#' arm_var <- reactiveVal("ARM", "arm variable")
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -61,18 +63,8 @@
 #'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
-#'        arm_var = arm_var,
+#'        arm_var = "ARM",
 #'        arm_var_choices = c("ARM", "ARMCD"),
-#'        arm_ref_comp = list(
-#'           ARM = list(
-#'              ref = "ARM A",
-#'              comp = c("ARM B", "ARM C")
-#'           ),
-#'           ARMCD = list(
-#'              ref = "ARM_B",
-#'              comp = "ARM_A"
-#'           )
-#'        ),
 #'        paramcd = "OS",
 #'        paramcd_choices = unique(ATE$PARAMCD),
 #'        strata_var = "SEX",
@@ -82,7 +74,52 @@
 #'        time_unit = "months"
 #'    )
 #'   )
-#' )   
+#' )
+#' 
+#' shinyApp(x$ui, x$server) 
+#' 
+#' 
+#' ## Define default reference & comparison arms based on 
+#' ## ARM variable 
+#' library(random.cdisc.data)
+#'
+#' ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
+#' ATE <- radam('ATE', ADSL = ASL)
+#' 
+#' ASL$ARM <- sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE)
+#' ASL$ARMCD <- gsub(" ", "_", ASL$ARM, fixed = TRUE)
+#' 
+#' arm_ref_comp = list(
+#'    ARM = list(
+#'       ref = "ARM A",
+#'       comp = c("ARM B", "ARM C")
+#'    ),
+#'    ARMCD = list(
+#'       ref = "ARM_B",
+#'       comp = "ARM_A"
+#'    )
+#' )
+#' 
+#' x <- teal::init(
+#'   data = list(ASL = ASL, ATE = ATE),
+#'   modules = root_modules(
+#'     tm_t_tte(
+#'        label = "Time To Event Table",
+#'        dataname = 'ATE',
+#'        arm_var = "ARM",
+#'        arm_var_choices = c("ARM", "ARMCD"),
+#'        arm_ref_comp = arm_ref_comp,
+#'        paramcd = "OS",
+#'        paramcd_choices = unique(ATE$PARAMCD),
+#'        strata_var = "SEX",
+#'        strata_var_choices = c("SEX", "MLIVER"),
+#'        time_points = 6,
+#'        time_points_choices = c(6, 8),
+#'        time_unit = "months"
+#'    )
+#'   )
+#' )
+#' 
 #' shinyApp(x$ui, x$server) 
 #'   
 #' } 
@@ -111,7 +148,6 @@ tm_t_tte <- function(label,
     ui_args = args,
     server_args = list(
       dataname = dataname,
-      arm_var = arm_var,
       arm_ref_comp = arm_ref_comp,
       time_unit = time_unit,
       event_desrc_var = event_desrc_var
@@ -120,23 +156,9 @@ tm_t_tte <- function(label,
   )
 }
 
-ui_t_tte <- function(id,
-                     label,
-                     dataname,
-                     arm_var,
-                     arm_var_choices,
-                     arm_reference,
-                     arm_comparison,
-                     paramcd,
-                     paramcd_choices = paramcd,
-                     strata_var,
-                     strata_var_choices,
-                     time_points,
-                     time_points_choices,
-                     time_unit,
-                     event_desrc_var,
-                     pre_output,
-                     post_output) {
+ui_t_tte <- function(id, ...) {
+  
+  a <- list(...) # module args
   
   ns <- NS(id)
   
@@ -144,31 +166,38 @@ ui_t_tte <- function(id,
     output = whiteSmallWell(uiOutput(ns("tte_table"))),
     encoding = div(
       tags$label("Encodings", class="text-primary"),
-      helpText("Analysis data:", tags$code(dataname)),
-      optionalSelectInput(ns("paramcd"), "Select Endpoint", paramcd_choices, paramcd, multiple = FALSE),
-      optionalSelectInput(ns("arm_var"), "ARM", arm_var_choices, arm_var, multiple = FALSE),
+      helpText("Analysis data:", tags$code(a$dataname)),
+      optionalSelectInput(ns("paramcd"), "Select Endpoint", a$paramcd_choices, a$paramcd, multiple = FALSE),
+      optionalSelectInput(ns("arm_var"), "ARM", a$arm_var_choices, a$arm_var, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Group", choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple reference groups are automatically combined into a single group."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       optionalSelectInput(ns("strata_var"), "Stratify by",
-                          strata_var_choices, strata_var, multiple = TRUE,
+                          a$strata_var_choices, a$strata_var, multiple = TRUE,
                           label_help = helpText("from ", tags$code("ASL"))),
-      optionalSelectInput(ns("time_points"), "Time Points", time_points_choices, time_points, multiple = TRUE)
+      optionalSelectInput(ns("time_points"), "Time Points", a$time_points_choices, a$time_points, multiple = TRUE)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
-    pre_output = pre_output,
-    post_output = post_output
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 } 
 
 srv_t_tte <- function(input, output, session, datasets, dataname,
-                      arm_var, arm_ref_comp,
-                      time_unit, event_desrc_var) {
-  
-  ASL <- datasets$get_data('ASL', filtered = FALSE, reactive = FALSE)
+                      arm_ref_comp, time_unit, event_desrc_var) {
   
 
+  # setup Arm selection, default reference and comparison arms for encoding panel
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
+    ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_t_tte"
+  )
+  
+  
   
   output$tte_table <- renderUI({
 
