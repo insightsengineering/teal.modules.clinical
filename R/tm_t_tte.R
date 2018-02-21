@@ -53,9 +53,12 @@
 #' \dontrun{
 #' library(random.cdisc.data)
 #'
-#' ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
+#' ASL <- radam('ASL', start_with = list(
+#'   ITTFL = 'Y',
+#'   SEX = c("M", "F"),
+#'   MLIVER = paste("mliver", 1:3)
+#' ))
 #' ATE <- radam('ATE', ADSL = ASL)
-#' ASL$ARMCD <- gsub(" ", "_", ASL$ARM, fixed = TRUE)
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -86,8 +89,7 @@
 #' ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
-#' ASL$ARM <- sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE)
-#' ASL$ARMCD <- gsub(" ", "_", ASL$ARM, fixed = TRUE)
+#' ASL$ARM <- paste(sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE))
 #' 
 #' arm_ref_comp = list(
 #'    ARM = list(
@@ -95,8 +97,8 @@
 #'       comp = c("ARM B", "ARM C")
 #'    ),
 #'    ARMCD = list(
-#'       ref = "ARM_B",
-#'       comp = "ARM_A"
+#'       ref = "ARM B",
+#'       comp = "ARM A"
 #'    )
 #' )
 #' 
@@ -201,75 +203,82 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
   
   output$tte_table <- renderUI({
 
-#    # resolve all reactive expressions
-#    ASL_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
-#    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
-#
-#    paramcd <- input$paramcd
-#    strata_var <- input$strata_var
-#    arm_var <- input$arm_var
-#    ref_arm <- input$ref_arm
-#    comp_arm <- input$comp_arm
-#    combine_comp_arms <- input$combine_comp_arms
-#    time_points <- input$time_points
-#    
-#    
-#    # validate your input values
-#    validate_has_data(ASL_filtered)
-#    validate_has_data(ATE_filtered, min_nrow = 15)    
-#    
-#    validate(need(ASL_filtered[[arm_var]], "no valid arm selected"))
-#    
-#    validate(need(!is.null(ref_arm) && !is.null(comp_arm),
-#                  "need at least one reference and one comparison arm"))
-#    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-#                  "reference and treatment group cannot overlap"))
-#    
-#    validate(need(paramcd %in% ATE_filtered$PARAMCD, "selected PARAMCD not in ATE"))
-#    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-#    
-#    validate(need(all(strata_var %in% names(ATE_filtered)),
-#                  "some baseline risk variables are not valid"))
-#    
-#    
-#    ## Now comes the static analysis code
-#   
-#    ASL_p <- ASL_filtered %>%
-#      filter(ITTFL == 'Y', ARM %in% c(ref_arm, comp_arm))
-#    
-#    ATE_endpoint <- ATE_filtered %>%
-#      filter(PARAMCD == 'OS')
-#    
-#    ATE_p <- reorder_to_match_id(ATE_endpoint, ref=ASL_p, key=c("USUBJID", "STUDYID"))
-#    
-#    ARM <- combine_levels(ASL$ARM, ref_arm)
-#    
-#    if (combine_comp_arms) {
-#      ARM <- combine_levels(ARM, comp_arm)
-#    }
-#
-#    strata_data <- if (length(strata_var) == 0) {
-#      NULL
-#    } else {
-#      ASL[strata_var]
-#    } 
-#    
-#    validate(need(nrow(ATE_p) > 15, "need at least 15 data points"))
-#    
-#    tbl <- try(
-#      t_tte(
-#        tte = ATE_p$AVAL,
-#        is_event = ATE_p$CNSR == 0,
-#        event_descr = ATE_p[[event_desrc_var]],
-#        col_by = ARM,
-#        strata_data = strata_data,
-#        time_points = time_points
-#      )
-#    )
-#    
-#   if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
+    # resolve all reactive expressions
+    ASL_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+
+    paramcd <- input$paramcd
+    strata_var <- input$strata_var
+    arm_var <- input$arm_var
+    ref_arm <- input$ref_arm
+    comp_arm <- input$comp_arm
+    combine_comp_arms <- input$combine_comp_arms
+    time_points <- as.numeric(input$time_points)
     
-    tbl <- as.rtable(table(iris$Species))
+    if (length(time_points) == 0) time_points <- NULL
+    
+    as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)
+    
+    # validate your input values
+    validate_has_data(ASL_filtered)
+    validate_has_data(ATE_filtered, min_nrow = 15)    
+    
+    validate(need(ASL_filtered[[arm_var]], "no valid arm selected"))
+    
+    validate(need(!is.null(ref_arm) && !is.null(comp_arm),
+                  "need at least one reference and one comparison arm"))
+    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
+                  "reference and treatment group cannot overlap"))
+    
+    validate(need(paramcd %in% ATE_filtered$PARAMCD, "selected PARAMCD not in ATE"))
+    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
+    
+    validate(need(all(strata_var %in% names(ASL_filtered)),
+                  "some baseline risk variables are not found in ASL"))
+    
+    if (!is.null(event_desrc_var)) {
+      validate(need(event_desrc_var %in% names(ATE_filtered), 
+                    paste("variable", event_desrc_var, "not found in ATE")))      
+    }
+    
+    ## Now comes the static analysis code
+   
+    ASL_p <- ASL_filtered %>%
+      filter(ITTFL == 'Y', ARM %in% c(ref_arm, comp_arm))
+    
+    ATE_endpoint <- ATE_filtered %>%
+      filter(PARAMCD == 'OS')
+    
+    ATE_p <- reorder_to_match_id(ATE_endpoint, ref=ASL_p, key=c("USUBJID", "STUDYID"))
+    
+    ARM <- combine_levels(ASL$ARM, ref_arm)
+    
+    if (combine_comp_arms) {
+      ARM <- combine_levels(ARM, comp_arm)
+    }
+
+    strata_data <- if (length(strata_var) == 0) {
+      NULL
+    } else {
+      ASL[strata_var]
+    } 
+    
+    validate(need(nrow(ATE_p) > 15, "need at least 15 data points"))
+    
+    tbl <- try(
+      t_tte(
+        tte = ATE_p$AVAL,
+        is_event = ATE_p$CNSR == 0,
+        event_descr = if (is.null(event_desrc_var)) NULL else ATE_p[[event_desrc_var]],
+        col_by = ARM,
+        strata_data = strata_data,
+        time_points = time_points
+      )
+    )
+    
+   if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
+    
+  #  tbl <- as.rtable(table(iris$Species))
     as_html(tbl)
   })
 }
