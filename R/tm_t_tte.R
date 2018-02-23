@@ -63,7 +63,7 @@
 #' attr(ASL, "source") <- "radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
 #' attr(ATE, "source") <- "radam('ATE')"
 #' 
-#' x <- teal::init(
+#' x <- teal::init( 
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
 #'     tm_t_tte(
