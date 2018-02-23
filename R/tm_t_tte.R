@@ -60,9 +60,13 @@
 #' ))
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
+#' attr(ASL, "source") <- "radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
+#' attr(ATE, "source") <- "radam('ATE')"
+#' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
+#'     tm_variable_browser(),
 #'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
@@ -190,7 +194,8 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
                       arm_ref_comp, time_unit, event_desrc_var) {
   
 
-  # setup Arm selection, default reference and comparison arms for encoding panel
+  # Setup arm variable selection, default reference arms, and default
+  # comparison arms for encoding panel
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
@@ -199,8 +204,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     module = "tm_t_tte"
   )
   
-  
-  
+  # Create output
   output$tte_table <- renderUI({
 
     # resolve all reactive expressions
@@ -215,9 +219,15 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
     
-    if (length(time_points) == 0) time_points <- NULL
+    as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
     
-    as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)
+    if (length(time_points) == 0) time_points <- NULL
+
+    # Delete chunks that are used for reproducible code
+    chunk_vars <<- ""
+    chunk_data <<- ""
+    chunk_t_tte <<- "# No Calculated"
+    
     
     # validate your input values
     validate_has_data(ASL_filtered)
@@ -241,44 +251,82 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
                     paste("variable", event_desrc_var, "not found in ATE")))      
     }
     
-    ## Now comes the static analysis code
-   
-    ASL_p <- ASL_filtered %>%
-      filter(ITTFL == 'Y', ARM %in% c(ref_arm, comp_arm))
+    ## Now comes the analysis code
+    chunk_vars <<- bquote({
+      ref_arm <- .(ref_arm)
+      comp_arm <- .(comp_arm)
+      combine_comp_arms <- .(combine_comp_arms)
+    })
     
-    ATE_endpoint <- ATE_filtered %>%
-      filter(PARAMCD == 'OS')
-    
-    ATE_p <- reorder_to_match_id(ATE_endpoint, ref=ASL_p, key=c("USUBJID", "STUDYID"))
-    
-    ARM <- combine_levels(ASL$ARM, ref_arm)
-    
-    if (combine_comp_arms) {
-      ARM <- combine_levels(ARM, comp_arm)
-    }
+    chunk_data <<- bquote({
+      ASL_p <- subset(ASL_filtered, ITTFL == 'Y' & ARM %in% c(ref_arm, comp_arm))
+      
+      ATE_endpoint <- subset(ATE_filtered, PARAMCD == .(paramcd))
+      
+      ATE_p <- reorder_to_match_id(ATE_endpoint, ref=ASL_p, key=c("USUBJID", "STUDYID"))
+      
+      ARM <- combine_levels(ASL[[.(arm_var)]], ref_arm)
+      
+      if (combine_comp_arms) {
+          ARM <- combine_levels(ARM, comp_arm)
+      }
+    })
 
-    strata_data <- if (length(strata_var) == 0) {
-      NULL
-    } else {
-      ASL[strata_var]
-    } 
-    
+    eval(chunk_data)
     validate(need(nrow(ATE_p) > 15, "need at least 15 data points"))
     
-    tbl <- try(
-      t_tte(
-        tte = ATE_p$AVAL,
-        is_event = ATE_p$CNSR == 0,
-        event_descr = if (is.null(event_desrc_var)) NULL else ATE_p[[event_desrc_var]],
-        col_by = ARM,
-        strata_data = strata_data,
-        time_points = time_points
-      )
+    chunk_t_tte <<- call(
+      name = "t_tte", 
+      tte = quote(ATE_p$AVAL),
+      is_event = quote(ATE_p$CNSR == 0),
+      event_descr = if (is.null(event_desrc_var)) NULL else bquote(ATE_p[[.(event_desrc_var)]]),
+      col_by = quote(ARM),
+      strata_data = if (length(strata_var) == 0) {
+        NULL
+      } else {
+        bquote(ASL[.(strata_var)])
+      },
+      time_points = time_points
     )
     
-   if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
+    tbl <- try(
+      eval(chunk_t_tte)
+    )
     
-  #  tbl <- as.rtable(table(iris$Species))
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
+    
     as_html(tbl)
   })
+  
+  
+  observeEvent(input$show_rcode, {
+
+    header <- get_rcode_header(
+      title = "Time To Event Table",
+      dataname = c("ASL", "ATE"), 
+      datasets = datasets
+    )
+    
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      get_filter_txt(c("ASL", "ATE"), datasets),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_data)),
+      "",
+      deparse(chunk_t_tte)
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Time To Event Table",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
+  })
+  
 }
