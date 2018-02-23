@@ -77,7 +77,8 @@
 #'        strata_var_choices = c("SEX", "MLIVER"),
 #'        time_points = 6,
 #'        time_points_choices = c(6, 8),
-#'        time_unit = "months"
+#'        time_unit = "months",
+#'        event_desrc_var = "EVNTDESC"
 #'    )
 #'   )
 #' )
@@ -295,10 +296,11 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
         if (length(strata_var) == 0) "" else paste0("+ strata(", paste(strata_var, collapse = ", "), ")")
       )),
       data = quote(ANL),
-      event_descr = if (is.null(event_desrc_var)) NULL else bquote(factor(.(event_desrc_var))),
+      event_descr = if (is.null(event_desrc_var)) NULL else call("factor", as.name(event_desrc_var)),
       time_points = time_points,
       time_unit = time_unit
     )
+    as.global(chunk_t_tte)
     
     tbl <- try(
       eval(chunk_t_tte)
@@ -322,9 +324,9 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      remove_enclosing_curly_braces(deparse(chunk_vars, width.cutoff = 100)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data)),
+      remove_enclosing_curly_braces(deparse(chunk_data, width.cutoff = 100)),
       "",
       deparse(chunk_t_tte)
     ), collapse = "\n")
