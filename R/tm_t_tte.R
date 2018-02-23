@@ -66,7 +66,6 @@
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
-#'     tm_variable_browser(),
 #'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
@@ -121,7 +120,8 @@
 #'        strata_var_choices = c("SEX", "MLIVER"),
 #'        time_points = 6,
 #'        time_points_choices = c(6, 8),
-#'        time_unit = "months"
+#'        time_unit = "months",
+#'        event_desrc_var = "EVNTDESC"
 #'    )
 #'   )
 #' )
@@ -255,17 +255,28 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     chunk_vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
+      strata_var <- .(strata_var)
       combine_comp_arms <- .(combine_comp_arms)
     })
+    
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
+    ate_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
+    as.global(asl_vars, ate_vars)
     
     chunk_data <<- bquote({
       ASL_p <- subset(ASL_filtered, ITTFL == 'Y' & ARM %in% c(ref_arm, comp_arm))
       
       ATE_endpoint <- subset(ATE_filtered, PARAMCD == .(paramcd))
-      
-      ATE_p <- reorder_to_match_id(ATE_endpoint, ref=ASL_p, key=c("USUBJID", "STUDYID"))
-      
-      ARM <- combine_levels(ASL[[.(arm_var)]], ref_arm)
+      if (any(duplicated(ATE_endpoint[,c("USUBJID", "STUDYID")]))) 
+        stop("only one row per patient expected")
+        
+      ANL <- merge(
+        x = ASL_p[, .(asl_vars)],
+        y = ATE_endpoint[, .(ate_vars)],
+        all = TRUE, by=c("USUBJID", "STUDYID")
+      )
+
+      ARM <- combine_levels(ANL[[.(arm_var)]], ref_arm)
       
       if (combine_comp_arms) {
           ARM <- combine_levels(ARM, comp_arm)
@@ -273,20 +284,20 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     })
 
     eval(chunk_data)
-    validate(need(nrow(ATE_p) > 15, "need at least 15 data points"))
+    validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    
+    as.global(ANL)
     
     chunk_t_tte <<- call(
       name = "t_tte", 
-      tte = quote(ATE_p$AVAL),
-      is_event = quote(ATE_p$CNSR == 0),
-      event_descr = if (is.null(event_desrc_var)) NULL else bquote(ATE_p[[.(event_desrc_var)]]),
-      col_by = quote(ARM),
-      strata_data = if (length(strata_var) == 0) {
-        NULL
-      } else {
-        bquote(ASL[.(strata_var)])
-      },
-      time_points = time_points
+      formula = as.formula(paste(
+        "Surv(AVAL, !CNSR) ~ arm(ARM)",
+        if (length(strata_var) == 0) "" else paste0("+ strata(", paste(strata_var, collapse = ", "), ")")
+      )),
+      data = quote(ANL),
+      event_descr = if (is.null(event_desrc_var)) NULL else bquote(factor(.(event_desrc_var))),
+      time_points = time_points,
+      time_unit = time_unit
     )
     
     tbl <- try(
