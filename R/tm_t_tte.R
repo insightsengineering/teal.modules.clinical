@@ -281,27 +281,29 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
         
       ANL <- merge(
         x = ASL_p[, .(asl_vars)],
-        y = ANL_endpoint[, .(ate_vars)],
+        y = ANL_endpoint[, .(anl_vars)],
         all = TRUE, by=c("USUBJID", "STUDYID")
       )
 
-      ARM <- combine_levels(ANL[[.(arm_var)]], ref_arm)
+      ARM <- combine_levels(as.factor(ANL[[.(arm_var)]]), ref_arm)
       
       if (combine_comp_arms) {
           ARM <- combine_levels(ARM, comp_arm)
       }
+      
+      ANL[[.(arm_var)]] <- ARM
+      
     })
 
     eval(chunk_data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
-    as.global(ANL)
     
     chunk_t_tte <<- call(
       name = "t_tte", 
-      formula = as.formula(paste(
-        "Surv(AVAL, !CNSR) ~ arm(ARM)",
-        if (length(strata_var) == 0) "" else paste0("+ strata(", paste(strata_var, collapse = ", "), ")")
+      formula = as.formula(paste0(
+        "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
+        if (length(strata_var) == 0) "" else paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
       )),
       data = quote(ANL),
       event_descr = if (is.null(event_desrc_var)) NULL else call("factor", as.name(event_desrc_var)),
@@ -332,9 +334,9 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars, width.cutoff = 100)),
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data, width.cutoff = 100)),
+      remove_enclosing_curly_braces(deparse(chunk_data)),
       "",
       deparse(chunk_t_tte)
     ), collapse = "\n")

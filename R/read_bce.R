@@ -15,7 +15,7 @@
 #' 
 read_bce <- function(FILE, encoding = NULL) {
   
-  requireNamespace("rocheBCE") || stop("read_bce requires the rocheBCE package ()")
+  # requireNamespace("rocheBCE") || stop("read_bce requires the rocheBCE package ()")
   
   if (!is.character(FILE) || !(length(FILE) == 1)) stop("teal.oncology::read_bce only allows to specify one FILE at a time")
   
@@ -23,7 +23,7 @@ read_bce <- function(FILE, encoding = NULL) {
   
   if (!file.exists(FILE)) stop("file", FILE, "either does not exists or you do not have access")
   
-  d <- rocheBCE::read_bce(FILE, encoding)
+  d <- haven::read_sas(FILE, encoding)
   
   attr(d, "md5sum") <- tools::md5sum(FILE)
   attr(d, "source") <- paste0("read_bce(FILE='", FILE,"'", ", encoding=", if (is.null(encoding)) "NULL" else encoding, ")")   #deparse(match.call(expand.dots = TRUE))
