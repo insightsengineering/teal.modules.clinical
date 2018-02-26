@@ -60,8 +60,8 @@
 #' ))
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
-#' attr(ASL, "source") <- "radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
-#' attr(ATE, "source") <- "radam('ATE')"
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
+#' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
 #' 
 #' x <- teal::init( 
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -209,8 +209,8 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
   output$tte_table <- renderUI({
 
     # resolve all reactive expressions
-    ASL_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
-    ATE_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
     strata_var <- input$strata_var
@@ -231,24 +231,24 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     
     
     # validate your input values
-    validate_has_data(ASL_filtered)
-    validate_has_data(ATE_filtered, min_nrow = 15)    
+    validate_has_data(ASL_FILTERED)
+    validate_has_data(ANL_FILTERED, min_nrow = 15)    
     
-    validate(need(ASL_filtered[[arm_var]], "no valid arm selected"))
+    validate(need(ASL_FILTERED[[arm_var]], "no valid arm selected"))
     
     validate(need(!is.null(ref_arm) && !is.null(comp_arm),
                   "need at least one reference and one comparison arm"))
     validate(need(length(intersect(ref_arm, comp_arm)) == 0,
                   "reference and treatment group cannot overlap"))
     
-    validate(need(paramcd %in% ATE_filtered$PARAMCD, "selected PARAMCD not in ATE"))
+    validate(need(paramcd %in% ANL_FILTERED$PARAMCD, "selected PARAMCD not in ATE"))
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
     
-    validate(need(all(strata_var %in% names(ASL_filtered)),
+    validate(need(all(strata_var %in% names(ASL_FILTERED)),
                   "some baseline risk variables are not found in ASL"))
     
     if (!is.null(event_desrc_var)) {
-      validate(need(event_desrc_var %in% names(ATE_filtered), 
+      validate(need(event_desrc_var %in% names(ANL_FILTERED), 
                     paste("variable", event_desrc_var, "not found in ATE")))      
     }
     
@@ -260,20 +260,28 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       combine_comp_arms <- .(combine_comp_arms)
     })
     
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, ANL_FILTERED)
+
+    anl_name_q <- as.name(anl_name)
+    
+    
     asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
-    ate_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
-    as.global(asl_vars, ate_vars)
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
+    #as.global(asl_vars, ate_vars)
+
+    
     
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_filtered, ITTFL == 'Y' & ARM %in% c(ref_arm, comp_arm))
+      ASL_p <- subset(ASL_FILTERED, ITTFL == 'Y' & ARM %in% c(ref_arm, comp_arm))
       
-      ATE_endpoint <- subset(ATE_filtered, PARAMCD == .(paramcd))
-      if (any(duplicated(ATE_endpoint[,c("USUBJID", "STUDYID")]))) 
+      ANL_endpoint <- subset(.(anl_name_q), PARAMCD == .(paramcd))
+      if (any(duplicated(ANL_endpoint[,c("USUBJID", "STUDYID")]))) 
         stop("only one row per patient expected")
         
       ANL <- merge(
         x = ASL_p[, .(asl_vars)],
-        y = ATE_endpoint[, .(ate_vars)],
+        y = ANL_endpoint[, .(ate_vars)],
         all = TRUE, by=c("USUBJID", "STUDYID")
       )
 
@@ -316,7 +324,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     header <- get_rcode_header(
       title = "Time To Event Table",
-      dataname = c("ASL", "ATE"), 
+      dataname = dataname, 
       datasets = datasets
     )
     
