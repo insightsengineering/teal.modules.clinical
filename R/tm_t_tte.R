@@ -65,7 +65,7 @@
 #' 
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3])); ASL$ARM <- as.factor(ASL$ARM)"
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
 #' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
 #' 
 #' 
