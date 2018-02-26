@@ -220,7 +220,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
     
-    as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
+    # as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
     
     if (length(time_points) == 0) time_points <- NULL
 

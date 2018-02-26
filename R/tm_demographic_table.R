@@ -1,28 +1,33 @@
 
 
-#' Demographic Table Teal Module
+#' Summarize Variable Teal Module
 #' 
 #' @export
 #' 
 #' @examples 
-#' \dontrun{
-#' library(atezo.data)
-#' library(dplyr)
-#' library(survival)
 #' 
-#' ASL <- asl(com.roche.cdt30019.go29436.re)
+#' \dontrun{
+#' 
+#' library(random.cdisc.data)
+#' 
+#' ASL <- radam('ASL', N = 1000)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL') "
+#' 
+#' ASL$ARMCD <- ASL$ARM
+#' levels(ASL$ARMCD) <- c("DUMMY A", "DUMMY B")
+#' 
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
-#'     tm_demographic_table(
+#'     tm_t_summarize_variables(
 #'        label = "Demographic Table",
+#'        dataname = "ASL",
 #'        arm_var = "ARM",
 #'        arm_var_choices = c("ARM", "ARMCD"),
-#'        summarize_vars =  toupper(c("sex", "mliver", "tciclvl2")),
-#'        summarize_vars_choices = toupper(c("sex", "mliver", "tciclvl2", "bage", "age4cat",
-#'             "ethnic", "race", "bwt", "tobhx", "hist", "EGFRMUT",
-#'             "alkmut", "krasmut", "becog"))
+#'        summarize_vars =  c("SEX"),
+#'        summarize_vars_choices = c("SEX", "RACE", "BAGE")
 #'    )
 #'   )
 #' )   
@@ -32,78 +37,106 @@
 #' } 
 #' 
 #' 
-tm_demographic_table <- function(label,
-                                 arm_var,
-                                 arm_var_choices = arm_var,
-                                 summarize_vars,
-                                 summarize_vars_choices = summarize_vars,
-                                 pre_output = NULL, post_output = NULL) {
-
+tm_t_summarize_variables <- function(label,
+                                     dataname,
+                                     arm_var,
+                                     arm_var_choices = arm_var,
+                                     summarize_vars,
+                                     summarize_vars_choices = summarize_vars,
+                                     pre_output = NULL,
+                                     post_output = NULL) {
+  
   args <- as.list(environment())
   
   module(
     label = label,
-    server = srv_demographic_table,
-    ui = ui_demographic_table,
+    server = srv_t_summarize_variables,
+    ui = ui_t_summarize_variables,
     ui_args = args,
-    filters = "ASL"
+    server_args = list(dataname = dataname),
+    filters = dataname
   )
   
 }
 
-ui_demographic_table <- function(id,
-                                 label,
-                                 arm_var,
-                                 arm_var_choices = arm_var,
-                                 summarize_vars,
-                                 summarize_vars_choices = summarize_vars,
-                                 pre_output = NULL, post_output = NULL) {
+ui_t_summarize_variables <- function(id, ...) {
   
   ns <- NS(id)
+  a <- list(...)
   
   standard_layout(
-    output = whiteSmallWell(uiOutput(ns("demographic_table"))),
+    output = whiteSmallWell(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class="text-primary"),
-      helpText("Analysis data:", tags$code("ASL")),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", arm_var_choices, arm_var, multiple = FALSE),
-      optionalSelectInput(ns("summarize_vars"), "Summarize Variables", summarize_vars_choices, summarize_vars, multiple = TRUE)
+      helpText("Analysis data:", tags$code(a$dataname)),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("summarize_vars"), "Summarize Variables", a$summarize_vars_choices, a$summarize_vars, multiple = TRUE)
     ),
-    pre_output = pre_output,
-    post_output = post_output
+    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
   
 }
 
-srv_demographic_table <- function(input, output, session, datasets) {
+srv_t_summarize_variables <- function(input, output, session, datasets, dataname) {
   
-  output$demographic_table <- renderUI({
-    
-    ASL_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+  output$table <- renderUI({
+
+    ANL_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
     arm_var <- input$arm_var
     summarize_vars <- input$summarize_vars
     
-    # teal:::as.global(ASL_filtered)
-    # teal:::as.global(arm_var)
-    # teal:::as.global(summarize_vars)
-  
+    chunk_analysis <<- ""
     
+    validate_has_data(ANL_f, min_nrow = 15)    
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
-    validate(need(all(summarize_vars %in% names(ASL_filtered)), "not all variables available"))
-    validate(need(nrow(ASL_filtered) > 10, "Need more than 10 patients to make the table"))
-    validate(need(ASL_filtered[[arm_var]], "Arm variable does not exist"))
+    validate(need(all(summarize_vars %in% names(ANL_f)), "not all variables available"))
+    validate(need(ANL_f[[arm_var]], "Arm variable does not exist"))
     
-    tbl <- try(demographic_table(
-      data = ASL_filtered,
-      arm_var = arm_var,
-      all.patients = TRUE,
-      group_by_vars = summarize_vars
-    ))
+    data_name <- paste0(dataname, "_FILTERED")
+    assign(data_name, ANL_f)
     
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate demographic table:\n\n", tbl)))
+    chunk_analysis <<- call(
+      "t_summarize_variables",
+      data = bquote(.(as.name(data_name))[, .(summarize_vars), drop=FALSE]),
+      col_by = bquote(.(as.name(data_name))[[.(arm_var)]]),
+      total = "All Patients",
+      useNA_factors = "ifany" 
+    )
+
+    tbl <- try(eval(chunk_analysis))
+    
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
     
     as_html(tbl)
+  })
+  
+  
+  
+  observeEvent(input$show_rcode, {
+    
+    header <- get_rcode_header(
+      title = "Summarize Variables",
+      dataname = dataname, 
+      datasets = datasets
+    )
+    
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_analysis, width.cutoff = 60))
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Time To Event Table",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
   })
   
 }

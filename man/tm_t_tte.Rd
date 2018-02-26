@@ -5,8 +5,8 @@
 \title{Time To Event Table Teal Module}
 \usage{
 tm_t_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  paramcd = "OS", paramcd_choices = paramcd, strata_var = NULL,
-  strata_var_choices = strata_var, time_points,
+  arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
+  strata_var = NULL, strata_var_choices = strata_var, time_points,
   time_points_choices = time_points, time_unit = "months",
   event_desrc_var = NULL, pre_output = NULL, post_output = NULL)
 }
@@ -23,6 +23,12 @@ Note that the data is expected to be in vertical form with the
 
 \item{arm_var_choices}{vector with variable names that can be used as
 \code{arm_var}}
+
+\item{arm_ref_comp}{optional, if specified it must be a named list with each
+element corresponding to an arm variable in \code{ASL} and the element must
+be another list with the elements named \code{ref} and \code{comp} that the
+defined the default reference and comparison arms when the arm variable is
+changed.}
 
 \item{paramcd}{single selected endpoint filtered with \code{PARAMCD} variable}
 
@@ -72,8 +78,58 @@ data.
 \dontrun{
 library(random.cdisc.data)
 
+ASL <- radam('ASL', start_with = list(
+  ITTFL = 'Y',
+  SEX = c("M", "F"),
+  MLIVER = paste("mliver", 1:3)
+))
+ATE <- radam('ATE', ADSL = ASL)
+
+attr(ASL, "source") <- "radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
+attr(ATE, "source") <- "radam('ATE')"
+
+x <- teal::init( 
+  data = list(ASL = ASL, ATE = ATE),
+  modules = root_modules(
+    tm_t_tte(
+       label = "Time To Event Table",
+       dataname = 'ATE',
+       arm_var = "ARM",
+       arm_var_choices = c("ARM", "ARMCD"),
+       paramcd = "OS",
+       paramcd_choices = unique(ATE$PARAMCD),
+       strata_var = "SEX",
+       strata_var_choices = c("SEX", "MLIVER"),
+       time_points = 6,
+       time_points_choices = c(6, 8),
+       time_unit = "months",
+       event_desrc_var = "EVNTDESC"
+   )
+  )
+)
+
+shinyApp(x$ui, x$server) 
+
+
+## Define default reference & comparison arms based on 
+## ARM variable 
+library(random.cdisc.data)
+
 ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
 ATE <- radam('ATE', ADSL = ASL)
+
+ASL$ARM <- paste(sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE))
+
+arm_ref_comp = list(
+   ARM = list(
+      ref = "ARM A",
+      comp = c("ARM B", "ARM C")
+   ),
+   ARMCD = list(
+      ref = "ARM B",
+      comp = "ARM A"
+   )
+)
 
 x <- teal::init(
   data = list(ASL = ASL, ATE = ATE),
@@ -82,17 +138,20 @@ x <- teal::init(
        label = "Time To Event Table",
        dataname = 'ATE',
        arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),      
+       arm_var_choices = c("ARM", "ARMCD"),
+       arm_ref_comp = arm_ref_comp,
        paramcd = "OS",
        paramcd_choices = unique(ATE$PARAMCD),
        strata_var = "SEX",
        strata_var_choices = c("SEX", "MLIVER"),
        time_points = 6,
        time_points_choices = c(6, 8),
-       time_unit = "months"
+       time_unit = "months",
+       event_desrc_var = "EVNTDESC"
    )
   )
-)   
+)
+
 shinyApp(x$ui, x$server) 
   
 } 
