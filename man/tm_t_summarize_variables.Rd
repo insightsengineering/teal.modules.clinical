@@ -2,27 +2,29 @@
 % Please edit documentation in R/tm_demographic_table.R
 \name{tm_t_summarize_variables}
 \alias{tm_t_summarize_variables}
-\title{Demographic Table Teal Module}
+\title{Summarize Variable Teal Module}
 \usage{
 tm_t_summarize_variables(label, dataname, arm_var, arm_var_choices = arm_var,
   summarize_vars, summarize_vars_choices = summarize_vars,
-  pre_output = NULL, post_output = NULL)
+  pre_output = NULL, post_output = NULL, code_data_processing = NULL)
 }
 \description{
-Demographic Table Teal Module
+Summarize Variable Teal Module
 }
 \examples{
 
-Î\dontrun{
+\dontrun{
 
 library(random.cdisc.data)
 
 ASL <- radam('ASL', N = 1000)
 
+attr(ASL, "source") <- "random.cdisc.data::radam('ASL') "
+
 ASL$ARMCD <- ASL$ARM
 levels(ASL$ARMCD) <- c("DUMMY A", "DUMMY B")
 
-names(ASL)
+
 x <- teal::init(
   data = list(ASL = ASL),
   modules = root_modules(

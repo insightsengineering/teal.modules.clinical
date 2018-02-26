@@ -8,7 +8,8 @@ tm_t_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
   strata_var = NULL, strata_var_choices = strata_var, time_points,
   time_points_choices = time_points, time_unit = "months",
-  event_desrc_var = NULL, pre_output = NULL, post_output = NULL)
+  event_desrc_var = NULL, pre_output = NULL, post_output = NULL,
+  code_data_processing = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -55,6 +56,9 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
+
+\item{code_data_processing}{string with data preprocessing before the teal
+app is initialized}
 }
 \description{
 Time to event table as defined in \code{\link[tern]{t_tte}} in the
@@ -81,12 +85,17 @@ library(random.cdisc.data)
 ASL <- radam('ASL', start_with = list(
   ITTFL = 'Y',
   SEX = c("M", "F"),
-  MLIVER = paste("mliver", 1:3)
+  MLIVER = paste("mliver", 1:3),
+  ARM = paste("ARM", LETTERS[1:3])
 ))
+
+ASL$ARM <- as.factor(ASL$ARM)
+
 ATE <- radam('ATE', ADSL = ASL)
 
-attr(ASL, "source") <- "radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
-attr(ATE, "source") <- "radam('ATE')"
+attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3])); ASL$ARM <- as.factor(ASL$ARM)"
+attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+
 
 x <- teal::init( 
   data = list(ASL = ASL, ATE = ATE),
