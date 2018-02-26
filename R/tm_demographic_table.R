@@ -44,7 +44,8 @@ tm_t_summarize_variables <- function(label,
                                      summarize_vars,
                                      summarize_vars_choices = summarize_vars,
                                      pre_output = NULL,
-                                     post_output = NULL) {
+                                     post_output = NULL,
+                                     code_data_processing = NULL) {
   
   args <- as.list(environment())
   
@@ -53,7 +54,7 @@ tm_t_summarize_variables <- function(label,
     server = srv_t_summarize_variables,
     ui = ui_t_summarize_variables,
     ui_args = args,
-    server_args = list(dataname = dataname),
+    server_args = list(dataname = dataname, code_data_processing = code_data_processing),
     filters = dataname
   )
   
@@ -79,7 +80,7 @@ ui_t_summarize_variables <- function(id, ...) {
   
 }
 
-srv_t_summarize_variables <- function(input, output, session, datasets, dataname) {
+srv_t_summarize_variables <- function(input, output, session, datasets, dataname, code_data_processing) {
   
   output$table <- renderUI({
 
@@ -121,8 +122,9 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     
     header <- get_rcode_header(
       title = "Summarize Variables",
-      dataname = dataname, 
-      datasets = datasets
+      dataname = dataname,
+      datasets = datasets,
+      code_data_processing
     )
     
     str_rcode <- paste(c(

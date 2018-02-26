@@ -28,7 +28,8 @@
 #' @param event_desrc_var variable name with the event description information,
 #'   optional
 #' @inheritParams teal::standard_layout
-#' 
+#' @param code_data_processing string with data preprocessing before the teal
+#'   app is initialized
 #' 
 #' @details 
 #' This modules expects that the analysis data has the following variables
@@ -56,12 +57,17 @@
 #' ASL <- radam('ASL', start_with = list(
 #'   ITTFL = 'Y',
 #'   SEX = c("M", "F"),
-#'   MLIVER = paste("mliver", 1:3)
+#'   MLIVER = paste("mliver", 1:3),
+#'   ARM = paste("ARM", LETTERS[1:3])
 #' ))
+#' 
+#' ASL$ARM <- as.factor(ASL$ARM)
+#' 
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3)))"
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3])); ASL$ARM <- as.factor(ASL$ARM)"
 #' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+#' 
 #' 
 #' x <- teal::init( 
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -144,7 +150,8 @@ tm_t_tte <- function(label,
                      time_unit = "months",
                      event_desrc_var = NULL, 
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     code_data_processing = NULL) {
   
   args <- as.list(environment())
   
@@ -157,7 +164,8 @@ tm_t_tte <- function(label,
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
       time_unit = time_unit,
-      event_desrc_var = event_desrc_var
+      event_desrc_var = event_desrc_var,
+      code_data_processing = code_data_processing
     ),
     filters = dataname
   )
@@ -192,7 +200,8 @@ ui_t_tte <- function(id, ...) {
 } 
 
 srv_t_tte <- function(input, output, session, datasets, dataname,
-                      arm_ref_comp, time_unit, event_desrc_var) {
+                      arm_ref_comp, time_unit, event_desrc_var,
+                      code_data_processing) {
   
 
   # Setup arm variable selection, default reference arms, and default
@@ -222,7 +231,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     
     # as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
     
-    if (length(time_points) == 0) time_points <- NULL
+    time_points <- if (length(time_points) == 0) NULL else sort(time_points)
 
     # Delete chunks that are used for reproducible code
     chunk_vars <<- ""
@@ -236,7 +245,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     
     validate(need(ASL_FILTERED[[arm_var]], "no valid arm selected"))
     
-    validate(need(!is.null(ref_arm) && !is.null(comp_arm),
+    validate(need(length(ref_arm) > 0 && length(comp_arm) > 0,
                   "need at least one reference and one comparison arm"))
     validate(need(length(intersect(ref_arm, comp_arm)) == 0,
                   "reference and treatment group cannot overlap"))
@@ -252,6 +261,12 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
                     paste("variable", event_desrc_var, "not found in ATE")))      
     }
     
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name
+
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
+    
     ## Now comes the analysis code
     chunk_vars <<- bquote({
       ref_arm <- .(ref_arm)
@@ -259,39 +274,28 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       strata_var <- .(strata_var)
       combine_comp_arms <- .(combine_comp_arms)
     })
-    
-    anl_name <- paste0(dataname, "_FILTERED")
-    assign(anl_name, ANL_FILTERED)
 
-    anl_name_q <- as.name(anl_name)
-    
-    
-    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
-    #as.global(asl_vars, ate_vars)
-
-    
-    
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_FILTERED, ITTFL == 'Y' & ARM %in% c(ref_arm, comp_arm))
+      ASL_p <- subset(ASL_FILTERED, ITTFL == 'Y' & .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
-      ANL_endpoint <- subset(.(anl_name_q), PARAMCD == .(paramcd))
+      ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
       if (any(duplicated(ANL_endpoint[,c("USUBJID", "STUDYID")]))) 
         stop("only one row per patient expected")
         
       ANL <- merge(
-        x = ASL_p[, .(asl_vars)],
-        y = ANL_endpoint[, .(anl_vars)],
-        all = TRUE, by=c("USUBJID", "STUDYID")
+        x = ASL_p[, .(asl_vars), drop = FALSE],
+        y = ANL_endpoint[, .(anl_vars), drop = FALSE],
+        all.x = TRUE, all.y = FALSE, by=c("USUBJID", "STUDYID")
       )
 
-      ARM <- combine_levels(as.factor(ANL[[.(arm_var)]]), ref_arm)
-      
+      ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
+        
+      ARM <- combine_levels(ARM, ref_arm)
       if (combine_comp_arms) {
           ARM <- combine_levels(ARM, comp_arm)
       }
       
-      ANL[[.(arm_var)]] <- ARM
+      ANL[[.(arm_var)]] <- droplevels(ARM)
       
     })
 
@@ -306,15 +310,12 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
         if (length(strata_var) == 0) "" else paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
       )),
       data = quote(ANL),
-      event_descr = if (is.null(event_desrc_var)) NULL else call("factor", as.name(event_desrc_var)),
+      event_descr = if (is.null(event_desrc_var)) NULL else call("as.factor", as.name(event_desrc_var)),
       time_points = time_points,
       time_unit = time_unit
     )
-    as.global(chunk_t_tte)
     
-    tbl <- try(
-      eval(chunk_t_tte)
-    )
+    tbl <- try(eval(chunk_t_tte))
     
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
     
@@ -326,8 +327,9 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     header <- get_rcode_header(
       title = "Time To Event Table",
-      dataname = dataname, 
-      datasets = datasets
+      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datasets = datasets,
+      code_data_processing
     )
     
     str_rcode <- paste(c(
