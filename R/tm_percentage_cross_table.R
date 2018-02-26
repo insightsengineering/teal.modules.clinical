@@ -88,9 +88,6 @@ srv_percentage_cross_table <- function(input, output, session, datasets) {
     validate(need(y, "selected y_var does not exist"))
     
     
-    teal:::as.global(x)
-    teal:::as.global(y)
-    
     X <- addmargins(table(x,y))
     P <- X / X[nrow(X), ncol(X)]
     
@@ -102,17 +99,11 @@ srv_percentage_cross_table <- function(input, output, session, datasets) {
         
         r <- Map(function(xii, pii) c(xii, pii), x_i, p_i)
         
-        do.call(rrow, c(list(rownames(X)[i]), r))
-        
+        rrowl(rownames(X)[i], r)
       })
       
-      do.call(rtable, c(
-        list(
-          col.names = colnames(X),
-          format = "xx (xx.xx%)"    
-        ),
-        rows
-      ))
+      
+      rtablel(header = colnames(X), rows, format = "xx (xx.xx%)")
     })
 
 
