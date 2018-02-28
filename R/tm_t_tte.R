@@ -276,16 +276,17 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     })
 
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_FILTERED, ITTFL == 'Y' & .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+      ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
       ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
       if (any(duplicated(ANL_endpoint[,c("USUBJID", "STUDYID")]))) 
         stop("only one row per patient expected")
         
       ANL <- merge(
-        x = ASL_p[, .(asl_vars), drop = FALSE],
-        y = ANL_endpoint[, .(anl_vars), drop = FALSE],
-        all.x = TRUE, all.y = FALSE, by=c("USUBJID", "STUDYID")
+        x = ASL_p[, .(asl_vars)],
+        y = ANL_endpoint[, .(anl_vars)],
+        all.x = TRUE, all.y = FALSE,
+        by=c("USUBJID", "STUDYID")
       )
 
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])

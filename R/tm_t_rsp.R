@@ -147,7 +147,7 @@ ui_t_rsp <- function(id, ...) {
                           choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
+      checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       #Stratification related parameters
       optionalSelectInput(ns("strata_var"), "Stratification Factors",
                   choices = a$strata_var_choices, selected = a$strata_var, multiple = TRUE,
@@ -223,106 +223,118 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     arm_var <- input$arm_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
-    combine_arm <- input$combine_arm
+    combine_comp_arms <- input$combine_comp_arms
     strata_var <- input$strata_var
     
+    #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, incl_missing, arm_var, ref_arm, comp_arm,
+    #          combine_comp_arms, strata_var)
     
+    
+    # Chunks
+    chunk_vars <<- ""
+    chunk_data <<- ""
+    chunk_t_rsp <<- "# No Calculated"
+      
+      
     # Validate your input
     validate_has_data(ASL_FILTERED)
     validate_has_data(ANL_FILTERED, min_nrow = 15)    
 
-    validate(need(!is.null(paramcd) && paramcd %in% ANL_FILTERED$PARAMCD,
-                  "PARAMCD does not exist"))
-    
-    validate(need(!is.null(responders) && all(responders %in% ANL_FILTERED$AVALC),
-                  "responders AVALC does not exist"))
-    
-    validate(need(!is.null(comp_arm) && !is.null(ref_arm),
-                  "need at least one treatment and one reference arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    
-    validate(need(all(c(ref_arm, comp_arm) %in% ANL_FILTERED[[var_arm]]), paste("arm variable not found in", dataname)))
-    
-    validate(need(all(strata_var %in% names(ANL_FILTERED)), paste("stratification factor not found in", dataname)))
+    validate_in(paramcd, ANL_FILTERED$PARAMCD, "PARAMCD values do not exist")
+    validate_in(responders, ANL_FILTERED$AVALC, "responder values do not exist")
+    validate_has_elements(comp_arm, "need comparison arms")
+    validate_has_elements(ref_arm, "need reference arms")
+    validate_no_intersection(comp_arm, ref_arm, "reference and treatment group cannot overlap")
+    validate_in(c(ref_arm, comp_arm), ASL_FILTERED[[arm_var]], "arm variable or comp/ref choices not found in ASL")
+    validate_in(strata_var, names(ASL_FILTERED), "stratification factor not found in ASL")
 
     
-    tbl <- as.rtable(table(iris$Species))
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name
+    
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
+    
+    ## Now comes the analysis code
+    chunk_vars <<- bquote({
+      ref_arm <- .(ref_arm)
+      comp_arm <- .(comp_arm)
+      strata_var <- .(strata_var)
+      combine_comp_arms <- .(combine_comp_arms)
+    })
+    
+    chunk_data <<- bquote({
+      ASL_p <- subset(ASL_FILTERED, 
+                      .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+      
+      ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
+      if (any(duplicated(ANL_endpoint[,c("USUBJID", "STUDYID")]))) 
+        stop("only one row per patient expected")
+      
+      ANL <- merge(
+        x = ASL_p[, .(asl_vars), drop = FALSE],
+        y = ANL_endpoint[, .(anl_vars), drop = FALSE],
+        all.x = TRUE, all.y = FALSE, by=c("USUBJID", "STUDYID")
+      )
+      
+      ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
+      
+      ARM <- combine_levels(ARM, ref_arm)
+      if (combine_comp_arms) {
+        ARM <- combine_levels(ARM, comp_arm)
+      }
+      
+      ANL[[.(arm_var)]] <- droplevels(ARM)
+    })
+    
+    eval(chunk_data)
+    validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    
+    
+    chunk_t_rsp <<- call(
+      "t_rsp",
+      rsp = bquote(ANL$AVALC %in% .(responders)),
+      col_by = bquote(ANL[[.(arm_var)]]),
+      parition_rsp_by = bquote(as.factor(ANL$AVALC)),
+      strata_data = if (length(strata_var) >0) bquote(ANL[, .(strata_var), drop=FALSE]) else NULL
+    )
+    
+    tbl <- try(eval(chunk_t_rsp))
+    
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
+    
     as_html(tbl)
     
   })
   
-    
-  
-#   # Deal With Reactivity/Inputs
-#   ARS_filtered <- reactive({
-#     ARS_f <- datasets$get_data("ARS", reactive = TRUE, filtered = TRUE)
-#     ARS_f
-#   })
-#   
-# 
-#   
-#   output$response_table <- renderUI({
-#     
 
-#     
-#     # Assign inputs to global
-#     # teal:::as.global(ARS_filtered)
-#     # teal:::as.global(paramcd)
-#     # teal:::as.global(responders)
-#     # teal:::as.global(incl_missing)
-#     # teal:::as.global(var_arm)
-#     # teal:::as.global(ref_arm)
-#     # teal:::as.global(comp_arm)
-#     # teal:::as.global(combine_arm)
-#     # teal:::as.global(var_strata)
-#     
-#     
-#     # Get final analysis dataset
-#     ANL1 <- ARS_filtered %>% filter(PARAMCD == paramcd)
-# 
-#     ANL <- ANL1[ANL1[[var_arm]] %in% c(ref_arm, comp_arm), ]
-#   
-#     validate(need(nrow(ANL) > 0, "no data left"))
-# 
-#     #--- Manipulation of response and arm variables ---#
-#     # Recode/filter responses if want to include missing as non-responders
-#     if (incl_missing == TRUE) {
-#       ANL$AVALC[ANL$AVALC==""] <- "NE"
-#     } else {
-#       ANL <- ANL %>% filter(AVALC != "")
-#     }
-#     
-#     # Recode grouping according to ref_arm, comp_arm and combine_arm settings
-#     arm1 <- factor(ANL[[var_arm]])
-#   
-#     if (length(ref_arm) > 1) {
-#       refname <- paste0(ref_arm, collapse = "/")
-#       armtmp <- fct_collapse(arm1, refs = ref_arm)
-#       arm2 <- fct_relevel(armtmp, "refs", comp_arm)
-#       levels(arm2)[which(levels(arm2)=="refs")] <- refname
-#     } else {
-#       arm2 <- fct_relevel(arm1, ref_arm, comp_arm)
-#     }
-#     
-#     if (length(comp_arm) > 1 && combine_arm == TRUE) {
-#       compname <- paste0(comp_arm, collapse = "/")
-#       ARM <- fct_collapse(arm2, comps = comp_arm)
-#       levels(ARM)[which(levels(ARM)=="comps")] <- compname
-#     } else {
-#       ARM <- arm2
-#     }
-# 
-#     tbl <- try(response_table(
-#       response = ANL$AVALC,
-#       value.resp = responders,
-#       value.nresp = setdiff(ANL$AVALC, responders),
-#       arm = ARM,
-#       strata_data = if (!is.null(var_strata)) ANL[var_strata] else NULL
-#     ))
-#     
-#     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
-#     
-#     as_html(tbl)
-#   })
+  observeEvent(input$show_rcode, {
+    
+    header <- get_rcode_header(
+      title = "Response Table",
+      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datasets = datasets,
+      code_data_processing
+    )
+    
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_data)),
+      "",
+      deparse(chunk_t_rsp)
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Response Table",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
+  })
+  
 }
