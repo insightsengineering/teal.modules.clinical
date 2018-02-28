@@ -32,60 +32,77 @@
 #' 
 #' @examples  
 #' 
-#' \dontrun{
-#' library(atezo.data)
-#' library(dplyr)
-#' library(teal.oncology)
-#' library(forcats)
+#' \dontrun{ 
+#' 
+#' library(random.cdisc.data)
+#'
+#' ASL <- radam('ASL', start_with = list(
+#'   ITTFL = 'Y',
+#'   SEX = c("M", "F"),
+#'   MLIVER = paste("mliver", 1:3),
+#'   ARM = paste("ARM", LETTERS[1:3])
+#' ))
+#' 
+#' ASL$ARM <- as.factor(ASL$ARM)
+#' 
+#' ARS <- radam('ARS', ADSL = ASL)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
+#' attr(ARS, "source") <- "random.cdisc.data::radam('ARS', ADSL = ASL)"
 #' 
 #' 
-#' ARS <- ars(com.roche.cdt30019.go29436.re)
-#' ASL <- asl(com.roche.cdt30019.go29436.re)
-#' 
-#' options(teal_logging = FALSE)
-#' 
-#' 
-#' x <- teal::init(
+#' x <- teal::init( 
 #'   data = list(ASL = ASL, ARS = ARS),
 #'   modules = root_modules(
-#'     tm_variable_browser(),
-#'     tm_data_table(),
-#'     tm_response_table(
+#'     tm_t_rsp(
 #'        label = "Response Table",
-#'        paramcd = "OVRSPI",
-#'        paramcd_choices = c("BESRSPI","LSTASDI","MBESRSPI","MLSTASDI","OVRSPI"),
-#'        #paramcd_choices = unique(ARS$PARAMCD),
-#'        arm.var = "ARM",
-#'        arm.var_choices = c("ARM", "ARMCD"),
-#'        #arm.var_choices = names(ARS),
-#'        strata.var = NULL,
-#'        strata.var_choices = c("SEX", "TC1IC1", "TC2IC2", "TC3IC3", "TCIC4GRP",
-#'                               "AGE4CAT", "AGEGRP", "AGE65", "TOBHX")
-#'    )
+#'        dataname = 'ARS',
+#'        arm_var = "ARM",
+#'        arm_var_choices = c("ARM", "ARMCD"),
+#'        paramcd = "BESRSPI",
+#'        paramcd_choices = unique(ARS$PARAMCD),
+#'        strata_var = "SEX",
+#'        strata_var_choices = c("SEX", "MLIVER")
+#'     )
 #'   )
-#' )   
+#' )
+#' 
 #' shinyApp(x$ui, x$server) 
+#' 
 #' 
 #'   
 #' } 
-tm_response_table <- function(label,
-                              paramcd = "OVRSPI",
-                              paramcd_choices = paramcd,
-                              arm.var = "ARM",
-                              arm.var_choices = arm.var,
-                              strata.var = NULL,
-                              strata.var_choices = strata.var,
-                              pre_output = NULL, post_output = NULL) {
+tm_t_rsp <- function(label,
+                     dataname,
+                     arm_var = "ARM",
+                     arm_var_choices = arm_var,
+                     arm_ref_comp = NULL,
+                     paramcd = "OVRSPI",
+                     paramcd_choices = paramcd,
+                     strata_var = NULL,
+                     strata_var_choices = strata_var,
+                     include_missing = TRUE,
+                     pre_output = NULL,
+                     post_output = NULL,
+                     code_data_processing = NULL) {
   
   args <- as.list(environment())
   
   module(
     label = label,
-    server = srv_response_table,
-    ui = ui_response_table,
+    server = srv_t_rsp,
+    ui = ui_t_rsp,
     ui_args = args,
-    filters = "ARS"
+    server_args = list(
+      dataname = dataname,
+      arm_ref_comp = arm_ref_comp,
+      code_data_processing = code_data_processing,
+      paramcd_choices = paramcd_choices
+    ),
+    filters = dataname
   )
+  
+  
 }
 
 
@@ -104,32 +121,27 @@ tm_response_table <- function(label,
 #' 
 #' @noRd
 #' 
-ui_response_table <- function(id, label,
-                              paramcd = "OVRSPI",
-                              paramcd_choices = paramcd,
-                              arm.var = "ARM",
-                              arm.var_choices = arm.var,
-                              strata.var = NULL,
-                              strata.var_choices = strata.var,
-                              pre_output,
-                              post_output) {
+ui_t_rsp <- function(id, ...) {
+
   ns <- NS(id)
   
+  a <- list(...)
   
   standard_layout(
     output = whiteSmallWell(uiOutput(ns("response_table"))),
     encoding = div(
       tags$label("Encodings", class="text-primary"),
-      helpText("Analysis data:", tags$code("ARS")),
+      helpText("Analysis data:", tags$code(a$dataname)),
       #Response related parameters
-      optionalSelectInput(ns("paramcd"), div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")), 
-                          paramcd_choices, paramcd, multiple = FALSE),
+      optionalSelectInput(ns("paramcd"),
+                          div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")), 
+                          choices = a$paramcd_choices, selected = a$paramcd, multiple = FALSE),
       selectInput(ns("responders"), "Responders", 
                   choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("incl_missing"), "Include missing as non-responders?", value = TRUE),
+      checkboxInput(ns("incl_missing"), "Include missing as non-responders?", value = a$include_missing),
       #Arm related parameters
-      optionalSelectInput(ns("var_arm"), "Grouping Variable", 
-                          arm.var_choices, arm.var, multiple = FALSE,
+      optionalSelectInput(ns("arm_var"), "Grouping Variable", 
+                          a$arm_var_choices, a$arm_var, multiple = FALSE,
                           label_help = helpText("Select one variable to use for grouping")),
       selectInput(ns("ref_arm"), "Reference Group", 
                           choices = NULL, selected = NULL, multiple = TRUE),
@@ -137,15 +149,15 @@ ui_response_table <- function(id, label,
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
       #Stratification related parameters
-      optionalSelectInput(ns("var_strata"), "Stratification Factors",
-                  choices = strata.var_choices, selected = strata.var, multiple = TRUE,
-                  label_help = helpText("Categorical variable(s) only. Currently taken from ", tags$code("ARS"))
+      optionalSelectInput(ns("strata_var"), "Stratification Factors",
+                  choices = a$strata_var_choices, selected = a$strata_var, multiple = TRUE,
+                  label_help = helpText("taken from:", tags$code("ASL"))
                   )
       
     ),
-    #forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
-    pre_output = pre_output,
-    post_output = post_output
+    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
@@ -168,119 +180,149 @@ ui_response_table <- function(id, label,
 #' 
 #' @noRd
 #' 
-srv_response_table <- function(input, output, session, datasets) {
-
-  # Deal With Reactivity/Inputs
-  ARS_filtered <- reactive({
-    ARS_f <- datasets$get_data("ARS", reactive = TRUE, filtered = TRUE)
-    ARS_f
-  })
+srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, code_data_processing, paramcd_choices) {
   
-  # Update UI choices depending on selection of previous options
+  
+  # Setup arm variable selection, default reference arms, and default
+  # comparison arms for encoding panel
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
+    ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_t_rsp"
+  )
+  
+
+  
+
+   # Update UI choices depending on selection of previous options
+  
+  ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+
   observe({
-    input$paramcd
-    ANL <- datasets$get_data("ARS", filtered = FALSE, reactive = FALSE)
+    
+    paramcd <- input$paramcd
+
+    responder_choices <- unique(ANL$AVALC[ANL$PARAMCD == paramcd])
+    
     updateSelectInput(session, "responders", 
-                      choices = unique(ANL$AVALC[ANL$PARAMCD == input$paramcd]),
-                      selected = c("CR", "PR"))
-    updateSelectInput(session, "ref_arm", choices = unique(ANL[[input$var_arm]]),
-                      selected = ANL[[input$var_arm]] %>% unique %>% sort %>% "["(1))
-    updateSelectInput(session, "comp_arm", choices = unique(ANL[[input$var_arm]]),
-                      selected = ANL[[input$var_arm]] %>% unique %>% sort %>% "["(-1))
+                      choices = responder_choices,
+                      selected = intersect(c("CR", "PR"), responder_choices))
     
   })
-
   
-  output$response_table <- renderUI({
+  output$response_table <-  renderUI({
     
-    ARS_filtered <- ARS_filtered()
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
     paramcd <- input$paramcd
     responders <- input$responders
     incl_missing <- input$incl_missing
-    var_arm <- input$var_arm
+    arm_var <- input$arm_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     combine_arm <- input$combine_arm
-    var_strata <- input$var_strata
+    strata_var <- input$strata_var
     
     
     # Validate your input
-    validate(need(!is.null(ARS_filtered) && is.data.frame(ARS_filtered), "no data left"))
-    validate(need(nrow(ARS_filtered) > 0 , "no observations left"))
-    
-    validate(need(!is.null(paramcd) && paramcd %in% ARS_filtered$PARAMCD,
+    validate_has_data(ASL_FILTERED)
+    validate_has_data(ANL_FILTERED, min_nrow = 15)    
+
+    validate(need(!is.null(paramcd) && paramcd %in% ANL_FILTERED$PARAMCD,
                   "PARAMCD does not exist"))
     
-    validate(need(!is.null(responders) && all(responders %in% ARS_filtered$AVALC),
+    validate(need(!is.null(responders) && all(responders %in% ANL_FILTERED$AVALC),
                   "responders AVALC does not exist"))
-   
+    
     validate(need(!is.null(comp_arm) && !is.null(ref_arm),
                   "need at least one treatment and one reference arm"))
     validate(need(length(intersect(ref_arm, comp_arm)) == 0,
                   "reference and treatment group cannot overlap"))
     
-    validate(need(all(c(ref_arm, comp_arm) %in% ARS_filtered[[var_arm]]), "arm variable not found in ARS"))
+    validate(need(all(c(ref_arm, comp_arm) %in% ANL_FILTERED[[var_arm]]), paste("arm variable not found in", dataname)))
     
-    validate(need(all(var_strata %in% names(ARS_filtered)), "stratification factor not found in ARS"))
-    
-    # Assign inputs to global
-    # teal:::as.global(ARS_filtered)
-    # teal:::as.global(paramcd)
-    # teal:::as.global(responders)
-    # teal:::as.global(incl_missing)
-    # teal:::as.global(var_arm)
-    # teal:::as.global(ref_arm)
-    # teal:::as.global(comp_arm)
-    # teal:::as.global(combine_arm)
-    # teal:::as.global(var_strata)
-    
-    
-    # Get final analysis dataset
-    ANL1 <- ARS_filtered %>% filter(PARAMCD == paramcd)
+    validate(need(all(strata_var %in% names(ANL_FILTERED)), paste("stratification factor not found in", dataname)))
 
-    ANL <- ANL1[ANL1[[var_arm]] %in% c(ref_arm, comp_arm), ]
-  
-    validate(need(nrow(ANL) > 0, "no data left"))
-
-    #--- Manipulation of response and arm variables ---#
-    # Recode/filter responses if want to include missing as non-responders
-    if (incl_missing == TRUE) {
-      ANL$AVALC[ANL$AVALC==""] <- "NE"
-    } else {
-      ANL <- ANL %>% filter(AVALC != "")
-    }
     
-    # Recode grouping according to ref_arm, comp_arm and combine_arm settings
-    arm1 <- factor(ANL[[var_arm]])
-  
-    if (length(ref_arm) > 1) {
-      refname <- paste0(ref_arm, collapse = "/")
-      armtmp <- fct_collapse(arm1, refs = ref_arm)
-      arm2 <- fct_relevel(armtmp, "refs", comp_arm)
-      levels(arm2)[which(levels(arm2)=="refs")] <- refname
-    } else {
-      arm2 <- fct_relevel(arm1, ref_arm, comp_arm)
-    }
-    
-    if (length(comp_arm) > 1 && combine_arm == TRUE) {
-      compname <- paste0(comp_arm, collapse = "/")
-      ARM <- fct_collapse(arm2, comps = comp_arm)
-      levels(ARM)[which(levels(ARM)=="comps")] <- compname
-    } else {
-      ARM <- arm2
-    }
-
-    tbl <- try(response_table(
-      response = ANL$AVALC,
-      value.resp = responders,
-      value.nresp = setdiff(ANL$AVALC, responders),
-      arm = ARM,
-      strata_data = if (!is.null(var_strata)) ANL[var_strata] else NULL
-    ))
-    
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
-    
+    tbl <- as.rtable(table(iris$Species))
     as_html(tbl)
+    
   })
+  
+    
+  
+#   # Deal With Reactivity/Inputs
+#   ARS_filtered <- reactive({
+#     ARS_f <- datasets$get_data("ARS", reactive = TRUE, filtered = TRUE)
+#     ARS_f
+#   })
+#   
+# 
+#   
+#   output$response_table <- renderUI({
+#     
+
+#     
+#     # Assign inputs to global
+#     # teal:::as.global(ARS_filtered)
+#     # teal:::as.global(paramcd)
+#     # teal:::as.global(responders)
+#     # teal:::as.global(incl_missing)
+#     # teal:::as.global(var_arm)
+#     # teal:::as.global(ref_arm)
+#     # teal:::as.global(comp_arm)
+#     # teal:::as.global(combine_arm)
+#     # teal:::as.global(var_strata)
+#     
+#     
+#     # Get final analysis dataset
+#     ANL1 <- ARS_filtered %>% filter(PARAMCD == paramcd)
+# 
+#     ANL <- ANL1[ANL1[[var_arm]] %in% c(ref_arm, comp_arm), ]
+#   
+#     validate(need(nrow(ANL) > 0, "no data left"))
+# 
+#     #--- Manipulation of response and arm variables ---#
+#     # Recode/filter responses if want to include missing as non-responders
+#     if (incl_missing == TRUE) {
+#       ANL$AVALC[ANL$AVALC==""] <- "NE"
+#     } else {
+#       ANL <- ANL %>% filter(AVALC != "")
+#     }
+#     
+#     # Recode grouping according to ref_arm, comp_arm and combine_arm settings
+#     arm1 <- factor(ANL[[var_arm]])
+#   
+#     if (length(ref_arm) > 1) {
+#       refname <- paste0(ref_arm, collapse = "/")
+#       armtmp <- fct_collapse(arm1, refs = ref_arm)
+#       arm2 <- fct_relevel(armtmp, "refs", comp_arm)
+#       levels(arm2)[which(levels(arm2)=="refs")] <- refname
+#     } else {
+#       arm2 <- fct_relevel(arm1, ref_arm, comp_arm)
+#     }
+#     
+#     if (length(comp_arm) > 1 && combine_arm == TRUE) {
+#       compname <- paste0(comp_arm, collapse = "/")
+#       ARM <- fct_collapse(arm2, comps = comp_arm)
+#       levels(ARM)[which(levels(ARM)=="comps")] <- compname
+#     } else {
+#       ARM <- arm2
+#     }
+# 
+#     tbl <- try(response_table(
+#       response = ANL$AVALC,
+#       value.resp = responders,
+#       value.nresp = setdiff(ANL$AVALC, responders),
+#       arm = ARM,
+#       strata_data = if (!is.null(var_strata)) ANL[var_strata] else NULL
+#     ))
+#     
+#     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
+#     
+#     as_html(tbl)
+#   })
 }

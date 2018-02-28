@@ -44,8 +44,10 @@ Forest Response Plot teal module
 
 library(random.cdisc.data)
 
-ASL <- radam("ASL")
+ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
 ARS <- radam("ARS", ADSL = ASL)
+
+ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 
 x <- teal::init(
   data = list(ASL = ASL, ARS = ARS),
