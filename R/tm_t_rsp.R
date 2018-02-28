@@ -5,6 +5,7 @@
 #' template rspt01
 #' 
 #' @inheritParams teal::standard_layout
+#' @inheritParams tm_t_tte
 #' @param label full name label of module
 #' @param paramcd filter the rows in ARS given the paramcd value
 #' @param paramcd_choices choices of possible poaramcd
