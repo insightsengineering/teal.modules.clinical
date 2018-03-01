@@ -4,7 +4,7 @@
 \alias{tm_t_rsp}
 \title{Response Table Teal Module}
 \usage{
-tm_t_rsp(label, datanmae, arm_var = "ARM", arm_var_choices = arm_var,
+tm_t_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   arm_ref_comp = NULL, paramcd = "OVRSPI", paramcd_choices = paramcd,
   strata_var = NULL, strata_var_choices = strata_var,
   include_missing = TRUE, pre_output = NULL, post_output = NULL,
@@ -13,9 +13,31 @@ tm_t_rsp(label, datanmae, arm_var = "ARM", arm_var_choices = arm_var,
 \arguments{
 \item{label}{full name label of module}
 
+\item{dataname}{analysis data used in teal module, needs to be available in
+the list passed to the \code{data} argument of \code{\link[teal]{init}}.
+Note that the data is expected to be in vertical form with the
+\code{PARAMCD} variable filtering to one observation per patient.}
+
+\item{arm_var}{single name of variable in analysis data that is used as
+\code{\link[tern]{col_by}} argument.}
+
+\item{arm_var_choices}{vector with variable names that can be used as
+\code{arm_var}}
+
+\item{arm_ref_comp}{optional, if specified it must be a named list with each
+element corresponding to an arm variable in \code{ASL} and the element must
+be another list with the elements named \code{ref} and \code{comp} that the
+defined the default reference and comparison arms when the arm variable is
+changed.}
+
 \item{paramcd}{filter the rows in ARS given the paramcd value}
 
 \item{paramcd_choices}{choices of possible poaramcd}
+
+\item{strata_var}{vector with variable names that should be used for
+stratification}
+
+\item{strata_var_choices}{vector with possible choices for \code{strata_var}}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -24,6 +46,9 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
+
+\item{code_data_processing}{string with data preprocessing before the teal
+app is initialized}
 
 \item{arm.var}{selected variable to use as arms}
 
@@ -57,39 +82,43 @@ group.
 \examples{
  
 
-\dontrun{
-library(atezo.data)
-library(dplyr)
-library(teal.oncology)
-library(forcats)
+\dontrun{ 
+
+library(random.cdisc.data)
+
+ASL <- radam('ASL', start_with = list(
+  ITTFL = 'Y',
+  SEX = c("M", "F"),
+  MLIVER = paste("mliver", 1:3),
+  ARM = paste("ARM", LETTERS[1:3])
+))
+
+ASL$ARM <- as.factor(ASL$ARM)
+
+ARS <- radam('ARS', ADSL = ASL)
+
+attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
+attr(ARS, "source") <- "random.cdisc.data::radam('ARS', ADSL = ASL)"
 
 
-ARS <- ars(com.roche.cdt30019.go29436.re)
-ASL <- asl(com.roche.cdt30019.go29436.re)
-
-options(teal_logging = FALSE)
-
-
-x <- teal::init(
+x <- teal::init( 
   data = list(ASL = ASL, ARS = ARS),
   modules = root_modules(
-    tm_variable_browser(),
-    tm_data_table(),
-    tm_response_table(
+    tm_t_rsp(
        label = "Response Table",
-       paramcd = "OVRSPI",
-       paramcd_choices = c("BESRSPI","LSTASDI","MBESRSPI","MLSTASDI","OVRSPI"),
-       #paramcd_choices = unique(ARS$PARAMCD),
-       arm.var = "ARM",
-       arm.var_choices = c("ARM", "ARMCD"),
-       #arm.var_choices = names(ARS),
-       strata.var = NULL,
-       strata.var_choices = c("SEX", "TC1IC1", "TC2IC2", "TC3IC3", "TCIC4GRP",
-                              "AGE4CAT", "AGEGRP", "AGE65", "TOBHX")
-   )
+       dataname = 'ARS',
+       arm_var = "ARM",
+       arm_var_choices = c("ARM", "ARMCD"),
+       paramcd = "BESRSPI",
+       paramcd_choices = unique(ARS$PARAMCD),
+       strata_var = "SEX",
+       strata_var_choices = c("SEX", "MLIVER")
+    )
   )
-)   
+)
+
 shinyApp(x$ui, x$server) 
+
 
   
 } 

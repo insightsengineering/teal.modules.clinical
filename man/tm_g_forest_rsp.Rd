@@ -14,6 +14,8 @@ tm_g_forest_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 \arguments{
 \item{label}{a character string displayed as module label}
 
+\item{dataname}{The name of the analysis dataset}
+
 \item{arm_var}{default variable name used as the arm variable}
 
 \item{arm_var_choices}{a character vector for the choices of \code{arm_var}}
@@ -33,6 +35,8 @@ tm_g_forest_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 \item{pre_output}{text displayed at the top of the plot}
 
 \item{post_output}{text displayed at the bottom of the plot}
+
+\item{code_data_processing}{xxx?}
 }
 \description{
 Forest Response Plot teal module

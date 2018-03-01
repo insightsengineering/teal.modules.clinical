@@ -2,6 +2,7 @@
 #' Forest Response Plot teal module
 #' 
 #' @param label a character string displayed as module label 
+#' @param dataname The name of the analysis dataset
 #' @param arm_var default variable name used as the arm variable
 #' @param arm_var_choices a character vector for the choices of \code{arm_var} 
 #' @param subgroup_var a vector of variable names used as the default subgroups
@@ -12,6 +13,8 @@
 #' @param cex multiplier applied to overall fontsize
 #' @param pre_output text displayed at the top of the plot
 #' @param post_output text displayed at the bottom of the plot
+#' @param code_data_processing xxx?
+#' 
 #' 
 #' @export
 #' 
@@ -182,17 +185,17 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     chunk_data <<- ""
     chunk_t_forest_rsp <<- "# No Calculated" 
     
-    anl_data_name <- paste0(dataname, "_FILTERED")
-    assign(anl_data_name, ANL_FILTERED)
-    
+    # anl_data_name <- paste0(dataname, "_FILTERED")
+    # assign(anl_data_name, ANL_FILTERED)
+  
     chunk_vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
     })
     
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
-      ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
+      ASL_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+      ANL_p <- subset(.(ANL_FILTERED), PARAMCD %in% .(paramcd))
       
       ANL <- merge(ASL_p, ANL_p, all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
@@ -212,7 +215,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     )                       
 
     
-    as.global(ARM, ANL)
+   # as.global(ARM, ANL)
     as.global(tbl, chunk_vars, chunk_data, chunk_t_forest_rsp)    
     eval(chunk_vars)
     eval(chunk_data)
@@ -220,7 +223,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     
     
     t_forest_rsp(
-      rsp = ANL$AVALC %in% c("CR", "PR"),
+      rsp = ANL_FILTERED$AVALC %in% c("CR", "PR"),
       col_by = ARM, 
       group_data = ANL[, c("SEX", "RACE"), drop= FALSE],
       total = "All Patients", 
