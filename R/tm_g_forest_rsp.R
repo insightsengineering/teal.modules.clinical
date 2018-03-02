@@ -2,11 +2,14 @@
 #' Forest Response Plot teal module
 #' 
 #' @param label a character string displayed as module label 
-#' @param dataname The name of the analysis dataset
+#' @param dataname The name of the analysis dataset, the data requires the
+#'   variables \code{USUBJID}, \code{STUDYID}, \code{AVALC} (response category),
+#'   and \code{PARAMCD}
 #' @param arm_var default variable name used as the arm variable
-#' @param arm_var_choices a character vector for the choices of \code{arm_var} 
+#' @param arm_var_choices a character vector for the choices of \code{arm_var}
 #' @param subgroup_var a vector of variable names used as the default subgroups
-#' @param subgroup_var_choices a vector of variable names to choose the \code{subgroup_var} from
+#' @param subgroup_var_choices a vector of variable names to choose the
+#'   \code{subgroup_var} from
 #' @param paramcd default response type from PARAMCD
 #' @param paramcd_choices a vector of possible \code{paramcd}
 #' @param plot_height height of the forest plot
@@ -28,6 +31,10 @@
 #' 
 #' ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
 #' ARS <- radam("ARS", ADSL = ASL)
+#' 
+#' attr(ASL, "source") <- 'radam("ASL", start_with = list(RACE = c("white", "asian")))'
+#' attr(ARS, "source") <- 'radam("ARS", ADSL = ASL)'
+#' 
 #' 
 #' ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 #' 
@@ -104,7 +111,7 @@ ui_g_forest_rsp <- function(id, ...) {
       tags$label("Plot Settings", class="text-primary", style="margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
-    #forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -145,19 +152,12 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
   
   })
   
-  ### need asl labels for labelling the plots
-  #temp_ASL <- datasets$get_data("ASL", filtered=FALSE, reactive = FALSE)  
-  #ASL_labels <- unlist(Filter(function(x)!is.null(x), sapply(temp_ASL, function(v) attr(v, "label"))))
-  
+
   output$forest_plot <- renderPlot({
 
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
-    
-    # validate your input values
-    validate_has_data(ASL_FILTERED)
-    validate_has_data(ANL_FILTERED, min_nrow = 15) 
     
     paramcd <- input$paramcd
     responders <- input$responders
@@ -166,115 +166,122 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
     
-    
-    validate(need(length(ref_arm) > 0 && length(comp_arm) > 0,
-                  "need at least one reference and one comparison arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    
-    validate(need(length(responders) > 0 && all(responders %in% ANL_FILTERED$AVALC),
-                  "response AVALC choice does not exist"))
-    
-    validate(need(length(paramcd)>0 && paramcd %in% ANL_FILTERED$PARAMCD,
-                  "PARAMCD choice does not exist"))
-    
-    
-   
+    as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, arm_var, ref_arm, comp_arm, subgroup_var)
+
     # Delete chunks that are used for reproducible code
     chunk_vars <<- ""
     chunk_data <<- ""
     chunk_t_forest_rsp <<- "# No Calculated" 
+    chunk_p_forest_rsp <<- "# No Calculated"
     
-    # anl_data_name <- paste0(dataname, "_FILTERED")
-    # assign(anl_data_name, ANL_FILTERED)
+    # validate your input values
+    validate_has_data(ASL_FILTERED)
+    validate_has_data(ANL_FILTERED, min_nrow = 15) 
+    
+    validate_has_variable(ASL_FILTERED, arm_var, paste("ASL does not have the variable:", arm_var))
+    
+    validate_has_elements(comp_arm, "need comparison arms")
+    validate_has_elements(ref_arm, "need reference arms")
+    
+    validate_in(comp_arm, ASL[[arm_var]], "comparison level not in arm variable")
+    validate_in(ref_arm, ASL[[arm_var]], "reference level not in arm variable")
+    
+    validate_no_intersection(comp_arm, ref_arm, "reference and treatment group cannot overlap")
+    validate_has_variable(ANL_FILTERED, c("AVALC", "USUBJID", "STUDYID", "AVAL"),
+                          paste(dataname, "is missing at least of the following variables: AVAL, AVALC, PARAMCD, USUBJID, STUDYID"))
+    validate_in(responders, ANL_FILTERED$AVALC, "responder values are not in AVALC")
+    validate_has_variable(ANL_FILTERED, "PARAMCD", paste(dataname, "is missing the variable PARAMCD"))
+    validate_in(paramcd, ANL_FILTERED$PARAMCD, "paramcd value is not in PARAMCD")
+    validate_has_variable(ASL_FILTERED, c("USUBJID", "STUDYID"), "ASL does not have USUBJID or STUDYID")
+    
+    if (length(subgroup_var) > 0) {
+      validate_has_variable(ASL_FILTERED, subgroup_var, "not all subgroup variables are in ASL")      
+    }
+
+    
+    anl_data_name <- paste0(dataname, "_FILTERED")
+    assign(anl_data_name, ANL_FILTERED)
   
     chunk_vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
     })
     
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, subgroup_var)
+    anl_vars <- c("USUBJID", "STUDYID", "AVALC")
+    
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
-      ANL_p <- subset(.(ANL_FILTERED), PARAMCD %in% .(paramcd))
+      ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+      ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
+
+      ANL <- merge(ASL_p[, .(asl_vars)], ANL_p[, .(anl_vars)],
+                   all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
-      ANL <- merge(ASL_p, ANL_p, all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
       
-      ARM <- droplevels(relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1]))
       ARM <- combine_levels(ARM, ref_arm)
       ARM <- combine_levels(ARM, comp_arm)
       
+      ANL[[.(arm_var)]] <- droplevels(ARM)
     })
+    
+    eval(chunk_data)
+    validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
     chunk_t_forest_rsp <<- call(
       "t_forest_rsp",
       rsp = bquote(ANL$AVALC %in% .(responders)),
-      col_by = quote(ARM),
+      col_by = bquote(ANL[[.(arm_var)]]),
       group_data = if (length(subgroup_var) > 0) bquote({ANL[, .(subgroup_var), drop=FALSE]}) else NULL,
       total = "All Patients",
-      na.omit.group = TRUE
-    )                       
-
-    
-   # as.global(ARM, ANL)
-    as.global(tbl, chunk_vars, chunk_data, chunk_t_forest_rsp)    
-    eval(chunk_vars)
-    eval(chunk_data)
-    
-    
-    
-    t_forest_rsp(
-      rsp = ANL_FILTERED$AVALC %in% c("CR", "PR"),
-      col_by = ARM, 
-      group_data = ANL[, c("SEX", "RACE"), drop= FALSE],
-      total = "All Patients", 
-      na.omit.group = TRUE
-    )
-    
+      na.omit.group = TRUE,
+      dense_header = TRUE
+    ) 
     
     tbl <- try(eval(chunk_t_forest_rsp))
-    
 
-     
-    # validate(need(nrow(ARS_f) > 0, "no data left"))
-    # validate(need(all(subgroup_var %in% names(ASL_filtered)), "some baseline risk variables are not valid"))
-    # validate(need(all(c(ref_arm, comp_arm) %in% ARS_f$arm_var), "data needs to include at least one patient from the reference and comparison arm"))  
-    # 
-    # ASL_f <- ASL_filtered[c("STUDYID", "USUBJID", subgroup_var)]
-    # validate(need(all(subgroup_var %in% names(ASL_f)), "some subgroup variables are not valid"))
-    # 
-    # 
-    # 
-    # 
-    # #Filter ASL to get the grouping variables
-    # group_data <- merge(
-    #   x = ASL_f,
-    #   y = ARS_f %>% select(USUBJID, STUDYID),
-    #   by = c("STUDYID","USUBJID"),
-    #   all.x = FALSE,
-    #   all.y = TRUE
-    # )
-    # names(group_data) <- labels_over_names(add_labels(group_data, ASL_labels))
-    # 
-    # ## add
-    # ## the arm combine & filtering and converting to a factor here...paste0(ref_arm, collapse = "/")
-    # ## using forcats
-    # arm <- fct_collapse(ARS_f$arm_var, ref_arm = ref_arm, comp_arm = comp_arm)
-    # arm <- ifelse (arm == "ref_arm", paste0(ref_arm, collapse = "/"), paste0(comp_arm, collapse = "/")) 
-    # arm <- fct_relevel(arm, paste0(ref_arm, collapse = "/"))
-    # 
-    # tbl <- try(forest_rsp(
-    #   response = ARS_f$AVAL,
-    #   event = ARS_f$AVALC %in% responders,
-    #   arm = arm, 
-    #   group_data = group_data[, -c(1,2), drop=FALSE]
-    # ))
-    # 
-    # if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
-    # 
-    # 
-    # #forest_rsp_plot(tbl, levels(arm)[1], levels(arm)[2], cex = cex)
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
-    plot(iris[, 1:2])
+    
+    chunk_p_forest_rsp <<- quote({
+      g_forest(tbl, 8, 9, header_forest = c("Treatment\nbetter", "Comparison\nbetter"))
+    })
+      
+    
+    eval(chunk_p_forest_rsp)
+#    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
+  })
+  
+  
+  observeEvent(input$show_rcode, {
+    
+    header <- get_rcode_header(
+      title = "Response Forest Plot",
+      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datasets = datasets,
+      code_data_processing
+    )
+    
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_data)),
+      "",
+      paste("tbl <-", paste(deparse(chunk_t_forest_rsp), collapse = "\n")),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_p_forest_rsp))
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Reponse Forest Plot",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
   })
 
 }

@@ -279,8 +279,6 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
       ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
-      if (any(duplicated(ANL_endpoint[,c("USUBJID", "STUDYID")]))) 
-        stop("only one row per patient expected")
         
       ANL <- merge(
         x = ASL_p[, .(asl_vars)],
