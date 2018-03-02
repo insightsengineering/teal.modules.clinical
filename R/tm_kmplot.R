@@ -15,6 +15,8 @@
 #' @param plot_height plot height specification
 #' 
 #' @importFrom survival Surv strata
+#' @importFrom gridExtra arrangeGrob
+#' @import forcats
 #' 
 #' @export
 #' 
@@ -57,9 +59,9 @@
 #'        treatment_var_choices = c("ARM", "ARMCD"),
 #'        endpoint_choices = c("OS", "PFS"),
 #'        facet_var = "SEX",
-#'        facet_var_choices = c("SEX", "ECOG"),
-#'        strata_var = "RACE",
-#'        strata_var_choices = c("SEX", "RACE", "ECOG")
+#'        facet_var_choices = c("SEX", "BECOG", "TOBHX"),
+#'        strata_var = "TOBHX",
+#'        strata_var_choices = c("SEX", "TOBHX")
 #'     )  
 #'   )
 #' )
@@ -133,8 +135,6 @@ ui_kmplot <- function(
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
-      #optionalSelectInput(ns("timeunit"), "Time Unit", choices = c("DAYS", "WEEKS","MONTHS", "YEARS"), 
-      #                    selected = "MONTHS", multiple = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", plot_height, ticks = FALSE)
     ),
@@ -161,19 +161,19 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
   })
   
   observe({
-    ANL <- ATE_Filtered()
-    chs <- as.list(colnames(ANL))
-    updateSelectInput(session,  "ref_arm" , choices = unique(ANL[[input$var_arm]]), 
-                      selected = ANL[[input$var_arm]] %>% unique() %>% sort() %>% "["(1))
-    updateSelectInput(session, "comp_arm", choices = unique(ANL[[input$var_arm]]),
-                      selected = ANL[[input$var_arm]] %>% unique() %>% sort() %>% "["(-1))
+    ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = TRUE)
+    chs <- sapply(ANL, unique, simplify = FALSE, USE.NAMES = TRUE)
+    
+    updateSelectInput(session,  "ref_arm" , choices = chs[input$var_arm],
+                      selected = chs[[input$var_arm]][1])
+    updateSelectInput(session, "comp_arm", choices = chs[input$var_arm],
+                      selected = chs[[input$var_arm]][-1])
     
   })
   
   
   output$kmplot <- renderPlot({
     ATE_Filtered <- ATE_Filtered()
-    
     tteout <- input$tteout
     var_arm <- input$var_arm
     facetby <- input$facetby
@@ -181,16 +181,7 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     comp_arm <- input$comp_arm
     strat <- input$strat
     combine_arm <- input$combine_arm
-    # timeunit <- input$timeunit
-    
-    # teal:::as.global(ATE_Filtered)
-    # teal:::as.global(var_arm)
-    # teal:::as.global(ANL)
-    # teal:::as.global(facetby)
-    # teal:::as.global(ref_arm)
-    # teal:::as.global(strat)
-    # teal:::as.global(comp_arm)
-    # teal:::as.global(combine_arm)
+
 
     validate(need(!is.null(comp_arm), "select at least one comparison arm"))
     validate(need(!is.null(ref_arm), "select at least one reference arm"))
@@ -207,35 +198,6 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     
     validate(need(nrow(ANL) > 10, "Need more than 10 observations"))
    
-    
-#    timeu <- unique(ANL[["AVALU"]])
-#    validate(need(length(timeu) <= 1, "NOT unique time unit"))
-#    validate(need(toupper(timeu) %in% c("DAYS", "WEEKS", "MONTHS", "YEARS"), "Time unit is not standard"))
-#    if (toupper(timeu) == "DAYS"){
-#      ANL[["AVAL"]] <- switch(timeunit, 
-#                              "DAYS" = ANL[["AVAL"]],
-#                              "WEEKS" = ANL[["AVAL"]]/7,
-#                              "MONTHS" = ANL[["AVAL"]]/30.4375,
-#                              "YEARS" = ANL[["AVAL"]]/365.25)
-#    } else if (toupper(timeu) == "WEEKS"){
-#      ANL[["AVAL"]] <- switch(timeunit, 
-#                              "DAYS" = ANL[["AVAL"]]*7,
-#                              "WEEKS" = ANL[["AVAL"]],
-#                              "MONTHS" = ANL[["AVAL"]]*7/30.4375,
-#                              "YEARS" = ANL[["AVAL"]]*7/365.25)
-#    } else if (toupper(timeu) == "MONTHS"){
-#      ANL[["AVAL"]] <- switch(timeunit, 
-#                              "DAYS" = ANL[["AVAL"]]*30.4375,
-#                              "WEEKS" = ANL[["AVAL"]]*30.4375/7,
-#                              "MONTHS" = ANL[["AVAL"]],
-#                              "YEARS" = ANL[["AVAL"]]*30.4375/365.25)
-#    } else if (toupper(timeu) == "YEARS"){
-#      ANL[["AVAL"]] <- switch(timeunit, 
-#                              "DAYS" = ANL[["AVAL"]]*365.25,
-#                              "WEEKS" = ANL[["AVAL"]]*365.25/7,
-#                              "MONTHS" = ANL[["AVAL"]]*365.25/30.4375,
-#                              "YEARS" = ANL[["AVAL"]])
-#    }
     
     if (length(ref_arm)>1) {
       new_ref_arm <- paste(ref_arm, collapse = "/")
@@ -263,14 +225,23 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
       info_coxph <- "Cox Proportional Model: Unstratified Analysis"
     }
 
-     
+    tbl_km <- kmAnnoData(formula_km = formula_km, data = ANL) 
+    tbl_cox <- coxphAnnoData(formula_coxph = formula_coxph, 
+                             data = ANL, cox_ties = "exact", info_coxph = info_coxph)
     results <- try({
       if (length(facetby) == 0){
-        kmplot(formula_km, data = ANL, add_km = TRUE, 
-               add_coxph = TRUE, formula_coxph, 
-               info_coxph,
-               add = FALSE, 
-               title = "Kaplan - Meier Plot")
+        kmGrob(title = "Kaplan - Meier Plot",
+               formula_km = formula_km, data = ANL) %>%
+        addTable(vp = vpPath("plotarea", "topcurve"),
+                 x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
+                 y = unit(1, "npc") -  unit(1, "lines"),
+                 just = c("left", "top"),
+                 tbl = tbl_km) %>%
+        addTable (vp = vpPath("plotarea", "topcurve"),
+                    x= unit(1, "lines"), y = unit(1, "lines"),
+                    just = c("left", "bottom"),
+                    tbl = tbl_cox) %>%
+         grid.draw()
       } else {
         
         facet_df <- ANL[facetby]
@@ -286,31 +257,27 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
         if (length(unique(lab)) != n_unique) stop("algorithm error")  
         
         dfs <- split(ANL, lab)
-        
-        nplots <- n_unique
-        
-        grid.newpage()
-        
-        pushViewport(plotViewport(margin = c(1, 1, 1, 1)))
-        pushViewport(viewport(layout = grid.layout(ncol = 1, nrow = 2*nplots-1,
-                                                   heights = unit(head(rep(c(1, 2), nplots), -1), head(rep(c("null", "lines"), nplots), -1))
-        )))
-        
         max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.) 
         xaxis_by <- max(1, floor(max_min/10))
         
-        Map(function(dfi, i, label) {
-          pushViewport(viewport(layout.pos.row = i*2 - 1))
-          kmplot(
-            formula_km, data = dfi, add_km = TRUE,
-            add_coxph = TRUE, formula_coxph,
-            info_coxph,
-            add = TRUE,
-            xaxis_by = xaxis_by,
-            title = paste0("Kaplan - Meier Plot for: ", label)
-          )
-          popViewport()
-        }, dfs, 1:length(dfs), levels(lab))
+       mapply(function(x, label){
+          km <- kmAnnoData(formula_km = formula_km, data = x) 
+          cox <- coxphAnnoData(formula_coxph = formula_coxph, 
+                                   data = x, cox_ties = "exact", info_coxph = info_coxph)
+          
+          kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
+                 formula_km = formula_km, data = x, xaxis_by = xaxis_by) %>%
+            addTable(vp = vpPath("plotarea", "topcurve"),
+                     x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
+                     y = unit(1, "npc") -  unit(1, "lines"),
+                     just = c("left", "top"),
+                     tbl = km) %>%
+            addTable (vp = vpPath("plotarea", "topcurve"),
+                      x= unit(1, "lines"), y = unit(1, "lines"),
+                      just = c("left", "bottom"),
+                      tbl = cox)
+        }, dfs, levels(lab), SIMPLIFY = FALSE) %>%
+        arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       }
       TRUE
     })
