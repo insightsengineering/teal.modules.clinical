@@ -260,21 +260,40 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
         xaxis_by <- max(1, floor(max_min/10))
         
         mapply(function(x, label){
+          
+          
           km <- kmAnnoData(formula_km = formula_km, data = x) 
           cox <- coxphAnnoData(formula_coxph = formula_coxph, 
                                data = x, cox_ties = "exact", info_coxph = info_coxph)
           
-          kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
+         p<-  kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
                  formula_km = formula_km, data = x, xaxis_by = xaxis_by) %>%
-            addTable(vp = vpPath("plotarea", "topcurve"),
+             addTable(vp = vpPath("plotarea", "topcurve"),
                      x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
                      y = unit(1, "npc") -  unit(1, "lines"),
                      just = c("left", "top"),
-                     tbl = km) %>%
-            addTable (vp = vpPath("plotarea", "topcurve"),
-                      x= unit(1, "lines"), y = unit(1, "lines"),
-                      just = c("left", "bottom"),
-                      tbl = cox)
+                     tbl = km) 
+         if (!seperate_model){
+           p %>%   addTable (vp = vpPath("plotarea", "topcurve"),
+                             x= unit(1, "lines"), y = unit(1, "lines"),
+                            just = c("left", "bottom"),
+                            tbl = cox)
+         } else {
+           group_combination <- expand.grid(ref_arm, comp_arm) %>% split(seq(nrow(.))) 
+           
+           data_list <- lapply(group_combination, function(i){
+             df <- x[x[[var_arm]] %in% unlist(i), ] 
+             df[[var_arm]] <- factor(df[[var_arm]])
+             df
+           })
+           cox <- coxphAnnoImpower131(formula_coxph = formula_coxph, 
+                                          data_list = data_list, cox_ties = "exact", info_coxph = info_coxph)
+           p %>%  addTable (vp = vpPath("plotarea", "topcurve"),
+                            x= unit(1, "lines"), y = unit(1, "lines"),
+                            just = c("left", "bottom"),
+                            tbl =  cox)
+         }
+
         }, dfs, levels(lab), SIMPLIFY = FALSE) %>%
           arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       }
