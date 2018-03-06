@@ -55,7 +55,7 @@ ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 x <- teal::init(
   data = list(ASL = ASL, ARS = ARS),
   modules = root_modules(
-    tm_g_forest_rsp(
+    tm_g_forest_tte(
        label = "Forest Survival",
        dataname = "ATE",
        arm_var = "ARM",
@@ -68,7 +68,8 @@ x <- teal::init(
    )
   )
 )   
-     
+shinyApp(x$ui, x$server) 
+    
 } 
 }
 \author{

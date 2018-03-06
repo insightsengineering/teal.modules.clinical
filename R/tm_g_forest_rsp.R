@@ -187,7 +187,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     validate_in(ref_arm, ASL[[arm_var]], "Reference arm cannot be found in arm variable")
     
     validate_no_intersection(comp_arm, ref_arm, "reference group and comparison group cannot overlap")
-    validate_has_variable(ANL_FILTERED, c("AVALC", "USUBJID", "STUDYID"),
+    validate_has_variable(ANL_FILTERED, c("AVALC", "PARAMCD", "USUBJID", "STUDYID"),
                           paste(dataname, "is missing at least of the following variables: AVALC, PARAMCD, USUBJID, STUDYID"))
     validate_in(responders, ANL_FILTERED$AVALC, "responder values cannot be found in AVALC")
     validate_has_variable(ANL_FILTERED, "PARAMCD", paste(dataname, "is missing the variable PARAMCD"))
@@ -244,7 +244,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     
     
     chunk_p_forest_rsp <<- quote({
-      g_forest(tbl, 8, 9, header_forest = c("Treatment\nbetter", "Comparison\nbetter"))
+      g_forest(tbl, 8, 9, header_forest = c(paste0(ref_arm[1],"\nbetter"), paste0(comp_arm[1],"\nbetter")))
     })
       
     

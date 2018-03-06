@@ -1,8 +1,10 @@
 
-#' Forest Survival Plot Teal Module
+#' Forest Survival Plot teal Module
 #' 
 #' @param label a character string displayed as module label 
-#' @param dataname The name of the analysis dataset
+#' @param dataname The name of the analysis dataset, the data requires the
+#'   variables \code{USUBJID}, \code{STUDYID}, \code{AVAL} (Time-to-event),
+#'   and \code{PARAMCD} (Endpoint)
 #' @param arm_var default variable name used as the arm variable
 #' @param arm_var_choices a character vector for the choices of \code{arm_var} 
 #' @param subgroup_var a vector of variable names used as the default subgroups
@@ -28,12 +30,16 @@
 #' ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
 #' ATE <- radam("ATE", ADSL = ASL)
 #' 
+#' attr(ASL, "source") <- 'radam("ASL", start_with = list(RACE = c("white", "asian")))'
+#' attr(ATE, "source") <- 'radam("ATE", ADSL = ASL)'
+#' 
+#' 
 #' ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 #' 
 #' x <- teal::init(
-#'   data = list(ASL = ASL, ARS = ARS),
+#'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
-#'     tm_g_forest_rsp(
+#'     tm_g_forest_tte(
 #'        label = "Forest Survival",
 #'        dataname = "ATE",
 #'        arm_var = "ARM",
@@ -46,7 +52,8 @@
 #'    )
 #'   )
 #' )   
-#'      
+#' shinyApp(x$ui, x$server) 
+#'     
 #' } 
 
 tm_g_forest_tte <- function(label,
@@ -101,7 +108,7 @@ ui_g_forest_tte <- function(id, ...) {
       tags$label("Plot Settings", class="text-primary", style="margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
-    #forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -124,7 +131,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
     arm_ref_comp = NULL,
-    module = "tm_g_forest_rsp"
+    module = "tm_g_forest_tte"
   )
   
   
@@ -135,11 +142,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     
     ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
     
-    rsp_choices <- unique(ANL$AVALC[ANL$PARAMCD == paramcd])
-    
-    updateSelectInput(session, "responders", 
-                      choices = rsp_choices,
-                      selected = intersect(rsp_choices, c("CR", "PR")))
+    paramcd_choices <- unique(ANL$AVALC[ANL$PARAMCD == paramcd])
     
   })
   
@@ -152,81 +155,134 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
-    
-    # validate your input values
-    validate_has_data(ASL_FILTERED)
-    validate_has_data(ANL_FILTERED, min_nrow = 15) 
-    
     paramcd <- input$paramcd
-    responders <- input$responders
     arm_var <- input$arm_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
     
+    as.global(ASL_FILTERED, ANL_FILTERED, paramcd, arm_var, ref_arm, comp_arm, subgroup_var)
     
-    validate(need(length(ref_arm) > 0 && length(comp_arm) > 0,
-                  "need at least one reference and one comparison arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
+    # Delete chunks that are used for reproducible code
+    chunk_vars <<- ""
+    chunk_data <<- ""
+    chunk_t_forest_tte <<- "# Not Calculated" 
+    chunk_p_forest_tte <<- "# Not Calculated"
     
-    validate(need(length(responders) > 0 && all(responders %in% ANL_FILTERED$AVALC),
-                  "response AVALC choice does not exist"))
+    # validate your input values
+    validate_has_data(ASL_FILTERED)
+    validate_has_data(ANL_FILTERED, min_nrow = 15) 
     
-    validate(need(length(paramcd)>0 && paramcd %in% ANL_FILTERED$PARAMCD,
-                  "PARAMCD choice does not exist"))
+    validate_has_variable(ASL_FILTERED, arm_var, paste("ASL does not have the variable:", arm_var))
     
+    validate_has_elements(comp_arm, "need comparison arm(s)")
+    validate_has_elements(ref_arm, "need reference arm(s)")
     
+    validate_in(comp_arm, ASL[[arm_var]], "Comparison arm cannot be found in arm variable")
+    validate_in(ref_arm, ASL[[arm_var]], "Reference arm cannot be found in arm variable")
     
+    validate_no_intersection(comp_arm, ref_arm, "reference group and comparison group cannot overlap")
+    validate_has_variable(ANL_FILTERED, c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR"),
+                          paste(dataname, "is missing at least of the following variables: PARAMCD, USUBJID, STUDYID, AVAL, CNSR"))
+    validate_has_variable(ANL_FILTERED, "PARAMCD", paste(dataname, "is missing the variable PARAMCD"))
+    validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    validate_has_variable(ASL_FILTERED, c("USUBJID", "STUDYID"), "ASL does not have USUBJID or STUDYID")
+    
+    if (length(subgroup_var) > 0) {
+      validate_has_variable(ASL_FILTERED, subgroup_var, "Not all subgroup variables can be found in ASL")      
+    }
+    
+
     # Delete chunks that are used for reproducible code
     chunk_vars <<- ""
     chunk_data <<- ""
     chunk_t_forest_tte <<- "# No Calculated" 
     
-    # anl_data_name <- paste0(dataname, "_FILTERED")
-    # assign(anl_data_name, ANL_FILTERED)
+    
+    anl_data_name <- paste0(dataname, "_FILTERED")
+    assign(anl_data_name, ANL_FILTERED)
     
     chunk_vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
     })
     
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, subgroup_var)
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR")
+    
     chunk_data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
-      ANL_p <- subset(.(ANL_FILTERED), PARAMCD %in% .(paramcd))
+      ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
       
-      ANL <- merge(ASL_p, ANL_p, all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      ANL <- merge(ASL_p[, .(asl_vars)], ANL_p[, .(anl_vars)],
+                   all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
-      ARM <- droplevels(relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1]))
+      ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
+      
       ARM <- combine_levels(ARM, ref_arm)
       ARM <- combine_levels(ARM, comp_arm)
       
+      ANL[[.(arm_var)]] <- droplevels(ARM)
+      
     })
     
-    chunk_t_forest_rsp <<- call(
-      "t_forest_rsp",
-      rsp = bquote(ANL$AVALC %in% .(responders)),
-      col_by = quote(ARM),
+    eval(chunk_data)
+    validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    
+    chunk_t_forest_tte <<- call(
+      "t_forest_tte",
+      tte = bquote(ANL$AVAL),
+      is_event = bquote(ANL$CNSR == 0),
+      col_by = bquote(ANL[[.(arm_var)]]),
       group_data = if (length(subgroup_var) > 0) bquote({ANL[, .(subgroup_var), drop=FALSE]}) else NULL,
       total = "All Patients",
       na.omit.group = TRUE
     )                       
     
+    tbl <- try(eval(chunk_t_forest_tte))
+  
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
-    # as.global(ARM, ANL)
-    as.global(tbl, chunk_vars, chunk_data, chunk_t_forest_tte)    
-    eval(chunk_vars)
-    eval(chunk_data)
- 
-    t_forest_tte(
-      time_to_event = ANL_FILTERED$AVAL,
-      event = ATE_f$CNSR == 0,
-      col_by = ARM, 
-      group_data = ANL[, c("SEX", "RACE"), drop= FALSE],
-      total = "All Patients", 
-      na.omit.group = TRUE
+    
+    chunk_p_forest_tte <<- quote({
+      g_forest(tbl, 8, 9, header_forest = c(paste0(comp_arm[1],"\nbetter"), paste0(ref_arm[1],"\nbetter")))
+    })
+    
+    
+    eval(chunk_p_forest_tte)
+    #    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
+  })
+  
+  
+  observeEvent(input$show_rcode, {
+    
+    header <- get_rcode_header(
+      title = "Time-to-Event Forest Plot",
+      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datasets = datasets,
+      code_data_processing
     )
     
-    tbl <- try(eval(chunk_t_forest_tte))
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_data)),
+      "",
+      paste("tbl <-", paste(deparse(chunk_t_forest_tte), collapse = "\n")),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_p_forest_tte))
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Time-to-Event Forest Plot",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
+    
   })
 }
