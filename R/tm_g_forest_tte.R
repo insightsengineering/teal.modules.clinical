@@ -79,7 +79,7 @@ tm_g_forest_tte <- function(label,
     ui = ui_g_forest_tte,
     ui_args = args,
     server_args = list(dataname = dataname, cex = cex, code_data_processing = code_data_processing),
-    filters = "ATE"
+    filters = dataname
   )
 }
 
@@ -236,7 +236,8 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       col_by = bquote(ANL[[.(arm_var)]]),
       group_data = if (length(subgroup_var) > 0) bquote({ANL[, .(subgroup_var), drop=FALSE]}) else NULL,
       total = "All Patients",
-      na.omit.group = TRUE
+      na.omit.group = TRUE,
+      dense_header = TRUE
     )                       
     
     tbl <- try(eval(chunk_t_forest_tte))
@@ -244,10 +245,17 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
     
-    chunk_p_forest_tte <<- quote({
-      g_forest(tbl, 8, 9, header_forest = c(paste0(comp_arm[1],"\nbetter"), paste0(ref_arm[1],"\nbetter")))
-    })
-    
+    chunk_p_forest_tte <<- call(
+      "g_forest",
+      tbl = quote(tbl),
+      col_x = 8,
+      col_ci = 9,
+      vline = 1,
+      forest_header = bquote(paste0(rev(levels(ANL[[.(arm_var)]])), "\nbetter")),
+      xlim = c(.1, 10),
+      logx = TRUE,
+      x_at = c(.1, 1, 10)
+    )
     
     eval(chunk_p_forest_tte)
     #    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
