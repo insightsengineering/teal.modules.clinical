@@ -227,6 +227,8 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     combine_comp_arms <- input$combine_comp_arms
     strata_var <- input$strata_var
     
+    if (length(strata_var) == 0) strata_var <- NULL
+    
     #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, incl_missing, arm_var, ref_arm, comp_arm,
     #          combine_comp_arms, strata_var)
     
@@ -247,7 +249,11 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     validate_has_elements(ref_arm, "need reference arms")
     validate_no_intersection(comp_arm, ref_arm, "reference and treatment group cannot overlap")
     validate_in(c(ref_arm, comp_arm), ASL_FILTERED[[arm_var]], "arm variable or comp/ref choices not found in ASL")
-    validate_in(strata_var, names(ASL_FILTERED), "stratification factor not found in ASL")
+    
+    if (!is.null(strata_var)) {
+      validate_in(strata_var, names(ASL_FILTERED), "stratification factor not found in ASL")
+    }
+
 
     
     anl_name <- paste0(dataname, "_FILTERED")
