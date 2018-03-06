@@ -34,7 +34,7 @@
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
-#'     tm_kmplot(
+#'     tm_kmplot_IMPower131(
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
 #'        treatment_var_choices = c("ARM", "ARMCD"),
@@ -50,7 +50,7 @@
 #' shinyApp(ui = x$ui, server = x$server)
 #' }
 #' 
-tm_kmplot <- function(label,
+tm_kmplot_IMPower131 <- function(label,
                       dataname,
                       treatment_var = "ARM",
                       treatment_var_choices = treatment_var,
@@ -92,7 +92,7 @@ ui_kmplot <- function(
   plot_height = c(700, 400, 3000),
   pre_output = NULL,
   post_output = NULL
-  ) {
+) {
   
   ns <- NS(id)
   
@@ -116,6 +116,7 @@ ui_kmplot <- function(
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
+      checkboxInput(ns("seperate_model"), "Separate Model Results for each comparison group?", value = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", plot_height, ticks = FALSE)
     ),
@@ -162,8 +163,8 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     comp_arm <- input$comp_arm
     strat <- input$strat
     combine_arm <- input$combine_arm
-
-
+    seperate_model <- input$seperate_model
+    
     validate(need(!is.null(comp_arm), "select at least one comparison arm"))
     validate(need(!is.null(ref_arm), "select at least one reference arm"))
     validate(need(length(intersect(ref_arm, comp_arm)) == 0,
@@ -171,14 +172,14 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     validate(need(var_arm %in% names(ATE_Filtered), "var_arm is not in ATE"))
     validate(need(is.null(facetby)  || facetby %in% names(ATE_Filtered), "facet by not correct"))
     validate(need(ref_arm %in% ATE_Filtered[[var_arm]], "reference arm does not exist in left over ARM values"))
-
+    
     
     
     ANL1 <- ATE_Filtered %>% filter(PARAMCD == tteout) 
     ANL <- ANL1[ANL1[[var_arm]] %in% c(comp_arm, ref_arm) , ]
     
     validate(need(nrow(ANL) > 10, "Need more than 10 observations"))
-   
+    
     
     if (length(ref_arm)>1) {
       new_ref_arm <- paste(ref_arm, collapse = "/")
@@ -205,24 +206,41 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
       formula_coxph <- formula_km
       info_coxph <- "Cox Proportional Model: Unstratified Analysis"
     }
-
+    
     tbl_km <- kmAnnoData(formula_km = formula_km, data = ANL) 
     tbl_cox <- coxphAnnoData(formula_coxph = formula_coxph, 
                              data = ANL, cox_ties = "exact", info_coxph = info_coxph)
     results <- try({
       if (length(facetby) == 0){
-        kmGrob(title = "Kaplan - Meier Plot",
-               formula_km = formula_km, data = ANL) %>%
-        addTable(vp = vpPath("plotarea", "topcurve"),
-                 x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
-                 y = unit(1, "npc") -  unit(1, "lines"),
-                 just = c("left", "top"),
-                 tbl = tbl_km) %>%
-        addTable (vp = vpPath("plotarea", "topcurve"),
-                    x= unit(1, "lines"), y = unit(1, "lines"),
-                    just = c("left", "bottom"),
-                    tbl = tbl_cox) %>%
-         grid.draw()
+        p <- kmGrob(title = "Kaplan - Meier Plot",
+                            formula_km = formula_km, data = ANL) %>%
+          addTable(vp = vpPath("plotarea", "topcurve"),
+                   x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
+                   y = unit(1, "npc") -  unit(1, "lines"),
+                   just = c("left", "top"),
+                   tbl = tbl_km) 
+        
+        if (!seperate_model){
+           p %>%  addTable (vp = vpPath("plotarea", "topcurve"),
+                            x= unit(1, "lines"), y = unit(1, "lines"),
+                            just = c("left", "bottom"),
+                            tbl = tbl_cox) %>% grid.draw()
+            
+        } else {
+          group_combination <- expand.grid(ref_arm, comp_arm) %>% split(seq(nrow(.))) 
+          
+          data_list <- lapply(group_combination, function(x){
+            df <- ANL[ANL[[var_arm]] %in% unlist(x), ] 
+            df[[var_arm]] <- factor(df[[var_arm]])
+            df
+          })
+          tbl_cox <- coxphAnnoImpower131(formula_coxph = formula_coxph, 
+                                         data_list = data_list, cox_ties = "exact", info_coxph = info_coxph)
+          p %>%  addTable (vp = vpPath("plotarea", "topcurve"),
+                           x= unit(1, "lines"), y = unit(1, "lines"),
+                           just = c("left", "bottom"),
+                           tbl = tbl_cox) %>% grid.draw()
+        }
       } else {
         
         facet_df <- ANL[facetby]
@@ -241,24 +259,43 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
         max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.) 
         xaxis_by <- max(1, floor(max_min/10))
         
-       mapply(function(x, label){
+        mapply(function(x, label){
+          
+          
           km <- kmAnnoData(formula_km = formula_km, data = x) 
           cox <- coxphAnnoData(formula_coxph = formula_coxph, 
-                                   data = x, cox_ties = "exact", info_coxph = info_coxph)
+                               data = x, cox_ties = "exact", info_coxph = info_coxph)
           
-          kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
+         p<-  kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
                  formula_km = formula_km, data = x, xaxis_by = xaxis_by) %>%
-            addTable(vp = vpPath("plotarea", "topcurve"),
+             addTable(vp = vpPath("plotarea", "topcurve"),
                      x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
                      y = unit(1, "npc") -  unit(1, "lines"),
                      just = c("left", "top"),
-                     tbl = km) %>%
-            addTable (vp = vpPath("plotarea", "topcurve"),
-                      x= unit(1, "lines"), y = unit(1, "lines"),
-                      just = c("left", "bottom"),
-                      tbl = cox)
+                     tbl = km) 
+         if (!seperate_model){
+           p %>%   addTable (vp = vpPath("plotarea", "topcurve"),
+                             x= unit(1, "lines"), y = unit(1, "lines"),
+                            just = c("left", "bottom"),
+                            tbl = cox)
+         } else {
+           group_combination <- expand.grid(ref_arm, comp_arm) %>% split(seq(nrow(.))) 
+           
+           data_list <- lapply(group_combination, function(i){
+             df <- x[x[[var_arm]] %in% unlist(i), ] 
+             df[[var_arm]] <- factor(df[[var_arm]])
+             df
+           })
+           cox <- coxphAnnoImpower131(formula_coxph = formula_coxph, 
+                                          data_list = data_list, cox_ties = "exact", info_coxph = info_coxph)
+           p %>%  addTable (vp = vpPath("plotarea", "topcurve"),
+                            x= unit(1, "lines"), y = unit(1, "lines"),
+                            just = c("left", "bottom"),
+                            tbl =  cox)
+         }
+
         }, dfs, levels(lab), SIMPLIFY = FALSE) %>%
-        arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
+          arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       }
       TRUE
     })
