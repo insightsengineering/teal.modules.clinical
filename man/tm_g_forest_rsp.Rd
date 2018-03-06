@@ -14,7 +14,9 @@ tm_g_forest_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 \arguments{
 \item{label}{a character string displayed as module label}
 
-\item{dataname}{The name of the analysis dataset}
+\item{dataname}{The name of the analysis dataset, the data requires the
+variables \code{USUBJID}, \code{STUDYID}, \code{AVALC} (response category),
+and \code{PARAMCD}}
 
 \item{arm_var}{default variable name used as the arm variable}
 
@@ -26,7 +28,8 @@ tm_g_forest_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 
 \item{subgroup_var}{a vector of variable names used as the default subgroups}
 
-\item{subgroup_var_choices}{a vector of variable names to choose the \code{subgroup_var} from}
+\item{subgroup_var_choices}{a vector of variable names to choose the
+\code{subgroup_var} from}
 
 \item{plot_height}{height of the forest plot}
 
@@ -50,6 +53,10 @@ library(random.cdisc.data)
 
 ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
 ARS <- radam("ARS", ADSL = ASL)
+
+attr(ASL, "source") <- 'radam("ASL", start_with = list(RACE = c("white", "asian")))'
+attr(ARS, "source") <- 'radam("ARS", ADSL = ASL)'
+
 
 ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 

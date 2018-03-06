@@ -171,8 +171,8 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     # Delete chunks that are used for reproducible code
     chunk_vars <<- ""
     chunk_data <<- ""
-    chunk_t_forest_rsp <<- "# No Calculated" 
-    chunk_p_forest_rsp <<- "# No Calculated"
+    chunk_t_forest_rsp <<- "# Not Calculated" 
+    chunk_p_forest_rsp <<- "# Not Calculated"
     
     # validate your input values
     validate_has_data(ASL_FILTERED)
@@ -180,22 +180,22 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     
     validate_has_variable(ASL_FILTERED, arm_var, paste("ASL does not have the variable:", arm_var))
     
-    validate_has_elements(comp_arm, "need comparison arms")
-    validate_has_elements(ref_arm, "need reference arms")
+    validate_has_elements(comp_arm, "need comparison arm(s)")
+    validate_has_elements(ref_arm, "need reference arm(s)")
     
-    validate_in(comp_arm, ASL[[arm_var]], "comparison level not in arm variable")
-    validate_in(ref_arm, ASL[[arm_var]], "reference level not in arm variable")
+    validate_in(comp_arm, ASL[[arm_var]], "Comparison arm cannot be found in arm variable")
+    validate_in(ref_arm, ASL[[arm_var]], "Reference arm cannot be found in arm variable")
     
-    validate_no_intersection(comp_arm, ref_arm, "reference and treatment group cannot overlap")
-    validate_has_variable(ANL_FILTERED, c("AVALC", "USUBJID", "STUDYID", "AVAL"),
-                          paste(dataname, "is missing at least of the following variables: AVAL, AVALC, PARAMCD, USUBJID, STUDYID"))
-    validate_in(responders, ANL_FILTERED$AVALC, "responder values are not in AVALC")
+    validate_no_intersection(comp_arm, ref_arm, "reference group and comparison group cannot overlap")
+    validate_has_variable(ANL_FILTERED, c("AVALC", "USUBJID", "STUDYID"),
+                          paste(dataname, "is missing at least of the following variables: AVALC, PARAMCD, USUBJID, STUDYID"))
+    validate_in(responders, ANL_FILTERED$AVALC, "responder values cannot be found in AVALC")
     validate_has_variable(ANL_FILTERED, "PARAMCD", paste(dataname, "is missing the variable PARAMCD"))
-    validate_in(paramcd, ANL_FILTERED$PARAMCD, "paramcd value is not in PARAMCD")
+    validate_in(paramcd, ANL_FILTERED$PARAMCD, "Response parameter cannot be found in PARAMCD")
     validate_has_variable(ASL_FILTERED, c("USUBJID", "STUDYID"), "ASL does not have USUBJID or STUDYID")
     
     if (length(subgroup_var) > 0) {
-      validate_has_variable(ASL_FILTERED, subgroup_var, "not all subgroup variables are in ASL")      
+      validate_has_variable(ASL_FILTERED, subgroup_var, "Not all subgroup variables can be found in ASL")      
     }
 
     
@@ -234,8 +234,8 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       col_by = bquote(ANL[[.(arm_var)]]),
       group_data = if (length(subgroup_var) > 0) bquote({ANL[, .(subgroup_var), drop=FALSE]}) else NULL,
       total = "All Patients",
-      na.omit.group = TRUE,
-      dense_header = TRUE
+      na.omit.group = TRUE
+    #  dense_header = TRUE
     ) 
     
     tbl <- try(eval(chunk_t_forest_rsp))
