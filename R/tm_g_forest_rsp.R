@@ -183,8 +183,8 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     validate_has_elements(comp_arm, "need comparison arm(s)")
     validate_has_elements(ref_arm, "need reference arm(s)")
     
-    validate_in(comp_arm, ASL[[arm_var]], "Comparison arm cannot be found in arm variable")
-    validate_in(ref_arm, ASL[[arm_var]], "Reference arm cannot be found in arm variable")
+    validate_in(comp_arm, ASL_FILTERED[[arm_var]], "Comparison arm cannot be found in arm variable")
+    validate_in(ref_arm, ASL_FILTERED[[arm_var]], "Reference arm cannot be found in arm variable")
     
     validate_no_intersection(comp_arm, ref_arm, "reference group and comparison group cannot overlap")
     validate_has_variable(ANL_FILTERED, c("AVALC", "PARAMCD", "USUBJID", "STUDYID"),
