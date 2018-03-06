@@ -296,7 +296,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
       "t_rsp",
       rsp = bquote(ANL$AVALC %in% .(responders)),
       col_by = bquote(ANL[[.(arm_var)]]),
-      parition_rsp_by = bquote(as.factor(ANL$AVALC)),
+      partition_rsp_by = bquote(as.factor(ANL$AVALC)),
       strata_data = if (length(strata_var) >0) bquote(ANL[, .(strata_var), drop=FALSE]) else NULL
     )
     
