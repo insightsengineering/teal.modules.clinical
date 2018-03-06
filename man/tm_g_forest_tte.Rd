@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_tte.R
 \name{tm_g_forest_tte}
 \alias{tm_g_forest_tte}
-\title{Forest Survival Plot Teal Module}
+\title{Forest Survival Plot teal Module}
 \usage{
 tm_g_forest_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   subgroup_var, subgroup_var_choices = subgroup_var, paramcd = "OS",
@@ -13,7 +13,9 @@ tm_g_forest_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 \arguments{
 \item{label}{a character string displayed as module label}
 
-\item{dataname}{The name of the analysis dataset}
+\item{dataname}{The name of the analysis dataset, the data requires the
+variables \code{USUBJID}, \code{STUDYID}, \code{AVAL} (Time-to-event),
+and \code{PARAMCD} (Endpoint)}
 
 \item{arm_var}{default variable name used as the arm variable}
 
@@ -38,7 +40,7 @@ tm_g_forest_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
 \item{code_data_processing}{xxx?}
 }
 \description{
-Forest Survival Plot Teal Module
+Forest Survival Plot teal Module
 }
 \examples{
  
@@ -50,10 +52,14 @@ library(random.cdisc.data)
 ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
 ATE <- radam("ATE", ADSL = ASL)
 
+attr(ASL, "source") <- 'radam("ASL", start_with = list(RACE = c("white", "asian")))'
+attr(ATE, "source") <- 'radam("ATE", ADSL = ASL)'
+
+
 ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 
 x <- teal::init(
-  data = list(ASL = ASL, ARS = ARS),
+  data = list(ASL = ASL, ATE = ATE),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
