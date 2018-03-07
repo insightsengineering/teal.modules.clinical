@@ -206,7 +206,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
       ANL <- merge(ASL_p[, .(asl_vars)], ANL_p[, .(anl_vars)],
-                   all.x = TRUE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
       

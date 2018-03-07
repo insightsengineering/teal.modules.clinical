@@ -281,7 +281,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
       ANL <- merge(
         x = ASL_p[, .(asl_vars), drop = FALSE],
         y = ANL_endpoint[, .(anl_vars), drop = FALSE],
-        all.x = TRUE, all.y = FALSE, by=c("USUBJID", "STUDYID")
+        all.x = FALSE, all.y = FALSE, by=c("USUBJID", "STUDYID")
       )
       
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])

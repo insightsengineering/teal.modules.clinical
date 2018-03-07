@@ -279,7 +279,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       ANL <- merge(
         x = ASL_p[, .(asl_vars)],
         y = ANL_endpoint[, .(anl_vars)],
-        all.x = TRUE, all.y = FALSE,
+        all.x = FALSE, all.y = FALSE,
         by=c("USUBJID", "STUDYID")
       )
 
