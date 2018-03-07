@@ -26,10 +26,22 @@
 #' 
 #' \dontrun{
 #' 
-#' ### Use Atezo Test data             
-#' library(atezo.data)
-#' ASL <- asl(com.roche.cdt30019.go29436.re)
-#' ATE <- ate(com.roche.cdt30019.go29436.re)
+#' library(random.cdisc.data)
+#'
+#' ASL <- radam('ASL', start_with = list(
+#'   ITTFL = 'Y',
+#'   SEX = c("M", "F"),
+#'   MLIVER = paste("mliver", 1:3),
+#'   ARM = paste("ARM", LETTERS[1:3])
+#' ))
+#' 
+#' ASL$ARM <- as.factor(ASL$ARM)
+#' 
+#' ATE <- radam('ATE', ADSL = ASL)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
+#' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+#' 
 #' ## Initialize Teal
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -39,17 +51,18 @@
 #'        dataname = 'ATE',
 #'        treatment_var_choices = c("ARM", "ARMCD"),
 #'        endpoint_choices = c("OS", "PFS"),
-#'        facet_var = "SEX",
-#'        facet_var_choices = c("SEX", "BECOG", "TOBHX"),
-#'        strata_var = "TOBHX",
-#'        strata_var_choices = c("SEX", "TOBHX")
+#'        facet_var = "MLIVER",
+#'        facet_var_choices = c("SEX", "MLIVER"),
+#'        strata_var = "SEX",
+#'        strata_var_choices = c("SEX", "MLIVER")
 #'     )  
 #'   )
 #' )
 #' ## Initiate Shiny App
 #' shinyApp(ui = x$ui, server = x$server)
-#' }
 #' 
+#' }
+
 tm_kmplot <- function(label,
                       dataname,
                       treatment_var = "ARM",
@@ -101,16 +114,16 @@ ui_kmplot <- function(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(dataname)),
-      optionalSelectInput(ns("var_arm"), "Treatment Variable", choices = treatment_var_choices,
+      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = treatment_var_choices,
                           selected = treatment_var, multiple = FALSE),
       optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = endpoint_choices, 
                           selected = endpoint, multiple = FALSE),
-      optionalSelectInput(ns("strat"), "Stratify by", choices = strata_var_choices, 
+      optionalSelectInput(ns("strata_var"), "Stratify by", choices = strata_var_choices, 
                           selected = strata_var, multiple = TRUE,
-                          label_help = helpText("currently taken from", tags$code(dataname))),
+                          label_help = helpText("currently taken from ASL")),
       optionalSelectInput(ns("facetby"), "Facet Plots by:", choices = facet_var_choices, 
                           selected = facet_var, multiple = TRUE,
-                          label_help = helpText("currently taken from", tags$code(dataname))),
+                          label_help = helpText("currently taken from ASL" )),
       selectInput(ns("ref_arm"), "Reference Arm", choices = NULL, 
                   selected = NULL, multiple = TRUE),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
@@ -135,32 +148,39 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     plotOutput(session$ns("kmplot"), height=plot_height)
   })
   
-  ATE_Filtered <- reactive({
+  ATE_FILTERED <- reactive({
     ATE_F <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    validate(need(ATE_F, "Need ATE data"))
+    validate(need(ATE_F, paste0("Need ", dataname,  "data")))
     ATE_F
+  })
+  ASL_FILTERED <- reactive({
+    ASL_F <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    validate(need(ASL_F, "Need ASL data"))
+    ASL_F
   })
   
   observe({
-    ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = TRUE)
-    chs <- sapply(ANL, unique, simplify = FALSE, USE.NAMES = TRUE)
+    ASL <- datasets$get_data("ASL", filtered = FALSE, reactive = TRUE)
     
-    updateSelectInput(session,  "ref_arm" , choices = chs[input$var_arm],
-                      selected = chs[[input$var_arm]][1])
-    updateSelectInput(session, "comp_arm", choices = chs[input$var_arm],
-                      selected = chs[[input$var_arm]][-1])
+    chs <- sapply(ASL, unique, simplify = FALSE, USE.NAMES = TRUE)
+    
+    updateSelectInput(session,  "ref_arm" , choices = chs[input$arm_var],
+                      selected = chs[[input$arm_var]][1])
+    updateSelectInput(session, "comp_arm", choices = chs[input$arm_var],
+                      selected = chs[[input$arm_var]][-1])
     
   })
   
   
   output$kmplot <- renderPlot({
-    ATE_Filtered <- ATE_Filtered()
+    ATE_FILTERED <- ATE_FILTERED()
+    ASL_FILTERED <- ASL_FILTERED()
     tteout <- input$tteout
-    var_arm <- input$var_arm
+    arm_var <- input$arm_var
     facetby <- input$facetby
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
-    strat <- input$strat
+    strata_var <- input$strata_var
     combine_arm <- input$combine_arm
 
 
@@ -168,39 +188,45 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     validate(need(!is.null(ref_arm), "select at least one reference arm"))
     validate(need(length(intersect(ref_arm, comp_arm)) == 0,
                   "reference and treatment group cannot overlap"))
-    validate(need(var_arm %in% names(ATE_Filtered), "var_arm is not in ATE"))
-    validate(need(is.null(facetby)  || facetby %in% names(ATE_Filtered), "facet by not correct"))
-    validate(need(ref_arm %in% ATE_Filtered[[var_arm]], "reference arm does not exist in left over ARM values"))
+    validate(need(arm_var %in% names(ASL_FILTERED), "arm_var is not in ASL"))
+    validate(need(is.null(facetby)  || facetby %in% names(ASL_FILTERED), "facet by not correct"))
+    validate(need(ref_arm %in% ASL_FILTERED[[arm_var]], "reference arm does not exist in left over ARM values"))
 
     
+    ANL2 <- merge(
+      ASL_FILTERED,
+      ATE_FILTERED,
+      all.x = TRUE, all.y = FALSE,
+      by=c("USUBJID", "STUDYID")
+    )
     
-    ANL1 <- ATE_Filtered %>% filter(PARAMCD == tteout) 
-    ANL <- ANL1[ANL1[[var_arm]] %in% c(comp_arm, ref_arm) , ]
+    ANL1 <- ANL2 %>% filter(PARAMCD == tteout) 
+    ANL <- ANL1[ANL1[[arm_var]] %in% c(comp_arm, ref_arm) , ]
     
     validate(need(nrow(ANL) > 10, "Need more than 10 observations"))
    
     
     if (length(ref_arm)>1) {
       new_ref_arm <- paste(ref_arm, collapse = "/")
-      ANL[[var_arm]] <- do.call(fct_collapse, setNames(list(ANL[[var_arm]], ref_arm), c("f", new_ref_arm)))
+      ANL[[arm_var]] <- do.call(fct_collapse, setNames(list(ANL[[arm_var]], ref_arm), c("f", new_ref_arm)))
       ref_arm <- new_ref_arm
     }
     
     if (combine_arm) {
-      ANL[[var_arm]] <- do.call(fct_collapse, setNames(list(ANL[[var_arm]], comp_arm), c("f", paste(comp_arm, collapse = "/"))))
+      ANL[[arm_var]] <- do.call(fct_collapse, setNames(list(ANL[[arm_var]], comp_arm), c("f", paste(comp_arm, collapse = "/"))))
     }
     
-    ANL[[var_arm]] <- fct_relevel(ANL[[var_arm]], ref_arm)
+    ANL[[arm_var]] <- fct_relevel(ANL[[arm_var]], ref_arm)
     
     formula_km <- as.formula(
-      paste0("Surv(AVAL, 1-CNSR) ~", var_arm)
+      paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
     )
     
-    if (length(strat) != 0){
+    if (length(strata_var) != 0){
       formula_coxph <- as.formula(
-        paste0("Surv(AVAL, 1-CNSR) ~", var_arm ,  "+ strata(", paste(strat, collapse = ","), ")")
+        paste0("Surv(AVAL, 1-CNSR) ~", arm_var ,  "+ strata(", paste(strata_var, collapse = ","), ")")
       )
-      info_coxph <- paste0("Cox Proportional Model: Stratified by ", paste(strat, collapse = ","))
+      info_coxph <- paste0("Cox Proportional Model: Stratified by ", paste(strata_var, collapse = ","))
     } else{
       formula_coxph <- formula_km
       info_coxph <- "Cox Proportional Model: Unstratified Analysis"
