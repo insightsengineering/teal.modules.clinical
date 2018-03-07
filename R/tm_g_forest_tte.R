@@ -170,28 +170,18 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     chunk_p_forest_tte <<- "# Not Calculated"
     
     # validate your input values
-    validate_has_data(ASL_FILTERED)
-    validate_has_data(ANL_FILTERED, min_nrow = 15) 
+    validate_standard_inputs(
+      ASL = ASL_FILTERED,
+      aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      ANL = ANL_FILTERED,
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR"),
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm
+    )
     
-    validate_has_variable(ASL_FILTERED, arm_var, paste("ASL does not have the variable:", arm_var))
-    
-    validate_has_elements(comp_arm, "need comparison arm(s)")
-    validate_has_elements(ref_arm, "need reference arm(s)")
-    
-    validate_in(comp_arm, ASL_FILTERED[[arm_var]], "Comparison arm cannot be found in arm variable")
-    validate_in(ref_arm, ASL_FILTERED[[arm_var]], "Reference arm cannot be found in arm variable")
-    
-    validate_no_intersection(comp_arm, ref_arm, "reference group and comparison group cannot overlap")
-    validate_has_variable(ANL_FILTERED, c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR"),
-                          paste(dataname, "is missing at least of the following variables: PARAMCD, USUBJID, STUDYID, AVAL, CNSR"))
-    validate_has_variable(ANL_FILTERED, "PARAMCD", paste(dataname, "is missing the variable PARAMCD"))
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
-    validate_has_variable(ASL_FILTERED, c("USUBJID", "STUDYID"), "ASL does not have USUBJID or STUDYID")
-    
-    if (length(subgroup_var) > 0) {
-      validate_has_variable(ASL_FILTERED, subgroup_var, "Not all subgroup variables can be found in ASL")      
-    }
-    
+
 
     # Delete chunks that are used for reproducible code
     chunk_vars <<- ""

@@ -42,10 +42,22 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 
 \dontrun{
 
-### Use Atezo Test data             
-library(atezo.data)
-ASL <- asl(com.roche.cdt30019.go29436.re)
-ATE <- ate(com.roche.cdt30019.go29436.re)
+library(random.cdisc.data)
+
+ASL <- radam('ASL', start_with = list(
+  ITTFL = 'Y',
+  SEX = c("M", "F"),
+  MLIVER = paste("mliver", 1:3),
+  ARM = paste("ARM", LETTERS[1:3])
+))
+
+ASL$ARM <- as.factor(ASL$ARM)
+
+ATE <- radam('ATE', ADSL = ASL)
+
+attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
+attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+
 ## Initialize Teal
 x <- teal::init(
   data = list(ASL = ASL, ATE = ATE),
@@ -55,15 +67,15 @@ x <- teal::init(
        dataname = 'ATE',
        treatment_var_choices = c("ARM", "ARMCD"),
        endpoint_choices = c("OS", "PFS"),
-       facet_var = "SEX",
-       facet_var_choices = c("SEX", "BECOG", "TOBHX"),
-       strata_var = "TOBHX",
-       strata_var_choices = c("SEX", "TOBHX")
+       facet_var = "MLIVER",
+       facet_var_choices = c("SEX", "MLIVER"),
+       strata_var = "SEX",
+       strata_var_choices = c("SEX", "MLIVER")
     )  
   )
 )
 ## Initiate Shiny App
 shinyApp(ui = x$ui, server = x$server)
-}
 
+}
 }

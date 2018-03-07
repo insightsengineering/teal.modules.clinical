@@ -89,7 +89,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     arm_var <- input$arm_var
     summarize_vars <- input$summarize_vars
     
-    chunk_analysis <<- ""
+    chunk_analysis <<- "# Not Calculated"
     
     validate_has_data(ANL_f, min_nrow = 15)    
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
@@ -106,8 +106,6 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
       total = "All Patients",
       useNA_factors = "ifany" 
     )
-    
-    .GlobalEnv$chunk_analysis <- chunk_analysis
 
     tbl <- try(eval(chunk_analysis))
     

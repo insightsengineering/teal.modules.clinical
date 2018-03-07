@@ -229,6 +229,8 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
     
+    if (length(strata_var) == 0) strata_var <- NULL
+    
     # as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
     
     time_points <- if (length(time_points) == 0) NULL else sort(time_points)
@@ -240,26 +242,20 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     
     
     # validate your input values
-    validate_has_data(ASL_FILTERED)
-    validate_has_data(ANL_FILTERED, min_nrow = 15)    
+    validate_standard_inputs(
+      ASL = ASL_FILTERED,
+      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      ANL = ANL_FILTERED,
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desrc_var),
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm
+    )
     
-    validate(need(ASL_FILTERED[[arm_var]], "no valid arm selected"))
-    
-    validate(need(length(ref_arm) > 0 && length(comp_arm) > 0,
-                  "need at least one reference and one comparison arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    
-    validate(need(paramcd %in% ANL_FILTERED$PARAMCD, "selected PARAMCD not in ATE"))
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
     
-    validate(need(all(strata_var %in% names(ASL_FILTERED)),
-                  "some baseline risk variables are not found in ASL"))
     
-    if (!is.null(event_desrc_var)) {
-      validate(need(event_desrc_var %in% names(ANL_FILTERED), 
-                    paste("variable", event_desrc_var, "not found in ATE")))      
-    }
+    # do analysis
     
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name

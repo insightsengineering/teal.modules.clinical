@@ -229,6 +229,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     
     if (length(strata_var) == 0) strata_var <- NULL
     
+    
     #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, incl_missing, arm_var, ref_arm, comp_arm,
     #          combine_comp_arms, strata_var)
     
@@ -240,22 +241,22 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
       
       
     # Validate your input
-    validate_has_data(ASL_FILTERED)
-    validate_has_data(ANL_FILTERED, min_nrow = 15)    
-
-    validate_in(paramcd, ANL_FILTERED$PARAMCD, "PARAMCD values do not exist")
+    validate_standard_inputs(
+      ASL = ASL_FILTERED,
+      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      ANL = ANL_FILTERED,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm
+    )
+    
     validate_in(responders, ANL_FILTERED$AVALC, "responder values do not exist")
-    validate_has_elements(comp_arm, "need comparison arms")
-    validate_has_elements(ref_arm, "need reference arms")
-    validate_no_intersection(comp_arm, ref_arm, "reference and treatment group cannot overlap")
-    validate_in(c(ref_arm, comp_arm), ASL_FILTERED[[arm_var]], "arm variable or comp/ref choices not found in ASL")
+    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
     
-    if (!is.null(strata_var)) {
-      validate_in(strata_var, names(ASL_FILTERED), "stratification factor not found in ASL")
-    }
-
-
     
+    
+    # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name
     
