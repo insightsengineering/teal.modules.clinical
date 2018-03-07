@@ -95,6 +95,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(ANL_f)), "not all variables available"))
     validate(need(ANL_f[[arm_var]], "Arm variable does not exist"))
+    validate(need(!("" %in% ANL_f[[arm_var]]), "arm values can not contain empty strings ''"))
     
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, ANL_f)
