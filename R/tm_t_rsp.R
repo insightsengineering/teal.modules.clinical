@@ -141,12 +141,11 @@ ui_t_rsp <- function(id, ...) {
                   choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("incl_missing"), "Include missing as non-responders?", value = a$include_missing),
       #Arm related parameters
-      optionalSelectInput(ns("arm_var"), "Grouping Variable", 
-                          a$arm_var_choices, a$arm_var, multiple = FALSE,
-                          label_help = helpText("Select one variable to use for grouping")),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", 
+                          a$arm_var_choices, a$arm_var, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Group", 
                           choices = NULL, selected = NULL, multiple = TRUE),
-      helpText("Reference groups automatically combined into a single group if more than one value selected."),
+      helpText("Multiple reference groups are automatically combined into a single group."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       #Stratification related parameters
