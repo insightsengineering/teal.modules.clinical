@@ -174,7 +174,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       ASL = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       ANL = ANL_FILTERED,
-      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR"),
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALU", "CNSR"),
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm
@@ -198,7 +198,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     })
     
     asl_vars <- c("USUBJID", "STUDYID", arm_var, subgroup_var)
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR")
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR")
     
     chunk_data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
@@ -224,6 +224,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       tte = bquote(ANL$AVAL),
       is_event = bquote(ANL$CNSR == 0),
       col_by = bquote(ANL[[.(arm_var)]]),
+      time_unit = bquote(tolower(ANL$AVALU[1])),
       group_data = if (length(subgroup_var) > 0) bquote({ANL[, .(subgroup_var), drop=FALSE]}) else NULL,
       total = "All Patients",
       na.omit.group = TRUE,
