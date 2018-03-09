@@ -1,32 +1,29 @@
 #' @title Response Table Teal Module
-#' 
-#' @description
-#' This module produces a response summary table that matches the STREAM 
-#' template rspt01
-#' 
+#'   
+#' @description This module produces a response summary table that matches the 
+#'   STREAM template rspt01
+#'   
 #' @inheritParams teal::standard_layout
 #' @inheritParams tm_t_tte
-#' @param label full name label of module
-#' @param paramcd filter the rows in ARS given the paramcd value
-#' @param paramcd_choices choices of possible poaramcd
-#' @param arm.var selected variable to use as arms
-#' @param arm.var_choices choices of arm variables
-#' @param strata.var categorical variable name(s) for stratified model
-#' @param strata.var_choices choices of stratification factors 
-#' 
-#' @details Additional standard UI inputs include \code{responders},
-#' \code{incl_missing} (default TRUE), \code{ref_arm}, \code{comp_arm} and
-#' \code{combine_arm} (default FALSE)
-#' 
-#' Default values of the inputs \code{var_arm}, \code{ref_arm} and
-#' \code{comp_arm} are set to NULL, and updated accordingly based on seletion of
-#' \code{paramcd} and \code{arm.var}
-#' 
-#' Package \code{forcats} used to re-format arm data into leveled factors.
-#' 
-#' Reference arms automatically combined if multiple arms selected as reference
-#' group.
-#' 
+#'   
+#' @details Additional standard UI inputs include \code{responders}, 
+#'   \code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
+#'   
+#'   Default values of the inputs \code{var_arm}, \code{ref_arm} and 
+#'   \code{comp_arm} are set to NULL, and updated accordingly based on seletion 
+#'   of \code{paramcd} and \code{var_arm}
+#'   
+#'   This display order of response categories in partitioned statistics section
+#'   inherits the factor level order of the source data. Use
+#'   \code{\link[base]{factor()}} and its \code{levels} argument to manipulate
+#'   the source data in order to include/exclude or re-categorize response
+#'   categories and arrange the display order. If response categories are
+#'   "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
+#'   confidence interval will not be calculated.
+#'   
+#'   Reference arms automatically combined if multiple arms selected as 
+#'   reference group.
+#'   
 #' @return an \code{\link[teal]{module}} object
 #'   
 #' @export
@@ -36,7 +33,7 @@
 #' \dontrun{ 
 #' 
 #' library(random.cdisc.data)
-#'
+#' 
 #' ASL <- radam('ASL', start_with = list(
 #'   ITTFL = 'Y',
 #'   SEX = c("M", "F"),
@@ -82,7 +79,6 @@ tm_t_rsp <- function(label,
                      paramcd_choices = paramcd,
                      strata_var = NULL,
                      strata_var_choices = strata_var,
-                     include_missing = TRUE,
                      pre_output = NULL,
                      post_output = NULL,
                      code_data_processing = NULL) {
@@ -139,7 +135,6 @@ ui_t_rsp <- function(id, ...) {
                           choices = a$paramcd_choices, selected = a$paramcd, multiple = FALSE),
       selectInput(ns("responders"), "Responders", 
                   choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("incl_missing"), "Include missing as non-responders?", value = a$include_missing),
       #Arm related parameters
       optionalSelectInput(ns("arm_var"), "Arm Variable", 
                           a$arm_var_choices, a$arm_var, multiple = FALSE),
@@ -180,7 +175,8 @@ ui_t_rsp <- function(id, ...) {
 #' 
 #' @noRd
 #' 
-srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, code_data_processing, paramcd_choices) {
+srv_t_rsp <- function(input, output, session, datasets, dataname, 
+                      arm_ref_comp, code_data_processing, paramcd_choices) {
   
   
   # Setup arm variable selection, default reference arms, and default
@@ -192,8 +188,6 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_rsp"
   )
-  
-
   
 
    # Update UI choices depending on selection of previous options
@@ -219,7 +213,6 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     
     paramcd <- input$paramcd
     responders <- input$responders
-    incl_missing <- input$incl_missing
     arm_var <- input$arm_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
@@ -229,7 +222,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     if (length(strata_var) == 0) strata_var <- NULL
     
     
-    #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, incl_missing, arm_var, ref_arm, comp_arm,
+    #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, arm_var, ref_arm, comp_arm,
     #          combine_comp_arms, strata_var)
     
     
@@ -252,7 +245,6 @@ srv_t_rsp <- function(input, output, session, datasets, dataname, arm_ref_comp, 
     
     validate_in(responders, ANL_FILTERED$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    
     
     
     # perform analysis
