@@ -6,12 +6,11 @@
 \usage{
 tm_t_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   arm_ref_comp = NULL, paramcd = "OVRSPI", paramcd_choices = paramcd,
-  strata_var = NULL, strata_var_choices = strata_var,
-  include_missing = TRUE, pre_output = NULL, post_output = NULL,
-  code_data_processing = NULL)
+  strata_var = NULL, strata_var_choices = strata_var, pre_output = NULL,
+  post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
-\item{label}{full name label of module}
+\item{label}{menue item label of the module in the teal app}
 
 \item{dataname}{analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -30,9 +29,9 @@ be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{filter the rows in ARS given the paramcd value}
+\item{paramcd}{single selected endpoint filtered with \code{PARAMCD} variable}
 
-\item{paramcd_choices}{choices of possible poaramcd}
+\item{paramcd_choices}{vector with \code{paramcd} choices}
 
 \item{strata_var}{vector with variable names that should be used for
 stratification}
@@ -49,35 +48,32 @@ output to put the output into context. For example the
 
 \item{code_data_processing}{string with data preprocessing before the teal
 app is initialized}
-
-\item{arm.var}{selected variable to use as arms}
-
-\item{arm.var_choices}{choices of arm variables}
-
-\item{strata.var}{categorical variable name(s) for stratified model}
-
-\item{strata.var_choices}{choices of stratification factors}
 }
 \value{
 an \code{\link[teal]{module}} object
 }
 \description{
-This module produces a response summary table that matches the STREAM 
-template rspt01
+This module produces a response summary table that matches the 
+  STREAM template rspt01
 }
 \details{
-Additional standard UI inputs include \code{responders},
-\code{incl_missing} (default TRUE), \code{ref_arm}, \code{comp_arm} and
-\code{combine_arm} (default FALSE)
-
-Default values of the inputs \code{var_arm}, \code{ref_arm} and
-\code{comp_arm} are set to NULL, and updated accordingly based on seletion of
-\code{paramcd} and \code{arm.var}
-
-Package \code{forcats} used to re-format arm data into leveled factors.
-
-Reference arms automatically combined if multiple arms selected as reference
-group.
+Additional standard UI inputs include \code{responders}, 
+  \code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
+  
+  Default values of the inputs \code{var_arm}, \code{ref_arm} and 
+  \code{comp_arm} are set to NULL, and updated accordingly based on seletion 
+  of \code{paramcd} and \code{var_arm}
+  
+  This display order of response categories in partitioned statistics section
+  inherits the factor level order of the source data. Use
+  \code{\link[base]{factor()}} and its \code{levels} argument to manipulate
+  the source data in order to include/exclude or re-categorize response
+  categories and arrange the display order. If response categories are
+  "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
+  confidence interval will not be calculated.
+  
+  Reference arms automatically combined if multiple arms selected as 
+  reference group.
 }
 \examples{
  
