@@ -4,8 +4,8 @@
 #' 
 #' @param label unique name for tabpanel
 #' @param dataname dataset name
-#' @param treatment_var parameter for seperating curves
-#' @param treatment_var_choices options for \code{treatment_var}
+#' @param arm_var parameter for seperating curves
+#' @param arm_var_choices options for \code{arm_var}
 #' @param endpoint selected endpoint from ADaM variable \code{PARAMCD}
 #' @param endpoint_choices options for \code{endpoint}
 #' @param facet_var parameter for facet plotting
@@ -49,7 +49,7 @@
 #'     tm_kmplot(
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
-#'        treatment_var_choices = c("ARM", "ARMCD"),
+#'        arm_var_choices = c("ARM", "ARMCD"),
 #'        endpoint_choices = c("OS", "PFS"),
 #'        facet_var = "MLIVER",
 #'        facet_var_choices = c("SEX", "MLIVER"),
@@ -65,8 +65,9 @@
 
 tm_kmplot <- function(label,
                       dataname,
-                      treatment_var = "ARM",
-                      treatment_var_choices = treatment_var,
+                      arm_var = "ARM",
+                      arm_var_choices = arm_var,
+                      arm_ref_comp = NULL,
                       endpoint = "OS",
                       endpoint_choices = endpoint,
                       facet_var = NULL,
@@ -84,45 +85,32 @@ tm_kmplot <- function(label,
     label = label,
     filters = dataname,
     server = srv_kmplot,
-    server_args = list(dataname = dataname),
+    server_args = list(dataname = dataname,
+                       arm_ref_comp = arm_ref_comp),
     ui = ui_kmplot,
     ui_args = args
   )
 }
 
-ui_kmplot <- function(
-  id, 
-  label,
-  dataname,
-  treatment_var = "ARM",
-  treatment_var_choices = treatment_var,
-  endpoint = "OS",
-  endpoint_choices = endpoint,
-  strata_var = NULL,
-  strata_var_choices = strata_var,
-  facet_var = NULL,
-  facet_var_choices = facet_var,
-  plot_height = c(700, 400, 3000),
-  pre_output = NULL,
-  post_output = NULL
-  ) {
+ui_kmplot <- function(id, ...) {
   
+  a <- list(...)
   ns <- NS(id)
   
   standard_layout(
     output = uiOutput(ns("plot_ui")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis Data: ", tags$code(dataname)),
-      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = treatment_var_choices,
-                          selected = treatment_var, multiple = FALSE),
-      optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = endpoint_choices, 
-                          selected = endpoint, multiple = FALSE),
-      optionalSelectInput(ns("strata_var"), "Stratify by", choices = strata_var_choices, 
-                          selected = strata_var, multiple = TRUE,
+      helpText("Analysis Data: ", tags$code(a$dataname)),
+      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = a$arm_var_choices,
+                          selected = a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = a$endpoint_choices, 
+                          selected = a$endpoint, multiple = FALSE),
+      optionalSelectInput(ns("strata_var"), "Stratify by", choices = a$strata_var_choices, 
+                          selected = a$strata_var, multiple = TRUE,
                           label_help = helpText("currently taken from ASL")),
-      optionalSelectInput(ns("facetby"), "Facet Plots by:", choices = facet_var_choices, 
-                          selected = facet_var, multiple = TRUE,
+      optionalSelectInput(ns("facet_var"), "Facet Plots by:", choices = a$facet_var_choices, 
+                          selected = a$facet_var, multiple = TRUE,
                           label_help = helpText("currently taken from ASL" )),
       selectInput(ns("ref_arm"), "Reference Arm", choices = NULL, 
                   selected = NULL, multiple = TRUE),
@@ -130,17 +118,23 @@ ui_kmplot <- function(
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
-      optionalSliderInputValMinMax(ns("plot_height"), "plot height", plot_height, ticks = FALSE)
+      optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
-    pre_output = pre_output,
-    post_output = post_output
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
 
-srv_kmplot <- function(input, output, session, datasets, dataname) {
+srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp) {
   
-  
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
+    ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_kmplot"
+  )
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
@@ -148,54 +142,43 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     plotOutput(session$ns("kmplot"), height=plot_height)
   })
   
-  ATE_FILTERED <- reactive({
-    ATE_F <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    validate(need(ATE_F, paste0("Need ", dataname,  "data")))
-    ATE_F
+  ANL_FILTERED <- reactive({
+    ANL_F <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
+    validate(need(ANL_F, paste0("Need ", dataname,  "data")))
+    ANL_F
   })
   ASL_FILTERED <- reactive({
     ASL_F <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
     validate(need(ASL_F, "Need ASL data"))
     ASL_F
   })
-  
-  observe({
-    ASL <- datasets$get_data("ASL", filtered = FALSE, reactive = TRUE)
-    
-    chs <- sapply(ASL, unique, simplify = FALSE, USE.NAMES = TRUE)
-    
-    updateSelectInput(session,  "ref_arm" , choices = chs[input$arm_var],
-                      selected = chs[[input$arm_var]][1])
-    updateSelectInput(session, "comp_arm", choices = chs[input$arm_var],
-                      selected = chs[[input$arm_var]][-1])
-    
-  })
-  
+
   
   output$kmplot <- renderPlot({
-    ATE_FILTERED <- ATE_FILTERED()
+    ANL_FILTERED <- ANL_FILTERED()
     ASL_FILTERED <- ASL_FILTERED()
     tteout <- input$tteout
     arm_var <- input$arm_var
-    facetby <- input$facetby
+    facet_var <- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_arm <- input$combine_arm
 
 
-    validate(need(!is.null(comp_arm), "select at least one comparison arm"))
-    validate(need(!is.null(ref_arm), "select at least one reference arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    validate(need(arm_var %in% names(ASL_FILTERED), "arm_var is not in ASL"))
-    validate(need(is.null(facetby)  || facetby %in% names(ASL_FILTERED), "facet by not correct"))
-    validate(need(ref_arm %in% ASL_FILTERED[[arm_var]], "reference arm does not exist in left over ARM values"))
-
+    validate_standard_inputs(
+      ASL = ASL_FILTERED,
+      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
+      ANL = ANL_FILTERED,
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR"),
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm
+    )
     
     ANL2 <- merge(
       ASL_FILTERED,
-      ATE_FILTERED,
+      ANL_FILTERED,
       all.x = TRUE, all.y = FALSE,
       by=c("USUBJID", "STUDYID")
     )
@@ -214,6 +197,7 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     
     if (combine_arm) {
       ANL[[arm_var]] <- do.call(fct_collapse, setNames(list(ANL[[arm_var]], comp_arm), c("f", paste(comp_arm, collapse = "/"))))
+      comp_arm <- paste(comp_arm, collapse = "/")
     }
     
     ANL[[arm_var]] <- fct_relevel(ANL[[arm_var]], ref_arm)
@@ -236,7 +220,7 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     tbl_cox <- coxphAnnoData(formula_coxph = formula_coxph, 
                              data = ANL, cox_ties = "exact", info_coxph = info_coxph)
     results <- try({
-      if (length(facetby) == 0){
+      if (length(facet_var) == 0){
         kmGrob(title = "Kaplan - Meier Plot",
                formula_km = formula_km, data = ANL) %>%
         addTable(vp = vpPath("plotarea", "topcurve"),
@@ -251,11 +235,11 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
          grid.draw()
       } else {
         
-        facet_df <- ANL[facetby]
+        facet_df <- ANL[facet_var]
         
         n_unique <- sum(!duplicated(facet_df))
         
-        lab <- Map(function(var, x) paste0(var, "= '", x,"'"), facetby, facet_df) %>%
+        lab <- Map(function(var, x) paste0(var, "= '", x,"'"), facet_var, facet_df) %>%
           unname() %>%
           Reduce(function(x, y) paste(x, y, sep = ", "), .) %>%
           unlist() %>%
