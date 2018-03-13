@@ -167,6 +167,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     chunk_vars <<- ""
     chunk_data <<- ""
     chunk_t_forest_tte <<- "# Not Calculated" 
+    chunk_row_name_wrap <<- ""
     chunk_p_forest_tte <<- "# Not Calculated"
     
     # validate your input values
@@ -236,6 +237,10 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
     
+    chunk_row_name_wrap <<- quote({
+      row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20, exdent = 6), collapse = "\n"))
+    })
+    
     chunk_p_forest_tte <<- call(
       "g_forest",
       tbl = quote(tbl),
@@ -248,6 +253,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       x_at = c(.1, 1, 10)
     )
     
+    eval(chunk_row_name_wrap)
     eval(chunk_p_forest_tte)
     #    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
   })
@@ -272,6 +278,8 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       "",
       paste("tbl <-", paste(deparse(chunk_t_forest_tte), collapse = "\n")),
       "",
+      remove_enclosing_curly_braces(deparse(chunk_row_name_wrap)),
+      "",
       remove_enclosing_curly_braces(deparse(chunk_p_forest_tte))
     ), collapse = "\n")
     
@@ -285,3 +293,4 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     
   })
 }
+
