@@ -6,8 +6,8 @@
 #' @param dataname dataset name
 #' @param arm_var parameter for seperating curves
 #' @param arm_var_choices options for \code{arm_var}
-#' @param endpoint selected endpoint from ADaM variable \code{PARAMCD}
-#' @param endpoint_choices options for \code{endpoint}
+#' @param paramcd selected endpoint from ADaM variable \code{PARAMCD}
+#' @param paramcd_choices options for \code{endpoint}
 #' @param facet_var parameter for facet plotting
 #' @param facet_var_choices options for \code{facet_var}
 #' @param strata_var parameter for stratification analysis in Cox PH model
@@ -50,7 +50,7 @@
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
 #'        arm_var_choices = c("ARM", "ARMCD"),
-#'        endpoint_choices = c("OS", "PFS"),
+#'        paramcd_choices = c("OS", "PFS"),
 #'        facet_var = "MLIVER",
 #'        facet_var_choices = c("SEX", "MLIVER"),
 #'        strata_var = "SEX",
@@ -68,8 +68,8 @@ tm_kmplot <- function(label,
                       arm_var = "ARM",
                       arm_var_choices = arm_var,
                       arm_ref_comp = NULL,
-                      endpoint = "OS",
-                      endpoint_choices = endpoint,
+                      paramcd = "OS",
+                      paramcd_choices = paramcd,
                       facet_var = NULL,
                       facet_var_choices = facet_var,
                       strata_var = NULL,
@@ -104,8 +104,8 @@ ui_kmplot <- function(id, ...) {
       helpText("Analysis Data: ", tags$code(a$dataname)),
       optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = a$arm_var_choices,
                           selected = a$arm_var, multiple = FALSE),
-      optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = a$endpoint_choices, 
-                          selected = a$endpoint, multiple = FALSE),
+      optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = a$paramcd_choices, 
+                          selected = a$paramcd, multiple = FALSE),
       optionalSelectInput(ns("strata_var"), "Stratify by", choices = a$strata_var_choices, 
                           selected = a$strata_var, multiple = TRUE,
                           label_help = helpText("currently taken from ASL")),
@@ -215,20 +215,21 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
       formula_coxph <- formula_km
       info_coxph <- "Cox Proportional Model: Unstratified Analysis"
     }
-
-    tbl_km <- kmAnnoData(formula_km = formula_km, data = ANL) 
-    tbl_cox <- coxphAnnoData(formula_coxph = formula_coxph, 
-                             data = ANL, cox_ties = "exact", info_coxph = info_coxph)
+    
+    fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
+    fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
+    
+    tbl_km <- kmAnnoData(fit_km) 
+    tbl_cox <- coxphAnnoData(fit_coxph, info_coxph = info_coxph)
     results <- try({
       if (length(facet_var) == 0){
-        kmGrob(title = "Kaplan - Meier Plot",
-               formula_km = formula_km, data = ANL) %>%
-        addTable(vp = vpPath("plotarea", "topcurve"),
+        kmGrob(title = "Kaplan - Meier Plot", fit_km = fit_km) %>%
+        addTable(vp = vpPath("plotArea", "topCurve"),
                  x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
                  y = unit(1, "npc") -  unit(1, "lines"),
                  just = c("left", "top"),
                  tbl = tbl_km) %>%
-        addTable (vp = vpPath("plotarea", "topcurve"),
+        addTable (vp = vpPath("plotArea", "topCurve"),
                     x= unit(1, "lines"), y = unit(1, "lines"),
                     just = c("left", "bottom"),
                     tbl = tbl_cox) %>%
@@ -251,23 +252,22 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
         max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.) 
         xaxis_by <- max(1, floor(max_min/10))
         
-       mapply(function(x, label){
-          km <- kmAnnoData(formula_km = formula_km, data = x) 
-          cox <- coxphAnnoData(formula_coxph = formula_coxph, 
-                                   data = x, cox_ties = "exact", info_coxph = info_coxph)
+       Map(function(x, label){
+          km <- kmAnnoData(fit_km = fit_km ) 
+          cox <- coxphAnnoData(fit_coxph = fit_coxph, info_coxph = info_coxph)
           
           kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
-                 formula_km = formula_km, data = x, xaxis_by = xaxis_by) %>%
-            addTable(vp = vpPath("plotarea", "topcurve"),
+                 fit_km = fit_km, xaxis_by = xaxis_by) %>%
+            addTable(vp = vpPath("plotArea", "topCurve"),
                      x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
                      y = unit(1, "npc") -  unit(1, "lines"),
                      just = c("left", "top"),
                      tbl = km) %>%
-            addTable (vp = vpPath("plotarea", "topcurve"),
+            addTable (vp = vpPath("plotArea", "topCurve"),
                       x= unit(1, "lines"), y = unit(1, "lines"),
                       just = c("left", "bottom"),
                       tbl = cox)
-        }, dfs, levels(lab), SIMPLIFY = FALSE) %>%
+        }, dfs, levels(lab)) %>%
         arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       }
       TRUE
