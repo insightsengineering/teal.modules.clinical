@@ -238,7 +238,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     
     
     chunk_row_name_wrap <<- quote({
-      row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20, exdent = 6), collapse = "\n"))
+      row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
     })
     
     chunk_p_forest_tte <<- call(
