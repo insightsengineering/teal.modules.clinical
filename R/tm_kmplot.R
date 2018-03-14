@@ -6,6 +6,11 @@
 #' @param dataname dataset name
 #' @param arm_var parameter for seperating curves
 #' @param arm_var_choices options for \code{arm_var}
+#' @param arm_ref_comp optional, if specified it must be a named list with each
+#'   element corresponding to an arm variable in \code{ASL} and the element must
+#'   be another list with the elements named \code{ref} and \code{comp} that the
+#'   defined the default reference and comparison arms when the arm variable is
+#'   changed.
 #' @param paramcd selected endpoint from ADaM variable \code{PARAMCD}
 #' @param paramcd_choices options for \code{endpoint}
 #' @param facet_var parameter for facet plotting
@@ -41,6 +46,16 @@
 #' 
 #' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
 #' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+#' arm_ref_comp = list(
+#'    ARM = list(
+#'       ref = "ARM A",
+#'       comp = c("ARM B", "ARM C")
+#'    ),
+#'    ARMCD = list(
+#'       ref = "ARM B",
+#'       comp = "ARM A"
+#'    )
+#' )
 #' 
 #' ## Initialize Teal
 #' x <- teal::init(
@@ -50,6 +65,7 @@
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
 #'        arm_var_choices = c("ARM", "ARMCD"),
+#'        arm_ref_comp = arm_ref_comp,
 #'        paramcd_choices = c("OS", "PFS"),
 #'        facet_var = "MLIVER",
 #'        facet_var_choices = c("SEX", "MLIVER"),
@@ -176,14 +192,15 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
       comp_arm = comp_arm
     )
     
-    ANL2 <- merge(
+    ANL_FILTERED <- ANL_FILTERED %>% filter(PARAMCD == tteout)
+    
+    ANL1 <- merge(
       ASL_FILTERED,
       ANL_FILTERED,
       all.x = TRUE, all.y = FALSE,
       by=c("USUBJID", "STUDYID")
     )
     
-    ANL1 <- ANL2 %>% filter(PARAMCD == tteout) 
     ANL <- ANL1[ANL1[[arm_var]] %in% c(comp_arm, ref_arm) , ]
     
     validate(need(nrow(ANL) > 10, "Need more than 10 observations"))
@@ -200,7 +217,7 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
       comp_arm <- paste(comp_arm, collapse = "/")
     }
     
-    ANL[[arm_var]] <- fct_relevel(ANL[[arm_var]], ref_arm)
+    ANL[[arm_var]] <- factor(ANL[[arm_var]], c(ref_arm, comp_arm))
     
     formula_km <- as.formula(
       paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
@@ -212,28 +229,23 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
       )
       info_coxph <- paste0("Cox Proportional Model: Stratified by ", paste(strata_var, collapse = ","))
     } else{
-      formula_coxph <- formula_km
+      formula_coxph <- as.formula(
+        paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
+      )
       info_coxph <- "Cox Proportional Model: Unstratified Analysis"
     }
     
-    fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
-    fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
+
     
-    tbl_km <- kmAnnoData(fit_km) 
-    tbl_cox <- coxphAnnoData(fit_coxph, info_coxph = info_coxph)
     results <- try({
       if (length(facet_var) == 0){
-        kmGrob(title = "Kaplan - Meier Plot", fit_km = fit_km) %>%
-        addTable(vp = vpPath("plotArea", "topCurve"),
-                 x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
-                 y = unit(1, "npc") -  unit(1, "lines"),
-                 just = c("left", "top"),
-                 tbl = tbl_km) %>%
-        addTable (vp = vpPath("plotArea", "topCurve"),
-                    x= unit(1, "lines"), y = unit(1, "lines"),
-                    just = c("left", "bottom"),
-                    tbl = tbl_cox) %>%
-         grid.draw()
+        
+        fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
+        fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
+        
+         g_km(fit_km = fit_km, 
+              anno_km = list(show = TRUE, fit_km = fit_km),
+              anno_coxph = list(show = TRUE, fit_coxph = fit_coxph, info_coxph = info_coxph))
       } else {
         
         facet_df <- ANL[facet_var]
@@ -250,25 +262,23 @@ srv_kmplot <- function(input, output, session, datasets, dataname, arm_ref_comp)
         
         dfs <- split(ANL, lab)
         max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.) 
-        xaxis_by <- max(1, floor(max_min/10))
+        xaxis_break <- max(1, floor(max_min/10))
         
        Map(function(x, label){
-          km <- kmAnnoData(fit_km = fit_km ) 
-          cox <- coxphAnnoData(fit_coxph = fit_coxph, info_coxph = info_coxph)
-          
-          kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
-                 fit_km = fit_km, xaxis_by = xaxis_by) %>%
-            addTable(vp = vpPath("plotArea", "topCurve"),
-                     x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
-                     y = unit(1, "npc") -  unit(1, "lines"),
-                     just = c("left", "top"),
-                     tbl = km) %>%
-            addTable (vp = vpPath("plotArea", "topCurve"),
-                      x= unit(1, "lines"), y = unit(1, "lines"),
-                      just = c("left", "bottom"),
-                      tbl = cox)
-        }, dfs, levels(lab)) %>%
-        arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
+         x[[arm_var]] <- factor(x[[arm_var]])
+         fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+         fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+         
+           if (nrow(x) < 5){
+             textGrob(paste0("Less than 5 patients in ", label, "group"))
+           } else {
+             g_km(fit_km = fit_km, title = paste0("Kaplan - Meier Plot for: ", label), xaxis_break = xaxis_break,
+                  anno_km = list(show = TRUE, fit_km = fit_km),
+                  anno_coxph = list(show = TRUE, fit_coxph = fit_coxph, info_coxph = info_coxph),
+                  draw = FALSE)
+           }
+ 
+        }, dfs, levels(lab)) %>% grobDraw()
       }
       TRUE
     })
