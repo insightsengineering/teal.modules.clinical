@@ -147,7 +147,7 @@ ui_kmplot <- function(id, ...) {
 }
 
 
-srv_kmplot2 <- function(input, output, session, datasets, 
+srv_kmplot <- function(input, output, session, datasets, 
                         dataname, arm_ref_comp, code_data_processing) {
   
   arm_ref_comp_observer(
