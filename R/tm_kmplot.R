@@ -171,17 +171,19 @@ srv_kmplot <- function(input, output, session, datasets,
     
     paramcd <- input$paramcd
     arm_var <- input$arm_var
-    facet_var <- input$facet_var
+    facet_var <<- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     
-    if (length(facet_var) == 0) facet_var <- NULL
+    if (length(facet_var) == 0) facet_var <<- NULL
     if (length(strata_var) == 0) strata_var <- NULL
     
     chunk_vars <<- ""
     chunk_data <<- ""
+    chunk_formula <<- ""
+    chunk_facet <<- ""
     chunk_t_kmplot <<- "# No Calculated"
     
     validate_standard_inputs(
@@ -200,8 +202,6 @@ srv_kmplot <- function(input, output, session, datasets,
     assign(anl_name, ANL_FILTERED)
     
     chunk_vars <<- bquote({
-      paramcd <- .(paramcd)
-      arm_var <- .(arm_var)
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
@@ -210,8 +210,8 @@ srv_kmplot <- function(input, output, session, datasets,
     })
     
     chunk_data <<- bquote({
-      ASL_p <- subset(ASL_FILTERED, ASL_FILTERED[[ arm_var ]] %in% c(ref_arm, comp_arm))
-      ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% paramcd)
+      ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+      ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
       
       ANL <- merge(ASL_p, ANL_p,
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
@@ -224,78 +224,58 @@ srv_kmplot <- function(input, output, session, datasets,
       }
       
       ANL[[.(arm_var)]] <- droplevels(ARM)
-      
-      formula_km <- as.formula(
-        paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
-      )
-      
-      if (!is.null(strata_var)){
-        formula_coxph <- as.formula(
-          paste0("Surv(AVAL, 1-CNSR) ~", arm_var ,  "+ strata(", paste(strata_var, collapse = ","), ")")
-        )
-        info_coxph <- paste0("Cox Proportional Model: Stratified by ", paste(strata_var, collapse = ","))
-      }
-      
-      if (is.null(strata_var)){
-        formula_coxph <- as.formula(
-          paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
-        )
-        info_coxph <- "Cox Proportional Model: Unstratified Analysis"
-      }
-      
-      
-      if (is.null(facet_var)){
-        
-        fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
-        fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
-      }
-      
-      if (!is.null(facet_var)){
-        facet_df <- ANL[facet_var]
-        
-        n_unique <- sum(!duplicated(facet_df))
-        
-        lab <- Map(function(var, x) paste0(var, "= '", x,"'"), facet_var, facet_df) %>%
-          unname() %>%
-          Reduce(function(x, y) paste(x, y, sep = ", "), .) %>%
-          unlist() %>%
-          factor()
-        dfs <- split(ANL, lab)
-        max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.)
-        xaxis_break <- max(1, floor(max_min/10))
-        
-      }
-      
     })
     
     eval(chunk_data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
-    if (is.null(facet_var)){
-      fit_km <- eval(fit_km)
-      fit_coxph <- eval(fit_coxph)
-      info_coxph <- eval(info_coxph)
-      
-      chunk_t_kmplot <<- call(
-        name = "g_km",
-        fit_km =  quote(fit_km),
-        anno_km_show = TRUE,
-        anno_coxph_show = TRUE,
-        anno_coxph_fit = quote(fit_coxph),
-        anno_coxph_info = quote(info_coxph)  
+    chunk_formula <<- bquote({
+      formula_km <- as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
+      formula_coxph <- as.formula(
+        paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var), 
+               ifelse(is.null(strata_var), "", paste0("+ strata(", paste(.(strata_var), collapse = ","), ")")))
       )
+      info_coxph <- paste0("Cox Proportional Model: ", 
+                           ifelse(is.null(strata_var), "Unstratified Analysis", paste(.(strata_var), collapse = ",")))
+      
+    })
+    
+    eval(chunk_formula)
+    
+    if (is.null(facet_var)){
+
+      chunk_t_kmplot <<- bquote({
+        g_km(fit_km = survfit(formula_km, data = ANL, conf.type = "plain"), 
+             anno_km_show = TRUE,
+             anno_coxph_show = TRUE,
+             anno_coxph_fit = coxph(formula_coxph, data = ANL, ties = "exact"),
+             anno_coxph_info = info_coxph)
+      })
     }
     
     if (!is.null(facet_var)){
-      lab <- eval(lab)
-      dfs <- eval(dfs)
-      xaxis_break <- eval(xaxis_break)
+      
+      chunk_facet <<- bquote({
+        facet_df <- ANL[.(facet_var)] 
+        
+        lab <- Map(function(var, x) paste0(var, "= '", x, "'"), 
+                   .(facet_var), facet_df) %>% unname() %>% Reduce(function(x, 
+                                                                            y) paste(x, y, sep = ", "), .) %>% unlist() %>% factor()
+        dfs <- split(ANL, lab)
+        max_min <- sapply(dfs, function(x) {
+          max(x[["AVAL"]], na.rm = TRUE)
+        }) %>% min(.)
+        xaxis_break <- max(1, floor(max_min/10))
+      })
+      
+      eval(chunk_facet)
       
       chunk_t_kmplot <<- bquote({
         Map(function(x, label){
-          x[[arm_var]] <- factor(x[[arm_var]])
+          x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
           fit_km <- survfit(formula_km, data = x, conf.type = "plain")
           fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+          
           if (nrow(x) < 5){
             textGrob(paste0("Less than 5 patients in ", label, "group"))
           } else {
@@ -303,12 +283,11 @@ srv_kmplot <- function(input, output, session, datasets,
                  anno_km_show = TRUE,
                  anno_coxph_show = TRUE,
                  anno_coxph_fit = fit_coxph,
-                 anno_coxph_info = info_coxph,  
+                 anno_coxph_info = info_coxph,
                  draw = FALSE)
           }
         }, dfs, levels(lab)) %>% arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       })
-      
       
     }
     
@@ -333,7 +312,11 @@ srv_kmplot <- function(input, output, session, datasets,
       "",
       remove_enclosing_curly_braces(deparse(chunk_data)),
       "",
-      if (is.null(facet_var)) deparse(chunk_t_kmplot) else remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
+      remove_enclosing_curly_braces(deparse(chunk_formula)),
+      "",
+      if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
     ), collapse = "\n")
     
     # .log("show R code")
