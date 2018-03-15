@@ -150,6 +150,7 @@ ui_kmplot <- function(id, ...) {
 srv_kmplot <- function(input, output, session, datasets, 
                         dataname, arm_ref_comp, code_data_processing) {
   
+  
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
@@ -182,7 +183,6 @@ srv_kmplot <- function(input, output, session, datasets,
     
     chunk_vars <<- ""
     chunk_data <<- ""
-    chunk_formula <<- ""
     chunk_facet <<- ""
     chunk_t_kmplot <<- "# No Calculated"
     
@@ -229,21 +229,26 @@ srv_kmplot <- function(input, output, session, datasets,
     eval(chunk_data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
-    chunk_formula <<- bquote({
-      formula_km <- as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
-      formula_coxph <- as.formula(
+    formula_km <<- eval(bquote({
+      as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
+    }))
+    
+    formula_coxph <<- eval(bquote({
+      as.formula(
         paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var), 
                ifelse(is.null(strata_var), "", paste0("+ strata(", paste(.(strata_var), collapse = ","), ")")))
       )
-      info_coxph <- paste0("Cox Proportional Model: ", 
-                           ifelse(is.null(strata_var), "Unstratified Analysis", paste(.(strata_var), collapse = ",")))
-      
-    })
+    }))
     
-    eval(chunk_formula)
+    info_coxph <<- eval(bquote({
+      paste0("Cox Proportional Model: ", 
+             ifelse(is.null(strata_var), "Unstratified Analysis", paste0("Stratified by ", paste(.(strata_var), collapse = ","))))
+      
+    }))
+    
     
     if (is.null(facet_var)){
-
+      
       chunk_t_kmplot <<- bquote({
         g_km(fit_km = survfit(formula_km, data = ANL, conf.type = "plain"), 
              anno_km_show = TRUE,
@@ -312,7 +317,11 @@ srv_kmplot <- function(input, output, session, datasets,
       "",
       remove_enclosing_curly_braces(deparse(chunk_data)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_formula)),
+      paste0("formula_km ~ ", deparse(formula_km)),
+      "",
+      paste0("formula_coxph ~ ", deparse(formula_coxph)),
+      "",
+      paste0("info_coxph ~ ", deparse(info_coxph)),
       "",
       if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
       "",
