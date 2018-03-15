@@ -306,7 +306,7 @@ srv_kmplot2 <- function(input, output, session, datasets,
                  anno_coxph_info = info_coxph,  
                  draw = FALSE)
           }
-        }, dfs, levels(lab)) %>% grobDraw()
+        }, dfs, levels(lab)) %>% arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
       })
       
       
