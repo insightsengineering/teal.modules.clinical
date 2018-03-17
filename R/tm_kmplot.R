@@ -259,6 +259,7 @@ srv_kmplot <- function(input, output, session, datasets,
                                just = c("left", "bottom"),
                              gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
                              vp = vpPath("plotArea", "topCurve"))
+        grid.newpage()
         g_km(fit_km = fit_km, col = NULL, draw = FALSE) %>%
           addTable(., tbl_km,
                    x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
@@ -288,6 +289,7 @@ srv_kmplot <- function(input, output, session, datasets,
       eval(chunk_facet)
       
       chunk_t_kmplot <<- bquote({
+        grid.newpage()
         Map(function(x, label){
           x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
           fit_km <- survfit(formula_km, data = x, conf.type = "plain")
@@ -345,6 +347,7 @@ srv_kmplot <- function(input, output, session, datasets,
       if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
       "",
       remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
+       
     ), collapse = "\n")
     
     # .log("show R code")
