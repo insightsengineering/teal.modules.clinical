@@ -4,15 +4,22 @@
 #' 
 #' @param label unique name for tabpanel
 #' @param dataname dataset name
-#' @param treatment_var parameter for seperating curves
-#' @param treatment_var_choices options for \code{treatment_var}
-#' @param endpoint selected endpoint from ADaM variable \code{PARAMCD}
-#' @param endpoint_choices options for \code{endpoint}
+#' @param arm_var parameter for seperating curves
+#' @param arm_var_choices options for \code{arm_var}
+#' @param arm_ref_comp optional, if specified it must be a named list with each
+#'   element corresponding to an arm variable in \code{ASL} and the element must
+#'   be another list with the elements named \code{ref} and \code{comp} that the
+#'   defined the default reference and comparison arms when the arm variable is
+#'   changed.
+#' @param paramcd selected endpoint from ADaM variable \code{PARAMCD}
+#' @param paramcd_choices options for \code{endpoint}
 #' @param facet_var parameter for facet plotting
 #' @param facet_var_choices options for \code{facet_var}
 #' @param strata_var parameter for stratification analysis in Cox PH model
 #' @param strata_var_choices options for \code{strata_var}
 #' @param plot_height plot height specification
+#' @param code_data_processing string with data preprocessing before the teal
+#'   app is initialized
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom gridExtra arrangeGrob
@@ -41,6 +48,16 @@
 #' 
 #' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
 #' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+#' arm_ref_comp = list(
+#'    ARM = list(
+#'       ref = "ARM A",
+#'       comp = c("ARM B", "ARM C")
+#'    ),
+#'    ARMCD = list(
+#'       ref = "ARM B",
+#'       comp = "ARM A"
+#'    )
+#' )
 #' 
 #' ## Initialize Teal
 #' x <- teal::init(
@@ -49,8 +66,9 @@
 #'     tm_kmplot(
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
-#'        treatment_var_choices = c("ARM", "ARMCD"),
-#'        endpoint_choices = c("OS", "PFS"),
+#'        arm_var_choices = c("ARM", "ARMCD"),
+#'        arm_ref_comp = arm_ref_comp,
+#'        paramcd_choices = c("OS", "PFS"),
 #'        facet_var = "MLIVER",
 #'        facet_var_choices = c("SEX", "MLIVER"),
 #'        strata_var = "SEX",
@@ -64,18 +82,20 @@
 #' }
 
 tm_kmplot <- function(label,
-                      dataname,
-                      treatment_var = "ARM",
-                      treatment_var_choices = treatment_var,
-                      endpoint = "OS",
-                      endpoint_choices = endpoint,
-                      facet_var = NULL,
-                      facet_var_choices = facet_var,
-                      strata_var = NULL,
-                      strata_var_choices = strata_var,
-                      plot_height = c(1200, 400, 5000),
-                      pre_output = helpText("x-axes for different factes may not have the same scale"),
-                      post_output = NULL
+                       dataname,
+                       arm_var = "ARM",
+                       arm_var_choices = arm_var,
+                       arm_ref_comp = NULL,
+                       paramcd = "OS",
+                       paramcd_choices = paramcd,
+                       facet_var = NULL,
+                       facet_var_choices = facet_var,
+                       strata_var = NULL,
+                       strata_var_choices = strata_var,
+                       plot_height = c(1200, 400, 5000),
+                       pre_output = helpText("x-axes for different factes may not have the same scale"),
+                       post_output = NULL,
+                       code_data_processing = NULL
 ){
   
   args <- as.list(environment())
@@ -84,63 +104,60 @@ tm_kmplot <- function(label,
     label = label,
     filters = dataname,
     server = srv_kmplot,
-    server_args = list(dataname = dataname),
+    server_args = list(dataname = dataname,
+                       arm_ref_comp = arm_ref_comp,
+                       code_data_processing = code_data_processing),
     ui = ui_kmplot,
     ui_args = args
   )
 }
 
-ui_kmplot <- function(
-  id, 
-  label,
-  dataname,
-  treatment_var = "ARM",
-  treatment_var_choices = treatment_var,
-  endpoint = "OS",
-  endpoint_choices = endpoint,
-  strata_var = NULL,
-  strata_var_choices = strata_var,
-  facet_var = NULL,
-  facet_var_choices = facet_var,
-  plot_height = c(700, 400, 3000),
-  pre_output = NULL,
-  post_output = NULL
-  ) {
+ui_kmplot <- function(id, ...) {
   
+  a <- list(...)
   ns <- NS(id)
   
   standard_layout(
     output = uiOutput(ns("plot_ui")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis Data: ", tags$code(dataname)),
-      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = treatment_var_choices,
-                          selected = treatment_var, multiple = FALSE),
-      optionalSelectInput(ns("tteout"), "Time to Event (Endpoint)", choices = endpoint_choices, 
-                          selected = endpoint, multiple = FALSE),
-      optionalSelectInput(ns("strata_var"), "Stratify by", choices = strata_var_choices, 
-                          selected = strata_var, multiple = TRUE,
+      helpText("Analysis Data: ", tags$code(a$dataname)),
+      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = a$arm_var_choices,
+                          selected = a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("paramcd"), "Time to Event (Endpoint)", choices = a$paramcd_choices, 
+                          selected = a$paramcd, multiple = FALSE),
+      optionalSelectInput(ns("strata_var"), "Stratify by", choices = a$strata_var_choices, 
+                          selected = a$strata_var, multiple = TRUE,
                           label_help = helpText("currently taken from ASL")),
-      optionalSelectInput(ns("facetby"), "Facet Plots by:", choices = facet_var_choices, 
-                          selected = facet_var, multiple = TRUE,
+      optionalSelectInput(ns("facet_var"), "Facet Plots by:", choices = a$facet_var_choices, 
+                          selected = a$facet_var, multiple = TRUE,
                           label_help = helpText("currently taken from ASL" )),
       selectInput(ns("ref_arm"), "Reference Arm", choices = NULL, 
                   selected = NULL, multiple = TRUE),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("combine_arm"), "Combine all comparison groups?", value = FALSE),
+      checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
-      optionalSliderInputValMinMax(ns("plot_height"), "plot height", plot_height, ticks = FALSE)
+      optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
-    pre_output = pre_output,
-    post_output = post_output
+    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
 
-srv_kmplot <- function(input, output, session, datasets, dataname) {
+srv_kmplot <- function(input, output, session, datasets, 
+                        dataname, arm_ref_comp, code_data_processing) {
   
   
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
+    ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_kmplot"
+  )
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
@@ -148,149 +165,198 @@ srv_kmplot <- function(input, output, session, datasets, dataname) {
     plotOutput(session$ns("kmplot"), height=plot_height)
   })
   
-  ATE_FILTERED <- reactive({
-    ATE_F <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    validate(need(ATE_F, paste0("Need ", dataname,  "data")))
-    ATE_F
-  })
-  ASL_FILTERED <- reactive({
-    ASL_F <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
-    validate(need(ASL_F, "Need ASL data"))
-    ASL_F
-  })
-  
-  observe({
-    ASL <- datasets$get_data("ASL", filtered = FALSE, reactive = TRUE)
-    
-    chs <- sapply(ASL, unique, simplify = FALSE, USE.NAMES = TRUE)
-    
-    updateSelectInput(session,  "ref_arm" , choices = chs[input$arm_var],
-                      selected = chs[[input$arm_var]][1])
-    updateSelectInput(session, "comp_arm", choices = chs[input$arm_var],
-                      selected = chs[[input$arm_var]][-1])
-    
-  })
-  
   
   output$kmplot <- renderPlot({
-    ATE_FILTERED <- ATE_FILTERED()
-    ASL_FILTERED <- ASL_FILTERED()
-    tteout <- input$tteout
+    ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    
+    paramcd <- input$paramcd
     arm_var <- input$arm_var
-    facetby <- input$facetby
+    facet_var <<- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
-    combine_arm <- input$combine_arm
-
-
-    validate(need(!is.null(comp_arm), "select at least one comparison arm"))
-    validate(need(!is.null(ref_arm), "select at least one reference arm"))
-    validate(need(length(intersect(ref_arm, comp_arm)) == 0,
-                  "reference and treatment group cannot overlap"))
-    validate(need(arm_var %in% names(ASL_FILTERED), "arm_var is not in ASL"))
-    validate(need(is.null(facetby)  || facetby %in% names(ASL_FILTERED), "facet by not correct"))
-    validate(need(ref_arm %in% ASL_FILTERED[[arm_var]], "reference arm does not exist in left over ARM values"))
-
+    combine_comp_arms <- input$combine_comp_arms
     
-    ANL2 <- merge(
-      ASL_FILTERED,
-      ATE_FILTERED,
-      all.x = TRUE, all.y = FALSE,
-      by=c("USUBJID", "STUDYID")
+    if (length(facet_var) == 0) facet_var <<- NULL
+    if (length(strata_var) == 0) strata_var <- NULL
+    
+    chunk_vars <<- ""
+    chunk_data <<- ""
+    chunk_facet <<- ""
+    chunk_t_kmplot <<- "# No Calculated"
+    
+    validate_standard_inputs(
+      ASL = ASL_FILTERED,
+      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
+      ANL = ANL_FILTERED,
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR"),
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm
     )
     
-    ANL1 <- ANL2 %>% filter(PARAMCD == tteout) 
-    ANL <- ANL1[ANL1[[arm_var]] %in% c(comp_arm, ref_arm) , ]
+    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
     
-    validate(need(nrow(ANL) > 10, "Need more than 10 observations"))
-   
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, ANL_FILTERED)
     
-    if (length(ref_arm)>1) {
-      new_ref_arm <- paste(ref_arm, collapse = "/")
-      ANL[[arm_var]] <- do.call(fct_collapse, setNames(list(ANL[[arm_var]], ref_arm), c("f", new_ref_arm)))
-      ref_arm <- new_ref_arm
-    }
-    
-    if (combine_arm) {
-      ANL[[arm_var]] <- do.call(fct_collapse, setNames(list(ANL[[arm_var]], comp_arm), c("f", paste(comp_arm, collapse = "/"))))
-    }
-    
-    ANL[[arm_var]] <- fct_relevel(ANL[[arm_var]], ref_arm)
-    
-    formula_km <- as.formula(
-      paste0("Surv(AVAL, 1-CNSR) ~", arm_var)
-    )
-    
-    if (length(strata_var) != 0){
-      formula_coxph <- as.formula(
-        paste0("Surv(AVAL, 1-CNSR) ~", arm_var ,  "+ strata(", paste(strata_var, collapse = ","), ")")
-      )
-      info_coxph <- paste0("Cox Proportional Model: Stratified by ", paste(strata_var, collapse = ","))
-    } else{
-      formula_coxph <- formula_km
-      info_coxph <- "Cox Proportional Model: Unstratified Analysis"
-    }
-
-    tbl_km <- kmAnnoData(formula_km = formula_km, data = ANL) 
-    tbl_cox <- coxphAnnoData(formula_coxph = formula_coxph, 
-                             data = ANL, cox_ties = "exact", info_coxph = info_coxph)
-    results <- try({
-      if (length(facetby) == 0){
-        kmGrob(title = "Kaplan - Meier Plot",
-               formula_km = formula_km, data = ANL) %>%
-        addTable(vp = vpPath("plotarea", "topcurve"),
-                 x = unit(1, "npc") - stringWidth(tbl_km) - unit(1, "lines"),
-                 y = unit(1, "npc") -  unit(1, "lines"),
-                 just = c("left", "top"),
-                 tbl = tbl_km) %>%
-        addTable (vp = vpPath("plotarea", "topcurve"),
-                    x= unit(1, "lines"), y = unit(1, "lines"),
-                    just = c("left", "bottom"),
-                    tbl = tbl_cox) %>%
-         grid.draw()
-      } else {
-        
-        facet_df <- ANL[facetby]
-        
-        n_unique <- sum(!duplicated(facet_df))
-        
-        lab <- Map(function(var, x) paste0(var, "= '", x,"'"), facetby, facet_df) %>%
-          unname() %>%
-          Reduce(function(x, y) paste(x, y, sep = ", "), .) %>%
-          unlist() %>%
-          factor()
-        
-        if (length(unique(lab)) != n_unique) stop("algorithm error")  
-        
-        dfs <- split(ANL, lab)
-        max_min <- sapply(dfs, function(x){ max(x[["AVAL"]], na.rm = TRUE)}) %>% min(.) 
-        xaxis_by <- max(1, floor(max_min/10))
-        
-       mapply(function(x, label){
-          km <- kmAnnoData(formula_km = formula_km, data = x) 
-          cox <- coxphAnnoData(formula_coxph = formula_coxph, 
-                                   data = x, cox_ties = "exact", info_coxph = info_coxph)
-          
-          kmGrob(title = paste0("Kaplan - Meier Plot for: ", label),
-                 formula_km = formula_km, data = x, xaxis_by = xaxis_by) %>%
-            addTable(vp = vpPath("plotarea", "topcurve"),
-                     x = unit(1, "npc") - stringWidth(km) - unit(1, "lines"),
-                     y = unit(1, "npc") -  unit(1, "lines"),
-                     just = c("left", "top"),
-                     tbl = km) %>%
-            addTable (vp = vpPath("plotarea", "topcurve"),
-                      x= unit(1, "lines"), y = unit(1, "lines"),
-                      just = c("left", "bottom"),
-                      tbl = cox)
-        }, dfs, levels(lab), SIMPLIFY = FALSE) %>%
-        arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
-      }
-      TRUE
+    chunk_vars <<- bquote({
+      ref_arm <- .(ref_arm)
+      comp_arm <- .(comp_arm)
+      strata_var <- .(strata_var)
+      facet_var <- .(facet_var)
+      combine_comp_arms <- .(combine_comp_arms)
     })
     
-    if (is(results, "try-error")) validate(need(FALSE, paste0("Could not calculate kmplots\n\n", results)))
+    chunk_data <<- bquote({
+      ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+      ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
+      
+      ANL <- merge(ASL_p, ANL_p,
+                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      
+      ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
+      
+      ARM <- combine_levels(ARM, ref_arm)
+      if (combine_comp_arms) {
+        ARM <- combine_levels(ARM, comp_arm)
+      }
+      
+      ANL[[.(arm_var)]] <- droplevels(ARM)
+    })
     
+    eval(chunk_data)
+    validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    
+    formula_km <<- eval(bquote({
+      as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
+    }))
+    
+    formula_coxph <<- eval(bquote({
+      as.formula(
+        paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var), 
+               ifelse(is.null(strata_var), "", paste0("+ strata(", paste(.(strata_var), collapse = ","), ")")))
+      )
+    }))
+    
+    info_coxph <<- eval(bquote({
+      paste0("Cox Proportional Model: ", 
+             ifelse(is.null(strata_var), "Unstratified Analysis", paste0("Stratified by ", paste(.(strata_var), collapse = ","))))
+      
+    }))
+    
+    
+    if (is.null(facet_var)){
+      
+      chunk_t_kmplot <<- bquote({
+        fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
+        fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
+        tbl_km <- t_km(fit_km)
+        tbl_coxph <- t_coxph(fit_coxph)
+        text_coxph <- toString(tbl_coxph, gap = 1) %>% paste0(info_coxph, "\n", .)
+        coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
+                               just = c("left", "bottom"),
+                             gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                             vp = vpPath("plotArea", "topCurve"))
+        grid.newpage()
+        g_km(fit_km = fit_km, col = NULL, draw = FALSE) %>%
+          addTable(., tbl_km,
+                   x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                   y = unit(1, "npc") -  unit(1, "lines"),
+                   just = c("left", "top")) %>%
+          addGrob(., coxph_grob) %>% grid.draw()
+        
+      })
+    }
+    
+    if (!is.null(facet_var)){
+      
+      chunk_facet <<- bquote({
+        facet_df <- ANL[.(facet_var)] 
+        
+        lab <- Map(function(var, x) paste0(var, "= '", x, "'"), 
+                   .(facet_var), facet_df) %>% unname() %>% 
+                Reduce(function(x, y) paste(x, y, sep = ", "), .) %>% 
+                unlist() %>% factor()
+        dfs <- split(ANL, lab)
+        max_min <- sapply(dfs, function(x) {
+          max(x[["AVAL"]], na.rm = TRUE)
+        }) %>% min(.)
+        xticks <- max(1, floor(max_min/10))
+      })
+      
+      eval(chunk_facet)
+      
+      chunk_t_kmplot <<- bquote({
+        grid.newpage()
+        Map(function(x, label){
+          x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
+          fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+          fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+          tbl_km <- t_km(fit_km)
+          tbl_coxph <- t_coxph(fit_coxph)
+          text_coxph <- toString(tbl_coxph, gap = 1) %>% paste0(info_coxph, "\n", .)
+          coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
+                                 just = c("left", "bottom"),
+                                 gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                                 vp = vpPath("plotArea", "topCurve"))
+          if (nrow(x) < 5){
+            textGrob(paste0("Less than 5 patients in ", label, "group"))
+          } else {
+            g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
+                 xticks = xticks, draw = FALSE)  %>%
+              addTable(., tbl_km,
+                       x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                       y = unit(1, "npc") -  unit(1, "lines"),
+                       just = c("left", "top")) %>%
+              addGrob(., coxph_grob)
+          }
+        }, dfs, levels(lab)) %>% arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
+      })
+      
+    }
+    
+    eval(chunk_t_kmplot)
+    
+  })
+  
+  observeEvent(input$show_rcode, {
+    
+    header <- get_rcode_header(
+      title = "Kaplan Meier Plot",
+      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datasets = datasets,
+      code_data_processing
+    )
+    
+    str_rcode <- paste(c(
+      "",
+      header,
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_data)),
+      "",
+      paste0("formula_km <- ", deparse(formula_km)),
+      "",
+      paste0("formula_coxph  <- ", deparse(formula_coxph)),
+      "",
+      paste0("info_coxph <- ", deparse(info_coxph)),
+      "",
+      if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
+      "",
+      remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
+       
+    ), collapse = "\n")
+    
+    # .log("show R code")
+    showModal(modalDialog(
+      title = "R Code for the Current Kaplan Meier Plot",
+      tags$pre(tags$code(class="R", str_rcode)),
+      easyClose = TRUE,
+      size = "l"
+    ))
   })
 }
 

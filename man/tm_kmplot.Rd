@@ -4,26 +4,31 @@
 \alias{tm_kmplot}
 \title{teal module for Kaplan-Meier Plot from grid}
 \usage{
-tm_kmplot(label, dataname, treatment_var = "ARM",
-  treatment_var_choices = treatment_var, endpoint = "OS",
-  endpoint_choices = endpoint, facet_var = NULL,
-  facet_var_choices = facet_var, strata_var = NULL,
+tm_kmplot(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
+  arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
+  facet_var = NULL, facet_var_choices = facet_var, strata_var = NULL,
   strata_var_choices = strata_var, plot_height = c(1200, 400, 5000),
   pre_output = helpText("x-axes for different factes may not have the same scale"),
-  post_output = NULL)
+  post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
 \item{label}{unique name for tabpanel}
 
 \item{dataname}{dataset name}
 
-\item{treatment_var}{parameter for seperating curves}
+\item{arm_var}{parameter for seperating curves}
 
-\item{treatment_var_choices}{options for \code{treatment_var}}
+\item{arm_var_choices}{options for \code{arm_var}}
 
-\item{endpoint}{selected endpoint from ADaM variable \code{PARAMCD}}
+\item{arm_ref_comp}{optional, if specified it must be a named list with each
+element corresponding to an arm variable in \code{ASL} and the element must
+be another list with the elements named \code{ref} and \code{comp} that the
+defined the default reference and comparison arms when the arm variable is
+changed.}
 
-\item{endpoint_choices}{options for \code{endpoint}}
+\item{paramcd}{selected endpoint from ADaM variable \code{PARAMCD}}
+
+\item{paramcd_choices}{options for \code{endpoint}}
 
 \item{facet_var}{parameter for facet plotting}
 
@@ -34,6 +39,9 @@ tm_kmplot(label, dataname, treatment_var = "ARM",
 \item{strata_var_choices}{options for \code{strata_var}}
 
 \item{plot_height}{plot height specification}
+
+\item{code_data_processing}{string with data preprocessing before the teal
+app is initialized}
 }
 \description{
 This is teal module produces a grid style KM plot for data with ADaM structure
@@ -57,6 +65,16 @@ ATE <- radam('ATE', ADSL = ASL)
 
 attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
 attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
+arm_ref_comp = list(
+   ARM = list(
+      ref = "ARM A",
+      comp = c("ARM B", "ARM C")
+   ),
+   ARMCD = list(
+      ref = "ARM B",
+      comp = "ARM A"
+   )
+)
 
 ## Initialize Teal
 x <- teal::init(
@@ -65,8 +83,9 @@ x <- teal::init(
     tm_kmplot(
        label = "KM PLOT",
        dataname = 'ATE',
-       treatment_var_choices = c("ARM", "ARMCD"),
-       endpoint_choices = c("OS", "PFS"),
+       arm_var_choices = c("ARM", "ARMCD"),
+       arm_ref_comp = arm_ref_comp,
+       paramcd_choices = c("OS", "PFS"),
        facet_var = "MLIVER",
        facet_var_choices = c("SEX", "MLIVER"),
        strata_var = "SEX",
