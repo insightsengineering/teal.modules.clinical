@@ -254,18 +254,19 @@ srv_kmplot <- function(input, output, session, datasets,
         fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
         tbl_km <- t_km(fit_km)
         tbl_coxph <- t_coxph(fit_coxph)
-        text_coxph <- toString(tbl_coxph, gap = 1) %>% paste0(info_coxph, "\n", .)
+        text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
         coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                just = c("left", "bottom"),
                              gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
                              vp = vpPath("plotArea", "topCurve"))
         grid.newpage()
-        g_km(fit_km = fit_km, col = NULL, draw = FALSE) %>%
-          addTable(., tbl_km,
+        p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE)  
+        p <-  addTable(p, tbl_km,
                    x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                    y = unit(1, "npc") -  unit(1, "lines"),
-                   just = c("left", "top")) %>%
-          addGrob(., coxph_grob) %>% grid.draw()
+                   just = c("left", "top"))  
+        p <- addGrob(p, coxph_grob) 
+        grid.draw(p)
         
       })
     }
@@ -276,13 +277,13 @@ srv_kmplot <- function(input, output, session, datasets,
         facet_df <- ANL[.(facet_var)] 
         
         lab <- Map(function(var, x) paste0(var, "= '", x, "'"), 
-                   .(facet_var), facet_df) %>% unname() %>% 
-                Reduce(function(x, y) paste(x, y, sep = ", "), .) %>% 
-                unlist() %>% factor()
+                   .(facet_var), facet_df)
+        lab <-  Reduce(function(x, y) paste(x, y, sep = ", "), unname(lab)) 
+        lab <- factor(unlist(lab))
         dfs <- split(ANL, lab)
-        max_min <- sapply(dfs, function(x) {
+        max_min <-  min(sapply(dfs, function(x) {
           max(x[["AVAL"]], na.rm = TRUE)
-        }) %>% min(.)
+        }))
         xticks <- max(1, floor(max_min/10))
       })
       
@@ -290,29 +291,30 @@ srv_kmplot <- function(input, output, session, datasets,
       
       chunk_t_kmplot <<- bquote({
         grid.newpage()
-        Map(function(x, label){
-          x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-          fit_km <- survfit(formula_km, data = x, conf.type = "plain")
-          fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-          tbl_km <- t_km(fit_km)
-          tbl_coxph <- t_coxph(fit_coxph)
-          text_coxph <- toString(tbl_coxph, gap = 1) %>% paste0(info_coxph, "\n", .)
-          coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
-                                 just = c("left", "bottom"),
-                                 gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
-                                 vp = vpPath("plotArea", "topCurve"))
-          if (nrow(x) < 5){
-            textGrob(paste0("Less than 5 patients in ", label, "group"))
-          } else {
-            g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
-                 xticks = xticks, draw = FALSE)  %>%
-              addTable(., tbl_km,
-                       x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                       y = unit(1, "npc") -  unit(1, "lines"),
-                       just = c("left", "top")) %>%
-              addGrob(., coxph_grob)
-          }
-        }, dfs, levels(lab)) %>% arrangeGrob(grobs = ., ncol = 1) %>% grid.draw()
+       pl <-  Map(function(x, label){
+              x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
+              fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+              fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+              tbl_km <- t_km(fit_km)
+              tbl_coxph <- t_coxph(fit_coxph)
+              text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+              coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
+                                     just = c("left", "bottom"),
+                                     gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                                     vp = vpPath("plotArea", "topCurve"))
+              if (nrow(x) < 5){
+                  textGrob(paste0("Less than 5 patients in ", label, "group"))
+              } else {
+                  p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
+                            xticks = xticks, draw = FALSE)  
+                  p <-  addTable(p, tbl_km,
+                                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                                 y = unit(1, "npc") -  unit(1, "lines"),
+                                 just = c("left", "top"))  
+                  p <- addGrob(p, coxph_grob)
+             }
+            }, dfs, levels(lab))
+        grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1) )
       })
       
     }
