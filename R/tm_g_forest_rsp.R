@@ -1,6 +1,8 @@
 
 #' Forest Response Plot teal module
 #' 
+#' This is teal module produces a grid style Forest plot for response data with ADaM structure
+#' 
 #' @param label a character string displayed as module label 
 #' @param dataname The name of the analysis dataset, the data requires the
 #'   variables \code{USUBJID}, \code{STUDYID}, \code{AVALC} (response category),
@@ -215,6 +217,8 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       ARM <- combine_levels(ARM, comp_arm)
       
       ANL[[.(arm_var)]] <- droplevels(ARM)
+      
+      levels(ANL[[.(arm_var)]]) <- sapply(levels(ANL[[.(arm_var)]]), function(x) paste(strwrap(x, width = 15), collapse = "\n"))
     })
     
     eval(chunk_data)
