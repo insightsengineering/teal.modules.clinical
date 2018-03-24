@@ -55,7 +55,7 @@
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
-#'     tm_kmplot(
+#'     tm_g_km(
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
 #'        arm_var_choices = c("ARM", "ARMCD"),

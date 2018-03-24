@@ -3,10 +3,17 @@
 
 #' Cross table based on rtables
 #' 
+#' @inheritParams tm_t_tte
+#' @param x_var variable name selected variable when shiny app starts
+#' @param x_var_choices vector with variable names available as choices
+#' @param y_var variable name selected variable when shiny app starts
+#' @param y_var_choices vector with variable names available as choices
+#' 
 #' @export
 #' 
+#' @template author_waddella
 #' 
-#' @examples 
+#' @examples
 #' 
 #' \dontrun{
 #' ASL <- data.frame(
@@ -20,17 +27,16 @@
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
-#'     tm_percentage_cross_table("Cross Table", x_var = "x", y_var = "y")
+#'     tm_t_percentage_cross_table("Cross Table", x_var = "x", y_var = "y")
 #'   )
 #' )
 #' 
 #' shinyApp(x$ui, x$server)
-#'
-#' 
-#' 
 #' }
-tm_percentage_cross_table <- function(
+#' 
+tm_t_percentage_cross_table <- function(
   label = "Cross Table",
+  dataname,
   x_var,
   x_var_choices = x_var,
   y_var,
@@ -44,45 +50,43 @@ tm_percentage_cross_table <- function(
     server = srv_percentage_cross_table,
     ui = ui_percentage_cross_table,
     ui_args = args,
-    filters = "ASL"
+    server_args = list(dataname = dataname),
+    filters = dataname
   )
   
 }
 
 
-ui_percentage_cross_table <- function(id,
-                                      label = "Cross Table",
-                                      x_var,
-                                      x_var_choices,
-                                      y_var,
-                                      y_var_choices) {
+ui_percentage_cross_table <- function(id, ...) {
+  
+  a <- list(...)
   
   ns <- NS(id)
   
   standard_layout(
     output = whiteSmallWell(uiOutput(ns("table"))),
     encoding = div(
-      helpText("Dataset:", tags$code("ASL")),
-      optionalSelectInput(ns("x_var"), "x var", x_var_choices, x_var),
-      optionalSelectInput(ns("y_var"), "y var", y_var_choices, y_var)
+      helpText("Dataset:", tags$code(a$dataname)),
+      optionalSelectInput(ns("x_var"), "x var", a$x_var_choices, a$x_var),
+      optionalSelectInput(ns("y_var"), "y var", a$y_var_choices, a$y_var)
     )
   )
 }
 
-srv_percentage_cross_table <- function(input, output, session, datasets) {
+srv_percentage_cross_table <- function(input, output, session, datasets, dataname) {
   
 
   output$table <- renderUI({
     
-    ASL_filtered <- datasets$get_data("ASL", filtered = TRUE, reactive = TRUE)
+    ANL_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
     x_var <- input$x_var
     y_var <- input$y_var
     
-    validate(need(ASL_filtered, "data missing"))
-    validate(need(nrow(ASL_filtered) > 10, "need at least 10 patients"))
+    validate(need(ANL_filtered, "data missing"))
+    validate(need(nrow(ANL_filtered) > 10, "need at least 10 patients"))
     
-    x <- ASL_filtered[[x_var]]
-    y <- ASL_filtered[[y_var]]
+    x <- ANL_filtered[[x_var]]
+    y <- ANL_filtered[[y_var]]
     
     validate(need(x, "selected x_var does not exist"))
     validate(need(y, "selected y_var does not exist"))

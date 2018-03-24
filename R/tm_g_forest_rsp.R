@@ -14,7 +14,7 @@
 #' 
 #' @export
 #' 
-#' @author Yuyao Song (songy24), \email{yuyao.song@roche.com}
+#' @template author_song24
 #' 
 #' @examples   
 #' 
@@ -47,9 +47,9 @@
 #'    )
 #'   )
 #' )   
+#' 
 #' shinyApp(x$ui, x$server) 
 #' 
-#'   
 #' } 
 tm_g_forest_rsp <- function(label,
                             dataname,

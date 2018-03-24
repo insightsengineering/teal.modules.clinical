@@ -11,19 +11,23 @@ tm_g_forest_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
-\item{label}{a character string displayed as module label}
+\item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{The name of the analysis dataset, the data requires the
-variables \code{USUBJID}, \code{STUDYID}, \code{AVAL} (Time-to-event),
-and \code{PARAMCD} (Endpoint)}
+\item{dataname}{analysis data used in teal module, needs to be available in
+the list passed to the \code{data} argument of \code{\link[teal]{init}}.
+Note that the data is expected to be in vertical form with the
+\code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{default variable name used as the arm variable}
+\item{arm_var}{single name of variable in analysis data that is used as
+\code{\link[tern]{col_by}} argument.}
 
-\item{arm_var_choices}{a character vector for the choices of \code{arm_var}}
+\item{arm_var_choices}{vector with variable names that can be used as
+\code{arm_var}}
 
 \item{subgroup_var}{a vector of variable names used as the default subgroups}
 
-\item{subgroup_var_choices}{a vector of variable names to choose the \code{subgroup_var} from}
+\item{subgroup_var_choices}{a vector of variable names to choose the
+\code{subgroup_var} from}
 
 \item{paramcd}{default response type from PARAMCD}
 
@@ -33,14 +37,20 @@ and \code{PARAMCD} (Endpoint)}
 
 \item{cex}{multiplier applied to overall fontsize}
 
-\item{pre_output}{text displayed at the top of the plot}
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 
-\item{post_output}{text displayed at the bottom of the plot}
+\item{post_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 
-\item{code_data_processing}{xxx?}
+\item{code_data_processing}{string with data preprocessing before the teal
+app is initialized}
 }
 \description{
-This is teal module produces a grid style Forest plot for time-to-event data with ADaM structure
+This is teal module produces a grid style Forest plot for time-to-event data
+with ADaM structure
 }
 \examples{
  
@@ -77,7 +87,8 @@ x <- teal::init(
 shinyApp(x$ui, x$server) 
     
 } 
+
 }
 \author{
-Yuyao Song (songy24), \email{yuyao.song@roche.com}
+Yuyao Song (songy24) \email{yuyao.song@roche.com}
 }

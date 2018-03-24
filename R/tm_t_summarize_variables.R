@@ -2,7 +2,17 @@
 
 #' Summarize Variable Teal Module
 #' 
+#' @inheritParams tm_t_tte
+#' @param summarize_vars character vector with variable names that are selected
+#'   by default
+#' @param summarize_vars_choices character vector with variable names that can
+#'   be selected (for summary)
+#' 
+#' 
 #' @export
+#' 
+#' @template author_waddella
+#' 
 #' 
 #' @examples 
 #' 

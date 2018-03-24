@@ -87,7 +87,7 @@
     </div>
 
     
-    <p>Forest Response Plot teal module</p>
+    <p>This is teal module produces a grid style Forest plot for response data with ADaM structure</p>
     
 
     <pre class="usage"><span class='fu'>tm_g_forest_rsp</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
@@ -102,21 +102,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>label</th>
-      <td><p>a character string displayed as module label</p></td>
+      <td><p>menue item label of the module in the teal app</p></td>
     </tr>
     <tr>
       <th>dataname</th>
-      <td><p>The name of the analysis dataset, the data requires the
-variables <code>USUBJID</code>, <code>STUDYID</code>, <code>AVALC</code> (response category),
-and <code>PARAMCD</code></p></td>
+      <td><p>analysis data used in teal module, needs to be available in
+the list passed to the <code>data</code> argument of <code><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></code>.
+Note that the data is expected to be in vertical form with the
+<code>PARAMCD</code> variable filtering to one observation per patient.</p></td>
     </tr>
     <tr>
       <th>arm_var</th>
-      <td><p>default variable name used as the arm variable</p></td>
+      <td><p>single name of variable in analysis data that is used as
+<code>col_by</code> argument.</p></td>
     </tr>
     <tr>
       <th>arm_var_choices</th>
-      <td><p>a character vector for the choices of <code>arm_var</code></p></td>
+      <td><p>vector with variable names that can be used as
+<code>arm_var</code></p></td>
     </tr>
     <tr>
       <th>paramcd</th>
@@ -145,15 +148,20 @@ and <code>PARAMCD</code></p></td>
     </tr>
     <tr>
       <th>pre_output</th>
-      <td><p>text displayed at the top of the plot</p></td>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
     </tr>
     <tr>
       <th>post_output</th>
-      <td><p>text displayed at the bottom of the plot</p></td>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
     </tr>
     <tr>
       <th>code_data_processing</th>
-      <td><p>xxx?</p></td>
+      <td><p>string with data preprocessing before the teal
+app is initialized</p></td>
     </tr>
     </table>
     
@@ -189,8 +197,8 @@ and <code>PARAMCD</code></p></td>
    )
   )
 )
-<span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
+<span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
 <span class='co'># }</span></pre>
   </div>
@@ -204,7 +212,7 @@ and <code>PARAMCD</code></p></td>
 
     <h2>Author</h2>
     
-Yuyao Song (songy24), <a href='mailto:yuyao.song@roche.com'>yuyao.song@roche.com</a>
+Yuyao Song (songy24) <a href='mailto:yuyao.song@roche.com'>yuyao.song@roche.com</a>
 
   </div>
 </div>

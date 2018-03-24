@@ -1,27 +1,14 @@
 
 #' Forest Survival Plot teal Module
 #' 
-#' This is teal module produces a grid style Forest plot for time-to-event data with ADaM structure
+#' This is teal module produces a grid style Forest plot for time-to-event data
+#' with ADaM structure
 #' 
-#' @param label a character string displayed as module label 
-#' @param dataname The name of the analysis dataset, the data requires the
-#'   variables \code{USUBJID}, \code{STUDYID}, \code{AVAL} (Time-to-event),
-#'   and \code{PARAMCD} (Endpoint)
-#' @param arm_var default variable name used as the arm variable
-#' @param arm_var_choices a character vector for the choices of \code{arm_var} 
-#' @param subgroup_var a vector of variable names used as the default subgroups
-#' @param subgroup_var_choices a vector of variable names to choose the \code{subgroup_var} from
-#' @param paramcd default response type from PARAMCD
-#' @param paramcd_choices a vector of possible \code{paramcd}
-#' @param plot_height height of the forest plot
-#' @param cex multiplier applied to overall fontsize
-#' @param pre_output text displayed at the top of the plot
-#' @param post_output text displayed at the bottom of the plot
-#' @param code_data_processing xxx?
+#' @inheritParams tm_g_forest_rsp
 #' 
 #' @export
 #' 
-#' @author Yuyao Song (songy24), \email{yuyao.song@roche.com}
+#' @template author_song24
 #' 
 #' @examples  
 #' 
@@ -57,7 +44,7 @@
 #' shinyApp(x$ui, x$server) 
 #'     
 #' } 
-
+#' 
 tm_g_forest_tte <- function(label,
                             dataname,
                             arm_var = "ARM",
