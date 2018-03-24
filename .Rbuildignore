@@ -3,4 +3,4 @@
 ^_pkgdown\.yml$
 man-roxygen/*
 temp/*
-temp_w/*
+^docs/*

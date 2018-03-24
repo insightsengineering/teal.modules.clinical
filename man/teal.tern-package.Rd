@@ -13,10 +13,10 @@ Teal Modules for TLGs in tern
 
 Authors:
 \itemize{
-  \item Heng Wang
+  \item Heng Wang \email{wang.heng@gene.com}
+  \item Yuyao Song \email{yuyao.song@roche.com}
+  \item Chendi Liao \email{chendi.liao@roche.com}
   \item Mark Rothe
-  \item Yuyao Song
-  \item Chendi Liao
   \item Xiao Mu Yo
 }
 

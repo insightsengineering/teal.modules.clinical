@@ -19,6 +19,7 @@ Imports:
   grid,
   gridExtra,
   survival,
+  forcats,
   haven
 Suggests:
   testthat,
