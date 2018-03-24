@@ -1,4 +1,4 @@
-Package: teal.oncology
+Package: teal.tern
 Title: Teal Modules useful for analyzing clinical oncology trials data
 Version: 0.5.0
 Authors@R: c(

@@ -12,24 +12,13 @@ navbar:
 reference:
   - title:
     contents:
-      - teal.oncology-package
-  - title: Plots
-    contents:
-      - tm_chgfbl_plot
-      - tm_forest_response
-      - tm_forest_survival
-      - tm_kmplot
+      - teal.tern-package
   - title: Tables
     contents:
-      - tm_chgfbl_table
-      - tm_demographic_table
-      - tm_percentage_cross_table
-      - tm_response_table
-      - tm_time_to_event_table
+      -  starts_with("tm_t_")
+  - title: Graphs
+    contents:
+      - starts_with("tm_g_")      
   - title: Utility Functions
     contents:  
       - add_labels
-      - labels_over_names
-  - title: Deprecated
-    contents:
-      - tm_kmplot_survminer
