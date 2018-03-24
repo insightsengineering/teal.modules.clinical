@@ -113,7 +113,7 @@ Note that the data is expected to be in vertical form with the
     <tr>
       <th>arm_var</th>
       <td><p>single name of variable in analysis data that is used as
-<code>col_by</code> argument.</p></td>
+<code>col_by</code> argument for the respective <code>tern</code> function.</p></td>
     </tr>
     <tr>
       <th>arm_var_choices</th>
@@ -177,7 +177,7 @@ app is initialized</p></td>
   of <code>paramcd</code> and <code>var_arm</code></p>  
 <p>This display order of response categories in partitioned statistics section
   inherits the factor level order of the source data. Use
-  <code>factor()</code> and its <code>levels</code> argument to manipulate
+  <code><a href='http://www.rdocumentation.org/packages/base/topics/factor'>factor</a></code> and its <code>levels</code> argument to manipulate
   the source data in order to include/exclude or re-categorize response
   categories and arrange the display order. If response categories are
   "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95%
@@ -202,9 +202,6 @@ app is initialized</p></td>
 <span class='no'>ASL</span>$<span class='no'>ARM</span> <span class='kw'>&lt;-</span> <span class='fu'>as.factor</span>(<span class='no'>ASL</span>$<span class='no'>ARM</span>)
 
 <span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ARS'</span>, <span class='kw'>ADSL</span> <span class='kw'>=</span> <span class='no'>ASL</span>)
-
-<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM &lt;- as.factor(ASL$ARM)"</span>
-<span class='fu'>attr</span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radam('ARS', ADSL = ASL)"</span>
 
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
@@ -246,7 +243,7 @@ app is initialized</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Adrian Waddell, Heng Wang, Mark Rothe, Yuyao Song, Chendi Liao, Xiao Mu Yo.</p>
+  <p>Developed by Adrian Waddell, Heng Wang, Yuyao Song, Chendi Liao, Mark Rothe, Xiao Mu Yo.</p>
 </div>
 
 <div class="pkgdown">

@@ -93,7 +93,60 @@
     <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
   <span class='no'>summarize_vars</span>, <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>,
   <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-        
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>label</th>
+      <td><p>menue item label of the module in the teal app</p></td>
+    </tr>
+    <tr>
+      <th>dataname</th>
+      <td><p>analysis data used in teal module, needs to be available in
+the list passed to the <code>data</code> argument of <code><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></code>.
+Note that the data is expected to be in vertical form with the
+<code>PARAMCD</code> variable filtering to one observation per patient.</p></td>
+    </tr>
+    <tr>
+      <th>arm_var</th>
+      <td><p>single name of variable in analysis data that is used as
+<code>col_by</code> argument for the respective <code>tern</code> function.</p></td>
+    </tr>
+    <tr>
+      <th>arm_var_choices</th>
+      <td><p>vector with variable names that can be used as
+<code>arm_var</code></p></td>
+    </tr>
+    <tr>
+      <th>summarize_vars</th>
+      <td><p>character vector with variable names that are selected
+by default</p></td>
+    </tr>
+    <tr>
+      <th>summarize_vars_choices</th>
+      <td><p>character vector with variable names that can
+be selected (for summary)</p></td>
+    </tr>
+    <tr>
+      <th>pre_output</th>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
+    </tr>
+    <tr>
+      <th>post_output</th>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
+    </tr>
+    <tr>
+      <th>code_data_processing</th>
+      <td><p>string with data preprocessing before the teal
+app is initialized</p></td>
+    </tr>
+    </table>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -131,16 +184,21 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
             
       <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Adrian Waddell (waddella) <a href='mailto:adrian.waddell@roche.com'>adrian.waddell@roche.com</a>
 
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Adrian Waddell, Heng Wang, Mark Rothe, Yuyao Song, Chendi Liao, Xiao Mu Yo.</p>
+  <p>Developed by Adrian Waddell, Heng Wang, Yuyao Song, Chendi Liao, Mark Rothe, Xiao Mu Yo.</p>
 </div>
 
 <div class="pkgdown">
