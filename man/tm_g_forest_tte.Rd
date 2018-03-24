@@ -19,7 +19,7 @@ Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
 \item{arm_var}{single name of variable in analysis data that is used as
-\code{\link[tern]{col_by}} argument.}
+\code{col_by} argument for the respective \code{tern} function.}
 
 \item{arm_var_choices}{vector with variable names that can be used as
 \code{arm_var}}

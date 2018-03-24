@@ -20,7 +20,7 @@ Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
 \item{arm_var}{single name of variable in analysis data that is used as
-\code{\link[tern]{col_by}} argument.}
+\code{col_by} argument for the respective \code{tern} function.}
 
 \item{arm_var_choices}{vector with variable names that can be used as
 \code{arm_var}}
@@ -76,8 +76,6 @@ ASL$ARM <- as.factor(ASL$ARM)
 
 ATE <- radam('ATE', ADSL = ASL)
 
-attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
-attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
 arm_ref_comp = list(
    ARM = list(
       ref = "ARM A",

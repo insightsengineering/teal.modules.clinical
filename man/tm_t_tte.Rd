@@ -20,7 +20,7 @@ Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
 \item{arm_var}{single name of variable in analysis data that is used as
-\code{\link[tern]{col_by}} argument.}
+\code{col_by} argument for the respective \code{tern} function.}
 
 \item{arm_var_choices}{vector with variable names that can be used as
 \code{arm_var}}
@@ -70,7 +70,8 @@ This modules expects that the analysis data has the following variables
 \tabular{ll}{
  \code{AVAL} \tab time to event\cr
  \code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
- \code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after filtering for \code{paramcd} one observation per patient is expected
+ \code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
+ filtering for \code{paramcd} one observation per patient is expected
 }
 
 The arm variables, stratification variables and taken from the \code{ASL}
@@ -92,9 +93,6 @@ ASL <- radam('ASL', start_with = list(
 ASL$ARM <- as.factor(ASL$ARM)
 
 ATE <- radam('ATE', ADSL = ASL)
-
-attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
-attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
 
 
 x <- teal::init( 
@@ -124,7 +122,10 @@ shinyApp(x$ui, x$server)
 ## ARM variable 
 library(random.cdisc.data)
 
-ASL <- radam('ASL', start_with = list(SEX = c("M", "F"), MLIVER = paste("mliver", 1:3)))
+ASL <- radam('ASL', start_with = list(
+  SEX = c("M", "F"),
+  MLIVER = paste("mliver", 1:3))
+)
 ATE <- radam('ATE', ADSL = ASL)
 
 ASL$ARM <- paste(sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE))

@@ -131,7 +131,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     
     header <- get_rcode_header(
       title = "Summarize Variables",
-      dataname = dataname,
+      datanames = dataname,
       datasets = datasets,
       code_data_processing
     )

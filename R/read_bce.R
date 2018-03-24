@@ -1,14 +1,14 @@
 
 
 
-#' Mask \code{rocheBCE::read_bce} on r.roche.com to add meta-data to the data
-#' set for reproducibility
+#' Mask \code{\link[rocheBCE]{read_bce}} on r.roche.com to add meta-data to the
+#' data set for reproducibility
 #' 
 #' This version uses read_bce and adds the \code{'source'}, \code{'md5sum'},
 #' \code{'accessed_by'} meta-data.
 #'
 #' @param FILE file path, needs to be an absolute file path
-#' @param encoding encoding, see \code{\link{[rocheBCE]{encoding}}}
+#' @param encoding encoding
 #'
 #' 
 #' @export

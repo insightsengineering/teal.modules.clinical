@@ -254,7 +254,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     
     header <- get_rcode_header(
       title = "Time-to-Event Forest Plot",
-      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
       datasets = datasets,
       code_data_processing
     )

@@ -15,7 +15,7 @@
 #'   
 #'   This display order of response categories in partitioned statistics section
 #'   inherits the factor level order of the source data. Use
-#'   \code{\link[base]{factor()}} and its \code{levels} argument to manipulate
+#'   \code{\link[base]{factor}} and its \code{levels} argument to manipulate
 #'   the source data in order to include/exclude or re-categorize response
 #'   categories and arrange the display order. If response categories are
 #'   "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
@@ -44,9 +44,6 @@
 #' ASL$ARM <- as.factor(ASL$ARM)
 #' 
 #' ARS <- radam('ARS', ADSL = ASL)
-#' 
-#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
-#' attr(ARS, "source") <- "random.cdisc.data::radam('ARS', ADSL = ASL)"
 #' 
 #' 
 #' x <- teal::init( 
@@ -311,7 +308,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
     
     header <- get_rcode_header(
       title = "Response Table",
-      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
       datasets = datasets,
       code_data_processing
     )

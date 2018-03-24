@@ -14,6 +14,7 @@
 #' 
 #' 
 #' @importFrom survival Surv strata
+#' @importFrom stats as.formula
 #' @importFrom gridExtra arrangeGrob
 #' @import grid
 #' 
@@ -36,8 +37,6 @@
 #' 
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
-#' attr(ATE, "source") <- "random.cdisc.data::radam('ATE', ADSL = ASL)"
 #' arm_ref_comp = list(
 #'    ARM = list(
 #'       ref = "ARM A",
@@ -316,7 +315,7 @@ srv_g_km <- function(input, output, session, datasets,
     
     header <- get_rcode_header(
       title = "Kaplan Meier Plot",
-      dataname = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
+      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(), 
       datasets = datasets,
       code_data_processing
     )

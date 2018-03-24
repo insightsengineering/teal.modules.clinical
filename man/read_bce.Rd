@@ -2,15 +2,15 @@
 % Please edit documentation in R/read_bce.R
 \name{read_bce}
 \alias{read_bce}
-\title{Mask \code{rocheBCE::read_bce} on r.roche.com to add meta-data to the data
-set for reproducibility}
+\title{Mask \code{\link[rocheBCE]{read_bce}} on r.roche.com to add meta-data to the
+data set for reproducibility}
 \usage{
 read_bce(FILE, encoding = NULL)
 }
 \arguments{
 \item{FILE}{file path, needs to be an absolute file path}
 
-\item{encoding}{encoding, see \code{\link{[rocheBCE]{encoding}}}}
+\item{encoding}{encoding}
 }
 \description{
 This version uses read_bce and adds the \code{'source'}, \code{'md5sum'},

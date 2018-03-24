@@ -9,6 +9,9 @@
 #' @param y_var variable name selected variable when shiny app starts
 #' @param y_var_choices vector with variable names available as choices
 #' 
+#' 
+#' @importFrom rtables rrowl rtablel as_html
+#' @importFrom stats addmargins
 #' @export
 #' 
 #' @template author_waddella

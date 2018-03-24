@@ -18,7 +18,7 @@ Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
 \item{arm_var}{single name of variable in analysis data that is used as
-\code{\link[tern]{col_by}} argument.}
+\code{col_by} argument for the respective \code{tern} function.}
 
 \item{arm_var_choices}{vector with variable names that can be used as
 \code{arm_var}}
@@ -66,7 +66,7 @@ Additional standard UI inputs include \code{responders},
   
   This display order of response categories in partitioned statistics section
   inherits the factor level order of the source data. Use
-  \code{\link[base]{factor()}} and its \code{levels} argument to manipulate
+  \code{\link[base]{factor}} and its \code{levels} argument to manipulate
   the source data in order to include/exclude or re-categorize response
   categories and arrange the display order. If response categories are
   "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
@@ -92,9 +92,6 @@ ASL <- radam('ASL', start_with = list(
 ASL$ARM <- as.factor(ASL$ARM)
 
 ARS <- radam('ARS', ADSL = ASL)
-
-attr(ASL, "source") <- "random.cdisc.data::radam('ASL', start_with = list(ITTFL = 'Y', SEX = c('M', 'F'), MLIVER = paste('mliver', 1:3),  ARM = paste('ARM', LETTERS[1:3]))); ASL$ARM <- as.factor(ASL$ARM)"
-attr(ARS, "source") <- "random.cdisc.data::radam('ARS', ADSL = ASL)"
 
 
 x <- teal::init( 
