@@ -4,9 +4,9 @@
 \name{teal.tern-package}
 \alias{teal.tern}
 \alias{teal.tern-package}
-\title{Teal Modules useful in Oncology}
+\title{Teal Modules for TLGs in tern}
 \description{
-Teal Modules useful in Oncology
+Teal Modules for TLGs in tern
 }
 \author{
 \strong{Maintainer}: Adrian Waddell \email{adrian.waddell@roche.com}

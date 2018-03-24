@@ -1,42 +1,33 @@
 
-[Project Website][ghs]
+# teal.tern
 
-# teal.oncology
-
-This R package contains teal modules for analysing oncology clinical trials 
-data. The package is in its building phase and under active development. Hence
-do not use these modules for production work.
+The `teal.tern` R package contains interactive `teal` modules for the outputs
+(TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
 
 # Installation
 
-You need to install `teal.oncology` and all its dependencies as follows:
+Please install the package dependencies as follows:
 
 ``` r
-devtools::install_github("Roche/rtables", upgrade_dependencies = FALSE, build_vignettes = FALSE)
-
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/random.cdisc.data.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github(
+  repo = "Rpackages/random.cdisc.data",
+  ref = "v0.1.0", 
+  host = "https://github.roche.com/api/v3"
 )
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/tern.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github("Roche/rtables", ref = "v0.0.1")
+
+devtools::install_github(
+  repo = "Rpackages/tern",
+  ref = "v0.5.0", 
+  host = "https://github.roche.com/api/v3"
 )
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/teal.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
-)
-
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/teal.oncology.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github(
+  repo = "Rpackages/teal.oncology",
+  ref = "v0.5.0", 
+  host = "https://github.roche.com/api/v3"
 )
 ```
 
@@ -46,6 +37,8 @@ devtools::install_git(
 Here is an example app that shows all modules using random data. If you save
 this code into a file named `app.R` then it is a valid [single-file shiny
 application](https://shiny.rstudio.com/articles/app-formats.html).
+
+## App setup, app.R
 
 ```r
 library(teal.oncology)
@@ -232,7 +225,7 @@ Each teal module in `teal.oncology` will be explained in a separate vignette and
 is accessile via the articles tab on the [project site][ghs].
 
 
-# Local installation
+## Deployment
 
 Save the following code in a file `install.R` and run this to reinstall all the
 dependencies local relative to the working directory (also on the shiny server).

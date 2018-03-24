@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>re-attach labels to variables — add_labels • teal.tern</title>
+<title>Mask <code><a href='http://www.rdocumentation.org/packages/rocheBCE/topics/read_bce'>rocheBCE::read_bce</a></code> on r.roche.com to add meta-data to the data
+set for reproducibility — read_bce • teal.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -83,47 +84,37 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>re-attach labels to variables</h1>
+    <h1>Mask <code><a href='http://www.rdocumentation.org/packages/rocheBCE/topics/read_bce'>rocheBCE::read_bce</a></code> on r.roche.com to add meta-data to the data
+set for reproducibility</h1>
     </div>
 
     
-    <p>re-attach labels to variables</p>
+    <p>This version uses read_bce and adds the <code>'source'</code>, <code>'md5sum'</code>,
+<code>'accessed_by'</code> meta-data.</p>
     
 
-    <pre class="usage"><span class='fu'>add_labels</span>(<span class='no'>df</span>, <span class='no'>labels</span>)</pre>
+    <pre class="usage"><span class='fu'>read_bce</span>(<span class='no'>FILE</span>, <span class='kw'>encoding</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>df</th>
-      <td><p>a data.frame</p></td>
+      <th>FILE</th>
+      <td><p>file path, needs to be an absolute file path</p></td>
     </tr>
     <tr>
-      <th>labels</th>
-      <td><p>a named vector with the labels. names are variable names</p></td>
+      <th>encoding</th>
+      <td><p>encoding, see <code>[rocheBCE]encoding</code></p></td>
     </tr>
     </table>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>c</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>), <span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>4</span>))
-
-<span class='no'>labels</span> <span class='kw'>&lt;-</span> <span class='fu'>setNames</span>(<span class='fu'>c</span>(<span class='st'>"a var"</span>, <span class='st'>"b var"</span>), <span class='fu'>c</span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>))
-
-
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'>add_labels</span>(<span class='no'>df</span>, <span class='no'>labels</span>)
-
-<span class='fu'>View</span>(<span class='no'>X</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>

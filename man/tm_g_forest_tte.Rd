@@ -40,7 +40,7 @@ and \code{PARAMCD} (Endpoint)}
 \item{code_data_processing}{xxx?}
 }
 \description{
-Forest Survival Plot teal Module
+This is teal module produces a grid style Forest plot for time-to-event data with ADaM structure
 }
 \examples{
  

@@ -1,5 +1,5 @@
 
-#' Teal Modules useful in Oncology
+#' Teal Modules for TLGs in tern
 #' 
 #' 
 "_PACKAGE"

@@ -60,46 +60,42 @@
       </header><div class="row">
   <div class="contents col-md-9">
     
-
-<div id="teal-oncology" class="section level1">
+<div id="teal-tern" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#teal-oncology" class="anchor"></a>teal.oncology</h1></div>
-<p>This R package contains teal modules for analysing oncology clinical trials data. The package is in its building phase and under active development. Hence do not use these modules for production work.</p>
+<a href="#teal-tern" class="anchor"></a>teal.tern</h1></div>
+<p>The <code>teal.tern</code> R package contains interactive <code>teal</code> modules for the outputs (TLGs) in <a href="https://github.roche.com/Rpackages/tern"><code>tern</code></a>.</p>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
-<p>You need to install <code>teal.oncology</code> and all its dependencies as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
-
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/random.cdisc.data.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+<p>Please install the package dependencies as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/tern.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.0.1"</span>)
+
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
-)
-
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.oncology.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/teal.oncology"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )</code></pre></div>
 </div>
 <div id="getting-started" class="section level1">
 <h1 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h1>
 <p>Here is an example app that shows all modules using random data. If you save this code into a file named <code>app.R</code> then it is a valid <a href="https://shiny.rstudio.com/articles/app-formats.html">single-file shiny application</a>.</p>
+<div id="app-setup-app-r" class="section level2">
+<h2 class="hasAnchor">
+<a href="#app-setup-app-r" class="anchor"></a>App setup, app.R</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.oncology)
 <span class="kw">library</span>(random.cdisc.data)
 <span class="kw">library</span>(dplyr)
@@ -249,7 +245,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
   ),
   <span class="kw">modules</span>(
     <span class="st">"QoL Change from Baseline"</span>,
-    <span class="kw"><a href="reference/tm_chgfbl_plot.html">tm_chgfbl_plot</a></span>(
+    <span class="kw"><a href="http://www.rdocumentation.org/packages/teal.oncology/topics/tm_chgfbl_plot">tm_chgfbl_plot</a></span>(
       <span class="dt">label =</span> <span class="st">"Change from Baseline Plot"</span>,
       <span class="dt">paramcd =</span> paramcd_aqs,
       <span class="dt">paramcd_choices =</span> paramcd_aqs_choices,
@@ -260,7 +256,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">errbar =</span> <span class="st">"SE"</span>,
       <span class="dt">errbar_choices =</span> <span class="kw">c</span>(<span class="st">"SE"</span>, <span class="st">"SD"</span>, <span class="st">"95CI"</span>, <span class="st">"IQR"</span>)
     ),
-    <span class="kw"><a href="reference/tm_chgfbl_table.html">tm_chgfbl_table</a></span>(
+    <span class="kw"><a href="http://www.rdocumentation.org/packages/teal.oncology/topics/tm_chgfbl_table">tm_chgfbl_table</a></span>(
       <span class="dt">label =</span> <span class="st">"Change from Baseline Table"</span>,
       <span class="dt">paramcd =</span> paramcd_aqs,
       <span class="dt">paramcd_choices =</span> paramcd_aqs_choices,
@@ -279,9 +275,9 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <span class="kw">shinyApp</span>(x<span class="op">$</span>ui, x<span class="op">$</span>server)</code></pre></div>
 <p>Each teal module in <code>teal.oncology</code> will be explained in a separate vignette and is accessile via the articles tab on the <a href="http://pages.github.roche.com/Rpackages/teal.oncology">project site</a>.</p>
 </div>
-<div id="local-installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#local-installation" class="anchor"></a>Local installation</h1>
+<div id="deployment" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deployment" class="anchor"></a>Deployment</h2>
 <p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## clone this project here:
 project.path &lt;-<span class="st"> </span><span class="kw">getwd</span>() <span class="co">#"/srv/shiny-server/users/..."</span>
@@ -330,6 +326,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 
 <span class="kw">.libPaths</span>(orig_libpaths)</code></pre></div>
 </div>
+</div>
 
   </div>
 
@@ -344,10 +341,6 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <li>Yuyao Song <br><small class="roles"> Author </small> </li>
 <li>Chendi Liao <br><small class="roles"> Author </small> </li>
 <li>Xiao Mu Yo <br><small class="roles"> Author </small> </li>
-</ul>
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="http://pages.github.roche.com/Rpackages/teal.oncology">Project Website</a></li>
 </ul>
 </div>
 </div>

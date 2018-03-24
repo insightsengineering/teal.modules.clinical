@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>re-attach labels to variables — add_labels • teal.tern</title>
+<title>Summarize Variable Teal Module — tm_t_summarize_variables • teal.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -83,44 +83,54 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>re-attach labels to variables</h1>
+    <h1>Summarize Variable Teal Module</h1>
     </div>
 
     
-    <p>re-attach labels to variables</p>
+    <p>Summarize Variable Teal Module</p>
     
 
-    <pre class="usage"><span class='fu'>add_labels</span>(<span class='no'>df</span>, <span class='no'>labels</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>df</th>
-      <td><p>a data.frame</p></td>
-    </tr>
-    <tr>
-      <th>labels</th>
-      <td><p>a named vector with the labels. names are variable names</p></td>
-    </tr>
-    </table>
-    
+    <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
+  <span class='no'>summarize_vars</span>, <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>,
+  <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+        
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>c</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>), <span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>4</span>))
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>labels</span> <span class='kw'>&lt;-</span> <span class='fu'>setNames</span>(<span class='fu'>c</span>(<span class='st'>"a var"</span>, <span class='st'>"b var"</span>), <span class='fu'>c</span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>))
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ASL'</span>, <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>1000</span>)
+
+<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radam('ASL') "</span>
+
+<span class='no'>ASL</span>$<span class='no'>ARMCD</span> <span class='kw'>&lt;-</span> <span class='no'>ASL</span>$<span class='no'>ARM</span>
+<span class='fu'>levels</span>(<span class='no'>ASL</span>$<span class='no'>ARMCD</span>) <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"DUMMY A"</span>, <span class='st'>"DUMMY B"</span>)
 
 
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'>add_labels</span>(<span class='no'>df</span>, <span class='no'>labels</span>)
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
+  <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>),
+  <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'>root_modules</span>(
+    <span class='fu'>tm_t_summarize_variables</span>(
+       <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Demographic Table"</span>,
+       <span class='kw'>dataname</span> <span class='kw'>=</span> <span class='st'>"ASL"</span>,
+       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
+       <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
+       <span class='kw'>summarize_vars</span> <span class='kw'>=</span>  <span class='fu'>c</span>(<span class='st'>"SEX"</span>),
+       <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BAGE"</span>)
+   )
+  )
+)
+<span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
-<span class='fu'>View</span>(<span class='no'>X</span>)</div></pre>
+
+<span class='co'># }</span><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
             
       <li><a href="#examples">Examples</a></li>
     </ul>

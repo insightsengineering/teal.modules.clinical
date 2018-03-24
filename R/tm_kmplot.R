@@ -2,24 +2,16 @@
 #' 
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #' 
-#' @param label unique name for tabpanel
-#' @param dataname dataset name
-#' @param arm_var parameter for seperating curves
-#' @param arm_var_choices options for \code{arm_var}
-#' @param arm_ref_comp optional, if specified it must be a named list with each
-#'   element corresponding to an arm variable in \code{ASL} and the element must
-#'   be another list with the elements named \code{ref} and \code{comp} that the
-#'   defined the default reference and comparison arms when the arm variable is
-#'   changed.
+#' @inheritParams tm_t_tte
 #' @param paramcd selected endpoint from ADaM variable \code{PARAMCD}
 #' @param paramcd_choices options for \code{endpoint}
 #' @param facet_var parameter for facet plotting
 #' @param facet_var_choices options for \code{facet_var}
 #' @param strata_var parameter for stratification analysis in Cox PH model
 #' @param strata_var_choices options for \code{strata_var}
-#' @param plot_height plot height specification
-#' @param code_data_processing string with data preprocessing before the teal
-#'   app is initialized
+#' @template param_plot_height
+#' 
+#' 
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom gridExtra arrangeGrob
@@ -80,22 +72,21 @@
 #' shinyApp(ui = x$ui, server = x$server)
 #' 
 #' }
-
-tm_kmplot <- function(label,
-                       dataname,
-                       arm_var = "ARM",
-                       arm_var_choices = arm_var,
-                       arm_ref_comp = NULL,
-                       paramcd = "OS",
-                       paramcd_choices = paramcd,
-                       facet_var = NULL,
-                       facet_var_choices = facet_var,
-                       strata_var = NULL,
-                       strata_var_choices = strata_var,
-                       plot_height = c(1200, 400, 5000),
-                       pre_output = helpText("x-axes for different factes may not have the same scale"),
-                       post_output = NULL,
-                       code_data_processing = NULL
+tm_g_km <- function(label,
+                    dataname,
+                    arm_var = "ARM",
+                    arm_var_choices = arm_var,
+                    arm_ref_comp = NULL,
+                    paramcd = "OS",
+                    paramcd_choices = paramcd,
+                    facet_var = NULL,
+                    facet_var_choices = facet_var,
+                    strata_var = NULL,
+                    strata_var_choices = strata_var,
+                    plot_height = c(1200, 400, 5000),
+                    pre_output = helpText("x-axes for different factes may not have the same scale"),
+                    post_output = NULL,
+                    code_data_processing = NULL
 ){
   
   args <- as.list(environment())
@@ -103,16 +94,16 @@ tm_kmplot <- function(label,
   module(
     label = label,
     filters = dataname,
-    server = srv_kmplot,
+    server = srv_g_km,
     server_args = list(dataname = dataname,
                        arm_ref_comp = arm_ref_comp,
                        code_data_processing = code_data_processing),
-    ui = ui_kmplot,
+    ui = ui_g_km,
     ui_args = args
   )
 }
 
-ui_kmplot <- function(id, ...) {
+ui_g_km <- function(id, ...) {
   
   a <- list(...)
   ns <- NS(id)
@@ -147,8 +138,8 @@ ui_kmplot <- function(id, ...) {
 }
 
 
-srv_kmplot <- function(input, output, session, datasets, 
-                        dataname, arm_ref_comp, code_data_processing) {
+srv_g_km <- function(input, output, session, datasets, 
+                       dataname, arm_ref_comp, code_data_processing) {
   
   
   arm_ref_comp_observer(
@@ -257,14 +248,14 @@ srv_kmplot <- function(input, output, session, datasets,
         text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
         coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                just = c("left", "bottom"),
-                             gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
-                             vp = vpPath("plotArea", "topCurve"))
+                               gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                               vp = vpPath("plotArea", "topCurve"))
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE)  
         p <-  addTable(p, tbl_km,
-                   x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                   y = unit(1, "npc") -  unit(1, "lines"),
-                   just = c("left", "top"))  
+                       x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                       y = unit(1, "npc") -  unit(1, "lines"),
+                       just = c("left", "top"))  
         p <- addGrob(p, coxph_grob) 
         grid.draw(p)
         
@@ -291,29 +282,29 @@ srv_kmplot <- function(input, output, session, datasets,
       
       chunk_t_kmplot <<- bquote({
         grid.newpage()
-       pl <-  Map(function(x, label){
-              x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-              fit_km <- survfit(formula_km, data = x, conf.type = "plain")
-              fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-              tbl_km <- t_km(fit_km)
-              tbl_coxph <- t_coxph(fit_coxph)
-              text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-              coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
-                                     just = c("left", "bottom"),
-                                     gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
-                                     vp = vpPath("plotArea", "topCurve"))
-              if (nrow(x) < 5){
-                  textGrob(paste0("Less than 5 patients in ", label, "group"))
-              } else {
-                  p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
-                            xticks = xticks, draw = FALSE)  
-                  p <-  addTable(p, tbl_km,
-                                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                                 y = unit(1, "npc") -  unit(1, "lines"),
-                                 just = c("left", "top"))  
-                  p <- addGrob(p, coxph_grob)
-             }
-            }, dfs, levels(lab))
+        pl <-  Map(function(x, label){
+          x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
+          fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+          fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+          tbl_km <- t_km(fit_km)
+          tbl_coxph <- t_coxph(fit_coxph)
+          text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+          coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
+                                 just = c("left", "bottom"),
+                                 gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                                 vp = vpPath("plotArea", "topCurve"))
+          if (nrow(x) < 5){
+            textGrob(paste0("Less than 5 patients in ", label, "group"))
+          } else {
+            p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
+                      xticks = xticks, draw = FALSE)  
+            p <-  addTable(p, tbl_km,
+                           x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                           y = unit(1, "npc") -  unit(1, "lines"),
+                           just = c("left", "top"))  
+            p <- addGrob(p, coxph_grob)
+          }
+        }, dfs, levels(lab))
         grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1) )
       })
       
@@ -349,7 +340,7 @@ srv_kmplot <- function(input, output, session, datasets,
       if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
       "",
       remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
-       
+      
     ), collapse = "\n")
     
     # .log("show R code")

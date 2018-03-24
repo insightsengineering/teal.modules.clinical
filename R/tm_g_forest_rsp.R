@@ -3,12 +3,7 @@
 #' 
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
 #' 
-#' @param label a character string displayed as module label 
-#' @param dataname The name of the analysis dataset, the data requires the
-#'   variables \code{USUBJID}, \code{STUDYID}, \code{AVALC} (response category),
-#'   and \code{PARAMCD}
-#' @param arm_var default variable name used as the arm variable
-#' @param arm_var_choices a character vector for the choices of \code{arm_var}
+#' @inheritParams tm_t_tte
 #' @param subgroup_var a vector of variable names used as the default subgroups
 #' @param subgroup_var_choices a vector of variable names to choose the
 #'   \code{subgroup_var} from
@@ -16,10 +11,6 @@
 #' @param paramcd_choices a vector of possible \code{paramcd}
 #' @param plot_height height of the forest plot
 #' @param cex multiplier applied to overall fontsize
-#' @param pre_output text displayed at the top of the plot
-#' @param post_output text displayed at the bottom of the plot
-#' @param code_data_processing xxx?
-#' 
 #' 
 #' @export
 #' 
