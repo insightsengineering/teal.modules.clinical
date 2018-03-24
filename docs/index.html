@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teal Modules useful for analyzing clinical oncology trials data • teal.oncology</title>
+<title>Teal Modules useful for analyzing clinical oncology trials data • teal.tern</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -24,7 +24,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">teal.oncology</a>
+      <a class="navbar-brand" href="index.html">teal.tern</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -172,7 +172,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     ),
     <span class="kw">tm_data_table</span>(<span class="st">"Data Table"</span>),
     <span class="kw">tm_variable_browser</span>(<span class="st">"Variable Browser"</span>),
-    <span class="kw"><a href="reference/tm_demographic_table.html">tm_demographic_table</a></span>(
+    <span class="kw">tm_demographic_table</span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">arm_var =</span> arm_var,
       <span class="dt">arm_var_choices =</span> arm_var_choices,
@@ -181,7 +181,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     ),
     <span class="kw">modules</span>(
       <span class="st">"Forest Plots"</span>,
-      <span class="kw"><a href="reference/tm_forest_survival.html">tm_forest_survival</a></span>(
+      <span class="kw">tm_forest_survival</span>(
         <span class="dt">label =</span> <span class="st">"Survival Forest Plot"</span>,
         <span class="dt">paramcd =</span> paramcd_tte,
         <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
@@ -192,7 +192,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
         <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>),
         <span class="dt">cex =</span> <span class="fl">1.2</span>
       ),
-      <span class="kw"><a href="reference/tm_forest_response.html">tm_forest_response</a></span>(
+      <span class="kw">tm_forest_response</span>(
         <span class="dt">label =</span> <span class="st">"Response Forest Plot"</span>,
         <span class="dt">paramcd =</span> paramcd_rsp,
         <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
@@ -216,7 +216,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">strata_var_choices =</span> strata_var_choices,
       <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">1800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
     ), 
-    <span class="kw"><a href="reference/tm_response_table.html">tm_response_table</a></span>(
+    <span class="kw">tm_response_table</span>(
       <span class="dt">label =</span> <span class="st">"Response Table"</span>,
       <span class="dt">paramcd =</span> <span class="st">"OVRSPI"</span>,
       <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
@@ -225,7 +225,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">strata.var =</span> strata_var,
       <span class="dt">strata.var_choices =</span> strata_var_choices
     ),
-    <span class="kw"><a href="reference/tm_time_to_event_table.html">tm_time_to_event_table</a></span>(
+    <span class="kw">tm_time_to_event_table</span>(
       <span class="dt">label =</span> <span class="st">"Time To Event Table"</span>,
       <span class="dt">time_points =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>),
       <span class="dt">time_points_choices =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>),

@@ -26,7 +26,7 @@
 #'   
 #' @return an \code{\link[teal]{module}} object
 #'   
-#' @export
+#' @noRd
 #' 
 #' @examples  
 #' 
@@ -51,7 +51,7 @@
 #' arm_var_choices_list <- c("ARM", "ARMCD", "AGE65", "SEX", "HSTSTYP", "PMETA", 
 #'                           "IC","ICC", "TCC", "ICCAT1", "ICCAT2", "ICCAT3", "BIO2ICL")
 #' arm_var_choices_labelled <- setNames(arm_var_choices_list, 
-#'                             paste(arm_var_choices_list, labels_over_names(ASL[arm_var_choices_list]), sep=" - "))
+#'                             paste(arm_var_choices_list, var_labels(ASL[arm_var_choices_list], fill = TRUE), sep=" - "))
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, AQS = AQS),
