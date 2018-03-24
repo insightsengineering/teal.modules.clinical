@@ -15,9 +15,7 @@
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom gridExtra arrangeGrob
-#' @import forcats
 #' @import grid
-#' @import dplyr
 #' 
 #' @export
 #' 

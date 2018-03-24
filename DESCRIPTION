@@ -12,19 +12,18 @@ Authors@R: c(
 Description: Teal modules
 Depends:
   R (>= 3.3),
+  shiny,
   teal,
   tern (>= 0.5)
 Imports:
-  dplyr,
-  shiny,
-  forcats,
-  tidyr
+  grid,
+  gridExtra,
+  survival,
+  haven
 Suggests:
   testthat,
   knitr,
-  rmarkdown,
-  ggplot2,
-  survminer
+  rmarkdown
 License: Copyright Roche
 Encoding: UTF-8
 LazyData: true
