@@ -172,12 +172,11 @@ app is initialized</p></td>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ASL"</span>, <span class='kw'>start_with</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>RACE</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"white"</span>, <span class='st'>"asian"</span>)))
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ASL"</span>, <span class='kw'>start_with</span> <span class='kw'>=</span> <span class='fu'>list</span>(
+   <span class='kw'>RACE</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"white"</span>, <span class='st'>"asian"</span>),
+   <span class='kw'>ARMCD</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"DUMMY 1"</span>, <span class='st'>"DUMMY 2"</span>, <span class='st'>"DUMMY 3"</span>)
+))
 <span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ARS"</span>, <span class='kw'>ADSL</span> <span class='kw'>=</span> <span class='no'>ASL</span>)
-
-<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>'radam("ASL", start_with = list(RACE = c("white", "asian")))'</span>
-<span class='fu'>attr</span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>'radam("ARS", ADSL = ASL)'</span>
-
 
 <span class='no'>ASL</span>$<span class='no'>ARMCD</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='fu'>gsub</span>(<span class='st'>"ARM"</span>, <span class='st'>"DUMMY"</span>, <span class='fu'>as.character</span>(<span class='no'>ASL</span>$<span class='no'>ARM</span>)))
 

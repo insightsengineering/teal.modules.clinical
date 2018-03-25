@@ -199,7 +199,6 @@ app is initialized</p></td>
   <span class='kw'>ARM</span> <span class='kw'>=</span> <span class='fu'>paste</span>(<span class='st'>"ARM"</span>, <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fl'>3</span>])
 ))
 
-<span class='no'>ASL</span>$<span class='no'>ARM</span> <span class='kw'>&lt;-</span> <span class='fu'>as.factor</span>(<span class='no'>ASL</span>$<span class='no'>ARM</span>)
 
 <span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ARS'</span>, <span class='kw'>ADSL</span> <span class='kw'>=</span> <span class='no'>ASL</span>)
 
@@ -222,9 +221,8 @@ app is initialized</p></td>
 
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
-
-
-<span class='co'># }</span></pre>
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -155,12 +155,6 @@ app is initialized</p></td>
 
 <span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ASL'</span>, <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>1000</span>)
 
-<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radam('ASL') "</span>
-
-<span class='no'>ASL</span>$<span class='no'>ARMCD</span> <span class='kw'>&lt;-</span> <span class='no'>ASL</span>$<span class='no'>ARM</span>
-<span class='fu'>levels</span>(<span class='no'>ASL</span>$<span class='no'>ARMCD</span>) <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"DUMMY A"</span>, <span class='st'>"DUMMY B"</span>)
-
-
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>),
   <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'>root_modules</span>(
@@ -174,8 +168,8 @@ app is initialized</p></td>
    )
   )
 )
-<span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
+<span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
 <span class='co'># }</span><div class='input'>
 
