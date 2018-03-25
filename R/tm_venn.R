@@ -12,11 +12,11 @@
 #' 
 #' @examples 
 #' 
+#' \dontrun{
 #' n <- 100
 #' tGE <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.2, .8))
 #' IHC <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.6, .4))
 #' 
-#' \dontrun{
 #' library(atezo.data)
 #' ASL <- asl(com.roche.cdpt7722.wo29637.rl)
 #' 

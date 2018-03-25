@@ -22,12 +22,6 @@
 #' 
 #' ASL <- radam('ASL', N = 1000)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radam('ASL') "
-#' 
-#' ASL$ARMCD <- ASL$ARM
-#' levels(ASL$ARMCD) <- c("DUMMY A", "DUMMY B")
-#' 
-#' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
@@ -40,9 +34,9 @@
 #'        summarize_vars_choices = c("SEX", "RACE", "BAGE")
 #'    )
 #'   )
-#' )   
+#' )
+#'    
 #' shinyApp(x$ui, x$server) 
-#' 
 #'   
 #' } 
 #' 

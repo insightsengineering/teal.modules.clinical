@@ -29,18 +29,17 @@ Cross table based on rtables
 \examples{
 
 \dontrun{
-ASL <- data.frame(
-  USUBJID = paste("p", 1:100, sep = "-"),
-  STUDYID = "A",
-  x = sample(c("Y", "N"), 100, TRUE),
-  y = sample(c("A", "B", "C"), 100, TRUE),
-  stringsAsFactors = FALSE
-)
+
+library(random.cdisc.data)
+
+ASL <- radam("ASL", start_with = list(
+  x = c("Y", "N"), y = c("A", "B", "C")
+))
 
 x <- teal::init(
   data = list(ASL = ASL),
   modules = root_modules(
-    tm_t_percentage_cross_table("Cross Table", x_var = "x", y_var = "y")
+    tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "x", y_var = "y")
   )
 )
 

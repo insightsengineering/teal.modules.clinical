@@ -89,7 +89,6 @@ ASL <- radam('ASL', start_with = list(
   ARM = paste("ARM", LETTERS[1:3])
 ))
 
-ASL$ARM <- as.factor(ASL$ARM)
 
 ARS <- radam('ARS', ADSL = ASL)
 
@@ -112,7 +111,6 @@ x <- teal::init(
 
 shinyApp(x$ui, x$server) 
 
-
-  
 } 
+
 }

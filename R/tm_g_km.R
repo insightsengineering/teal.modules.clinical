@@ -33,7 +33,6 @@
 #'   ARM = paste("ARM", LETTERS[1:3])
 #' ))
 #' 
-#' ASL$ARM <- as.factor(ASL$ARM)
 #' 
 #' ATE <- radam('ATE', ADSL = ASL)
 #' 

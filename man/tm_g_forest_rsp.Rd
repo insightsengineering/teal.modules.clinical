@@ -59,12 +59,11 @@ This is teal module produces a grid style Forest plot for response data with ADa
 
 library(random.cdisc.data)
 
-ASL <- radam("ASL", start_with = list(RACE = c("white", "asian")))
+ASL <- radam("ASL", start_with = list(
+   RACE = c("white", "asian"),
+   ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")
+))
 ARS <- radam("ARS", ADSL = ASL)
-
-attr(ASL, "source") <- 'radam("ASL", start_with = list(RACE = c("white", "asian")))'
-attr(ARS, "source") <- 'radam("ARS", ADSL = ASL)'
-
 
 ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
 

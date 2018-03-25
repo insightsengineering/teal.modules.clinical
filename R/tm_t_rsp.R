@@ -41,7 +41,6 @@
 #'   ARM = paste("ARM", LETTERS[1:3])
 #' ))
 #' 
-#' ASL$ARM <- as.factor(ASL$ARM)
 #' 
 #' ARS <- radam('ARS', ADSL = ASL)
 #' 
@@ -64,9 +63,8 @@
 #' 
 #' shinyApp(x$ui, x$server) 
 #' 
-#' 
-#'   
 #' } 
+#' 
 tm_t_rsp <- function(label,
                      dataname,
                      arm_var = "ARM",
