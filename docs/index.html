@@ -5,11 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teal Modules useful for analyzing clinical oncology trials data • teal.oncology</title>
+<title>Teal Modules for TLG Functions in Tern • teal.tern</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Teal Modules for TLG Functions in Tern">
+<meta property="og:description" content="Provides teal modules for outputs defined in the tern package.
+  The teal modules add an encoding panel to interactively change the encoding within teal.">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -24,12 +28,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">teal.oncology</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="index.html">teal.tern</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.5.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="/index.html">
+  <a href="index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -38,7 +46,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -60,54 +68,57 @@
       </header><div class="row">
   <div class="contents col-md-9">
     
-
-<div id="teal-oncology" class="section level1">
+<div id="teal-tern" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#teal-oncology" class="anchor"></a>teal.oncology</h1></div>
-<p>This R package contains teal modules for analysing oncology clinical trials data. The package is in its building phase and under active development. Hence do not use these modules for production work.</p>
+<a href="#teal-tern" class="anchor"></a>teal.tern</h1></div>
+<p>The <code>teal.tern</code> R package contains interactive <code>teal</code> modules for the outputs (TLGs) in <a href="https://github.roche.com/Rpackages/tern"><code>tern</code></a>.</p>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
-<p>You need to install <code>teal.oncology</code> and all its dependencies as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
-
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/random.cdisc.data.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+<p>Please install the package dependencies as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/tern.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.0.1"</span>)
+
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.0.3"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.oncology.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )</code></pre></div>
 </div>
 <div id="getting-started" class="section level1">
 <h1 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h1>
 <p>Here is an example app that shows all modules using random data. If you save this code into a file named <code>app.R</code> then it is a valid <a href="https://shiny.rstudio.com/articles/app-formats.html">single-file shiny application</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.oncology)
+<div id="app-setup-app-r" class="section level2">
+<h2 class="hasAnchor">
+<a href="#app-setup-app-r" class="anchor"></a>App setup, app.R</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.tern)
 <span class="kw">library</span>(random.cdisc.data)
-<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(htmltools) <span class="co"># for study source</span>
 
 ## Generate Data
 ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ASL"</span>, <span class="dt">N =</span> <span class="dv">600</span>,
              <span class="dt">arm_choices =</span> <span class="kw">c</span>(<span class="st">"Arm A"</span>, <span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>),
              <span class="dt">start_with =</span> <span class="kw">list</span>(
+               <span class="dt">ARM1 =</span> <span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>),
                <span class="dt">STRATM1 =</span> <span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>),
                <span class="dt">STRATM2 =</span> <span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
                <span class="dt">TCICLVL2 =</span> <span class="kw">paste</span>(<span class="st">"STRATM2"</span>, letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]),
@@ -117,63 +128,66 @@ ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocument
                <span class="dt">ITTWTFL =</span> <span class="kw">c</span>(T,F),
                <span class="dt">ITTGE2FL =</span> <span class="kw">c</span>(T,F),
                <span class="dt">ITTGE3FL =</span> <span class="kw">c</span>(T,F)
-             )) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">ARM1 =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/recode.html">recode</a></span>(ARM, <span class="st">"Arm A"</span> =<span class="st"> "DUMMY 1"</span>, <span class="st">"Arm B"</span> =<span class="st"> "DUMMY 2"</span>, <span class="st">"Arm C"</span> =<span class="st"> "DUMMY 3"</span>))
-ATE &lt;-<span class="st"> </span><span class="kw">merge</span>(ASL, <span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ATE"</span>, <span class="dt">ADSL =</span> ASL), <span class="dt">all =</span> <span class="ot">TRUE</span>)
-ARS &lt;-<span class="st"> </span><span class="kw">merge</span>(ASL, <span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ARS"</span>, <span class="dt">ADSL =</span> ASL))
-AQS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"AQS"</span>, <span class="dt">ADSL =</span> ASL)
+             )) 
+ATE &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ATE"</span>, <span class="dt">ADSL =</span> ASL)
+ARS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ARS"</span>, <span class="dt">ADSL =</span> ASL)
 
-## Configure Reused Information
-arm_var &lt;-<span class="st"> "ARM1"</span>
-arm_var_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))]  <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+## Reusable Configuration For Modules
+arm_var &lt;-<span class="st"> "ARM"</span>
+arm_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ARM1"</span>, <span class="st">"STRATM1"</span>, <span class="st">"STRATM2"</span>)
 
 strata_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"STRATM1"</span>, <span class="st">"STRATM2"</span>, <span class="st">"TCICLVL2"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
 strata_var_choices &lt;-<span class="st">  </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))] <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
 
 dm_summarize_vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"SEX"</span>, <span class="st">"BAGE"</span>, <span class="st">"RACE"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
 dm_summarize_vars_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)
 
 facet_var &lt;-<span class="st">  "TCICLVL2"</span>
 facet_var_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))] <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
 
 paramcd_tte &lt;-<span class="st"> "OS"</span>
 paramcd_choices_tte &lt;-<span class="st"> </span><span class="kw">unique</span>(ATE<span class="op">$</span>PARAMCD)
 
 paramcd_rsp &lt;-<span class="st"> "OVRSPI"</span>
 paramcd_choices_rsp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"BESRSPI"</span>, <span class="st">"OVRINV"</span>, <span class="st">"OVRSPI"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(ARS<span class="op">$</span>PARAMCD)
-
-tmp.p.aqs &lt;-<span class="st"> </span>AQS <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(PARAM, PARAMCD) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/summarise_all.html">mutate_all</a></span>(as.character)
-paramcd_aqs_choices &lt;-<span class="st"> </span><span class="kw">setNames</span>(tmp.p.aqs<span class="op">$</span>PARAMCD, <span class="kw">paste</span>(tmp.p.aqs<span class="op">$</span>PARAMCD, tmp.p.aqs<span class="op">$</span>PARAM, <span class="dt">sep =</span> <span class="st">" - "</span>))
-paramcd_aqs &lt;-<span class="st"> </span>paramcd_aqs_choices[<span class="dv">1</span>]
+<span class="st">  </span><span class="kw">intersect</span>(ARS<span class="op">$</span>PARAMCD)
 
 x_var_ct &lt;-<span class="st"> "T1I1FL"</span>
 y_var_ct &lt;-<span class="st"> "T0I0FL"</span>
 ct_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"T1I1FL"</span>, <span class="st">"T0I0FL"</span>, <span class="st">"ITTGEFL"</span>, <span class="st">"ITTWTFL"</span>, <span class="st">"ITTGE2FL"</span>, <span class="st">"ITTGE3FL"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
 
-<span class="co"># unfortunatly this is only implemented for the tte_tbl currently</span>
-ref_arm &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(ASL<span class="op">$</span>ARM1))[<span class="dv">1</span>]
+<span class="co"># reference &amp; comparison arm selection when switching the arm variable</span>
+arm_ref_comp &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">ARM =</span> <span class="kw">list</span>(<span class="dt">ref=</span><span class="st">"Arm A"</span>, <span class="dt">comp=</span><span class="kw">c</span>(<span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>)),
+  <span class="dt">ARM1 =</span> <span class="kw">list</span>(<span class="dt">ref=</span><span class="st">"DUMMY B"</span>, <span class="dt">comp=</span><span class="st">"DUMMY A"</span>)
+)
 
 ## Setup App
 x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/teal/topics/init">init</a></span>(
-  <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">ASL =</span> ASL, <span class="dt">ARS =</span> ARS, <span class="dt">ATE =</span> ATE, <span class="dt">AQS =</span> AQS),
+  <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">ASL =</span> ASL, <span class="dt">ARS =</span> ARS, <span class="dt">ATE =</span> ATE),
   <span class="dt">modules =</span> <span class="kw">root_modules</span>(
     <span class="kw">module</span>(
       <span class="dt">label =</span> <span class="st">"Study Information"</span>,
       <span class="dt">server =</span> <span class="cf">function</span>(input, output, session, datasets) {},
-      <span class="dt">ui =</span> <span class="cf">function</span>(id) {tags<span class="op">$</span><span class="kw">p</span>(<span class="st">"Info about data source"</span>)},
+      <span class="dt">ui =</span> <span class="cf">function</span>(id) {
+        <span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/tag">tagList</a></span>(
+          tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="st">"Info about data source:"</span>),
+          tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="st">"Radom data is used that has been created with the "</span>,
+                 tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">code</a></span>(<span class="st">"random.cdisc.data"</span>), <span class="st">"R package."</span>)
+        )
+      },
       <span class="dt">filters =</span> <span class="ot">NULL</span>
     ),
     <span class="kw">tm_data_table</span>(<span class="st">"Data Table"</span>),
     <span class="kw">tm_variable_browser</span>(<span class="st">"Variable Browser"</span>),
-    <span class="kw"><a href="reference/tm_demographic_table.html">tm_demographic_table</a></span>(
+    <span class="kw"><a href="reference/tm_t_summarize_variables.html">tm_t_summarize_variables</a></span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
+      <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">arm_var =</span> arm_var,
       <span class="dt">arm_var_choices =</span> arm_var_choices,
       <span class="dt">summarize_vars =</span>  dm_summarize_vars,
@@ -181,108 +195,92 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     ),
     <span class="kw">modules</span>(
       <span class="st">"Forest Plots"</span>,
-      <span class="kw"><a href="reference/tm_forest_survival.html">tm_forest_survival</a></span>(
+      <span class="kw"><a href="reference/tm_g_forest_tte.html">tm_g_forest_tte</a></span>(
         <span class="dt">label =</span> <span class="st">"Survival Forest Plot"</span>,
+        <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
+        <span class="dt">arm_var =</span> arm_var,
+        <span class="dt">arm_var_choices =</span> arm_var_choices,
+        <span class="dt">subgroup_var =</span> strata_var,
+        <span class="dt">subgroup_var_choices =</span> strata_var_choices,        
         <span class="dt">paramcd =</span> paramcd_tte,
         <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
-        <span class="dt">subgroup_var =</span> strata_var,
-        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
+        <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
+      ),
+      <span class="kw"><a href="reference/tm_g_forest_rsp.html">tm_g_forest_rsp</a></span>(
+        <span class="dt">label =</span> <span class="st">"Response Forest Plot"</span>,
+        <span class="dt">dataname =</span> <span class="st">"ARS"</span>,
         <span class="dt">arm_var =</span> arm_var,
         <span class="dt">arm_var_choices =</span> arm_var_choices,
-        <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>),
-        <span class="dt">cex =</span> <span class="fl">1.2</span>
-      ),
-      <span class="kw"><a href="reference/tm_forest_response.html">tm_forest_response</a></span>(
-        <span class="dt">label =</span> <span class="st">"Response Forest Plot"</span>,
+        <span class="dt">subgroup_var =</span> strata_var,
+        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
         <span class="dt">paramcd =</span> paramcd_rsp,
         <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
-        <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>),
-        <span class="dt">subgroup_var =</span> strata_var,
-        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
-        <span class="dt">arm_var =</span> arm_var,
-        <span class="dt">arm_var_choices =</span> arm_var_choices,
-        <span class="dt">cex =</span> <span class="fl">1.2</span>
+        <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
       )
     ),
-    <span class="kw"><a href="reference/tm_kmplot.html">tm_kmplot</a></span>(
+    <span class="kw"><a href="reference/tm_g_km.html">tm_g_km</a></span>(
       <span class="dt">label =</span> <span class="st">"Kaplan Meier Plot"</span>,
-      <span class="dt">treatment_var =</span> arm_var,
-      <span class="dt">treatment_var_choices =</span> arm_var_choices,
-      <span class="dt">endpoint =</span> paramcd_tte,
-      <span class="dt">endpoint_choices =</span> paramcd_choices_tte,
+      <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
+      <span class="dt">arm_var =</span> arm_var,
+      <span class="dt">arm_var_choices =</span> arm_var_choices,
+      <span class="dt">arm_ref_comp =</span> arm_ref_comp,
+      <span class="dt">paramcd =</span> paramcd_tte,
+      <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
       <span class="dt">facet_var =</span> facet_var,
       <span class="dt">facet_var_choices =</span> facet_var_choices,
       <span class="dt">strata_var =</span> strata_var,
       <span class="dt">strata_var_choices =</span> strata_var_choices,
       <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">1800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
     ), 
-    <span class="kw"><a href="reference/tm_response_table.html">tm_response_table</a></span>(
+    <span class="kw"><a href="reference/tm_t_rsp.html">tm_t_rsp</a></span>(
       <span class="dt">label =</span> <span class="st">"Response Table"</span>,
-      <span class="dt">paramcd =</span> <span class="st">"OVRSPI"</span>,
-      <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
-      <span class="dt">arm.var =</span> arm_var,
-      <span class="dt">arm.var_choices =</span> arm_var_choices,
-      <span class="dt">strata.var =</span> strata_var,
-      <span class="dt">strata.var_choices =</span> strata_var_choices
-    ),
-    <span class="kw"><a href="reference/tm_time_to_event_table.html">tm_time_to_event_table</a></span>(
-      <span class="dt">label =</span> <span class="st">"Time To Event Table"</span>,
-      <span class="dt">time_points =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>),
-      <span class="dt">time_points_choices =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>),
-      <span class="dt">time_points_unit =</span> <span class="st">"months"</span>,
+      <span class="dt">dataname =</span> <span class="st">"ARS"</span>,
       <span class="dt">arm_var =</span> arm_var,
       <span class="dt">arm_var_choices =</span> arm_var_choices,
-      <span class="dt">ref_arm =</span> ref_arm,
+      <span class="dt">arm_ref_comp =</span> arm_ref_comp,
+      <span class="dt">paramcd =</span> paramcd_rsp,
+      <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
+      <span class="dt">strata_var =</span> strata_var,
+      <span class="dt">strata_var_choices =</span> strata_var_choices
+    ),
+    <span class="kw"><a href="reference/tm_t_tte.html">tm_t_tte</a></span>(
+      <span class="dt">label =</span> <span class="st">"Time To Event Table"</span>,
+      <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
+      <span class="dt">arm_var =</span> arm_var,
+      <span class="dt">arm_var_choices =</span> arm_var_choices,
+      <span class="dt">arm_ref_comp =</span> arm_ref_comp,
       <span class="dt">paramcd =</span> paramcd_tte,
       <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
       <span class="dt">strata_var =</span> strata_var,
       <span class="dt">strata_var_choices =</span> strata_var_choices,
-      <span class="dt">pre_output =</span> shiny<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/shiny/topics/helpText">helpText</a></span>(<span class="st">"Note that the 'p-value (log-rank)' is currently not matching that of STREAM"</span>)
+      <span class="dt">time_points =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>),
+      <span class="dt">time_points_choices =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>),
+      <span class="dt">time_unit =</span> <span class="st">"month"</span>
     ),
-    <span class="kw"><a href="reference/tm_percentage_cross_table.html">tm_percentage_cross_table</a></span>(
+    <span class="kw"><a href="reference/tm_t_percentage_cross_table.html">tm_t_percentage_cross_table</a></span>(
       <span class="st">"Cross Table"</span>,
+      <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">x_var =</span> x_var_ct,
-      <span class="dt">y_var =</span> y_var_ct,
       <span class="dt">x_var_choices =</span> ct_var_choices,
+      <span class="dt">y_var =</span> y_var_ct,
       <span class="dt">y_var_choices =</span> ct_var_choices
     )
   ),
-  <span class="kw">modules</span>(
-    <span class="st">"QoL Change from Baseline"</span>,
-    <span class="kw"><a href="reference/tm_chgfbl_plot.html">tm_chgfbl_plot</a></span>(
-      <span class="dt">label =</span> <span class="st">"Change from Baseline Plot"</span>,
-      <span class="dt">paramcd =</span> paramcd_aqs,
-      <span class="dt">paramcd_choices =</span> paramcd_aqs_choices,
-      <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices,
-      <span class="dt">ytype =</span> <span class="st">"CHG"</span>,
-      <span class="dt">ytype_choices =</span> <span class="kw">c</span>(<span class="st">"CHG"</span>, <span class="st">"AVAL"</span>),
-      <span class="dt">errbar =</span> <span class="st">"SE"</span>,
-      <span class="dt">errbar_choices =</span> <span class="kw">c</span>(<span class="st">"SE"</span>, <span class="st">"SD"</span>, <span class="st">"95CI"</span>, <span class="st">"IQR"</span>)
-    ),
-    <span class="kw"><a href="reference/tm_chgfbl_table.html">tm_chgfbl_table</a></span>(
-      <span class="dt">label =</span> <span class="st">"Change from Baseline Table"</span>,
-      <span class="dt">paramcd =</span> paramcd_aqs,
-      <span class="dt">paramcd_choices =</span> paramcd_aqs_choices,
-      <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices
-    )
-  ),
-  <span class="dt">header =</span> <span class="kw">div</span>(
+  <span class="dt">header =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">div</a></span>(
     <span class="dt">class=</span><span class="st">""</span>,
     <span class="dt">style=</span><span class="st">"margin-bottom: 2px;"</span>,
-    tags<span class="op">$</span><span class="kw">h1</span>(<span class="st">"Example App With teal.oncology Teal Modules"</span>, tags<span class="op">$</span><span class="kw">span</span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
+    tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">h1</a></span>(<span class="st">"Example App With teal.tern Teal Modules"</span>, tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">span</a></span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
   ),
-  <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw">p</span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)
+  <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)
 )  
 
 <span class="kw">shinyApp</span>(x<span class="op">$</span>ui, x<span class="op">$</span>server)</code></pre></div>
-<p>Each teal module in <code>teal.oncology</code> will be explained in a separate vignette and is accessile via the articles tab on the <a href="http://pages.github.roche.com/Rpackages/teal.oncology">project site</a>.</p>
+<p>Each teal module in <code>teal.tern</code> will be explained in a separate vignette and is accessile via the articles tab on the <a href="http://pages.github.roche.com/Rpackages/teal.tern">project site</a>.</p>
 </div>
-<div id="local-installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#local-installation" class="anchor"></a>Local installation</h1>
-<p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code>.</p>
+<div id="deployment" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deployment" class="anchor"></a>Deployment</h2>
+<p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code>. Then add <code>.libPaths(c(normalizePath("./libs"), .libPaths()))</code> as the first line in <code>app.R</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## clone this project here:
 project.path &lt;-<span class="st"> </span><span class="kw">getwd</span>() <span class="co">#"/srv/shiny-server/users/..."</span>
 
@@ -302,63 +300,78 @@ orig_libpaths &lt;-<span class="st"> </span><span class="kw">.libPaths</span>()
 ))
 
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/random.cdisc.data.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/tern.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.0.1"</span>)
+
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.0.3"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(
-  <span class="dt">url =</span> <span class="st">"http://github.roche.com/Rpackages/teal.oncology.git"</span>,
-  <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>,
-  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+  <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
+  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
 <span class="kw">.libPaths</span>(orig_libpaths)</code></pre></div>
+</div>
 </div>
 
   </div>
 
   <div class="col-md-3" id="sidebar">
-    <h2>License</h2>
-<p>Copyright Roche</p>
-<h2>Developers</h2>
+    <div class="links">
+<h2>Links</h2>
 <ul class="list-unstyled">
-<li>Adrian Waddell <br><small class="roles"> Author, maintainer </small> </li>
-<li>Heng Wang <br><small class="roles"> Author </small> </li>
-<li>Mark Rothe <br><small class="roles"> Author </small> </li>
-<li>Yuyao Song <br><small class="roles"> Author </small> </li>
-<li>Chendi Liao <br><small class="roles"> Author </small> </li>
-<li>Xiao Mu Yo <br><small class="roles"> Author </small> </li>
-</ul>
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="http://pages.github.roche.com/Rpackages/teal.oncology">Project Website</a></li>
+<li>Report a bug at <br><a href="https://github.roche.com/Rpackages/teal.tern/issues">https://​github.roche.com/​Rpackages/​teal.tern/​issues</a>
+</li>
 </ul>
 </div>
+<div class="license">
+<h2>License</h2>
+<ul class="list-unstyled">
+<li>Copyright Roche</li>
+</ul>
+</div>
+<div class="developers">
+<h2>Developers</h2>
+<ul class="list-unstyled">
+<li>Adrian Waddell <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Heng Wang <br><small class="roles"> Author </small>  </li>
+<li>Yuyao Song <br><small class="roles"> Author </small>  </li>
+<li>Chendi Liao <br><small class="roles"> Author </small>  </li>
+<li>Mark Rothe <br><small class="roles"> Author </small>  </li>
+<li>Xiao Mu Yo <br><small class="roles"> Author </small>  </li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Adrian Waddell, Heng Wang, Mark Rothe, Yuyao Song, Chendi Liao, Xiao Mu Yo.</p>
+  <p>Developed by Adrian Waddell, Heng Wang, Yuyao Song, Chendi Liao, Mark Rothe, Xiao Mu Yo.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

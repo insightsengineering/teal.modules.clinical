@@ -1,3 +1,12 @@
+
+# teal.tern 0.5.0
+
+## Changes
+* package renamed to `teal.tern`
+* teal modules are now named according to the function names in `tern` prefixed
+with an `tm_`
+* harmonized argument names
+
 # teal.oncology 0.0.2
 
 ## Changes

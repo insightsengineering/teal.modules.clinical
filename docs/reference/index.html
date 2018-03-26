@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • teal.oncology</title>
+<title>Function reference • teal.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,16 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Function reference" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,12 +50,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">teal.oncology</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">teal.tern</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.5.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -61,7 +68,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -83,10 +90,7 @@
       <div class="row">
   <div class="col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.0.2</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
     <div class="contents">
@@ -107,41 +111,9 @@
         <tr>
           <!--  -->
           <td>
-            <p><code><a href="teal.oncology-package.html">teal.oncology-package</a></code> </p>
+            <p><code><a href="teal.tern-package.html">teal.tern-package</a></code> </p>
           </td>
-          <td><p>Teal Modules useful in Oncology</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-plots" class="hasAnchor"><a href="#section-plots" class="anchor"></a>Plots</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_chgfbl_plot.html">tm_chgfbl_plot</a></code> </p>
-          </td>
-          <td><p>Change from Baseline Plot Teal Module</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_forest_response.html">tm_forest_response</a></code> </p>
-          </td>
-          <td><p>Forest Response Plot teal module</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_forest_survival.html">tm_forest_survival</a></code> </p>
-          </td>
-          <td><p>Forest Survival Plot Teal Module</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_kmplot.html">tm_kmplot</a></code> </p>
-          </td>
-          <td><p>teal module for Kaplan-Meier Plot from grid</p></td>
+          <td><p>Teal Modules for TLGs in tern</p></td>
         </tr>
       </tbody><tbody>
         <tr>
@@ -153,67 +125,53 @@
         <tr>
           <!--  -->
           <td>
-            <p><code><a href="tm_chgfbl_table.html">tm_chgfbl_table</a></code> </p>
-          </td>
-          <td><p>Change from Baseline Table Teal Module</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_demographic_table.html">tm_demographic_table</a></code> </p>
-          </td>
-          <td><p>Demographic Table Teal Module</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tm_percentage_cross_table.html">tm_percentage_cross_table</a></code> </p>
+            <p><code><a href="tm_t_percentage_cross_table.html">tm_t_percentage_cross_table()</a></code> </p>
           </td>
           <td><p>Cross table based on rtables</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="tm_response_table.html">tm_response_table</a></code> </p>
+            <p><code><a href="tm_t_rsp.html">tm_t_rsp()</a></code> </p>
           </td>
           <td><p>Response Table Teal Module</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="tm_time_to_event_table.html">tm_time_to_event_table</a></code> </p>
+            <p><code><a href="tm_t_summarize_variables.html">tm_t_summarize_variables()</a></code> </p>
           </td>
-          <td><p>Time To Event Table teal module</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility Functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="add_labels.html">add_labels</a></code> </p>
-          </td>
-          <td><p>re-attach labels to variables</p></td>
+          <td><p>Summarize Variable Teal Module</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="labels_over_names.html">labels_over_names</a></code> </p>
+            <p><code><a href="tm_t_tte.html">tm_t_tte()</a></code> </p>
           </td>
-          <td><p>return a vector with the variable labels and names if variable labels do not exist</p></td>
+          <td><p>Time To Event Table Teal Module</p></td>
         </tr>
       </tbody><tbody>
         <tr>
           <th colspan="2">
-            <h2 id="section-deprecated" class="hasAnchor"><a href="#section-deprecated" class="anchor"></a>Deprecated</h2>
+            <h2 id="section-graphs" class="hasAnchor"><a href="#section-graphs" class="anchor"></a>Graphs</h2>
             <p class="section-desc"></p>
           </th>
         </tr>
         <tr>
           <!--  -->
           <td>
-            <p><code><a href="tm_kmplot_survminer.html">tm_kmplot_survminer</a></code> </p>
+            <p><code><a href="tm_g_forest_rsp.html">tm_g_forest_rsp()</a></code> </p>
           </td>
-          <td><p>teal module for KM plot</p></td>
+          <td><p>Forest Response Plot teal module</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="tm_g_forest_tte.html">tm_g_forest_tte()</a></code> </p>
+          </td>
+          <td><p>Forest Survival Plot teal Module</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="tm_g_km.html">tm_g_km()</a></code> </p>
+          </td>
+          <td><p>teal module for Kaplan-Meier Plot from grid</p></td>
         </tr>
       </tbody>
       </table>
@@ -224,21 +182,19 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-"></a></li>
-      <li><a href="#section-plots">Plots</a></li>
       <li><a href="#section-tables">Tables</a></li>
-      <li><a href="#section-utility-functions">Utility Functions</a></li>
-      <li><a href="#section-deprecated">Deprecated</a></li>
+      <li><a href="#section-graphs">Graphs</a></li>
     </ul>
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Adrian Waddell, Heng Wang, Mark Rothe, Yuyao Song, Chendi Liao, Xiao Mu Yo.</p>
+  <p>Developed by Adrian Waddell, Heng Wang, Yuyao Song, Chendi Liao, Mark Rothe, Xiao Mu Yo.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -246,3 +202,4 @@
 
   </body>
 </html>
+

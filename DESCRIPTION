@@ -1,35 +1,43 @@
-Package: teal.oncology
-Title: Teal Modules useful for analyzing clinical oncology trials data
-Version: 0.0.2
+Package: teal.tern
+Title: Teal Modules for TLG Functions in Tern
+Version: 0.5.0
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
-  person("Heng", "Wang", email = "", role = c("aut")),
-  person("Mark", "Rothe", email = "", role = c("aut")),
-  person("Yuyao", "Song", email = "", role = c("aut")),
-  person("Chendi", "Liao", email = "", role = c("aut")),
-  person("Xiao", "Mu Yo", email = "", role = c("aut"))
+  person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),
+  person("Yuyao", "Song", email = "yuyao.song@roche.com", role = c("aut")),
+  person("Chendi", "Liao", email = "chendi.liao@roche.com", role = c("aut")),
+  person("Mark", "Rothe", role = c("aut")),
+  person("Xiao", "Mu Yo", role = c("aut"))
   )
-Description: Teal modules
+Description: Provides teal modules for outputs defined in the tern package.
+  The teal modules add an encoding panel to interactively change the encoding within teal.
 Depends:
   R (>= 3.3),
-  teal,
-  tern
-Imports:
-  dplyr,
   shiny,
+  teal (>= 0.0.3),
+  tern (>= 0.5)
+Imports:
+  methods,
+  stats,
+  utils,
+  grid,
+  gridExtra,
+  rtables,
+  survival,
   forcats,
-  tidyr
+  haven
 Suggests:
   testthat,
   knitr,
-  rmarkdown,
-  ggplot2,
-  survminer
+  rmarkdown
 License: Copyright Roche
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+URL: https://pages.github.roche.com/Rpackages/teal.tern/, https://github.roche.com/Rpackages/teal.tern/
+BugReports: https://github.roche.com/Rpackages/teal.tern/issues
 Additional_repositories: 
   https://github.roche.com/Rpackages/teal,
-  https://github.roche.com/Rpackages/tern
+  https://github.roche.com/Rpackages/tern,
+  https://github.com/Roche/rtables

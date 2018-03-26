@@ -5,16 +5,18 @@
 #' 
 #' @noRd
 #' 
+#' @importFrom stats uniroot
+#' 
 #' @return  list with absolute and percentage cross table
 #' 
 #' 
 #' @examples 
 #' 
+#' \dontrun{
 #' n <- 100
 #' tGE <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.2, .8))
 #' IHC <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.6, .4))
 #' 
-#' \dontrun{
 #' library(atezo.data)
 #' ASL <- asl(com.roche.cdpt7722.wo29637.rl)
 #' 
@@ -25,9 +27,6 @@
 #' plot(x)
 #' 
 #' venn2(x = IC, y = TC, "biomarker IT", "biamrker TC")
-#' 
-#' }
-#' 
 #' 
 #' x = c(rep(T,5), rep(F,3), rep(T, 4), rep(F, 9))
 #' y = c(rep(T,5), rep(F,3), rep(F, 4), rep(T, 9))
@@ -42,7 +41,7 @@
 #' table(x,y)
 #' y <- venn2(x, y, "X", "Y")
 #' plot(y)
-#' 
+#' }
 venn2 <- function(x, y, xlab, ylab) {
 
 
@@ -73,6 +72,7 @@ venn2 <- function(x, y, xlab, ylab) {
 #' 
 #' @noRd
 #' 
+#' @importFrom graphics plot
 #' @import grid
 #' @export 
 plot.venn2 <- function(x, ...) {
