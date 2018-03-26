@@ -16,7 +16,7 @@ devtools::install_github(
   host = "https://github.roche.com/api/v3"
 )
 
-devtools::install_github("Roche/rtables", ref = "v0.0.1")
+devtools::install_github("Roche/rtables", ref = "v0.1.0")
 
 devtools::install_github(
   repo = "Rpackages/tern",
@@ -253,7 +253,7 @@ devtools::install_github(
   host = "https://github.roche.com/api/v3"
 )
 
-devtools::install_github("Roche/rtables", ref = "v0.0.1")
+devtools::install_github("Roche/rtables", ref = "v0.1.0")
 
 devtools::install_github(
   repo = "Rpackages/tern",
