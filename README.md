@@ -26,7 +26,7 @@ devtools::install_github(
 
 devtools::install_github(
   repo = "Rpackages/teal",
-  ref = "v0.0.4", 
+  ref = "v0.0.3", 
   host = "https://github.roche.com/api/v3"
 )
 
@@ -215,7 +215,7 @@ shinyApp(x$ui, x$server)
 ```
 
 
-Each teal module in `teal.oncology` will be explained in a separate vignette and
+Each teal module in `teal.tern` will be explained in a separate vignette and
 is accessile via the articles tab on the [project site][ghs].
 
 
@@ -263,7 +263,7 @@ devtools::install_github(
 
 devtools::install_github(
   repo = "Rpackages/teal",
-  ref = "v0.0.4", 
+  ref = "v0.0.3", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
@@ -279,4 +279,4 @@ devtools::install_github(
 ```
 
 
-[ghs]: http://pages.github.roche.com/Rpackages/teal.oncology
+[ghs]: http://pages.github.roche.com/Rpackages/teal.tern
