@@ -25,7 +25,13 @@ devtools::install_github(
 )
 
 devtools::install_github(
-  repo = "Rpackages/teal.oncology",
+  repo = "Rpackages/teal",
+  ref = "v0.0.4", 
+  host = "https://github.roche.com/api/v3"
+)
+
+devtools::install_github(
+  repo = "Rpackages/teal.tern",
   ref = "v0.5.0", 
   host = "https://github.roche.com/api/v3"
 )
@@ -41,14 +47,15 @@ application](https://shiny.rstudio.com/articles/app-formats.html).
 ## App setup, app.R
 
 ```r
-library(teal.oncology)
+library(teal.tern)
 library(random.cdisc.data)
-library(dplyr)
+library(htmltools) # for study source
 
 ## Generate Data
 ASL <- radam("ASL", N = 600,
              arm_choices = c("Arm A", "Arm B", "Arm C"),
              start_with = list(
+               ARM1 = c("DUMMY A", "DUMMY B"),
                STRATM1 = paste("STRATM1", 1:3),
                STRATM2 = paste("STRATM2", 1:4),
                TCICLVL2 = paste("STRATM2", letters[1:3]),
@@ -58,16 +65,13 @@ ASL <- radam("ASL", N = 600,
                ITTWTFL = c(T,F),
                ITTGE2FL = c(T,F),
                ITTGE3FL = c(T,F)
-             )) %>%
-  mutate(ARM1 = recode(ARM, "Arm A" = "DUMMY 1", "Arm B" = "DUMMY 2", "Arm C" = "DUMMY 3"))
-ATE <- merge(ASL, radam("ATE", ADSL = ASL), all = TRUE)
-ARS <- merge(ASL, radam("ARS", ADSL = ASL))
-AQS <- radam("AQS", ADSL = ASL)
+             )) 
+ATE <- radam("ATE", ADSL = ASL)
+ARS <- radam("ARS", ADSL = ASL)
 
-## Configure Reused Information
-arm_var <- "ARM1"
-arm_var_choices <- names(ASL)[(sapply(ASL, is.character))]  %>%
-  intersect(names(ASL))
+## Reusable Configuration For Modules
+arm_var <- "ARM"
+arm_var_choices <- c("ARM", "ARMCD", "ARM1", "STRATM1", "STRATM2")
 
 strata_var <- c("STRATM1", "STRATM2", "TCICLVL2") %>%
   intersect(names(ASL))
@@ -89,32 +93,38 @@ paramcd_rsp <- "OVRSPI"
 paramcd_choices_rsp <- c("BESRSPI", "OVRINV", "OVRSPI") %>% 
   intersect(ARS$PARAMCD)
 
-tmp.p.aqs <- AQS %>% select(PARAM, PARAMCD) %>% distinct() %>% mutate_all(as.character)
-paramcd_aqs_choices <- setNames(tmp.p.aqs$PARAMCD, paste(tmp.p.aqs$PARAMCD, tmp.p.aqs$PARAM, sep = " - "))
-paramcd_aqs <- paramcd_aqs_choices[1]
-
 x_var_ct <- "T1I1FL"
 y_var_ct <- "T0I0FL"
 ct_var_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE3FL") %>%
   intersect(names(ASL))
 
-# unfortunatly this is only implemented for the tte_tbl currently
-ref_arm <- sort(unique(ASL$ARM1))[1]
+# reference & comparison arm selection when switching the arm variable
+arm_ref_comp <- list(
+  ARM = list(ref="Arm A", comp=c("Arm B", "Arm C")),
+  ARM1 = list(ref="DUMMY B", comp="DUMMY A")
+)
 
 ## Setup App
 x <- teal::init(
-  data = list(ASL = ASL, ARS = ARS, ATE = ATE, AQS = AQS),
+  data = list(ASL = ASL, ARS = ARS, ATE = ATE),
   modules = root_modules(
     module(
       label = "Study Information",
       server = function(input, output, session, datasets) {},
-      ui = function(id) {tags$p("Info about data source")},
+      ui = function(id) {
+        tagList(
+          tags$p("Info about data source:"),
+          tags$p("Radom data is used that has been created with the ",
+                 tags$code("random.cdisc.data"), "R package.")
+        )
+      },
       filters = NULL
     ),
     tm_data_table("Data Table"),
     tm_variable_browser("Variable Browser"),
-    tm_demographic_table(
+    tm_t_summarize_variables(
       label = "Demographic Table",
+      dataname = "ASL",
       arm_var = arm_var,
       arm_var_choices = arm_var_choices,
       summarize_vars =  dm_summarize_vars,
@@ -122,97 +132,81 @@ x <- teal::init(
     ),
     modules(
       "Forest Plots",
-      tm_forest_survival(
+      tm_g_forest_tte(
         label = "Survival Forest Plot",
+        dataname = "ATE",
+        arm_var = arm_var,
+        arm_var_choices = arm_var_choices,
+        subgroup_var = strata_var,
+        subgroup_var_choices = strata_var_choices,        
         paramcd = paramcd_tte,
         paramcd_choices = paramcd_choices_tte,
-        subgroup_var = strata_var,
-        subgroup_var_choices = strata_var_choices,
+        plot_height = c(800, 200, 4000)
+      ),
+      tm_g_forest_rsp(
+        label = "Response Forest Plot",
+        dataname = "ARS",
         arm_var = arm_var,
         arm_var_choices = arm_var_choices,
-        plot_height = c(800, 200, 4000),
-        cex = 1.2
-      ),
-      tm_forest_response(
-        label = "Response Forest Plot",
+        subgroup_var = strata_var,
+        subgroup_var_choices = strata_var_choices,
         paramcd = paramcd_rsp,
         paramcd_choices = paramcd_choices_rsp,
-        plot_height = c(800, 200, 4000),
-        subgroup_var = strata_var,
-        subgroup_var_choices = strata_var_choices,
-        arm_var = arm_var,
-        arm_var_choices = arm_var_choices,
-        cex = 1.2
+        plot_height = c(800, 200, 4000)
       )
     ),
-    tm_kmplot(
+    tm_g_km(
       label = "Kaplan Meier Plot",
-      treatment_var = arm_var,
-      treatment_var_choices = arm_var_choices,
-      endpoint = paramcd_tte,
-      endpoint_choices = paramcd_choices_tte,
+      dataname = "ATE",
+      arm_var = arm_var,
+      arm_var_choices = arm_var_choices,
+      arm_ref_comp = arm_ref_comp,
+      paramcd = paramcd_tte,
+      paramcd_choices = paramcd_choices_tte,
       facet_var = facet_var,
       facet_var_choices = facet_var_choices,
       strata_var = strata_var,
       strata_var_choices = strata_var_choices,
       plot_height = c(1800, 200, 4000)
     ), 
-    tm_response_table(
+    tm_t_rsp(
       label = "Response Table",
-      paramcd = "OVRSPI",
-      paramcd_choices = paramcd_choices_rsp,
-      arm.var = arm_var,
-      arm.var_choices = arm_var_choices,
-      strata.var = strata_var,
-      strata.var_choices = strata_var_choices
-    ),
-    tm_time_to_event_table(
-      label = "Time To Event Table",
-      time_points = c(6, 12, 18),
-      time_points_choices = c(6, 12, 18, 24, 30, 36, 42),
-      time_points_unit = "months",
+      dataname = "ARS",
       arm_var = arm_var,
       arm_var_choices = arm_var_choices,
-      ref_arm = ref_arm,
+      arm_ref_comp = arm_ref_comp,
+      paramcd = paramcd_rsp,
+      paramcd_choices = paramcd_choices_rsp,
+      strata_var = strata_var,
+      strata_var_choices = strata_var_choices
+    ),
+    tm_t_tte(
+      label = "Time To Event Table",
+      dataname = "ATE",
+      arm_var = arm_var,
+      arm_var_choices = arm_var_choices,
+      arm_ref_comp = arm_ref_comp,
       paramcd = paramcd_tte,
       paramcd_choices = paramcd_choices_tte,
       strata_var = strata_var,
       strata_var_choices = strata_var_choices,
-      pre_output = shiny::helpText("Note that the 'p-value (log-rank)' is currently not matching that of STREAM")
+      time_points = c(6, 12, 18),
+      time_points_choices = c(6, 12, 18, 24, 30, 36, 42),
+      time_unit = "month"
     ),
-    tm_percentage_cross_table(
+    tm_t_percentage_cross_table(
       "Cross Table",
+      dataname = "ASL",
       x_var = x_var_ct,
-      y_var = y_var_ct,
       x_var_choices = ct_var_choices,
+      y_var = y_var_ct,
       y_var_choices = ct_var_choices
-    )
-  ),
-  modules(
-    "QoL Change from Baseline",
-    tm_chgfbl_plot(
-      label = "Change from Baseline Plot",
-      paramcd = paramcd_aqs,
-      paramcd_choices = paramcd_aqs_choices,
-      arm_var = arm_var,
-      arm_var_choices = arm_var_choices,
-      ytype = "CHG",
-      ytype_choices = c("CHG", "AVAL"),
-      errbar = "SE",
-      errbar_choices = c("SE", "SD", "95CI", "IQR")
-    ),
-    tm_chgfbl_table(
-      label = "Change from Baseline Table",
-      paramcd = paramcd_aqs,
-      paramcd_choices = paramcd_aqs_choices,
-      arm_var = arm_var,
-      arm_var_choices = arm_var_choices
     )
   ),
   header = div(
     class="",
     style="margin-bottom: 2px;",
-    tags$h1("Example App With teal.oncology Teal Modules", tags$span("SPA", class="pull-right"))
+    tags$h1("Example App With teal.tern Teal Modules", tags$span("SPA", class="pull-right"))
   ),
   footer = tags$p(class="text-muted", "Info About Authors")
 )  
@@ -251,30 +245,34 @@ orig_libpaths <- .libPaths()
 ))
 
 
-devtools::install_github("Roche/rtables", upgrade_dependencies = FALSE, build_vignettes = FALSE)
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/random.cdisc.data.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github(
+  repo = "Rpackages/random.cdisc.data",
+  ref = "v0.1.0", 
+  host = "https://github.roche.com/api/v3"
 )
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/tern.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github("Roche/rtables", ref = "v0.0.1")
+
+devtools::install_github(
+  repo = "Rpackages/tern",
+  ref = "v0.5.0", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/teal.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github(
+  repo = "Rpackages/teal",
+  ref = "v0.0.4", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
-devtools::install_git(
-  url = "http://github.roche.com/Rpackages/teal.oncology.git",
-  build_vignettes = FALSE,
-  upgrade_dependencies = FALSE
+devtools::install_github(
+  repo = "Rpackages/teal.tern",
+  ref = "v0.5.0", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
 .libPaths(orig_libpaths)
