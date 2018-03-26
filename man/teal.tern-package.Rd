@@ -8,6 +8,15 @@
 \description{
 Teal Modules for TLGs in tern
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://pages.github.roche.com/Rpackages/teal.tern/}
+  \item \url{https://github.roche.com/Rpackages/teal.tern/}
+  \item Report bugs at \url{https://github.roche.com/Rpackages/teal.tern/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Adrian Waddell \email{adrian.waddell@roche.com}
 
