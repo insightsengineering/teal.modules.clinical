@@ -1,5 +1,5 @@
 Package: teal.tern
-Title: Teal Modules For TLGs in tern
+Title: Teal Modules for TLG Functions in Tern
 Version: 0.5.0
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
@@ -14,7 +14,7 @@ Description: Provides teal modules for outputs defined in the tern package.
 Depends:
   R (>= 3.3),
   shiny,
-  teal,
+  teal (>= 0.0.3),
   tern (>= 0.5)
 Imports:
   methods,
@@ -34,6 +34,9 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+URL: https://pages.github.roche.com/Rpackages/teal.tern/, https://github.roche.com/Rpackages/teal.tern/
+BugReports: https://github.roche.com/Rpackages/teal.tern/issues
 Additional_repositories: 
   https://github.roche.com/Rpackages/teal,
-  https://github.roche.com/Rpackages/tern
+  https://github.roche.com/Rpackages/tern,
+  https://github.com/Roche/rtables
