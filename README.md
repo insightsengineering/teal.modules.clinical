@@ -5,6 +5,8 @@ The `teal.tern` R package contains interactive `teal` modules for the outputs
 (TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
 
+A test application with random data can be found [here](https://shiny.roche.com/users/waddella/teal_tern/).
+
 # Installation
 
 Please install the package dependencies as follows:
