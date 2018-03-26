@@ -143,8 +143,9 @@ srv_g_km <- function(input, output, session, datasets,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
     ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
-    module = "tm_kmplot"
+    module = "tm_g_km"
   )
+  
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
@@ -171,7 +172,11 @@ srv_g_km <- function(input, output, session, datasets,
     chunk_vars <<- ""
     chunk_data <<- ""
     chunk_facet <<- ""
+    formula_km <<- ""
+    formula_coxph <<- ""
+    info_coxph <<- ""
     chunk_t_kmplot <<- "# No Calculated"
+
     
     validate_standard_inputs(
       ASL = ASL_FILTERED,
@@ -196,11 +201,13 @@ srv_g_km <- function(input, output, session, datasets,
       combine_comp_arms <- .(combine_comp_arms)
     })
     
+    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var, facet_var)
     chunk_data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
       
-      ANL <- merge(ASL_p, ANL_p,
+      ANL <- merge(ASL_p[, asl_vars],
+                   ANL_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR")],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
