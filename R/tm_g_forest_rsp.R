@@ -143,6 +143,14 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
   })
   
 
+  chunks <- list(
+    vars = "# Not Calculated",
+    data = "# Not Calculated",
+    t_forest_rsp = "# Not Calculated",
+    row_name_wrap = "# Not Calculated",
+    p_forest_rsp = "# Not Calculated"
+  )
+  
   output$forest_plot <- renderPlot({
 
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
@@ -159,11 +167,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, arm_var, ref_arm, comp_arm, subgroup_var)
 
     # Delete chunks that are used for reproducible code
-    chunk_vars <<- ""
-    chunk_data <<- ""
-    chunk_t_forest_rsp <<- "# Not Calculated"
-    chunk_row_name_wrap <<- ""
-    chunk_p_forest_rsp <<- "# Not Calculated"
+    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
     
     # validate your input values
     validate_standard_inputs(
@@ -184,7 +188,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
   
-    chunk_vars <<- bquote({
+    chunks$vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
     })
@@ -192,7 +196,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     asl_vars <- c("USUBJID", "STUDYID", arm_var, subgroup_var)
     anl_vars <- c("USUBJID", "STUDYID", "AVALC")
     
-    chunk_data <<- bquote({
+    chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
@@ -209,10 +213,10 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       levels(ANL[[.(arm_var)]]) <- sapply(levels(ANL[[.(arm_var)]]), function(x) paste(strwrap(x, width = 15), collapse = "\n"))
     })
     
-    eval(chunk_data)
+    eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
-    chunk_t_forest_rsp <<- call(
+    chunks$t_forest_rsp <<- call(
       "t_forest_rsp",
       rsp = bquote(ANL$AVALC %in% .(responders)),
       col_by = bquote(ANL[[.(arm_var)]]),
@@ -222,16 +226,16 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       dense_header = TRUE
     ) 
     
-    tbl <- try(eval(chunk_t_forest_rsp))
+    tbl <- try(eval(chunks$t_forest_rsp))
 
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
     
-    chunk_row_name_wrap <<- quote({
+    chunks$row_name_wrap <<- quote({
       row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
     })
     
-    chunk_p_forest_rsp <<- call(
+    chunks$p_forest_rsp <<- call(
       "g_forest",
       tbl = quote(tbl),
       col_x = 8,
@@ -243,8 +247,8 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       x_at = c(.1, 1, 10)
     )
       
-    eval(chunk_row_name_wrap)
-    eval(chunk_p_forest_rsp)
+    eval(chunks$row_name_wrap)
+    eval(chunks$p_forest_rsp)
 #    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
   })
   
@@ -262,15 +266,15 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data)),
+      remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
-      paste("tbl <-", paste(deparse(chunk_t_forest_rsp), collapse = "\n")),
+      paste("tbl <-", paste(deparse(chunks$t_forest_rsp), collapse = "\n")),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_row_name_wrap)),
+      remove_enclosing_curly_braces(deparse(chunks$row_name_wrap)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_p_forest_rsp))
+      remove_enclosing_curly_braces(deparse(chunks$p_forest_rsp))
     ), collapse = "\n")
     
     # .log("show R code")

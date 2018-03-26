@@ -86,6 +86,10 @@ ui_t_summarize_variables <- function(id, ...) {
 
 srv_t_summarize_variables <- function(input, output, session, datasets, dataname, code_data_processing) {
   
+  chunks <- list(
+    analysis = "# Not Calculated"
+  )
+  
   output$table <- renderUI({
 
     ANL_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
@@ -93,7 +97,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     arm_var <- input$arm_var
     summarize_vars <- input$summarize_vars
     
-    chunk_analysis <<- "# Not Calculated"
+    chunks$analysis <<- "# Not Calculated"
     
     validate_has_data(ANL_f, min_nrow = 15)    
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
@@ -104,7 +108,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, ANL_f)
     
-    chunk_analysis <<- call(
+    chunks$analysis <<- call(
       "t_summarize_variables",
       data = bquote(.(as.name(data_name))[, .(summarize_vars), drop=FALSE]),
       col_by = bquote(as.factor(.(as.name(data_name))[[.(arm_var)]])),
@@ -112,7 +116,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
       useNA_factors = "ifany" 
     )
 
-    tbl <- try(eval(chunk_analysis))
+    tbl <- try(eval(chunks$analysis))
     
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
     
@@ -134,7 +138,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_analysis, width.cutoff = 60))
+      remove_enclosing_curly_braces(deparse(chunks$analysis, width.cutoff = 60))
     ), collapse = "\n")
     
     # .log("show R code")

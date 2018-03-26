@@ -201,6 +201,12 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
     
   })
   
+  chunks <- list(
+    vars = "# No Calculated",
+    data = "# No Calculated",
+    t_rsp = "# No Calculated"
+  )
+  
   output$response_table <-  renderUI({
     
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
@@ -220,13 +226,9 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
     #as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, arm_var, ref_arm, comp_arm,
     #          combine_comp_arms, strata_var)
     
-    
-    # Chunks
-    chunk_vars <<- ""
-    chunk_data <<- ""
-    chunk_t_rsp <<- "# No Calculated"
-      
-      
+    # Delete chunks that are used for reproducible code
+    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
+
     # Validate your input
     validate_standard_inputs(
       ASL = ASL_FILTERED,
@@ -250,14 +252,14 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
     
     ## Now comes the analysis code
-    chunk_vars <<- bquote({
+    chunks$vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
       combine_comp_arms <- .(combine_comp_arms)
     })
     
-    chunk_data <<- bquote({
+    chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, 
                       .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
@@ -281,11 +283,11 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
       ANL[[.(arm_var)]] <- droplevels(ARM)
     })
     
-    eval(chunk_data)
+    eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
     
-    chunk_t_rsp <<- call(
+    chunks$t_rsp <<- call(
       "t_rsp",
       rsp = bquote(ANL$AVALC %in% .(responders)),
       col_by = bquote(ANL[[.(arm_var)]]),
@@ -293,7 +295,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
       strata_data = if (length(strata_var) >0) bquote(ANL[, .(strata_var), drop=FALSE]) else NULL
     )
     
-    tbl <- try(eval(chunk_t_rsp))
+    tbl <- try(eval(chunks$t_rsp))
     
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
     
@@ -315,11 +317,11 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data)),
+      remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
-      deparse(chunk_t_rsp)
+      deparse(chunks$t_rsp)
     ), collapse = "\n")
     
     # .log("show R code")

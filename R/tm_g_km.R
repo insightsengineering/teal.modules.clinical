@@ -153,6 +153,16 @@ srv_g_km <- function(input, output, session, datasets,
     plotOutput(session$ns("kmplot"), height=plot_height)
   })
   
+  chunks <- list(
+    vars = "# No Calculated",
+    data = "# No Calculated",
+    facet = "# No Calculated",
+    formula_km = "# No Calculated",
+    formula_coxph = "# No Calculated",
+    info_coxph = "# No Calculated",
+    t_kmplot = "# No Calculated"
+  )
+  
   
   output$kmplot <- renderPlot({
     ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
@@ -169,14 +179,8 @@ srv_g_km <- function(input, output, session, datasets,
     if (length(facet_var) == 0) facet_var <<- NULL
     if (length(strata_var) == 0) strata_var <- NULL
     
-    chunk_vars <<- ""
-    chunk_data <<- ""
-    chunk_facet <<- ""
-    formula_km <<- ""
-    formula_coxph <<- ""
-    info_coxph <<- ""
-    chunk_t_kmplot <<- "# No Calculated"
-
+    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
+    
     
     validate_standard_inputs(
       ASL = ASL_FILTERED,
@@ -193,7 +197,7 @@ srv_g_km <- function(input, output, session, datasets,
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED)
     
-    chunk_vars <<- bquote({
+    chunks$vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
@@ -202,11 +206,11 @@ srv_g_km <- function(input, output, session, datasets,
     })
     
     asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var, facet_var)
-    chunk_data <<- bquote({
+    chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
       
-      ANL <- merge(ASL_p[, asl_vars],
+      ANL <- merge(ASL_p[, .(asl_vars)],
                    ANL_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR")],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
@@ -220,30 +224,33 @@ srv_g_km <- function(input, output, session, datasets,
       ANL[[.(arm_var)]] <- droplevels(ARM)
     })
     
-    eval(chunk_data)
+    eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
-    formula_km <<- eval(bquote({
+    chunks$formula_km <<- eval(bquote({
       as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
     }))
     
-    formula_coxph <<- eval(bquote({
+    chunks$formula_coxph <<- eval(bquote({
       as.formula(
         paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var), 
                ifelse(is.null(strata_var), "", paste0("+ strata(", paste(.(strata_var), collapse = ","), ")")))
       )
     }))
     
-    info_coxph <<- eval(bquote({
+    chunks$info_coxph <<- eval(bquote({
       paste0("Cox Proportional Model: ", 
              ifelse(is.null(strata_var), "Unstratified Analysis", paste0("Stratified by ", paste(.(strata_var), collapse = ","))))
       
     }))
     
+    formula_km <- chunks$formula_km
+    formula_coxph <- chunks$formula_coxph
+    info_coxph <- chunks$info_coxph
     
     if (is.null(facet_var)){
       
-      chunk_t_kmplot <<- bquote({
+      chunks$t_kmplot <<- bquote({
         fit_km <- survfit(formula_km, data = ANL, conf.type = "plain")
         fit_coxph <- coxph(formula_coxph, data = ANL, ties = "exact")
         tbl_km <- t_km(fit_km)
@@ -263,11 +270,10 @@ srv_g_km <- function(input, output, session, datasets,
         grid.draw(p)
         
       })
-    }
-    
-    if (!is.null(facet_var)){
       
-      chunk_facet <<- bquote({
+    } else {
+      
+      chunks$facet <<- bquote({
         facet_df <- ANL[.(facet_var)] 
         
         lab <- Map(function(var, x) paste0(var, "= '", x, "'"), 
@@ -281,9 +287,9 @@ srv_g_km <- function(input, output, session, datasets,
         xticks <- max(1, floor(max_min/10))
       })
       
-      eval(chunk_facet)
+      eval(chunks$facet)
       
-      chunk_t_kmplot <<- bquote({
+      chunks$t_kmplot <<- bquote({
         grid.newpage()
         pl <-  Map(function(x, label){
           x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
@@ -308,12 +314,13 @@ srv_g_km <- function(input, output, session, datasets,
             p <- addGrob(p, coxph_grob)
           }
         }, dfs, levels(lab))
+        
         grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1) )
       })
       
     }
     
-    eval(chunk_t_kmplot)
+    eval(chunks$t_kmplot)
     
   })
   
@@ -330,20 +337,23 @@ srv_g_km <- function(input, output, session, datasets,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data)),
+      remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
-      paste0("formula_km <- ", deparse(formula_km)),
+      paste0("formula_km <- ", deparse(chunks$formula_km)),
       "",
-      paste0("formula_coxph  <- ", deparse(formula_coxph)),
+      paste0("formula_coxph  <- ", deparse(chunks$formula_coxph)),
       "",
-      paste0("info_coxph <- ", deparse(info_coxph)),
+      paste0("info_coxph <- ", deparse(chunks$info_coxph)),
       "",
-      if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunk_facet)),
-      "",
-      remove_enclosing_curly_braces(deparse(chunk_t_kmplot))
-      
+      if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunks$facet)),
+      remove_enclosing_curly_braces(deparse(chunks$t_kmplot)),
+      if (!is.null(facet_var)) c(
+        "",
+        "# or plot each kaplan meier plot individually with",
+        "# grid.newpage(); grid.draw(pl[[1]])"
+      )
     ), collapse = "\n")
     
     # .log("show R code")

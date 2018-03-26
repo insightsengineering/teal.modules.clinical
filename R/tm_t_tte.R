@@ -215,6 +215,12 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     module = "tm_t_tte"
   )
   
+  chunks <- list(
+    vars = "# No Calculated",
+    data = "# No Calculated",
+    t_tte = "# No Calculated"
+  )
+  
   # Create output
   output$tte_table <- renderUI({
 
@@ -237,10 +243,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     time_points <- if (length(time_points) == 0) NULL else sort(time_points)
 
     # Delete chunks that are used for reproducible code
-    chunk_vars <<- ""
-    chunk_data <<- ""
-    chunk_t_tte <<- "# No Calculated"
-    
+    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
     
     # validate your input values
     validate_standard_inputs(
@@ -265,14 +268,14 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
     
     ## Now comes the analysis code
-    chunk_vars <<- bquote({
+    chunks$vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
       combine_comp_arms <- .(combine_comp_arms)
     })
 
-    chunk_data <<- bquote({
+    chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
       ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
@@ -295,11 +298,11 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       
     })
 
-    eval(chunk_data)
+    eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
     
-    chunk_t_tte <<- call(
+    chunks$t_tte <<- call(
       name = "t_tte", 
       formula = as.formula(paste0(
         "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
@@ -311,7 +314,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       time_unit = time_unit
     )
     
-    tbl <- try(eval(chunk_t_tte))
+    tbl <- try(eval(chunks$t_tte))
     
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
     
@@ -332,11 +335,11 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunk_vars)),
+      remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunk_data)),
+      remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
-      deparse(chunk_t_tte)
+      deparse(chunks$t_tte)
     ), collapse = "\n")
     
     # .log("show R code")
