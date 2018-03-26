@@ -28,8 +28,6 @@
 #' ))
 #' ARS <- radam("ARS", ADSL = ASL)
 #' 
-#' ASL$ARMCD <- factor(gsub("ARM", "DUMMY", as.character(ASL$ARM)))
-#' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ARS = ARS),
 #'   modules = root_modules(
