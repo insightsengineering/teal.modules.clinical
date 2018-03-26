@@ -223,8 +223,10 @@ is accessile via the articles tab on the [project site][ghs].
 
 Save the following code in a file `install.R` and run this to reinstall all the
 dependencies local relative to the working directory (also on the shiny server).
-Then execute the script with `Rscript install.R`. Then add 
-`.libPaths(c(normalizePath("./libs"), .libPaths()))` as the first line in `app.R`.
+Then execute the script with `Rscript install.R` (note if you `ssh` into
+`r.roche.com` then you need to specify the correct R version, e.g. with
+`Rscript-3.3.1`). Then add `.libPaths(c(normalizePath("./libs"), .libPaths()))`
+as the first line in `app.R`.
 
 ```r
 ## clone this project here:

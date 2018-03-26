@@ -280,7 +280,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <div id="deployment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#deployment" class="anchor"></a>Deployment</h2>
-<p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code>. Then add <code>.libPaths(c(normalizePath("./libs"), .libPaths()))</code> as the first line in <code>app.R</code>.</p>
+<p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code> (note if you <code>ssh</code> into <code>r.roche.com</code> then you need to specify the correct R version, e.g. with <code>Rscript-3.3.1</code>). Then add <code>.libPaths(c(normalizePath("./libs"), .libPaths()))</code> as the first line in <code>app.R</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## clone this project here:
 project.path &lt;-<span class="st"> </span><span class="kw">getwd</span>() <span class="co">#"/srv/shiny-server/users/..."</span>
 
