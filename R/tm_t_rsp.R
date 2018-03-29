@@ -26,6 +26,8 @@
 #'   
 #' @return an \code{\link[teal]{module}} object
 #'   
+#' @template author_liaoc10
+#'   
 #' @export
 #' 
 #' @examples  

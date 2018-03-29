@@ -18,6 +18,8 @@
 #' @importFrom gridExtra arrangeGrob
 #' @import grid
 #' 
+#' @template author_wangh107
+#' 
 #' @export
 #' 
 #' @examples 

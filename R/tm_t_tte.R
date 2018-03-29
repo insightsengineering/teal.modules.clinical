@@ -45,6 +45,8 @@
 #' data.
 #' 
 #' 
+#' @template author_waddella
+#' 
 #' @export
 #' 
 #' 

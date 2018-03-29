@@ -166,3 +166,6 @@ shinyApp(x$ui, x$server)
   
 } 
 }
+\author{
+Adrian Waddell (waddella) \email{adrian.waddell@roche.com}
+}

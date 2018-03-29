@@ -108,3 +108,6 @@ shinyApp(ui = x$ui, server = x$server)
 
 }
 }
+\author{
+Heng Wang (wangh107) \email{wang.heng@gene.com}
+}
