@@ -1,0 +1,14 @@
+---
+title: "Demographic Table Module"
+author: "Tadeusz Lewandowski"
+date: "3/29/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction Video
+
+<iframe id="kmsembed-1_p52sgyt0" width="640" height="360" src="https://streamingmedia.roche.com/embed/secure/iframe/entryId/1_p52sgyt0/uiConfId/38807381" class="kmsembed" allowfullscreen webkitallowfullscreen mozAllowFullScreen frameborder="0" title="Kaltura Player"></iframe>
