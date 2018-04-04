@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
+^.github$
 man-roxygen/*
 temp/*
 ^docs/*
