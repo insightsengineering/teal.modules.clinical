@@ -4,7 +4,9 @@
 The `teal.tern` R package contains interactive `teal` modules for the outputs
 (TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
-A test application with random data can be found [here](http://shiny.roche.com/users/waddella/teal_tern/).
+See a live demo [on the Roche Shiny Server](http://shiny.roche.com/users/waddella/teal_tern/).
+
+To build your own app, see [Getting Started](#getting-started) below.
 
 ## Training
 
