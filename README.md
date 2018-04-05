@@ -4,8 +4,16 @@
 The `teal.tern` R package contains interactive `teal` modules for the outputs
 (TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
-
 A test application with random data can be found [here](http://shiny.roche.com/users/waddella/teal_tern/).
+
+## Training
+
+We are currently working on trainings. Here is a list of available content:
+
+ * [Agile R Leader Perspectives March 2018](https://streamingmedia.roche.com/media/AgileR+Leader+Perspectives+March+2018/1_ccr8716n)
+ * [General Teal and Agile R Framework](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story.html)
+
+Videos explaining the indiviual teal modules in `teal.tern` can be found under [Articles](https://pages.github.roche.com/Rpackages/teal.tern/articles/) on the web documentation.
 
 # Installation
 
