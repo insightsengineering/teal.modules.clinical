@@ -54,7 +54,43 @@ Here is an example app that shows all modules using random data. If you save
 this code into a file named `app.R` then it is a valid [single-file shiny
 application](https://shiny.rstudio.com/articles/app-formats.html).
 
-## App setup, app.R
+## Simple app
+
+Copy the following code into a new R file and execute it line by line:
+
+```r
+library(teal.tern)
+library(random.cdisc.data)
+
+ASL <- radam("ASL", N = 600)
+
+x <- teal::init(
+  data = list(ASL = ASL),
+  modules = root_modules(
+    tm_data_table("Data Table"),
+    tm_variable_browser("Variable Browser"),
+    tm_t_summarize_variables(
+      label = "Demographic Table",
+      dataname = "ASL",
+      arm_var = "ARM",
+      arm_var_choices = c("ARM", "ARMCD"),
+      summarize_vars =  c("BAGE", "SEX"),
+      summarize_vars_choices =  c("BAGE", "SEX", "RACE")
+    )
+  )
+)
+
+shinyApp(x$ui, x$server)
+```
+
+This should start the teal web app. Now save the above code into an R file named
+`app.R` and replace `radam` with `read_bce` and select a dataset from a study of
+your choice. Start the app again and configure the arguments of
+`tm_t_summarize_variables` according to the information you would like to
+summarize in your `ASL` dataset.
+
+
+## App setup with all available modules
 
 ```r
 library(teal.tern)
