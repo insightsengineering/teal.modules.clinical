@@ -10,6 +10,7 @@ A test application with random data can be found [here](http://shiny.roche.com/u
 
 We are currently working on trainings. Here is a list of available content:
 
+ * [go.gene.com/go-teal: a gentle introduction and getting started webpage](http://go.gene.com/go-teal)
  * [Agile R Leader Perspectives March 2018](https://streamingmedia.roche.com/media/AgileR+Leader+Perspectives+March+2018/1_ccr8716n)
  * [General Teal and Agile R Framework](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story.html)
 
