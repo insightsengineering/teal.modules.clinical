@@ -180,7 +180,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       comp_arm <- .(comp_arm)
     })
     
-    asl_vars <- c("USUBJID", "STUDYID", arm_var, subgroup_var)
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR")
     
     chunks$data <<- bquote({

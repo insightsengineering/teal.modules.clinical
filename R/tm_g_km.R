@@ -207,7 +207,7 @@ srv_g_km <- function(input, output, session, datasets,
       combine_comp_arms <- .(combine_comp_arms)
     })
     
-    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var, facet_var)
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var, facet_var))
     chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))

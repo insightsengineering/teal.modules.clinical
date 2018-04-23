@@ -266,8 +266,8 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name
 
-    asl_vars <- c("USUBJID", "STUDYID", arm_var, strata_var)
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var))
     
     ## Now comes the analysis code
     chunks$vars <<- bquote({
