@@ -147,8 +147,8 @@ ct_var_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE
 
 # reference & comparison arm selection when switching the arm variable
 arm_ref_comp <- list(
-  ARM = list(ref="Arm A", comp=c("Arm B", "Arm C")),
-  ARM1 = list(ref="DUMMY B", comp="DUMMY A")
+  ARM = list(ref = "Arm A", comp = c("Arm B", "Arm C")),
+  ARM1 = list(ref = "DUMMY B", comp = "DUMMY A")
 )
 
 ## Setup App
