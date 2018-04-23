@@ -239,7 +239,8 @@ x <- teal::init(
       strata_var_choices = strata_var_choices,
       time_points = c(6, 12, 18),
       time_points_choices = c(6, 12, 18, 24, 30, 36, 42),
-      time_unit = "month"
+      time_unit = "month",
+      event_desrc_var = "EVNTDESC"
     ),
     tm_t_percentage_cross_table(
       "Cross Table",
