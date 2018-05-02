@@ -1,4 +1,10 @@
 
+# teal.tern 0.5.1
+
+## Changes
+* tables displayed with horizontal scrollbar if needed
+
+
 # teal.tern 0.5.0
 
 ## Changes
