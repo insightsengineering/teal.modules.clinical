@@ -279,6 +279,10 @@ We currently recommend to deploy your teal apps to the shiny server at
 [shiny.roche.com](http://shiny.roche.com). We will look into the deployment
 mechanism with [rstudio connect](https://rsconnect.roche.com/) soon.
 
+Please also have a look at the [following
+video](https://streamingmedia.roche.com/media/Deploy+a+Teal+App+to+the+Shiny+server/1_t59abpdw)
+that shows the deployment step by step.
+
 ### Deployment Setup
 
 Teal apps should be setup such that the R packages `teal`, `tea.tern`, `tern`,

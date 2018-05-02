@@ -11,5 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction Video
 
+This page contains an embedded video. If the video does not load then please
+watch the video on
+[streamingmedia](https://streamingmedia.roche.com/media/Response+Table+Teal+Module/1_popugetp).
+
 <iframe id="kmsembed-1_popugetp" width="640" height="360" src="https://streamingmedia.roche.com/embed/secure/iframe/entryId/1_popugetp/uiConfId/38807381" class="kmsembed" allowfullscreen webkitallowfullscreen mozAllowFullScreen frameborder="0" title="Kaltura Player"></iframe>
 
