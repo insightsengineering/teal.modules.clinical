@@ -99,7 +99,8 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#teal-tern" class="anchor"></a>teal.tern</h1></div>
 <p>The <code>teal.tern</code> R package contains interactive <code>teal</code> modules for the outputs (TLGs) in <a href="https://github.roche.com/Rpackages/tern"><code>tern</code></a>.</p>
-<p>A test application with random data can be found <a href="http://shiny.roche.com/users/waddella/teal_tern/">here</a>.</p>
+<p>See a live demo <a href="http://shiny.roche.com/users/waddella/teal_tern/">on the Roche Shiny Server</a>.</p>
+<p>To build your own app, see <a href="#getting-started">Getting Started</a> below.</p>
 <div id="training" class="section level2">
 <h2 class="hasAnchor">
 <a href="#training" class="anchor"></a>Training</h2>
@@ -119,27 +120,32 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
-  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>)
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
-  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.0.3"</span>, 
-  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
-  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )</code></pre></div>
 </div>
 <div id="getting-started" class="section level1">
@@ -179,7 +185,6 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <a href="#app-setup-with-all-available-modules" class="anchor"></a>App setup with all available modules</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.tern)
 <span class="kw">library</span>(random.cdisc.data)
-<span class="kw">library</span>(htmltools) <span class="co"># for study source</span>
 
 ## Generate Data
 ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ASL"</span>, <span class="dt">N =</span> <span class="dv">600</span>,
@@ -230,8 +235,8 @@ ct_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span cla
 
 <span class="co"># reference &amp; comparison arm selection when switching the arm variable</span>
 arm_ref_comp &lt;-<span class="st"> </span><span class="kw">list</span>(
-  <span class="dt">ARM =</span> <span class="kw">list</span>(<span class="dt">ref=</span><span class="st">"Arm A"</span>, <span class="dt">comp=</span><span class="kw">c</span>(<span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>)),
-  <span class="dt">ARM1 =</span> <span class="kw">list</span>(<span class="dt">ref=</span><span class="st">"DUMMY B"</span>, <span class="dt">comp=</span><span class="st">"DUMMY A"</span>)
+  <span class="dt">ARM =</span> <span class="kw">list</span>(<span class="dt">ref =</span> <span class="st">"Arm A"</span>, <span class="dt">comp =</span> <span class="kw">c</span>(<span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>)),
+  <span class="dt">ARM1 =</span> <span class="kw">list</span>(<span class="dt">ref =</span> <span class="st">"DUMMY B"</span>, <span class="dt">comp =</span> <span class="st">"DUMMY A"</span>)
 )
 
 ## Setup App
@@ -242,10 +247,10 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">label =</span> <span class="st">"Study Information"</span>,
       <span class="dt">server =</span> <span class="cf">function</span>(input, output, session, datasets) {},
       <span class="dt">ui =</span> <span class="cf">function</span>(id) {
-        <span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/tag">tagList</a></span>(
-          tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="st">"Info about data source:"</span>),
-          tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="st">"Radom data is used that has been created with the "</span>,
-                 tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">code</a></span>(<span class="st">"random.cdisc.data"</span>), <span class="st">"R package."</span>)
+        <span class="kw">tagList</span>(
+          tags<span class="op">$</span><span class="kw">p</span>(<span class="st">"Info about data source:"</span>),
+          tags<span class="op">$</span><span class="kw">p</span>(<span class="st">"Radom data is used that has been created with the "</span>,
+                 tags<span class="op">$</span><span class="kw">code</span>(<span class="st">"random.cdisc.data"</span>), <span class="st">"R package."</span>)
         )
       },
       <span class="dt">filters =</span> <span class="ot">NULL</span>
@@ -322,7 +327,8 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">strata_var_choices =</span> strata_var_choices,
       <span class="dt">time_points =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>),
       <span class="dt">time_points_choices =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>),
-      <span class="dt">time_unit =</span> <span class="st">"month"</span>
+      <span class="dt">time_unit =</span> <span class="st">"month"</span>,
+      <span class="dt">event_desrc_var =</span> <span class="st">"EVNTDESC"</span>
     ),
     <span class="kw"><a href="reference/tm_t_percentage_cross_table.html">tm_t_percentage_cross_table</a></span>(
       <span class="st">"Cross Table"</span>,
@@ -333,12 +339,12 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">y_var_choices =</span> ct_var_choices
     )
   ),
-  <span class="dt">header =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">div</a></span>(
+  <span class="dt">header =</span> <span class="kw">div</span>(
     <span class="dt">class=</span><span class="st">""</span>,
     <span class="dt">style=</span><span class="st">"margin-bottom: 2px;"</span>,
-    tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">h1</a></span>(<span class="st">"Example App With teal.tern Teal Modules"</span>, tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">span</a></span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
+    tags<span class="op">$</span><span class="kw">h1</span>(<span class="st">"Example App With teal.tern Teal Modules"</span>, tags<span class="op">$</span><span class="kw">span</span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
   ),
-  <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw"><a href="http://www.rdocumentation.org/packages/htmltools/topics/builder">p</a></span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)
+  <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw">p</span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)
 )  
 
 <span class="kw">shinyApp</span>(x<span class="op">$</span>ui, x<span class="op">$</span>server)</code></pre></div>
@@ -347,9 +353,21 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <div id="deployment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#deployment" class="anchor"></a>Deployment</h2>
-<p>Save the following code in a file <code>install.R</code> and run this to reinstall all the dependencies local relative to the working directory (also on the shiny server). Then execute the script with <code>Rscript install.R</code> (note if you <code>ssh</code> into <code>r.roche.com</code> then you need to specify the correct R version, e.g. with <code>Rscript-3.3.1</code>). Then add <code>.libPaths(c(normalizePath("./libs"), .libPaths()))</code> as the first line in <code>app.R</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## clone this project here:
-project.path &lt;-<span class="st"> </span><span class="kw">getwd</span>() <span class="co">#"/srv/shiny-server/users/..."</span>
+<div id="introduction" class="section level3">
+<h3 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h3>
+<p>We currently recommend to deploy your teal apps to the shiny server at <a href="http://shiny.roche.com">shiny.roche.com</a>. We will look into the deployment mechanism with <a href="https://rsconnect.roche.com/">rstudio connect</a> soon.</p>
+<p>Please also have a look at the <a href="https://streamingmedia.roche.com/media/Deploy+a+Teal+App+to+the+Shiny+server/1_t59abpdw">following video</a> that shows the deployment step by step.</p>
+</div>
+<div id="deployment-setup" class="section level3">
+<h3 class="hasAnchor">
+<a href="#deployment-setup" class="anchor"></a>Deployment Setup</h3>
+<p>Teal apps should be setup such that the R packages <code>teal</code>, <code>tea.tern</code>, <code>tern</code>, and <code>rtables</code> are installed locally for every app. This way you can use different versions of those libraries for your different projects.</p>
+<ol>
+<li><p>Create a <a href="http://github.roche.com">GitHub</a> repository with your <code>app.R</code> file. Add <code>libs/*</code> to the <code>.gitignore</code> file.</p></li>
+<li><p>Save the following code in a file <code>install.R</code></p></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project.path &lt;-<span class="st"> </span><span class="kw">getwd</span>() <span class="co">#"/srv/shiny-server/users/..."</span>
 
 path.teal.libs &lt;-<span class="st">  </span><span class="kw">file.path</span>(project.path, <span class="st">"libs"</span>)
 
@@ -360,21 +378,20 @@ path.teal.libs &lt;-<span class="st">  </span><span class="kw">file.path</span>(
 
 orig_libpaths &lt;-<span class="st"> </span><span class="kw">.libPaths</span>()
 
-
 <span class="kw">.libPaths</span>(<span class="kw">c</span>(
     path.teal.libs,
     <span class="kw">as.vector</span>(<span class="kw">Filter</span>(<span class="cf">function</span>(x) <span class="op">!</span><span class="kw">grepl</span>(<span class="st">"^/opt/bee/home"</span>, x), orig_libpaths))
 ))
 
-
-
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
-  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>
+  <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>)
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
+  <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
@@ -398,6 +415,47 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 )
 
 <span class="kw">.libPaths</span>(orig_libpaths)</code></pre></div>
+<ol>
+<li>Add the following line as the first in <code>app.R</code> line</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">.libPaths</span>(<span class="kw">c</span>(<span class="kw">normalizePath</span>(<span class="st">"./libs"</span>), <span class="kw">.libPaths</span>()))</code></pre></div>
+<ol>
+<li>Commit and push you changes to the GitHub repository.</li>
+</ol>
+</div>
+<div id="run-locally-laptop-and-r-roche-com" class="section level3">
+<h3 class="hasAnchor">
+<a href="#run-locally-laptop-and-r-roche-com" class="anchor"></a>Run Locally (Laptop and r.roche.com)</h3>
+<ol>
+<li>
+<p>Install the libraries specified in <code>install.R</code> in your Terminal (shell)</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">Rscript</span> install.R</code></pre></div>
+</li>
+<li><p>Restart R in RStudio with the menu item <code>Session</code> &gt; <code>Restart R</code>.</p></li>
+<li><p>Execute the code in <code>app.R</code> either line by line or all at once.</p></li>
+</ol>
+</div>
+<div id="run-on-the-shiny-server" class="section level3">
+<h3 class="hasAnchor">
+<a href="#run-on-the-shiny-server" class="anchor"></a>Run on the Shiny server</h3>
+<ol>
+<li><p>Choose a location on the shiny server. If you want your app to be accessible under <code>http://shiny.roche.com/user/waddella/my-app/</code> then you need to put the <code>app.R</code> file to <code>/srv/shiny-server/user/waddella/my-app/</code>.</p></li>
+<li>
+<p>Clone your repository to the chosen location in your Terminal:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">cd</span> /srv/shiny-server/user/waddella/
+<span class="fu">git</span> clone <span class="op">&lt;</span>repository-url<span class="op">&gt;</span> my-app</code></pre></div>
+</li>
+<li>
+<p>Install the dependencies defined in <code>install.R</code>. If your shiny app is installed under <code>/srv/shiny-server/3.*</code> you know the R version that shiny uses from the path. For all other paths shiny uses R version <code>3.3.1</code>. Use the correct R version to install the packages, e.g. to install the packages with R version <code>3.3.1</code> run in your terminal:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">cd</span> my-app
+<span class="ex">Rscript-3.3.1</span> install.R</code></pre></div>
+<p>This will install the dependent R packages under <code>./libs</code></p>
+</li>
+<li><p>Run your shiny app in your web browser</p></li>
+<li><p>If you run into errors inspect the logs under: <code>/var/log/shiny-server</code></p></li>
+<li><p>Modify your <code>app.R</code> push the changes to github and pull the in your deployed shiny app with <code>git pull</code>. If you do not see the changes in your app then the shiny server has likely cashed your current session in which case the app is not restarted. The easiest way to deal with that is to rename the folder with your app (e.g. <code>mv my-app my-app-2</code>) and open the app the new web address.</p></li>
+</ol>
+</div>
 </div>
 </div>
 

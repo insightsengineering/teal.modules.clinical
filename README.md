@@ -4,7 +4,9 @@
 The `teal.tern` R package contains interactive `teal` modules for the outputs
 (TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
-A test application with random data can be found [here](http://shiny.roche.com/users/waddella/teal_tern/).
+See a live demo [on the Roche Shiny Server](http://shiny.roche.com/users/waddella/teal_tern/).
+
+To build your own app, see [Getting Started](#getting-started) below.
 
 ## Training
 
@@ -24,27 +26,32 @@ Please install the package dependencies as follows:
 devtools::install_github(
   repo = "Rpackages/random.cdisc.data",
   ref = "v0.1.0", 
-  host = "https://github.roche.com/api/v3"
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
-devtools::install_github("Roche/rtables", ref = "v0.1.0")
+devtools::install_github("Roche/rtables", ref = "v0.1.0",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE)
 
 devtools::install_github(
   repo = "Rpackages/tern",
   ref = "v0.5.0", 
-  host = "https://github.roche.com/api/v3"
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
 devtools::install_github(
   repo = "Rpackages/teal",
   ref = "v0.0.3", 
-  host = "https://github.roche.com/api/v3"
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
 devtools::install_github(
   repo = "Rpackages/teal.tern",
   ref = "v0.5.0", 
-  host = "https://github.roche.com/api/v3"
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 ```
 
@@ -96,7 +103,6 @@ summarize in your `ASL` dataset.
 ```r
 library(teal.tern)
 library(random.cdisc.data)
-library(htmltools) # for study source
 
 ## Generate Data
 ASL <- radam("ASL", N = 600,
@@ -147,8 +153,8 @@ ct_var_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE
 
 # reference & comparison arm selection when switching the arm variable
 arm_ref_comp <- list(
-  ARM = list(ref="Arm A", comp=c("Arm B", "Arm C")),
-  ARM1 = list(ref="DUMMY B", comp="DUMMY A")
+  ARM = list(ref = "Arm A", comp = c("Arm B", "Arm C")),
+  ARM1 = list(ref = "DUMMY B", comp = "DUMMY A")
 )
 
 ## Setup App
@@ -239,7 +245,8 @@ x <- teal::init(
       strata_var_choices = strata_var_choices,
       time_points = c(6, 12, 18),
       time_points_choices = c(6, 12, 18, 24, 30, 36, 42),
-      time_unit = "month"
+      time_unit = "month",
+      event_desrc_var = "EVNTDESC"
     ),
     tm_t_percentage_cross_table(
       "Cross Table",
@@ -268,15 +275,28 @@ is accessile via the articles tab on the [project site][ghs].
 
 ## Deployment
 
-Save the following code in a file `install.R` and run this to reinstall all the
-dependencies local relative to the working directory (also on the shiny server).
-Then execute the script with `Rscript install.R` (note if you `ssh` into
-`r.roche.com` then you need to specify the correct R version, e.g. with
-`Rscript-3.3.1`). Then add `.libPaths(c(normalizePath("./libs"), .libPaths()))`
-as the first line in `app.R`.
+### Introduction
+
+We currently recommend to deploy your teal apps to the shiny server at
+[shiny.roche.com](http://shiny.roche.com). We will look into the deployment
+mechanism with [rstudio connect](https://rsconnect.roche.com/) soon.
+
+Please also have a look at the [following
+video](https://streamingmedia.roche.com/media/Deploy+a+Teal+App+to+the+Shiny+server/1_t59abpdw)
+that shows the deployment step by step.
+
+### Deployment Setup
+
+Teal apps should be setup such that the R packages `teal`, `tea.tern`, `tern`,
+and `rtables` are installed locally for every app. This way you can use
+different versions of those libraries for your different projects.
+
+1. Create a [GitHub](http://github.roche.com) repository with your `app.R` file.
+Add `libs/*` to the `.gitignore` file.
+
+2. Save the following code in a file `install.R`
 
 ```r
-## clone this project here:
 project.path <- getwd() #"/srv/shiny-server/users/..."
 
 path.teal.libs <-  file.path(project.path, "libs")
@@ -288,21 +308,20 @@ lapply(list.dirs(path.teal.libs, recursive = FALSE), unlink, recursive = TRUE, f
 
 orig_libpaths <- .libPaths()
 
-
 .libPaths(c(
     path.teal.libs,
     as.vector(Filter(function(x) !grepl("^/opt/bee/home", x), orig_libpaths))
 ))
 
-
-
 devtools::install_github(
   repo = "Rpackages/random.cdisc.data",
   ref = "v0.1.0", 
-  host = "https://github.roche.com/api/v3"
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
-devtools::install_github("Roche/rtables", ref = "v0.1.0")
+devtools::install_github("Roche/rtables", ref = "v0.1.0",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE)
 
 devtools::install_github(
   repo = "Rpackages/tern",
@@ -328,5 +347,58 @@ devtools::install_github(
 .libPaths(orig_libpaths)
 ```
 
+3. Add the following line as the first in `app.R` line 
+
+```r
+.libPaths(c(normalizePath("./libs"), .libPaths()))
+```
+
+4. Commit and push you changes to the GitHub repository.
+
+
+### Run Locally (Laptop and r.roche.com)
+
+1. Install the libraries specified in `install.R` in your Terminal (shell)
+```bash
+Rscript install.R
+```
+
+2. Restart R in RStudio with the menu item `Session` > `Restart R`.
+
+3. Execute the code in `app.R` either line by line or all at once.
+
+
+### Run on the Shiny server
+
+1. Choose a location on the shiny server. If you want your app to be accessible
+under `http://shiny.roche.com/user/waddella/my-app/` then you need to put the
+`app.R` file to  `/srv/shiny-server/user/waddella/my-app/`.
+
+2. Clone your repository to the chosen location in your Terminal:
+```bash
+cd /srv/shiny-server/user/waddella/
+git clone <repository-url> my-app
+```
+
+3. Install the dependencies defined in `install.R`. If your shiny app is
+installed under `/srv/shiny-server/3.*` you know the R version that shiny uses
+from the path. For all other paths shiny uses R version `3.3.1`. Use the correct
+R version to  install the packages, e.g. to install the packages with R version
+`3.3.1` run in your terminal:
+```bash
+cd my-app
+Rscript-3.3.1 install.R
+```
+This will install the dependent R packages under `./libs`
+
+4. Run your shiny app in your web browser
+
+5. If you run into errors inspect the logs under: `/var/log/shiny-server`
+
+6. Modify your `app.R` push the changes to github and pull the in your deployed
+shiny app with `git pull`. If you do not see the changes in your app then the
+shiny server has likely cashed your current session in which case the app is not
+restarted. The easiest way to deal with that is to rename the folder with your
+app (e.g. `mv my-app my-app-2`) and open the app the new web address.
 
 [ghs]: http://pages.github.roche.com/Rpackages/teal.tern
