@@ -186,7 +186,7 @@ ui_t_tte <- function(id, ...) {
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(ns("paramcd"), "Select Endpoint", a$paramcd_choices, a$paramcd, multiple = FALSE),
-      optionalSelectInput(ns("arm_var"), "ARM", a$arm_var_choices, a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Group", choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple reference groups are automatically combined into a single group."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),

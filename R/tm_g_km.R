@@ -111,7 +111,7 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"), "Treatment Variable", choices = a$arm_var_choices,
+      optionalSelectInput(ns("arm_var"), "Arm Variable", choices = a$arm_var_choices,
                           selected = a$arm_var, multiple = FALSE),
       optionalSelectInput(ns("paramcd"), "Time to Event (Endpoint)", choices = a$paramcd_choices, 
                           selected = a$paramcd, multiple = FALSE),
