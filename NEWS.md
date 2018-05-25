@@ -2,6 +2,7 @@
 # teal.tern 0.5.1
 
 ## Changes
+
 * tables displayed with horizontal scrollbar if needed
 
 
