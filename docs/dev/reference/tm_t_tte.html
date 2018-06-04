@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Time To Event Table Teal Module — tm_t_tte" />
 
 <meta property="og:description" content="Time to event table as defined in t_tte in the
@@ -113,6 +116,7 @@ tern package" />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -120,17 +124,20 @@ tern package" />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Time To Event Table Teal Module</h1>
     
+    <div class="hidden name"><code>tm_t_tte.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Time to event table as defined in <code><a href='https://pages.github.roche.com/Rpackages/tern/reference/t_tte.html'>t_tte</a></code> in the
 <code>tern</code> package</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>tm_t_tte</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
   <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OS"</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>,
@@ -227,13 +234,10 @@ app is initialized</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This modules expects that the analysis data has the following variables</p>
-<table><tr><td>
- <code>AVAL</code> </td>
-<td> time to event</td>
-</tr><tr><td><br />
- <code>CNSR</code> </td>
-<td> boolean or 0,1 is element in <code>AVAL</code> censored</td>
-</tr></table>
+<table class='table'>
+<tr><td><code>AVAL</code></td><td>time to event</td></tr>
+<tr><td><code>CNSR</code></td><td>boolean or 0,1 is element in <code>AVAL</code> censored</td></tr>
+</table>
     <p>The arm variables, stratification variables and taken from the <code>ASL</code>
 data.</p>
     
@@ -355,6 +359,8 @@ Adrian Waddell (waddella) <a href='mailto:adrian.waddell@roche.com'>adrian.wadde
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>
