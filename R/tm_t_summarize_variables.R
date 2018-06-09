@@ -109,11 +109,11 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     assign(data_name, ANL_f)
     
     chunks$analysis <<- call(
-      "t_summarize_variables",
-      data = bquote(.(as.name(data_name))[, .(summarize_vars), drop=FALSE]),
+      "t_summary",
+      x = bquote(.(as.name(data_name))[, .(summarize_vars), drop=FALSE]),
       col_by = bquote(as.factor(.(as.name(data_name))[[.(arm_var)]])),
       total = "All Patients",
-      useNA_factors = "ifany" 
+      useNA = "ifany" 
     )
 
     tbl <- try(eval(chunks$analysis))
