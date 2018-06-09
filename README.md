@@ -20,6 +20,8 @@ Videos explaining the indiviual teal modules in `teal.tern` can be found under [
 
 # Installation
 
+## Stable Release
+
 Please install the package dependencies as follows:
 
 ``` r
@@ -42,7 +44,7 @@ devtools::install_github(
 
 devtools::install_github(
   repo = "Rpackages/teal",
-  ref = "v0.0.3", 
+  ref = "v0.0.4", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
@@ -55,6 +57,40 @@ devtools::install_github(
 )
 ```
 
+## Development Version
+
+``` r
+devtools::install_github(
+  repo = "Rpackages/random.cdisc.data",
+  ref = "master", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
+)
+
+devtools::install_github("Roche/rtables", ref = "master",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE)
+
+devtools::install_github(
+  repo = "Rpackages/tern",
+  ref = "master", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
+)
+
+devtools::install_github(
+  repo = "Rpackages/teal",
+  ref = "master", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
+)
+
+devtools::install_github(
+  repo = "Rpackages/teal.tern",
+  ref = "master", 
+  host = "https://github.roche.com/api/v3",
+  upgrade_dependencies = FALSE, build_vignettes = FALSE
+)
+```
 
 # Getting Started
 
@@ -332,7 +368,7 @@ devtools::install_github(
 
 devtools::install_github(
   repo = "Rpackages/teal",
-  ref = "v0.0.3", 
+  ref = "v0.0.4", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
