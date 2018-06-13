@@ -99,7 +99,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     
     chunks$analysis <<- "# Not Calculated"
     
-    validate_has_data(ANL_f, min_nrow = 15)    
+    validate_has_data(ANL_f, min_nrow = 3)    
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(ANL_f)), "not all variables available"))
     validate(need(ANL_f[[arm_var]], "Arm variable does not exist"))
