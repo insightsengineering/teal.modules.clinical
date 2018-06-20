@@ -9,6 +9,7 @@
 #' @param facet_var_choices options for \code{facet_var}
 #' @param strata_var parameter for stratification analysis in Cox PH model
 #' @param strata_var_choices options for \code{strata_var}
+#' @param tbl_fontsize fontsize for text annotation
 #' @template param_plot_height
 #' 
 #' 
@@ -62,7 +63,8 @@
 #'        facet_var = "MLIVER",
 #'        facet_var_choices = c("SEX", "MLIVER"),
 #'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER")
+#'        strata_var_choices = c("SEX", "MLIVER"),
+#'        tbl_fontsize = 12
 #'     )  
 #'   )
 #' )
@@ -82,6 +84,7 @@ tm_g_km <- function(label,
                     strata_var = NULL,
                     strata_var_choices = strata_var,
                     plot_height = c(1200, 400, 5000),
+                    tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL,
                     code_data_processing = NULL
@@ -94,7 +97,7 @@ tm_g_km <- function(label,
     filters = dataname,
     server = srv_g_km,
     server_args = list(dataname = dataname,
-                       arm_ref_comp = arm_ref_comp,
+                       arm_ref_comp = arm_ref_comp, tbl_fontsize = tbl_fontsize,
                        code_data_processing = code_data_processing),
     ui = ui_g_km,
     ui_args = args
@@ -136,7 +139,7 @@ ui_g_km <- function(id, ...) {
 }
 
 
-srv_g_km <- function(input, output, session, datasets, 
+srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                        dataname, arm_ref_comp, code_data_processing) {
   
   
@@ -260,14 +263,17 @@ srv_g_km <- function(input, output, session, datasets,
         text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
         coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                just = c("left", "bottom"),
-                               gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                               gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
                                vp = vpPath("plotArea", "topCurve"))
+        km_grob <- textGrob(label = toString(tbl_km, gap = 1),
+                            x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                            y = unit(1, "npc") -  unit(1, "lines"),
+                            just = c("left", "top"),
+                            gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
+                            vp = vpPath("plotArea", "topCurve"))
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE)  
-        p <-  addTable(p, tbl_km,
-                       x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                       y = unit(1, "npc") -  unit(1, "lines"),
-                       just = c("left", "top"))  
+        p <- addGrob(p, km_grob)  
         p <- addGrob(p, coxph_grob) 
         grid.draw(p)
         
@@ -302,17 +308,20 @@ srv_g_km <- function(input, output, session, datasets,
           text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
           coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                  just = c("left", "bottom"),
-                                 gp = gpar(fontfamily = 'mono', fontsize = 8, fontface = "bold"),
+                                 gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
                                  vp = vpPath("plotArea", "topCurve"))
+          km_grob <- textGrob(label = toString(tbl_km, gap = 1),
+                              x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                              y = unit(1, "npc") -  unit(1, "lines"),
+                              just = c("left", "top"),
+                              gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
+                              vp = vpPath("plotArea", "topCurve"))
           if (nrow(x) < 5){
             textGrob(paste0("Less than 5 patients in ", label, "group"))
           } else {
             p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
                       xticks = xticks, draw = FALSE)  
-            p <-  addTable(p, tbl_km,
-                           x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                           y = unit(1, "npc") -  unit(1, "lines"),
-                           just = c("left", "top"))  
+            p <- addGrob(p, km_grob)  
             p <- addGrob(p, coxph_grob)
           }
         }, dfs, levels(lab))
