@@ -143,7 +143,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     
     # .log("show R code")
     showModal(modalDialog(
-      title = "R Code for the Current Time To Event Table",
+      title = "R Code for the Current Demographic Table",
       tags$pre(tags$code(class="R", str_rcode)),
       easyClose = TRUE,
       size = "l"
