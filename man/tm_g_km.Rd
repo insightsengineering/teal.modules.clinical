@@ -8,6 +8,7 @@ tm_g_km(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
   facet_var = NULL, facet_var_choices = facet_var, strata_var = NULL,
   strata_var_choices = strata_var, plot_height = c(1200, 400, 5000),
+  tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
   post_output = NULL, code_data_processing = NULL)
 }
@@ -44,6 +45,8 @@ changed.}
 \item{strata_var_choices}{options for \code{strata_var}}
 
 \item{plot_height}{plot height specification}
+
+\item{tbl_fontsize}{fontsize for text annotation}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -99,7 +102,8 @@ x <- teal::init(
        facet_var = "MLIVER",
        facet_var_choices = c("SEX", "MLIVER"),
        strata_var = "SEX",
-       strata_var_choices = c("SEX", "MLIVER")
+       strata_var_choices = c("SEX", "MLIVER"),
+       tbl_fontsize = 12
     )  
   )
 )

@@ -300,29 +300,34 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       chunks$t_kmplot <<- bquote({
         grid.newpage()
         pl <-  Map(function(x, label){
-          x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-          fit_km <- survfit(formula_km, data = x, conf.type = "plain")
-          fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-          tbl_km <- t_km(fit_km)
-          tbl_coxph <- t_coxph(fit_coxph)
-          text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-          coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
-                                 just = c("left", "bottom"),
-                                 gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                                 vp = vpPath("plotArea", "topCurve"))
-          km_grob <- textGrob(label = toString(tbl_km, gap = 1),
-                              x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                              y = unit(1, "npc") -  unit(1, "lines"),
-                              just = c("left", "top"),
-                              gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                              vp = vpPath("plotArea", "topCurve"))
+
           if (nrow(x) < 5){
             textGrob(paste0("Less than 5 patients in ", label, "group"))
           } else {
+            
+            x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
+            fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+            fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+            tbl_km <- t_km(fit_km)
+            tbl_coxph <- t_coxph(fit_coxph)
+            text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+            coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
+                                   just = c("left", "bottom"),
+                                   gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
+                                   vp = vpPath("plotArea", "topCurve"))
+            km_grob <- textGrob(label = toString(tbl_km, gap = 1),
+                                x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                                y = unit(1, "npc") -  unit(1, "lines"),
+                                just = c("left", "top"),
+                                gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
+                                vp = vpPath("plotArea", "topCurve"))
+            
+            
             p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
                       xticks = xticks, draw = FALSE)  
             p <- addGrob(p, km_grob)  
             p <- addGrob(p, coxph_grob)
+            p
           }
         }, dfs, levels(lab))
         
