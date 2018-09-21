@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -34,7 +36,6 @@
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
-
 
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -60,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.1</span>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
       </span>
     </div>
 
@@ -141,6 +142,7 @@
   <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OS"</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>,
   <span class='kw'>facet_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>facet_var_choices</span> <span class='kw'>=</span> <span class='no'>facet_var</span>, <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='no'>strata_var</span>, <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1200</span>, <span class='fl'>400</span>, <span class='fl'>5000</span>),
+  <span class='kw'>tbl_fontsize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
   <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='fu'>helpText</span>(<span class='st'>"x-axes for different factes may not have the same scale"</span>),
   <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
@@ -205,6 +207,10 @@ changed.</p></td>
       <td><p>plot height specification</p></td>
     </tr>
     <tr>
+      <th>tbl_fontsize</th>
+      <td><p>fontsize for text annotation</p></td>
+    </tr>
+    <tr>
       <th>pre_output</th>
       <td><p>optional, <code>shiny.tag</code> with text placed before the
 output to put the output into context. For example the
@@ -263,7 +269,8 @@ app is initialized</p></td>
        <span class='kw'>facet_var</span> <span class='kw'>=</span> <span class='st'>"MLIVER"</span>,
        <span class='kw'>facet_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"MLIVER"</span>),
        <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='st'>"SEX"</span>,
-       <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"MLIVER"</span>)
+       <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"MLIVER"</span>),
+       <span class='kw'>tbl_fontsize</span> <span class='kw'>=</span> <span class='fl'>12</span>
     )
   )
 )

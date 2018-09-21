@@ -1,6 +1,6 @@
 Package: teal.tern
 Title: Teal Modules for TLG Functions in Tern
-Version: 0.5.0.1
+Version: 0.5.0.2
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
   person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),

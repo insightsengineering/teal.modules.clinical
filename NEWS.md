@@ -1,5 +1,5 @@
 
-# teal.tern 0.5.1
+# teal.tern 0.5.0.2
 
 ## Changes
 
