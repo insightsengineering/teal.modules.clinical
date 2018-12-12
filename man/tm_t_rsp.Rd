@@ -6,8 +6,8 @@
 \usage{
 tm_t_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
   arm_ref_comp = NULL, paramcd = "OVRSPI", paramcd_choices = paramcd,
-  strata_var = NULL, strata_var_choices = strata_var, pre_output = NULL,
-  post_output = NULL, code_data_processing = NULL)
+  strata_var = NULL, strata_var_choices = strata_var,
+  pre_output = NULL, post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
