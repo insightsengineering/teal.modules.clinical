@@ -140,7 +140,7 @@ ui_g_km <- function(id, ...) {
 
 
 srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
-                       dataname, arm_ref_comp, code_data_processing) {
+                     dataname, arm_ref_comp, code_data_processing) {
   
   
   arm_ref_comp_observer(
@@ -191,7 +191,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       ASL = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       ANL = ANL_FILTERED,
-      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR"),
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", "AVALU"),
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm
@@ -216,7 +216,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       ANL_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
       
       ANL <- merge(ASL_p[, .(asl_vars)],
-                   ANL_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR")],
+                   ANL_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
@@ -227,10 +227,13 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       }
       
       ANL[[.(arm_var)]] <- droplevels(ARM)
+      time_unit <- unique(ANL[["AVALU"]])
+      tbl_fontsize <- .(tbl_fontsize)
     })
     
     eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    validate(need(length(time_unit) == 1, "Time Unit is not consistant"))
     
     chunks$formula_km <<- eval(bquote({
       as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
@@ -272,7 +275,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                             gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
                             vp = vpPath("plotArea", "topCurve"))
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE)  
+        p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE, xlab = time_unit)  
         p <- addGrob(p, km_grob)  
         p <- addGrob(p, coxph_grob) 
         grid.draw(p)
@@ -300,7 +303,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       chunks$t_kmplot <<- bquote({
         grid.newpage()
         pl <-  Map(function(x, label){
-
+          
           if (nrow(x) < 5){
             textGrob(paste0("Less than 5 patients in ", label, "group"))
           } else {
@@ -324,7 +327,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             
             
             p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
-                      xticks = xticks, draw = FALSE)  
+                      xticks = xticks, draw = FALSE, xlab = time_unit)  
             p <- addGrob(p, km_grob)  
             p <- addGrob(p, coxph_grob)
             p
@@ -381,4 +384,3 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     ))
   })
 }
-
