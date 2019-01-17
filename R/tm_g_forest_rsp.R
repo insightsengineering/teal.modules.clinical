@@ -1,4 +1,3 @@
-
 #' Forest Response Plot teal module
 #' 
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
@@ -22,11 +21,11 @@
 #' 
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radam("ASL", start_with = list(
-#'    RACE = c("white", "asian"),
-#'    ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")
-#' ))
-#' ARS <- radam("ARS", ADSL = ASL)
+#' ASL <- radsl(seed = 2)
+#' ARS <- radrs(ASL, seed = 2)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
+#' attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 2)"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ARS = ARS),
@@ -36,12 +35,12 @@
 #'        dataname = "ARS",
 #'        arm_var = "ARM",
 #'        arm_var_choices = c("ARM", "ARMCD"),        
-#'        paramcd = "OVRSPI",
-#'        paramcd_choices = c("BESRSPI", "OVRINV",  "OVRSPI" ),
+#'        paramcd = "INVET",
+#'        paramcd_choices = c("BESRSPI", "INVET", "OVRINV" ),
 #'        plot_height = c(600, 200, 2000),
 #'        subgroup_var = c("RACE", "SEX"),
 #'        subgroup_var_choices = names(ASL)
-#'    )
+#'     )
 #'   )
 #' )   
 #' 
@@ -74,6 +73,7 @@ tm_g_forest_rsp <- function(label,
   )
 }
 
+
 ui_g_forest_rsp <- function(id, ...) {
   
   a <- list(...)
@@ -105,6 +105,7 @@ ui_g_forest_rsp <- function(id, ...) {
     post_output = a$post_output
   )
 } 
+
 
 srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1.5, code_data_processing) {
   
@@ -151,10 +152,9 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
   )
   
   output$forest_plot <- renderPlot({
-
+    
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
-    
     
     paramcd <- input$paramcd
     responders <- input$responders

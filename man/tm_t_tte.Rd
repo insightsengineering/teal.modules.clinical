@@ -83,17 +83,11 @@ data.
 \dontrun{
 library(random.cdisc.data)
 
-ASL <- radam('ASL', start_with = list(
-  ITTFL = 'Y',
-  SEX = c("M", "F"),
-  MLIVER = paste("mliver", 1:3),
-  ARM = paste("ARM", LETTERS[1:3])
-))
+ASL <- radsl(seed = 2)
+ATE <- radtte(ASL, seed = 2)
 
-ASL$ARM <- as.factor(ASL$ARM)
-
-ATE <- radam('ATE', ADSL = ASL)
-
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
 
 x <- teal::init( 
   data = list(ASL = ASL, ATE = ATE),
@@ -106,12 +100,12 @@ x <- teal::init(
        paramcd = "OS",
        paramcd_choices = unique(ATE$PARAMCD),
        strata_var = "SEX",
-       strata_var_choices = c("SEX", "MLIVER"),
+       strata_var_choices = c("SEX", "BMRKR2"),
        time_points = 6,
        time_points_choices = c(6, 8),
        time_unit = "months",
        event_desrc_var = "EVNTDESC"
-   )
+    )
   )
 )
 
@@ -122,23 +116,22 @@ shinyApp(x$ui, x$server)
 ## ARM variable 
 library(random.cdisc.data)
 
-ASL <- radam('ASL', start_with = list(
-  SEX = c("M", "F"),
-  MLIVER = paste("mliver", 1:3))
-)
-ATE <- radam('ATE', ADSL = ASL)
+ASL <- radsl(seed = 2) \%>\% 
+  mutate(., ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE))
+ATE <- radtte(ASL, seed = 2)
 
-ASL$ARM <- paste(sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE))
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
 
 arm_ref_comp = list(
-   ARM = list(
-      ref = "ARM A",
-      comp = c("ARM B", "ARM C")
-   ),
-   ARMCD = list(
-      ref = "ARM B",
-      comp = "ARM A"
-   )
+  ACTARMCD = list(
+    ref = "ARM A", 
+    comp = c("ARM B", "ARM C")
+  ),
+  ARM1 = list(
+    ref = "DUMMY B", 
+    comp = "DUMMY A"
+  )
 )
 
 x <- teal::init(

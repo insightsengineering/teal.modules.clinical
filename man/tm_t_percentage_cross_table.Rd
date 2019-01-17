@@ -32,20 +32,20 @@ Cross table based on rtables
 
 library(random.cdisc.data)
 
-ASL <- radam("ASL", start_with = list(
-  x = c("Y", "N"), y = c("A", "B", "C")
-))
+ASL <- radsl(seed = 2)
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
 
 x <- teal::init(
   data = list(ASL = ASL),
   modules = root_modules(
-    tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "x", y_var = "y")
+    tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "STRATA1", y_var = "STRATA2")
   )
 )
 
 shinyApp(x$ui, x$server)
-}
 
+}
 }
 \author{
 Adrian Waddell (waddella) \email{adrian.waddell@roche.com}

@@ -4,9 +4,10 @@
 \alias{tm_t_summarize_variables}
 \title{Summarize Variable Teal Module}
 \usage{
-tm_t_summarize_variables(label, dataname, arm_var, arm_var_choices = arm_var,
-  summarize_vars, summarize_vars_choices = summarize_vars,
-  pre_output = NULL, post_output = NULL, code_data_processing = NULL)
+tm_t_summarize_variables(label, dataname, arm_var,
+  arm_var_choices = arm_var, summarize_vars,
+  summarize_vars_choices = summarize_vars, pre_output = NULL,
+  post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -48,7 +49,8 @@ Summarize Variable Teal Module
 
 library(random.cdisc.data)
 
-ASL <- radam('ASL', N = 1000)
+ASL <- radsl(seed = 2)
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
 
 x <- teal::init(
   data = list(ASL = ASL),
@@ -59,16 +61,14 @@ x <- teal::init(
        arm_var = "ARM",
        arm_var_choices = c("ARM", "ARMCD"),
        summarize_vars =  c("SEX"),
-       summarize_vars_choices = c("SEX", "RACE", "BAGE")
-   )
+       summarize_vars_choices = c("SEX", "RACE", "BMRKR2")
+    )
   )
 )
    
 shinyApp(x$ui, x$server) 
   
 } 
-
-
 }
 \author{
 Adrian Waddell (waddella) \email{adrian.waddell@roche.com}

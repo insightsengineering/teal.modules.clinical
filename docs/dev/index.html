@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teal Modules for TLG Functions in Tern • teal.tern</title>
+<title>Teal Modules for TLG Functions in Tern • teal.modules.tern</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -30,8 +30,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -96,10 +96,10 @@
       </header><div class="row">
   <div class="contents col-md-9">
     
-<div id="teal-tern" class="section level1">
+<div id="teal-modules-tern" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#teal-tern" class="anchor"></a>teal.tern</h1></div>
-<p>The <code>teal.tern</code> R package contains interactive <code>teal</code> modules for the outputs (TLGs) in <a href="https://github.roche.com/Rpackages/tern"><code>tern</code></a>.</p>
+<a href="#teal-modules-tern" class="anchor"></a>teal.modules.tern</h1></div>
+<p>The <code>teal.modules.tern</code> R package contains interactive <code>teal</code> modules for the outputs (TLGs) in <a href="https://github.roche.com/Rpackages/tern"><code>tern</code></a>.</p>
 <p>See a live demo <a href="http://shiny.roche.com/users/waddella/teal_tern/">on the Roche Shiny Server</a>.</p>
 <p>To build your own app, see <a href="#getting-started">Getting Started</a> below.</p>
 <div id="training" class="section level2">
@@ -111,7 +111,7 @@
 <li><a href="https://streamingmedia.roche.com/media/AgileR+Leader+Perspectives+March+2018/1_ccr8716n">Agile R Leader Perspectives March 2018</a></li>
 <li><a href="http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story.html">General Teal and Agile R Framework</a></li>
 </ul>
-<p>Videos explaining the indiviual teal modules in <code>teal.tern</code> can be found under <a href="https://pages.github.roche.com/Rpackages/teal.tern/articles/">Articles</a> on the web documentation.</p>
+<p>Videos explaining the indiviual teal modules can be found under <a href="https://pages.github.roche.com/Rpackages/teal.tern/articles/">Articles</a> on the web documentation.</p>
 </div>
 </div>
 <div id="installation" class="section level1">
@@ -121,31 +121,31 @@
 <h2 class="hasAnchor">
 <a href="#stable-release" class="anchor"></a>Stable Release</h2>
 <p>Please install the package dependencies as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.0.4"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
   <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
@@ -155,31 +155,31 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div id="development-version" class="section level2">
 <h2 class="hasAnchor">
 <a href="#development-version" class="anchor"></a>Development Version</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
   <span class="dt">ref =</span> <span class="st">"master"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"master"</span>,
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"master"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
   <span class="dt">ref =</span> <span class="st">"master"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
   <span class="dt">ref =</span> <span class="st">"master"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
   <span class="dt">ref =</span> <span class="st">"master"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
@@ -195,10 +195,10 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <h2 class="hasAnchor">
 <a href="#simple-app" class="anchor"></a>Simple app</h2>
 <p>Copy the following code into a new R file and execute it line by line:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.tern)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.modules.tern) <span class="co"># library(teal.tern) if you are using older version</span>
 <span class="kw">library</span>(random.cdisc.data)
 
-ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ASL"</span>, <span class="dt">N =</span> <span class="dv">600</span>)
+ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">N =</span> <span class="dv">600</span>)
 
 x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/teal/topics/init">init</a></span>(
   <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">ASL =</span> ASL),
@@ -208,10 +208,10 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     <span class="kw"><a href="reference/tm_t_summarize_variables.html">tm_t_summarize_variables</a></span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
-      <span class="dt">arm_var =</span> <span class="st">"ARM"</span>,
-      <span class="dt">arm_var_choices =</span> <span class="kw">c</span>(<span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>),
-      <span class="dt">summarize_vars =</span>  <span class="kw">c</span>(<span class="st">"BAGE"</span>, <span class="st">"SEX"</span>),
-      <span class="dt">summarize_vars_choices =</span>  <span class="kw">c</span>(<span class="st">"BAGE"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span>)
+      <span class="dt">arm_var =</span> <span class="st">"ACTARMCD"</span>,
+      <span class="dt">arm_var_choices =</span> <span class="kw">c</span>(<span class="st">"ACTARMCD"</span>, <span class="st">"ARMCD"</span>),
+      <span class="dt">summarize_vars =</span>  <span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>),
+      <span class="dt">summarize_vars_choices =</span>  <span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span>)
     )
   )
 )
@@ -222,26 +222,26 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <div id="app-setup-with-all-available-modules" class="section level2">
 <h2 class="hasAnchor">
 <a href="#app-setup-with-all-available-modules" class="anchor"></a>App setup with all available modules</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.tern)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.modules.tern) <span class="co"># library(teal.tern) if you are using older version</span>
 <span class="kw">library</span>(random.cdisc.data)
+<span class="kw">library</span>(dplyr)
 
 ## Generate Data
-ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ASL"</span>, <span class="dt">N =</span> <span class="dv">600</span>,
-             <span class="dt">arm_choices =</span> <span class="kw">c</span>(<span class="st">"Arm A"</span>, <span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>),
-             <span class="dt">start_with =</span> <span class="kw">list</span>(
-               <span class="dt">ARM1 =</span> <span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>),
-               <span class="dt">STRATM1 =</span> <span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>),
-               <span class="dt">STRATM2 =</span> <span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
-               <span class="dt">TCICLVL2 =</span> <span class="kw">paste</span>(<span class="st">"STRATM2"</span>, letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]),
-               <span class="dt">T1I1FL =</span> <span class="kw">c</span>(T,F),
-               <span class="dt">T0I0FL =</span> <span class="kw">c</span>(T,F),
-               <span class="dt">ITTGEFL =</span> <span class="kw">c</span>(T,F),
-               <span class="dt">ITTWTFL =</span> <span class="kw">c</span>(T,F),
-               <span class="dt">ITTGE2FL =</span> <span class="kw">c</span>(T,F),
-               <span class="dt">ITTGE3FL =</span> <span class="kw">c</span>(T,F)
-             )) 
-ATE &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ATE"</span>, <span class="dt">ADSL =</span> ASL)
-ARS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ARS"</span>, <span class="dt">ADSL =</span> ASL)
+ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">seed =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(., 
+         <span class="dt">ARM1 =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">STRATM1 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">STRATM2 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">TCICLVL2 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">T1I1FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">T0I0FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGEFL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTWTFL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGE2FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGE3FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>))
+
+ATE &lt;-<span class="st"> </span><span class="kw">radtte</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">2</span>)
+ARS &lt;-<span class="st"> </span><span class="kw">radrs</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">2</span>)
 
 ## Reusable Configuration For Modules
 arm_var &lt;-<span class="st"> "ARM"</span>
@@ -263,8 +263,8 @@ facet_var_choices &lt;-<span class="st"> </span><span class="kw">names</span>(AS
 paramcd_tte &lt;-<span class="st"> "OS"</span>
 paramcd_choices_tte &lt;-<span class="st"> </span><span class="kw">unique</span>(ATE<span class="op">$</span>PARAMCD)
 
-paramcd_rsp &lt;-<span class="st"> "OVRSPI"</span>
-paramcd_choices_rsp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"BESRSPI"</span>, <span class="st">"OVRINV"</span>, <span class="st">"OVRSPI"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+paramcd_rsp &lt;-<span class="st"> "INVET"</span>
+paramcd_choices_rsp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"BESRSPI"</span>, <span class="st">"INVET"</span>, <span class="st">"OVRINV"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">intersect</span>(ARS<span class="op">$</span>PARAMCD)
 
 x_var_ct &lt;-<span class="st"> "T1I1FL"</span>
@@ -274,7 +274,7 @@ ct_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span cla
 
 <span class="co"># reference &amp; comparison arm selection when switching the arm variable</span>
 arm_ref_comp &lt;-<span class="st"> </span><span class="kw">list</span>(
-  <span class="dt">ARM =</span> <span class="kw">list</span>(<span class="dt">ref =</span> <span class="st">"Arm A"</span>, <span class="dt">comp =</span> <span class="kw">c</span>(<span class="st">"Arm B"</span>, <span class="st">"Arm C"</span>)),
+  <span class="dt">ACTARMCD =</span> <span class="kw">list</span>(<span class="dt">ref =</span> <span class="st">"ARM A"</span>, <span class="dt">comp =</span> <span class="kw">c</span>(<span class="st">"ARM B"</span>, <span class="st">"ARM C"</span>)),
   <span class="dt">ARM1 =</span> <span class="kw">list</span>(<span class="dt">ref =</span> <span class="st">"DUMMY B"</span>, <span class="dt">comp =</span> <span class="st">"DUMMY A"</span>)
 )
 
@@ -312,7 +312,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
         <span class="dt">arm_var =</span> arm_var,
         <span class="dt">arm_var_choices =</span> arm_var_choices,
         <span class="dt">subgroup_var =</span> strata_var,
-        <span class="dt">subgroup_var_choices =</span> strata_var_choices,        
+        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
         <span class="dt">paramcd =</span> paramcd_tte,
         <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
         <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
@@ -342,7 +342,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">strata_var =</span> strata_var,
       <span class="dt">strata_var_choices =</span> strata_var_choices,
       <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">1800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
-    ), 
+    ),
     <span class="kw"><a href="reference/tm_t_rsp.html">tm_t_rsp</a></span>(
       <span class="dt">label =</span> <span class="st">"Response Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ARS"</span>,
@@ -354,6 +354,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">strata_var =</span> strata_var,
       <span class="dt">strata_var_choices =</span> strata_var_choices
     ),
+    <span class="co"># @TODO</span>
     <span class="kw"><a href="reference/tm_t_tte.html">tm_t_tte</a></span>(
       <span class="dt">label =</span> <span class="st">"Time To Event Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
@@ -381,13 +382,13 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
   <span class="dt">header =</span> <span class="kw">div</span>(
     <span class="dt">class=</span><span class="st">""</span>,
     <span class="dt">style=</span><span class="st">"margin-bottom: 2px;"</span>,
-    tags<span class="op">$</span><span class="kw">h1</span>(<span class="st">"Example App With teal.tern Teal Modules"</span>, tags<span class="op">$</span><span class="kw">span</span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
+    tags<span class="op">$</span><span class="kw">h1</span>(<span class="st">"Example App With teal.modules.tern module"</span>, tags<span class="op">$</span><span class="kw">span</span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
   ),
   <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw">p</span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)
 )  
 
 <span class="kw">shinyApp</span>(x<span class="op">$</span>ui, x<span class="op">$</span>server)</code></pre></div>
-<p>Each teal module in <code>teal.tern</code> will be explained in a separate vignette and is accessile via the articles tab on the <a href="http://pages.github.roche.com/Rpackages/teal.tern">project site</a>.</p>
+<p>Each teal module in <code>teal</code> will be explained in a separate vignette and is accessile via the articles tab on the <a href="http://pages.github.roche.com/Rpackages/teal.tern">project site</a>.</p>
 </div>
 <div id="deployment" class="section level2">
 <h2 class="hasAnchor">
@@ -422,33 +423,33 @@ orig_libpaths &lt;-<span class="st"> </span><span class="kw">.libPaths</span>()
     <span class="kw">as.vector</span>(<span class="kw">Filter</span>(<span class="cf">function</span>(x) <span class="op">!</span><span class="kw">grepl</span>(<span class="st">"^/opt/bee/home"</span>, x), orig_libpaths))
 ))
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/random.cdisc.data"</span>,
-  <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>, 
+  <span class="dt">ref =</span> <span class="st">"v0.1.2.1"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"Roche/rtables"</span>, <span class="dt">ref =</span> <span class="st">"v0.1.0"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/tern"</span>,
-  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">ref =</span> <span class="st">"v0.5.1"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal"</span>,
-  <span class="dt">ref =</span> <span class="st">"v0.0.4"</span>, 
+  <span class="dt">ref =</span> <span class="st">"v0.0.5.9000"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )
 
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(
   <span class="dt">repo =</span> <span class="st">"Rpackages/teal.tern"</span>,
-  <span class="dt">ref =</span> <span class="st">"v0.5.0"</span>, 
+  <span class="dt">ref =</span> <span class="st">"v0.5.1"</span>, 
   <span class="dt">host =</span> <span class="st">"https://github.roche.com/api/v3"</span>,
   <span class="dt">upgrade_dependencies =</span> <span class="ot">FALSE</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>
 )

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reporting an Issue with teal.tern • teal.tern</title>
+<title>Reporting an Issue with teal.modules.tern • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Reporting an Issue with teal.tern" />
+<meta property="og:title" content="Reporting an Issue with teal.modules.tern" />
 
 <meta name="robots" content="noindex">
 
@@ -57,8 +57,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -124,22 +124,22 @@
 <div class="row">
   <div class="contents col-md-9">
     <div class="page-header">
-      <h1>Reporting an Issue with teal.tern</h1>
+      <h1>Reporting an Issue with teal.modules.tern</h1>
     </div>
 
-<div id="reporting-an-issue-with-teal-tern" class="section level1">
+<div id="reporting-an-issue-with-teal-modules-tern" class="section level1">
 
-<p>Please briefly describe your problem and, when relevant, the output you expect. Please also provide the output of <code><a href="http://www.rdocumentation.org/packages/utils/topics/sessionInfo">utils::sessionInfo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/devtools/topics/session_info">devtools::session_info()</a></code> at the end of your post.</p>
-<p>If at all possible, please include a <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example">minimal, reproducible example</a>. If the data is restricted for your example then try to generate random data that re-creates the problem, the <a href="https://github.roche.com/Rpackages/random.cdisc.data">random.cdisc.data</a> R package might be useful for that. The <code>teal.tern</code> team will be much more likely to resolve your issue if they are able to reproduce it themselves locally.</p>
+<p>Please briefly describe your problem and, when relevant, the output you expect. Please also provide the output of <code><a href="http://www.rdocumentation.org/packages/utils/topics/sessionInfo">utils::sessionInfo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">devtools::session_info()</a></code> at the end of your post.</p>
+<p>If at all possible, please include a <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example">minimal, reproducible example</a>. If the data is restricted for your example then try to generate random data that re-creates the problem, the <a href="https://github.roche.com/Rpackages/random.cdisc.data">random.cdisc.data</a> R package might be useful for that. The <code>teal.modules.tern</code> team will be much more likely to resolve your issue if they are able to reproduce it themselves locally.</p>
 <p>Please delete this preamble after you have read it.</p>
 <hr>
 <p>your brief description of the problem</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.tern)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.modules.tern) <span class="co"># library(teal.tern) if you are using older version</span>
 
 <span class="co"># your reproducible example here, e.g.</span>
 
 <span class="kw">library</span>(random.cdisc.data)
-ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam">radam</a></span>(<span class="st">"ASL"</span>, <span class="dt">N=</span><span class="dv">200</span>)
+ASL &lt;-<span class="st"> </span><span class="kw">radam</span>(<span class="st">"ASL"</span>, <span class="dt">N=</span><span class="dv">200</span>)
 
 x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/teal/topics/init">init</a></span>(
   <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">ASL=</span>ASL),

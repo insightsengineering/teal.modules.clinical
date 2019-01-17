@@ -1,3 +1,9 @@
+# teal.modules.tern 0.5.1
+
+## Changes
+
+* package renamed to `teal.modules.tern`
+
 
 # teal.tern 0.5.0.2
 

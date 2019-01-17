@@ -1,5 +1,3 @@
-
-
 #' Summarize Variable Teal Module
 #' 
 #' @inheritParams tm_t_tte
@@ -8,11 +6,9 @@
 #' @param summarize_vars_choices character vector with variable names that can
 #'   be selected (for summary)
 #' 
-#' 
 #' @export
 #' 
 #' @template author_waddella
-#' 
 #' 
 #' @examples 
 #' 
@@ -20,7 +16,8 @@
 #' 
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radam('ASL', N = 1000)
+#' ASL <- radsl(seed = 2)
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
@@ -31,16 +28,14 @@
 #'        arm_var = "ARM",
 #'        arm_var_choices = c("ARM", "ARMCD"),
 #'        summarize_vars =  c("SEX"),
-#'        summarize_vars_choices = c("SEX", "RACE", "BAGE")
-#'    )
+#'        summarize_vars_choices = c("SEX", "RACE", "BMRKR2")
+#'     )
 #'   )
 #' )
 #'    
 #' shinyApp(x$ui, x$server) 
 #'   
 #' } 
-#' 
-#' 
 tm_t_summarize_variables <- function(label,
                                      dataname,
                                      arm_var,
@@ -151,4 +146,3 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
   })
   
 }
-

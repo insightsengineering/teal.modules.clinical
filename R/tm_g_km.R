@@ -10,9 +10,8 @@
 #' @param strata_var parameter for stratification analysis in Cox PH model
 #' @param strata_var_choices options for \code{strata_var}
 #' @param tbl_fontsize fontsize for text annotation
+#' 
 #' @template param_plot_height
-#' 
-#' 
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -29,20 +28,16 @@
 #' 
 #' library(random.cdisc.data)
 #'
-#' ASL <- radam('ASL', start_with = list(
-#'   ITTFL = 'Y',
-#'   SEX = c("M", "F"),
-#'   MLIVER = paste("mliver", 1:3),
-#'   ARM = paste("ARM", LETTERS[1:3])
-#' ))
+#' ASL <- radsl(seed = 2)
+#' ATE <- radtte(ASL, seed = 2)
 #' 
-#' 
-#' ATE <- radam('ATE', ADSL = ASL)
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
 #' 
 #' arm_ref_comp = list(
 #'    ARM = list(
-#'       ref = "ARM A",
-#'       comp = c("ARM B", "ARM C")
+#'       ref = "A: Drug X",
+#'       comp = c("B: Placebo", "C: Combination")
 #'    ),
 #'    ARMCD = list(
 #'       ref = "ARM B",
@@ -50,7 +45,6 @@
 #'    )
 #' )
 #' 
-#' ## Initialize Teal
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
@@ -60,15 +54,15 @@
 #'        arm_var_choices = c("ARM", "ARMCD"),
 #'        arm_ref_comp = arm_ref_comp,
 #'        paramcd_choices = c("OS", "PFS"),
-#'        facet_var = "MLIVER",
-#'        facet_var_choices = c("SEX", "MLIVER"),
+#'        facet_var = "BMRKR2",
+#'        facet_var_choices = c("SEX", "BMRKR2"),
 #'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER"),
+#'        strata_var_choices = c("SEX", "BMRKR2"),
 #'        tbl_fontsize = 12
 #'     )  
 #'   )
 #' )
-#' ## Initiate Shiny App
+#' 
 #' shinyApp(ui = x$ui, server = x$server)
 #' 
 #' }
@@ -87,8 +81,7 @@ tm_g_km <- function(label,
                     tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL,
-                    code_data_processing = NULL
-){
+                    code_data_processing = NULL){
   
   args <- as.list(environment())
   
@@ -103,6 +96,7 @@ tm_g_km <- function(label,
     ui_args = args
   )
 }
+
 
 ui_g_km <- function(id, ...) {
   
@@ -142,7 +136,6 @@ ui_g_km <- function(id, ...) {
 srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                      dataname, arm_ref_comp, code_data_processing) {
   
-  
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
@@ -167,7 +160,6 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     info_coxph = "# No Calculated",
     t_kmplot = "# No Calculated"
   )
-  
   
   output$kmplot <- renderPlot({
     ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)

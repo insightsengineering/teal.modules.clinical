@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Forest Survival Plot teal Module — tm_g_forest_tte • teal.tern</title>
+<title>Forest Survival Plot teal Module — tm_g_forest_tte • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -61,8 +61,8 @@ with ADaM structure" />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="../index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -140,9 +140,11 @@ with ADaM structure</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>tm_g_forest_tte</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
-  <span class='no'>subgroup_var</span>, <span class='kw'>subgroup_var_choices</span> <span class='kw'>=</span> <span class='no'>subgroup_var</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OS"</span>,
-  <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>, <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>600</span>, <span class='fl'>200</span>, <span class='fl'>2000</span>), <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.3</span>,
+    <pre class="usage"><span class='fu'>tm_g_forest_tte</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
+  <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>, <span class='no'>subgroup_var</span>,
+  <span class='kw'>subgroup_var_choices</span> <span class='kw'>=</span> <span class='no'>subgroup_var</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OS"</span>,
+  <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>, <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>600</span>, <span class='fl'>200</span>, <span class='fl'>2000</span>),
+  <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.3</span>,
   <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='fu'>helpText</span>(<span class='st'>"graph needs to be of a certain width to be displayed"</span>),
   <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
@@ -221,10 +223,11 @@ app is initialized</p></td>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ASL"</span>, <span class='kw'>start_with</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>RACE</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"white"</span>, <span class='st'>"asian"</span>),
-   <span class='kw'>ARMCD</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"DUMMY 1"</span>, <span class='st'>"DUMMY 2"</span>, <span class='st'>"DUMMY 3"</span>)))
-<span class='no'>ATE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ATE"</span>, <span class='kw'>ADSL</span> <span class='kw'>=</span> <span class='no'>ASL</span>)
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>ATE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radtte'>radtte</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
+<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 2)"</span>
+<span class='fu'>attr</span>(<span class='no'>ATE</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radtte(ASL, seed = 2)"</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>ATE</span> <span class='kw'>=</span> <span class='no'>ATE</span>),
@@ -239,9 +242,10 @@ app is initialized</p></td>
        <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>600</span>, <span class='fl'>200</span>, <span class='fl'>2000</span>),
        <span class='kw'>subgroup_var</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"RACE"</span>, <span class='st'>"SEX"</span>),
        <span class='kw'>subgroup_var_choices</span> <span class='kw'>=</span> <span class='fu'>names</span>(<span class='no'>ASL</span>)
-   )
+    )
   )
 )
+
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
 <span class='co'># }</span><div class='input'>

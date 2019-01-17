@@ -2,7 +2,11 @@
 title: "Time To Event Table Module"
 author: "Tadeusz Lewandowski"
 date: "3/29/2018"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with Teal}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
