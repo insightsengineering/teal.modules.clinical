@@ -11,15 +11,16 @@
 #' 
 #' @examples  
 #' 
-#' \dontrun{
-#' 
 #' library(random.cdisc.data)
+#' library(dplyr)
 #' 
-#' ASL <- radsl(seed = 2)
-#' ATE <- radtte(ASL, seed = 2)
+#' ASL <- radsl(seed = 1) %>%
+#'   mutate(RACE = droplevels(RACE))
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% 
+#'   mutate(RACE = droplevels(RACE))"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -37,6 +38,8 @@
 #'     )
 #'   )
 #' )
+#' 
+#' \dontrun{
 #' 
 #' shinyApp(x$ui, x$server) 
 #'     

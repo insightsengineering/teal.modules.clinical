@@ -24,15 +24,13 @@
 #' 
 #' @examples 
 #' 
-#' \dontrun{
-#' 
 #' library(random.cdisc.data)
 #'
-#' ASL <- radsl(seed = 2)
-#' ATE <- radtte(ASL, seed = 2)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' arm_ref_comp = list(
 #'    ARM = list(
@@ -62,6 +60,8 @@
 #'     )  
 #'   )
 #' )
+#' 
+#' \dontrun{
 #' 
 #' shinyApp(ui = x$ui, server = x$server)
 #' 

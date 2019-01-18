@@ -6,14 +6,13 @@
 #' 
 #' @examples 
 #' 
-#' \dontrun{
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radsl(seed = 2)
-#' ATE <- radtte(ASL, seed = 2)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' d <- teal:::FilteredData$new()
 #' d$set_data("ASL", ASL)
@@ -24,8 +23,6 @@
 #'   dataname = c("ATE"),
 #'   datasets = d
 #' )); cat("\n")
-#' 
-#' }
 #' 
 get_rcode_header <- function(title, datanames, datasets, code_data_processing = NULL) {
 

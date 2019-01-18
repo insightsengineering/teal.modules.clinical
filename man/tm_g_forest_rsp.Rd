@@ -56,15 +56,13 @@ This is teal module produces a grid style Forest plot for response data with ADa
 \examples{
   
 
-\dontrun{
-
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 2)
-ARS <- radrs(ASL, seed = 2)
+ASL <- radsl(seed = 1)
+ARS <- radrs(ASL, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 2)"
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
 
 x <- teal::init(
   data = list(ASL = ASL, ARS = ARS),
@@ -81,9 +79,11 @@ x <- teal::init(
        subgroup_var_choices = names(ASL)
     )
   )
-)   
+)
 
-shinyApp(x$ui, x$server) 
+\dontrun{
+
+shinyApp(x$ui, x$server)
 
 } 
 }

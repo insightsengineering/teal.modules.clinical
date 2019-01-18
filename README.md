@@ -142,8 +142,9 @@ library(random.cdisc.data)
 library(dplyr)
 
 ## Generate Data
-ASL <- radsl(seed = 2) %>% 
+ASL <- radsl(seed = 1) %>% 
   mutate(., 
+         RACE = droplevels(RACE),
          ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE),
          STRATM1 = sample(paste("STRATM1", 1:3), n(), TRUE),
          STRATM2 = sample(paste("STRATM2", 1:4), n(), TRUE),
@@ -155,8 +156,12 @@ ASL <- radsl(seed = 2) %>%
          ITTGE2FL = sample(c(T,F), n(), TRUE),
          ITTGE3FL = sample(c(T,F), n(), TRUE))
 
-ATE <- radtte(ADSL = ASL, seed = 2)
-ARS <- radrs(ADSL = ASL, seed = 2)
+ATE <- radtte(ADSL = ASL, seed = 1)
+ARS <- radrs(ADSL = ASL, seed = 1)
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% mutate(...)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
 
 ## Reusable Configuration For Modules
 arm_var <- "ARM"

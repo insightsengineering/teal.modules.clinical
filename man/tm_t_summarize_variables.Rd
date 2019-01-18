@@ -45,12 +45,10 @@ Summarize Variable Teal Module
 }
 \examples{
 
-\dontrun{
-
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 2)
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
+ASL <- radsl(seed = 1)
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
 
 x <- teal::init(
   data = list(ASL = ASL),
@@ -65,7 +63,9 @@ x <- teal::init(
     )
   )
 )
-   
+
+\dontrun{
+
 shinyApp(x$ui, x$server) 
   
 } 

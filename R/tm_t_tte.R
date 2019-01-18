@@ -54,14 +54,13 @@
 #' 
 #' @examples  
 #' 
-#' \dontrun{
 #' library(random.cdisc.data)
 #'
-#' ASL <- radsl(seed = 2)
-#' ATE <- radtte(ASL, seed = 2)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' x <- teal::init( 
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -83,19 +82,23 @@
 #'   )
 #' )
 #' 
-#' shinyApp(x$ui, x$server) 
 #' 
+#' \dontrun{
+#' shinyApp(x$ui, x$server) 
+#' }
 #' 
 #' ## Define default reference & comparison arms based on 
 #' ## ARM variable 
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 2) %>% 
+#' ASL <- radsl(seed = 1) %>% 
 #'   mutate(., ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE))
-#' ATE <- radtte(ASL, seed = 2)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 2)"
-#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 2)"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% 
+#'   mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -129,9 +132,9 @@
 #'   )
 #' )
 #' 
+#' \dontrun{
 #' shinyApp(x$ui, x$server) 
-#'   
-#' } 
+#' }
 tm_t_tte <- function(label,
                      dataname,
                      arm_var = "ARM",

@@ -227,8 +227,9 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <span class="kw">library</span>(dplyr)
 
 ## Generate Data
-ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">seed =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">seed =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(., 
+         <span class="dt">RACE =</span> <span class="kw">droplevels</span>(RACE),
          <span class="dt">ARM1 =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
          <span class="dt">STRATM1 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
          <span class="dt">STRATM2 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
@@ -240,8 +241,12 @@ ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt"
          <span class="dt">ITTGE2FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
          <span class="dt">ITTGE3FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>))
 
-ATE &lt;-<span class="st"> </span><span class="kw">radtte</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">2</span>)
-ARS &lt;-<span class="st"> </span><span class="kw">radrs</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">2</span>)
+ATE &lt;-<span class="st"> </span><span class="kw">radtte</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
+ARS &lt;-<span class="st"> </span><span class="kw">radrs</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
+
+<span class="kw">attr</span>(ASL, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radsl(seed = 1) %&gt;% mutate(...)"</span>
+<span class="kw">attr</span>(ATE, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radtte(ASL, seed = 1)"</span>
+<span class="kw">attr</span>(ARS, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radrs(ASL, seed = 1)"</span>
 
 ## Reusable Configuration For Modules
 arm_var &lt;-<span class="st"> "ARM"</span>

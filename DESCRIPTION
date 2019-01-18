@@ -29,7 +29,9 @@ Imports:
 Suggests:
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  random.cdisc.data,
+  dplyr
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
