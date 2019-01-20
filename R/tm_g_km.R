@@ -26,27 +26,23 @@
 #' @examples 
 #' 
 #' \dontrun{
-#' 
+#' library(teal.tern)
 #' library(random.cdisc.data)
-#'
-#' ASL <- radam('ASL', start_with = list(
-#'   ITTFL = 'Y',
-#'   SEX = c("M", "F"),
-#'   MLIVER = paste("mliver", 1:3),
-#'   ARM = paste("ARM", LETTERS[1:3])
-#' ))
-#' 
-#' 
-#' ATE <- radam('ATE', ADSL = ASL)
+#' library(dplyr)
+#' ASL <- radsl()
+#' ASL$RACE <- factor(sapply(as.character(ASL$RACE), function(x) {
+#'    if (nchar(x)>9) paste0(substr(x, 1,9), "...") else x
+#' }))
+#' ATE <- radte(ADSL = ASL)
 #' 
 #' arm_ref_comp = list(
 #'    ARM = list(
-#'       ref = "ARM A",
-#'       comp = c("ARM B", "ARM C")
+#'       ref = "B: Placebo",
+#'       comp = c("A: Drug X", "C: Combination")
 #'    ),
 #'    ARMCD = list(
 #'       ref = "ARM B",
-#'       comp = "ARM A"
+#'       comp = c("ARM A", "ARM C")
 #'    )
 #' )
 #' 
@@ -60,10 +56,10 @@
 #'        arm_var_choices = c("ARM", "ARMCD"),
 #'        arm_ref_comp = arm_ref_comp,
 #'        paramcd_choices = c("OS", "PFS"),
-#'        facet_var = "MLIVER",
-#'        facet_var_choices = c("SEX", "MLIVER"),
+#'        facet_var = "BMRKR2",
+#'        facet_var_choices = c("SEX", "BMRKR2"),
 #'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER"),
+#'        strata_var_choices = c("SEX", "BMRKR2"),
 #'        tbl_fontsize = 12
 #'     )  
 #'   )
@@ -267,17 +263,21 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
         coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                just = c("left", "bottom"),
                                gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                               vp = vpPath("plotArea", "topCurve"))
+                               vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                               )
         km_grob <- textGrob(label = toString(tbl_km, gap = 1),
                             x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                             y = unit(1, "npc") -  unit(1, "lines"),
                             just = c("left", "top"),
                             gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                            vp = vpPath("plotArea", "topCurve"))
+                            vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                             )
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE, xlab = time_unit)  
-        p <- addGrob(p, km_grob)  
-        p <- addGrob(p, coxph_grob) 
+        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = time_unit)
+        p <- addGrob(p, km_grob)
+        p <- addGrob(p, coxph_grob)
+        # p <- addGrob(p, gTree(children = gList(km_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot"))  
+        # p <- addGrob(p, gTree(children = gList(coxph_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot")) 
         grid.draw(p)
         
       })
@@ -317,19 +317,21 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                    just = c("left", "bottom"),
                                    gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                                   vp = vpPath("plotArea", "topCurve"))
+                                   vp = vpPath("mainPlot", "kmCurve", "curvePlot"))
             km_grob <- textGrob(label = toString(tbl_km, gap = 1),
                                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                                 y = unit(1, "npc") -  unit(1, "lines"),
                                 just = c("left", "top"),
                                 gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                                vp = vpPath("plotArea", "topCurve"))
+                                vp = vpPath("mainPlot", "kmCurve", "curvePlot"))
             
             
-            p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
+            p <- g_km(fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label), 
                       xticks = xticks, draw = FALSE, xlab = time_unit)  
-            p <- addGrob(p, km_grob)  
+            p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
+           # p <- addGrob(p, gTree(children = gList(km_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot"))  
+           # p <- addGrob(p, gTree(children = gList(coxph_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot")) 
             p
           }
         }, dfs, levels(lab))

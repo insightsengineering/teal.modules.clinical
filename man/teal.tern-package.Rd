@@ -6,7 +6,8 @@
 \alias{teal.tern-package}
 \title{Teal Modules for TLGs in tern}
 \description{
-Teal Modules for TLGs in tern
+Provides teal modules for outputs defined in the tern package.
+  The teal modules add an encoding panel to interactively change the encoding within teal.
 }
 \seealso{
 Useful links:
