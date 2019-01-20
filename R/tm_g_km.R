@@ -276,8 +276,6 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = time_unit)
         p <- addGrob(p, km_grob)
         p <- addGrob(p, coxph_grob)
-        # p <- addGrob(p, gTree(children = gList(km_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot"))  
-        # p <- addGrob(p, gTree(children = gList(coxph_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot")) 
         grid.draw(p)
         
       })
@@ -330,8 +328,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                       xticks = xticks, draw = FALSE, xlab = time_unit)  
             p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
-           # p <- addGrob(p, gTree(children = gList(km_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot"))  
-           # p <- addGrob(p, gTree(children = gList(coxph_grob)), vp = vpPath("mainPlot", "kmCurve", "curvePlot")) 
+
             p
           }
         }, dfs, levels(lab))
