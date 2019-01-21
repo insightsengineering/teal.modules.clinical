@@ -66,7 +66,7 @@
       <a href="articles/tm_t_rsp.html">Response Table Module</a>
     </li>
     <li>
-      <a href="articles/tm_t_summarize_variables.html">Demographic Table Module</a>
+      <a href="articles/tm_t_summary_variables.html">Demographic Table Module</a>
     </li>
     <li>
       <a href="articles/tm_t_tte.html">Time To Event Table Module</a>
@@ -205,7 +205,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
   <span class="dt">modules =</span> <span class="kw">root_modules</span>(
     <span class="kw">tm_data_table</span>(<span class="st">"Data Table"</span>),
     <span class="kw">tm_variable_browser</span>(<span class="st">"Variable Browser"</span>),
-    <span class="kw"><a href="reference/tm_t_summarize_variables.html">tm_t_summarize_variables</a></span>(
+    <span class="kw"><a href="reference/tm_t_summary.html">tm_t_summary</a></span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">arm_var =</span> <span class="st">"ACTARMCD"</span>,
@@ -217,7 +217,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 )
 
 <span class="kw">shinyApp</span>(x<span class="op">$</span>ui, x<span class="op">$</span>server)</code></pre></div>
-<p>This should start the teal web app. Now save the above code into an R file named <code>app.R</code> and replace <code>radam</code> with <code>read_bce</code> and select a dataset from a study of your choice. Start the app again and configure the arguments of <code>tm_t_summarize_variables</code> according to the information you would like to summarize in your <code>ASL</code> dataset.</p>
+<p>This should start the teal web app. Now save the above code into an R file named <code>app.R</code> and replace <code>radam</code> with <code>read_bce</code> and select a dataset from a study of your choice. Start the app again and configure the arguments of <code>tm_t_summary</code> according to the information you would like to summarize in your <code>ASL</code> dataset.</p>
 </div>
 <div id="app-setup-with-all-available-modules" class="section level2">
 <h2 class="hasAnchor">
@@ -301,7 +301,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     ),
     <span class="kw">tm_data_table</span>(<span class="st">"Data Table"</span>),
     <span class="kw">tm_variable_browser</span>(<span class="st">"Variable Browser"</span>),
-    <span class="kw"><a href="reference/tm_t_summarize_variables.html">tm_t_summarize_variables</a></span>(
+    <span class="kw"><a href="reference/tm_t_summary.html">tm_t_summary</a></span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">arm_var =</span> arm_var,

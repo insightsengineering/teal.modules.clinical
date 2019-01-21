@@ -27,7 +27,7 @@ x <- teal::init(
   data = list(ASL=ASL),
   modules = root_modules(
     tm_data_table(),
-    tm_t_summarize_variables(
+    tm_t_summary(
     	label = "Demographic Table",
     	dataname = "ASL",
         arm_var = "ARM", arm_var_choices = c("ARM", "SEX"),

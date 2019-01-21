@@ -3,6 +3,7 @@
 ## Changes
 
 * package renamed to `teal.modules.tern`
+* rename `tm_t_summarize_variables` to `tm_t_summary`
 
 
 # teal.tern 0.5.0.2
