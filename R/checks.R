@@ -1,4 +1,3 @@
-
 check_arm_ref_comp <- function(x, ASL, module) {
   
   msg <- paste("module", module, "argument arm_ref_comp ")

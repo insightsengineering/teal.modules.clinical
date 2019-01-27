@@ -1,7 +1,7 @@
 
-# teal.tern
+# teal.modules.tern
 
-The `teal.tern` R package contains interactive `teal` modules for the outputs
+The `teal.modules.tern` R package contains interactive `teal` modules for the outputs
 (TLGs) in [`tern`](https://github.roche.com/Rpackages/tern).
 
 See a live demo [on the Roche Shiny Server](http://shiny.roche.com/users/waddella/teal_tern/).
@@ -16,7 +16,7 @@ We are currently working on trainings. Here is a list of available content:
  * [Agile R Leader Perspectives March 2018](https://streamingmedia.roche.com/media/AgileR+Leader+Perspectives+March+2018/1_ccr8716n)
  * [General Teal and Agile R Framework](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story.html)
 
-Videos explaining the indiviual teal modules in `teal.tern` can be found under [Articles](https://pages.github.roche.com/Rpackages/teal.tern/articles/) on the web documentation.
+Videos explaining the indiviual teal modules can be found under [Articles](https://pages.github.roche.com/Rpackages/teal.tern/articles/) on the web documentation.
 
 # Installation
 
@@ -103,10 +103,10 @@ application](https://shiny.rstudio.com/articles/app-formats.html).
 Copy the following code into a new R file and execute it line by line:
 
 ```r
-library(teal.tern)
+library(teal.modules.tern) # library(teal.tern) if you are using older version
 library(random.cdisc.data)
 
-ASL <- radam("ASL", N = 600)
+ASL <- radsl(N = 600)
 
 x <- teal::init(
   data = list(ASL = ASL),
@@ -116,10 +116,10 @@ x <- teal::init(
     tm_t_summarize_variables(
       label = "Demographic Table",
       dataname = "ASL",
-      arm_var = "ARM",
-      arm_var_choices = c("ARM", "ARMCD"),
-      summarize_vars =  c("BAGE", "SEX"),
-      summarize_vars_choices =  c("BAGE", "SEX", "RACE")
+      arm_var = "ACTARMCD",
+      arm_var_choices = c("ACTARMCD", "ARMCD"),
+      summarize_vars =  c("BMRKR2", "SEX"),
+      summarize_vars_choices =  c("BMRKR2", "SEX", "RACE")
     )
   )
 )
@@ -137,26 +137,31 @@ summarize in your `ASL` dataset.
 ## App setup with all available modules
 
 ```r
-library(teal.tern)
+library(teal.modules.tern) # library(teal.tern) if you are using older version
 library(random.cdisc.data)
+library(dplyr)
 
 ## Generate Data
-ASL <- radam("ASL", N = 600,
-             arm_choices = c("Arm A", "Arm B", "Arm C"),
-             start_with = list(
-               ARM1 = c("DUMMY A", "DUMMY B"),
-               STRATM1 = paste("STRATM1", 1:3),
-               STRATM2 = paste("STRATM2", 1:4),
-               TCICLVL2 = paste("STRATM2", letters[1:3]),
-               T1I1FL = c(T,F),
-               T0I0FL = c(T,F),
-               ITTGEFL = c(T,F),
-               ITTWTFL = c(T,F),
-               ITTGE2FL = c(T,F),
-               ITTGE3FL = c(T,F)
-             )) 
-ATE <- radam("ATE", ADSL = ASL)
-ARS <- radam("ARS", ADSL = ASL)
+ASL <- radsl(seed = 1) %>% 
+  mutate(., 
+         RACE = droplevels(RACE),
+         ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE),
+         STRATM1 = sample(paste("STRATM1", 1:3), n(), TRUE),
+         STRATM2 = sample(paste("STRATM2", 1:4), n(), TRUE),
+         TCICLVL2 = sample(paste("STRATM2", letters[1:3]), n(), TRUE),
+         T1I1FL = sample(c(T,F), n(), TRUE),
+         T0I0FL = sample(c(T,F), n(), TRUE),
+         ITTGEFL = sample(c(T,F), n(), TRUE),
+         ITTWTFL = sample(c(T,F), n(), TRUE),
+         ITTGE2FL = sample(c(T,F), n(), TRUE),
+         ITTGE3FL = sample(c(T,F), n(), TRUE))
+
+ATE <- radtte(ADSL = ASL, seed = 1)
+ARS <- radrs(ADSL = ASL, seed = 1)
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% mutate(...)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
 
 ## Reusable Configuration For Modules
 arm_var <- "ARM"
@@ -178,8 +183,8 @@ facet_var_choices <- names(ASL)[(sapply(ASL, is.character))] %>%
 paramcd_tte <- "OS"
 paramcd_choices_tte <- unique(ATE$PARAMCD)
 
-paramcd_rsp <- "OVRSPI"
-paramcd_choices_rsp <- c("BESRSPI", "OVRINV", "OVRSPI") %>% 
+paramcd_rsp <- "INVET"
+paramcd_choices_rsp <- c("BESRSPI", "INVET", "OVRINV") %>% 
   intersect(ARS$PARAMCD)
 
 x_var_ct <- "T1I1FL"
@@ -189,7 +194,7 @@ ct_var_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE
 
 # reference & comparison arm selection when switching the arm variable
 arm_ref_comp <- list(
-  ARM = list(ref = "Arm A", comp = c("Arm B", "Arm C")),
+  ACTARMCD = list(ref = "ARM A", comp = c("ARM B", "ARM C")),
   ARM1 = list(ref = "DUMMY B", comp = "DUMMY A")
 )
 
@@ -227,7 +232,7 @@ x <- teal::init(
         arm_var = arm_var,
         arm_var_choices = arm_var_choices,
         subgroup_var = strata_var,
-        subgroup_var_choices = strata_var_choices,        
+        subgroup_var_choices = strata_var_choices,
         paramcd = paramcd_tte,
         paramcd_choices = paramcd_choices_tte,
         plot_height = c(800, 200, 4000)
@@ -257,7 +262,7 @@ x <- teal::init(
       strata_var = strata_var,
       strata_var_choices = strata_var_choices,
       plot_height = c(1800, 200, 4000)
-    ), 
+    ),
     tm_t_rsp(
       label = "Response Table",
       dataname = "ARS",
@@ -269,6 +274,7 @@ x <- teal::init(
       strata_var = strata_var,
       strata_var_choices = strata_var_choices
     ),
+    # @TODO
     tm_t_tte(
       label = "Time To Event Table",
       dataname = "ATE",
@@ -296,7 +302,7 @@ x <- teal::init(
   header = div(
     class="",
     style="margin-bottom: 2px;",
-    tags$h1("Example App With teal.tern Teal Modules", tags$span("SPA", class="pull-right"))
+    tags$h1("Example App With teal.modules.tern module", tags$span("SPA", class="pull-right"))
   ),
   footer = tags$p(class="text-muted", "Info About Authors")
 )  
@@ -305,7 +311,7 @@ shinyApp(x$ui, x$server)
 ```
 
 
-Each teal module in `teal.tern` will be explained in a separate vignette and
+Each teal module in `teal` will be explained in a separate vignette and
 is accessile via the articles tab on the [project site][ghs].
 
 
@@ -351,7 +357,7 @@ orig_libpaths <- .libPaths()
 
 devtools::install_github(
   repo = "Rpackages/random.cdisc.data",
-  ref = "v0.1.0", 
+  ref = "v0.1.2.1", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
@@ -361,21 +367,21 @@ devtools::install_github("Roche/rtables", ref = "v0.1.0",
 
 devtools::install_github(
   repo = "Rpackages/tern",
-  ref = "v0.5.0", 
+  ref = "v0.5.1", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
 devtools::install_github(
   repo = "Rpackages/teal",
-  ref = "v0.0.4", 
+  ref = "v0.0.5.9000", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )
 
 devtools::install_github(
   repo = "Rpackages/teal.tern",
-  ref = "v0.5.0", 
+  ref = "v0.5.1", 
   host = "https://github.roche.com/api/v3",
   upgrade_dependencies = FALSE, build_vignettes = FALSE
 )

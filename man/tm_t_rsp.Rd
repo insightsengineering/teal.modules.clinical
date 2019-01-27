@@ -78,20 +78,13 @@ Additional standard UI inputs include \code{responders},
 \examples{
  
 
-\dontrun{ 
-
 library(random.cdisc.data)
 
-ASL <- radam('ASL', start_with = list(
-  ITTFL = 'Y',
-  SEX = c("M", "F"),
-  MLIVER = paste("mliver", 1:3),
-  ARM = paste("ARM", LETTERS[1:3])
-))
+ASL <- radsl(seed = 1)
+ARS <- radrs(ASL, seed = 1)
 
-
-ARS <- radam('ARS', ADSL = ASL)
-
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
 
 x <- teal::init( 
   data = list(ASL = ASL, ARS = ARS),
@@ -104,10 +97,12 @@ x <- teal::init(
        paramcd = "BESRSPI",
        paramcd_choices = unique(ARS$PARAMCD),
        strata_var = "SEX",
-       strata_var_choices = c("SEX", "MLIVER")
+       strata_var_choices = c("SEX", "BMRKR2")
     )
   )
 )
+
+\dontrun{ 
 
 shinyApp(x$ui, x$server) 
 

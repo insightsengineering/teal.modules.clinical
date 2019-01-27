@@ -15,7 +15,7 @@ development:
 reference:
   - title:
     contents:
-      - teal.tern-package
+      - teal.modules.tern-package
   - title: Tables
     contents:
       -  starts_with("tm_t_")

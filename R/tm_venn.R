@@ -9,39 +9,21 @@
 #' 
 #' @return  list with absolute and percentage cross table
 #' 
-#' 
 #' @examples 
 #' 
-#' \dontrun{
-#' n <- 100
-#' tGE <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.2, .8))
-#' IHC <- sample(c(TRUE, FALSE), n, replace=TRUE, prob = c(.6, .4))
-#' 
-#' library(atezo.data)
-#' ASL <- asl(com.roche.cdpt7722.wo29637.rl)
-#' 
-#' IC <- ASL$IC %in% c("2", "3")
-#' TC <- ASL$TC %in% c(2, 3)
-#' 
-#' x <- venn2(x = IC, y = TC)
-#' plot(x)
-#' 
-#' venn2(x = IC, y = TC, "biomarker IT", "biamrker TC")
-#' 
-#' x = c(rep(T,5), rep(F,3), rep(T, 4), rep(F, 9))
-#' y = c(rep(T,5), rep(F,3), rep(F, 4), rep(T, 9))
-#' table(x,y)
-#' y <- venn2(x,y, "X", "Y")
+#' x = c(rep(T, 5), rep(F, 3), rep(T, 4), rep(F, 9))
+#' y = c(rep(T, 5), rep(F, 3), rep(F, 4), rep(T, 9))
+#' table(x, y)
+#' y <- venn2(x, y, "X", "Y")
 #' plot(y)
 #' 
 #' 
 #' # if too few then table is plotted
-#' x = c(F, F,F,F, T,T)
-#' y = c(F, T,T,T, F,F)
-#' table(x,y)
+#' x = c(F, F, F, F, T, T)
+#' y = c(F, T, T, T, F, F)
+#' table(x, y)
 #' y <- venn2(x, y, "X", "Y")
 #' plot(y)
-#' }
 venn2 <- function(x, y, xlab, ylab) {
 
 
@@ -65,6 +47,7 @@ venn2 <- function(x, y, xlab, ylab) {
   
   structure(list(absolute = abs, perentage = per, xlab = xlab, ylab = ylab), class = "venn2")
 }
+
 
 #' plot venn2 object
 #' 
@@ -208,9 +191,6 @@ plot.venn2 <- function(x, ...) {
     )
   }
 
-  
-
-
   # draw graphic
   grid.newpage()
   pushViewport(plotViewport(margins = c(2,2,2,2))) # add margins
@@ -220,12 +200,8 @@ plot.venn2 <- function(x, ...) {
   # helper lines
   # grid.lines(x = c(0, 1), y = c(.5, .5), default.units = "npc")
   # grid.lines(x =  c(.5, .5), y =c(0, 1), default.units = "npc")
-
-  
-
   
 }
-
 
 
 #' Venn2 teal module
@@ -234,15 +210,16 @@ plot.venn2 <- function(x, ...) {
 #' 
 #' @examples  
 #' 
-#' \dontrun{
 #' N <- 100
 #' var_biomarkers <- paste0("B", 1:10) 
 #' sample_bm_data <- lapply(1:10, function(x)sample(c(TRUE, FALSE), N, replace = TRUE))
 #' names(sample_bm_data) <- var_biomarkers
 #' 
 #' ASL <- do.call(data.frame, c(
-#'   list(USUBJID = paste("ID", 1:N),STUDYID = "1"), sample_bm_data
+#'   list(USUBJID = paste("ID", 1:N), STUDYID = "1"), sample_bm_data
 #' ))
+#' 
+#' attr(ASL, "source") <- "do.call(data.frame, c(list(USUBJID = paste("ID", 1:N), STUDYID = "1"), sample_bm_data))"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
@@ -251,7 +228,10 @@ plot.venn2 <- function(x, ...) {
 #'     tm_data_table(),
 #'     tm_venn2("Venn Diagram", "ASL", "B1", "B2", var_biomarkers, var_biomarkers)
 #'   )
-#' )   
+#' )
+#' 
+#' \dontrun{
+#' 
 #' shinyApp(x$ui, x$server)     
 #' 
 #' }
@@ -343,4 +323,3 @@ srv_venn2 <- function(input, output, session, datasets, dataname) {
     plot(x)
   })
 }
-

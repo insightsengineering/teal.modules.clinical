@@ -64,28 +64,25 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 }
 \examples{
 
-\dontrun{
-library(teal.tern)
 library(random.cdisc.data)
-library(dplyr)
-ASL <- radsl()
-ASL$RACE <- factor(sapply(as.character(ASL$RACE), function(x) {
-   if (nchar(x)>9) paste0(substr(x, 1,9), "...") else x
-}))
-ATE <- radte(ADSL = ASL)
+
+ASL <- radsl(seed = 1)
+ATE <- radtte(ASL, seed = 1)
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 
 arm_ref_comp = list(
    ARM = list(
-      ref = "B: Placebo",
-      comp = c("A: Drug X", "C: Combination")
+      ref = "A: Drug X",
+      comp = c("B: Placebo", "C: Combination")
    ),
    ARMCD = list(
       ref = "ARM B",
-      comp = c("ARM A", "ARM C")
+      comp = "ARM A"
    )
 )
 
-## Initialize Teal
 x <- teal::init(
   data = list(ASL = ASL, ATE = ATE),
   modules = root_modules(
@@ -103,7 +100,9 @@ x <- teal::init(
     )  
   )
 )
-## Initiate Shiny App
+
+\dontrun{
+
 shinyApp(ui = x$ui, server = x$server)
 
 }

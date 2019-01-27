@@ -10,9 +10,8 @@
 #' @param strata_var parameter for stratification analysis in Cox PH model
 #' @param strata_var_choices options for \code{strata_var}
 #' @param tbl_fontsize fontsize for text annotation
+#' 
 #' @template param_plot_height
-#' 
-#' 
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -25,28 +24,25 @@
 #' 
 #' @examples 
 #' 
-#' \dontrun{
-#' library(teal.tern)
 #' library(random.cdisc.data)
-#' library(dplyr)
-#' ASL <- radsl()
-#' ASL$RACE <- factor(sapply(as.character(ASL$RACE), function(x) {
-#'    if (nchar(x)>9) paste0(substr(x, 1,9), "...") else x
-#' }))
-#' ATE <- radte(ADSL = ASL)
+#'
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' arm_ref_comp = list(
 #'    ARM = list(
-#'       ref = "B: Placebo",
-#'       comp = c("A: Drug X", "C: Combination")
+#'       ref = "A: Drug X",
+#'       comp = c("B: Placebo", "C: Combination")
 #'    ),
 #'    ARMCD = list(
 #'       ref = "ARM B",
-#'       comp = c("ARM A", "ARM C")
+#'       comp = "ARM A"
 #'    )
 #' )
 #' 
-#' ## Initialize Teal
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
 #'   modules = root_modules(
@@ -64,7 +60,9 @@
 #'     )  
 #'   )
 #' )
-#' ## Initiate Shiny App
+#' 
+#' \dontrun{
+#' 
 #' shinyApp(ui = x$ui, server = x$server)
 #' 
 #' }
@@ -83,8 +81,7 @@ tm_g_km <- function(label,
                     tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL,
-                    code_data_processing = NULL
-){
+                    code_data_processing = NULL){
   
   args <- as.list(environment())
   
@@ -99,6 +96,7 @@ tm_g_km <- function(label,
     ui_args = args
   )
 }
+
 
 ui_g_km <- function(id, ...) {
   
@@ -138,7 +136,6 @@ ui_g_km <- function(id, ...) {
 srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                      dataname, arm_ref_comp, code_data_processing) {
   
-  
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
@@ -163,7 +160,6 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     info_coxph = "# No Calculated",
     t_kmplot = "# No Calculated"
   )
-  
   
   output$kmplot <- renderPlot({
     ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cross table based on rtables — tm_t_percentage_cross_table • teal.tern</title>
+<title>Cross table based on rtables — tm_t_percentage_cross_table • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -60,8 +60,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="../index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -176,23 +176,24 @@ Note that the data is expected to be in vertical form with the
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>"ASL"</span>, <span class='kw'>start_with</span> <span class='kw'>=</span> <span class='fu'>list</span>(
-  <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>)
-))
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+
+<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>),
   <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'>root_modules</span>(
-    <span class='fu'>tm_t_percentage_cross_table</span>(<span class='st'>"Cross Table"</span>, <span class='st'>"ASL"</span>, <span class='kw'>x_var</span> <span class='kw'>=</span> <span class='st'>"x"</span>, <span class='kw'>y_var</span> <span class='kw'>=</span> <span class='st'>"y"</span>)
+    <span class='fu'>tm_t_percentage_cross_table</span>(<span class='st'>"Cross Table"</span>, <span class='st'>"ASL"</span>, <span class='kw'>x_var</span> <span class='kw'>=</span> <span class='st'>"STRATA1"</span>, <span class='kw'>y_var</span> <span class='kw'>=</span> <span class='st'>"STRATA2"</span>)
   )
-)
-
+)</div><div class='output co'>#&gt; |apply filter for ASL
+#&gt; |** UI id for modules is teal_modules.root
+#&gt; |UI id for module is teal_modules_root.Cross_Table</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
-<span class='co'># }</span><div class='input'>
-</div></pre>
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

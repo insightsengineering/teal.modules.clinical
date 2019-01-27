@@ -1,4 +1,3 @@
-
 # the arm_ref_comp_observer updates the reference and comparison arms
 # when the selected arm variable changes
 arm_ref_comp_observer <- function(session, input,
