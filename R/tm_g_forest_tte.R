@@ -1,4 +1,3 @@
-
 #' Forest Survival Plot teal Module
 #' 
 #' This is teal module produces a grid style Forest plot for time-to-event data
@@ -12,14 +11,16 @@
 #' 
 #' @examples  
 #' 
-#' \dontrun{
-#' 
 #' library(random.cdisc.data)
+#' library(dplyr)
 #' 
-#' ASL <- radam("ASL", start_with = list(RACE = c("white", "asian"),
-#'    ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")))
-#' ATE <- radam("ATE", ADSL = ASL)
+#' ASL <- radsl(seed = 1) %>%
+#'   mutate(RACE = droplevels(RACE))
+#' ATE <- radtte(ASL, seed = 1)
 #' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% 
+#'   mutate(RACE = droplevels(RACE))"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -34,9 +35,12 @@
 #'        plot_height = c(600, 200, 2000),
 #'        subgroup_var = c("RACE", "SEX"),
 #'        subgroup_var_choices = names(ASL)
-#'    )
+#'     )
 #'   )
-#' )   
+#' )
+#' 
+#' \dontrun{
+#' 
 #' shinyApp(x$ui, x$server) 
 #'     
 #' } 
@@ -68,6 +72,7 @@ tm_g_forest_tte <- function(label,
   )
 }
 
+
 ui_g_forest_tte <- function(id, ...) {
   
   a <- list(...)
@@ -97,6 +102,7 @@ ui_g_forest_tte <- function(id, ...) {
     post_output = a$post_output
   )
 } 
+
 
 srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5, code_data_processing) {
   
@@ -276,4 +282,3 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     
   })
 }
-

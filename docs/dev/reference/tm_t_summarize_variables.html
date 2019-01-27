@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summarize Variable Teal Module — tm_t_summarize_variables • teal.tern</title>
+<title>Summarize Variable Teal Module — tm_t_summarize_variables • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -60,8 +60,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="../index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -138,9 +138,10 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
-  <span class='no'>summarize_vars</span>, <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>,
-  <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>,
+  <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>, <span class='no'>summarize_vars</span>,
+  <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>, <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,10 +199,10 @@ app is initialized</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ASL'</span>, <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>1000</span>)
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>),
@@ -212,16 +213,16 @@ app is initialized</p></td>
        <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
        <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
        <span class='kw'>summarize_vars</span> <span class='kw'>=</span>  <span class='fu'>c</span>(<span class='st'>"SEX"</span>),
-       <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BAGE"</span>)
-   )
+       <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BMRKR2"</span>)
+    )
   )
-)
-
+)</div><div class='output co'>#&gt; |apply filter for ASL
+#&gt; |** UI id for modules is teal_modules.root
+#&gt; |UI id for module is teal_modules_root.Demographic_Table</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
-<span class='co'># }</span><div class='input'>
-
-</div></pre>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

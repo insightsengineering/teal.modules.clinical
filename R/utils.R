@@ -1,4 +1,3 @@
-
 #' Check if list or data.frame has elements/variables
 #' 
 #' Checks if list names exist and throws an error otherwise
@@ -29,8 +28,6 @@
 }
 
 
-
-
 whiteSmallWell <- function(...) {
   shiny::tags$div(class = "well well-sm", style = "background-color: white;", shiny::tags$div(style = "overflow-x: auto;",...))
 }
@@ -50,7 +47,6 @@ as.global <- function(...) {
   }, args, names)
 
 }
-
 
 
 # x <- c("{", "     ", "    a <- 3", "}    ")
@@ -86,11 +82,8 @@ remove_enclosing_curly_braces <- function(x) {
          txt2
        }
        
-
-       
     } else {
       txt
     }
   }
 }
-

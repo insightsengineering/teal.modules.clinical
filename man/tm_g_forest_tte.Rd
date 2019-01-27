@@ -4,9 +4,11 @@
 \alias{tm_g_forest_tte}
 \title{Forest Survival Plot teal Module}
 \usage{
-tm_g_forest_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  subgroup_var, subgroup_var_choices = subgroup_var, paramcd = "OS",
-  paramcd_choices = paramcd, plot_height = c(600, 200, 2000), cex = 1.3,
+tm_g_forest_tte(label, dataname, arm_var = "ARM",
+  arm_var_choices = arm_var, subgroup_var,
+  subgroup_var_choices = subgroup_var, paramcd = "OS",
+  paramcd_choices = paramcd, plot_height = c(600, 200, 2000),
+  cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
   post_output = NULL, code_data_processing = NULL)
 }
@@ -55,14 +57,16 @@ with ADaM structure
 \examples{
  
 
-\dontrun{
-
 library(random.cdisc.data)
+library(dplyr)
 
-ASL <- radam("ASL", start_with = list(RACE = c("white", "asian"),
-   ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")))
-ATE <- radam("ATE", ADSL = ASL)
+ASL <- radsl(seed = 1) \%>\%
+  mutate(RACE = droplevels(RACE))
+ATE <- radtte(ASL, seed = 1)
 
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\% 
+  mutate(RACE = droplevels(RACE))"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 
 x <- teal::init(
   data = list(ASL = ASL, ATE = ATE),
@@ -77,9 +81,12 @@ x <- teal::init(
        plot_height = c(600, 200, 2000),
        subgroup_var = c("RACE", "SEX"),
        subgroup_var_choices = names(ASL)
-   )
+    )
   )
-)   
+)
+
+\dontrun{
+
 shinyApp(x$ui, x$server) 
     
 } 

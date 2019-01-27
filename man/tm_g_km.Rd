@@ -64,24 +64,18 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 }
 \examples{
 
-\dontrun{
-
 library(random.cdisc.data)
 
-ASL <- radam('ASL', start_with = list(
-  ITTFL = 'Y',
-  SEX = c("M", "F"),
-  MLIVER = paste("mliver", 1:3),
-  ARM = paste("ARM", LETTERS[1:3])
-))
+ASL <- radsl(seed = 1)
+ATE <- radtte(ASL, seed = 1)
 
-
-ATE <- radam('ATE', ADSL = ASL)
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 
 arm_ref_comp = list(
    ARM = list(
-      ref = "ARM A",
-      comp = c("ARM B", "ARM C")
+      ref = "A: Drug X",
+      comp = c("B: Placebo", "C: Combination")
    ),
    ARMCD = list(
       ref = "ARM B",
@@ -89,7 +83,6 @@ arm_ref_comp = list(
    )
 )
 
-## Initialize Teal
 x <- teal::init(
   data = list(ASL = ASL, ATE = ATE),
   modules = root_modules(
@@ -99,15 +92,17 @@ x <- teal::init(
        arm_var_choices = c("ARM", "ARMCD"),
        arm_ref_comp = arm_ref_comp,
        paramcd_choices = c("OS", "PFS"),
-       facet_var = "MLIVER",
-       facet_var_choices = c("SEX", "MLIVER"),
+       facet_var = "BMRKR2",
+       facet_var_choices = c("SEX", "BMRKR2"),
        strata_var = "SEX",
-       strata_var_choices = c("SEX", "MLIVER"),
+       strata_var_choices = c("SEX", "BMRKR2"),
        tbl_fontsize = 12
     )  
   )
 )
-## Initiate Shiny App
+
+\dontrun{
+
 shinyApp(ui = x$ui, server = x$server)
 
 }

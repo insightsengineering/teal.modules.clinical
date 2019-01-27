@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Response Table Teal Module — tm_t_rsp • teal.tern</title>
+<title>Response Table Teal Module — tm_t_rsp • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -61,8 +61,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">teal.tern</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.0.2</span>
+        <a class="navbar-link" href="../index.html">teal.modules.tern</a>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.5.1</span>
       </span>
     </div>
 
@@ -142,8 +142,8 @@
 
     <pre class="usage"><span class='fu'>tm_t_rsp</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
   <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OVRSPI"</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>,
-  <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='no'>strata_var</span>, <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='no'>strata_var</span>,
+  <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -236,21 +236,15 @@ app is initialized</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'> 
+    <pre class="examples"><div class='input'>
 
-</div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
-<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ASL'</span>, <span class='kw'>start_with</span> <span class='kw'>=</span> <span class='fu'>list</span>(
-  <span class='kw'>ITTFL</span> <span class='kw'>=</span> <span class='st'>'Y'</span>,
-  <span class='kw'>SEX</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"M"</span>, <span class='st'>"F"</span>),
-  <span class='kw'>MLIVER</span> <span class='kw'>=</span> <span class='fu'>paste</span>(<span class='st'>"mliver"</span>, <span class='fl'>1</span>:<span class='fl'>3</span>),
-  <span class='kw'>ARM</span> <span class='kw'>=</span> <span class='fu'>paste</span>(<span class='st'>"ARM"</span>, <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fl'>3</span>])
-))
+<span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs'>radrs</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
-
-<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radam'>radam</a></span>(<span class='st'>'ARS'</span>, <span class='kw'>ADSL</span> <span class='kw'>=</span> <span class='no'>ASL</span>)
-
+<span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
+<span class='fu'>attr</span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radrs(ASL, seed = 1)"</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>ARS</span> <span class='kw'>=</span> <span class='no'>ARS</span>),
@@ -263,11 +257,14 @@ app is initialized</p></td>
        <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"BESRSPI"</span>,
        <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='fu'>unique</span>(<span class='no'>ARS</span>$<span class='no'>PARAMCD</span>),
        <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='st'>"SEX"</span>,
-       <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"MLIVER"</span>)
+       <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span>)
     )
   )
-)
-
+)</div><div class='output co'>#&gt; |apply filter for ASL
+#&gt; |apply filter for ARS
+#&gt; |** UI id for modules is teal_modules.root
+#&gt; |UI id for module is teal_modules_root.Response_Table</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
 <span class='co'># }</span><div class='input'>

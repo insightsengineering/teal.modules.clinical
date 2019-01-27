@@ -1,4 +1,3 @@
-
 validate_standard_inputs <- function(ASL = NULL, aslvars = character(0),
                                     ANL = NULL, anlvars = character(0),
                                     arm_var = NULL,
@@ -47,18 +46,22 @@ validate_has_data <- function(x, min_nrow = NULL) {
   
 }
 
+
 # Also check if USUBJID, STUDYID matches
 validate_one_row_per_id <- function(x, key = c("USUBJID", "STUDYID")) {
   validate(need(!any(duplicated(x[key])) , paste("more then one row per id")))
 }
 
+
 validate_in <- function(x, choices, msg) {
   validate(need(length(x) > 0 && length(choices) > 0  && all(x %in% choices), msg))  
 }
 
+
 validate_has_elements <- function(x, msg) {
   validate(need(length(x) > 0, msg))
 }
+
 
 validate_no_intersection <- function(x, y, msg) {
   validate(need(length(intersect(x, y)) == 0, msg))
@@ -82,6 +85,7 @@ validate_has_variable <- function(data, varname, msg) {
   }
 
 }
+
 
 validate_n_levels <- function(x, more_than = 2, less_than = 12, msg) {
   

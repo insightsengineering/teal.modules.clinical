@@ -1,6 +1,3 @@
-
-
-
 #' Cross table based on rtables
 #' 
 #' @inheritParams tm_t_tte
@@ -8,7 +5,6 @@
 #' @param x_var_choices vector with variable names available as choices
 #' @param y_var variable name selected variable when shiny app starts
 #' @param y_var_choices vector with variable names available as choices
-#' 
 #' 
 #' @importFrom rtables rrowl rtablel as_html
 #' @importFrom stats addmargins
@@ -18,32 +14,31 @@
 #' 
 #' @examples
 #' 
-#' \dontrun{
-#' 
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radam("ASL", start_with = list(
-#'   x = c("Y", "N"), y = c("A", "B", "C")
-#' ))
+#' ASL <- radsl(seed = 1)
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
-#'     tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "x", y_var = "y")
+#'     tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "STRATA1", y_var = "STRATA2")
 #'   )
 #' )
 #' 
-#' shinyApp(x$ui, x$server)
-#' }
+#' \dontrun{
 #' 
+#' shinyApp(x$ui, x$server)
+#' 
+#' }
 tm_t_percentage_cross_table <- function(
   label = "Cross Table",
   dataname,
   x_var,
   x_var_choices = x_var,
   y_var,
-  y_var_choices = y_var
-) {
+  y_var_choices = y_var) {
   
   args <- as.list(environment())
   
@@ -75,8 +70,8 @@ ui_percentage_cross_table <- function(id, ...) {
   )
 }
 
+
 srv_percentage_cross_table <- function(input, output, session, datasets, dataname) {
-  
 
   output$table <- renderUI({
     
@@ -120,4 +115,3 @@ srv_percentage_cross_table <- function(input, output, session, datasets, datanam
   })
   
 }
-

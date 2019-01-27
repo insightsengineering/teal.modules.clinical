@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_bce.R
 \name{read_bce}
 \alias{read_bce}
-\title{Mask \code{\link[rocheBCE]{read_bce}} on r.roche.com to add meta-data to the
+\title{Mask \code{read_bce} on r.roche.com to add meta-data to the
 data set for reproducibility}
 \usage{
 read_bce(FILE, encoding = NULL)
