@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cross table based on rtables — tm_t_percentage_cross_table • teal.modules.tern</title>
+<title>Summarize Variable Teal Module — tm_t_summary • teal.modules.tern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Cross table based on rtables — tm_t_percentage_cross_table" />
+<meta property="og:title" content="Summarize Variable Teal Module — tm_t_summary" />
 
-<meta property="og:description" content="Cross table based on rtables" />
+<meta property="og:description" content="Summarize Variable Teal Module" />
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
@@ -127,19 +127,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Cross table based on rtables</h1>
+    <h1>Summarize Variable Teal Module</h1>
     
-    <div class="hidden name"><code>tm_t_percentage_cross_table.Rd</code></div>
+    <div class="hidden name"><code>tm_t_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Cross table based on rtables</p>
+    <p>Summarize Variable Teal Module</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>tm_t_percentage_cross_table</span>(<span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Cross Table"</span>, <span class='no'>dataname</span>, <span class='no'>x_var</span>,
-  <span class='kw'>x_var_choices</span> <span class='kw'>=</span> <span class='no'>x_var</span>, <span class='no'>y_var</span>, <span class='kw'>y_var_choices</span> <span class='kw'>=</span> <span class='no'>y_var</span>)</pre>
+    <pre class="usage"><span class='fu'>tm_t_summary</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
+  <span class='no'>summarize_vars</span>, <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>,
+  <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,20 +157,41 @@ Note that the data is expected to be in vertical form with the
 <code>PARAMCD</code> variable filtering to one observation per patient.</p></td>
     </tr>
     <tr>
-      <th>x_var</th>
-      <td><p>variable name selected variable when shiny app starts</p></td>
+      <th>arm_var</th>
+      <td><p>single name of variable in analysis data that is used as
+<code>col_by</code> argument for the respective <code>tern</code> function.</p></td>
     </tr>
     <tr>
-      <th>x_var_choices</th>
-      <td><p>vector with variable names available as choices</p></td>
+      <th>arm_var_choices</th>
+      <td><p>vector with variable names that can be used as
+<code>arm_var</code></p></td>
     </tr>
     <tr>
-      <th>y_var</th>
-      <td><p>variable name selected variable when shiny app starts</p></td>
+      <th>summarize_vars</th>
+      <td><p>character vector with variable names that are selected
+by default</p></td>
     </tr>
     <tr>
-      <th>y_var_choices</th>
-      <td><p>vector with variable names available as choices</p></td>
+      <th>summarize_vars_choices</th>
+      <td><p>character vector with variable names that can
+be selected (for summary)</p></td>
+    </tr>
+    <tr>
+      <th>pre_output</th>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
+    </tr>
+    <tr>
+      <th>post_output</th>
+      <td><p>optional, <code>shiny.tag</code> with text placed before the
+output to put the output into context. For example the
+<code><a href='http://www.rdocumentation.org/packages/shiny/topics/helpText'>helpText</a></code> elements are useful.</p></td>
+    </tr>
+    <tr>
+      <th>code_data_processing</th>
+      <td><p>string with data preprocessing before the teal
+app is initialized</p></td>
     </tr>
     </table>
     
@@ -179,17 +201,23 @@ Note that the data is expected to be in vertical form with the
 <span class='fu'>library</span>(<span class='no'>random.cdisc.data</span>)
 
 <span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
 <span class='fu'>attr</span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>),
   <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'>root_modules</span>(
-    <span class='fu'>tm_t_percentage_cross_table</span>(<span class='st'>"Cross Table"</span>, <span class='st'>"ASL"</span>, <span class='kw'>x_var</span> <span class='kw'>=</span> <span class='st'>"STRATA1"</span>, <span class='kw'>y_var</span> <span class='kw'>=</span> <span class='st'>"STRATA2"</span>)
+    <span class='fu'>tm_t_summary</span>(
+       <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Demographic Table"</span>,
+       <span class='kw'>dataname</span> <span class='kw'>=</span> <span class='st'>"ASL"</span>,
+       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
+       <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
+       <span class='kw'>summarize_vars</span> <span class='kw'>=</span>  <span class='fu'>c</span>(<span class='st'>"SEX"</span>),
+       <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BMRKR2"</span>)
+    )
   )
 )</div><div class='output co'>#&gt; |apply filter for ASL
 #&gt; |** UI id for modules is teal_modules.root
-#&gt; |UI id for module is teal_modules_root.Cross_Table</div><div class='input'>
+#&gt; |UI id for module is teal_modules_root.Demographic_Table</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>shinyApp</span>(<span class='no'>x</span>$<span class='no'>ui</span>, <span class='no'>x</span>$<span class='no'>server</span>)
 
