@@ -259,17 +259,19 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
         coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                just = c("left", "bottom"),
                                gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                               vp = vpPath("plotArea", "topCurve"))
+                               vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                               )
         km_grob <- textGrob(label = toString(tbl_km, gap = 1),
                             x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                             y = unit(1, "npc") -  unit(1, "lines"),
                             just = c("left", "top"),
                             gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                            vp = vpPath("plotArea", "topCurve"))
+                            vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                             )
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NULL, draw = FALSE, xlab = time_unit)  
-        p <- addGrob(p, km_grob)  
-        p <- addGrob(p, coxph_grob) 
+        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = time_unit)
+        p <- addGrob(p, km_grob)
+        p <- addGrob(p, coxph_grob)
         grid.draw(p)
         
       })
@@ -309,19 +311,20 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             coxph_grob <- textGrob(label = text_coxph, x= unit(1, "lines"), y = unit(1, "lines"), 
                                    just = c("left", "bottom"),
                                    gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                                   vp = vpPath("plotArea", "topCurve"))
+                                   vp = vpPath("mainPlot", "kmCurve", "curvePlot"))
             km_grob <- textGrob(label = toString(tbl_km, gap = 1),
                                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                                 y = unit(1, "npc") -  unit(1, "lines"),
                                 just = c("left", "top"),
                                 gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
-                                vp = vpPath("plotArea", "topCurve"))
+                                vp = vpPath("mainPlot", "kmCurve", "curvePlot"))
             
             
-            p <- g_km(fit_km = fit_km, col = NULL, title = paste0("Kaplan - Meier Plot for: ", label), 
+            p <- g_km(fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label), 
                       xticks = xticks, draw = FALSE, xlab = time_unit)  
-            p <- addGrob(p, km_grob)  
+            p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
+
             p
           }
         }, dfs, levels(lab))
