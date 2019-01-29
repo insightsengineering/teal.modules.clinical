@@ -4,10 +4,8 @@
 \alias{tm_t_tte}
 \title{Time To Event Table Teal Module}
 \usage{
-tm_t_tte(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
-  strata_var = NULL, strata_var_choices = strata_var, time_points,
-  time_points_choices = time_points, time_unit = "months",
+tm_t_tte(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
+  strata_var, time_points, time_unit = "months",
   event_desrc_var = NULL, pre_output = NULL, post_output = NULL,
   code_data_processing = NULL)
 }
@@ -19,11 +17,7 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
-
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{ASL} and the element must
@@ -31,18 +25,11 @@ be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{single selected endpoint filtered with \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{paramcd_choices}{vector with \code{paramcd} choices}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for stratification}
 
-\item{strata_var}{vector with variable names that should be used for
-stratification}
-
-\item{strata_var_choices}{vector with possible choices for \code{strata_var}}
-
-\item{time_points}{vector with timepoints as used in \code{\link[tern]{t_tte}}}
-
-\item{time_points_choices}{vector with possible \code{time_points}s}
+\item{time_points}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used \code{\link[tern]{t_tte}}}
 
 \item{time_unit}{string with unit of \code{dataname$AVAL}}
 
@@ -78,7 +65,6 @@ The arm variables, stratification variables and taken from the \code{ASL}
 data.
 }
 \examples{
- 
 
 library(random.cdisc.data)
 
@@ -94,14 +80,10 @@ x <- teal::init(
     tm_t_tte(
        label = "Time To Event Table",
        dataname = 'ATE',
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),
-       paramcd = "OS",
-       paramcd_choices = unique(ATE$PARAMCD),
-       strata_var = "SEX",
-       strata_var_choices = c("SEX", "BMRKR2"),
-       time_points = 6,
-       time_points_choices = c(6, 8),
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+       paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+       time_points = choices_selected(c(6, 8), 6),
        time_unit = "months",
        event_desrc_var = "EVNTDESC"
     )
@@ -143,18 +125,14 @@ x <- teal::init(
     tm_t_tte(
        label = "Time To Event Table",
        dataname = 'ATE',
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
        arm_ref_comp = arm_ref_comp,
-       paramcd = "OS",
-       paramcd_choices = unique(ATE$PARAMCD),
-       strata_var = "SEX",
-       strata_var_choices = c("SEX", "MLIVER"),
-       time_points = 6,
-       time_points_choices = c(6, 8),
+       paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+       strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
+       time_points = choices_selected(c(6, 8), 6),
        time_unit = "months",
        event_desrc_var = "EVNTDESC"
-   )
+    )
   )
 )
 

@@ -198,7 +198,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(teal.modules.tern) <span class="co"># library(teal.tern) if you are using older version</span>
 <span class="kw">library</span>(random.cdisc.data)
 
-ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">N =</span> <span class="dv">600</span>)
+ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl">radsl</a></span>(<span class="dt">N =</span> <span class="dv">600</span>)
 
 x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/teal/topics/init">init</a></span>(
   <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">ASL =</span> ASL),
@@ -208,10 +208,8 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
     <span class="kw"><a href="reference/tm_t_summarize_variables.html">tm_t_summarize_variables</a></span>(
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
-      <span class="dt">arm_var =</span> <span class="st">"ACTARMCD"</span>,
-      <span class="dt">arm_var_choices =</span> <span class="kw">c</span>(<span class="st">"ACTARMCD"</span>, <span class="st">"ARMCD"</span>),
-      <span class="dt">summarize_vars =</span>  <span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>),
-      <span class="dt">summarize_vars_choices =</span>  <span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span>)
+      <span class="dt">arm_var =</span> <span class="kw">choices_selected</span>(<span class="kw">c</span>(<span class="st">"ACTARMCD"</span>, <span class="st">"ARMCD"</span>), <span class="st">"ACTARMCD"</span>),
+      <span class="dt">summarize_vars =</span> <span class="kw">choices_selected</span>(<span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span>), <span class="kw">c</span>(<span class="st">"BMRKR2"</span>, <span class="st">"SEX"</span>))
     )
   )
 )
@@ -227,55 +225,63 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
 <span class="kw">library</span>(dplyr)
 
 ## Generate Data
-ASL &lt;-<span class="st"> </span><span class="kw">radsl</span>(<span class="dt">seed =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(., 
+ASL &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl">radsl</a></span>(<span class="dt">seed =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(., 
          <span class="dt">RACE =</span> <span class="kw">droplevels</span>(RACE),
-         <span class="dt">ARM1 =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">STRATM1 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">STRATM2 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">TCICLVL2 =</span> <span class="kw">sample</span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">T1I1FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">T0I0FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">ITTGEFL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">ITTWTFL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">ITTGE2FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>),
-         <span class="dt">ITTGE3FL =</span> <span class="kw">sample</span>(<span class="kw">c</span>(T,F), <span class="kw">n</span>(), <span class="ot">TRUE</span>))
+         <span class="dt">ARM1 =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(<span class="st">"DUMMY A"</span>, <span class="st">"DUMMY B"</span>), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">STRATM1 =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">paste</span>(<span class="st">"STRATM1"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">STRATM2 =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">TCICLVL2 =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">paste</span>(<span class="st">"STRATM2"</span>, letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">T1I1FL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">T0I0FL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGEFL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTWTFL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGE2FL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>),
+         <span class="dt">ITTGE3FL =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample</a></span>(<span class="kw">c</span>(T,F), <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="ot">TRUE</span>))
 
-ATE &lt;-<span class="st"> </span><span class="kw">radtte</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
-ARS &lt;-<span class="st"> </span><span class="kw">radrs</span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
+ATE &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radtte">radtte</a></span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
+ARS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs">radrs</a></span>(<span class="dt">ADSL =</span> ASL, <span class="dt">seed =</span> <span class="dv">1</span>)
 
 <span class="kw">attr</span>(ASL, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radsl(seed = 1) %&gt;% mutate(...)"</span>
 <span class="kw">attr</span>(ATE, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radtte(ASL, seed = 1)"</span>
 <span class="kw">attr</span>(ARS, <span class="st">"source"</span>) &lt;-<span class="st"> "random.cdisc.data::radrs(ASL, seed = 1)"</span>
 
 ## Reusable Configuration For Modules
-arm_var &lt;-<span class="st"> "ARM"</span>
+arm_var_selected &lt;-<span class="st"> "ARM"</span>
 arm_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ARM1"</span>, <span class="st">"STRATM1"</span>, <span class="st">"STRATM2"</span>)
+arm_var &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(arm_var_choices, arm_var_selected)
 
-strata_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"STRATM1"</span>, <span class="st">"STRATM2"</span>, <span class="st">"TCICLVL2"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
+strata_var_selected &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"STRATM1"</span>, <span class="st">"STRATM2"</span>, <span class="st">"TCICLVL2"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
 strata_var_choices &lt;-<span class="st">  </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))] <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+strata_var &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(strata_var_choices, strata_var_selected)
 
-dm_summarize_vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"SEX"</span>, <span class="st">"BAGE"</span>, <span class="st">"RACE"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
+dm_summarize_vars_selected &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"SEX"</span>, <span class="st">"BAGE"</span>, <span class="st">"RACE"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
 dm_summarize_vars_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)
+dm_summarize_vars &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(dm_summarize_vars_choices, dm_summarize_vars_selected)
 
-facet_var &lt;-<span class="st">  "TCICLVL2"</span>
+facet_var_selected &lt;-<span class="st"> "TCICLVL2"</span>
 facet_var_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))] <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+facet_var &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(facet_vars_choices, facet_vars_selected)
 
-paramcd_tte &lt;-<span class="st"> "OS"</span>
-paramcd_choices_tte &lt;-<span class="st"> </span><span class="kw">unique</span>(ATE<span class="op">$</span>PARAMCD)
+paramcd_tte_selected &lt;-<span class="st"> "OS"</span>
+paramcd_tte_choices &lt;-<span class="st"> </span><span class="kw">unique</span>(ATE<span class="op">$</span>PARAMCD)
+paramcd_tte &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(paramcd_tte_choices, paramcd_tte_selected)
 
-paramcd_rsp &lt;-<span class="st"> "INVET"</span>
-paramcd_choices_rsp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"BESRSPI"</span>, <span class="st">"INVET"</span>, <span class="st">"OVRINV"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">intersect</span>(ARS<span class="op">$</span>PARAMCD)
+paramcd_rsp_selected &lt;-<span class="st"> "INVET"</span>
+paramcd_rsp_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"BESRSPI"</span>, <span class="st">"INVET"</span>, <span class="st">"OVRINV"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(ARS<span class="op">$</span>PARAMCD)
+paramcd_rsp &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(paramcd_rsp_choices, paramcd_rsp_selected)
 
-x_var_ct &lt;-<span class="st"> "T1I1FL"</span>
-y_var_ct &lt;-<span class="st"> "T0I0FL"</span>
-ct_var_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"T1I1FL"</span>, <span class="st">"T0I0FL"</span>, <span class="st">"ITTGEFL"</span>, <span class="st">"ITTWTFL"</span>, <span class="st">"ITTGE2FL"</span>, <span class="st">"ITTGE3FL"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">intersect</span>(<span class="kw">names</span>(ASL))
+x_var_ct_selected &lt;-<span class="st"> "T1I1FL"</span>
+y_var_ct_selected &lt;-<span class="st"> "T0I0FL"</span>
+ct_choices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"T1I1FL"</span>, <span class="st">"T0I0FL"</span>, <span class="st">"ITTGEFL"</span>, <span class="st">"ITTWTFL"</span>, <span class="st">"ITTGE2FL"</span>, <span class="st">"ITTGE3FL"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
+x_var_ct &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(ct_choices, x_var_ct_selected)
+y_var_ct &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(ct_choices, y_var_ct_selected)
 
 <span class="co"># reference &amp; comparison arm selection when switching the arm variable</span>
 arm_ref_comp &lt;-<span class="st"> </span><span class="kw">list</span>(
@@ -305,9 +311,7 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">label =</span> <span class="st">"Demographic Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices,
-      <span class="dt">summarize_vars =</span>  dm_summarize_vars,
-      <span class="dt">summarize_vars_choices =</span> dm_summarize_vars_choices
+      <span class="dt">summarize_vars =</span> dm_summarize_vars
     ),
     <span class="kw">modules</span>(
       <span class="st">"Forest Plots"</span>,
@@ -315,22 +319,16 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
         <span class="dt">label =</span> <span class="st">"Survival Forest Plot"</span>,
         <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
         <span class="dt">arm_var =</span> arm_var,
-        <span class="dt">arm_var_choices =</span> arm_var_choices,
         <span class="dt">subgroup_var =</span> strata_var,
-        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
         <span class="dt">paramcd =</span> paramcd_tte,
-        <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
         <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
       ),
       <span class="kw"><a href="reference/tm_g_forest_rsp.html">tm_g_forest_rsp</a></span>(
         <span class="dt">label =</span> <span class="st">"Response Forest Plot"</span>,
         <span class="dt">dataname =</span> <span class="st">"ARS"</span>,
         <span class="dt">arm_var =</span> arm_var,
-        <span class="dt">arm_var_choices =</span> arm_var_choices,
         <span class="dt">subgroup_var =</span> strata_var,
-        <span class="dt">subgroup_var_choices =</span> strata_var_choices,
         <span class="dt">paramcd =</span> paramcd_rsp,
-        <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
         <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
       )
     ),
@@ -338,26 +336,19 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">label =</span> <span class="st">"Kaplan Meier Plot"</span>,
       <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
       <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices,
       <span class="dt">arm_ref_comp =</span> arm_ref_comp,
       <span class="dt">paramcd =</span> paramcd_tte,
-      <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
       <span class="dt">facet_var =</span> facet_var,
-      <span class="dt">facet_var_choices =</span> facet_var_choices,
       <span class="dt">strata_var =</span> strata_var,
-      <span class="dt">strata_var_choices =</span> strata_var_choices,
       <span class="dt">plot_height =</span> <span class="kw">c</span>(<span class="dv">1800</span>, <span class="dv">200</span>, <span class="dv">4000</span>)
     ),
     <span class="kw"><a href="reference/tm_t_rsp.html">tm_t_rsp</a></span>(
       <span class="dt">label =</span> <span class="st">"Response Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ARS"</span>,
       <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices,
       <span class="dt">arm_ref_comp =</span> arm_ref_comp,
       <span class="dt">paramcd =</span> paramcd_rsp,
-      <span class="dt">paramcd_choices =</span> paramcd_choices_rsp,
-      <span class="dt">strata_var =</span> strata_var,
-      <span class="dt">strata_var_choices =</span> strata_var_choices
+      <span class="dt">strata_var =</span> strata_var
     ),
     <span class="co"># @TODO</span>
     <span class="kw"><a href="reference/tm_t_tte.html">tm_t_tte</a></span>(
@@ -367,11 +358,8 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">arm_var_choices =</span> arm_var_choices,
       <span class="dt">arm_ref_comp =</span> arm_ref_comp,
       <span class="dt">paramcd =</span> paramcd_tte,
-      <span class="dt">paramcd_choices =</span> paramcd_choices_tte,
       <span class="dt">strata_var =</span> strata_var,
-      <span class="dt">strata_var_choices =</span> strata_var_choices,
-      <span class="dt">time_points =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>),
-      <span class="dt">time_points_choices =</span> <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>),
+      <span class="dt">time_points =</span> <span class="kw">choices_selected</span>(<span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">36</span>, <span class="dv">42</span>), <span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">18</span>)),
       <span class="dt">time_unit =</span> <span class="st">"month"</span>,
       <span class="dt">event_desrc_var =</span> <span class="st">"EVNTDESC"</span>
     ),
@@ -379,14 +367,12 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="st">"Cross Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ASL"</span>,
       <span class="dt">x_var =</span> x_var_ct,
-      <span class="dt">x_var_choices =</span> ct_var_choices,
-      <span class="dt">y_var =</span> y_var_ct,
-      <span class="dt">y_var_choices =</span> ct_var_choices
+      <span class="dt">y_var =</span> y_var_ct
     )
   ),
   <span class="dt">header =</span> <span class="kw">div</span>(
-    <span class="dt">class=</span><span class="st">""</span>,
-    <span class="dt">style=</span><span class="st">"margin-bottom: 2px;"</span>,
+    <span class="dt">class =</span> <span class="st">""</span>,
+    <span class="dt">style =</span> <span class="st">"margin-bottom: 2px;"</span>,
     tags<span class="op">$</span><span class="kw">h1</span>(<span class="st">"Example App With teal.modules.tern module"</span>, tags<span class="op">$</span><span class="kw">span</span>(<span class="st">"SPA"</span>, <span class="dt">class=</span><span class="st">"pull-right"</span>))
   ),
   <span class="dt">footer =</span> tags<span class="op">$</span><span class="kw">p</span>(<span class="dt">class=</span><span class="st">"text-muted"</span>, <span class="st">"Info About Authors"</span>)

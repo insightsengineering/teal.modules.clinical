@@ -3,6 +3,7 @@
 ## Changes
 
 * package renamed to `teal.modules.tern`
+* usage of `teal::choices_selected()` function
 
 
 # teal.tern 0.5.0.2

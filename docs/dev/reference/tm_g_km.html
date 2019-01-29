@@ -138,10 +138,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>tm_g_km</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>, <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>,
-  <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='st'>"OS"</span>, <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='no'>paramcd</span>,
-  <span class='kw'>facet_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>facet_var_choices</span> <span class='kw'>=</span> <span class='no'>facet_var</span>, <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='no'>strata_var</span>, <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1200</span>, <span class='fl'>400</span>, <span class='fl'>5000</span>),
+    <pre class="usage"><span class='fu'>tm_g_km</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>paramcd</span>,
+  <span class='no'>facet_var</span>, <span class='no'>strata_var</span>, <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1200</span>, <span class='fl'>400</span>, <span class='fl'>5000</span>),
   <span class='kw'>tbl_fontsize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
   <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='fu'>helpText</span>(<span class='st'>"x-axes for different factes may not have the same scale"</span>),
   <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
@@ -162,13 +160,7 @@ Note that the data is expected to be in vertical form with the
     </tr>
     <tr>
       <th>arm_var</th>
-      <td><p>single name of variable in analysis data that is used as
-<code>col_by</code> argument for the respective <code>tern</code> function.</p></td>
-    </tr>
-    <tr>
-      <th>arm_var_choices</th>
-      <td><p>vector with variable names that can be used as
-<code>arm_var</code></p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
     </tr>
     <tr>
       <th>arm_ref_comp</th>
@@ -180,31 +172,19 @@ changed.</p></td>
     </tr>
     <tr>
       <th>paramcd</th>
-      <td><p>selected endpoint from ADaM variable <code>PARAMCD</code></p></td>
-    </tr>
-    <tr>
-      <th>paramcd_choices</th>
-      <td><p>options for <code>endpoint</code></p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>PARAMCD</code> variable</p></td>
     </tr>
     <tr>
       <th>facet_var</th>
-      <td><p>parameter for facet plotting</p></td>
-    </tr>
-    <tr>
-      <th>facet_var_choices</th>
-      <td><p>options for <code>facet_var</code></p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used for facet plotting</p></td>
     </tr>
     <tr>
       <th>strata_var</th>
-      <td><p>parameter for stratification analysis in Cox PH model</p></td>
-    </tr>
-    <tr>
-      <th>strata_var_choices</th>
-      <td><p>options for <code>strata_var</code></p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used for stratification</p></td>
     </tr>
     <tr>
       <th>plot_height</th>
-      <td><p>plot height specification</p></td>
+      <td><p>vector with three elements defining selected, min and max plot height</p></td>
     </tr>
     <tr>
       <th>tbl_fontsize</th>
@@ -257,13 +237,11 @@ app is initialized</p></td>
     <span class='fu'>tm_g_km</span>(
        <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"KM PLOT"</span>,
        <span class='kw'>dataname</span> <span class='kw'>=</span> <span class='st'>'ATE'</span>,
-       <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
+       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>), <span class='st'>"ARM"</span>),
        <span class='kw'>arm_ref_comp</span> <span class='kw'>=</span> <span class='no'>arm_ref_comp</span>,
-       <span class='kw'>paramcd_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"OS"</span>, <span class='st'>"PFS"</span>),
-       <span class='kw'>facet_var</span> <span class='kw'>=</span> <span class='st'>"BMRKR2"</span>,
-       <span class='kw'>facet_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span>),
-       <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='st'>"SEX"</span>,
-       <span class='kw'>strata_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span>),
+       <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"OS"</span>, <span class='st'>"PFS"</span>), <span class='st'>"OS"</span>),
+       <span class='kw'>facet_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span>), <span class='st'>"BMRKR2"</span>),
+       <span class='kw'>strata_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span>), <span class='st'>"SEX"</span>),
        <span class='kw'>tbl_fontsize</span> <span class='kw'>=</span> <span class='fl'>12</span>
     )
   )

@@ -25,8 +25,8 @@
 #' y <- venn2(x, y, "X", "Y")
 #' plot(y)
 venn2 <- function(x, y, xlab, ylab) {
-
-
+  
+  
   if (length(x) <= 0) stop("lenght of x must be > 0")
   
   if (missing(xlab)) xlab <- deparse(substitute(x))
@@ -41,7 +41,7 @@ venn2 <- function(x, y, xlab, ylab) {
   
   x <- factor(x, levels = c(FALSE, TRUE))[sel]
   y <- factor(y, levels = c(FALSE, TRUE))[sel]
-    
+  
   abs <- table(x, y)
   per <- abs/length(x)
   
@@ -70,8 +70,8 @@ plot.venn2 <- function(x, ...) {
   label_XY <- paste0(abs[2,2],"\n(",per[2,2],"%)")
   label_xY <- paste0(abs[1,2],"\n(",per[1,2],"%)")
   label_Xy <- paste0(abs[2,1],"\n(",per[2,1],"%)")
-
-
+  
+  
   plot_grob <- if (any(abs<=2)) {
     ## plot a table
     
@@ -84,26 +84,26 @@ plot.venn2 <- function(x, ...) {
     gTree(
       children = gList(
         textGrob(label_xy,
-                  x = unit(0.5, "npc") - (w2 + u1),
-                  y = unit(0.5, "npc") + (h2 + u1)),
+                 x = unit(0.5, "npc") - (w2 + u1),
+                 y = unit(0.5, "npc") + (h2 + u1)),
         textGrob(label_Xy,
-                  x = unit(0.5, "npc") - (w2 + u1),
-                  y = unit(0.5, "npc") - (h2 + u1)),
+                 x = unit(0.5, "npc") - (w2 + u1),
+                 y = unit(0.5, "npc") - (h2 + u1)),
         textGrob(label_xY,
-                  x = unit(0.5, "npc") + (w2 + u1),
-                  y = unit(0.5, "npc") + (h2 + u1)),
+                 x = unit(0.5, "npc") + (w2 + u1),
+                 y = unit(0.5, "npc") + (h2 + u1)),
         textGrob(label_XY,
-                  x = unit(0.5, "npc") + (w2 + u1),
-                  y = unit(0.5, "npc") - (h2 + u1)),
+                 x = unit(0.5, "npc") + (w2 + u1),
+                 y = unit(0.5, "npc") - (h2 + u1)),
         textGrob(x$xlab,
-                  y = unit(.5, "npc") + 2 * (h2 + u1),
-                  gp = gpar(fontface = "bold")),
+                 y = unit(.5, "npc") + 2 * (h2 + u1),
+                 gp = gpar(fontface = "bold")),
         textGrob(x$ylab,
-                  x = unit(.5, "npc") - 2 * (w2 + u1),
-                  gp = gpar(fontface = "bold"), rot = 90)
+                 x = unit(.5, "npc") - 2 * (w2 + u1),
+                 gp = gpar(fontface = "bold"), rot = 90)
       )
     )
-
+    
     
   } else {
     ## plot venn diagram
@@ -138,14 +138,14 @@ plot.venn2 <- function(x, ...) {
     
     rx <- ax/(2*(ax+ay)) * min_side
     ry <- ay/(2*(ax+ay)) * min_side
-
+    
     gTree(
       children = gList(
         #draw circles
         circleGrob(x = unit(0.5, "npc") - dx, y = unit(0.5, "npc"), r = rx,
-                    gp = gpar(fill = "thistle", alpha = .4)),
+                   gp = gpar(fill = "thistle", alpha = .4)),
         circleGrob(x = unit(0.5, "npc") + dy, y = unit(0.5, "npc"), r = ry,
-                    gp = gpar(fill = "orange", alpha = .4)),
+                   gp = gpar(fill = "orange", alpha = .4)),
         # add labels
         textGrob(
           x$xlab,
@@ -186,11 +186,11 @@ plot.venn2 <- function(x, ...) {
           y = unit(0.5, "npc"),
           just = c("center", "center"),
           gp = gpar(lineheight = .9)
-        )   
+        )
       )
     )
   }
-
+  
   # draw graphic
   grid.newpage()
   pushViewport(plotViewport(margins = c(2,2,2,2))) # add margins
@@ -208,7 +208,7 @@ plot.venn2 <- function(x, ...) {
 #' 
 #' @noRd
 #' 
-#' @examples  
+#' @examples
 #' 
 #' N <- 100
 #' var_biomarkers <- paste0("B", 1:10) 
@@ -232,16 +232,20 @@ plot.venn2 <- function(x, ...) {
 #' 
 #' \dontrun{
 #' 
-#' shinyApp(x$ui, x$server)     
+#' shinyApp(x$ui, x$server)
 #' 
 #' }
-tm_venn2 <- function(label, dataname, bm1_var, bm2_var,
-                     bm1_var_choices = bm1_var,
-                     bm2_var_choices = bm2_var,
+tm_venn2 <- function(label, 
+                     dataname, 
+                     bm1_var, 
+                     bm2_var,
                      plot_height = c(600, 200, 2000),
                      alpha = c(1, 0, 1),
                      pre_output = shiny::tags$p("NAs get currently removed"),
                      post_output = NULL) {
+  
+  stopifnot(is.choices_selected(bm1_var))
+  stopifnot(is.choices_selected(bm1_var))
   
   args <- as.list(environment())
   
@@ -255,9 +259,8 @@ tm_venn2 <- function(label, dataname, bm1_var, bm2_var,
   )
 }
 
-ui_venn2 <- function(id, label, dataname, bm1_var, bm2_var,
-                     bm1_var_choices,
-                     bm2_var_choices,
+ui_venn2 <- function(id, label, dataname, 
+                     bm1_var, bm2_var,
                      plot_height,
                      alpha,
                      pre_output,
@@ -269,8 +272,8 @@ ui_venn2 <- function(id, label, dataname, bm1_var, bm2_var,
     encoding = div(
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(dataname)),
-      optionalSelectInput(ns("bm1_var"), "Biomarker 1", bm1_var_choices, bm1_var, multiple = FALSE),
-      optionalSelectInput(ns("bm2_var"), "Biomarker 2", bm2_var_choices, bm2_var, multiple = FALSE),
+      optionalSelectInput(ns("bm1_var"), "Biomarker 1", bm1_var$choices, bm1_var$selected, multiple = FALSE),
+      optionalSelectInput(ns("bm2_var"), "Biomarker 2", bm2_var$choices, bm2_var$selected, multiple = FALSE),
       if (all(c(
         length(plot_height) == 1,
         length(alpha) == 1
@@ -307,7 +310,7 @@ srv_venn2 <- function(input, output, session, datasets, dataname) {
     
     bm1_var <- input$bm1_var
     bm2_var <- input$bm2_var
-
+    
     validate(need(bm1_var != bm2_var, "Please choose different Biomarker 1 and 2"))
     
     bm1 <- ANL[[bm1_var]]
@@ -317,9 +320,9 @@ srv_venn2 <- function(input, output, session, datasets, dataname) {
     validate(need(!is.null(bm2), "biomarker 2 does not exist"))
     
     x <- try(venn2(bm1, bm2, bm1_var, bm2_var), silent = TRUE)
-
+    
     if (is(x, "try-error")) validate(need(FALSE, paste0("could not calculate cross table:\n\n", x)))
-      
+    
     plot(x)
   })
 }

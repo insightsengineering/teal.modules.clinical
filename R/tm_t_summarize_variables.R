@@ -1,10 +1,7 @@
 #' Summarize Variable Teal Module
 #' 
 #' @inheritParams tm_t_tte
-#' @param summarize_vars character vector with variable names that are selected
-#'   by default
-#' @param summarize_vars_choices character vector with variable names that can
-#'   be selected (for summary)
+#' @param summarize_vars \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for summary
 #' 
 #' @export
 #' 
@@ -23,10 +20,8 @@
 #'     tm_t_summarize_variables(
 #'        label = "Demographic Table",
 #'        dataname = "ASL",
-#'        arm_var = "ARM",
-#'        arm_var_choices = c("ARM", "ARMCD"),
-#'        summarize_vars =  c("SEX"),
-#'        summarize_vars_choices = c("SEX", "RACE", "BMRKR2")
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'        summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), "SEX")
 #'     )
 #'   )
 #' )
@@ -34,17 +29,18 @@
 #' \dontrun{
 #' 
 #' shinyApp(x$ui, x$server) 
-#'   
+#' 
 #' } 
 tm_t_summarize_variables <- function(label,
                                      dataname,
                                      arm_var,
-                                     arm_var_choices = arm_var,
                                      summarize_vars,
-                                     summarize_vars_choices = summarize_vars,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      code_data_processing = NULL) {
+  
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(summarize_vars))
   
   args <- as.list(environment())
   
@@ -69,8 +65,8 @@ ui_t_summarize_variables <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
-      optionalSelectInput(ns("summarize_vars"), "Summarize Variables", a$summarize_vars_choices, a$summarize_vars, multiple = TRUE)
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var$choices, a$arm_var$selected, multiple = FALSE),
+      optionalSelectInput(ns("summarize_vars"), "Summarize Variables", a$summarize_vars$choices, a$summarize_vars$selected, multiple = TRUE)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -86,7 +82,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
   )
   
   output$table <- renderUI({
-
+    
     ANL_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
     arm_var <- input$arm_var
@@ -94,7 +90,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
     
     chunks$analysis <<- "# Not Calculated"
     
-    validate_has_data(ANL_f, min_nrow = 3)    
+    validate_has_data(ANL_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(ANL_f)), "not all variables available"))
     validate(need(ANL_f[[arm_var]], "Arm variable does not exist"))
@@ -110,7 +106,7 @@ srv_t_summarize_variables <- function(input, output, session, datasets, dataname
       total = "All Patients",
       useNA = "ifany" 
     )
-
+    
     tbl <- try(eval(chunks$analysis))
     
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))

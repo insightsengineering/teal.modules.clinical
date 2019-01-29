@@ -30,9 +30,8 @@ x <- teal::init(
     tm_t_summarize_variables(
     	label = "Demographic Table",
     	dataname = "ASL",
-        arm_var = "ARM", arm_var_choices = c("ARM", "SEX"),
-        summarize_vars = c("SEX"),
-        summarize_vars_choices = c("SEX", "RACE")
+        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+        summarize_vars = choices_selected(c("SEX", "RACE"), "SEX")
     )
   )
 )

@@ -3,15 +3,9 @@
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #' 
 #' @inheritParams tm_t_tte
-#' @param paramcd selected endpoint from ADaM variable \code{PARAMCD}
-#' @param paramcd_choices options for \code{endpoint}
-#' @param facet_var parameter for facet plotting
-#' @param facet_var_choices options for \code{facet_var}
-#' @param strata_var parameter for stratification analysis in Cox PH model
-#' @param strata_var_choices options for \code{strata_var}
+#' @param facet_var \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for facet plotting
+#' @param plot_height vector with three elements defining selected, min and max plot height
 #' @param tbl_fontsize fontsize for text annotation
-#' 
-#' @template param_plot_height
 #' 
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -49,15 +43,13 @@
 #'     tm_g_km(
 #'        label = "KM PLOT",
 #'        dataname = 'ATE',
-#'        arm_var_choices = c("ARM", "ARMCD"),
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'        arm_ref_comp = arm_ref_comp,
-#'        paramcd_choices = c("OS", "PFS"),
-#'        facet_var = "BMRKR2",
-#'        facet_var_choices = c("SEX", "BMRKR2"),
-#'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "BMRKR2"),
+#'        paramcd = choices_selected(c("OS", "PFS"), "OS"),
+#'        facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
+#'        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
 #'        tbl_fontsize = 12
-#'     )  
+#'     )
 #'   )
 #' )
 #' 
@@ -68,20 +60,21 @@
 #' }
 tm_g_km <- function(label,
                     dataname,
-                    arm_var = "ARM",
-                    arm_var_choices = arm_var,
+                    arm_var,
                     arm_ref_comp = NULL,
-                    paramcd = "OS",
-                    paramcd_choices = paramcd,
-                    facet_var = NULL,
-                    facet_var_choices = facet_var,
-                    strata_var = NULL,
-                    strata_var_choices = strata_var,
+                    paramcd,
+                    facet_var,
+                    strata_var,
                     plot_height = c(1200, 400, 5000),
                     tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL,
                     code_data_processing = NULL){
+  
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(paramcd))
+  stopifnot(is.choices_selected(facet_var))
+  stopifnot(is.choices_selected(strata_var))
   
   args <- as.list(environment())
   
@@ -108,15 +101,15 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", choices = a$arm_var_choices,
-                          selected = a$arm_var, multiple = FALSE),
-      optionalSelectInput(ns("paramcd"), "Time to Event (Endpoint)", choices = a$paramcd_choices, 
-                          selected = a$paramcd, multiple = FALSE),
-      optionalSelectInput(ns("strata_var"), "Stratify by", choices = a$strata_var_choices, 
-                          selected = a$strata_var, multiple = TRUE,
+      optionalSelectInput(ns("arm_var"), "Arm Variable", choices = a$arm_var$choices,
+                          selected = a$arm_var$selected, multiple = FALSE),
+      optionalSelectInput(ns("paramcd"), "Time to Event (Endpoint)", choices = a$paramcd$choices, 
+                          selected = a$paramcd$selected, multiple = FALSE),
+      optionalSelectInput(ns("strata_var"), "Stratify by", choices = a$strata_var$choices, 
+                          selected = a$strata_var$selected, multiple = TRUE,
                           label_help = helpText("currently taken from ASL")),
-      optionalSelectInput(ns("facet_var"), "Facet Plots by:", choices = a$facet_var_choices, 
-                          selected = a$facet_var, multiple = TRUE,
+      optionalSelectInput(ns("facet_var"), "Facet Plots by:", choices = a$facet_var$choices, 
+                          selected = a$facet_var$selected, multiple = TRUE,
                           label_help = helpText("currently taken from ASL" )),
       selectInput(ns("ref_arm"), "Reference Arm", choices = NULL, 
                   selected = NULL, multiple = TRUE),
@@ -138,7 +131,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
   
   arm_ref_comp_observer(
     session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",     
+    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
     ASL = datasets$get_data('ASL', filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_km"
@@ -260,14 +253,14 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                                just = c("left", "bottom"),
                                gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
                                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-                               )
+        )
         km_grob <- textGrob(label = toString(tbl_km, gap = 1),
                             x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
                             y = unit(1, "npc") -  unit(1, "lines"),
                             just = c("left", "top"),
                             gp = gpar(fontfamily = 'mono', fontsize = tbl_fontsize, fontface = "bold"),
                             vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-                             )
+        )
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = time_unit)
         p <- addGrob(p, km_grob)
@@ -321,10 +314,10 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             
             
             p <- g_km(fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label), 
-                      xticks = xticks, draw = FALSE, xlab = time_unit)  
+                      xticks = xticks, draw = FALSE, xlab = time_unit)
             p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
-
+            
             p
           }
         }, dfs, levels(lab))

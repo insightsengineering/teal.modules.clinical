@@ -4,10 +4,8 @@
 \alias{tm_t_summarize_variables}
 \title{Summarize Variable Teal Module}
 \usage{
-tm_t_summarize_variables(label, dataname, arm_var,
-  arm_var_choices = arm_var, summarize_vars,
-  summarize_vars_choices = summarize_vars, pre_output = NULL,
-  post_output = NULL, code_data_processing = NULL)
+tm_t_summarize_variables(label, dataname, arm_var, summarize_vars,
+  pre_output = NULL, post_output = NULL, code_data_processing = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -17,17 +15,9 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used as \code{arm_var}}
 
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
-
-\item{summarize_vars}{character vector with variable names that are selected
-by default}
-
-\item{summarize_vars_choices}{character vector with variable names that can
-be selected (for summary)}
+\item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for summary}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -56,10 +46,8 @@ x <- teal::init(
     tm_t_summarize_variables(
        label = "Demographic Table",
        dataname = "ASL",
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),
-       summarize_vars =  c("SEX"),
-       summarize_vars_choices = c("SEX", "RACE", "BMRKR2")
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), "SEX")
     )
   )
 )
@@ -67,7 +55,7 @@ x <- teal::init(
 \dontrun{
 
 shinyApp(x$ui, x$server) 
-  
+
 } 
 }
 \author{

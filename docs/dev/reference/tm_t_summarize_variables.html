@@ -138,10 +138,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>,
-  <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='no'>arm_var</span>, <span class='no'>summarize_vars</span>,
-  <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='no'>summarize_vars</span>, <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tm_t_summarize_variables</span>(<span class='no'>label</span>, <span class='no'>dataname</span>, <span class='no'>arm_var</span>, <span class='no'>summarize_vars</span>,
+  <span class='kw'>pre_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>post_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>code_data_processing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,23 +157,11 @@ Note that the data is expected to be in vertical form with the
     </tr>
     <tr>
       <th>arm_var</th>
-      <td><p>single name of variable in analysis data that is used as
-<code>col_by</code> argument for the respective <code>tern</code> function.</p></td>
-    </tr>
-    <tr>
-      <th>arm_var_choices</th>
-      <td><p>vector with variable names that can be used as
-<code>arm_var</code></p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
     </tr>
     <tr>
       <th>summarize_vars</th>
-      <td><p>character vector with variable names that are selected
-by default</p></td>
-    </tr>
-    <tr>
-      <th>summarize_vars_choices</th>
-      <td><p>character vector with variable names that can
-be selected (for summary)</p></td>
+      <td><p><code><a href='http://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used for summary</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -210,10 +196,8 @@ app is initialized</p></td>
     <span class='fu'>tm_t_summarize_variables</span>(
        <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Demographic Table"</span>,
        <span class='kw'>dataname</span> <span class='kw'>=</span> <span class='st'>"ASL"</span>,
-       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='st'>"ARM"</span>,
-       <span class='kw'>arm_var_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>),
-       <span class='kw'>summarize_vars</span> <span class='kw'>=</span>  <span class='fu'>c</span>(<span class='st'>"SEX"</span>),
-       <span class='kw'>summarize_vars_choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BMRKR2"</span>)
+       <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>), <span class='st'>"ARM"</span>),
+       <span class='kw'>summarize_vars</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'>c</span>(<span class='st'>"SEX"</span>, <span class='st'>"RACE"</span>, <span class='st'>"BMRKR2"</span>), <span class='st'>"SEX"</span>)
     )
   )
 )</div><div class='output co'>#&gt; |apply filter for ASL

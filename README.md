@@ -116,10 +116,8 @@ x <- teal::init(
     tm_t_summarize_variables(
       label = "Demographic Table",
       dataname = "ASL",
-      arm_var = "ACTARMCD",
-      arm_var_choices = c("ACTARMCD", "ARMCD"),
-      summarize_vars =  c("BMRKR2", "SEX"),
-      summarize_vars_choices =  c("BMRKR2", "SEX", "RACE")
+      arm_var = choices_selected(c("ACTARMCD", "ARMCD"), "ACTARMCD"),
+      summarize_vars = choices_selected(c("BMRKR2", "SEX", "RACE"), c("BMRKR2", "SEX"))
     )
   )
 )
@@ -164,33 +162,41 @@ attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
 
 ## Reusable Configuration For Modules
-arm_var <- "ARM"
+arm_var_selected <- "ARM"
 arm_var_choices <- c("ARM", "ARMCD", "ARM1", "STRATM1", "STRATM2")
+arm_var <- choices_selected(arm_var_choices, arm_var_selected)
 
-strata_var <- c("STRATM1", "STRATM2", "TCICLVL2") %>%
+strata_var_selected <- c("STRATM1", "STRATM2", "TCICLVL2") %>%
   intersect(names(ASL))
 strata_var_choices <-  names(ASL)[(sapply(ASL, is.character))] %>%
   intersect(names(ASL))
+strata_var <- choices_selected(strata_var_choices, strata_var_selected)
 
-dm_summarize_vars <- c("SEX", "BAGE", "RACE") %>% 
+dm_summarize_vars_selected <- c("SEX", "BAGE", "RACE") %>% 
   intersect(names(ASL))
 dm_summarize_vars_choices <- names(ASL)
+dm_summarize_vars <- choices_selected(dm_summarize_vars_choices, dm_summarize_vars_selected)
 
-facet_var <-  "TCICLVL2"
+facet_var_selected <- "TCICLVL2"
 facet_var_choices <- names(ASL)[(sapply(ASL, is.character))] %>%
   intersect(names(ASL))
+facet_var <- choices_selected(facet_vars_choices, facet_vars_selected)
 
-paramcd_tte <- "OS"
-paramcd_choices_tte <- unique(ATE$PARAMCD)
+paramcd_tte_selected <- "OS"
+paramcd_tte_choices <- unique(ATE$PARAMCD)
+paramcd_tte <- choices_selected(paramcd_tte_choices, paramcd_tte_selected)
 
-paramcd_rsp <- "INVET"
-paramcd_choices_rsp <- c("BESRSPI", "INVET", "OVRINV") %>% 
+paramcd_rsp_selected <- "INVET"
+paramcd_rsp_choices <- c("BESRSPI", "INVET", "OVRINV") %>% 
   intersect(ARS$PARAMCD)
+paramcd_rsp <- choices_selected(paramcd_rsp_choices, paramcd_rsp_selected)
 
-x_var_ct <- "T1I1FL"
-y_var_ct <- "T0I0FL"
-ct_var_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE3FL") %>%
+x_var_ct_selected <- "T1I1FL"
+y_var_ct_selected <- "T0I0FL"
+ct_choices <- c("T1I1FL", "T0I0FL", "ITTGEFL", "ITTWTFL", "ITTGE2FL", "ITTGE3FL") %>%
   intersect(names(ASL))
+x_var_ct <- choices_selected(ct_choices, x_var_ct_selected)
+y_var_ct <- choices_selected(ct_choices, y_var_ct_selected)
 
 # reference & comparison arm selection when switching the arm variable
 arm_ref_comp <- list(
@@ -220,9 +226,7 @@ x <- teal::init(
       label = "Demographic Table",
       dataname = "ASL",
       arm_var = arm_var,
-      arm_var_choices = arm_var_choices,
-      summarize_vars =  dm_summarize_vars,
-      summarize_vars_choices = dm_summarize_vars_choices
+      summarize_vars = dm_summarize_vars
     ),
     modules(
       "Forest Plots",
@@ -230,22 +234,16 @@ x <- teal::init(
         label = "Survival Forest Plot",
         dataname = "ATE",
         arm_var = arm_var,
-        arm_var_choices = arm_var_choices,
         subgroup_var = strata_var,
-        subgroup_var_choices = strata_var_choices,
         paramcd = paramcd_tte,
-        paramcd_choices = paramcd_choices_tte,
         plot_height = c(800, 200, 4000)
       ),
       tm_g_forest_rsp(
         label = "Response Forest Plot",
         dataname = "ARS",
         arm_var = arm_var,
-        arm_var_choices = arm_var_choices,
         subgroup_var = strata_var,
-        subgroup_var_choices = strata_var_choices,
         paramcd = paramcd_rsp,
-        paramcd_choices = paramcd_choices_rsp,
         plot_height = c(800, 200, 4000)
       )
     ),
@@ -253,26 +251,19 @@ x <- teal::init(
       label = "Kaplan Meier Plot",
       dataname = "ATE",
       arm_var = arm_var,
-      arm_var_choices = arm_var_choices,
       arm_ref_comp = arm_ref_comp,
       paramcd = paramcd_tte,
-      paramcd_choices = paramcd_choices_tte,
       facet_var = facet_var,
-      facet_var_choices = facet_var_choices,
       strata_var = strata_var,
-      strata_var_choices = strata_var_choices,
       plot_height = c(1800, 200, 4000)
     ),
     tm_t_rsp(
       label = "Response Table",
       dataname = "ARS",
       arm_var = arm_var,
-      arm_var_choices = arm_var_choices,
       arm_ref_comp = arm_ref_comp,
       paramcd = paramcd_rsp,
-      paramcd_choices = paramcd_choices_rsp,
-      strata_var = strata_var,
-      strata_var_choices = strata_var_choices
+      strata_var = strata_var
     ),
     # @TODO
     tm_t_tte(
@@ -282,11 +273,8 @@ x <- teal::init(
       arm_var_choices = arm_var_choices,
       arm_ref_comp = arm_ref_comp,
       paramcd = paramcd_tte,
-      paramcd_choices = paramcd_choices_tte,
       strata_var = strata_var,
-      strata_var_choices = strata_var_choices,
-      time_points = c(6, 12, 18),
-      time_points_choices = c(6, 12, 18, 24, 30, 36, 42),
+      time_points = choices_selected(c(6, 12, 18, 24, 30, 36, 42), c(6, 12, 18)),
       time_unit = "month",
       event_desrc_var = "EVNTDESC"
     ),
@@ -294,14 +282,12 @@ x <- teal::init(
       "Cross Table",
       dataname = "ASL",
       x_var = x_var_ct,
-      x_var_choices = ct_var_choices,
-      y_var = y_var_ct,
-      y_var_choices = ct_var_choices
+      y_var = y_var_ct
     )
   ),
   header = div(
-    class="",
-    style="margin-bottom: 2px;",
+    class = "",
+    style = "margin-bottom: 2px;",
     tags$h1("Example App With teal.modules.tern module", tags$span("SPA", class="pull-right"))
   ),
   footer = tags$p(class="text-muted", "Info About Authors")
