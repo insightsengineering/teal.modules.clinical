@@ -14,7 +14,7 @@
 #' x = c(rep(T, 5), rep(F, 3), rep(T, 4), rep(F, 9))
 #' y = c(rep(T, 5), rep(F, 3), rep(F, 4), rep(T, 9))
 #' table(x, y)
-#' y <- venn2(x, y, "X", "Y")
+#' y <- teal.modules.tern:::venn2(x, y, "X", "Y")
 #' plot(y)
 #' 
 #' 
@@ -22,7 +22,7 @@
 #' x = c(F, F, F, F, T, T)
 #' y = c(F, T, T, T, F, F)
 #' table(x, y)
-#' y <- venn2(x, y, "X", "Y")
+#' y <- teal.modules.tern:::venn2(x, y, "X", "Y")
 #' plot(y)
 venn2 <- function(x, y, xlab, ylab) {
   
@@ -219,14 +219,18 @@ plot.venn2 <- function(x, ...) {
 #'   list(USUBJID = paste("ID", 1:N), STUDYID = "1"), sample_bm_data
 #' ))
 #' 
-#' attr(ASL, "source") <- "do.call(data.frame, c(list(USUBJID = paste("ID", 1:N), STUDYID = "1"), sample_bm_data))"
+#' attr(ASL, "source") <- "do.call(data.frame, c(list(USUBJID = paste('ID', 1:N), STUDYID = '1'), sample_bm_data))"
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
 #'     tm_variable_browser(),
 #'     tm_data_table(),
-#'     tm_venn2("Venn Diagram", "ASL", "B1", "B2", var_biomarkers, var_biomarkers)
+#'     tm_venn2(
+#'       "Venn Diagram", "ASL", 
+#'       bm1_var = choices_selected(var_biomarkers, "B1"), 
+#'       bm2_var = choices_selected(var_biomarkers, "B2")
+#'     )
 #'   )
 #' )
 #' 

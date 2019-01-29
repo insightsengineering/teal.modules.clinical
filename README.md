@@ -180,7 +180,7 @@ dm_summarize_vars <- choices_selected(dm_summarize_vars_choices, dm_summarize_va
 facet_var_selected <- "TCICLVL2"
 facet_var_choices <- names(ASL)[(sapply(ASL, is.character))] %>%
   intersect(names(ASL))
-facet_var <- choices_selected(facet_vars_choices, facet_vars_selected)
+facet_var <- choices_selected(facet_var_choices, facet_var_selected)
 
 paramcd_tte_selected <- "OS"
 paramcd_tte_choices <- unique(ATE$PARAMCD)
@@ -270,7 +270,6 @@ x <- teal::init(
       label = "Time To Event Table",
       dataname = "ATE",
       arm_var = arm_var,
-      arm_var_choices = arm_var_choices,
       arm_ref_comp = arm_ref_comp,
       paramcd = paramcd_tte,
       strata_var = strata_var,

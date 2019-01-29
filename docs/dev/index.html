@@ -265,7 +265,7 @@ dm_summarize_vars &lt;-<span class="st"> </span><span class="kw">choices_selecte
 facet_var_selected &lt;-<span class="st"> "TCICLVL2"</span>
 facet_var_choices &lt;-<span class="st"> </span><span class="kw">names</span>(ASL)[(<span class="kw">sapply</span>(ASL, is.character))] <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/setops.html">intersect</a></span>(<span class="kw">names</span>(ASL))
-facet_var &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(facet_vars_choices, facet_vars_selected)
+facet_var &lt;-<span class="st"> </span><span class="kw">choices_selected</span>(facet_var_choices, facet_var_selected)
 
 paramcd_tte_selected &lt;-<span class="st"> "OS"</span>
 paramcd_tte_choices &lt;-<span class="st"> </span><span class="kw">unique</span>(ATE<span class="op">$</span>PARAMCD)
@@ -355,7 +355,6 @@ x &lt;-<span class="st"> </span>teal<span class="op">::</span><span class="kw"><
       <span class="dt">label =</span> <span class="st">"Time To Event Table"</span>,
       <span class="dt">dataname =</span> <span class="st">"ATE"</span>,
       <span class="dt">arm_var =</span> arm_var,
-      <span class="dt">arm_var_choices =</span> arm_var_choices,
       <span class="dt">arm_ref_comp =</span> arm_ref_comp,
       <span class="dt">paramcd =</span> paramcd_tte,
       <span class="dt">strata_var =</span> strata_var,
