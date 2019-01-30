@@ -17,7 +17,7 @@
 #' x <- teal::init(
 #'   data = list(ASL = ASL),
 #'   modules = root_modules(
-#'     tm_t_summarize_variables(
+#'     tm_t_summary(
 #'        label = "Demographic Table",
 #'        dataname = "ASL",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
@@ -31,13 +31,15 @@
 #' shinyApp(x$ui, x$server) 
 #' 
 #' } 
-tm_t_summarize_variables <- function(label,
-                                     dataname,
-                                     arm_var,
-                                     summarize_vars,
-                                     pre_output = NULL,
-                                     post_output = NULL,
-                                     code_data_processing = NULL) {
+tm_t_summary <- function(label,
+                         dataname,
+                         arm_var,
+                         arm_var_choices = arm_var,
+                         summarize_vars,
+                         summarize_vars_choices = summarize_vars,
+                         pre_output = NULL,
+                         post_output = NULL,
+                         code_data_processing = NULL) {
   
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(summarize_vars))
@@ -46,8 +48,8 @@ tm_t_summarize_variables <- function(label,
   
   module(
     label = label,
-    server = srv_t_summarize_variables,
-    ui = ui_t_summarize_variables,
+    server = srv_t_summary,
+    ui = ui_t_summary,
     ui_args = args,
     server_args = list(dataname = dataname, code_data_processing = code_data_processing),
     filters = dataname
@@ -55,7 +57,7 @@ tm_t_summarize_variables <- function(label,
   
 }
 
-ui_t_summarize_variables <- function(id, ...) {
+ui_t_summary <- function(id, ...) {
   
   ns <- NS(id)
   a <- list(...)
@@ -75,7 +77,7 @@ ui_t_summarize_variables <- function(id, ...) {
   
 }
 
-srv_t_summarize_variables <- function(input, output, session, datasets, dataname, code_data_processing) {
+srv_t_summary <- function(input, output, session, datasets, dataname, code_data_processing) {
   
   chunks <- list(
     analysis = "# Not Calculated"

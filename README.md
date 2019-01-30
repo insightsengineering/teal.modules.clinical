@@ -113,7 +113,7 @@ x <- teal::init(
   modules = root_modules(
     tm_data_table("Data Table"),
     tm_variable_browser("Variable Browser"),
-    tm_t_summarize_variables(
+    tm_t_summary(
       label = "Demographic Table",
       dataname = "ASL",
       arm_var = choices_selected(c("ACTARMCD", "ARMCD"), "ACTARMCD"),
@@ -128,7 +128,7 @@ shinyApp(x$ui, x$server)
 This should start the teal web app. Now save the above code into an R file named
 `app.R` and replace `radam` with `read_bce` and select a dataset from a study of
 your choice. Start the app again and configure the arguments of
-`tm_t_summarize_variables` according to the information you would like to
+`tm_t_summary` according to the information you would like to
 summarize in your `ASL` dataset.
 
 
@@ -222,7 +222,7 @@ x <- teal::init(
     ),
     tm_data_table("Data Table"),
     tm_variable_browser("Variable Browser"),
-    tm_t_summarize_variables(
+    tm_t_summary(
       label = "Demographic Table",
       dataname = "ASL",
       arm_var = arm_var,
