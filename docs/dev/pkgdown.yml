@@ -1,13 +1,7 @@
 pandoc: 1.19.2.1
 pkgdown: 1.3.0
 pkgdown_sha: ~
-articles:
-  tm_t_forest_rsp: tm_t_forest_rsp.html
-  tm_t_forest_tte: tm_t_forest_tte.html
-  tm_t_km: tm_t_km.html
-  tm_t_rsp: tm_t_rsp.html
-  tm_t_summary_variables: tm_t_summary_variables.html
-  tm_t_tte: tm_t_tte.html
+articles: []
 urls:
   reference: https://pages.github.roche.com/NEST/teal.modules.clinical/reference
   article: https://pages.github.roche.com/NEST/teal.modules.clinical/articles
