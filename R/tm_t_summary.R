@@ -1,8 +1,11 @@
-#' Summarize Variable Teal Module
+#' Summarize Variables Module
+#' 
+#' This module is for \code{\link[tern]{t_summary}}.
 #' 
 #' @inheritParams tm_t_tte
-#' @param summarize_vars \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for summary
-#' 
+#' @param summarize_vars \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option
+#'   for variable names that can be used for summary
+#'   
 #' @export
 #' 
 #' @template author_waddella
@@ -21,7 +24,7 @@
 #'        label = "Demographic Table",
 #'        dataname = "ASL",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), "SEX")
+#'        summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
 #'     )
 #'   )
 #' )
@@ -34,9 +37,7 @@
 tm_t_summary <- function(label,
                          dataname,
                          arm_var,
-                         arm_var_choices = arm_var,
                          summarize_vars,
-                         summarize_vars_choices = summarize_vars,
                          pre_output = NULL,
                          post_output = NULL,
                          code_data_processing = NULL) {
