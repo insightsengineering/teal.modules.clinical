@@ -18,7 +18,7 @@
 #' d$set_data("ASL", ASL)
 #' d$set_data("ATE", ATE)
 #' 
-#' cat(teal.modules.tern:::get_rcode_header(
+#' cat(teal.modules.clinical:::get_rcode_header(
 #'   title = "Hello World\nsubtitle",
 #'   dataname = c("ATE"),
 #'   datasets = d
@@ -76,14 +76,14 @@ get_rcode_header <- function(title, datanames, datasets, code_data_processing = 
     txt_inst_pkgs <- c(
       paste0('devtools::install_github("Roche/rtables", ref="v',
              packageDescription("rtables")$Version,'")'),
-      paste0('devtools::install_github("Rpackages/tern", ref="v',
+      paste0('devtools::install_github("NEST/tern", ref="v',
              packageDescription("tern")$Version,'", host="https://github.roche.com/api/v3")')
     )
     
     needs_rcd <- any(grepl("radam\\(", txt_data))
     if (needs_rcd) {
       txt_inst_pkgs <- c(
-        paste0('devtools::install_github("Rpackages/random.cdisc.data", ref="v',
+        paste0('devtools::install_github("NEST/random.cdisc.data", ref="v',
                packageDescription("random.cdisc.data")$Version,'", host="https://github.roche.com/api/v3")'),
         txt_inst_pkgs
       )
