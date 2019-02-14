@@ -16,10 +16,10 @@
 #' library(random.cdisc.data)
 #' 
 #' ASL <- radsl(seed = 1)
-#' ARS <- radrs(ASL, seed = 1)
+#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 #' 
 #' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-#' attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
+#' attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ARS = ARS),
@@ -28,7 +28,7 @@
 #'        label = "Forest Response",
 #'        dataname = "ARS",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "INVET"),
+#'        paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
 #'        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
 #'        plot_height = c(600, 200, 2000)
 #'     )
@@ -176,7 +176,6 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     validate_in(responders, ANL_FILTERED$AVALC, "responder values cannot be found in AVALC")
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Response parameter cannot be found in PARAMCD")
     
-    
     # perform analysis
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
@@ -208,6 +207,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     
     eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    validate(need(!any(duplicated(ANL$USUBJID)), "patients have multiple records in the analysis data."))
     
     chunks$t_forest_rsp <<- call(
       "t_forest_rsp",

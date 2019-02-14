@@ -70,10 +70,10 @@ Additional standard UI inputs include \code{responders},
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
-ARS <- radrs(ASL, seed = 1)
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 
 attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
+attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 
 x <- teal::init( 
   data = list(ASL = ASL, ARS = ARS),

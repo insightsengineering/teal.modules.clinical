@@ -34,10 +34,10 @@
 #' library(random.cdisc.data)
 #' 
 #' ASL <- radsl(seed = 1)
-#' ARS <- radrs(ASL, seed = 1)
+#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 #' 
 #' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-#' attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
+#' attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 #' 
 #' x <- teal::init( 
 #'   data = list(ASL = ASL, ARS = ARS),
@@ -277,7 +277,7 @@ srv_t_rsp <- function(input, output, session, datasets, dataname,
     
     eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
-    
+    validate(need(!any(duplicated(ANL$USUBJID)), "patients have multiple records in the analysis data."))
     
     chunks$t_rsp <<- call(
       "t_rsp",

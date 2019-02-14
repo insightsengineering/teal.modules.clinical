@@ -46,10 +46,10 @@ This is teal module produces a grid style Forest plot for response data with ADa
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
-ARS <- radrs(ASL, seed = 1)
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 
 attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
+attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 
 x <- teal::init(
   data = list(ASL = ASL, ARS = ARS),
@@ -58,7 +58,7 @@ x <- teal::init(
        label = "Forest Response",
        dataname = "ARS",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "INVET"),
+       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
        plot_height = c(600, 200, 2000)
     )
