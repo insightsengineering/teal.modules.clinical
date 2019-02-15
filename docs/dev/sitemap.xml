@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/index.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/index.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/read_bce.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/read_bce.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/teal.modules.tern-package.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/teal.modules.clinical-package.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_g_forest_rsp.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_g_forest_rsp.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_g_forest_tte.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_g_forest_tte.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_g_km.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_g_km.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_t_percentage_cross_table.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_t_percentage_cross_table.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_t_rsp.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_t_rsp.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_t_summary.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_t_summary.html</loc>
   </url>
   <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/reference/tm_t_tte.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_forest_rsp.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_forest_tte.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_km.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_rsp.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_summary_variables.html</loc>
-  </url>
-  <url>
-    <loc>https://pages.github.roche.com/Rpackages/teal.oncology/articles/tm_t_tte.html</loc>
+    <loc>https://pages.github.roche.com/NEST/teal.modules.clinical/reference/tm_t_tte.html</loc>
   </url>
 </urlset>

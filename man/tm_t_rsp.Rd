@@ -4,10 +4,9 @@
 \alias{tm_t_rsp}
 \title{Response Table Teal Module}
 \usage{
-tm_t_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  arm_ref_comp = NULL, paramcd = "OVRSPI", paramcd_choices = paramcd,
-  strata_var = NULL, strata_var_choices = strata_var,
-  pre_output = NULL, post_output = NULL, code_data_processing = NULL)
+tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
+  strata_var, pre_output = NULL, post_output = NULL,
+  code_data_processing = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -17,11 +16,7 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
-
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{ASL} and the element must
@@ -29,14 +24,9 @@ be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{single selected endpoint filtered with \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{paramcd_choices}{vector with \code{paramcd} choices}
-
-\item{strata_var}{vector with variable names that should be used for
-stratification}
-
-\item{strata_var_choices}{vector with possible choices for \code{strata_var}}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -69,22 +59,21 @@ Additional standard UI inputs include \code{responders},
   \code{\link[base]{factor}} and its \code{levels} argument to manipulate
   the source data in order to include/exclude or re-categorize response
   categories and arrange the display order. If response categories are
-  "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
+  "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
   confidence interval will not be calculated.
   
   Reference arms automatically combined if multiple arms selected as 
   reference group.
 }
 \examples{
- 
 
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
-ARS <- radrs(ASL, seed = 1)
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 
 attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- "random.cdisc.data::radrs(ASL, seed = 1)"
+attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 
 x <- teal::init( 
   data = list(ASL = ASL, ARS = ARS),
@@ -92,12 +81,9 @@ x <- teal::init(
     tm_t_rsp(
        label = "Response Table",
        dataname = 'ARS',
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),
-       paramcd = "BESRSPI",
-       paramcd_choices = unique(ARS$PARAMCD),
-       strata_var = "SEX",
-       strata_var_choices = c("SEX", "BMRKR2")
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+       paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
+       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
 )

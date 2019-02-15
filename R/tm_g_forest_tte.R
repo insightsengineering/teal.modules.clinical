@@ -9,7 +9,7 @@
 #' 
 #' @template author_song24
 #' 
-#' @examples  
+#' @examples
 #' 
 #' library(random.cdisc.data)
 #' library(dplyr)
@@ -28,13 +28,10 @@
 #'     tm_g_forest_tte(
 #'        label = "Forest Survival",
 #'        dataname = "ATE",
-#'        arm_var = "ARM",
-#'        arm_var_choices = c("ARM", "ARMCD"),        
-#'        paramcd = "OS",
-#'        paramcd_choices = c("OS", "PFS"),
-#'        plot_height = c(600, 200, 2000),
-#'        subgroup_var = c("RACE", "SEX"),
-#'        subgroup_var_choices = names(ASL)
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+#'        paramcd = choices_selected(c("OS", "PFS"), "OS"),
+#'        plot_height = c(600, 200, 2000)
 #'     )
 #'   )
 #' )
@@ -42,24 +39,23 @@
 #' \dontrun{
 #' 
 #' shinyApp(x$ui, x$server) 
-#'     
-#' } 
 #' 
+#' } 
 tm_g_forest_tte <- function(label,
                             dataname,
-                            arm_var = "ARM",
-                            arm_var_choices = arm_var,
+                            arm_var,
                             subgroup_var,
-                            subgroup_var_choices = subgroup_var,
-                            paramcd = "OS",
-                            paramcd_choices = paramcd,
+                            paramcd,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
                             post_output = NULL,
                             code_data_processing = NULL) {
   
-
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(paramcd))
+  stopifnot(is.choices_selected(subgroup_var))
+  
   args <- as.list(environment())
   
   module(
@@ -85,14 +81,14 @@ ui_g_forest_tte <- function(id, ...) {
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(ns("paramcd"), div("PARAMCD", tags$br(), helpText("Select an endpoint to analyze.")), 
-                          a$paramcd_choices, a$paramcd, multiple = FALSE),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
+                          a$paramcd$choices, a$paramcd$selected, multiple = FALSE),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var$choices, a$arm_var$selected, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Arm", 
                   choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Arm", choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
-      optionalSelectInput(ns("subgroup_var"), "Subgroup Variables", a$subgroup_var_choices, a$subgroup_var, multiple = TRUE,
+      optionalSelectInput(ns("subgroup_var"), "Subgroup Variables", a$subgroup_var$choices, a$subgroup_var$selected, multiple = TRUE,
                           label_help = helpText("are taken from", tags$code("ASL"))),
       tags$label("Plot Settings", class="text-primary", style="margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
@@ -125,21 +121,6 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   )
   
   
-  # Update UI choices depending on selection of previous options
-  observe({
-    
-    paramcd <- input$paramcd
-    
-    ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
-    
-    paramcd_choices <- unique(ANL$AVALC[ANL$PARAMCD == paramcd])
-    
-  })
-  
-  ### need asl labels for labelling the plots
-  #temp_ASL <- datasets$get_data("ASL", filtered=FALSE, reactive = FALSE)  
-  #ASL_labels <- unlist(Filter(function(x)!is.null(x), sapply(temp_ASL, function(v) attr(v, "label"))))
-  
   chunks <- list(
     vars = "# Not Calculated",
     data = "# Not Calculated",
@@ -150,7 +131,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   
   output$forest_plot <- renderPlot({
     
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
     paramcd <- input$paramcd
@@ -201,7 +182,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       ARM <- combine_levels(ARM, comp_arm)
       
       ANL[[.(arm_var)]] <- droplevels(ARM)
-
+      
       levels(ANL[[.(arm_var)]]) <- sapply(levels(ANL[[.(arm_var)]]), function(x) paste(strwrap(x, width = 15), collapse = "\n"))
       
     })
@@ -219,10 +200,10 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       total = "All Patients",
       na.omit.group = TRUE,
       dense_header = TRUE
-    )                       
+    )
     
     tbl <- try(eval(chunks$t_forest_tte))
-  
+    
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
     

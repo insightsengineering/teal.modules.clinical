@@ -4,10 +4,8 @@
 \alias{tm_g_km}
 \title{teal module for Kaplan-Meier Plot from grid}
 \usage{
-tm_g_km(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  arm_ref_comp = NULL, paramcd = "OS", paramcd_choices = paramcd,
-  facet_var = NULL, facet_var_choices = facet_var, strata_var = NULL,
-  strata_var_choices = strata_var, plot_height = c(1200, 400, 5000),
+tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
+  facet_var, strata_var, plot_height = c(1200, 400, 5000),
   tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
   post_output = NULL, code_data_processing = NULL)
@@ -20,11 +18,7 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
-
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{ASL} and the element must
@@ -32,19 +26,13 @@ be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{selected endpoint from ADaM variable \code{PARAMCD}}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{paramcd_choices}{options for \code{endpoint}}
+\item{facet_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for facet plotting}
 
-\item{facet_var}{parameter for facet plotting}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
 
-\item{facet_var_choices}{options for \code{facet_var}}
-
-\item{strata_var}{parameter for stratification analysis in Cox PH model}
-
-\item{strata_var_choices}{options for \code{strata_var}}
-
-\item{plot_height}{plot height specification}
+\item{plot_height}{vector with three elements defining selected, min and max plot height}
 
 \item{tbl_fontsize}{fontsize for text annotation}
 
@@ -89,15 +77,13 @@ x <- teal::init(
     tm_g_km(
        label = "KM PLOT",
        dataname = 'ATE',
-       arm_var_choices = c("ARM", "ARMCD"),
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
        arm_ref_comp = arm_ref_comp,
-       paramcd_choices = c("OS", "PFS"),
-       facet_var = "BMRKR2",
-       facet_var_choices = c("SEX", "BMRKR2"),
-       strata_var = "SEX",
-       strata_var_choices = c("SEX", "BMRKR2"),
+       paramcd = choices_selected(c("OS", "PFS"), "OS"),
+       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
+       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
        tbl_fontsize = 12
-    )  
+    )
   )
 )
 

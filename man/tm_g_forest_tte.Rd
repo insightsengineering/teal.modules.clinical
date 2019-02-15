@@ -4,11 +4,8 @@
 \alias{tm_g_forest_tte}
 \title{Forest Survival Plot teal Module}
 \usage{
-tm_g_forest_tte(label, dataname, arm_var = "ARM",
-  arm_var_choices = arm_var, subgroup_var,
-  subgroup_var_choices = subgroup_var, paramcd = "OS",
-  paramcd_choices = paramcd, plot_height = c(600, 200, 2000),
-  cex = 1.3,
+tm_g_forest_tte(label, dataname, arm_var, subgroup_var, paramcd,
+  plot_height = c(600, 200, 2000), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
   post_output = NULL, code_data_processing = NULL)
 }
@@ -20,22 +17,13 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
 
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
 
-\item{subgroup_var}{a vector of variable names used as the default subgroups}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{subgroup_var_choices}{a vector of variable names to choose the
-\code{subgroup_var} from}
-
-\item{paramcd}{default response type from PARAMCD}
-
-\item{paramcd_choices}{a vector of possible \code{paramcd}}
-
-\item{plot_height}{height of the forest plot}
+\item{plot_height}{vector with three elements defining selected, min and max plot height}
 
 \item{cex}{multiplier applied to overall fontsize}
 
@@ -55,7 +43,6 @@ This is teal module produces a grid style Forest plot for time-to-event data
 with ADaM structure
 }
 \examples{
- 
 
 library(random.cdisc.data)
 library(dplyr)
@@ -74,13 +61,10 @@ x <- teal::init(
     tm_g_forest_tte(
        label = "Forest Survival",
        dataname = "ATE",
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),        
-       paramcd = "OS",
-       paramcd_choices = c("OS", "PFS"),
-       plot_height = c(600, 200, 2000),
-       subgroup_var = c("RACE", "SEX"),
-       subgroup_var_choices = names(ASL)
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       paramcd = choices_selected(c("OS", "PFS"), "OS"),
+       plot_height = c(600, 200, 2000)
     )
   )
 )
@@ -88,9 +72,8 @@ x <- teal::init(
 \dontrun{
 
 shinyApp(x$ui, x$server) 
-    
-} 
 
+} 
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

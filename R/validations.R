@@ -1,17 +1,17 @@
 validate_standard_inputs <- function(ASL = NULL, aslvars = character(0),
-                                    ANL = NULL, anlvars = character(0),
-                                    arm_var = NULL,
-                                    ref_arm,
-                                    comp_arm,
-                                    min_n_levels_armvar = 2,
-                                    min_nrow = 15) {
+                                     ANL = NULL, anlvars = character(0),
+                                     arm_var = NULL,
+                                     ref_arm,
+                                     comp_arm,
+                                     min_n_levels_armvar = 2,
+                                     min_nrow = 15) {
   
   validate_has_data(ASL, min_nrow = min_nrow)
-  validate_has_data(ANL, min_nrow = min_nrow)    
+  validate_has_data(ANL, min_nrow = min_nrow)
   
-  if (length(aslvars) > 0) validate_has_variable(ASL, c(aslvars, arm_var))  
+  if (length(aslvars) > 0) validate_has_variable(ASL, c(aslvars, arm_var))
   if (length(anlvars) > 0) validate_has_variable(ANL, anlvars) 
-
+  
   
   if (!is.null(arm_var) && !is.null(min_n_levels_armvar)) {
     validate_n_levels(ASL[[arm_var]], more_than = 1, less_than = 15,
@@ -54,7 +54,7 @@ validate_one_row_per_id <- function(x, key = c("USUBJID", "STUDYID")) {
 
 
 validate_in <- function(x, choices, msg) {
-  validate(need(length(x) > 0 && length(choices) > 0  && all(x %in% choices), msg))  
+  validate(need(length(x) > 0 && length(choices) > 0  && all(x %in% choices), msg))
 }
 
 
@@ -80,10 +80,10 @@ validate_has_variable <- function(data, varname, msg) {
         msg <- paste(dataname, "does not not have the required variables:",
                      paste(varname[!has_vars], collapse = ", "))
       } 
-      validate(need(FALSE, msg))    
+      validate(need(FALSE, msg))
     }
   }
-
+  
 }
 
 
