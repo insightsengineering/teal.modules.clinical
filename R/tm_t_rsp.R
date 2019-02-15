@@ -17,7 +17,7 @@
 #'   \code{\link[base]{factor}} and its \code{levels} argument to manipulate
 #'   the source data in order to include/exclude or re-categorize response
 #'   categories and arrange the display order. If response categories are
-#'   "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
+#'   "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
 #'   confidence interval will not be calculated.
 #'   
 #'   Reference arms automatically combined if multiple arms selected as 

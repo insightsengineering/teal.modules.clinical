@@ -135,7 +135,7 @@ Note that the data is expected to be in vertical form with the
     </tr>
     <tr>
       <th>arm_var</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
     </tr>
     <tr>
       <th>arm_ref_comp</th>
@@ -147,11 +147,11 @@ changed.</p></td>
     </tr>
     <tr>
       <th>paramcd</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>PARAMCD</code> variable</p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used as <code>PARAMCD</code> variable</p></td>
     </tr>
     <tr>
       <th>strata_var</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used for stratification</p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used for stratification</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -188,7 +188,7 @@ app is initialized</p></td>
   <code><a href='https://www.rdocumentation.org/packages/base/topics/factor'>factor</a></code> and its <code>levels</code> argument to manipulate
   the source data in order to include/exclude or re-categorize response
   categories and arrange the display order. If response categories are
-  "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95%
+  "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95%
   confidence interval will not be calculated.</p>  
 <p>Reference arms automatically combined if multiple arms selected as 
   reference group.</p>
@@ -199,10 +199,10 @@ app is initialized</p></td>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>random.cdisc.data</span>)
 
 <span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs'>radrs</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs'>radrs</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>), <span class='no'>AVISIT</span> <span class='kw'>==</span> <span class='st'>"Follow Up"</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radrs(ASL, seed = 1)"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>ARS</span> <span class='kw'>=</span> <span class='no'>ARS</span>),

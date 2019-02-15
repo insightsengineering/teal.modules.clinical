@@ -3,7 +3,7 @@
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #' 
 #' @inheritParams tm_t_tte
-#' @param facet_var \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for facet plotting
+#' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for facet plotting
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #' @param tbl_fontsize fontsize for text annotation
 #' 

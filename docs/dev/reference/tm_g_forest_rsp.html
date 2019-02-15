@@ -134,15 +134,15 @@ Note that the data is expected to be in vertical form with the
     </tr>
     <tr>
       <th>arm_var</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used as <code>arm_var</code></p></td>
     </tr>
     <tr>
       <th>paramcd</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as <code>PARAMCD</code> variable</p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used as <code>PARAMCD</code> variable</p></td>
     </tr>
     <tr>
       <th>subgroup_var</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all availalbe choices and preselected option for variable names that can be used as the default subgroups</p></td>
+      <td><p><code><a href='https://www.rdocumentation.org/packages/teal/topics/choices_selected'>choices_selected</a></code> object with all available choices and preselected option for variable names that can be used as the default subgroups</p></td>
     </tr>
     <tr>
       <th>plot_height</th>
@@ -177,10 +177,10 @@ app is initialized</p></td>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>random.cdisc.data</span>)
 
 <span class='no'>ASL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radsl'>radsl</a></span>(<span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs'>radrs</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>ARS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/random.cdisc.data/topics/radrs'>radrs</a></span>(<span class='no'>ASL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>), <span class='no'>AVISIT</span> <span class='kw'>==</span> <span class='st'>"Follow Up"</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ASL</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radsl(seed = 1)"</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>"random.cdisc.data::radrs(ASL, seed = 1)"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>ARS</span>, <span class='st'>"source"</span>) <span class='kw'>&lt;-</span> <span class='st'>'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>teal</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/teal/topics/init'>init</a></span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ASL</span> <span class='kw'>=</span> <span class='no'>ASL</span>, <span class='kw'>ARS</span> <span class='kw'>=</span> <span class='no'>ARS</span>),
@@ -189,7 +189,7 @@ app is initialized</p></td>
        <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"Forest Response"</span>,
        <span class='kw'>dataname</span> <span class='kw'>=</span> <span class='st'>"ARS"</span>,
        <span class='kw'>arm_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>), <span class='st'>"ARM"</span>),
-       <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"BESRSPI"</span>, <span class='st'>"INVET"</span>, <span class='st'>"OVRINV"</span> ), <span class='st'>"INVET"</span>),
+       <span class='kw'>paramcd</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"BESRSPI"</span>, <span class='st'>"INVET"</span>, <span class='st'>"OVRINV"</span> ), <span class='st'>"OVRINV"</span>),
        <span class='kw'>subgroup_var</span> <span class='kw'>=</span> <span class='fu'>choices_selected</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>ASL</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"RACE"</span>, <span class='st'>"SEX"</span>)),
        <span class='kw'>plot_height</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>600</span>, <span class='fl'>200</span>, <span class='fl'>2000</span>)
     )

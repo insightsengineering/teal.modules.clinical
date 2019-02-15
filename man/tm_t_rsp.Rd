@@ -16,7 +16,7 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{ASL} and the element must
@@ -24,9 +24,9 @@ be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -59,7 +59,7 @@ Additional standard UI inputs include \code{responders},
   \code{\link[base]{factor}} and its \code{levels} argument to manipulate
   the source data in order to include/exclude or re-categorize response
   categories and arrange the display order. If response categories are
-  "Missing" or "Not Evaluable (NE)" or "Missing or uneavluable", 95\%
+  "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
   confidence interval will not be calculated.
   
   Reference arms automatically combined if multiple arms selected as 

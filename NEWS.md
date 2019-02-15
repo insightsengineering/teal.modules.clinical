@@ -4,7 +4,7 @@
 
 * package renamed to `teal.modules.clinical`
 * rename `tm_t_summarize_variables` to `tm_t_summary`
-* usage of `teal::choices_selected()` function insteal of `*_var` and `*_var_choices` type of arguments
+* usage of `teal::choices_selected()` function instead of `*_var` and `*_var_choices` type of arguments
 
 # teal.tern 0.5.0.2
 

@@ -3,7 +3,7 @@
 #' This module is for \code{\link[tern]{t_summary}}.
 #' 
 #' @inheritParams tm_t_tte
-#' @param summarize_vars \code{\link[teal]{choices_selected}} object with all availalbe choices and preselected option
+#' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary
 #'   
 #' @export
