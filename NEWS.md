@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.5.1
+# teal.modules.clinical 0.6.0
 
 ## Changes
 
@@ -29,7 +29,7 @@ with an `tm_`
  `tern` contains all the analysis code and `teal.oncology` contains the the teal
  modules that make the analysis function interactive with encodings and
  filtering. The `tern` package can be found here:
- [https://github.roche.com/Rpackages/tern](https://github.roche.com/Rpackages/tern).
+ [https://github.roche.com/NEST/tern](https://github.roche.com/NEST/tern).
 
 
 # teal.oncology 0.0.1

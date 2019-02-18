@@ -16,7 +16,7 @@ Please delete this preamble after you have read it.
 your brief description of the problem
 
 ```r
-library(teal.modules.clinical) # library(teal.tern) if you are using older version
+library(teal.modules.clinical)
 
 # your reproducible example here, e.g.
 
