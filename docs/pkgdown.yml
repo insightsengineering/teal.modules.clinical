@@ -9,6 +9,6 @@ articles:
   tm_t_summary: tm_t_summary.html
   tm_t_tte: tm_t_tte.html
 urls:
-  reference: https://pages.github.roche.com/Rpackages/teal.oncology/reference
-  article: https://pages.github.roche.com/Rpackages/teal.oncology/articles
+  reference: https://pages.github.roche.com/NEST/teal.modules.clinical/reference
+  article: https://pages.github.roche.com/NEST/teal.modules.clinical/articles
 
