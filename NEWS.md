@@ -1,4 +1,5 @@
 # teal.modules.clinical 0.6.0
+package renamed
 
 ## Changes
 
