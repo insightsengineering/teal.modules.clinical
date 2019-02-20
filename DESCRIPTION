@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.5.1.9000
+Version: 0.6.0
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
   person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),
@@ -14,8 +14,8 @@ Description: Provides teal modules for the standard clinical trials outputs.
 Depends:
   R (>= 3.3),
   shiny,
-  teal (>= 0.0.3),
-  tern (>= 0.5)
+  teal (>= 0.6),
+  tern (>= 0.6)
 Imports:
   methods,
   stats,
