@@ -3,31 +3,24 @@
 #' Time to event table as defined in \code{\link[tern]{t_tte}} in the
 #' \code{tern} package
 #' 
+#' @inheritParams teal::standard_layout
 #' @param label menue item label of the module in the teal app
 #' @param dataname analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form with the
 #'   \code{PARAMCD} variable filtering to one observation per patient.
-#' @param arm_var single name of variable in analysis data that is used as
-#'   \code{col_by} argument for the respective \code{tern} function.
-#' @param arm_var_choices vector with variable names that can be used as
-#'   \code{arm_var}
+#' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}
 #' @param arm_ref_comp optional, if specified it must be a named list with each
 #'   element corresponding to an arm variable in \code{ASL} and the element must
 #'   be another list with the elements named \code{ref} and \code{comp} that the
 #'   defined the default reference and comparison arms when the arm variable is
 #'   changed.
-#' @param paramcd single selected endpoint filtered with \code{PARAMCD} variable
-#' @param paramcd_choices vector with \code{paramcd} choices
-#' @param strata_var vector with variable names that should be used for
-#'   stratification
-#' @param strata_var_choices vector with possible choices for \code{strata_var}
-#' @param time_points vector with timepoints as used in \code{\link[tern]{t_tte}}
-#' @param time_points_choices vector with possible \code{time_points}s
+#' @param paramcd \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable
+#' @param strata_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification
+#' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used \code{\link[tern]{t_tte}}
 #' @param time_unit string with unit of \code{dataname$AVAL}
 #' @param event_desrc_var variable name with the event description information,
 #'   optional
-#' @inheritParams teal::standard_layout
 #' @param code_data_processing string with data preprocessing before the teal
 #'   app is initialized
 #' 
@@ -52,22 +45,15 @@
 #' 
 #' @importFrom forcats fct_collapse fct_relevel
 #' 
-#' @examples  
+#' @examples
 #' 
-#' \dontrun{
 #' library(random.cdisc.data)
 #'
-#' ASL <- radam('ASL', start_with = list(
-#'   ITTFL = 'Y',
-#'   SEX = c("M", "F"),
-#'   MLIVER = paste("mliver", 1:3),
-#'   ARM = paste("ARM", LETTERS[1:3])
-#' ))
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' ASL$ARM <- as.factor(ASL$ARM)
-#' 
-#' ATE <- radam('ATE', ADSL = ASL)
-#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' x <- teal::init( 
 #'   data = list(ASL = ASL, ATE = ATE),
@@ -75,44 +61,43 @@
 #'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
-#'        arm_var = "ARM",
-#'        arm_var_choices = c("ARM", "ARMCD"),
-#'        paramcd = "OS",
-#'        paramcd_choices = unique(ATE$PARAMCD),
-#'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER"),
-#'        time_points = 6,
-#'        time_points_choices = c(6, 8),
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'        paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+#'        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+#'        time_points = choices_selected(c(6, 8), 6),
 #'        time_unit = "months",
 #'        event_desrc_var = "EVNTDESC"
-#'    )
+#'     )
 #'   )
 #' )
 #' 
-#' shinyApp(x$ui, x$server) 
 #' 
+#' \dontrun{
+#' shinyApp(x$ui, x$server) 
+#' }
 #' 
 #' ## Define default reference & comparison arms based on 
 #' ## ARM variable 
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radam('ASL', start_with = list(
-#'   SEX = c("M", "F"),
-#'   MLIVER = paste("mliver", 1:3))
-#' )
-#' ATE <- radam('ATE', ADSL = ASL)
+#' ASL <- radsl(seed = 1) %>% 
+#'   mutate(., ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE))
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' ASL$ARM <- paste(sample(paste("ARM", LETTERS[1:3]), nrow(ASL), TRUE))
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) %>% 
+#'   mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' arm_ref_comp = list(
-#'    ARM = list(
-#'       ref = "ARM A",
-#'       comp = c("ARM B", "ARM C")
-#'    ),
-#'    ARMCD = list(
-#'       ref = "ARM B",
-#'       comp = "ARM A"
-#'    )
+#'   ACTARMCD = list(
+#'     ref = "ARM A", 
+#'     comp = c("ARM B", "ARM C")
+#'   ),
+#'   ARM1 = list(
+#'     ref = "DUMMY B", 
+#'     comp = "DUMMY A"
+#'   )
 #' )
 #' 
 #' x <- teal::init(
@@ -121,40 +106,37 @@
 #'     tm_t_tte(
 #'        label = "Time To Event Table",
 #'        dataname = 'ATE',
-#'        arm_var = "ARM",
-#'        arm_var_choices = c("ARM", "ARMCD"),
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'        arm_ref_comp = arm_ref_comp,
-#'        paramcd = "OS",
-#'        paramcd_choices = unique(ATE$PARAMCD),
-#'        strata_var = "SEX",
-#'        strata_var_choices = c("SEX", "MLIVER"),
-#'        time_points = 6,
-#'        time_points_choices = c(6, 8),
+#'        paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+#'        strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
+#'        time_points = choices_selected(c(6, 8), 6),
 #'        time_unit = "months",
 #'        event_desrc_var = "EVNTDESC"
-#'    )
+#'     )
 #'   )
 #' )
 #' 
+#' \dontrun{
 #' shinyApp(x$ui, x$server) 
-#'   
-#' } 
+#' }
 tm_t_tte <- function(label,
                      dataname,
-                     arm_var = "ARM",
-                     arm_var_choices = arm_var,
+                     arm_var,
                      arm_ref_comp = NULL,
-                     paramcd = "OS",
-                     paramcd_choices = paramcd,
-                     strata_var = NULL,
-                     strata_var_choices = strata_var,
+                     paramcd,
+                     strata_var,
                      time_points,
-                     time_points_choices = time_points,
                      time_unit = "months",
                      event_desrc_var = NULL, 
                      pre_output = NULL,
                      post_output = NULL,
                      code_data_processing = NULL) {
+  
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(paramcd))
+  stopifnot(is.choices_selected(strata_var))
+  stopifnot(is.choices_selected(time_points))
   
   args <- as.list(environment())
   
@@ -174,6 +156,7 @@ tm_t_tte <- function(label,
   )
 }
 
+
 ui_t_tte <- function(id, ...) {
   
   a <- list(...) # module args
@@ -185,16 +168,16 @@ ui_t_tte <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("paramcd"), "Select Endpoint", a$paramcd_choices, a$paramcd, multiple = FALSE),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("paramcd"), "Select Endpoint", a$paramcd$choices, a$paramcd$selected, multiple = FALSE),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var$choices, a$arm_var$selected, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Group", choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple reference groups are automatically combined into a single group."),
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       optionalSelectInput(ns("strata_var"), "Stratify by",
-                          a$strata_var_choices, a$strata_var, multiple = TRUE,
+                          a$strata_var$choices, a$strata_var$selected, multiple = TRUE,
                           label_help = helpText("from ", tags$code("ASL"))),
-      optionalSelectInput(ns("time_points"), "Time Points", a$time_points_choices, a$time_points, multiple = TRUE)
+      optionalSelectInput(ns("time_points"), "Time Points", a$time_points$choices, a$time_points$selected, multiple = TRUE)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -202,11 +185,11 @@ ui_t_tte <- function(id, ...) {
   )
 } 
 
+
 srv_t_tte <- function(input, output, session, datasets, dataname,
                       arm_ref_comp, time_unit, event_desrc_var,
                       code_data_processing) {
   
-
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   arm_ref_comp_observer(
@@ -225,11 +208,11 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
   
   # Create output
   output$tte_table <- renderUI({
-
+    
     # resolve all reactive expressions
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
-
+    
     paramcd <- input$paramcd
     strata_var <- input$strata_var
     arm_var <- input$arm_var
@@ -243,7 +226,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     # as.global(ASL_filtered, ATE_filtered, paramcd, strata_var, arm_var, ref_arm, comp_arm, combine_comp_arms, time_points)    
     
     time_points <- if (length(time_points) == 0) NULL else sort(time_points)
-
+    
     # Delete chunks that are used for reproducible code
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
     
@@ -265,7 +248,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED) # so that we can refer to the 'correct' data name
-
+    
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var))
     
@@ -276,30 +259,30 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
       strata_var <- .(strata_var)
       combine_comp_arms <- .(combine_comp_arms)
     })
-
+    
     chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       
       ANL_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
-        
+      
       ANL <- merge(
         x = ASL_p[, .(asl_vars)],
         y = ANL_endpoint[, .(anl_vars)],
         all.x = FALSE, all.y = FALSE,
         by=c("USUBJID", "STUDYID")
       )
-
+      
       ARM <- relevel(as.factor(ANL[[.(arm_var)]]), ref_arm[1])
-        
+      
       ARM <- combine_levels(ARM, ref_arm)
       if (combine_comp_arms) {
-          ARM <- combine_levels(ARM, comp_arm)
+        ARM <- combine_levels(ARM, comp_arm)
       }
       
       ANL[[.(arm_var)]] <- droplevels(ARM)
       
     })
-
+    
     eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
     
@@ -325,7 +308,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
   
   
   observeEvent(input$show_rcode, {
-
+    
     header <- get_rcode_header(
       title = "Time To Event Table",
       datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(), 

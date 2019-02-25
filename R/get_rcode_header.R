@@ -1,35 +1,31 @@
-
 #' Used to get the header for "Show R-Code"
 #' 
-#' 
 #' @importFrom utils packageDescription
+#' 
 #' @noRd
 #' 
 #' @examples 
 #' 
-#' \dontrun{
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radam('ASL')
-#' ATE <- radam('ATE')
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #' 
-#' attr(ASL, "source") <- "radam('ASL')"
-#' attr(ATE, "source") <- "radam('ATE')"
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
 #' 
 #' d <- teal:::FilteredData$new()
 #' d$set_data("ASL", ASL)
 #' d$set_data("ATE", ATE)
 #' 
-#' cat(teal.tern:::get_rcode_header(
+#' cat(teal.modules.clinical:::get_rcode_header(
 #'   title = "Hello World\nsubtitle",
 #'   dataname = c("ATE"),
 #'   datasets = d
 #' )); cat("\n")
 #' 
-#' }
-#' 
 get_rcode_header <- function(title, datanames, datasets, code_data_processing = NULL) {
-
+  
   datanames <- c("ASL", setdiff(datanames, "ASL"))
   
   datanames_import <- if (is.null(code_data_processing)) {
@@ -42,7 +38,7 @@ get_rcode_header <- function(title, datanames, datasets, code_data_processing = 
   names(data) <- datanames_import
   
   comment <- function(txt) {
-    paste0("# ", gsub("\n", "\n# ", txt, fixed = TRUE))  
+    paste0("# ", gsub("\n", "\n# ", txt, fixed = TRUE))
   }
   
   if (!has_source_attribute(data)) {
@@ -56,11 +52,6 @@ get_rcode_header <- function(title, datanames, datasets, code_data_processing = 
     } else {
       getwd()
     }
-    
-    
-
-    
-
     
     
     txt_data <- paste(
@@ -78,26 +69,26 @@ get_rcode_header <- function(title, datanames, datasets, code_data_processing = 
       paste(c(code_data_processing, ""), collapse = "\n")
     }
     
-    txt_filter <- teal::get_filter_txt(datanames, datasets)    
+    txt_filter <- teal::get_filter_txt(datanames, datasets)
     
     
     ## header
     txt_inst_pkgs <- c(
       paste0('devtools::install_github("Roche/rtables", ref="v',
              packageDescription("rtables")$Version,'")'),
-      paste0('devtools::install_github("Rpackages/tern", ref="v',
+      paste0('devtools::install_github("NEST/tern", ref="v',
              packageDescription("tern")$Version,'", host="https://github.roche.com/api/v3")')
     )
     
     needs_rcd <- any(grepl("radam\\(", txt_data))
     if (needs_rcd) {
       txt_inst_pkgs <- c(
-        paste0('devtools::install_github("Rpackages/random.cdisc.data", ref="v',
+        paste0('devtools::install_github("NEST/random.cdisc.data", ref="v',
                packageDescription("random.cdisc.data")$Version,'", host="https://github.roche.com/api/v3")'),
         txt_inst_pkgs
       )
-    }  
-
+    }
+    
     
     txt_comment <- paste(c(
       title,
@@ -126,8 +117,6 @@ get_rcode_header <- function(title, datanames, datasets, code_data_processing = 
     )
   }
   
-
-
 }
 
 

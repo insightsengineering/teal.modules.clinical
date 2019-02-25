@@ -4,10 +4,8 @@
 \alias{tm_g_forest_rsp}
 \title{Forest Response Plot teal module}
 \usage{
-tm_g_forest_rsp(label, dataname, arm_var = "ARM", arm_var_choices = arm_var,
-  paramcd = "OVRSPI", paramcd_choices = paramcd, subgroup_var,
-  subgroup_var_choices = subgroup_var, plot_height = c(700, 200, 2000),
-  cex = 1.3,
+tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
+  plot_height = c(700, 200, 2000), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
   post_output = NULL, code_data_processing = NULL)
 }
@@ -19,22 +17,13 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{single name of variable in analysis data that is used as
-\code{col_by} argument for the respective \code{tern} function.}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
 
-\item{arm_var_choices}{vector with variable names that can be used as
-\code{arm_var}}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{paramcd}{default response type from PARAMCD}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
 
-\item{paramcd_choices}{a vector of possible \code{paramcd}}
-
-\item{subgroup_var}{a vector of variable names used as the default subgroups}
-
-\item{subgroup_var_choices}{a vector of variable names to choose the
-\code{subgroup_var} from}
-
-\item{plot_height}{height of the forest plot}
+\item{plot_height}{vector with three elements defining selected, min and max plot height}
 
 \item{cex}{multiplier applied to overall fontsize}
 
@@ -53,17 +42,14 @@ app is initialized}
 This is teal module produces a grid style Forest plot for response data with ADaM structure
 }
 \examples{
-  
-
-\dontrun{
 
 library(random.cdisc.data)
 
-ASL <- radam("ASL", start_with = list(
-   RACE = c("white", "asian"),
-   ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")
-))
-ARS <- radam("ARS", ADSL = ASL)
+ASL <- radsl(seed = 1)
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 
 x <- teal::init(
   data = list(ASL = ASL, ARS = ARS),
@@ -71,18 +57,17 @@ x <- teal::init(
     tm_g_forest_rsp(
        label = "Forest Response",
        dataname = "ARS",
-       arm_var = "ARM",
-       arm_var_choices = c("ARM", "ARMCD"),        
-       paramcd = "OVRSPI",
-       paramcd_choices = c("BESRSPI", "OVRINV",  "OVRSPI" ),
-       plot_height = c(600, 200, 2000),
-       subgroup_var = c("RACE", "SEX"),
-       subgroup_var_choices = names(ASL)
-   )
+       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
+       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       plot_height = c(600, 200, 2000)
+    )
   )
-)   
+)
 
-shinyApp(x$ui, x$server) 
+\dontrun{
+
+shinyApp(x$ui, x$server)
 
 } 
 }

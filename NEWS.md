@@ -1,3 +1,10 @@
+# teal.modules.clinical 0.6.0
+
+## Changes
+
+* package renamed to `teal.modules.clinical`
+* rename `tm_t_summarize_variables` to `tm_t_summary`
+* usage of `teal::choices_selected()` function instead of `*_var` and `*_var_choices` type of arguments
 
 # teal.tern 0.5.0.2
 
@@ -22,7 +29,7 @@ with an `tm_`
  `tern` contains all the analysis code and `teal.oncology` contains the the teal
  modules that make the analysis function interactive with encodings and
  filtering. The `tern` package can be found here:
- [https://github.roche.com/Rpackages/tern](https://github.roche.com/Rpackages/tern).
+ [https://github.roche.com/NEST/tern](https://github.roche.com/NEST/tern).
 
 
 # teal.oncology 0.0.1

@@ -1,7 +1,4 @@
-
-
-
-#' Mask \code{\link[rocheBCE]{read_bce}} on r.roche.com to add meta-data to the
+#' Mask \code{read_bce} on r.roche.com to add meta-data to the
 #' data set for reproducibility
 #' 
 #' This version uses read_bce and adds the \code{'source'}, \code{'md5sum'},
@@ -9,17 +6,14 @@
 #'
 #' @param FILE file path, needs to be an absolute file path
 #' @param encoding encoding
-#'
 #' 
 #' @export
 #' 
 read_bce <- function(FILE, encoding = NULL) {
   
-  # requireNamespace("rocheBCE") || stop("read_bce requires the rocheBCE package ()")
+  if (!is.character(FILE) || !(length(FILE) == 1)) stop("teal.modules.clinical::read_bce only allows to specify one FILE at a time")
   
-  if (!is.character(FILE) || !(length(FILE) == 1)) stop("teal.tern::read_bce only allows to specify one FILE at a time")
-  
-  if (substr(FILE, 1,1) != "/") stop("teal.tern::read_bce only accepts absolute paths")
+  if (substr(FILE, 1,1) != "/") stop("teal.modules.clinical::read_bce only accepts absolute paths")
   
   if (!file.exists(FILE)) stop("file", FILE, "either does not exists or you do not have access")
   
@@ -32,5 +26,3 @@ read_bce <- function(FILE, encoding = NULL) {
   
   d
 }
-
-

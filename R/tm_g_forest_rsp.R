@@ -1,32 +1,25 @@
-
 #' Forest Response Plot teal module
 #' 
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
 #' 
 #' @inheritParams tm_t_tte
-#' @param subgroup_var a vector of variable names used as the default subgroups
-#' @param subgroup_var_choices a vector of variable names to choose the
-#'   \code{subgroup_var} from
-#' @param paramcd default response type from PARAMCD
-#' @param paramcd_choices a vector of possible \code{paramcd}
-#' @param plot_height height of the forest plot
+#' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups
+#' @param plot_height vector with three elements defining selected, min and max plot height
 #' @param cex multiplier applied to overall fontsize
 #' 
 #' @export
 #' 
 #' @template author_song24
 #' 
-#' @examples   
-#' 
-#' \dontrun{
+#' @examples
 #' 
 #' library(random.cdisc.data)
 #' 
-#' ASL <- radam("ASL", start_with = list(
-#'    RACE = c("white", "asian"),
-#'    ARMCD = c("DUMMY 1", "DUMMY 2", "DUMMY 3")
-#' ))
-#' ARS <- radam("ARS", ADSL = ASL)
+#' ASL <- radsl(seed = 1)
+#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#' 
+#' attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
 #' 
 #' x <- teal::init(
 #'   data = list(ASL = ASL, ARS = ARS),
@@ -34,33 +27,33 @@
 #'     tm_g_forest_rsp(
 #'        label = "Forest Response",
 #'        dataname = "ARS",
-#'        arm_var = "ARM",
-#'        arm_var_choices = c("ARM", "ARMCD"),        
-#'        paramcd = "OVRSPI",
-#'        paramcd_choices = c("BESRSPI", "OVRINV",  "OVRSPI" ),
-#'        plot_height = c(600, 200, 2000),
-#'        subgroup_var = c("RACE", "SEX"),
-#'        subgroup_var_choices = names(ASL)
-#'    )
+#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'        paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
+#'        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+#'        plot_height = c(600, 200, 2000)
+#'     )
 #'   )
-#' )   
+#' )
 #' 
-#' shinyApp(x$ui, x$server) 
+#' \dontrun{
+#' 
+#' shinyApp(x$ui, x$server)
 #' 
 #' } 
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            arm_var = "ARM",
-                            arm_var_choices = arm_var,
-                            paramcd = "OVRSPI",
-                            paramcd_choices = paramcd,
+                            arm_var,
+                            paramcd,
                             subgroup_var,
-                            subgroup_var_choices = subgroup_var,
                             plot_height = c(700, 200, 2000),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
                             post_output = NULL,
                             code_data_processing = NULL){
+  
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(paramcd))
+  stopifnot(is.choices_selected(subgroup_var))
   
   args <- as.list(environment())
   
@@ -74,6 +67,7 @@ tm_g_forest_rsp <- function(label,
   )
 }
 
+
 ui_g_forest_rsp <- function(id, ...) {
   
   a <- list(...)
@@ -86,16 +80,16 @@ ui_g_forest_rsp <- function(id, ...) {
       tags$label("Encodings", class="text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(ns("paramcd"), div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")), 
-                          a$paramcd_choices, a$paramcd, multiple = FALSE),
+                          a$paramcd$choices, a$paramcd$selected, multiple = FALSE),
       selectInput(ns("responders"), "Responders", 
                   choices = NULL, selected = NULL, multiple = TRUE),
-      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var_choices, a$arm_var, multiple = FALSE),
+      optionalSelectInput(ns("arm_var"), "Arm Variable", a$arm_var$choices, a$arm_var$selected, multiple = FALSE),
       selectInput(ns("ref_arm"), "Reference Arm", 
                   choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
       selectInput(ns("comp_arm"), "Comparison Arm", choices = NULL, selected = NULL, multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
-      optionalSelectInput(ns("subgroup_var"), "Subgroup Variables", a$subgroup_var_choices, a$subgroup_var, multiple = TRUE,
+      optionalSelectInput(ns("subgroup_var"), "Subgroup Variables", a$subgroup_var$choices, a$subgroup_var$selected, multiple = TRUE,
                           label_help = helpText("are taken from", tags$code("ASL"))),
       tags$label("Plot Settings", class="text-primary", style="margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
@@ -105,6 +99,7 @@ ui_g_forest_rsp <- function(id, ...) {
     post_output = a$post_output
   )
 } 
+
 
 srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1.5, code_data_processing) {
   
@@ -128,20 +123,20 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
   
   # Update UI choices depending on selection of previous options
   observe({
-
+    
     paramcd <- input$paramcd
     
     ANL <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
     
     rsp_choices <- unique(ANL$AVALC[ANL$PARAMCD == paramcd])
-  
+    
     updateSelectInput(session, "responders", 
                       choices = rsp_choices,
                       selected = intersect(rsp_choices, c("CR", "PR")))
-  
+    
   })
   
-
+  
   chunks <- list(
     vars = "# Not Calculated",
     data = "# Not Calculated",
@@ -151,10 +146,9 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
   )
   
   output$forest_plot <- renderPlot({
-
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)    
-    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     
     paramcd <- input$paramcd
     responders <- input$responders
@@ -164,7 +158,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     subgroup_var <- input$subgroup_var
     
     as.global(ASL_FILTERED, ANL_FILTERED, paramcd, responders, arm_var, ref_arm, comp_arm, subgroup_var)
-
+    
     # Delete chunks that are used for reproducible code
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
     
@@ -182,11 +176,10 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     validate_in(responders, ANL_FILTERED$AVALC, "responder values cannot be found in AVALC")
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Response parameter cannot be found in PARAMCD")
     
-
     # perform analysis
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
-  
+    
     chunks$vars <<- bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
@@ -198,7 +191,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     chunks$data <<- bquote({
       ASL_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
       ANL_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
-
+      
       ANL <- merge(ASL_p[, .(asl_vars)], ANL_p[, .(anl_vars)],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
       
@@ -214,6 +207,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     
     eval(chunks$data)
     validate(need(nrow(ANL) > 15, "need at least 15 data points"))
+    validate(need(!any(duplicated(ANL$USUBJID)), "patients have multiple records in the analysis data."))
     
     chunks$t_forest_rsp <<- call(
       "t_forest_rsp",
@@ -226,7 +220,7 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
     ) 
     
     tbl <- try(eval(chunks$t_forest_rsp))
-
+    
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     
     
@@ -245,10 +239,10 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       logx = TRUE,
       x_at = c(.1, 1, 10)
     )
-      
+    
     eval(chunks$row_name_wrap)
     eval(chunks$p_forest_rsp)
-#    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
+    #    if (is(p, "try-error")) validate(need(FALSE, paste0("could not calculate forest plot:\n\n", p)))
   })
   
   
@@ -284,5 +278,5 @@ srv_g_forest_rsp <- function(input, output, session, datasets, dataname, cex = 1
       size = "l"
     ))
   })
-
+  
 }

@@ -1,6 +1,6 @@
-Package: teal.tern
-Title: Teal Modules for TLG Functions in Tern
-Version: 0.5.0.2
+Package: teal.modules.clinical
+Title: Teal Modules for Standard Clinical Outputs
+Version: 0.6.0
 Authors@R: c(
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
   person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),
@@ -9,13 +9,13 @@ Authors@R: c(
   person("Mark", "Rothe", role = c("aut")),
   person("Xiao", "Mu Yo", role = c("aut"))
   )
-Description: Provides teal modules for outputs defined in the tern package.
+Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encoding within teal.
 Depends:
   R (>= 3.3),
   shiny,
-  teal (>= 0.0.3),
-  tern (>= 0.5)
+  teal (>= 0.6),
+  tern (>= 0.6)
 Imports:
   methods,
   stats,
@@ -29,15 +29,17 @@ Imports:
 Suggests:
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  random.cdisc.data,
+  dplyr
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
-URL: https://pages.github.roche.com/Rpackages/teal.tern/, https://github.roche.com/Rpackages/teal.tern/
-BugReports: https://github.roche.com/Rpackages/teal.tern/issues
+URL: https://pages.github.roche.com/NEST/teal.modules.clinical/
+BugReports: https://github.roche.com/NEST/teal.modules.clinical/issues
 Additional_repositories: 
-  https://github.roche.com/Rpackages/teal,
-  https://github.roche.com/Rpackages/tern,
+  https://github.roche.com/NEST/teal,
+  https://github.roche.com/NEST/tern,
   https://github.com/Roche/rtables

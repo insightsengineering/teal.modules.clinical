@@ -5,7 +5,7 @@
 \title{Cross table based on rtables}
 \usage{
 tm_t_percentage_cross_table(label = "Cross Table", dataname, x_var,
-  x_var_choices = x_var, y_var, y_var_choices = y_var)
+  y_var)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -15,37 +15,38 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{x_var}{variable name selected variable when shiny app starts}
+\item{x_var}{\code{\link[teal]{choices_selected}} object with all available choices with preselected option for variable X}
 
-\item{x_var_choices}{vector with variable names available as choices}
-
-\item{y_var}{variable name selected variable when shiny app starts}
-
-\item{y_var_choices}{vector with variable names available as choices}
+\item{y_var}{\code{\link[teal]{choices_selected}} object with all available choices with preselected option for variable Y}
 }
 \description{
 Cross table based on rtables
 }
 \examples{
 
-\dontrun{
-
 library(random.cdisc.data)
 
-ASL <- radam("ASL", start_with = list(
-  x = c("Y", "N"), y = c("A", "B", "C")
-))
+ASL <- radsl(seed = 1)
+
+attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
 
 x <- teal::init(
   data = list(ASL = ASL),
   modules = root_modules(
-    tm_t_percentage_cross_table("Cross Table", "ASL", x_var = "x", y_var = "y")
+    tm_t_percentage_cross_table(
+      label = "Cross Table", 
+      dataname = "ASL", 
+      x_var = choices_selected(c("STRATA1"), "STRATA1"), 
+      y_var = choices_selected(c("STRATA2"), "STRATA2")
+    )
   )
 )
 
-shinyApp(x$ui, x$server)
-}
+\dontrun{
 
+shinyApp(x$ui, x$server)
+
+}
 }
 \author{
 Adrian Waddell (waddella) \email{adrian.waddell@roche.com}

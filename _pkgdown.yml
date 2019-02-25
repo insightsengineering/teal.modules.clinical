@@ -1,4 +1,4 @@
-url: https://pages.github.roche.com/Rpackages/teal.oncology
+url: https://pages.github.roche.com/NEST/teal.modules.clinical
 
 template:
   params:
@@ -7,15 +7,15 @@ template:
 navbar:
   right:
     - icon: fa-github
-      href: https://github.roche.com/Rpackages/teal.oncology
+      href: https://github.roche.com/NEST/teal.modules.clinical
 
 development:
-  mode: devel
+  mode: release
 
 reference:
   - title:
     contents:
-      - teal.tern-package
+      - teal.modules.clinical-package
   - title: Tables
     contents:
       -  starts_with("tm_t_")
