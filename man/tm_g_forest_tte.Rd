@@ -17,11 +17,14 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as the default subgroups}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -47,22 +50,22 @@ with ADaM structure
 library(random.cdisc.data)
 library(dplyr)
 
-ASL <- radsl(seed = 1) \%>\%
+asl <- radsl(seed = 1) \%>\%
   mutate(RACE = droplevels(RACE))
-ATE <- radtte(ASL, seed = 1)
+ate <- radtte(asl, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\% 
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\%
   mutate(RACE = droplevels(RACE))"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
 
 x <- teal::init(
-  data = list(ASL = ASL, ATE = ATE),
+  data = list(ASL = asl, ATE = ate),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
        dataname = "ATE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
        paramcd = choices_selected(c("OS", "PFS"), "OS"),
        plot_height = c(600, 200, 2000)
     )
@@ -71,9 +74,9 @@ x <- teal::init(
 
 \dontrun{
 
-shinyApp(x$ui, x$server) 
+shinyApp(x$ui, x$server)
 
-} 
+}
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

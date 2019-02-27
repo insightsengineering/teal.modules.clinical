@@ -5,10 +5,10 @@
 \title{Mask \code{read_bce} on r.roche.com to add meta-data to the
 data set for reproducibility}
 \usage{
-read_bce(FILE, encoding = NULL)
+read_bce(file, encoding = NULL)
 }
 \arguments{
-\item{FILE}{file path, needs to be an absolute file path}
+\item{file}{file path, needs to be an absolute file path}
 
 \item{encoding}{encoding}
 }

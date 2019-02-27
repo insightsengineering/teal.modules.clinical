@@ -18,19 +18,23 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{asl} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{facet_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for facet plotting}
+\item{facet_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for facet plotting}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -54,43 +58,41 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
+asl <- radsl(seed = 1)
+ate <- radtte(asl, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
 
-arm_ref_comp = list(
-   ARM = list(
-      ref = "A: Drug X",
-      comp = c("B: Placebo", "C: Combination")
-   ),
-   ARMCD = list(
-      ref = "ARM B",
-      comp = "ARM A"
-   )
-)
-
-x <- teal::init(
-  data = list(ASL = ASL, ATE = ATE),
-  modules = root_modules(
-    tm_g_km(
-       label = "KM PLOT",
-       dataname = 'ATE',
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       arm_ref_comp = arm_ref_comp,
-       paramcd = choices_selected(c("OS", "PFS"), "OS"),
-       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-       tbl_fontsize = 12
-    )
+arm_ref_comp <- list(
+  ARM = list(
+    ref = "A: Drug X",
+    comp = c("B: Placebo", "C: Combination")
+  ),
+  ARMCD = list(
+    ref = "ARM B",
+    comp = "ARM A"
   )
 )
 
+x <- teal::init(
+  data = list(ASL = asl, ATE = ate),
+  modules = root_modules(
+    tm_g_km(
+      label = "KM PLOT",
+      dataname = "ATE",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(c("OS", "PFS"), "OS"),
+      facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
+      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+      tbl_fontsize = 12
+    )
+  )
+)
 \dontrun{
 
 shinyApp(ui = x$ui, server = x$server)
-
 }
 }
 \author{

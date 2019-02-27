@@ -15,9 +15,11 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{x_var}{\code{\link[teal]{choices_selected}} object with all available choices with preselected option for variable X}
+\item{x_var}{\code{\link[teal]{choices_selected}} object with all available choices
+with preselected option for variable X}
 
-\item{y_var}{\code{\link[teal]{choices_selected}} object with all available choices with preselected option for variable Y}
+\item{y_var}{\code{\link[teal]{choices_selected}} object with all available choices
+with preselected option for variable Y}
 }
 \description{
 Cross table based on rtables
@@ -26,26 +28,24 @@ Cross table based on rtables
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
+asl <- radsl(seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
 
 x <- teal::init(
-  data = list(ASL = ASL),
+  data = list(ASL = asl),
   modules = root_modules(
     tm_t_percentage_cross_table(
-      label = "Cross Table", 
-      dataname = "ASL", 
-      x_var = choices_selected(c("STRATA1"), "STRATA1"), 
+      label = "Cross Table",
+      dataname = "ASL",
+      x_var = choices_selected(c("STRATA1"), "STRATA1"),
       y_var = choices_selected(c("STRATA2"), "STRATA2")
     )
   )
 )
-
 \dontrun{
 
 shinyApp(x$ui, x$server)
-
 }
 }
 \author{

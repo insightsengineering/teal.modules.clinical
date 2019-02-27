@@ -17,11 +17,14 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as the default subgroups}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -45,21 +48,21 @@ This is teal module produces a grid style Forest plot for response data with ADa
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+asl <- radsl(seed = 1)
+ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ars, "source") <- 'subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")'
 
 x <- teal::init(
-  data = list(ASL = ASL, ARS = ARS),
+  data = list(ASL = asl, ARS = ars),
   modules = root_modules(
     tm_g_forest_rsp(
        label = "Forest Response",
        dataname = "ARS",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
        paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
        plot_height = c(600, 200, 2000)
     )
   )
@@ -69,7 +72,7 @@ x <- teal::init(
 
 shinyApp(x$ui, x$server)
 
-} 
+}
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

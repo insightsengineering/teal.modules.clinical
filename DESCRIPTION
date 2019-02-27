@@ -17,21 +17,22 @@ Depends:
   teal (>= 0.6),
   tern (>= 0.6)
 Imports:
-  methods,
-  stats,
-  utils,
+  forcats,
   grid,
   gridExtra,
+  haven,
+  methods,
   rtables,
   survival,
-  forcats,
-  haven
+  stats,
+  utils
 Suggests:
-  testthat,
+  dplyr,
   knitr,
   rmarkdown,
   random.cdisc.data,
-  dplyr
+  test.nest,
+  testthat
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -17,19 +17,23 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{asl} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
 
-\item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used \code{\link[tern]{t_tte}}}
+\item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used \code{\link[tern]{t_tte}}}
 
 \item{time_unit}{string with unit of \code{dataname$AVAL}}
 
@@ -61,27 +65,27 @@ This modules expects that the analysis data has the following variables
  filtering for \code{paramcd} one observation per patient is expected
 }
 
-The arm variables, stratification variables and taken from the \code{ASL}
+The arm variables, stratification variables and taken from the \code{asl}
 data.
 }
 \examples{
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
+asl <- radsl(seed = 1)
+ate <- radtte(asl, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
 
-x <- teal::init( 
-  data = list(ASL = ASL, ATE = ATE),
+x <- teal::init(
+  data = list(ASL = asl, ATE = ate),
   modules = root_modules(
     tm_t_tte(
        label = "Time To Event Table",
        dataname = 'ATE',
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+       paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
        time_points = choices_selected(c(6, 8), 6),
        time_unit = "months",
@@ -92,42 +96,42 @@ x <- teal::init(
 
 
 \dontrun{
-shinyApp(x$ui, x$server) 
+shinyApp(x$ui, x$server)
 }
 
-## Define default reference & comparison arms based on 
-## ARM variable 
+## Define default reference & comparison arms based on
+## ARM variable
 library(random.cdisc.data)
 library(dplyr)
 
-ASL <- radsl(seed = 1) \%>\% 
+asl <- radsl(seed = 1) \%>\%
   mutate(., ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE))
-ATE <- radtte(ASL, seed = 1)
+ate <- radtte(asl, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\% 
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\%
   mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
 
 arm_ref_comp = list(
   ACTARMCD = list(
-    ref = "ARM A", 
+    ref = "ARM A",
     comp = c("ARM B", "ARM C")
   ),
   ARM1 = list(
-    ref = "DUMMY B", 
+    ref = "DUMMY B",
     comp = "DUMMY A"
   )
 )
 
 x <- teal::init(
-  data = list(ASL = ASL, ATE = ATE),
+  data = list(ASL = asl, ATE = ate),
   modules = root_modules(
     tm_t_tte(
        label = "Time To Event Table",
        dataname = 'ATE',
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
        arm_ref_comp = arm_ref_comp,
-       paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+       paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
        strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
        time_points = choices_selected(c(6, 8), 6),
        time_unit = "months",
@@ -137,7 +141,7 @@ x <- teal::init(
 )
 
 \dontrun{
-shinyApp(x$ui, x$server) 
+shinyApp(x$ui, x$server)
 }
 }
 \author{

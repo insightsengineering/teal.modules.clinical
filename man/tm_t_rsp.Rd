@@ -16,17 +16,20 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{asl} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -43,17 +46,17 @@ app is initialized}
 an \code{\link[teal]{module}} object
 }
 \description{
-This module produces a response summary table that matches the 
+This module produces a response summary table that matches the
   STREAM template rspt01
 }
 \details{
-Additional standard UI inputs include \code{responders}, 
+Additional standard UI inputs include \code{responders},
   \code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
-  
-  Default values of the inputs \code{var_arm}, \code{ref_arm} and 
-  \code{comp_arm} are set to NULL, and updated accordingly based on seletion 
+
+  Default values of the inputs \code{var_arm}, \code{ref_arm} and
+  \code{comp_arm} are set to NULL, and updated accordingly based on seletion
   of \code{paramcd} and \code{var_arm}
-  
+
   This display order of response categories in partitioned statistics section
   inherits the factor level order of the source data. Use
   \code{\link[base]{factor}} and its \code{levels} argument to manipulate
@@ -61,38 +64,38 @@ Additional standard UI inputs include \code{responders},
   categories and arrange the display order. If response categories are
   "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
   confidence interval will not be calculated.
-  
-  Reference arms automatically combined if multiple arms selected as 
+
+  Reference arms automatically combined if multiple arms selected as
   reference group.
 }
 \examples{
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+asl <- radsl(seed = 1)
+ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ars, "source") <- 'subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")'
 
-x <- teal::init( 
-  data = list(ASL = ASL, ARS = ARS),
+x <- teal::init(
+  data = list(ASL = asl, ARS = ars),
   modules = root_modules(
     tm_t_rsp(
        label = "Response Table",
        dataname = 'ARS',
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
+       paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
 )
 
-\dontrun{ 
+\dontrun{
 
-shinyApp(x$ui, x$server) 
+shinyApp(x$ui, x$server)
 
-} 
+}
 
 }
 \author{

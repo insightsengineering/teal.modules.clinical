@@ -10,7 +10,7 @@ navbar:
       href: https://github.roche.com/NEST/teal.modules.clinical
 
 development:
-  mode: devel
+  mode: release
 
 reference:
   - title:

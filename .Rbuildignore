@@ -5,3 +5,4 @@
 man-roxygen/*
 temp/*
 ^docs/*
+test_full_example/*

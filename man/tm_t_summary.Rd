@@ -15,7 +15,8 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
 \item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for summary}
@@ -38,11 +39,11 @@ This module is for \code{\link[tern]{t_summary}}.
 
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+asl <- radsl(seed = 1)
+attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
 
 x <- teal::init(
-  data = list(ASL = ASL),
+  data = list(ASL = asl),
   modules = root_modules(
     tm_t_summary(
        label = "Demographic Table",
@@ -55,9 +56,9 @@ x <- teal::init(
 
 \dontrun{
 
-shinyApp(x$ui, x$server) 
+shinyApp(x$ui, x$server)
 
-} 
+}
 }
 \author{
 Adrian Waddell (waddella) \email{adrian.waddell@roche.com}
