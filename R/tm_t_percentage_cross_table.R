@@ -61,7 +61,7 @@ ui_percentage_cross_table <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("table"))),
+    output = teal.devel::white_small_well(uiOutput(ns("table"))),
     encoding = div(
       helpText("Dataset:", tags$code(a$dataname)),
       optionalSelectInput(ns("x_var"), "x var", a$x_var$choices, a$x_var$selected),

@@ -130,7 +130,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -162,7 +162,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
 
     # validate your input values
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       asl = asl_filtered,
       aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       anl = anl_filtered,
@@ -172,7 +172,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       comp_arm = comp_arm
     )
 
-    validate_in(paramcd, anl_filtered$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    teal.devel::validate_in(paramcd, anl_filtered$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
 
     anl_data_name <- paste0(dataname, "_filtered")
     assign(anl_data_name, anl_filtered)
@@ -255,7 +255,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
   observeEvent(input$show_rcode, {
 
-    header <- get_rcode_header(
+    header <- teal.devel::get_rcode_header(
       title = "Time-to-Event Forest Plot",
       datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
       datasets = datasets,
@@ -266,15 +266,15 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunks$vars)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunks$data)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
       paste("tbl <-", paste(deparse(chunks$t_forest_tte), collapse = "\n")),
       "",
-      remove_enclosing_curly_braces(deparse(chunks$row_name_wrap)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$row_name_wrap)),
       "",
-      remove_enclosing_curly_braces(deparse(chunks$p_forest_tte))
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$p_forest_tte))
     ), collapse = "\n")
 
     showModal(modalDialog(

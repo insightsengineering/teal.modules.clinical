@@ -148,7 +148,7 @@ ui_g_km <- function(id, ...) {
 
 srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
                      dataname, arm_ref_comp, code_data_processing) {
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -191,7 +191,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
 
 
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       asl = asl_filtered,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
@@ -361,7 +361,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
   })
 
   observeEvent(input$show_rcode, {
-    header <- get_rcode_header(
+    header <- teal.devel::get_rcode_header(
       title = "Kaplan Meier Plot",
       datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
       datasets = datasets,
@@ -372,9 +372,9 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunks$vars)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunks$data)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
       paste0("formula_km <- ", deparse(chunks$formula_km)),
       "",
@@ -382,8 +382,8 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
       "",
       paste0("info_coxph <- ", deparse(chunks$info_coxph)),
       "",
-      if (!is.null(facet_var)) remove_enclosing_curly_braces(deparse(chunks$facet)),
-      remove_enclosing_curly_braces(deparse(chunks$t_kmplot)),
+      if (!is.null(facet_var)) teal.devel::remove_enclosing_curly_braces(deparse(chunks$facet)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$t_kmplot)),
       if (!is.null(facet_var)) {
         c(
           "",

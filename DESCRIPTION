@@ -15,7 +15,8 @@ Depends:
   R (>= 3.3),
   shiny,
   teal (>= 0.6),
-  tern (>= 0.6)
+  tern (>= 0.6),
+  teal.devel (>= 0.6)
 Imports:
   forcats,
   grid,
