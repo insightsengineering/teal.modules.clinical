@@ -112,7 +112,7 @@ ui_t_rsp <- function(id, ...) {
   a <- list(...)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("response_table"))),
+    output = teal.devel::white_small_well(uiOutput(ns("response_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -192,7 +192,7 @@ srv_t_rsp <- function(input,
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -242,7 +242,7 @@ srv_t_rsp <- function(input,
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
 
     # Validate your input
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       asl = asl_filtered,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = anl_filtered,
@@ -252,7 +252,7 @@ srv_t_rsp <- function(input,
       comp_arm = comp_arm
     )
 
-    validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
+    teal.devel::validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
 
@@ -322,7 +322,7 @@ srv_t_rsp <- function(input,
 
   observeEvent(input$show_rcode, {
 
-    header <- get_rcode_header(
+    header <- teal.devel::get_rcode_header(
       title = "Response Table",
       datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
       datasets = datasets,
@@ -333,9 +333,9 @@ srv_t_rsp <- function(input,
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunks$vars)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
       "",
-      remove_enclosing_curly_braces(deparse(chunks$data)),
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
       "",
       deparse(chunks$t_rsp)
     ), collapse = "\n")

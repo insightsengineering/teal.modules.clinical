@@ -64,7 +64,7 @@ ui_t_summary <- function(id, ...) {
   a <- list(...)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("table"))),
+    output = teal.devel::white_small_well(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -101,7 +101,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
 
     chunks$analysis <<- "# Not Calculated"
 
-    validate_has_data(anl_f, min_nrow = 3)
+    teal.devel::validate_has_data(anl_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
     validate(need(anl_f[[arm_var]], "Arm variable does not exist"))
@@ -129,7 +129,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
 
   observeEvent(input$show_rcode, {
 
-    header <- get_rcode_header(
+    header <- teal.devel::get_rcode_header(
       title = "Summarize Variables",
       datanames = dataname,
       datasets = datasets,
@@ -140,7 +140,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
       "",
       header,
       "",
-      remove_enclosing_curly_braces(deparse(chunks$analysis, width.cutoff = 60))
+      teal.devel::remove_enclosing_curly_braces(deparse(chunks$analysis, width.cutoff = 60))
     ), collapse = "\n")
 
     showModal(modalDialog(
