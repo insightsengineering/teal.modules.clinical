@@ -329,7 +329,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
 
-    as_html(tbl)
+    rtables::as_html(tbl)
   })
 
 

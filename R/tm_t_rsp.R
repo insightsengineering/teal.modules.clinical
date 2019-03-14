@@ -178,7 +178,7 @@ ui_t_rsp <- function(id, ...) {
 #' group.
 #'
 #' @importFrom forcats fct_relevel fct_collapse
-#'
+#' @importFrom rtables as_html
 #' @noRd
 #'
 srv_t_rsp <- function(input,
@@ -315,7 +315,7 @@ srv_t_rsp <- function(input,
 
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
 
-    as_html(tbl)
+    rtables::as_html(tbl)
 
   })
 

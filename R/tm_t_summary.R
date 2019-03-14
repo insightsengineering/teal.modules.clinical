@@ -122,7 +122,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
 
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
 
-    as_html(tbl)
+    rtables::as_html(tbl)
   })
 
 
