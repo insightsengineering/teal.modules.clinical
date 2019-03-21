@@ -290,7 +290,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
           vp = vpPath("mainPlot", "kmCurve", "curvePlot")
         )
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(input$xlab,time_unit))
+        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(input$xlab, time_unit))
         p <- addGrob(p, km_grob)
         p <- addGrob(p, coxph_grob)
         grid.draw(p)
@@ -346,7 +346,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
-              xticks = xticks, draw = FALSE, xlab = paste(input$xlab,time_unit)
+              xticks = xticks, draw = FALSE, xlab = paste(input$xlab, time_unit)
             )
             p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
