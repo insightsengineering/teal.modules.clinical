@@ -137,7 +137,7 @@ ui_g_km <- function(id, ...) {
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
-      helpText("X-axis label will be combined with variable ",tags$code("AVALU")),
+      helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       textInput(ns("xlab"), "X-axis label", "Overall survival in "),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
