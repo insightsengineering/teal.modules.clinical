@@ -137,6 +137,8 @@ ui_g_km <- function(id, ...) {
       selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
       checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
       tags$label("Plot Settings", class = "text-primary"),
+      helpText("X-axis label will be combined with variable ",tags$code("AVALU")),
+      textInput(ns("xlab"), "X-axis label", "Overall survival in "),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
@@ -288,7 +290,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
           vp = vpPath("mainPlot", "kmCurve", "curvePlot")
         )
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = time_unit)
+        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(input$xlab,time_unit))
         p <- addGrob(p, km_grob)
         p <- addGrob(p, coxph_grob)
         grid.draw(p)
@@ -344,7 +346,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
-              xticks = xticks, draw = FALSE, xlab = time_unit
+              xticks = xticks, draw = FALSE, xlab = paste(input$xlab,time_unit)
             )
             p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
