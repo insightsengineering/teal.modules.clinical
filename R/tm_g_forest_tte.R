@@ -223,7 +223,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         NULL
       },
       total = "All Patients",
-      na.omit.group = TRUE,
+      na_omit_group = TRUE,
       dense_header = TRUE
     )
 
