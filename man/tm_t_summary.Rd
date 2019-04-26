@@ -10,7 +10,7 @@ tm_t_summary(label, dataname, arm_var, summarize_vars, pre_output = NULL,
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
@@ -28,9 +28,6 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This module is for \code{\link[tern]{t_summary}}.
