@@ -213,14 +213,14 @@ ui_t_tte <- function(id, ...) {
   )
 }
 
-
+#' @import teal.devel
 srv_t_tte <- function(input, output, session, datasets, dataname,
                       arm_ref_comp, time_unit, event_desrc_var,
                       code_data_processing) {
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
+  arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -257,7 +257,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
 
     # validate your input values
-    teal.devel::validate_standard_inputs(
+    validate_standard_inputs(
       asl = asl_filtered,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = anl_filtered,
@@ -268,7 +268,6 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     )
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-
 
     # do analysis
 
