@@ -31,23 +31,25 @@
 #'
 #' @examples
 #'
+#' #code>
 #' library(random.cdisc.data)
 #'
 #' asl <- radsl(seed = 1)
+#' keys(asl) <- c("STUDYID", "USUBJID")
+#'
 #' ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+#' keys(ars) <- c("STUDYID", "USUBJID")
 #'
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-#' attr(ars, "source") <- 'subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")'
-#'
+#' #<code
 #' x <- teal::init(
-#'   data = list(ASL = asl, ARS = ars),
+#'   data = cdisc_data(ASL = asl, ARS = ars, code = ""),
 #'   modules = root_modules(
 #'     tm_t_rsp(
-#'        label = "Response Table",
-#'        dataname = 'ARS',
-#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
-#'        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
+#'       label = "Response Table",
+#'       dataname = 'ARS',
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
+#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )
 #' )
@@ -65,10 +67,12 @@ tm_t_rsp <- function(label,
                      paramcd,
                      strata_var,
                      pre_output = NULL,
-                     post_output = NULL,
-                     code_data_processing = NULL) {
+                     post_output = NULL) {
 
+  stop_if_not(list(is.character.single(label), "Label should be single (i.e. not vector) character type of object"))
+  stop_if_not(list(is.character.vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.null(arm_ref_comp) || is.choices_selected(arm_ref_comp))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
 
@@ -81,8 +85,7 @@ tm_t_rsp <- function(label,
     ui_args = args,
     server_args = list(
       dataname = dataname,
-      arm_ref_comp = arm_ref_comp,
-      code_data_processing = code_data_processing
+      arm_ref_comp = arm_ref_comp
     ),
     filters = dataname
   )
@@ -117,45 +120,63 @@ ui_t_rsp <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       #Response related parameters
-      optionalSelectInput(ns("paramcd"),
-                          div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
-                          choices = a$paramcd$choices,
-                          selected = a$paramcd$selected,
-                          multiple = FALSE),
-      selectInput(ns("responders"),
-                  "Responders",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
+      optionalSelectInput(
+        ns("paramcd"),
+        div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
+        choices = a$paramcd$choices,
+        selected = a$paramcd$selected,
+        multiple = FALSE
+      ),
+      selectInput(
+        ns("responders"),
+        "Responders",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
       #Arm related parameters
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          choices = a$arm_var$choices,
-                          selected = a$arm_var$selected,
-                          multiple = FALSE),
-      selectInput(ns("ref_arm"),
-                  "Reference Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        choices = a$arm_var$choices,
+        selected = a$arm_var$selected,
+        multiple = FALSE
+      ),
+      selectInput(
+        ns("ref_arm"),
+        "Reference Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
       helpText("Multiple reference groups are automatically combined into a single group."),
-      selectInput(ns("comp_arm"),
-                  "Comparison Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
-      checkboxInput(ns("combine_comp_arms"),
-                    "Combine all comparison groups?",
-                    value = FALSE),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE
+      ),
       #Stratification related parameters
-      optionalSelectInput(ns("strata_var"),
-                          "Stratification Factors",
-                          choices = a$strata_var$choices,
-                          selected = a$strata_var$selected,
-                          multiple = TRUE,
-                          label_help = helpText("taken from:", tags$code("ASL")))
+      optionalSelectInput(
+        ns("strata_var"),
+        "Stratification Factors",
+        choices = a$strata_var$choices,
+        selected = a$strata_var$selected,
+        multiple = TRUE,
+        label_help = helpText("taken from:", tags$code("ASL"))
+      )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = actionButton(
+      ns("show_rcode"),
+      "Show R Code",
+      width = "100%"
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -186,15 +207,18 @@ srv_t_rsp <- function(input,
                       session,
                       datasets,
                       dataname,
-                      arm_ref_comp,
-                      code_data_processing) {
+                      arm_ref_comp) {
 
+  use_chunks(session)
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
+  arm_ref_comp_observer(
+    session,
+    input,
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = "arm_var",
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_rsp"
@@ -202,29 +226,20 @@ srv_t_rsp <- function(input,
 
 
   # Update UI choices depending on selection of previous options
-
-  anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
-
   observe({
-
+    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
     paramcd <- input$paramcd
 
     responder_choices <- unique(anl$AVALC[anl$PARAMCD == paramcd])
 
-    updateSelectInput(session, "responders",
-                      choices = responder_choices,
-                      selected = intersect(c("CR", "PR"), responder_choices))
-
+    updateSelectInput(
+      session, "responders",
+      choices = responder_choices,
+      selected = intersect(c("CR", "PR"), responder_choices)
+    )
   })
 
-  chunks <- list(
-    vars = "# No Calculated",
-    data = "# No Calculated",
-    t_rsp = "# No Calculated"
-  )
-
-  output$response_table <-  renderUI({
-
+  tm_t_rsp_call <- reactive({
     asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
@@ -236,13 +251,12 @@ srv_t_rsp <- function(input,
     combine_comp_arms <- input$combine_comp_arms
     strata_var <- input$strata_var
 
-    if (length(strata_var) == 0) strata_var <- NULL
-
-    # Delete chunks that are used for reproducible code
-    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
+    if (length(strata_var) == 0) {
+      strata_var <- NULL
+    }
 
     # Validate your input
-    teal.devel::validate_standard_inputs(
+    validate_standard_inputs(
       asl = asl_filtered,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = anl_filtered,
@@ -257,32 +271,36 @@ srv_t_rsp <- function(input,
 
 
     # perform analysis
-    anl_name <- paste0(dataname, "_filtered")
-    assign(anl_name, anl_filtered) # so that we can refer to the 'correct' data name
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, anl_filtered)
+    asl_name <- "ASL_FILTERED"
+    assign(asl_name, asl_filtered)
 
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
 
-    ## Now comes the analysis code
-    chunks$vars <<- bquote({
-      ref_arm <- .(ref_arm)
-      comp_arm <- .(comp_arm)
-      strata_var <- .(strata_var)
-      combine_comp_arms <- .(combine_comp_arms)
-    })
 
-    chunks$data <<- bquote({
-      asl_p <- subset(asl_filtered,
-                      .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+    ## Now comes the analysis code
+    renew_chunk_environment(envir = environment())
+    renew_chunks()
+
+    data_call_quoted <- bquote({
+      asl_p <- subset(
+        .(as.name(asl_name)),
+        .(as.name(arm_var)) %in% c(ref_arm, comp_arm)
+      )
 
       anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
-      if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")])))
+      if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {
         stop("only one row per patient expected")
+      }
 
       anl <- merge(
         x = asl_p[, .(asl_vars), drop = FALSE],
         y = anl_endpoint[, .(anl_vars), drop = FALSE],
-        all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
+        all.x = FALSE,
+        all.y = FALSE,
+        by = c("USUBJID", "STUDYID")
       )
 
       arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
@@ -293,59 +311,55 @@ srv_t_rsp <- function(input,
       }
 
       anl[[.(arm_var)]] <- droplevels(arm)
+
+      anl
     })
 
-    eval(chunks$data)
-    validate(need(nrow(anl) > 15, "need at least 15 data points"))
-    validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
+    set_chunk("tm_t_rsp_data", data_call_quoted)
 
-    chunks$t_rsp <<- call(
+    table_call <- call(
       "t_rsp",
       rsp = bquote(anl$AVALC %in% .(responders)),
       col_by = bquote(anl[[.(arm_var)]]),
       partition_rsp_by = bquote(as.factor(anl$AVALC)),
-      strata_data = if (length(strata_var) > 0){
+      strata_data = if (length(strata_var) > 0) {
         bquote(anl[, .(strata_var), drop = FALSE])
       } else {
         NULL
       }
     )
 
-    tbl <- try(eval(chunks$t_rsp))
+    set_chunk("tm_t_rsp", table_call)
 
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
+    invisible(NULL)
+  })
+
+
+  output$response_table <- renderUI({
+    tm_t_rsp_call()
+
+    anl <- eval_chunk("tm_t_rsp_data")
+    validate(need(nrow(anl) > 15, "need at least 15 data points"))
+    validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
+
+    tbl <- eval_chunk("tm_t_rsp")
+    if (is(tbl, "try-error")) {
+      validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
+    }
 
     rtables::as_html(tbl)
-
   })
 
 
   observeEvent(input$show_rcode, {
-
-    header <- teal.devel::get_rcode_header(
-      title = "Response Table",
-      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
-      datasets = datasets,
-      code_data_processing
+    show_rcode_modal(
+      title = "Summary",
+      rcode = get_rcode(
+        datasets = datasets,
+        dataname = dataname,
+        title = "Response Table"
+      )
     )
-
-    str_rcode <- paste(c(
-      "",
-      header,
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
-      "",
-      deparse(chunks$t_rsp)
-    ), collapse = "\n")
-
-    showModal(modalDialog(
-      title = "R Code for the Current Response Table",
-      tags$pre(tags$code(class = "R", str_rcode)),
-      easyClose = TRUE,
-      size = "l"
-    ))
   })
 
 }
