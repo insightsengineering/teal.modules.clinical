@@ -284,17 +284,23 @@ srv_t_rsp <- function(input,
     renew_chunk_environment(envir = environment())
     renew_chunks()
 
-    data_call_quoted <- bquote({
+    chunk_call_asl_p <- bquote(
       asl_p <- subset(
         .(as.name(asl_name)),
-        .(as.name(arm_var)) %in% c(ref_arm, comp_arm)
+        .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
+    )
+    set_chunk("tm_t_rsp_asl_p", chunk_call_asl_p)
 
-      anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
-      if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {
-        stop("only one row per patient expected")
-      }
+    chunk_call_anl_endpoint <- bquote(
+      anl_endpoint <- subset(
+        .(as.name(anl_name)),
+        PARAMCD == .(paramcd)
+      )
+    )
+    set_chunk("tm_t_rsp_anl_endpoint", chunk_call_anl_endpoint)
 
+    chunk_call_anl <- bquote(
       anl <- merge(
         x = asl_p[, .(asl_vars), drop = FALSE],
         y = anl_endpoint[, .(anl_vars), drop = FALSE],
@@ -302,20 +308,25 @@ srv_t_rsp <- function(input,
         all.y = FALSE,
         by = c("USUBJID", "STUDYID")
       )
+    )
+    set_chunk("tm_t_rsp_anl", chunk_call_anl)
 
-      arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
-
-      arm <- combine_levels(arm, ref_arm)
-      if (combine_comp_arms) {
-        arm <- combine_levels(arm, comp_arm)
-      }
-
-      anl[[.(arm_var)]] <- droplevels(arm)
-
-      anl
+    chunk_call_arm <- bquote({
+      arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
+      arm <- combine_levels(arm, .(ref_arm))
     })
+    if (combine_comp_arms) {
+      chunk_call_arm <- bquote({
+        .(chunk_call_arm)
+        arm <- combine_levels(arm, .(comp_arm))
+      })
+    }
+    set_chunk("tm_t_rsp_arm", chunk_call_arm)
 
-    set_chunk("tm_t_rsp_data", data_call_quoted)
+    chunk_call_arm_var <- bquote(
+      anl[[.(arm_var)]] <- droplevels(arm)
+    )
+    set_chunk("tm_t_rsp_arm_var", chunk_call_arm_var)
 
     table_call <- call(
       "t_rsp",
@@ -328,7 +339,6 @@ srv_t_rsp <- function(input,
         NULL
       }
     )
-
     set_chunk("tm_t_rsp", table_call)
 
     invisible(NULL)
@@ -338,9 +348,20 @@ srv_t_rsp <- function(input,
   output$response_table <- renderUI({
     tm_t_rsp_call()
 
-    anl <- eval_chunk("tm_t_rsp_data")
+    eval_chunk("tm_t_rsp_asl_p")
+
+    anl_endpoint <- eval_chunk("tm_t_rsp_anl_endpoint")
+    if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {
+      stop("only one row per patient expected")
+    }
+
+    anl <- eval_chunk("tm_t_rsp_anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
+
+    eval_chunk("tm_t_rsp_arm")
+
+    eval_chunk("tm_t_rsp_arm_var")
 
     tbl <- eval_chunk("tm_t_rsp")
     if (is(tbl, "try-error")) {
