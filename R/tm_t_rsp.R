@@ -3,6 +3,8 @@
 #' @description This module produces a response summary table that matches the
 #'   STREAM template rspt01
 #'
+#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
+#'
 #' @inheritParams tm_t_tte
 #'
 #' @details Additional standard UI inputs include \code{responders},

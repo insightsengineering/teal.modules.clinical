@@ -22,6 +22,7 @@ Imports:
   grid,
   gridExtra,
   haven,
+  magrittr,
   methods,
   rtables,
   survival,
@@ -41,7 +42,7 @@ RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 URL: https://pages.github.roche.com/NEST/teal.modules.clinical/
 BugReports: https://github.roche.com/NEST/teal.modules.clinical/issues
-Additional_repositories: 
+Additional_repositories:
   https://github.roche.com/NEST/teal,
   https://github.roche.com/NEST/tern,
   https://github.com/Roche/rtables
