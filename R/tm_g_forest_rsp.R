@@ -2,12 +2,13 @@
 #'
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
 #'
-#' @inheritParams tm_t_tte
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #' @param cex multiplier applied to overall fontsize
+#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
 #'
+#' @inheritParams tm_t_tte
 #' @export
 #'
 #' @template author_song24

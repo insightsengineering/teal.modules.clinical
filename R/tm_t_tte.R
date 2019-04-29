@@ -44,7 +44,7 @@
 #' @template author_waddella
 #'
 #' @export
-#'
+#' @import magrittr
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
@@ -83,6 +83,7 @@
 #'
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
+#' library(magrittr)
 #' library(dplyr)
 #'
 #' asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
@@ -243,8 +244,10 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
   table_reactive <- reactive({
     # resolve all reactive expressions
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
-    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) # nolint
+    # nolint start
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    # nolint end
 
     paramcd <- input$paramcd # nolint
     strata_var <- input$strata_var
@@ -280,8 +283,8 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     renew_chunk_environment(envir = environment())
     renew_chunks()
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
-    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) # nolint
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) #nolint
+    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) #nolint
 
     ## Now comes the analysis code
     set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
@@ -289,7 +292,7 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     set_chunk(expression = bquote(strata_var <- .(strata_var)))
     set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm)))) # nolint
+    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))# nolint
     set_chunk(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
     set_chunk(expression = bquote(anl <- merge(

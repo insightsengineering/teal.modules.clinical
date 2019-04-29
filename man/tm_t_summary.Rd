@@ -28,6 +28,8 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
+
+\item{code_data_processing}{(\code{character}) Code to show in Show-R-Code. Will be deprecated}
 }
 \description{
 This module is for \code{\link[tern]{t_summary}}.

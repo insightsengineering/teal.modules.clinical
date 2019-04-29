@@ -2,6 +2,8 @@
 #'
 #' This module is for \code{\link[tern]{t_summary}}.
 #'
+#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
+#'
 #' @inheritParams tm_t_tte
 #' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary

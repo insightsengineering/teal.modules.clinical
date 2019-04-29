@@ -101,6 +101,7 @@ shinyApp(app$ui, app$server)
 
 ## Define default reference & comparison arms based on
 ## ARM variable
+library(magrittr)
 library(dplyr)
 
 asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
