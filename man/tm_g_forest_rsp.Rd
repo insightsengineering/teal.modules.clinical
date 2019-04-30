@@ -5,9 +5,9 @@
 \title{Forest Response Plot teal module}
 \usage{
 tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
-  plot_height = c(700, 200, 2000), cex = 1.3,
+  plot_height = c(700L, 200L, 2000L), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -37,41 +37,37 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This is teal module produces a grid style Forest plot for response data with ADaM structure
 }
 \examples{
-
+#code>
 library(random.cdisc.data)
 
 asl <- radsl(seed = 1)
+keys(asl) <- c("STUDYID", "USUBJID")
+
 ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+keys(ars) <- c("STUDYID", "USUBJID")
 
-attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ars, "source") <- 'subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")'
-
+#<code
 x <- teal::init(
-  data = list(ASL = asl, ARS = ars),
+  data = cdisc_data(ASL = asl, ARS = ars),
   modules = root_modules(
     tm_g_forest_rsp(
-       label = "Forest Response",
-       dataname = "ARS",
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-       subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
-       plot_height = c(600, 200, 2000)
+      label = "Forest Response",
+      dataname = "ARS",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
+      subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
+      plot_height = c(600L, 200L, 2000L)
     )
   )
 )
 
 \dontrun{
-
 shinyApp(x$ui, x$server)
-
 }
 }
 \author{
