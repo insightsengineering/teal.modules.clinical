@@ -5,13 +5,13 @@
 #'
 #' @inheritParams teal::standard_layout
 #' @param label menue item label of the module in the teal app
-#' @param dataname analysis data used in teal module, needs to be available in
+#' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form with the
 #'   \code{PARAMCD} variable filtering to one observation per patient.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as \code{arm_var}
-#' @param arm_ref_comp optional, if specified it must be a named list with each
+#' @param arm_ref_comp (\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
 #'   element corresponding to an arm variable in \code{asl} and the element must
 #'   be another list with the elements named \code{ref} and \code{comp} that the
 #'   defined the default reference and comparison arms when the arm variable is
@@ -22,11 +22,10 @@
 #' for variable names that can be used for stratification
 #' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used \code{\link[tern]{t_tte}}
-#' @param time_unit string with unit of \code{dataname$AVAL}
-#' @param event_desrc_var variable name with the event description information,
+#' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
+#'   of months
+#' @param event_desc_var (\code{character}) variable name with the event description information,
 #'   optional
-#' @param code_data_processing string with data preprocessing before the teal
-#'   app is initialized
 #'
 #' @details
 #' This modules expects that the analysis data has the following variables
@@ -45,52 +44,53 @@
 #' @template author_waddella
 #'
 #' @export
-#'
+#' @import magrittr
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
 #'
-#' library(random.cdisc.data)
+#' asl <- random.cdisc.data::radsl(seed = 1)
+#' ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'
-#' asl <- radsl(seed = 1)
-#' ate <- radtte(asl, seed = 1)
+#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-#' attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
-#'
-#' x <- teal::init(
-#'   data = list(ASL = asl, ATE = ate),
-#'   modules = root_modules(
-#'     tm_t_tte(
-#'        label = "Time To Event Table",
-#'        dataname = 'ATE',
-#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
-#'        strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-#'        time_points = choices_selected(c(6, 8), 6),
-#'        time_unit = "months",
-#'        event_desrc_var = "EVNTDESC"
+#' #<code
+#' app <- teal::init(
+#'     data = cdisc_data(ASL = asl, ATE = ate,
+#'         code = "
+#'             asl <- random.cdisc.data::radsl(seed = 1)
+#'             ate <- random.cdisc.data::radtte(asl, seed = 1)
+#'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'         check = TRUE),
+#'     modules = root_modules(
+#'         tm_t_tte(
+#'             label = "Time To Event Table",
+#'             dataname = 'ATE',
+#'             arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'             paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
+#'             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+#'             time_points = choices_selected(c(6, 8), 6),
+#'             time_unit = "month",
+#'             event_desc_var = "EVNTDESC"
+#'         )
 #'     )
-#'   )
 #' )
 #'
 #'
 #' \dontrun{
-#' shinyApp(x$ui, x$server)
+#' shinyApp(app$ui, app$server)
 #' }
 #'
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
-#' library(random.cdisc.data)
+#' library(magrittr)
 #' library(dplyr)
 #'
-#' asl <- radsl(seed = 1) %>%
-#'   mutate(., ARM1 = sample(c("DUMMY A", "DUMMY B"), n(), TRUE))
-#' ate <- radtte(asl, seed = 1)
-#'
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1) %>%
-#'   mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))"
-#' attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
+#' asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
+#'   ARM1 = sample(c("DUMMY A", "DUMMY B"),
+#'   dplyr::n(), TRUE))
+#' ate <- random.cdisc.data::radtte(asl, seed = 1)
+#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -102,26 +102,31 @@
 #'     comp = "DUMMY A"
 #'   )
 #' )
-#'
-#' x <- teal::init(
-#'   data = list(ASL = asl, ATE = ate),
-#'   modules = root_modules(
-#'     tm_t_tte(
-#'        label = "Time To Event Table",
-#'        dataname = 'ATE',
-#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        arm_ref_comp = arm_ref_comp,
-#'        paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
-#'        strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
-#'        time_points = choices_selected(c(6, 8), 6),
-#'        time_unit = "months",
-#'        event_desrc_var = "EVNTDESC"
+#' app <- teal::init(
+#'     data = cdisc_data(ASL = asl, ATE = ate,
+#'         code = "library(dplyr)
+#'    asl <- random.cdisc.data::radsl(seed = 1) %>%
+#' dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
+#'             ate <- random.cdisc.data::radtte(asl, seed = 1)
+#'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'         check = TRUE),
+#'     modules = root_modules(
+#'         tm_t_tte(
+#'          label = "Time To Event Table",
+#'          dataname = 'ATE',
+#'          arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'          arm_ref_comp = arm_ref_comp,
+#'          paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
+#'          strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
+#'          time_points = choices_selected(c(6, 8), 6),
+#'          time_unit = "months",
+#'          event_desc_var = "EVNTDESC"
+#'         )
 #'     )
-#'   )
 #' )
 #'
 #' \dontrun{
-#' shinyApp(x$ui, x$server)
+#' shinyApp(app$ui, app$server)
 #' }
 tm_t_tte <- function(label,
                      dataname,
@@ -131,11 +136,12 @@ tm_t_tte <- function(label,
                      strata_var,
                      time_points,
                      time_unit = "months",
-                     event_desrc_var = NULL,
+                     event_desc_var = NULL,
                      pre_output = NULL,
-                     post_output = NULL,
-                     code_data_processing = NULL) {
+                     post_output = NULL
+                     ) {
 
+  stopifnot(length(dataname) == 1)
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
@@ -152,14 +158,14 @@ tm_t_tte <- function(label,
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
       time_unit = time_unit,
-      event_desrc_var = event_desrc_var,
-      code_data_processing = code_data_processing
+      event_desc_var = event_desc_var,
+      label = label
     ),
     filters = dataname
   )
 }
 
-
+#' @import teal.devel
 ui_t_tte <- function(id, ...) {
 
   a <- list(...) # module args
@@ -167,7 +173,7 @@ ui_t_tte <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = teal.devel::white_small_well(uiOutput(ns("tte_table"))),
+    output = white_small_well(uiOutput(ns("tte_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -205,7 +211,10 @@ ui_t_tte <- function(id, ...) {
                           "Time Points",
                           a$time_points$choices,
                           a$time_points$selected,
-                          multiple = TRUE)
+                          multiple = TRUE),
+      if (!is.null(a$event_desc_var)) {
+        helpText("Event Description Variable: ", tags$code(a$event_desc_var))
+      }
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -213,14 +222,15 @@ ui_t_tte <- function(id, ...) {
   )
 }
 
-
+#' @import teal.devel
+#' @importFrom rtables as_html
 srv_t_tte <- function(input, output, session, datasets, dataname,
-                      arm_ref_comp, time_unit, event_desrc_var,
-                      code_data_processing) {
+                      arm_ref_comp, time_unit, event_desc_var,
+                      label) {
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
+  arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -228,18 +238,16 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     module = "tm_t_tte"
   )
 
-  chunks <- list(
-    vars = "# No Calculated",
-    data = "# No Calculated",
-    t_tte = "# No Calculated"
-  )
+  use_chunks(session)
 
   # Create output
-  output$tte_table <- renderUI({
 
+  table_reactive <- reactive({
     # resolve all reactive expressions
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    # nolint start
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    # nolint end
 
     paramcd <- input$paramcd # nolint
     strata_var <- input$strata_var
@@ -253,15 +261,12 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     time_points <- if (length(time_points) == 0) NULL else sort(time_points)
 
-    # Delete chunks that are used for reproducible code
-    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
-
     # validate your input values
-    teal.devel::validate_standard_inputs(
-      asl = asl_filtered,
+    validate_standard_inputs(
+      asl = ASL_FILTERED, # nolint
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desrc_var),
+      anl = ANL_FILTERED, # nolint
+      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desc_var),
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm
@@ -269,95 +274,85 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
-
     # do analysis
 
-    anl_name <- paste0(dataname, "_filtered")
-    assign(anl_name, anl_filtered) # so that we can refer to the 'correct' data name
+    anl_name <- paste0(dataname, "_FILTERED")
+    assign(anl_name, ANL_FILTERED) # nolint
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
-    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desrc_var)) # nolint
+    # Delete chunks that are used for reproducible code
+    renew_chunk_environment(envir = environment())
+    renew_chunks()
+
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) #nolint
+    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) #nolint
 
     ## Now comes the analysis code
-    chunks$vars <<- bquote({
-      ref_arm <- .(ref_arm)
-      comp_arm <- .(comp_arm)
-      strata_var <- .(strata_var)
-      combine_comp_arms <- .(combine_comp_arms)
-    })
+    set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
+    set_chunk(expression = bquote(comp_arm <- .(comp_arm)))
+    set_chunk(expression = bquote(strata_var <- .(strata_var)))
+    set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks$data <<- bquote({
-      asl_p <- subset(asl_filtered, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
+    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))# nolint
+    set_chunk(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
-      anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))
-
-      anl <- merge(
+    set_chunk(expression = bquote(anl <- merge(
         x = asl_p[, .(asl_vars)],
         y = anl_endpoint[, .(anl_vars)],
         all.x = FALSE, all.y = FALSE,
         by = c("USUBJID", "STUDYID")
-      )
+      )))
 
-      arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
+    set_chunk(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    set_chunk(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    if (combine_comp_arms) {
+      set_chunk(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+    }
+    set_chunk(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
-      arm <- combine_levels(arm, ref_arm)
-      if (combine_comp_arms) {
-        arm <- combine_levels(arm, comp_arm)
-      }
+    eval_remaining()
 
-      anl[[.(arm_var)]] <- droplevels(arm)
+    validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
 
-    })
-
-    eval(chunks$data)
-    validate(need(nrow(anl) > 15, "need at least 15 data points"))
-
-
-    chunks$t_tte <<- call(
-      name = "t_tte",
-      formula = as.formula(paste0(
-        "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
-        if (length(strata_var) == 0) "" else paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
-      )),
-      data = quote(anl),
-      event_descr = if (is.null(event_desrc_var)) NULL else call("as.factor", as.name(event_desrc_var)),
-      time_points = time_points,
-      time_unit = time_unit
+    set_chunk(
+        id = "final_table",
+        expression =
+            call(
+                name = "t_tte",
+                formula = as.formula(paste0(
+                        "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
+                        if (length(strata_var) == 0){
+                              ""
+                            }else{
+                              paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
+                            }
+                    )),
+                data = quote(anl),
+                event_descr = if (is.null(event_desc_var)) NULL else call("as.factor", as.name(event_desc_var)),
+                time_points = time_points,
+                time_unit = time_unit
+            )
     )
+  })
 
-    tbl <- try(eval(chunks$t_tte))
+  output$tte_table <- renderUI({
+        table_reactive()
 
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate time to event table:\n\n", tbl)))
+        table_result <- eval_remaining()
+        validate(need(is(table_result, "rtable"), "Evaluation with tern t_tte failed."))
 
-    rtables::as_html(tbl)
+        as_html(table_result)
   })
 
 
   observeEvent(input$show_rcode, {
-
-    header <- teal.devel::get_rcode_header(
-      title = "Time To Event Table",
-      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
-      datasets = datasets,
-      code_data_processing
+    show_rcode_modal(
+        title = "Cross Table",
+        rcode = get_rcode(
+            datasets = datasets,
+            dataname = c("ASL", dataname),
+            title = label
+        )
     )
-
-    str_rcode <- paste(c(
-      "",
-      header,
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
-      "",
-      deparse(chunks$t_tte)
-    ), collapse = "\n")
-
-    showModal(modalDialog(
-      title = "R Code for the Current Time To Event Table",
-      tags$pre(tags$code(class = "R", str_rcode)),
-      easyClose = TRUE,
-      size = "l"
-    ))
   })
+
 }

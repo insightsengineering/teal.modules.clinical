@@ -12,7 +12,7 @@ tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
