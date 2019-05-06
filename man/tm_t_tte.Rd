@@ -66,7 +66,7 @@ The arm variables, stratification variables and taken from the \code{asl}
 data.
 }
 \examples{
-
+\dontrun{
 asl <- random.cdisc.data::radsl(seed = 1)
 ate <- random.cdisc.data::radtte(asl, seed = 1)
 
@@ -94,10 +94,7 @@ app <- teal::init(
     )
 )
 
-
-\dontrun{
 shinyApp(app$ui, app$server)
-}
 
 ## Define default reference & comparison arms based on
 ## ARM variable
@@ -142,6 +139,7 @@ dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
         )
     )
 )
+}
 
 \dontrun{
 shinyApp(app$ui, app$server)
