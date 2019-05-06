@@ -63,7 +63,7 @@ tm_g_forest_rsp <- function(label,
     plot_height[2] < plot_height[3] && plot_height[1] >= plot_height[2] && plot_height[1] <= plot_height[3],
     "selected plot_height should be between min and max, min should be lower than max"
   ))
-  stop_if_not(list(is.numeric.single(cex), "cex should be single numeric object))"))
+  stop_if_not(list(is_numeric_single(cex), "cex should be single numeric object))"))
   stop_if_not(list(
     is.null(pre_output) || is(pre_output, "shiny.tag"),
     "pre_output should be either null or shiny.tag type of object"
@@ -321,8 +321,7 @@ srv_g_forest_rsp <- function(input,
       validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
     }
 
-    eval_chunk("tm_g_forest_rsp_row")
-    eval_chunk("tm_g_forest_rsp")
+    eval_remaining()
   })
 
   ## dynamic plot height
