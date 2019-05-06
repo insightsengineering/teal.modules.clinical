@@ -48,7 +48,7 @@
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
-#'
+#' \dontrun{
 #' asl <- random.cdisc.data::radsl(seed = 1)
 #' ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'
@@ -76,10 +76,7 @@
 #'     )
 #' )
 #'
-#'
-#' \dontrun{
 #' shinyApp(app$ui, app$server)
-#' }
 #'
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
@@ -124,6 +121,7 @@
 #'         )
 #'     )
 #' )
+#' }
 #'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
