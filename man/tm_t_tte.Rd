@@ -66,7 +66,7 @@ The arm variables, stratification variables and taken from the \code{asl}
 data.
 }
 \examples{
-\dontrun{
+
 asl <- random.cdisc.data::radsl(seed = 1)
 ate <- random.cdisc.data::radtte(asl, seed = 1)
 
@@ -94,11 +94,15 @@ app <- teal::init(
     )
 )
 
-shinyApp(app$ui, app$server)
+
+\dontrun{
+ \donttest{
+   shinyApp(app$ui, app$server)
+  }
+}
 
 ## Define default reference & comparison arms based on
 ## ARM variable
-library(magrittr)
 library(dplyr)
 
 asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
@@ -117,6 +121,7 @@ arm_ref_comp = list(
     comp = "DUMMY A"
   )
 )
+library(magrittr)
 app <- teal::init(
     data = cdisc_data(ASL = asl, ATE = ate,
         code = "library(dplyr)
@@ -139,7 +144,6 @@ dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
         )
     )
 )
-}
 
 \dontrun{
 shinyApp(app$ui, app$server)
