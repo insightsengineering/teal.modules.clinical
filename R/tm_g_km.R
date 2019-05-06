@@ -2,8 +2,6 @@
 #'
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #'
-#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
-#'
 #' @inheritParams tm_t_tte
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
@@ -26,8 +24,7 @@
 #' asl <- radsl(seed = 1)
 #' ate <- radtte(asl, seed = 1)
 #'
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-#' attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
+#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -40,8 +37,15 @@
 #'   )
 #' )
 #'
-#' x <- teal::init(
-#'   data = list(ASL = asl, ATE = ate),
+#' app <- teal::init(
+#'   data = cdisc_data(
+#'     ASL = asl, ATE = ate,
+#'     code = "library(random.cdisc.data)
+#' asl <- radsl(seed = 1)
+#' ate <- radtte(asl, seed = 1)
+#' keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'     check = FALSE
+#'   ),
 #'   modules = root_modules(
 #'     tm_g_km(
 #'       label = "KM PLOT",
@@ -56,8 +60,7 @@
 #'   )
 #' )
 #' \dontrun{
-#'
-#' shinyApp(ui = x$ui, server = x$server)
+#' shinyApp(ui = app$ui, server = app$server)
 #' }
 tm_g_km <- function(label,
                     dataname,
@@ -69,8 +72,7 @@ tm_g_km <- function(label,
                     plot_height = c(1200, 400, 5000),
                     tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
-                    post_output = NULL,
-                    code_data_processing = NULL) {
+                    post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(facet_var))
@@ -86,7 +88,7 @@ tm_g_km <- function(label,
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
       tbl_fontsize = tbl_fontsize,
-      code_data_processing = code_data_processing
+      label = label
     ),
     ui = ui_g_km,
     ui_args = args
@@ -99,7 +101,7 @@ ui_g_km <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = uiOutput(ns("plot_ui")),
+    output = white_small_well(plot_height_output(id = ns("myplot"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
@@ -141,7 +143,7 @@ ui_g_km <- function(id, ...) {
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       textInput(ns("xlab"), "X-axis label", "Overall survival in "),
-      optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
+      plot_height_input(id = ns("myplot"), value = a$plot_height)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -151,7 +153,9 @@ ui_g_km <- function(id, ...) {
 
 
 srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
-                     dataname, arm_ref_comp, code_data_processing) {
+                     dataname, arm_ref_comp, label) {
+  use_chunks(session)
+
   teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
@@ -177,9 +181,9 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     t_kmplot = "# No Calculated"
   )
 
-  output$kmplot <- renderPlot({
+  plot_call <- reactive({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
 
     paramcd <- input$paramcd # nolint
     arm_var <- input$arm_var
@@ -188,15 +192,15 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
+    xlab <- input$xlab # nolint
 
     if (length(facet_var) == 0) facet_var <<- NULL
     if (length(strata_var) == 0) strata_var <- NULL
 
     for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
 
-
     teal.devel::validate_standard_inputs(
-      asl = asl_filtered,
+      asl = ASL_FILTERED, # nolint
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
@@ -207,71 +211,64 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
-    anl_name <- paste0(dataname, "_filtered")
+    anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
 
-    chunks$vars <<- bquote({
-      ref_arm <- .(ref_arm)
-      comp_arm <- .(comp_arm)
-      strata_var <- .(strata_var)
-      facet_var <- .(facet_var)
-      combine_comp_arms <- .(combine_comp_arms)
-    })
+    # Delete chunks that are used for reproducible code
+    renew_chunk_environment(envir = environment())
+    renew_chunks()
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var, facet_var))  # nolint
-    chunks$data <<- bquote({
-      asl_p <- subset(asl_filtered, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))
-      anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
+    set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
+    set_chunk(expression = bquote(comp_arm <- .(comp_arm)))
+    set_chunk(expression = bquote(strata_var <- .(strata_var)))
+    set_chunk(expression = bquote(facet_var <- .(facet_var)))
+    set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-      anl <- merge(asl_p[, .(asl_vars)],
-        anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
-        all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
-      )
 
-      arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
+    set_chunk(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var))))) # nolint
 
-      arm <- combine_levels(arm, ref_arm)
-      if (combine_comp_arms) {
-        arm <- combine_levels(arm, comp_arm)
-      }
+    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm)))) # nolint
+    set_chunk(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
+    set_chunk(expression = bquote(anl <- merge(asl_p[, asl_vars],
+      anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
+      all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
+    )))
+    set_chunk(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    set_chunk(expression = bquote(arm <- combine_levels(arm, ref_arm)))
 
-      anl[[.(arm_var)]] <- droplevels(arm)
-      time_unit <- unique(anl[["AVALU"]])
-      tbl_fontsize <- .(tbl_fontsize)
-    })
+    if (combine_comp_arms) {
+      set_chunk(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+    }
 
-    eval(chunks$data)
-    validate(need(nrow(anl) > 15, "need at least 15 data points"))
-    validate(need(length(time_unit) == 1, "Time Unit is not consistant"))
+    set_chunk(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    set_chunk(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
+    set_chunk(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
 
-    chunks$formula_km <<- eval(bquote({
-      as.formula(paste0("Surv(AVAL, 1-CNSR) ~", .(arm_var)))
-    }))
+    eval_remaining()
 
-    chunks$formula_coxph <<- eval(bquote({
-      as.formula(
-        paste0(
-          "Surv(AVAL, 1-CNSR) ~", .(arm_var),
-          ifelse(is.null(strata_var), "", paste0("+ strata(", paste(.(strata_var), collapse = ","), ")"))
-        )
-      )
-    }))
+    validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
+    validate(need(length(get_envir_chunks()$time_unit) == 1, "Time Unit is not consistant"))
 
-    chunks$info_coxph <<- eval(bquote({
-      paste0(
+
+    set_chunk(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
+
+    set_chunk(expression = bquote(formula_coxph <- as.formula(
+      .(paste0(
+        "Surv(AVAL, 1-CNSR) ~ ", arm_var,
+        ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
+      ))
+    )))
+    set_chunk(expression = bquote(info_coxph <-
+      .(paste0(
         "Cox Proportional Model: ",
         ifelse(is.null(strata_var),
-               "Unstratified Analysis",
-               paste0("Stratified by ", paste(.(strata_var), collapse = ",")))
-      )
-    }))
-
-    formula_km <- chunks$formula_km # nolint
-    formula_coxph <- chunks$formula_coxph # nolint
-    info_coxph <- chunks$info_coxph # nolint
+          "Unstratified Analysis",
+          paste0("Stratified by ", paste(strata_var, collapse = ","))
+        )
+      ))))
 
     if (is.null(facet_var)) {
-      chunks$t_kmplot <<- bquote({
+      set_chunk(expression = bquote({
         fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
         fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
         tbl_km <- t_km(fit_km)
@@ -292,13 +289,13 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
           vp = vpPath("mainPlot", "kmCurve", "curvePlot")
         )
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(input$xlab, time_unit))
+        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
         p <- addGrob(p, km_grob)
         p <- addGrob(p, coxph_grob)
         grid.draw(p)
-      })
+      }))
     } else {
-      chunks$facet <<- bquote({
+      set_chunk(expression = bquote({
         facet_df <- anl[.(facet_var)]
 
         lab <- Map(
@@ -312,11 +309,6 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
           max(x[["AVAL"]], na.rm = TRUE)
         }))
         xticks <- max(1, floor(max_min / 10))
-      })
-
-      eval(chunks$facet)
-
-      chunks$t_kmplot <<- bquote({
         grid.newpage()
         pl <- Map(function(x, label) {
           if (nrow(x) < 5) {
@@ -348,7 +340,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
-              xticks = xticks, draw = FALSE, xlab = paste(input$xlab, time_unit)
+              xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
             )
             p <- addGrob(p, km_grob)
             p <- addGrob(p, coxph_grob)
@@ -358,50 +350,37 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
         }, dfs, levels(lab))
 
         grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
-      })
+      }))
     }
+  })
 
-    eval(chunks$t_kmplot)
+  # Insert the plot into a plot_height module from teal.devel
+  callModule(plot_with_height,
+    id = "myplot",
+    plot_height = reactive(input$myplot),
+    plot_id = session$ns("plot")
+  )
+
+  output$plot <- renderPlot({
+    plot_call()
+
+    p <- eval_remaining()
+
+    if (is(p, "try-error")) {
+      validate(need(FALSE, p))
+    } else {
+      p
+    }
   })
 
   observeEvent(input$show_rcode, {
-    header <- teal.devel::get_rcode_header(
-      title = "Kaplan Meier Plot",
-      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
-      datasets = datasets,
-      code_data_processing
+    show_rcode_modal(
+      title = "Kaplan Meyer Plot",
+      rcode = get_rcode(
+        datasets = datasets,
+        dataname = c("ASL", dataname),
+        title = label
+      )
     )
-
-    str_rcode <- paste(c(
-      "",
-      header,
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
-      "",
-      paste0("formula_km <- ", deparse(chunks$formula_km)),
-      "",
-      paste0("formula_coxph  <- ", deparse(chunks$formula_coxph)),
-      "",
-      paste0("info_coxph <- ", deparse(chunks$info_coxph)),
-      "",
-      if (!is.null(facet_var)) teal.devel::remove_enclosing_curly_braces(deparse(chunks$facet)),
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$t_kmplot)),
-      if (!is.null(facet_var)) {
-        c(
-          "",
-          "# or plot each kaplan meier plot individually with",
-          "# grid.newpage(); grid.draw(pl[[1]])"
-        )
-      }
-    ), collapse = "\n")
-
-    showModal(modalDialog(
-      title = "R Code for the Current Kaplan Meier Plot",
-      tags$pre(tags$code(class = "R", str_rcode)),
-      easyClose = TRUE,
-      size = "l"
-    ))
   })
 }

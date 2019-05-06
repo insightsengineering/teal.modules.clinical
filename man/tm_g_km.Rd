@@ -8,7 +8,7 @@ tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
   facet_var, strata_var, plot_height = c(1200, 400, 5000),
   tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -47,8 +47,6 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{(\code{character}) Code to show in Show-R-Code. Will be deprecated}
 }
 \description{
 This is teal module produces a grid style KM plot for data with ADaM structure
@@ -60,8 +58,7 @@ library(random.cdisc.data)
 asl <- radsl(seed = 1)
 ate <- radtte(asl, seed = 1)
 
-attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
+keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -74,8 +71,15 @@ arm_ref_comp <- list(
   )
 )
 
-x <- teal::init(
-  data = list(ASL = asl, ATE = ate),
+app <- teal::init(
+  data = cdisc_data(
+    ASL = asl, ATE = ate,
+    code = "library(random.cdisc.data)
+asl <- radsl(seed = 1)
+ate <- radtte(asl, seed = 1)
+keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+    check = FALSE
+  ),
   modules = root_modules(
     tm_g_km(
       label = "KM PLOT",
@@ -90,8 +94,7 @@ x <- teal::init(
   )
 )
 \dontrun{
-
-shinyApp(ui = x$ui, server = x$server)
+shinyApp(ui = app$ui, server = app$server)
 }
 }
 \author{
