@@ -1,4 +1,3 @@
-
 # teal.modules.clinical
 
 Collection of [`teal`](https://github.roche.com/NEST/tern) intended to eventually cover many of the standard outputs used in clinical trials.
