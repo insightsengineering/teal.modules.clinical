@@ -61,7 +61,7 @@
 #'             asl <- random.cdisc.data::radsl(seed = 1)
 #'             ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
-#'         check = TRUE),
+#'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'             label = "Time To Event Table",
@@ -78,12 +78,13 @@
 #'
 #'
 #' \dontrun{
-#' shinyApp(app$ui, app$server)
+#'  \donttest{
+#'    shinyApp(app$ui, app$server)
+#'   }
 #' }
 #'
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
-#' library(magrittr)
 #' library(dplyr)
 #'
 #' asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
@@ -102,6 +103,7 @@
 #'     comp = "DUMMY A"
 #'   )
 #' )
+#' library(magrittr)
 #' app <- teal::init(
 #'     data = cdisc_data(ASL = asl, ATE = ate,
 #'         code = "library(dplyr)
@@ -109,7 +111,7 @@
 #' dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
 #'             ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
-#'         check = TRUE),
+#'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'          label = "Time To Event Table",

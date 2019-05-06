@@ -44,7 +44,7 @@
 #' asl <- radsl(seed = 1)
 #' ate <- radtte(asl, seed = 1)
 #' keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
-#'     check = TRUE
+#'     check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_km(
