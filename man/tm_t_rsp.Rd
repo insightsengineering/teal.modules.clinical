@@ -10,7 +10,7 @@ tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
@@ -18,7 +18,7 @@ Note that the data is expected to be in vertical form with the
 \item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as \code{arm_var}}
 
-\item{arm_ref_comp}{optional, if specified it must be a named list with each
+\item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{asl} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is

@@ -4,6 +4,8 @@
 #' with ADaM structure
 #'
 #' @inheritParams tm_g_forest_rsp
+#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
+#'
 #'
 #' @export
 #'
