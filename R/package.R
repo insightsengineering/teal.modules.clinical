@@ -1,5 +1,5 @@
 #' Teal Modules for TLGs in tern
-#'
+#' 
 #' @import shiny teal tern teal.devel utils.nest
 #' @importFrom methods is
 #' @importFrom utils tail

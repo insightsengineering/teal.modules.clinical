@@ -5,8 +5,7 @@
 \title{Response Table Teal Module}
 \usage{
 tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
-  strata_var, pre_output = NULL, post_output = NULL,
-  code_data_processing = NULL)
+  strata_var, pre_output = NULL, post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -38,8 +37,6 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{(\code{character}) Code to show in Show-R-Code. Will be deprecated}
 }
 \value{
 an \code{\link[teal]{module}} object
@@ -68,24 +65,31 @@ Additional standard UI inputs include \code{responders},
   reference group.
 }
 \examples{
-
 library(random.cdisc.data)
 
 asl <- radsl(seed = 1)
-ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+keys(asl) <- c("STUDYID", "USUBJID")
 
-attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ars, "source") <- 'subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")'
+ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+keys(ars) <- c("STUDYID", "USUBJID")
 
 x <- teal::init(
-  data = list(ASL = asl, ARS = ars),
+  data = cdisc_data(
+    ASL = asl,
+    ARS = ars,
+    code = "
+      asl <- radsl(seed = 1)
+      keys(asl) <- c('STUDYID', 'USUBJID')
+      ars <- subset(radrs(asl, seed = 1), AVISIT == 'Follow Up')
+      keys(ars) <- c('STUDYID', 'USUBJID')
+    "),
   modules = root_modules(
     tm_t_rsp(
-       label = "Response Table",
-       dataname = 'ARS',
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
-       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
+      label = "Response Table",
+      dataname = 'ARS',
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
+      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
 )
