@@ -65,8 +65,6 @@ Additional standard UI inputs include \code{responders},
   reference group.
 }
 \examples{
-
-#code>
 library(random.cdisc.data)
 
 asl <- radsl(seed = 1)
@@ -75,9 +73,16 @@ keys(asl) <- c("STUDYID", "USUBJID")
 ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
 keys(ars) <- c("STUDYID", "USUBJID")
 
-#<code
 x <- teal::init(
-  data = cdisc_data(ASL = asl, ARS = ars, code = ""),
+  data = cdisc_data(
+    ASL = asl,
+    ARS = ars,
+    code = "
+      asl <- radsl(seed = 1)
+      keys(asl) <- c('STUDYID', 'USUBJID')
+      ars <- subset(radrs(asl, seed = 1), AVISIT == 'Follow Up')
+      keys(ars) <- c('STUDYID', 'USUBJID')
+    "),
   modules = root_modules(
     tm_t_rsp(
       label = "Response Table",
