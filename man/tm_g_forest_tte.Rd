@@ -7,7 +7,7 @@
 tm_g_forest_tte(label, dataname, arm_var, subgroup_var, paramcd,
   plot_height = c(600, 200, 2000), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -37,28 +37,32 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{(\code{character}) Code to show in Show-R-Code. Will be deprecated}
 }
 \description{
 This is teal module produces a grid style Forest plot for time-to-event data
 with ADaM structure
 }
 \examples{
-
+# reproducible teal app
 library(random.cdisc.data)
-library(dplyr)
 
-asl <- radsl(seed = 1) \%>\%
-  mutate(RACE = droplevels(RACE))
+asl <- radsl(seed = 1)
 ate <- radtte(asl, seed = 1)
 
-attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\%
-  mutate(RACE = droplevels(RACE))"
-attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
+asl$RACE <- droplevels(asl$RACE)
+keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 
 x <- teal::init(
-  data = list(ASL = asl, ATE = ate),
+  data = cdisc_data(
+    ASL = asl,
+    ATE = ate,
+    code = paste("asl <- random.cdisc.data::radsl(seed = 1)",
+                 "ate <- random.cdisc.data::radtte(asl, seed = 1)",
+                 "asl$RACE <- droplevels(asl$RACE)",
+                 'keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
+                 sep = "\\n"),
+    check = FALSE
+    ),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
@@ -72,9 +76,7 @@ x <- teal::init(
 )
 
 \dontrun{
-
-shinyApp(x$ui, x$server)
-
+  shinyApp(x$ui, x$server)
 }
 }
 \author{

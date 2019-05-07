@@ -4,7 +4,7 @@
 #' with ADaM structure
 #'
 #' @inheritParams tm_g_forest_rsp
-#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
+#'
 #'
 #'
 #' @export
@@ -12,20 +12,26 @@
 #' @template author_song24
 #'
 #' @examples
-#'
+#' # reproducible teal app
 #' library(random.cdisc.data)
-#' library(dplyr)
 #'
-#' asl <- radsl(seed = 1) %>%
-#'   mutate(RACE = droplevels(RACE))
+#' asl <- radsl(seed = 1)
 #' ate <- radtte(asl, seed = 1)
 #'
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1) %>%
-#'   mutate(RACE = droplevels(RACE))"
-#' attr(ate, "source") <- "random.cdisc.data::radtte(asl, seed = 1)"
+#' asl$RACE <- droplevels(asl$RACE)
+#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
 #' x <- teal::init(
-#'   data = list(ASL = asl, ATE = ate),
+#'   data = cdisc_data(
+#'     ASL = asl,
+#'     ATE = ate,
+#'     code = paste("asl <- random.cdisc.data::radsl(seed = 1)",
+#'                  "ate <- random.cdisc.data::radtte(asl, seed = 1)",
+#'                  "asl$RACE <- droplevels(asl$RACE)",
+#'                  'keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
+#'                  sep = "\n"),
+#'     check = FALSE
+#'     ),
 #'   modules = root_modules(
 #'     tm_g_forest_tte(
 #'        label = "Forest Survival",
@@ -39,9 +45,7 @@
 #' )
 #'
 #' \dontrun{
-#'
-#' shinyApp(x$ui, x$server)
-#'
+#'   shinyApp(x$ui, x$server)
 #' }
 tm_g_forest_tte <- function(label,
                             dataname,
@@ -51,8 +55,7 @@ tm_g_forest_tte <- function(label,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
-                            post_output = NULL,
-                            code_data_processing = NULL) {
+                            post_output = NULL) {
 
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
@@ -65,7 +68,7 @@ tm_g_forest_tte <- function(label,
     server = srv_g_forest_tte,
     ui = ui_g_forest_tte,
     ui_args = args,
-    server_args = list(dataname = dataname, cex = cex, code_data_processing = code_data_processing),
+    server_args = list(dataname = dataname, cex = cex),
     filters = dataname
   )
 }
@@ -120,16 +123,7 @@ ui_g_forest_tte <- function(id, ...) {
 }
 
 
-srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5, code_data_processing) {
-
-  ## dynamic plot height
-  output$plot_ui <- renderUI({
-    plot_height <- input$plot_height
-    validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
-  })
-
-
+srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5) {
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   teal.devel::arm_ref_comp_observer(
@@ -139,20 +133,11 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
+  use_chunks(session)
 
-
-  chunks <- list(
-    vars = "# Not Calculated",
-    data = "# Not Calculated",
-    t_forest_tte = "# Not Calculated",
-    row_name_wrap = "# Not Calculated",
-    p_forest_tte = "# Not Calculated"
-  )
-
-  output$forest_plot <- renderPlot({
-
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+  table_reactive <- reactive({
+    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) #nolint
+    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) #nolint
 
     paramcd <- input$paramcd
     arm_var <- input$arm_var
@@ -160,131 +145,121 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
 
-    # Delete chunks that are used for reproducible code
-    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
-
     # validate your input values
     teal.devel::validate_standard_inputs(
-      asl = asl_filtered,
+      asl = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
-      anl = anl_filtered,
+      anl = ANL_FILTERED,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALU", "CNSR"),
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm
     )
 
-    teal.devel::validate_in(paramcd, anl_filtered$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    teal.devel::validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
 
-    anl_data_name <- paste0(dataname, "_filtered")
-    assign(anl_data_name, anl_filtered)
+    anl_data_name <- paste0(dataname, "_FILTERED")
+    assign(anl_data_name, ANL_FILTERED)
 
-    chunks$vars <<- bquote({
-      ref_arm <- .(ref_arm)
-      comp_arm <- .(comp_arm)
-    })
+    # Delete chunks that are used for reproducible code
+    renew_chunk_environment(envir = environment())
+    renew_chunks()
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) # nolint
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") # nolint
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
-    chunks$data <<- bquote({
-      asl_p <- subset(asl_filtered, asl_filtered[[.(arm_var)]] %in% c(ref_arm, comp_arm))
-      anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
+    set_chunk(
+      id = "tm_g_forest_tte_anl",
+      expression = bquote({
+        ref_arm <- .(ref_arm)
+        comp_arm <- .(comp_arm)
+        asl_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+        anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
-      anl <- merge(asl_p[, .(asl_vars)], anl_p[, .(anl_vars)],
-                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+        anl <- merge(asl_p[, .(asl_vars)], anl_p[, .(anl_vars)],
+                     all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+        arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
+        arm <- combine_levels(arm, ref_arm)
+        arm <- combine_levels(arm, comp_arm)
 
-      arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
+        anl[[.(arm_var)]] <- droplevels(arm)
 
-      arm <- combine_levels(arm, ref_arm)
-      arm <- combine_levels(arm, comp_arm)
+        levels(anl[[.(arm_var)]]) <- sapply(
+          levels(anl[[.(arm_var)]]),
+          function(x) paste(strwrap(x, width = 15), collapse = "\n")
+        )
 
-      anl[[.(arm_var)]] <- droplevels(arm)
+        anl
+    }))
 
-      levels(anl[[.(arm_var)]]) <- sapply(
-        levels(anl[[.(arm_var)]]),
-        function(x) paste(strwrap(x, width = 15), collapse = "\n")
+    set_chunk(
+      id = "tm_g_forest_tte_tbl",
+      expression = bquote({
+        tbl <- t_forest_tte(
+          tte = anl$AVAL,
+          is_event = anl$CNSR == 0,
+          col_by = anl[[.(arm_var)]],
+          time_unit = tolower(anl$AVALU[1]),
+          group_data = if (length(.(subgroup_var)) > 0) {
+              anl[, .(subgroup_var), drop = FALSE]
+            } else {
+              NULL
+            },
+          total = "All Patients",
+          na_omit_group = TRUE,
+          dense_header = TRUE
+        )
+
+        row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
+        tbl
+    }))
+
+    set_chunk(
+      id = "tm_g_forest_tte_plot",
+      expression = call(
+          "g_forest",
+          tbl = quote(tbl),
+          col_x = 8,
+          col_ci = 9,
+          vline = 1,
+          forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
+          xlim = c(.1, 10),
+          logx = TRUE,
+          x_at = c(.1, 1, 10)
       )
+    )
 
-    })
+    invisible(NULL)
+  })
 
-    eval(chunks$data)
+  output$forest_plot <- renderPlot({
+    table_reactive()
+
+    anl <- eval_chunk("tm_g_forest_tte_anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
 
-    chunks$t_forest_tte <<- call(
-      "t_forest_tte",
-      tte = bquote(anl$AVAL),
-      is_event = bquote(anl$CNSR == 0),
-      col_by = bquote(anl[[.(arm_var)]]),
-      time_unit = bquote(tolower(anl$AVALU[1])),
-      group_data = if (length(subgroup_var) > 0) {
-        bquote({
-          anl[, .(subgroup_var), drop = FALSE]
-        })
-      } else{
-        NULL
-      },
-      total = "All Patients",
-      na_omit_group = TRUE,
-      dense_header = TRUE
-    )
-
-    tbl <- try(eval(chunks$t_forest_tte))
-
+    tbl <- eval_chunk("tm_g_forest_tte_tbl")
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
 
+    eval_remaining()
+  })
 
-    chunks$row_name_wrap <<- quote({
-      row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
-    })
-
-    chunks$p_forest_tte <<- call(
-      "g_forest",
-      tbl = quote(tbl),
-      col_x = 8,
-      col_ci = 9,
-      vline = 1,
-      forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
-      xlim = c(.1, 10),
-      logx = TRUE,
-      x_at = c(.1, 1, 10)
-    )
-
-    eval(chunks$row_name_wrap)
-    eval(chunks$p_forest_tte)
+  ## dynamic plot height
+  output$plot_ui <- renderUI({
+    plot_height <- input$plot_height
+    validate(need(plot_height, "need valid plot height"))
+    plotOutput(session$ns("forest_plot"), height = plot_height)
   })
 
 
   observeEvent(input$show_rcode, {
-
-    header <- teal.devel::get_rcode_header(
-      title = "Time-to-Event Forest Plot",
-      datanames = if (is.null(code_data_processing)) dataname else datasets$datanames(),
-      datasets = datasets,
-      code_data_processing
-    )
-
-    str_rcode <- paste(c(
-      "",
-      header,
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$vars)),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$data)),
-      "",
-      paste("tbl <-", paste(deparse(chunks$t_forest_tte), collapse = "\n")),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$row_name_wrap)),
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$p_forest_tte))
-    ), collapse = "\n")
-
-    showModal(modalDialog(
+    show_rcode_modal(
       title = "R Code for the Current Time-to-Event Forest Plot",
-      tags$pre(tags$code(class = "R", str_rcode)),
-      easyClose = TRUE,
-      size = "l"
-    ))
-
+      rcode = get_rcode(
+        datasets = datasets,
+        dataname = dataname,
+        title = "Time-to-Event Forest Plot"
+      )
+    )
   })
 }
