@@ -31,6 +31,7 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(tern)
 #'
 #' asl <- radsl(seed = 1)
 #' keys(asl) <- c("STUDYID", "USUBJID")

@@ -66,6 +66,7 @@ The arm variables, stratification variables and taken from the \code{asl}
 data.
 }
 \examples{
+library(tern)
 
 asl <- random.cdisc.data::radsl(seed = 1)
 ate <- random.cdisc.data::radtte(asl, seed = 1)

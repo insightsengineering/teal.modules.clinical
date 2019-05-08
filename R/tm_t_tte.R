@@ -3,7 +3,7 @@
 #' Time to event table as defined in \code{\link[tern]{t_tte}} in the
 #' \code{tern} package
 #'
-#' @inheritParams teal::standard_layout
+#' @inheritParams teal.devel::standard_layout
 #' @param label menue item label of the module in the teal app
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -48,6 +48,7 @@
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
+#' library(tern)
 #'
 #' asl <- random.cdisc.data::radsl(seed = 1)
 #' ate <- random.cdisc.data::radtte(asl, seed = 1)

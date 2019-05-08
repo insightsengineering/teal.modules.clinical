@@ -20,6 +20,7 @@
 #' @examples
 #'
 #' library(random.cdisc.data)
+#' library(tern)
 #'
 #' asl <- radsl(seed = 1)
 #' ate <- radtte(asl, seed = 1)

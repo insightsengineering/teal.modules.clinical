@@ -28,7 +28,7 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{cex}{multiplier applied to overall \code{fontsize}}
+\item{cex}{multiplier applied to overall fontsize}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -45,6 +45,7 @@ with ADaM structure
 \examples{
 # reproducible teal app
 library(random.cdisc.data)
+library(tern)
 
 asl <- radsl(seed = 1)
 ate <- radtte(asl, seed = 1)

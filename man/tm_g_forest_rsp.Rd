@@ -28,7 +28,7 @@ for variable names that can be used as the default subgroups}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{cex}{multiplier applied to overall \code{fontsize}}
+\item{cex}{multiplier applied to overall fontsize}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -44,6 +44,7 @@ This is teal module produces a grid style Forest plot for response data with ADa
 \examples{
 #code>
 library(random.cdisc.data)
+library(tern)
 
 asl <- radsl(seed = 1)
 keys(asl) <- c("STUDYID", "USUBJID")
