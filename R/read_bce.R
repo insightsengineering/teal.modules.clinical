@@ -1,7 +1,7 @@
 #' Mask \code{read_bce} on r.roche.com to add meta-data to the
 #' data set for reproducibility
 #'
-#' This version uses read_bce and adds the \code{'source'}, \code{'md5sum'},
+#' This version uses \code{read_bce} and adds the \code{'source'}, \code{'md5sum'},
 #' \code{'accessed_by'} meta-data.
 #'
 #' @param file file path, needs to be an absolute file path

@@ -5,7 +5,7 @@
 \title{Summarize Variables Module}
 \usage{
 tm_t_summary(label, dataname, arm_var, summarize_vars, pre_output = NULL,
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
@@ -28,30 +28,29 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{(\code{character}) Code to show in Show-R-Code. Will be deprecated}
 }
 \description{
 This module is for \code{\link[tern]{t_summary}}.
 }
 \examples{
-
 library(random.cdisc.data)
 
 asl <- radsl(seed = 1)
-attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+keys(asl) <- c("STUDYID", "USUBJID")
 
 x <- teal::init(
-  data = list(ASL = asl),
+  data = cdisc_data(
+    ASL = asl,
+    code = 'asl <- random.cdisc.data::radsl(seed = 1); keys(asl) <- c("STUDYID", "USUBJID")',
+    check = TRUE),
   modules = root_modules(
     tm_t_summary(
-       label = "Demographic Table",
-       dataname = "ASL",
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
+      label = "Demographic Table",
+      dataname = "ASL",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE")))
     )
   )
-)
 
 \dontrun{
 

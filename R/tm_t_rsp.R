@@ -1,7 +1,7 @@
 #' @title Response Table Teal Module
 #'
 #' @description This module produces a response summary table that matches the
-#'   STREAM template rspt01
+#'   STREAM template \code{rspt01}
 #'
 #' @inheritParams tm_t_tte
 #'
@@ -9,7 +9,7 @@
 #'   \code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
 #'
 #'   Default values of the inputs \code{var_arm}, \code{ref_arm} and
-#'   \code{comp_arm} are set to NULL, and updated accordingly based on seletion
+#'   \code{comp_arm} are set to NULL, and updated accordingly based on selection
 #'   of \code{paramcd} and \code{var_arm}
 #'
 #'   This display order of response categories in partitioned statistics section
@@ -108,7 +108,7 @@ tm_t_rsp <- function(label,
 #' \code{combin_arm} (default FALSE)
 #'
 #' Default values of the inputs \code{var_arm}, \code{ref_arm} and
-#' \code{comp_arm} are set to NULL, and updated accordingly based on seletion of
+#' \code{comp_arm} are set to NULL, and updated accordingly based on selection of
 #' \code{paramcd} and \code{arm.var}
 #'
 #' @noRd

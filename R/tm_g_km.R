@@ -6,7 +6,7 @@
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
 #' @param plot_height vector with three elements defining selected, min and max plot height
-#' @param tbl_fontsize fontsize for text annotation
+#' @param tbl_fontsize \code{fontsize} for text annotation
 #'
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula

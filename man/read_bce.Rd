@@ -13,6 +13,6 @@ read_bce(file, encoding = NULL)
 \item{encoding}{encoding}
 }
 \description{
-This version uses read_bce and adds the \code{'source'}, \code{'md5sum'},
+This version uses \code{read_bce} and adds the \code{'source'}, \code{'md5sum'},
 \code{'accessed_by'} meta-data.
 }

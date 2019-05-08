@@ -2,8 +2,6 @@
 #'
 #' This module is for \code{\link[tern]{t_summary}}.
 #'
-#' @param code_data_processing (\code{character}) Code to show in Show-R-Code. Will be deprecated
-#'
 #' @inheritParams tm_t_tte
 #' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary
@@ -13,23 +11,24 @@
 #' @template author_waddella
 #'
 #' @examples
-#'
 #' library(random.cdisc.data)
 #'
 #' asl <- radsl(seed = 1)
-#' attr(asl, "source") <- "random.cdisc.data::radsl(seed = 1)"
+#' keys(asl) <- c("STUDYID", "USUBJID")
 #'
 #' x <- teal::init(
-#'   data = list(ASL = asl),
+#'   data = cdisc_data(
+#'     ASL = asl,
+#'     code = 'asl <- random.cdisc.data::radsl(seed = 1); keys(asl) <- c("STUDYID", "USUBJID")',
+#'     check = TRUE),
 #'   modules = root_modules(
 #'     tm_t_summary(
-#'        label = "Demographic Table",
-#'        dataname = "ASL",
-#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
+#'       label = "Demographic Table",
+#'       dataname = "ASL",
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE")))
 #'     )
 #'   )
-#' )
 #'
 #' \dontrun{
 #'
@@ -41,8 +40,7 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          pre_output = NULL,
-                         post_output = NULL,
-                         code_data_processing = NULL) {
+                         post_output = NULL) {
 
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(summarize_vars))
@@ -54,7 +52,7 @@ tm_t_summary <- function(label,
     server = srv_t_summary,
     ui = ui_t_summary,
     ui_args = args,
-    server_args = list(dataname = dataname, code_data_processing = code_data_processing),
+    server_args = list(dataname = dataname),
     filters = dataname
   )
 
@@ -88,20 +86,14 @@ ui_t_summary <- function(id, ...) {
 
 }
 
-srv_t_summary <- function(input, output, session, datasets, dataname, code_data_processing) {
+srv_t_summary <- function(input, output, session, datasets, dataname) {
+  use_chunks(session)
 
-  chunks <- list(
-    analysis = "# Not Calculated"
-  )
-
-  output$table <- renderUI({
-
+  table_call <- reactive({
     anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     arm_var <- input$arm_var
     summarize_vars <- input$summarize_vars
-
-    chunks$analysis <<- "# Not Calculated"
 
     teal.devel::validate_has_data(anl_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
@@ -109,10 +101,10 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
     validate(need(anl_f[[arm_var]], "Arm variable does not exist"))
     validate(need(!("" %in% anl_f[[arm_var]]), "arm values can not contain empty strings ''"))
 
-    data_name <- paste0(dataname, "_filtered")
+    data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
 
-    chunks$analysis <<- call(
+    table_call <- call(
       "t_summary",
       x = bquote(.(as.name(data_name))[, .(summarize_vars), drop = FALSE]),
       col_by = bquote(as.factor(.(as.name(data_name))[[.(arm_var)]])),
@@ -120,37 +112,28 @@ srv_t_summary <- function(input, output, session, datasets, dataname, code_data_
       useNA = "ifany"
     )
 
-    tbl <- try(eval(chunks$analysis))
+    renew_chunk_environment(envir = environment())
+    renew_chunks()
+    set_chunk("tableCall", table_call)
 
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
-
-    rtables::as_html(tbl)
   })
 
+  output$table <- renderUI({
+    table_call()
+    tbl <- eval_remaining()
+    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
+    rtables::as_html(tbl)
 
+  })
 
   observeEvent(input$show_rcode, {
-
-    header <- teal.devel::get_rcode_header(
-      title = "Summarize Variables",
-      datanames = dataname,
-      datasets = datasets,
-      code_data_processing
+    teal.devel::show_rcode_modal(
+      title = "Summary",
+      rcode = get_rcode(
+        datasets = datasets,
+        dataname = dataname,
+        title = "Response Plot"
+      )
     )
-
-    str_rcode <- paste(c(
-      "",
-      header,
-      "",
-      teal.devel::remove_enclosing_curly_braces(deparse(chunks$analysis, width.cutoff = 60))
-    ), collapse = "\n")
-
-    showModal(modalDialog(
-      title = "R Code for the Current Demographic Table",
-      tags$pre(tags$code(class = "R", str_rcode)),
-      easyClose = TRUE,
-      size = "l"
-    ))
   })
-
 }

@@ -38,7 +38,7 @@ for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{tbl_fontsize}{fontsize for text annotation}
+\item{tbl_fontsize}{\code{fontsize} for text annotation}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
