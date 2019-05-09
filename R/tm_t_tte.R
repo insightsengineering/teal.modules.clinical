@@ -3,7 +3,7 @@
 #' Time to event table as defined in \code{\link[tern]{t_tte}} in the
 #' \code{tern} package
 #'
-#' @inheritParams teal::standard_layout
+#' @inheritParams teal.devel::standard_layout
 #' @param label menue item label of the module in the teal app
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -48,19 +48,19 @@
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
+#' library(teal)
 #'
 #' asl <- random.cdisc.data::radsl(seed = 1)
 #' ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'
 #' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
-#' #<code
-#' app <- teal::init(
+#' app <- init(
 #'     data = cdisc_data(ASL = asl, ATE = ate,
-#'         code = "
-#'             asl <- random.cdisc.data::radsl(seed = 1)
-#'             ate <- random.cdisc.data::radtte(asl, seed = 1)
-#'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'         code = "library(tern)
+#'                 asl <- random.cdisc.data::radsl(seed = 1)
+#'                 ate <- random.cdisc.data::radtte(asl, seed = 1)
+#'                 keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
@@ -86,6 +86,7 @@
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
 #' library(dplyr)
+#' library(teal)
 #'
 #' asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
 #'   ARM1 = sample(c("DUMMY A", "DUMMY B"),

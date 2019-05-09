@@ -28,7 +28,7 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{cex}{multiplier applied to overall \code{fontsize}}
+\item{cex}{multiplier applied to overall fontsize}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -45,6 +45,7 @@ with ADaM structure
 \examples{
 # reproducible teal app
 library(random.cdisc.data)
+library(teal)
 
 asl <- radsl(seed = 1)
 ate <- radtte(asl, seed = 1)
@@ -52,15 +53,15 @@ ate <- radtte(asl, seed = 1)
 asl$RACE <- droplevels(asl$RACE)
 keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 
-x <- teal::init(
+x <- init(
   data = cdisc_data(
     ASL = asl,
     ATE = ate,
-    code = paste("asl <- random.cdisc.data::radsl(seed = 1)",
-                 "ate <- random.cdisc.data::radtte(asl, seed = 1)",
-                 "asl$RACE <- droplevels(asl$RACE)",
-                 'keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
-                 sep = "\\n"),
+    code = 'library(tern)
+            asl <- random.cdisc.data::radsl(seed = 1)
+            ate <- random.cdisc.data::radtte(asl, seed = 1)
+            asl$RACE <- droplevels(asl$RACE)
+            keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
     check = FALSE
     ),
   modules = root_modules(

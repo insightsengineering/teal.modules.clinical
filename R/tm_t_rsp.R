@@ -31,6 +31,7 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' keys(asl) <- c("STUDYID", "USUBJID")
@@ -38,16 +39,17 @@
 #' ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
 #' keys(ars) <- c("STUDYID", "USUBJID")
 #'
-#' x <- teal::init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ASL = asl,
 #'     ARS = ars,
-#'     code = "
-#'       asl <- radsl(seed = 1)
-#'       keys(asl) <- c('STUDYID', 'USUBJID')
-#'       ars <- subset(radrs(asl, seed = 1), AVISIT == 'Follow Up')
-#'       keys(ars) <- c('STUDYID', 'USUBJID')
-#'     "),
+#'     code = "library(tern)
+#'             asl <- random.cdisc.data::radsl(seed = 1)
+#'             ars <- subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == 'Follow Up')
+#'             keys(asl) <- c('STUDYID', 'USUBJID')
+#'             keys(ars) <- c('STUDYID', 'USUBJID')",
+#'      check = FALSE
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
 #'       label = "Response Table",
@@ -61,7 +63,7 @@
 #'
 #' \dontrun{
 #'
-#' shinyApp(x$ui, x$server)
+#' shinyApp(app$ui, app$server)
 #'
 #' }
 #'

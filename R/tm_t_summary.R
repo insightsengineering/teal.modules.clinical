@@ -12,15 +12,18 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' keys(asl) <- c("STUDYID", "USUBJID")
 #'
-#' x <- teal::init(
+#' x <- init(
 #'   data = cdisc_data(
 #'     ASL = asl,
-#'     code = 'asl <- random.cdisc.data::radsl(seed = 1); keys(asl) <- c("STUDYID", "USUBJID")',
-#'     check = TRUE),
+#'     code = 'library(tern)
+#'             asl <- random.cdisc.data::radsl(seed = 1)
+#'             keys(asl) <- c("STUDYID", "USUBJID")',
+#'     check = FALSE),
 #'   modules = root_modules(
 #'     tm_t_summary(
 #'       label = "Demographic Table",
