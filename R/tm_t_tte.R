@@ -48,14 +48,14 @@
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
-#' library(tern)
+#' library(teal)
 #'
 #' asl <- random.cdisc.data::radsl(seed = 1)
 #' ate <- random.cdisc.data::radtte(asl, seed = 1)
 #'
 #' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
-#' app <- teal::init(
+#' app <- init(
 #'     data = cdisc_data(ASL = asl, ATE = ate,
 #'         code = "library(tern)
 #'                 asl <- random.cdisc.data::radsl(seed = 1)
@@ -86,6 +86,7 @@
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
 #' library(dplyr)
+#' library(teal)
 #'
 #' asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
 #'   ARM1 = sample(c("DUMMY A", "DUMMY B"),

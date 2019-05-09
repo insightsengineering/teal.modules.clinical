@@ -14,7 +14,7 @@
 #' @examples
 #' # reproducible teal app
 #' library(random.cdisc.data)
-#' library(tern)
+#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' ate <- radtte(asl, seed = 1)
@@ -22,7 +22,7 @@
 #' asl$RACE <- droplevels(asl$RACE)
 #' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 #'
-#' x <- teal::init(
+#' x <- init(
 #'   data = cdisc_data(
 #'     ASL = asl,
 #'     ATE = ate,

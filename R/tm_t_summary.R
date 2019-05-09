@@ -12,12 +12,12 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(tern)
+#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' keys(asl) <- c("STUDYID", "USUBJID")
 #'
-#' x <- teal::init(
+#' x <- init(
 #'   data = cdisc_data(
 #'     ASL = asl,
 #'     code = 'library(tern)

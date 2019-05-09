@@ -54,7 +54,7 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 \examples{
 
 library(random.cdisc.data)
-library(tern)
+library(teal)
 
 asl <- radsl(seed = 1)
 ate <- radtte(asl, seed = 1)
@@ -72,7 +72,7 @@ arm_ref_comp <- list(
   )
 )
 
-app <- teal::init(
+app <- init(
   data = cdisc_data(
     ASL = asl, ATE = ate,
     code = "library(random.cdisc.data)

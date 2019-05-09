@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(tern)
+#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
@@ -22,7 +22,7 @@
 #' keys(asl) <- c("STUDYID", "USUBJID")
 #' keys(ars) <- c("STUDYID", "USUBJID")
 #'
-#' x <- teal::init(
+#' x <- init(
 #'   data = cdisc_data(
 #'    ASL = asl,
 #'    ARS = ars,
