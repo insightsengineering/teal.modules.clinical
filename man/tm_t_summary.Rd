@@ -34,7 +34,6 @@ This module is for \code{\link[tern]{t_summary}}.
 }
 \examples{
 library(random.cdisc.data)
-library(teal)
 
 asl <- radsl(seed = 1)
 keys(asl) <- c("STUDYID", "USUBJID")
@@ -56,9 +55,7 @@ x <- init(
   )
 
 \dontrun{
-
 shinyApp(x$ui, x$server)
-
 }
 }
 \author{

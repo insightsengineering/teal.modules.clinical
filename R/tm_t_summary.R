@@ -12,7 +12,6 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' keys(asl) <- c("STUDYID", "USUBJID")
@@ -34,9 +33,7 @@
 #'   )
 #'
 #' \dontrun{
-#'
 #' shinyApp(x$ui, x$server)
-#'
 #' }
 tm_t_summary <- function(label,
                          dataname,

@@ -66,7 +66,6 @@ Additional standard UI inputs include \code{responders},
 }
 \examples{
 library(random.cdisc.data)
-library(teal)
 
 asl <- radsl(seed = 1)
 keys(asl) <- c("STUDYID", "USUBJID")
@@ -97,9 +96,7 @@ app <- init(
 )
 
 \dontrun{
-
 shinyApp(app$ui, app$server)
-
 }
 
 }

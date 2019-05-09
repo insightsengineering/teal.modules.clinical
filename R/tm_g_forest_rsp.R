@@ -14,7 +14,6 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(teal)
 #'
 #' asl <- radsl(seed = 1)
 #' ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")

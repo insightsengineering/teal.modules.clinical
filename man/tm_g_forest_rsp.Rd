@@ -43,7 +43,6 @@ This is teal module produces a grid style Forest plot for response data with ADa
 }
 \examples{
 library(random.cdisc.data)
-library(teal)
 
 asl <- radsl(seed = 1)
 ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
