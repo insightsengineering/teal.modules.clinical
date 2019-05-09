@@ -73,13 +73,12 @@ ate <- random.cdisc.data::radtte(asl, seed = 1)
 
 keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
 
-#<code
 app <- teal::init(
     data = cdisc_data(ASL = asl, ATE = ate,
-        code = "
-            asl <- random.cdisc.data::radsl(seed = 1)
-            ate <- random.cdisc.data::radtte(asl, seed = 1)
-            keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+        code = "library(tern)
+                asl <- random.cdisc.data::radsl(seed = 1)
+                ate <- random.cdisc.data::radtte(asl, seed = 1)
+                keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(

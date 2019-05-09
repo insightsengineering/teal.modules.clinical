@@ -42,9 +42,9 @@
 #'   data = cdisc_data(
 #'     ASL = asl, ATE = ate,
 #'     code = "library(random.cdisc.data)
-#' asl <- radsl(seed = 1)
-#' ate <- radtte(asl, seed = 1)
-#' keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'             asl <- radsl(seed = 1)
+#'             ate <- radtte(asl, seed = 1)
+#'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
