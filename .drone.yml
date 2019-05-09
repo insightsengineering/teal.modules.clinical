@@ -1,5 +1,5 @@
 
-# This file was automatically merged from several files at time Thu May  2 09:47:11 DST 2019
+# This file was automatically merged from several files at time Thu May  9 11:38:51 DST 2019
 
 # On Push to master: build R package, push R package doc to file server, deploy/release in Docker
 # for master: also push to R repo and create a github release (which automatically tags it)
@@ -239,16 +239,16 @@ volumes:
     path: /home/ubuntu/sshkeys # this is wrt host drone is running on (because docker daemon is shared!!)
 
 steps:
-# - name: Check branch condition (pre-release)
-#   image: python:3
-#   entrypoint:
-#   - bash
-#   commands:
-#   - |
-#     cat <<- EOF > test.py
-#     if (('${DRONE_TARGET_BRANCH}' == 'master') and (not '${DRONE_SOURCE_BRANCH}'.startswith('pre-release'))): print("Only pre-release can merge into master"); quit(1)
-#     EOF
-#   - python test.py
+- name: Check branch condition (pre-release)
+  image: python:3
+  entrypoint:
+  - bash
+  commands:
+  - |
+    cat <<- EOF > test.py
+    if (('${DRONE_TARGET_BRANCH}' == 'master') and (not '${DRONE_SOURCE_BRANCH}'.startswith('pre-release'))): print("Only pre-release can merge into master"); quit(1)
+    EOF
+  - python test.py
 
 - name: Info about run
   image: alpine
