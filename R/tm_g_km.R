@@ -21,10 +21,10 @@
 #'
 #' library(random.cdisc.data)
 #'
-#' asl <- radsl(seed = 1)
-#' ate <- radtte(asl, seed = 1)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #'
-#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -39,11 +39,11 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = asl, ATE = ate,
+#'     ASL = ASL, ATE = ATE,
 #'     code = "library(random.cdisc.data)
-#'             asl <- radsl(seed = 1)
-#'             ate <- radtte(asl, seed = 1)
-#'             keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+#'             ASL <- radsl(seed = 1)
+#'             ATE <- radtte(ASL, seed = 1)
+#'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(

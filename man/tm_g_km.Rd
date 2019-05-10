@@ -22,7 +22,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{asl} and the element must
+element corresponding to an arm variable in \code{ASL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -55,10 +55,10 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 
 library(random.cdisc.data)
 
-asl <- radsl(seed = 1)
-ate <- radtte(asl, seed = 1)
+ASL <- radsl(seed = 1)
+ATE <- radtte(ASL, seed = 1)
 
-keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -73,11 +73,11 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    ASL = asl, ATE = ate,
+    ASL = ASL, ATE = ATE,
     code = "library(random.cdisc.data)
-            asl <- radsl(seed = 1)
-            ate <- radtte(asl, seed = 1)
-            keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+            ASL <- radsl(seed = 1)
+            ATE <- radtte(ASL, seed = 1)
+            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
     check = FALSE
   ),
   modules = root_modules(

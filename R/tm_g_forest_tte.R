@@ -15,21 +15,21 @@
 #' # reproducible teal app
 #' library(random.cdisc.data)
 #'
-#' asl <- radsl(seed = 1)
-#' ate <- radtte(asl, seed = 1)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #'
-#' asl$RACE <- droplevels(asl$RACE)
-#' keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+#' ASL$RACE <- droplevels(ASL$RACE)
+#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
 #' x <- init(
 #'   data = cdisc_data(
-#'     ASL = asl,
-#'     ATE = ate,
+#'     ASL = ASL,
+#'     ATE = ATE,
 #'     code = 'library(tern)
-#'             asl <- random.cdisc.data::radsl(seed = 1)
-#'             ate <- random.cdisc.data::radtte(asl, seed = 1)
-#'             asl$RACE <- droplevels(asl$RACE)
-#'             keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
+#'             ASL <- random.cdisc.data::radsl(seed = 1)
+#'             ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#'             ASL$RACE <- droplevels(ASL$RACE)
+#'             keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
 #'     check = FALSE
 #'     ),
 #'   modules = root_modules(
@@ -37,7 +37,7 @@
 #'        label = "Forest Survival",
 #'        dataname = "ATE",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
+#'        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
 #'        paramcd = choices_selected(c("OS", "PFS"), "OS"),
 #'        plot_height = c(600, 200, 2000)
 #'     )
@@ -188,8 +188,6 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
           levels(anl[[.(arm_var)]]),
           function(x) paste(strwrap(x, width = 15), collapse = "\n")
         )
-
-        anl
     }))
 
     set_chunk(
@@ -211,7 +209,6 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         )
 
         row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
-        tbl
     }))
 
     set_chunk(
@@ -234,11 +231,13 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
   output$forest_plot <- renderPlot({
     table_reactive()
+    eval_chunk("tm_g_forest_tte_anl")
 
-    anl <- eval_chunk("tm_g_forest_tte_anl")
+    anl <- get_envir_chunks()$anl
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
+    eval_chunk("tm_g_forest_tte_tbl")
 
-    tbl <- eval_chunk("tm_g_forest_tte_tbl")
+    tbl <- try(get_envir_chunks()$tbl)
     if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
 
     eval_remaining()

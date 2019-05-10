@@ -15,21 +15,21 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' asl <- radsl(seed = 1)
-#' ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+#' ASL <- radsl(seed = 1)
+#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 #'
-#' keys(asl) <- c("STUDYID", "USUBJID")
-#' keys(ars) <- c("STUDYID", "USUBJID")
+#' keys(ASL) <- c("STUDYID", "USUBJID")
+#' keys(ARS) <- c("STUDYID", "USUBJID")
 #'
 #' x <- init(
 #'   data = cdisc_data(
-#'    ASL = asl,
-#'    ARS = ars,
+#'    ASL = ASL,
+#'    ARS = ARS,
 #'    code = 'library(tern)
-#'            asl <- random.cdisc.data::radsl(seed = 1)
-#'            ars <- subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")
-#'            keys(asl) <- c("STUDYID", "USUBJID")
-#'            keys(ars) <- c("STUDYID", "USUBJID")',
+#'            ASL <- random.cdisc.data::radsl(seed = 1)
+#'            ARS <- subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#'            keys(ASL) <- c("STUDYID", "USUBJID")
+#'            keys(ARS) <- c("STUDYID", "USUBJID")',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
@@ -37,7 +37,7 @@
 #'       dataname = "ARS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-#'       subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
+#'       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
 #'       plot_height = c(600L, 200L, 2000L)
 #'     )
 #'   )
@@ -267,8 +267,6 @@ srv_g_forest_rsp <- function(input,
           paste(strwrap(x, width = 15), collapse = "\n")
         }
       )
-
-      anl
     })
     set_chunk("tm_g_forest_rsp_data", chunk_data_expr)
 
@@ -317,7 +315,9 @@ srv_g_forest_rsp <- function(input,
   output$forest_plot <- renderPlot({
     tm_g_forest_rsp_call()
 
-    anl <- eval_chunk("tm_g_forest_rsp_data")
+    eval_chunk("tm_g_forest_rsp_data")
+    anl <- get_envir_chunks()$anl
+
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
@@ -341,11 +341,9 @@ srv_g_forest_rsp <- function(input,
   observeEvent(input$show_rcode, {
     show_rcode_modal(
       title = "R Code for the Current Reponse Forest Plot",
-      rcode = get_rcode(
-        datasets = datasets,
-        dataname = dataname,
-        title = "Response Forest Plot"
-      )
+      rcode = get_rcode(datasets = datasets,
+                        dataname = dataname,
+                        title = "Response Forest Plot")
     )
   })
 

@@ -44,21 +44,21 @@ This is teal module produces a grid style Forest plot for response data with ADa
 \examples{
 library(random.cdisc.data)
 
-asl <- radsl(seed = 1)
-ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
+ASL <- radsl(seed = 1)
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 
-keys(asl) <- c("STUDYID", "USUBJID")
-keys(ars) <- c("STUDYID", "USUBJID")
+keys(ASL) <- c("STUDYID", "USUBJID")
+keys(ARS) <- c("STUDYID", "USUBJID")
 
 x <- init(
   data = cdisc_data(
-   ASL = asl,
-   ARS = ars,
+   ASL = ASL,
+   ARS = ARS,
    code = 'library(tern)
-           asl <- random.cdisc.data::radsl(seed = 1)
-           ars <- subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == "Follow Up")
-           keys(asl) <- c("STUDYID", "USUBJID")
-           keys(ars) <- c("STUDYID", "USUBJID")',
+           ASL <- random.cdisc.data::radsl(seed = 1)
+           ARS <- subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")
+           keys(ASL) <- c("STUDYID", "USUBJID")
+           keys(ARS) <- c("STUDYID", "USUBJID")',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
@@ -66,7 +66,7 @@ x <- init(
       dataname = "ARS",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-      subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
+      subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
       plot_height = c(600L, 200L, 2000L)
     )
   )

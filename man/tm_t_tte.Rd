@@ -20,7 +20,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{asl} and the element must
+element corresponding to an arm variable in \code{ASL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -62,29 +62,29 @@ This modules expects that the analysis data has the following variables
  filtering for \code{paramcd} one observation per patient is expected
 }
 
-The arm variables, stratification variables and taken from the \code{asl}
+The arm variables, stratification variables and taken from the \code{ASL}
 data.
 }
 \examples{
 
-asl <- random.cdisc.data::radsl(seed = 1)
-ate <- random.cdisc.data::radtte(asl, seed = 1)
+ASL <- random.cdisc.data::radsl(seed = 1)
+ATE <- random.cdisc.data::radtte(ASL, seed = 1)
 
-keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 app <- init(
-    data = cdisc_data(ASL = asl, ATE = ate,
+    data = cdisc_data(ASL = ASL, ATE = ATE,
         code = "library(tern)
-                asl <- random.cdisc.data::radsl(seed = 1)
-                ate <- random.cdisc.data::radtte(asl, seed = 1)
-                keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+                ASL <- random.cdisc.data::radsl(seed = 1)
+                ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(
             label = "Time To Event Table",
             dataname = 'ATE',
             arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-            paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
+            paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
             time_points = choices_selected(c(6, 8), 6),
             time_unit = "month",
@@ -105,11 +105,11 @@ app <- init(
 library(dplyr)
 library(teal)
 
-asl <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
+ASL <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
   ARM1 = sample(c("DUMMY A", "DUMMY B"),
   dplyr::n(), TRUE))
-ate <- random.cdisc.data::radtte(asl, seed = 1)
-keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 arm_ref_comp = list(
   ACTARMCD = list(
@@ -123,12 +123,12 @@ arm_ref_comp = list(
 )
 library(magrittr)
 app <- teal::init(
-    data = cdisc_data(ASL = asl, ATE = ate,
+    data = cdisc_data(ASL = ASL, ATE = ATE,
         code = "library(dplyr)
-   asl <- random.cdisc.data::radsl(seed = 1) \%>\%
+   ASL <- random.cdisc.data::radsl(seed = 1) \%>\%
 dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-            ate <- random.cdisc.data::radtte(asl, seed = 1)
-            keys(asl) <- keys(ate) <- c('USUBJID', 'STUDYID')",
+            ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(
@@ -136,7 +136,7 @@ dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
          dataname = 'ATE',
          arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
          arm_ref_comp = arm_ref_comp,
-         paramcd = choices_selected(unique(ate$PARAMCD), "OS"),
+         paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
          strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
          time_points = choices_selected(c(6, 8), 6),
          time_unit = "months",

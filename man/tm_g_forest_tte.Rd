@@ -46,21 +46,21 @@ with ADaM structure
 # reproducible teal app
 library(random.cdisc.data)
 
-asl <- radsl(seed = 1)
-ate <- radtte(asl, seed = 1)
+ASL <- radsl(seed = 1)
+ATE <- radtte(ASL, seed = 1)
 
-asl$RACE <- droplevels(asl$RACE)
-keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")
+ASL$RACE <- droplevels(ASL$RACE)
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 x <- init(
   data = cdisc_data(
-    ASL = asl,
-    ATE = ate,
+    ASL = ASL,
+    ATE = ATE,
     code = 'library(tern)
-            asl <- random.cdisc.data::radsl(seed = 1)
-            ate <- random.cdisc.data::radtte(asl, seed = 1)
-            asl$RACE <- droplevels(asl$RACE)
-            keys(asl) <- keys(ate) <- c("USUBJID", "STUDYID")',
+            ASL <- random.cdisc.data::radsl(seed = 1)
+            ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+            ASL$RACE <- droplevels(ASL$RACE)
+            keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
     check = FALSE
     ),
   modules = root_modules(
@@ -68,7 +68,7 @@ x <- init(
        label = "Forest Survival",
        dataname = "ATE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(asl), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
        paramcd = choices_selected(c("OS", "PFS"), "OS"),
        plot_height = c(600, 200, 2000)
     )

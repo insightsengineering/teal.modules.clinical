@@ -19,7 +19,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{asl} and the element must
+element corresponding to an arm variable in \code{ASL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -67,21 +67,21 @@ Additional standard UI inputs include \code{responders},
 \examples{
 library(random.cdisc.data)
 
-asl <- radsl(seed = 1)
-keys(asl) <- c("STUDYID", "USUBJID")
+ASL <- radsl(seed = 1)
+keys(ASL) <- c("STUDYID", "USUBJID")
 
-ars <- subset(radrs(asl, seed = 1), AVISIT == "Follow Up")
-keys(ars) <- c("STUDYID", "USUBJID")
+ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+keys(ARS) <- c("STUDYID", "USUBJID")
 
 app <- init(
   data = cdisc_data(
-    ASL = asl,
-    ARS = ars,
+    ASL = ASL,
+    ARS = ARS,
     code = "library(tern)
-            asl <- random.cdisc.data::radsl(seed = 1)
-            ars <- subset(random.cdisc.data::radrs(asl, seed = 1), AVISIT == 'Follow Up')
-            keys(asl) <- c('STUDYID', 'USUBJID')
-            keys(ars) <- c('STUDYID', 'USUBJID')",
+            ASL <- random.cdisc.data::radsl(seed = 1)
+            ARS <- subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == 'Follow Up')
+            keys(ASL) <- c('STUDYID', 'USUBJID')
+            keys(ARS) <- c('STUDYID', 'USUBJID')",
      check = FALSE
   ),
   modules = root_modules(
@@ -89,7 +89,7 @@ app <- init(
       label = "Response Table",
       dataname = 'ARS',
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      paramcd = choices_selected(unique(ars$PARAMCD), "BESRSPI"),
+      paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
