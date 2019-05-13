@@ -76,7 +76,6 @@ tm_t_rsp <- function(label,
   stop_if_not(list(is.character.single(label), "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is.character.vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.null(arm_ref_comp) || is.choices_selected(arm_ref_comp))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
 
