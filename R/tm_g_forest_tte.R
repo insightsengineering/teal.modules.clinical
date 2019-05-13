@@ -232,13 +232,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   output$forest_plot <- renderPlot({
     table_reactive()
     eval_chunk("tm_g_forest_tte_anl")
-
     anl <- get_envir_chunks()$anl
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
-    eval_chunk("tm_g_forest_tte_tbl")
 
-    tbl <- try(get_envir_chunks()$tbl)
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
+    eval_chunk("tm_g_forest_tte_tbl")
+    tbl <- get_envir_chunks()$tbl
+    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
 
     eval_remaining()
   })

@@ -104,24 +104,28 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
 
-    table_call <- call(
-      "t_summary",
-      x = bquote(.(as.name(data_name))[, .(summarize_vars), drop = FALSE]),
-      col_by = bquote(as.factor(.(as.name(data_name))[[.(arm_var)]])),
-      total = "All Patients",
-      useNA = "ifany"
-    )
-
     renew_chunk_environment(envir = environment())
     renew_chunks()
-    set_chunk("tableCall", table_call)
 
+    table_chunk_expr <- bquote(
+      tbl <- t_summary(
+        x = .(as.name(data_name))[, .(summarize_vars), drop = FALSE],
+        col_by = as.factor(.(as.name(data_name))[[.(arm_var)]]),
+        total = "All Patients",
+        useNA = "ifany"
+      )
+    )
+    set_chunk("tm_t_summary_tbl", expression = table_chunk_expr)
+
+    return(invisible)
   })
 
   output$table <- renderUI({
     table_call()
-    tbl <- eval_remaining()
-    if (is(tbl, "try-error")) validate(need(FALSE, paste0("could not calculate the table:\n\n", tbl)))
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
+    validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
+
     rtables::as_html(tbl)
 
   })

@@ -125,10 +125,10 @@ library(magrittr)
 app <- teal::init(
     data = cdisc_data(ASL = ASL, ATE = ATE,
         code = "library(dplyr)
-   ASL <- random.cdisc.data::radsl(seed = 1) \%>\%
-dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-            ATE <- random.cdisc.data::radtte(ASL, seed = 1)
-            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+               ASL <- random.cdisc.data::radsl(seed = 1) \%>\%
+               dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
+               ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+               keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(

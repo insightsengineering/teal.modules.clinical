@@ -292,7 +292,9 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
         p <- addGrob(p, km_grob)
         p <- addGrob(p, coxph_grob)
-        grid.draw(p)
+        plot <- grid.draw(p)
+
+        plot
       }))
     } else {
       set_chunk(expression = bquote({
@@ -348,8 +350,9 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             p
           }
         }, dfs, levels(lab))
+        plot <- grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
 
-        grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
+        plot
       }))
     }
   })
@@ -363,10 +366,10 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
   output$plot <- renderPlot({
     plot_call()
+    eval_remaining()
+    p <- get_envir_chunks()$plot
 
-    p <- eval_remaining()
-
-    if (is(p, "try-error")) {
+    if (is.null(p)) {
       validate(need(FALSE, p))
     } else {
       p

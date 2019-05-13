@@ -332,18 +332,19 @@ srv_t_rsp <- function(input,
     )
     set_chunk("tm_t_rsp_arm_var", chunk_call_arm_var)
 
-    table_call <- call(
-      "t_rsp",
-      rsp = bquote(anl$AVALC %in% .(responders)),
-      col_by = bquote(anl[[.(arm_var)]]),
-      partition_rsp_by = bquote(as.factor(anl$AVALC)),
-      strata_data = if (length(strata_var) > 0) {
-        bquote(anl[, .(strata_var), drop = FALSE])
-      } else {
-        NULL
-      }
+    chunk_table_expr <- bquote(
+      tbl <- t_rsp(
+        rsp = anl$AVALC %in% .(responders),
+        col_by = anl[[.(arm_var)]],
+        partition_rsp_by = as.factor(anl$AVALC),
+        strata_data = if (length(strata_var) > 0) {
+          anl[, .(strata_var), drop = FALSE]
+        } else {
+          NULL
+        }
+      )
     )
-    set_chunk("tm_t_rsp", table_call)
+    set_chunk("tm_t_rsp", chunk_table_expr)
 
     invisible(NULL)
   })
@@ -359,18 +360,15 @@ srv_t_rsp <- function(input,
       stop("only one row per patient expected")
     }
 
-    anl <- eval_chunk("tm_t_rsp_anl")
+    eval_chunk("tm_t_rsp_anl")
+    anl <- get_envir_chunks()$anl
+
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    eval_chunk("tm_t_rsp_arm")
-
-    eval_chunk("tm_t_rsp_arm_var")
-
-    tbl <- eval_chunk("tm_t_rsp")
-    if (is(tbl, "try-error")) {
-      validate(need(FALSE, paste0("could not calculate response table:\n\n", tbl)))
-    }
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
+    validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
 
     rtables::as_html(tbl)
   })

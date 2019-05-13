@@ -107,10 +107,10 @@
 #' app <- teal::init(
 #'     data = cdisc_data(ASL = ASL, ATE = ATE,
 #'         code = "library(dplyr)
-#'    ASL <- random.cdisc.data::radsl(seed = 1) %>%
-#' dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-#'             ATE <- random.cdisc.data::radtte(ASL, seed = 1)
-#'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+#'                ASL <- random.cdisc.data::radsl(seed = 1) %>%
+#'                dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
+#'                ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#'                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
@@ -315,34 +315,33 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
 
     validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
 
-    set_chunk(
-        id = "final_table",
-        expression =
-            call(
-                name = "t_tte",
-                formula = as.formula(paste0(
-                        "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
-                        if (length(strata_var) == 0){
-                              ""
-                            }else{
-                              paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
-                            }
-                    )),
-                data = quote(anl),
-                event_descr = if (is.null(event_desc_var)) NULL else call("as.factor", as.name(event_desc_var)),
-                time_points = time_points,
-                time_unit = time_unit
-            )
-    )
+    table_expr <- bquote({
+      tbl <- t_tte(
+        formula = .(as.formula(
+          paste0(
+            "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
+            if (length(strata_var) == 0) {
+              ""
+            } else {
+              paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
+            }))),
+        data = anl,
+        event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
+        time_points = .(time_points),
+        time_unit = .(time_unit)
+      )
+      tbl
+    })
+
+    set_chunk(id = "final_table", expression = table_expr)
   })
 
   output$tte_table <- renderUI({
-        table_reactive()
-
-        table_result <- eval_remaining()
-        validate(need(is(table_result, "rtable"), "Evaluation with tern t_tte failed."))
-
-        as_html(table_result)
+      table_reactive()
+      eval_remaining()
+      tbl <- get_envir_chunks()$tbl
+      validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
+      as_html(tbl)
   })
 
 

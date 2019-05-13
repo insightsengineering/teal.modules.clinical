@@ -322,10 +322,9 @@ srv_g_forest_rsp <- function(input,
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
 
-    tbl <- try(eval_chunk("tm_g_forest_rsp_table"))
-    if (is(tbl, "try-error")) {
-      validate(need(FALSE, paste0("could not calculate forest table:\n\n", tbl)))
-    }
+    eval_chunk("tm_g_forest_rsp_table")
+    tbl <- get_envir_chunks()$tbl
+    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
 
     eval_remaining()
   })
