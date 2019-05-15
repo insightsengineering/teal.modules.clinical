@@ -75,6 +75,7 @@ app <- init(
   data = cdisc_data(
     ASL = ASL, ATE = ATE,
     code = "library(random.cdisc.data)
+            library(tern)
             ASL <- radsl(seed = 1)
             ATE <- radtte(ASL, seed = 1)
             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
