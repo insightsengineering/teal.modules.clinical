@@ -122,7 +122,6 @@ ui_g_forest_tte <- function(id, ...) {
   )
 }
 
-
 srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5) {
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
