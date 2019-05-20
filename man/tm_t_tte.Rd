@@ -66,17 +66,17 @@ The arm variables, stratification variables and taken from the \code{ASL}
 data.
 }
 \examples{
+library(random.cdisc.data)
 
-ASL <- random.cdisc.data::radsl(seed = 1)
-ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+ASL <- radsl(seed = 1)
+ATE <- radtte(ASL, seed = 1)
 
 keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 app <- init(
     data = cdisc_data(ASL = ASL, ATE = ATE,
-        code = "library(tern)
-                ASL <- random.cdisc.data::radsl(seed = 1)
-                ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+        code = "ASL <- radsl(seed = 1)
+                ATE <- radtte(ASL, seed = 1)
                 keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
@@ -102,13 +102,14 @@ app <- init(
 
 ## Define default reference & comparison arms based on
 ## ARM variable
-library(dplyr)
 library(teal)
+library(dplyr)
+library(magrittr)
 
-ASL <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
+ASL <- mutate(radsl(seed = 1),
   ARM1 = sample(c("DUMMY A", "DUMMY B"),
-  dplyr::n(), TRUE))
-ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+  n(), TRUE))
+ATE <- radtte(ASL, seed = 1)
 keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 arm_ref_comp = list(
@@ -121,14 +122,12 @@ arm_ref_comp = list(
     comp = "DUMMY A"
   )
 )
-library(magrittr)
-app <- teal::init(
+app <- init(
     data = cdisc_data(ASL = ASL, ATE = ATE,
-        code = "library(dplyr)
-               ASL <- random.cdisc.data::radsl(seed = 1) \%>\%
-               dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-               ATE <- random.cdisc.data::radtte(ASL, seed = 1)
-               keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+        code = "ASL <- radsl(seed = 1) \%>\%
+                mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
+                ATE <- radtte(ASL, seed = 1)
+                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(

@@ -21,12 +21,11 @@ library(teal.modules.clinical)
 # your reproducible example here, e.g.
 
 library(random.cdisc.data)
-ASL <- radam("ASL", N = 200)
+ASL <- radsl(N = 200)
 
-x <- teal::init(
+x <- init(
   data = list(ASL=ASL),
   modules = root_modules(
-    tm_data_table(),
     tm_t_summary(
     	label = "Demographic Table",
     	dataname = "ASL",

@@ -6,6 +6,8 @@
 #' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary
 #'
+#' @importFrom rtables as_html
+#'
 #' @export
 #'
 #' @template author_waddella
@@ -19,8 +21,7 @@
 #' x <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL,
-#'     code = 'library(tern)
-#'             ASL <- random.cdisc.data::radsl(seed = 1)
+#'     code = 'ASL <- radsl(seed = 1)
 #'             keys(ASL) <- c("STUDYID", "USUBJID")',
 #'     check = FALSE),
 #'   modules = root_modules(
@@ -64,7 +65,7 @@ ui_t_summary <- function(id, ...) {
   a <- list(...)
 
   standard_layout(
-    output = teal.devel::white_small_well(uiOutput(ns("table"))),
+    output = white_small_well(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -95,7 +96,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     arm_var <- input$arm_var
     summarize_vars <- input$summarize_vars
 
-    teal.devel::validate_has_data(anl_f, min_nrow = 3)
+    validate_has_data(anl_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
     validate(need(anl_f[[arm_var]], "Arm variable does not exist"))
@@ -126,12 +127,12 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     tbl <- get_envir_chunks()$tbl
     validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
 
-    rtables::as_html(tbl)
+    as_html(tbl)
 
   })
 
   observeEvent(input$show_rcode, {
-    teal.devel::show_rcode_modal(
+    show_rcode_modal(
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,

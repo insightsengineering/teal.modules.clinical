@@ -54,9 +54,8 @@ x <- init(
   data = cdisc_data(
    ASL = ASL,
    ARS = ARS,
-   code = 'library(tern)
-           ASL <- random.cdisc.data::radsl(seed = 1)
-           ARS <- subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")
+   code = 'ASL <- radsl(seed = 1)
+           ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
            keys(ASL) <- c("STUDYID", "USUBJID")
            keys(ARS) <- c("STUDYID", "USUBJID")',
    check = FALSE),

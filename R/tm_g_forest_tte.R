@@ -25,9 +25,8 @@
 #'   data = cdisc_data(
 #'     ASL = ASL,
 #'     ATE = ATE,
-#'     code = 'library(tern)
-#'             ASL <- random.cdisc.data::radsl(seed = 1)
-#'             ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#'     code = 'ASL <- radsl(seed = 1)
+#'             ATE <- radtte(ASL, seed = 1)
 #'             ASL$RACE <- droplevels(ASL$RACE)
 #'             keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
 #'     check = FALSE
@@ -125,7 +124,7 @@ ui_g_forest_tte <- function(id, ...) {
 srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5) {
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
+  arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -145,7 +144,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     subgroup_var <- input$subgroup_var
 
     # validate your input values
-    teal.devel::validate_standard_inputs(
+    validate_standard_inputs(
       asl = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       anl = ANL_FILTERED,
@@ -155,7 +154,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       comp_arm = comp_arm
     )
 
-    teal.devel::validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
 
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
@@ -213,15 +212,15 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     set_chunk(
       id = "tm_g_forest_tte_plot",
       expression = call(
-          "g_forest",
-          tbl = quote(tbl),
-          col_x = 8,
-          col_ci = 9,
-          vline = 1,
-          forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
-          xlim = c(.1, 10),
-          logx = TRUE,
-          x_at = c(.1, 1, 10)
+        "g_forest",
+        tbl = quote(tbl),
+        col_x = 8,
+        col_ci = 9,
+        vline = 1,
+        forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
+        xlim = c(.1, 10),
+        logx = TRUE,
+        x_at = c(.1, 1, 10)
       )
     )
 
