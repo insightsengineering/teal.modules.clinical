@@ -50,7 +50,7 @@ ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 keys(ASL) <- c("STUDYID", "USUBJID")
 keys(ARS) <- c("STUDYID", "USUBJID")
 
-x <- init(
+app <- init(
   data = cdisc_data(
    ASL = ASL,
    ARS = ARS,
@@ -72,7 +72,7 @@ x <- init(
 )
 
 \dontrun{
-shinyApp(x$ui, x$server)
+shinyApp(app$ui, app$server)
 }
 }
 \author{

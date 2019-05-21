@@ -21,7 +21,7 @@
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #' keys(ARS) <- c("STUDYID", "USUBJID")
 #'
-#' x <- init(
+#' app <- init(
 #'   data = cdisc_data(
 #'    ASL = ASL,
 #'    ARS = ARS,
@@ -43,7 +43,7 @@
 #' )
 #'
 #' \dontrun{
-#' shinyApp(x$ui, x$server)
+#' shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_rsp <- function(label,
                             dataname,

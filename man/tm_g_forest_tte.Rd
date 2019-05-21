@@ -52,7 +52,7 @@ ATE <- radtte(ASL, seed = 1)
 ASL$RACE <- droplevels(ASL$RACE)
 keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
-x <- init(
+app <- init(
   data = cdisc_data(
     ASL = ASL,
     ATE = ATE,
@@ -75,7 +75,7 @@ x <- init(
 )
 
 \dontrun{
-  shinyApp(x$ui, x$server)
+  shinyApp(app$ui, app$server)
 }
 }
 \author{
