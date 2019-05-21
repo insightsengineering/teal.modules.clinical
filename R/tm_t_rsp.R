@@ -63,6 +63,7 @@
 #' shinyApp(app$ui, app$server)
 #' }
 #'
+#' @importFrom methods substituteDirect
 tm_t_rsp <- function(label,
                      dataname,
                      arm_var,
