@@ -48,17 +48,17 @@
 #' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
+#' library(random.cdisc.data)
 #'
-#' ASL <- random.cdisc.data::radsl(seed = 1)
-#' ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#' ASL <- radsl(seed = 1)
+#' ATE <- radtte(ASL, seed = 1)
 #'
 #' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
 #' app <- init(
 #'     data = cdisc_data(ASL = ASL, ATE = ATE,
-#'         code = "library(tern)
-#'                 ASL <- random.cdisc.data::radsl(seed = 1)
-#'                 ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#'         code = "ASL <- radsl(seed = 1)
+#'                 ATE <- radtte(ASL, seed = 1)
 #'                 keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'         check = FALSE),
 #'     modules = root_modules(
@@ -84,13 +84,14 @@
 #'
 #' ## Define default reference & comparison arms based on
 #' ## ARM variable
-#' library(dplyr)
 #' library(teal)
+#' library(dplyr)
+#' library(magrittr)
 #'
-#' ASL <- dplyr::mutate(random.cdisc.data::radsl(seed = 1),
+#' ASL <- mutate(radsl(seed = 1),
 #'   ARM1 = sample(c("DUMMY A", "DUMMY B"),
-#'   dplyr::n(), TRUE))
-#' ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+#'   n(), TRUE))
+#' ATE <- radtte(ASL, seed = 1)
 #' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
 #' arm_ref_comp = list(
@@ -103,14 +104,12 @@
 #'     comp = "DUMMY A"
 #'   )
 #' )
-#' library(magrittr)
-#' app <- teal::init(
+#' app <- init(
 #'     data = cdisc_data(ASL = ASL, ATE = ATE,
-#'         code = "library(dplyr)
-#'                ASL <- random.cdisc.data::radsl(seed = 1) %>%
-#'                dplyr::mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-#'                ATE <- random.cdisc.data::radtte(ASL, seed = 1)
-#'                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+#'         code = "ASL <- radsl(seed = 1) %>%
+#'                 mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
+#'                 ATE <- radtte(ASL, seed = 1)
+#'                 keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
@@ -226,8 +225,14 @@ ui_t_tte <- function(id, ...) {
 
 #' @import teal.devel
 #' @importFrom rtables as_html
-srv_t_tte <- function(input, output, session, datasets, dataname,
-                      arm_ref_comp, time_unit, event_desc_var,
+srv_t_tte <- function(input,
+                      output,
+                      session,
+                      datasets,
+                      dataname,
+                      arm_ref_comp,
+                      time_unit,
+                      event_desc_var,
                       label) {
 
   # Setup arm variable selection, default reference arms, and default
@@ -298,11 +303,11 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
     set_chunk(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
     set_chunk(expression = bquote(anl <- merge(
-        x = asl_p[, .(asl_vars)],
-        y = anl_endpoint[, .(anl_vars)],
-        all.x = FALSE, all.y = FALSE,
-        by = c("USUBJID", "STUDYID")
-      )))
+      x = asl_p[, .(asl_vars)],
+      y = anl_endpoint[, .(anl_vars)],
+      all.x = FALSE, all.y = FALSE,
+      by = c("USUBJID", "STUDYID")
+    )))
 
     set_chunk(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
     set_chunk(expression = bquote(arm <- combine_levels(arm, ref_arm)))
@@ -337,22 +342,22 @@ srv_t_tte <- function(input, output, session, datasets, dataname,
   })
 
   output$tte_table <- renderUI({
-      table_reactive()
-      eval_remaining()
-      tbl <- get_envir_chunks()$tbl
-      validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
-      as_html(tbl)
+    table_reactive()
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
+    validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
+    as_html(tbl)
   })
 
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(
-        title = "Cross Table",
-        rcode = get_rcode(
-            datasets = datasets,
-            dataname = c("ASL", dataname),
-            title = label
-        )
+      title = "Cross Table",
+      rcode = get_rcode(
+        datasets = datasets,
+        dataname = c("ASL", dataname),
+        title = label
+      )
     )
   })
 

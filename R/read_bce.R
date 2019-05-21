@@ -7,6 +7,9 @@
 #' @param file file path, needs to be an absolute file path
 #' @param encoding encoding
 #'
+#' @importFrom haven read_sas
+#' @importFrom tools md5sum
+#'
 #' @export
 #'
 read_bce <- function(file, encoding = NULL) {
@@ -22,9 +25,9 @@ read_bce <- function(file, encoding = NULL) {
     stop("file", file, "either does not exists or you do not have access")
   }
 
-  d <- haven::read_sas(file, encoding)
+  d <- read_sas(file, encoding)
 
-  attr(d, "md5sum") <- tools::md5sum(file)
+  attr(d, "md5sum") <- md5sum(file)
   attr(d, "source") <- paste0(
     "read_bce(file='",
     file,

@@ -42,9 +42,8 @@
 #'   data = cdisc_data(
 #'     ASL = ASL,
 #'     ARS = ARS,
-#'     code = "library(tern)
-#'             ASL <- random.cdisc.data::radsl(seed = 1)
-#'             ARS <- subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == 'Follow Up')
+#'     code = "ASL <- radsl(seed = 1)
+#'             ARS <- subset(radrs(ASL, seed = 1), AVISIT == 'Follow Up')
 #'             keys(ASL) <- c('STUDYID', 'USUBJID')
 #'             keys(ARS) <- c('STUDYID', 'USUBJID')",
 #'      check = FALSE
@@ -118,7 +117,7 @@ ui_t_rsp <- function(id, ...) {
   a <- list(...)
 
   standard_layout(
-    output = teal.devel::white_small_well(uiOutput(ns("response_table"))),
+    output = white_small_well(uiOutput(ns("response_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -269,7 +268,7 @@ srv_t_rsp <- function(input,
       comp_arm = comp_arm
     )
 
-    teal.devel::validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
+    validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
 
@@ -369,7 +368,7 @@ srv_t_rsp <- function(input,
     tbl <- get_envir_chunks()$tbl
     validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
 
-    rtables::as_html(tbl)
+    as_html(tbl)
   })
 
 

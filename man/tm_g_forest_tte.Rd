@@ -56,9 +56,8 @@ x <- init(
   data = cdisc_data(
     ASL = ASL,
     ATE = ATE,
-    code = 'library(tern)
-            ASL <- random.cdisc.data::radsl(seed = 1)
-            ATE <- random.cdisc.data::radtte(ASL, seed = 1)
+    code = 'ASL <- radsl(seed = 1)
+            ATE <- radtte(ASL, seed = 1)
             ASL$RACE <- droplevels(ASL$RACE)
             keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
     check = FALSE

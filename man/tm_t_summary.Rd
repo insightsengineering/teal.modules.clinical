@@ -41,8 +41,7 @@ keys(ASL) <- c("STUDYID", "USUBJID")
 x <- init(
   data = cdisc_data(
     ASL = ASL,
-    code = 'library(tern)
-            ASL <- random.cdisc.data::radsl(seed = 1)
+    code = 'ASL <- radsl(seed = 1)
             keys(ASL) <- c("STUDYID", "USUBJID")',
     check = FALSE),
   modules = root_modules(

@@ -40,9 +40,7 @@
 #' app <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL, ATE = ATE,
-#'     code = "library(random.cdisc.data)
-#'             library(tern)
-#'             ASL <- radsl(seed = 1)
+#'     code = "ASL <- radsl(seed = 1)
 #'             ATE <- radtte(ASL, seed = 1)
 #'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'     check = FALSE
@@ -153,11 +151,17 @@ ui_g_km <- function(id, ...) {
 }
 
 
-srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
-                     dataname, arm_ref_comp, label) {
+srv_g_km <- function(input,
+                     output,
+                     session,
+                     datasets,
+                     tbl_fontsize,
+                     dataname,
+                     arm_ref_comp,
+                     label) {
   use_chunks(session)
 
-  teal.devel::arm_ref_comp_observer(
+  arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
     asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
@@ -188,19 +192,25 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
 
     paramcd <- input$paramcd # nolint
     arm_var <- input$arm_var
-    facet_var <<- input$facet_var
+    facet_var <- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     xlab <- input$xlab # nolint
 
-    if (length(facet_var) == 0) facet_var <<- NULL
-    if (length(strata_var) == 0) strata_var <- NULL
+    if (length(facet_var) == 0) {
+      facet_var <<- NULL
+    }
+    if (length(strata_var) == 0) {
+      strata_var <- NULL
+    }
 
-    for (i in seq_along(chunks)) chunks[[i]] <<- "# Not calculated"
+    for (i in seq_along(chunks)) {
+      chunks[[i]] <<- "# Not calculated"
+    }
 
-    teal.devel::validate_standard_inputs(
+    validate_standard_inputs(
       asl = ASL_FILTERED, # nolint
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
@@ -351,7 +361,7 @@ srv_g_km <- function(input, output, session, datasets, tbl_fontsize,
             p
           }
         }, dfs, levels(lab))
-        plot <- grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
+        plot <- grid.draw(arrangeGrob(grobs = pl, ncol = 1))
 
         plot
       }))
