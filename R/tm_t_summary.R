@@ -18,7 +18,7 @@
 #' ASL <- radsl(seed = 1)
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #'
-#' x <- init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL,
 #'     code = 'ASL <- radsl(seed = 1)
@@ -34,7 +34,7 @@
 #'   )
 #'
 #' \dontrun{
-#' shinyApp(x$ui, x$server)
+#' shinyApp(app$ui, app$server)
 #' }
 tm_t_summary <- function(label,
                          dataname,

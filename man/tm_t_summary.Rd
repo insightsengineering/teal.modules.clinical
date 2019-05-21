@@ -38,7 +38,7 @@ library(random.cdisc.data)
 ASL <- radsl(seed = 1)
 keys(ASL) <- c("STUDYID", "USUBJID")
 
-x <- init(
+app <- init(
   data = cdisc_data(
     ASL = ASL,
     code = 'ASL <- radsl(seed = 1)
@@ -54,7 +54,7 @@ x <- init(
   )
 
 \dontrun{
-shinyApp(x$ui, x$server)
+shinyApp(app$ui, app$server)
 }
 }
 \author{

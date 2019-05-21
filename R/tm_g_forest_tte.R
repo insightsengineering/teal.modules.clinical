@@ -21,7 +21,7 @@
 #' ASL$RACE <- droplevels(ASL$RACE)
 #' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
-#' x <- init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL,
 #'     ATE = ATE,
@@ -44,7 +44,7 @@
 #' )
 #'
 #' \dontrun{
-#'   shinyApp(x$ui, x$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
                             dataname,
