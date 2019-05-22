@@ -63,6 +63,7 @@
 #' shinyApp(app$ui, app$server)
 #' }
 #'
+#' @importFrom methods substituteDirect
 tm_t_rsp <- function(label,
                      dataname,
                      arm_var,
@@ -330,16 +331,19 @@ srv_t_rsp <- function(input,
     )
     set_chunk("tm_t_rsp_arm_var", chunk_call_arm_var)
 
+    strata_data <- if (length(strata_var) > 0) {
+      quote(anl[, strata_var, drop = FALSE]) %>%
+          substituteDirect(list(strata_var = strata_var))
+    } else {
+      NULL
+    }
+
     chunk_table_expr <- bquote(
       tbl <- t_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
         partition_rsp_by = as.factor(anl$AVALC),
-        strata_data = if (length(strata_var) > 0) {
-          anl[, .(strata_var), drop = FALSE]
-        } else {
-          NULL
-        }
+        strata_data = .(strata_data)
       )
     )
     set_chunk("tm_t_rsp", chunk_table_expr)
