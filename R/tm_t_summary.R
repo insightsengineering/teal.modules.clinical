@@ -109,7 +109,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     renew_chunks()
 
     table_chunk_expr <- bquote(
-      tbl <- t_summary(
+      t_summary(
         x = .(as.name(data_name))[, .(summarize_vars), drop = FALSE],
         col_by = as.factor(.(as.name(data_name))[[.(arm_var)]]),
         total = "All Patients",
@@ -123,8 +123,8 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
 
   output$table <- renderUI({
     table_call()
-    eval_remaining()
-    tbl <- get_envir_chunks()$tbl
+
+    tbl <- eval_remaining()
     validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
 
     as_html(tbl)

@@ -202,6 +202,7 @@ ui_t_rsp <- function(id, ...) {
 #'
 #' @importFrom forcats fct_relevel fct_collapse
 #' @importFrom rtables as_html
+#' @importFrom methods substituteDirect
 #' @noRd
 #'
 srv_t_rsp <- function(input,
@@ -330,16 +331,19 @@ srv_t_rsp <- function(input,
     )
     set_chunk("tm_t_rsp_arm_var", chunk_call_arm_var)
 
+    strata_data <- if (length(strata_var) > 0) {
+      quote(anl[, strata_var, drop = FALSE]) %>%
+          substituteDirect(list(strata_var = strata_var))
+    } else {
+      NULL
+    }
+
     chunk_table_expr <- bquote(
-      tbl <- t_rsp(
+      t_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
         partition_rsp_by = as.factor(anl$AVALC),
-        strata_data = if (length(strata_var) > 0) {
-          anl[, .(strata_var), drop = FALSE]
-        } else {
-          NULL
-        }
+        strata_data = .(strata_data)
       )
     )
     set_chunk("tm_t_rsp", chunk_table_expr)
@@ -364,8 +368,7 @@ srv_t_rsp <- function(input,
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    eval_remaining()
-    tbl <- get_envir_chunks()$tbl
+    tbl <- eval_remaining()
     validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
 
     as_html(tbl)
