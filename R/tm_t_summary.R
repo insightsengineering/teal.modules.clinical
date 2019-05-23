@@ -124,9 +124,11 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
   output$table <- renderUI({
     table_call()
 
-    tbl <- eval_remaining()
-    validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
+    validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
 
+    set_chunk(expression = quote(tbl))
     as_html(tbl)
 
   })

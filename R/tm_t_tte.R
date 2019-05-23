@@ -343,8 +343,11 @@ srv_t_tte <- function(input,
   output$tte_table <- renderUI({
     table_reactive()
 
-    tbl <- eval_remaining()
-    validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
+    validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
+
+    set_chunk(expression = quote(tbl))
     as_html(tbl)
   })
 

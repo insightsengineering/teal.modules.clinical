@@ -369,9 +369,11 @@ srv_t_rsp <- function(input,
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    tbl <- eval_remaining()
+    eval_remaining()
+    tbl <- get_envir_chunks()$tbl
     validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
 
+    set_chunk(expression = quote(tbl))
     as_html(tbl)
   })
 
