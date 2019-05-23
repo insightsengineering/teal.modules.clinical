@@ -186,7 +186,7 @@ srv_g_km <- function(input,
     t_kmplot = "# No Calculated"
   )
 
-  plot_call <- reactive({
+  output$plot <- renderPlot({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
 
@@ -366,17 +366,7 @@ srv_g_km <- function(input,
         plot
       }))
     }
-  })
 
-  # Insert the plot into a plot_height module from teal.devel
-  callModule(plot_with_height,
-    id = "myplot",
-    plot_height = reactive(input$myplot),
-    plot_id = session$ns("plot")
-  )
-
-  output$plot <- renderPlot({
-    plot_call()
     eval_remaining()
     p <- get_envir_chunks()$plot
 
@@ -386,6 +376,13 @@ srv_g_km <- function(input,
       p
     }
   })
+
+  # Insert the plot into a plot_height module from teal.devel
+  callModule(plot_with_height,
+    id = "myplot",
+    plot_height = reactive(input$myplot),
+    plot_id = session$ns("plot")
+  )
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(

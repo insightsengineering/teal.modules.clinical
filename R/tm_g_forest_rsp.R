@@ -209,7 +209,8 @@ srv_g_forest_rsp <- function(input,
     )
   })
 
-  tm_g_forest_rsp_call <- reactive({
+
+  output$forest_plot <- renderPlot({
     asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
@@ -309,10 +310,6 @@ srv_g_forest_rsp <- function(input,
     set_chunk("tm_g_forest_rsp", chunk_g_expr)
 
     invisible(NULL)
-  })
-
-  output$forest_plot <- renderPlot({
-    tm_g_forest_rsp_call()
 
     eval_chunk("tm_g_forest_rsp_data")
     anl <- get_envir_chunks()$anl
