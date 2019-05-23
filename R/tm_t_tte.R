@@ -321,7 +321,7 @@ srv_t_tte <- function(input,
     validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
 
     table_expr <- bquote({
-      t_tte(
+      tbl <- t_tte(
         formula = .(as.formula(
           paste0(
             "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
@@ -335,6 +335,7 @@ srv_t_tte <- function(input,
         time_points = .(time_points),
         time_unit = .(time_unit)
       )
+      tbl
     })
 
     set_chunk(id = "final_table", expression = table_expr)
@@ -345,9 +346,8 @@ srv_t_tte <- function(input,
 
     eval_remaining()
     tbl <- get_envir_chunks()$tbl
-    validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
+    validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
 
-    set_chunk(expression = quote(tbl))
     as_html(tbl)
   })
 
