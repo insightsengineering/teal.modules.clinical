@@ -21,7 +21,6 @@ Imports:
   forcats,
   grid,
   gridExtra,
-  haven,
   magrittr,
   methods,
   rtables,

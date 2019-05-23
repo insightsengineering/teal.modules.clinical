@@ -63,6 +63,7 @@
 #' shinyApp(app$ui, app$server)
 #' }
 #'
+#' @importFrom methods substituteDirect
 tm_t_rsp <- function(label,
                      dataname,
                      arm_var,
@@ -380,7 +381,6 @@ srv_t_rsp <- function(input,
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
-        dataname = dataname,
         title = "Response Table"
       )
     )

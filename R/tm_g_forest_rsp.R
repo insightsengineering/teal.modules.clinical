@@ -68,7 +68,7 @@ tm_g_forest_rsp <- function(label,
     plot_height[2] < plot_height[3] && plot_height[1] >= plot_height[2] && plot_height[1] <= plot_height[3],
     "selected plot_height should be between min and max, min should be lower than max"
   ))
-  stop_if_not(list(is_numeric_single(cex), "cex should be single numeric object))"))
+  stop_if_not(list(is.numeric.single(cex), "cex should be single numeric object))"))
   stop_if_not(list(
     is.null(pre_output) || is(pre_output, "shiny.tag"),
     "pre_output should be either null or shiny.tag type of object"
@@ -339,9 +339,7 @@ srv_g_forest_rsp <- function(input,
   observeEvent(input$show_rcode, {
     show_rcode_modal(
       title = "R Code for the Current Reponse Forest Plot",
-      rcode = get_rcode(datasets = datasets,
-                        dataname = dataname,
-                        title = "Response Forest Plot")
+      rcode = get_rcode(datasets = datasets, title = "Response Forest Plot")
     )
   })
 

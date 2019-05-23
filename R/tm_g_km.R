@@ -361,7 +361,7 @@ srv_g_km <- function(input,
             p
           }
         }, dfs, levels(lab))
-        plot <- grid.draw(arrangeGrob(grobs = pl, ncol = 1))
+        plot <- grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
 
         plot
       }))
@@ -392,7 +392,6 @@ srv_g_km <- function(input,
       title = "Kaplan Meyer Plot",
       rcode = get_rcode(
         datasets = datasets,
-        dataname = c("ASL", dataname),
         title = label
       )
     )
