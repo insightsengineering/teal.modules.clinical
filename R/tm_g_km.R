@@ -392,7 +392,6 @@ srv_g_km <- function(input,
       title = "Kaplan Meyer Plot",
       rcode = get_rcode(
         datasets = datasets,
-        dataname = c("ASL", dataname),
         title = label
       )
     )

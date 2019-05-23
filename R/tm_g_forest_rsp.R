@@ -339,9 +339,7 @@ srv_g_forest_rsp <- function(input,
   observeEvent(input$show_rcode, {
     show_rcode_modal(
       title = "R Code for the Current Reponse Forest Plot",
-      rcode = get_rcode(datasets = datasets,
-                        dataname = dataname,
-                        title = "Response Forest Plot")
+      rcode = get_rcode(datasets = datasets, title = "Response Forest Plot")
     )
   })
 
