@@ -7,7 +7,7 @@ Authors@R: c(
   person("Yuyao", "Song", email = "yuyao.song@roche.com", role = c("aut")),
   person("Chendi", "Liao", email = "chendi.liao@roche.com", role = c("aut")),
   person("Mark", "Rothe", role = c("aut")),
-  person("Xiao", "Mu Yo", role = c("aut"))
+  person("Xiao", "Yu Mo", role = c("aut"))
   )
 Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encoding within teal.
