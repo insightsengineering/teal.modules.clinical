@@ -133,7 +133,8 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   )
   use_chunks(session)
 
-  table_reactive <- reactive({
+
+  output$forest_plot <- renderPlot({
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) #nolint
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) #nolint
 
@@ -225,10 +226,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     )
 
     invisible(NULL)
-  })
 
-  output$forest_plot <- renderPlot({
-    table_reactive()
     eval_chunk("tm_g_forest_tte_anl")
     anl <- get_envir_chunks()$anl
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
