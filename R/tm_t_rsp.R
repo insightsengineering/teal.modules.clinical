@@ -203,6 +203,7 @@ ui_t_rsp <- function(id, ...) {
 #'
 #' @importFrom forcats fct_relevel fct_collapse
 #' @importFrom rtables as_html
+#' @importFrom methods substituteDirect
 #' @noRd
 #'
 srv_t_rsp <- function(input,
@@ -338,14 +339,15 @@ srv_t_rsp <- function(input,
       NULL
     }
 
-    chunk_table_expr <- bquote(
+    chunk_table_expr <- bquote({
       tbl <- t_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
         partition_rsp_by = as.factor(anl$AVALC),
         strata_data = .(strata_data)
       )
-    )
+      tbl
+    })
     set_chunk("tm_t_rsp", chunk_table_expr)
 
     invisible(NULL)
@@ -370,7 +372,7 @@ srv_t_rsp <- function(input,
 
     eval_remaining()
     tbl <- get_envir_chunks()$tbl
-    validate(need(is(tbl, "rtable"), "Evaluation with tern tm_t_rsp failed."))
+    validate(need(is(tbl, "rtable"), "Evaluation with tern t_rsp failed."))
 
     as_html(tbl)
   })
