@@ -260,7 +260,6 @@ srv_g_km <- function(input,
     validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
     validate(need(length(get_envir_chunks()$time_unit) == 1, "Time Unit is not consistant"))
 
-
     set_chunk(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
 
     set_chunk(expression = bquote(formula_coxph <- as.formula(
@@ -269,14 +268,13 @@ srv_g_km <- function(input,
         ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
       ))
     )))
-    set_chunk(expression = bquote(info_coxph <-
-      .(paste0(
-        "Cox Proportional Model: ",
-        ifelse(is.null(strata_var),
-          "Unstratified Analysis",
-          paste0("Stratified by ", paste(strata_var, collapse = ","))
-        )
-      ))))
+    set_chunk(expression = bquote(info_coxph <- .(paste0(
+      "Cox Proportional Model: ",
+      ifelse(is.null(strata_var),
+             "Unstratified Analysis",
+             paste0("Stratified by ", paste(strata_var, collapse = ","))
+      )
+    ))))
 
     if (is.null(facet_var)) {
       set_chunk(expression = bquote({
@@ -325,7 +323,7 @@ srv_g_km <- function(input,
         grid.newpage()
         pl <- Map(function(x, label) {
           if (nrow(x) < 5) {
-            textGrob(paste0("Less than 5 patients in ", label, "group"))
+            textGrob(paste0("Less than 5 patients in ", label, " group"))
           } else {
             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
             fit_km <- survfit(formula_km, data = x, conf.type = "plain")
