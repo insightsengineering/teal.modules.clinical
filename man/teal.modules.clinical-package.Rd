@@ -26,7 +26,7 @@ Authors:
   \item Yuyao Song \email{yuyao.song@roche.com}
   \item Chendi Liao \email{chendi.liao@roche.com}
   \item Mark Rothe
-  \item Xiao Mu Yo
+  \item Xiao Yu Mo
 }
 
 }
