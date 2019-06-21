@@ -50,15 +50,15 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- radsl(seed = 1)
-#' ATE <- radtte(ASL, seed = 1)
+#' ASL <- cadsl
+#' ATE <- cadtte
 #'
 #' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
 #' app <- init(
 #'     data = cdisc_data(ASL = ASL, ATE = ATE,
-#'         code = "ASL <- radsl(seed = 1)
-#'                 ATE <- radtte(ASL, seed = 1)
+#'         code = "ASL <- cadsl
+#'                 ATE <- cadtte
 #'                 keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'         check = FALSE),
 #'     modules = root_modules(

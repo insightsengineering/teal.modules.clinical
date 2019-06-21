@@ -31,19 +31,20 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 1)
+#' ASL <- cadsl
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #'
-#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #' keys(ARS) <- c("STUDYID", "USUBJID")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL,
 #'     ARS = ARS,
-#'     code = "ASL <- radsl(seed = 1)
-#'             ARS <- subset(radrs(ASL, seed = 1), AVISIT == 'Follow Up')
+#'     code = "ASL <- cadsl
+#'             ARS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
 #'             keys(ASL) <- c('STUDYID', 'USUBJID')
 #'             keys(ARS) <- c('STUDYID', 'USUBJID')",
 #'      check = FALSE
