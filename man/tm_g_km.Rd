@@ -52,7 +52,6 @@ output to put the output into context. For example the
 This is teal module produces a grid style KM plot for data with ADaM structure
 }
 \examples{
-
 library(random.cdisc.data)
 
 ASL <- cadsl

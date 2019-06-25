@@ -18,7 +18,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' library(random.cdisc.data)
 #'
 #' ASL <- cadsl
