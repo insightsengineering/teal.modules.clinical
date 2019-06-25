@@ -14,9 +14,10 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 1)
-#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#' ASL <- cadsl
+#' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #' keys(ARS) <- c("STUDYID", "USUBJID")
@@ -25,8 +26,8 @@
 #'   data = cdisc_data(
 #'    ASL = ASL,
 #'    ARS = ARS,
-#'    code = 'ASL <- radsl(seed = 1)
-#'            ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#'    code = 'ASL <- cadsl
+#'            ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'            keys(ASL) <- c("STUDYID", "USUBJID")
 #'            keys(ARS) <- c("STUDYID", "USUBJID")',
 #'    check = FALSE),

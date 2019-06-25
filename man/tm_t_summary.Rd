@@ -35,13 +35,13 @@ This module is for \code{\link[tern]{t_summary}}.
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
+ASL <- cadsl
 keys(ASL) <- c("STUDYID", "USUBJID")
 
 app <- init(
   data = cdisc_data(
     ASL = ASL,
-    code = 'ASL <- radsl(seed = 1)
+    code = 'ASL <- cadsl
             keys(ASL) <- c("STUDYID", "USUBJID")',
     check = FALSE),
   modules = root_modules(
