@@ -221,7 +221,6 @@ srv_g_km <- function(input,
     )
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    validate(need(ref_arm %in% levels(droplevels(ASL_FILTERED[[arm_var]])), "reference arm not present"))
 
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
