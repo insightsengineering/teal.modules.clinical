@@ -245,7 +245,7 @@ srv_t_tte <- function(input,
     module = "tm_t_tte"
   )
 
-  use_chunks(session)
+  use_chunks()
 
   # Create output
 
@@ -256,7 +256,7 @@ srv_t_tte <- function(input,
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     # nolint end
 
-    paramcd <- input$paramcd # nolint
+    paramcd <- input$paramcd
     strata_var <- input$strata_var
     arm_var <- input$arm_var
     ref_arm <- input$ref_arm
@@ -264,15 +264,21 @@ srv_t_tte <- function(input,
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
 
-    if (length(strata_var) == 0) strata_var <- NULL
+    if (length(strata_var) == 0) {
+      strata_var <- NULL
+    }
 
-    time_points <- if (length(time_points) == 0) NULL else sort(time_points)
+    time_points <- if (length(time_points) == 0) {
+      NULL
+    } else {
+      sort(time_points)
+    }
 
     # validate your input values
     validate_standard_inputs(
-      asl = ASL_FILTERED, # nolint
+      asl = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-      anl = ANL_FILTERED, # nolint
+      anl = ANL_FILTERED,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desc_var),
       arm_var = arm_var,
       ref_arm = ref_arm,
@@ -284,14 +290,12 @@ srv_t_tte <- function(input,
     # do analysis
 
     anl_name <- paste0(dataname, "_FILTERED")
-    assign(anl_name, ANL_FILTERED) # nolint
+    assign(anl_name, ANL_FILTERED)
 
-    # Delete chunks that are used for reproducible code
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    reset_chunks(envir = environment())
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) #nolint
-    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) #nolint
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var))
 
     ## Now comes the analysis code
     set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
@@ -299,7 +303,7 @@ srv_t_tte <- function(input,
     set_chunk(expression = bquote(strata_var <- .(strata_var)))
     set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))# nolint
+    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
     set_chunk(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
     set_chunk(expression = bquote(anl <- merge(
@@ -316,9 +320,9 @@ srv_t_tte <- function(input,
     }
     set_chunk(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
-    eval_remaining()
+    eval_chunks()
 
-    validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
+    validate(need(nrow(get_var_chunks("anl")) > 15, "need at least 15 data points"))
 
     table_expr <- bquote({
       tbl <- t_tte(
@@ -338,14 +342,14 @@ srv_t_tte <- function(input,
       tbl
     })
 
-    set_chunk(id = "final_table", expression = table_expr)
+    set_chunk(expression = table_expr, id = "final_table")
   })
 
   output$tte_table <- renderUI({
     table_reactive()
 
-    eval_remaining()
-    tbl <- get_envir_chunks()$tbl
+    eval_chunks()
+    tbl <- get_var_chunks("tbl")
     validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
 
     as_html(tbl)

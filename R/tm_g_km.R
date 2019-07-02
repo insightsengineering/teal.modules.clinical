@@ -18,7 +18,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' library(random.cdisc.data)
 #'
 #' ASL <- radsl(seed = 1)
@@ -159,7 +158,7 @@ srv_g_km <- function(input,
                      dataname,
                      arm_ref_comp,
                      label) {
-  use_chunks(session)
+  use_chunks()
 
   arm_ref_comp_observer(
     session, input,
@@ -176,28 +175,18 @@ srv_g_km <- function(input,
     plotOutput(session$ns("kmplot"), height = plot_height)
   })
 
-  chunks <- list(
-    vars = "# No Calculated",
-    data = "# No Calculated",
-    facet = "# No Calculated",
-    formula_km = "# No Calculated",
-    formula_coxph = "# No Calculated",
-    info_coxph = "# No Calculated",
-    t_kmplot = "# No Calculated"
-  )
-
   output$plot <- renderPlot({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
 
-    paramcd <- input$paramcd # nolint
+    paramcd <- input$paramcd
     arm_var <- input$arm_var
     facet_var <- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
-    xlab <- input$xlab # nolint
+    xlab <- input$xlab
 
     if (length(facet_var) == 0) {
       facet_var <<- NULL
@@ -206,12 +195,8 @@ srv_g_km <- function(input,
       strata_var <- NULL
     }
 
-    for (i in seq_along(chunks)) {
-      chunks[[i]] <<- "# Not calculated"
-    }
-
     validate_standard_inputs(
-      asl = ASL_FILTERED, # nolint
+      asl = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
@@ -225,9 +210,7 @@ srv_g_km <- function(input,
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
 
-    # Delete chunks that are used for reproducible code
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    reset_chunks(envir = environment())
 
     set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
     set_chunk(expression = bquote(comp_arm <- .(comp_arm)))
@@ -235,10 +218,9 @@ srv_g_km <- function(input,
     set_chunk(expression = bquote(facet_var <- .(facet_var)))
     set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
+    set_chunk(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    set_chunk(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var))))) # nolint
-
-    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm)))) # nolint
+    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
     set_chunk(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
     set_chunk(expression = bquote(anl <- merge(asl_p[, asl_vars],
       anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
@@ -255,10 +237,10 @@ srv_g_km <- function(input,
     set_chunk(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
     set_chunk(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
 
-    eval_remaining()
+    eval_chunks()
 
-    validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
-    validate(need(length(get_envir_chunks()$time_unit) == 1, "Time Unit is not consistant"))
+    validate(need(nrow(get_var_chunks("anl")) > 15, "need at least 15 data points"))
+    validate(need(length(get_var_chunks("time_unit")) == 1, "Time Unit is not consistant"))
 
     set_chunk(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
 
@@ -365,8 +347,8 @@ srv_g_km <- function(input,
       }))
     }
 
-    eval_remaining()
-    p <- get_envir_chunks()$plot
+    eval_chunks()
+    p <- get_var_chunks("plot")
 
     if (is.null(p)) {
       validate(need(FALSE, p))
