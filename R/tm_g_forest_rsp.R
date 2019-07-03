@@ -335,11 +335,12 @@ srv_g_forest_rsp <- function(input,
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
+    plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
     div(style = 'overflow-x: scroll',
         plotOutput(session$ns("forest_plot"),
                    height = plot_height,
-                   width = input$plot_width)
+                   width = plot_width)
     )
   })
 
