@@ -161,6 +161,12 @@ ui_g_forest_rsp <- function(id, ...) {
         "plot height",
         a$plot_height,
         ticks = FALSE
+      ),
+      optionalSliderInputValMinMax(
+        ns("plot_width"),
+        "plot width",
+        c(700L, 500L, 2000L),
+        ticks = FALSE
       )
     ),
     forms = actionButton(
@@ -330,7 +336,11 @@ srv_g_forest_rsp <- function(input,
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
     validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
+    div(style = 'overflow-x: scroll',
+        plotOutput(session$ns("forest_plot"),
+                   height = plot_height,
+                   width = input$plot_width)
+    )
   })
 
 
