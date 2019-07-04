@@ -1,7 +1,7 @@
 # We take the example from https://pages.github.roche.com/NEST/docs/hugo/NEST/agile-R/devel/teal/teal_modules/clinical-code/
 # Before, we must have installed everything
 
-library(teal.modules.clinical)
+library("teal.modules.clinical")
 library(random.cdisc.data)
 
 ## Generate Data
@@ -35,7 +35,9 @@ arm_ref_comp <- list(
 
 ## Setup App
 app <- teal::init(
-  data = list(ASL = ASL, ARS = ARS, ATE = ATE),
+  data = cdisc_data(ASL = ASL, ARS = ARS, ATE = ATE, code = 'ASL <- radsl(seed = 1)
+ATE <- radtte(ADSL = ASL, seed = 1)
+ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
   modules = root_modules(
     module(
       label = "Study Information",
@@ -49,8 +51,6 @@ app <- teal::init(
       },
       filters = NULL
     ),
-    tm_data_table("Data Table"),
-    tm_variable_browser("Variable Browser"),
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ASL",
@@ -67,16 +67,14 @@ app <- teal::init(
         dataname = "ATE",
         arm_var = cs_arm_var,
         subgroup_var = cs_strata_var,
-        paramcd = cs_paramcd_tte,
-        plot_height = c(800, 200, 4000)
+        paramcd = cs_paramcd_tte
       ),
       tm_g_forest_rsp(
         label = "Response Forest Plot",
         dataname = "ARS",
         arm_var = cs_arm_var,
         subgroup_var = cs_strata_var,
-        paramcd = cs_paramcd_rsp,
-        plot_height = c(800, 200, 4000)
+        paramcd = cs_paramcd_rsp
       )
     ),
     tm_g_km(
@@ -86,8 +84,7 @@ app <- teal::init(
       arm_ref_comp = arm_ref_comp,
       paramcd = cs_paramcd_tte,
       facet_var = cs_facet_var,
-      strata_var = cs_strata_var,
-      plot_height = c(1800, 200, 4000)
+      strata_var = cs_strata_var
     ),
     tm_t_rsp(
       label = "Response Table",
@@ -104,14 +101,7 @@ app <- teal::init(
       paramcd = cs_paramcd_tte,
       strata_var = cs_strata_var,
       time_points = choices_selected(c(6, 12, 18, 24, 30, 36, 42), c(6, 12, 18)),
-      time_unit = "month",
-      event_desrc_var = "EVNTDESC"
-    ),
-    tm_t_percentage_cross_table(
-      "Cross Table",
-      dataname = "ASL",
-      x_var = choices_selected(fact_vars_asl, fact_vars_asl[1]),
-      y_var = choices_selected(fact_vars_asl, fact_vars_asl[4])
+      time_unit = "month"
     )
   ),
   header = div(
