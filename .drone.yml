@@ -223,6 +223,7 @@ trigger:
   branch:
   - master
   - devel
+  - pre-release
   event:
   - pull_request
 
