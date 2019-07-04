@@ -1,7 +1,7 @@
 # We take the example from https://pages.github.roche.com/NEST/docs/hugo/NEST/agile-R/devel/teal/teal_modules/clinical-code/
 # Before, we must have installed everything
 
-library("teal.modules.clinical")
+library(teal.modules.clinical)
 library(random.cdisc.data)
 
 ## Generate Data
