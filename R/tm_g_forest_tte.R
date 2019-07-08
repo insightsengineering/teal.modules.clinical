@@ -214,8 +214,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     )
 
     eval_chunks()
-    tbl <- get_var_chunks("tbl")
-    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
+    validate_is_chunks("tbl", "rtable", "could not calculate forest table")
 
     set_chunk(
       expression = call(
@@ -232,7 +231,11 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       id = "tm_g_forest_tte_plot"
     )
 
-    eval_chunks()
+    p <- eval_chunks()
+
+    validate_is_ok_chunks()
+
+    p
   })
 
   ## dynamic plot height

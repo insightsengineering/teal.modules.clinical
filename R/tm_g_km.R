@@ -347,14 +347,11 @@ srv_g_km <- function(input,
       }))
     }
 
-    eval_chunks()
-    p <- get_var_chunks("plot")
+    p <- eval_chunks()
 
-    if (is.null(p)) {
-      validate(need(FALSE, p))
-    } else {
-      p
-    }
+    validate_is_ok_chunks()
+
+    p
   })
 
   # Insert the plot into a plot_height module from teal.devel

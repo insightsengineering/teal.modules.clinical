@@ -126,9 +126,9 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     table_call()
 
     eval_chunks()
-    tbl <- get_var_chunks("tbl")
-    validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
+    validate_all_chunks("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
+    tbl <- get_var_chunks("tbl")
     as_html(tbl)
   })
 

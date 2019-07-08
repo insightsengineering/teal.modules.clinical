@@ -292,8 +292,7 @@ srv_g_forest_rsp <- function(input,
     set_chunk(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
 
     eval_chunks()
-    tbl <- get_var_chunks("tbl")
-    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
+    validate_is_chunks("tbl", "rtable", "could not calculate forest table")
 
     chunk_row_expr <- quote(
       row.names(tbl) <- sapply(
@@ -318,7 +317,11 @@ srv_g_forest_rsp <- function(input,
     )
     set_chunk(expression = chunk_g_expr, id = "tm_g_forest_rsp")
 
-    eval_chunks()
+    p <- eval_chunks()
+
+    validate_is_ok_chunks()
+
+    p
   })
 
   ## dynamic plot height

@@ -349,9 +349,9 @@ srv_t_tte <- function(input,
     table_reactive()
 
     eval_chunks()
-    tbl <- get_var_chunks("tbl")
-    validate(need(is(tbl, "rtable"), "Evaluation with tern t_tte failed."))
+    validate_all_chunks("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
+    tbl <- get_var_chunks("tbl")
     as_html(tbl)
   })
 
