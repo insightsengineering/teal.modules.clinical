@@ -5,8 +5,6 @@
 #'
 #' @inheritParams tm_g_forest_rsp
 #'
-#'
-#'
 #' @export
 #'
 #' @template author_song24
@@ -121,6 +119,9 @@ ui_g_forest_tte <- function(id, ...) {
 }
 
 srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5) {
+
+  init_chunks()
+
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   arm_ref_comp_observer(
@@ -130,8 +131,6 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
-  use_chunks()
-
 
   output$forest_plot <- renderPlot({
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) #nolint
@@ -159,12 +158,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
 
-    reset_chunks(envir = environment())
+    chunks_reset(envir = environment())
 
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
-    set_chunk(
+    chunks_push(
       expression = bquote({
         ref_arm <- .(ref_arm)
         comp_arm <- .(comp_arm)
@@ -187,11 +186,11 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       id = "tm_g_forest_tte_anl"
     )
 
-    eval_chunks()
-    anl <- get_var_chunks("anl")
+    chunks_eval()
+    anl <- chunks_get_var("anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
 
-    set_chunk(
+    chunks_push(
       expression = bquote({
         tbl <- t_forest_tte(
           tte = anl$AVAL,
@@ -213,10 +212,10 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       id = "tm_g_forest_tte_tbl"
     )
 
-    eval_chunks()
-    validate_is_chunks("tbl", "rtable", "could not calculate forest table")
+    chunks_eval()
+    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
 
-    set_chunk(
+    chunks_push(
       expression = call(
         "g_forest",
         tbl = quote(tbl),
@@ -231,9 +230,9 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       id = "tm_g_forest_tte_plot"
     )
 
-    p <- eval_chunks()
+    p <- chunks_eval()
 
-    validate_is_ok_chunks()
+    chunks_validate_is_ok()
 
     p
   })

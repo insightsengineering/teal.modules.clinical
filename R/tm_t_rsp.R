@@ -213,7 +213,7 @@ srv_t_rsp <- function(input,
                       dataname,
                       arm_ref_comp) {
 
-  use_chunks()
+  init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
@@ -284,7 +284,7 @@ srv_t_rsp <- function(input,
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
 
 
-    reset_chunks(envir = environment())
+    chunks_reset(envir = environment())
 
     chunk_call_asl_p <- bquote(
       asl_p <- subset(
@@ -292,7 +292,7 @@ srv_t_rsp <- function(input,
         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
     )
-    set_chunk(expression = chunk_call_asl_p, id = "tm_t_rsp_asl_p")
+    chunks_push(expression = chunk_call_asl_p, id = "tm_t_rsp_asl_p")
 
     chunk_call_anl_endpoint <- bquote(
       anl_endpoint <- subset(
@@ -300,7 +300,7 @@ srv_t_rsp <- function(input,
         PARAMCD == .(paramcd)
       )
     )
-    set_chunk(expression = chunk_call_anl_endpoint, id = "tm_t_rsp_anl_endpoint")
+    chunks_push(expression = chunk_call_anl_endpoint, id = "tm_t_rsp_anl_endpoint")
 
     chunk_call_anl <- bquote(
       anl <- merge(
@@ -311,7 +311,7 @@ srv_t_rsp <- function(input,
         by = c("USUBJID", "STUDYID")
       )
     )
-    set_chunk(expression = chunk_call_anl, id = "tm_t_rsp_anl")
+    chunks_push(expression = chunk_call_anl, id = "tm_t_rsp_anl")
 
     chunk_call_arm <- bquote({
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -323,12 +323,12 @@ srv_t_rsp <- function(input,
         arm <- combine_levels(arm, .(comp_arm))
       })
     }
-    set_chunk(expression = chunk_call_arm, id = "tm_t_rsp_arm")
+    chunks_push(expression = chunk_call_arm, id = "tm_t_rsp_arm")
 
     chunk_call_arm_var <- bquote(
       anl[[.(arm_var)]] <- droplevels(arm)
     )
-    set_chunk(expression = chunk_call_arm_var, id = "tm_t_rsp_arm_var")
+    chunks_push(expression = chunk_call_arm_var, id = "tm_t_rsp_arm_var")
 
     strata_data <- if (length(strata_var) > 0) {
       quote(anl[, strata_var, drop = FALSE]) %>%
@@ -346,7 +346,7 @@ srv_t_rsp <- function(input,
       )
       tbl
     })
-    set_chunk(expression = chunk_table_expr, id = "tm_t_rsp")
+    chunks_push(expression = chunk_table_expr, id = "tm_t_rsp")
 
     invisible(NULL)
   })
@@ -355,18 +355,18 @@ srv_t_rsp <- function(input,
   output$response_table <- renderUI({
     tm_t_rsp_call()
 
-    eval_chunks()
+    chunks_eval()
 
-    anl_endpoint <- get_var_chunks("anl_endpoint")
+    anl_endpoint <- chunks_get_var("anl_endpoint")
     if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {
       stop("only one row per patient expected")
     }
 
-    anl <- get_var_chunks("anl")
+    anl <- chunks_get_var("anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    tbl <- get_var_chunks("tbl")
+    tbl <- chunks_get_var("tbl")
     validate(need(is(tbl, "rtable"), "Evaluation with tern t_rsp failed."))
 
     as_html(tbl)

@@ -235,6 +235,8 @@ srv_t_tte <- function(input,
                       event_desc_var,
                       label) {
 
+  init_chunks()
+
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   arm_ref_comp_observer(
@@ -245,10 +247,7 @@ srv_t_tte <- function(input,
     module = "tm_t_tte"
   )
 
-  use_chunks()
-
   # Create output
-
   table_reactive <- reactive({
     # resolve all reactive expressions
     # nolint start
@@ -292,37 +291,37 @@ srv_t_tte <- function(input,
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED)
 
-    reset_chunks(envir = environment())
+    chunks_reset(envir = environment())
 
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var))
 
     ## Now comes the analysis code
-    set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
-    set_chunk(expression = bquote(comp_arm <- .(comp_arm)))
-    set_chunk(expression = bquote(strata_var <- .(strata_var)))
-    set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(expression = bquote(ref_arm <- .(ref_arm)))
+    chunks_push(expression = bquote(comp_arm <- .(comp_arm)))
+    chunks_push(expression = bquote(strata_var <- .(strata_var)))
+    chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-    set_chunk(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
+    chunks_push(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
-    set_chunk(expression = bquote(anl <- merge(
+    chunks_push(expression = bquote(anl <- merge(
       x = asl_p[, .(asl_vars)],
       y = anl_endpoint[, .(anl_vars)],
       all.x = FALSE, all.y = FALSE,
       by = c("USUBJID", "STUDYID")
     )))
 
-    set_chunk(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    set_chunk(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
     if (combine_comp_arms) {
-      set_chunk(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+      chunks_push(expression = bquote(arm <- combine_levels(arm, comp_arm)))
     }
-    set_chunk(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    chunks_push(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
-    eval_chunks()
+    chunks_eval()
 
-    validate(need(nrow(get_var_chunks("anl")) > 15, "need at least 15 data points"))
+    validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
 
     table_expr <- bquote({
       tbl <- t_tte(
@@ -342,16 +341,16 @@ srv_t_tte <- function(input,
       tbl
     })
 
-    set_chunk(expression = table_expr, id = "final_table")
+    chunks_push(expression = table_expr, id = "final_table")
   })
 
   output$tte_table <- renderUI({
     table_reactive()
 
-    eval_chunks()
-    validate_all_chunks("tbl", "rtable", "Evaluation with tern t_tte failed.")
+    chunks_eval()
+    chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
-    tbl <- get_var_chunks("tbl")
+    tbl <- chunks_get_var("tbl")
     as_html(tbl)
   })
 

@@ -89,7 +89,7 @@ ui_t_summary <- function(id, ...) {
 }
 
 srv_t_summary <- function(input, output, session, datasets, dataname) {
-  use_chunks()
+  init_chunks()
 
   table_call <- reactive({
     anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
@@ -106,7 +106,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
 
-    reset_chunks(envir = environment())
+    chunks_reset(envir = environment())
 
     table_chunk_expr <- bquote({
       tbl <- t_summary(
@@ -117,7 +117,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
       )
       tbl
     })
-    set_chunk(expression = table_chunk_expr, id = "tm_t_summary_tbl")
+    chunks_push(expression = table_chunk_expr, id = "tm_t_summary_tbl")
 
     return(invisible(NULL))
   })
@@ -125,10 +125,10 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
   output$table <- renderUI({
     table_call()
 
-    eval_chunks()
-    validate_all_chunks("tbl", "rtable", "Evaluation with tern t_tte failed.")
+    chunks_eval()
+    chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
-    tbl <- get_var_chunks("tbl")
+    tbl <- chunks_get_var("tbl")
     as_html(tbl)
   })
 

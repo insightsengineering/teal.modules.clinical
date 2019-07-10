@@ -180,7 +180,7 @@ srv_g_forest_rsp <- function(input,
                              dataname,
                              cex) {
 
-  use_chunks()
+  init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
@@ -244,7 +244,7 @@ srv_g_forest_rsp <- function(input,
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVALC")
 
-    reset_chunks(envir = environment())
+    chunks_reset(envir = environment())
 
     chunk_data_expr <- bquote({
       asl_p <- subset(.(as.name(asl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
@@ -267,10 +267,10 @@ srv_g_forest_rsp <- function(input,
         }
       )
     })
-    set_chunk(expression = chunk_data_expr, id = "tm_g_forest_rsp_data")
+    chunks_push(expression = chunk_data_expr, id = "tm_g_forest_rsp_data")
 
-    eval_chunks()
-    anl <- get_var_chunks("anl")
+    chunks_eval()
+    anl <- chunks_get_var("anl")
 
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
@@ -289,10 +289,10 @@ srv_g_forest_rsp <- function(input,
         dense_header = TRUE
       )
     )
-    set_chunk(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
+    chunks_push(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
 
-    eval_chunks()
-    validate_is_chunks("tbl", "rtable", "could not calculate forest table")
+    chunks_eval()
+    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
 
     chunk_row_expr <- quote(
       row.names(tbl) <- sapply(
@@ -302,7 +302,7 @@ srv_g_forest_rsp <- function(input,
         }
       )
     )
-    set_chunk(expression = chunk_row_expr, id = "tm_g_forest_rsp_row")
+    chunks_push(expression = chunk_row_expr, id = "tm_g_forest_rsp_row")
 
     chunk_g_expr <- call(
       "g_forest",
@@ -315,11 +315,11 @@ srv_g_forest_rsp <- function(input,
       logx = TRUE,
       x_at = c(.1, 1, 10)
     )
-    set_chunk(expression = chunk_g_expr, id = "tm_g_forest_rsp")
+    chunks_push(expression = chunk_g_expr, id = "tm_g_forest_rsp")
 
-    p <- eval_chunks()
+    p <- chunks_eval()
 
-    validate_is_ok_chunks()
+    chunks_validate_is_ok()
 
     p
   })
