@@ -29,9 +29,10 @@
 #'       label = "Demographic Table",
 #'       dataname = "ASL",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE")))
+#'       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
 #'     )
 #'   )
+#' )
 #'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
@@ -88,7 +89,7 @@ ui_t_summary <- function(id, ...) {
 }
 
 srv_t_summary <- function(input, output, session, datasets, dataname) {
-  use_chunks(session)
+  init_chunks()
 
   table_call <- reactive({
     anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
@@ -105,8 +106,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
 
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    chunks_reset(envir = environment())
 
     table_chunk_expr <- bquote({
       tbl <- t_summary(
@@ -117,20 +117,19 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
       )
       tbl
     })
-    set_chunk("tm_t_summary_tbl", expression = table_chunk_expr)
+    chunks_push(expression = table_chunk_expr, id = "tm_t_summary_tbl")
 
-    return(invisible)
+    return(invisible(NULL))
   })
 
   output$table <- renderUI({
     table_call()
 
-    eval_remaining()
-    tbl <- get_envir_chunks()$tbl
-    validate(need(is(tbl, "rtable"), "Evaluation with tern t_summary failed."))
+    chunks_eval()
+    chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
+    tbl <- chunks_get_var("tbl")
     as_html(tbl)
-
   })
 
   observeEvent(input$show_rcode, {

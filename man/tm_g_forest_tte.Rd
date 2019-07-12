@@ -43,7 +43,6 @@ This is teal module produces a grid style Forest plot for time-to-event data
 with ADaM structure
 }
 \examples{
-# reproducible teal app
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)

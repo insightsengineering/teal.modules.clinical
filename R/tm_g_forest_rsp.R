@@ -180,7 +180,7 @@ srv_g_forest_rsp <- function(input,
                              dataname,
                              cex) {
 
-  use_chunks(session)
+  init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
@@ -241,11 +241,10 @@ srv_g_forest_rsp <- function(input,
     asl_name <- "ASL_FILTERED"
     assign(asl_name, asl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) # nolint
-    anl_vars <- c("USUBJID", "STUDYID", "AVALC") # nolint
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
+    anl_vars <- c("USUBJID", "STUDYID", "AVALC")
 
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    chunks_reset(envir = environment())
 
     chunk_data_expr <- bquote({
       asl_p <- subset(.(as.name(asl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
@@ -268,7 +267,13 @@ srv_g_forest_rsp <- function(input,
         }
       )
     })
-    set_chunk("tm_g_forest_rsp_data", chunk_data_expr)
+    chunks_push(expression = chunk_data_expr, id = "tm_g_forest_rsp_data")
+
+    chunks_eval()
+    anl <- chunks_get_var("anl")
+
+    validate(need(nrow(anl) > 15, "need at least 15 data points"))
+    validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
     chunk_table_expr <- bquote(
       tbl <- t_forest_rsp(
@@ -284,7 +289,10 @@ srv_g_forest_rsp <- function(input,
         dense_header = TRUE
       )
     )
-    set_chunk("tm_g_forest_rsp_table", chunk_table_expr)
+    chunks_push(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
+
+    chunks_eval()
+    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
 
     chunk_row_expr <- quote(
       row.names(tbl) <- sapply(
@@ -294,7 +302,7 @@ srv_g_forest_rsp <- function(input,
         }
       )
     )
-    set_chunk("tm_g_forest_rsp_row", chunk_row_expr)
+    chunks_push(expression = chunk_row_expr, id = "tm_g_forest_rsp_row")
 
     chunk_g_expr <- call(
       "g_forest",
@@ -307,22 +315,13 @@ srv_g_forest_rsp <- function(input,
       logx = TRUE,
       x_at = c(.1, 1, 10)
     )
-    set_chunk("tm_g_forest_rsp", chunk_g_expr)
+    chunks_push(expression = chunk_g_expr, id = "tm_g_forest_rsp")
 
-    invisible(NULL)
+    p <- chunks_eval()
 
-    eval_chunk("tm_g_forest_rsp_data")
-    anl <- get_envir_chunks()$anl
+    chunks_validate_is_ok()
 
-    validate(need(nrow(anl) > 15, "need at least 15 data points"))
-    validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
-
-
-    eval_chunk("tm_g_forest_rsp_table")
-    tbl <- get_envir_chunks()$tbl
-    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
-
-    eval_remaining()
+    p
   })
 
   ## dynamic plot height
