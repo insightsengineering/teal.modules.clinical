@@ -1,37 +1,42 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: c(
-  person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = c("aut", "cre")),
+  person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre")),
+  person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = "aut"),
   person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),
   person("Yuyao", "Song", email = "yuyao.song@roche.com", role = c("aut")),
   person("Chendi", "Liao", email = "chendi.liao@roche.com", role = c("aut")),
   person("Mark", "Rothe", role = c("aut")),
-  person("Xiao", "Mu Yo", role = c("aut"))
+  person("Xiao", "Yu Mo", role = c("aut")),
+  person("Roche", role = c("cph", "fnd"))
   )
 Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encoding within teal.
 Depends:
   R (>= 3.3),
   shiny,
-  teal (>= 0.6),
-  tern (>= 0.6)
+  teal (>= 0.7),
+  tern (>= 0.6.2),
+  teal.devel (>= 0.1)
 Imports:
-  methods,
-  stats,
-  utils,
+  forcats,
   grid,
   gridExtra,
-  rtables,
+  magrittr,
+  methods,
+  rtables (>= 0.1.2),
   survival,
-  forcats,
-  haven
+  stats,
+  utils,
+  utils.nest (>= 0.1)
 Suggests:
-  testthat,
+  dplyr,
   knitr,
   rmarkdown,
-  random.cdisc.data,
-  dplyr
+  random.cdisc.data (>= 0.2.1),
+  test.nest (>= 0.1),
+  testthat
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -39,7 +44,7 @@ RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 URL: https://pages.github.roche.com/NEST/teal.modules.clinical/
 BugReports: https://github.roche.com/NEST/teal.modules.clinical/issues
-Additional_repositories: 
+Additional_repositories:
   https://github.roche.com/NEST/teal,
   https://github.roche.com/NEST/tern,
   https://github.com/Roche/rtables

@@ -21,12 +21,15 @@ library(teal.modules.clinical)
 # your reproducible example here, e.g.
 
 library(random.cdisc.data)
-ASL <- radam("ASL", N = 200)
+ASL <- radsl(seed = 1)
 
-x <- teal::init(
-  data = list(ASL=ASL),
+app <- init(
+  data = cdisc_data(
+    ASL = ASL
+    code = "ASL <- radsl(seed = 1)"
+    check = TRUE
+  ),
   modules = root_modules(
-    tm_data_table(),
     tm_t_summary(
     	label = "Demographic Table",
     	dataname = "ASL",
@@ -36,5 +39,5 @@ x <- teal::init(
   )
 )
 
-shinyApp(x$ui, x$server)
+shinyApp(app$ui, app$server)
 ```

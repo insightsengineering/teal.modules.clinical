@@ -5,17 +5,18 @@
 \title{Summarize Variables Module}
 \usage{
 tm_t_summary(label, dataname, arm_var, summarize_vars, pre_output = NULL,
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
 \item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for summary}
@@ -27,37 +28,35 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This module is for \code{\link[tern]{t_summary}}.
 }
 \examples{
-
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+keys(ASL) <- c("STUDYID", "USUBJID")
 
-x <- teal::init(
-  data = list(ASL = ASL),
+app <- init(
+  data = cdisc_data(
+    ASL = ASL,
+    code = 'ASL <- radsl(seed = 1)
+            keys(ASL) <- c("STUDYID", "USUBJID")',
+    check = FALSE),
   modules = root_modules(
     tm_t_summary(
-       label = "Demographic Table",
-       dataname = "ASL",
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
+      label = "Demographic Table",
+      dataname = "ASL",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
     )
   )
 )
 
 \dontrun{
-
-shinyApp(x$ui, x$server) 
-
-} 
+shinyApp(app$ui, app$server)
+}
 }
 \author{
 Adrian Waddell (waddella) \email{adrian.waddell@roche.com}

@@ -7,21 +7,24 @@
 tm_g_forest_tte(label, dataname, arm_var, subgroup_var, paramcd,
   plot_height = c(600, 200, 2000), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as the default subgroups}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -34,29 +37,30 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This is teal module produces a grid style Forest plot for time-to-event data
 with ADaM structure
 }
 \examples{
-
 library(random.cdisc.data)
-library(dplyr)
 
-ASL <- radsl(seed = 1) \%>\%
-  mutate(RACE = droplevels(RACE))
+ASL <- radsl(seed = 1)
 ATE <- radtte(ASL, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1) \%>\% 
-  mutate(RACE = droplevels(RACE))"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+ASL$RACE <- droplevels(ASL$RACE)
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
-x <- teal::init(
-  data = list(ASL = ASL, ATE = ATE),
+app <- init(
+  data = cdisc_data(
+    ASL = ASL,
+    ATE = ATE,
+    code = 'ASL <- radsl(seed = 1)
+            ATE <- radtte(ASL, seed = 1)
+            ASL$RACE <- droplevels(ASL$RACE)
+            keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
+    check = FALSE
+    ),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
@@ -70,10 +74,8 @@ x <- teal::init(
 )
 
 \dontrun{
-
-shinyApp(x$ui, x$server) 
-
-} 
+  shinyApp(app$ui, app$server)
+}
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

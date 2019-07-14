@@ -5,23 +5,26 @@
 \title{Forest Response Plot teal module}
 \usage{
 tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
-  plot_height = c(700, 200, 2000), cex = 1.3,
+  plot_height = c(700L, 200L, 2000L), cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as the default subgroups}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as the default subgroups}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -34,42 +37,43 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This is teal module produces a grid style Forest plot for response data with ADaM structure
 }
 \examples{
-
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
 ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
+keys(ASL) <- c("STUDYID", "USUBJID")
+keys(ARS) <- c("STUDYID", "USUBJID")
 
-x <- teal::init(
-  data = list(ASL = ASL, ARS = ARS),
+app <- init(
+  data = cdisc_data(
+   ASL = ASL,
+   ARS = ARS,
+   code = 'ASL <- radsl(seed = 1)
+           ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+           keys(ASL) <- c("STUDYID", "USUBJID")
+           keys(ARS) <- c("STUDYID", "USUBJID")',
+   check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
-       label = "Forest Response",
-       dataname = "ARS",
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
-       plot_height = c(600, 200, 2000)
+      label = "Forest Response",
+      dataname = "ARS",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
+      subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+      plot_height = c(600L, 200L, 2000L)
     )
   )
 )
 
 \dontrun{
-
-shinyApp(x$ui, x$server)
-
-} 
+shinyApp(app$ui, app$server)
+}
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

@@ -8,33 +8,37 @@ tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
   facet_var, strata_var, plot_height = c(1200, 400, 5000),
   tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
-  post_output = NULL, code_data_processing = NULL)
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menue item label of the module in the teal app}
 
-\item{dataname}{analysis data used in teal module, needs to be available in
+\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used as \code{arm_var}}
 
-\item{arm_ref_comp}{optional, if specified it must be a named list with each
+\item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
 element corresponding to an arm variable in \code{ASL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
+variable names that can be used as \code{PARAMCD} variable}
 
-\item{facet_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for facet plotting}
+\item{facet_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for facet plotting}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{tbl_fontsize}{fontsize for text annotation}
+\item{tbl_fontsize}{\code{fontsize} for text annotation}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -43,54 +47,52 @@ output to put the output into context. For example the
 \item{post_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{code_data_processing}{string with data preprocessing before the teal
-app is initialized}
 }
 \description{
 This is teal module produces a grid style KM plot for data with ADaM structure
 }
 \examples{
-
 library(random.cdisc.data)
 
 ASL <- radsl(seed = 1)
 ATE <- radtte(ASL, seed = 1)
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
-arm_ref_comp = list(
-   ARM = list(
-      ref = "A: Drug X",
-      comp = c("B: Placebo", "C: Combination")
-   ),
-   ARMCD = list(
-      ref = "ARM B",
-      comp = "ARM A"
-   )
-)
-
-x <- teal::init(
-  data = list(ASL = ASL, ATE = ATE),
-  modules = root_modules(
-    tm_g_km(
-       label = "KM PLOT",
-       dataname = 'ATE',
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       arm_ref_comp = arm_ref_comp,
-       paramcd = choices_selected(c("OS", "PFS"), "OS"),
-       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-       tbl_fontsize = 12
-    )
+arm_ref_comp <- list(
+  ARM = list(
+    ref = "A: Drug X",
+    comp = c("B: Placebo", "C: Combination")
+  ),
+  ARMCD = list(
+    ref = "ARM B",
+    comp = "ARM A"
   )
 )
 
+app <- init(
+  data = cdisc_data(
+    ASL = ASL, ATE = ATE,
+    code = "ASL <- radsl(seed = 1)
+            ATE <- radtte(ASL, seed = 1)
+            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+    check = FALSE
+  ),
+  modules = root_modules(
+    tm_g_km(
+      label = "KM PLOT",
+      dataname = "ATE",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(c("OS", "PFS"), "OS"),
+      facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
+      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+      tbl_fontsize = 12
+    )
+  )
+)
 \dontrun{
-
-shinyApp(ui = x$ui, server = x$server)
-
+shinyApp(ui = app$ui, server = app$server)
 }
 }
 \author{
