@@ -71,13 +71,15 @@ library(random.cdisc.data)
 ASL <- cadsl
 ATE <- cadtte
 
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+keys(ASL) <- c("USUBJID", "STUDYID")
+keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 app <- init(
     data = cdisc_data(ASL = ASL, ATE = ATE,
         code = "ASL <- cadsl
                 ATE <- cadtte
-                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+                keys(ASL) <- c('USUBJID', 'STUDYID')
+                keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(
@@ -110,7 +112,8 @@ ASL <- mutate(radsl(seed = 1),
   ARM1 = sample(c("DUMMY A", "DUMMY B"),
   n(), TRUE))
 ATE <- radtte(ASL, seed = 1)
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+
+keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 arm_ref_comp = list(
   ACTARMCD = list(
@@ -127,7 +130,8 @@ app <- init(
         code = "ASL <- radsl(seed = 1) \%>\%
                 mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
                 ATE <- radtte(ASL, seed = 1)
-                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+                keys(ASL) <- c('USUBJID', 'STUDYID')
+                keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(

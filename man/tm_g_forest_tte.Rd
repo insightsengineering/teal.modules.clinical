@@ -49,7 +49,8 @@ ASL <- cadsl
 ATE <- cadtte
 
 ASL$RACE <- droplevels(ASL$RACE)
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+keys(ASL) <- c("USUBJID", "STUDYID")
+keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 app <- init(
   data = cdisc_data(
@@ -58,7 +59,8 @@ app <- init(
     code = 'ASL <- cadsl
             ATE <- cadtte
             ASL$RACE <- droplevels(ASL$RACE)
-            keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
+            keys(ASL) <- c("USUBJID", "STUDYID")
+            keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")',
     check = FALSE
     ),
   modules = root_modules(

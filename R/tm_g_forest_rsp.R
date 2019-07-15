@@ -20,7 +20,7 @@
 #' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'
 #' keys(ASL) <- c("STUDYID", "USUBJID")
-#' keys(ARS) <- c("STUDYID", "USUBJID")
+#' keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -165,7 +165,7 @@ ui_g_forest_rsp <- function(id, ...) {
       optionalSliderInputValMinMax(
         ns("plot_width"),
         "plot width",
-        c(700L, 500L, 2000L),
+        c(980L, 500L, 2000L),
         ticks = FALSE
       )
     ),
