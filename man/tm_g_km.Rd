@@ -6,7 +6,6 @@
 \usage{
 tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
   facet_var, strata_var, plot_height = c(1200, 400, 5000),
-  tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
   post_output = NULL)
 }
@@ -38,8 +37,6 @@ for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{tbl_fontsize}{\code{fontsize} for text annotation}
-
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
@@ -54,8 +51,8 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
+ASL <- cadsl
+ATE <- cadtte
 
 keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
@@ -73,8 +70,8 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     ASL = ASL, ATE = ATE,
-    code = "ASL <- radsl(seed = 1)
-            ATE <- radtte(ASL, seed = 1)
+    code = "ASL <- cadsl
+            ATE <- cadtte
             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
     check = FALSE
   ),
@@ -86,8 +83,7 @@ app <- init(
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(c("OS", "PFS"), "OS"),
       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-      tbl_fontsize = 12
+      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
 )

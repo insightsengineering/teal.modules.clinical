@@ -6,7 +6,6 @@
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
 #' @param plot_height vector with three elements defining selected, min and max plot height
-#' @param tbl_fontsize \code{fontsize} for text annotation
 #'
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -20,8 +19,8 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- radsl(seed = 1)
-#' ATE <- radtte(ASL, seed = 1)
+#' ASL <- cadsl
+#' ATE <- cadtte
 #'
 #' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 #'
@@ -39,8 +38,8 @@
 #' app <- init(
 #'   data = cdisc_data(
 #'     ASL = ASL, ATE = ATE,
-#'     code = "ASL <- radsl(seed = 1)
-#'             ATE <- radtte(ASL, seed = 1)
+#'     code = "ASL <- cadsl
+#'             ATE <- cadtte
 #'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
 #'     check = FALSE
 #'   ),
@@ -52,8 +51,7 @@
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(c("OS", "PFS"), "OS"),
 #'       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-#'       tbl_fontsize = 12
+#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )
 #' )
@@ -68,7 +66,6 @@ tm_g_km <- function(label,
                     facet_var,
                     strata_var,
                     plot_height = c(1200, 400, 5000),
-                    tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
@@ -85,7 +82,6 @@ tm_g_km <- function(label,
     server_args = list(
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
-      tbl_fontsize = tbl_fontsize,
       label = label
     ),
     ui = ui_g_km,
@@ -103,45 +99,86 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
+      optionalSelectInput(
+        ns("arm_var"),
         "Arm Variable",
         choices = a$arm_var$choices,
         selected = a$arm_var$selected,
         multiple = FALSE
       ),
-      optionalSelectInput(ns("paramcd"),
+      optionalSelectInput(
+        ns("paramcd"),
         "Time to Event (Endpoint)",
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
         multiple = FALSE
       ),
-      optionalSelectInput(ns("strata_var"),
+      optionalSelectInput(
+        ns("strata_var"),
         "Stratify by",
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
         label_help = helpText("currently taken from ASL")
       ),
-      optionalSelectInput(ns("facet_var"),
+      optionalSelectInput(
+        ns("facet_var"),
         "Facet Plots by:",
         choices = a$facet_var$choices,
         selected = a$facet_var$selected,
         multiple = TRUE,
         label_help = helpText("currently taken from ASL")
       ),
-      selectInput(ns("ref_arm"),
+      selectInput(
+        ns("ref_arm"),
         "Reference Arm",
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
-      selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE
+      ),
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       textInput(ns("xlab"), "X-axis label", "Overall survival in "),
-      plot_height_input(id = ns("myplot"), value = a$plot_height)
+      plot_height_input(id = ns("myplot"), value = a$plot_height),
+      accordion(
+        accordion_panel(
+          "Additional plot settings",
+          numericInput(
+            inputId = ns('font_size'),
+            label = "Font size",
+            value = 8,
+            min = 5,
+            max = 15,
+            step = 1,
+            width = "100%"
+          ),
+          checkboxInput(
+            inputId = ns('show_km_table'),
+            label = "Show KM table",
+            value = TRUE,
+            width = "100%"
+          ),
+          checkboxInput(
+            inputId = ns('show_coxph_table'),
+            label = "Show CoxPH table",
+            value = TRUE,
+            width = "100%"
+          )
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -154,7 +191,6 @@ srv_g_km <- function(input,
                      output,
                      session,
                      datasets,
-                     tbl_fontsize,
                      dataname,
                      arm_ref_comp,
                      label) {
@@ -188,6 +224,9 @@ srv_g_km <- function(input,
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     xlab <- input$xlab
+    tbl_fontsize <- input$font_size
+    if_show_km <- input$show_km_table
+    if_show_coxph <- input$show_coxph_table
 
     if (length(facet_var) == 0) {
       facet_var <<- NULL
@@ -262,30 +301,44 @@ srv_g_km <- function(input,
     if (is.null(facet_var)) {
       chunks_push(expression = bquote({
         fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
-        fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
-        tbl_km <- t_km(fit_km)
-        tbl_coxph <- t_coxph(fit_coxph)
-        text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-        coxph_grob <- textGrob(
-          label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
-          just = c("left", "bottom"),
-          gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-          vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-        )
-        km_grob <- textGrob(
-          label = toString(tbl_km, gap = 1),
-          x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-          y = unit(1, "npc") - unit(1, "lines"),
-          just = c("left", "top"),
-          gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-          vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-        )
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
-        p <- addGrob(p, km_grob)
-        p <- addGrob(p, coxph_grob)
-        plot <- grid.draw(p)
 
+        .(
+          if (if_show_km) {
+            bquote({
+              tbl_km <- t_km(fit_km)
+              km_grob <- textGrob(
+                label = toString(tbl_km, gap = 1),
+                x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                y = unit(1, "npc") - unit(1, "lines"),
+                just = c("left", "top"),
+                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+              )
+              p <- addGrob(p, km_grob)
+            })
+          }
+        )
+
+        .(
+          if (if_show_coxph) {
+            bquote({
+              fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
+              tbl_coxph <- t_coxph(fit_coxph)
+              text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+              coxph_grob <- textGrob(
+                label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
+                just = c("left", "bottom"),
+                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+              )
+              p <- addGrob(p, coxph_grob)
+            })
+          }
+        )
+
+        plot <- grid.draw(p)
         plot
       }))
     } else {
@@ -310,34 +363,46 @@ srv_g_km <- function(input,
           } else {
             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
             fit_km <- survfit(formula_km, data = x, conf.type = "plain")
-            fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-            tbl_km <- t_km(fit_km)
-            tbl_coxph <- t_coxph(fit_coxph)
-            text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-            coxph_grob <- textGrob(
-              label = text_coxph,
-              x = unit(1, "lines"),
-              y = unit(1, "lines"),
-              just = c("left", "bottom"),
-              gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-              vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-            )
-            km_grob <- textGrob(
-              label = toString(tbl_km, gap = 1),
-              x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-              y = unit(1, "npc") - unit(1, "lines"),
-              just = c("left", "top"),
-              gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-              vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-            )
-
-
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
               xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
             )
-            p <- addGrob(p, km_grob)
-            p <- addGrob(p, coxph_grob)
+
+            .(
+              if (if_show_km) {
+                bquote({
+                  tbl_km <- t_km(fit_km)
+                  km_grob <- textGrob(
+                    label = toString(tbl_km, gap = 1),
+                    x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                    y = unit(1, "npc") - unit(1, "lines"),
+                    just = c("left", "top"),
+                    gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                    vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                  )
+                  p <- addGrob(p, km_grob)
+                })
+              }
+            )
+
+            .(
+              if (if_show_coxph) {
+                bquote({
+                  fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+                  tbl_coxph <- t_coxph(fit_coxph)
+                  text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+                  coxph_grob <- textGrob(
+                    label = text_coxph,
+                    x = unit(1, "lines"),
+                    y = unit(1, "lines"),
+                    just = c("left", "bottom"),
+                    gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                    vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                  )
+                  p <- addGrob(p, coxph_grob)
+                })
+              }
+            )
 
             p
           }

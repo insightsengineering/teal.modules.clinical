@@ -14,9 +14,10 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 1)
-#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#' ASL <- cadsl
+#' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #' keys(ARS) <- c("STUDYID", "USUBJID")
@@ -25,8 +26,8 @@
 #'   data = cdisc_data(
 #'    ASL = ASL,
 #'    ARS = ARS,
-#'    code = 'ASL <- radsl(seed = 1)
-#'            ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
+#'    code = 'ASL <- cadsl
+#'            ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'            keys(ASL) <- c("STUDYID", "USUBJID")
 #'            keys(ARS) <- c("STUDYID", "USUBJID")',
 #'    check = FALSE),
@@ -159,6 +160,12 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("plot_height"),
         "plot height",
         a$plot_height,
+        ticks = FALSE
+      ),
+      optionalSliderInputValMinMax(
+        ns("plot_width"),
+        "plot width",
+        c(700L, 500L, 2000L),
         ticks = FALSE
       )
     ),
@@ -327,8 +334,13 @@ srv_g_forest_rsp <- function(input,
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
+    plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
+    div(style = 'overflow-x: scroll',
+        plotOutput(session$ns("forest_plot"),
+                   height = plot_height,
+                   width = plot_width)
+    )
   })
 
 
