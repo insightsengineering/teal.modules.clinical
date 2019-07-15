@@ -95,7 +95,8 @@
 #'   n(), TRUE))
 #' ATE <- radtte(ASL, seed = 1)
 #'
-#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' keys(ASL) <- c("USUBJID", "STUDYID")
+#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
