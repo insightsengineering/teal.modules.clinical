@@ -1,3 +1,9 @@
+# teal.modules.clinical next release
+
+# teal.modules.clinical 0.7.0
+
+* use `teal.devel`
+
 # teal.modules.clinical 0.6.0
 
 ## Changes

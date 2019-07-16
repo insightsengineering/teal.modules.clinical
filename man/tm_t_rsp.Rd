@@ -72,7 +72,7 @@ ASL <- cadsl
 keys(ASL) <- c("STUDYID", "USUBJID")
 
 ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-keys(ARS) <- c("STUDYID", "USUBJID")
+keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
 
 app <- init(
   data = cdisc_data(
@@ -81,7 +81,7 @@ app <- init(
     code = "ASL <- cadsl
             ARS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
             keys(ASL) <- c('STUDYID', 'USUBJID')
-            keys(ARS) <- c('STUDYID', 'USUBJID')",
+            keys(ARS) <- c('STUDYID', 'USUBJID', 'PARAMCD')",
      check = FALSE
   ),
   modules = root_modules(

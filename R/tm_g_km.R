@@ -22,7 +22,8 @@
 #' ASL <- cadsl
 #' ATE <- cadtte
 #'
-#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+#' keys(ASL) <- c("USUBJID", "STUDYID")
+#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -40,7 +41,8 @@
 #'     ASL = ASL, ATE = ATE,
 #'     code = "ASL <- cadsl
 #'             ATE <- cadtte
-#'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+#'             keys(ASL) <- c('USUBJID', 'STUDYID')
+#'             keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
@@ -194,7 +196,8 @@ srv_g_km <- function(input,
                      dataname,
                      arm_ref_comp,
                      label) {
-  use_chunks(session)
+
+  init_chunks()
 
   arm_ref_comp_observer(
     session, input,
@@ -210,16 +213,6 @@ srv_g_km <- function(input,
     validate(need(plot_height, "need valid plot height"))
     plotOutput(session$ns("kmplot"), height = plot_height)
   })
-
-  chunks <- list(
-    vars = "# No Calculated",
-    data = "# No Calculated",
-    facet = "# No Calculated",
-    formula_km = "# No Calculated",
-    formula_coxph = "# No Calculated",
-    info_coxph = "# No Calculated",
-    t_kmplot = "# No Calculated"
-  )
 
   output$plot <- renderPlot({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
@@ -244,12 +237,8 @@ srv_g_km <- function(input,
       strata_var <- NULL
     }
 
-    for (i in seq_along(chunks)) {
-      chunks[[i]] <<- "# Not calculated"
-    }
-
     validate_standard_inputs(
-      asl = ASL_FILTERED, # nolint
+      asl = ASL_FILTERED,
       aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
@@ -263,50 +252,47 @@ srv_g_km <- function(input,
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
 
-    # Delete chunks that are used for reproducible code
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    chunks_reset(envir = environment())
 
-    set_chunk(expression = bquote(ref_arm <- .(ref_arm)))
-    set_chunk(expression = bquote(comp_arm <- .(comp_arm)))
-    set_chunk(expression = bquote(strata_var <- .(strata_var)))
-    set_chunk(expression = bquote(facet_var <- .(facet_var)))
-    set_chunk(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(expression = bquote(ref_arm <- .(ref_arm)))
+    chunks_push(expression = bquote(comp_arm <- .(comp_arm)))
+    chunks_push(expression = bquote(strata_var <- .(strata_var)))
+    chunks_push(expression = bquote(facet_var <- .(facet_var)))
+    chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
+    chunks_push(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    set_chunk(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var))))) # nolint
-
-    set_chunk(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm)))) # nolint
-    set_chunk(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
-    set_chunk(expression = bquote(anl <- merge(asl_p[, asl_vars],
+    chunks_push(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
+    chunks_push(expression = bquote(anl <- merge(asl_p[, asl_vars],
       anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
       all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
     )))
-    set_chunk(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    set_chunk(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
 
     if (combine_comp_arms) {
-      set_chunk(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+      chunks_push(expression = bquote(arm <- combine_levels(arm, comp_arm)))
     }
 
-    set_chunk(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-    set_chunk(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
-    set_chunk(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
+    chunks_push(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    chunks_push(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
+    chunks_push(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
 
-    eval_remaining()
+    chunks_eval()
 
-    validate(need(nrow(get_envir_chunks()$anl) > 15, "need at least 15 data points"))
-    validate(need(length(get_envir_chunks()$time_unit) == 1, "Time Unit is not consistant"))
+    validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
+    validate(need(length(chunks_get_var("time_unit")) == 1, "Time Unit is not consistant"))
 
-    set_chunk(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
+    chunks_push(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
 
-    set_chunk(expression = bquote(formula_coxph <- as.formula(
+    chunks_push(expression = bquote(formula_coxph <- as.formula(
       .(paste0(
         "Surv(AVAL, 1-CNSR) ~ ", arm_var,
         ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
       ))
     )))
-    set_chunk(expression = bquote(info_coxph <- .(paste0(
+    chunks_push(expression = bquote(info_coxph <- .(paste0(
       "Cox Proportional Model: ",
       ifelse(is.null(strata_var),
              "Unstratified Analysis",
@@ -315,7 +301,7 @@ srv_g_km <- function(input,
     ))))
 
     if (is.null(facet_var)) {
-      set_chunk(expression = bquote({
+      chunks_push(expression = bquote({
         fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
@@ -358,7 +344,7 @@ srv_g_km <- function(input,
         plot
       }))
     } else {
-      set_chunk(expression = bquote({
+      chunks_push(expression = bquote({
         facet_df <- anl[.(facet_var)]
 
         lab <- Map(
@@ -429,14 +415,11 @@ srv_g_km <- function(input,
       }))
     }
 
-    eval_remaining()
-    p <- get_envir_chunks()$plot
+    p <- chunks_eval()
 
-    if (is.null(p)) {
-      validate(need(FALSE, p))
-    } else {
-      p
-    }
+    chunks_validate_is_ok()
+
+    p
   })
 
   # Insert the plot into a plot_height module from teal.devel

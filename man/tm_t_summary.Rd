@@ -49,9 +49,10 @@ app <- init(
       label = "Demographic Table",
       dataname = "ASL",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE")))
+      summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
     )
   )
+)
 
 \dontrun{
 shinyApp(app$ui, app$server)

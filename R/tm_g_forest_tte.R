@@ -5,21 +5,19 @@
 #'
 #' @inheritParams tm_g_forest_rsp
 #'
-#'
-#'
 #' @export
 #'
 #' @template author_song24
 #'
 #' @examples
-#' # reproducible teal app
 #' library(random.cdisc.data)
 #'
 #' ASL <- cadsl
 #' ATE <- cadtte
 #'
 #' ASL$RACE <- droplevels(ASL$RACE)
-#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+#' keys(ASL) <- c("USUBJID", "STUDYID")
+#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -28,7 +26,8 @@
 #'     code = 'ASL <- cadsl
 #'             ATE <- cadtte
 #'             ASL$RACE <- droplevels(ASL$RACE)
-#'             keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
+#'             keys(ASL) <- c("USUBJID", "STUDYID")
+#'             keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")',
 #'     check = FALSE
 #'     ),
 #'   modules = root_modules(
@@ -122,6 +121,9 @@ ui_g_forest_tte <- function(id, ...) {
 }
 
 srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1.5) {
+
+  init_chunks()
+
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   arm_ref_comp_observer(
@@ -131,8 +133,6 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
-  use_chunks(session)
-
 
   output$forest_plot <- renderPlot({
     ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) #nolint
@@ -160,15 +160,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
 
-    # Delete chunks that are used for reproducible code
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    chunks_reset(envir = environment())
 
     asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
-    set_chunk(
-      id = "tm_g_forest_tte_anl",
+    chunks_push(
       expression = bquote({
         ref_arm <- .(ref_arm)
         comp_arm <- .(comp_arm)
@@ -187,10 +184,15 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
           levels(anl[[.(arm_var)]]),
           function(x) paste(strwrap(x, width = 15), collapse = "\n")
         )
-    }))
+      }),
+      id = "tm_g_forest_tte_anl"
+    )
 
-    set_chunk(
-      id = "tm_g_forest_tte_tbl",
+    chunks_eval()
+    anl <- chunks_get_var("anl")
+    validate(need(nrow(anl) > 15, "need at least 15 data points"))
+
+    chunks_push(
       expression = bquote({
         tbl <- t_forest_tte(
           tte = anl$AVAL,
@@ -208,10 +210,14 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         )
 
         row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
-    }))
+      }),
+      id = "tm_g_forest_tte_tbl"
+    )
 
-    set_chunk(
-      id = "tm_g_forest_tte_plot",
+    chunks_eval()
+    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
+
+    chunks_push(
       expression = call(
         "g_forest",
         tbl = quote(tbl),
@@ -222,20 +228,15 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         xlim = c(.1, 10),
         logx = TRUE,
         x_at = c(.1, 1, 10)
-      )
+      ),
+      id = "tm_g_forest_tte_plot"
     )
 
-    invisible(NULL)
+    p <- chunks_eval()
 
-    eval_chunk("tm_g_forest_tte_anl")
-    anl <- get_envir_chunks()$anl
-    validate(need(nrow(anl) > 15, "need at least 15 data points"))
+    chunks_validate_is_ok()
 
-    eval_chunk("tm_g_forest_tte_tbl")
-    tbl <- get_envir_chunks()$tbl
-    validate(need(!is.null(tbl), paste0("could not calculate forest table:\n\n")))
-
-    eval_remaining()
+    p
   })
 
   ## dynamic plot height

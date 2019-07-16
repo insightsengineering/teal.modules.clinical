@@ -54,7 +54,8 @@ library(random.cdisc.data)
 ASL <- cadsl
 ATE <- cadtte
 
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+keys(ASL) <- c("USUBJID", "STUDYID")
+keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -72,7 +73,8 @@ app <- init(
     ASL = ASL, ATE = ATE,
     code = "ASL <- cadsl
             ATE <- cadtte
-            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+            keys(ASL) <- c('USUBJID', 'STUDYID')
+            keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
     check = FALSE
   ),
   modules = root_modules(

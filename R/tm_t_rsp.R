@@ -37,7 +37,7 @@
 #' keys(ASL) <- c("STUDYID", "USUBJID")
 #'
 #' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-#' keys(ARS) <- c("STUDYID", "USUBJID")
+#' keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -46,7 +46,7 @@
 #'     code = "ASL <- cadsl
 #'             ARS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
 #'             keys(ASL) <- c('STUDYID', 'USUBJID')
-#'             keys(ARS) <- c('STUDYID', 'USUBJID')",
+#'             keys(ARS) <- c('STUDYID', 'USUBJID', 'PARAMCD')",
 #'      check = FALSE
 #'   ),
 #'   modules = root_modules(
@@ -214,7 +214,7 @@ srv_t_rsp <- function(input,
                       dataname,
                       arm_ref_comp) {
 
-  use_chunks(session)
+  init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
@@ -281,13 +281,11 @@ srv_t_rsp <- function(input,
     asl_name <- "ASL_FILTERED"
     assign(asl_name, asl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
+    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
 
 
-    ## Now comes the analysis code
-    renew_chunk_environment(envir = environment())
-    renew_chunks()
+    chunks_reset(envir = environment())
 
     chunk_call_asl_p <- bquote(
       asl_p <- subset(
@@ -295,7 +293,7 @@ srv_t_rsp <- function(input,
         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
     )
-    set_chunk("tm_t_rsp_asl_p", chunk_call_asl_p)
+    chunks_push(expression = chunk_call_asl_p, id = "tm_t_rsp_asl_p")
 
     chunk_call_anl_endpoint <- bquote(
       anl_endpoint <- subset(
@@ -303,7 +301,7 @@ srv_t_rsp <- function(input,
         PARAMCD == .(paramcd)
       )
     )
-    set_chunk("tm_t_rsp_anl_endpoint", chunk_call_anl_endpoint)
+    chunks_push(expression = chunk_call_anl_endpoint, id = "tm_t_rsp_anl_endpoint")
 
     chunk_call_anl <- bquote(
       anl <- merge(
@@ -314,7 +312,7 @@ srv_t_rsp <- function(input,
         by = c("USUBJID", "STUDYID")
       )
     )
-    set_chunk("tm_t_rsp_anl", chunk_call_anl)
+    chunks_push(expression = chunk_call_anl, id = "tm_t_rsp_anl")
 
     chunk_call_arm <- bquote({
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -326,12 +324,12 @@ srv_t_rsp <- function(input,
         arm <- combine_levels(arm, .(comp_arm))
       })
     }
-    set_chunk("tm_t_rsp_arm", chunk_call_arm)
+    chunks_push(expression = chunk_call_arm, id = "tm_t_rsp_arm")
 
     chunk_call_arm_var <- bquote(
       anl[[.(arm_var)]] <- droplevels(arm)
     )
-    set_chunk("tm_t_rsp_arm_var", chunk_call_arm_var)
+    chunks_push(expression = chunk_call_arm_var, id = "tm_t_rsp_arm_var")
 
     strata_data <- if (length(strata_var) > 0) {
       quote(anl[, strata_var, drop = FALSE]) %>%
@@ -349,7 +347,7 @@ srv_t_rsp <- function(input,
       )
       tbl
     })
-    set_chunk("tm_t_rsp", chunk_table_expr)
+    chunks_push(expression = chunk_table_expr, id = "tm_t_rsp")
 
     invisible(NULL)
   })
@@ -358,21 +356,18 @@ srv_t_rsp <- function(input,
   output$response_table <- renderUI({
     tm_t_rsp_call()
 
-    eval_chunk("tm_t_rsp_asl_p")
+    chunks_eval()
 
-    anl_endpoint <- eval_chunk("tm_t_rsp_anl_endpoint")
+    anl_endpoint <- chunks_get_var("anl_endpoint")
     if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {
       stop("only one row per patient expected")
     }
 
-    eval_chunk("tm_t_rsp_anl")
-    anl <- get_envir_chunks()$anl
-
+    anl <- chunks_get_var("anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    eval_remaining()
-    tbl <- get_envir_chunks()$tbl
+    tbl <- chunks_get_var("tbl")
     validate(need(is(tbl, "rtable"), "Evaluation with tern t_rsp failed."))
 
     as_html(tbl)
