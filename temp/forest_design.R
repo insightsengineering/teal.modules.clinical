@@ -1,36 +1,36 @@
 
 
 
-g_forest <- function(snapshot, ASL, ATE) {
-  
-  df <- ATE %>% filter(ARM %in% c("ARM B", "ARM C"), PARAMCD == "OS") %>%
+g_forest <- function(snapshot, ADSL, ADTTE) {
+
+  df <- ADTTE %>% filter(ARM %in% c("ARM B", "ARM C"), PARAMCD == "OS") %>%
     select(AVAL, CNSR, ARM)
-  
+
   df$ARM <- df$ARM %>% as.factor() %>% fct_reoder("ARM C")
-  
-  
+
+
   forstplot(Surv(AVAL, 1-CNSR) ~ ARM + SEX + strata(LIVER, ABC), dat = df)
-  
-}  
+
+}
 
 forstplot <- function(tte, event, arm) {
 
   fit <- survfit(Surv(tte, event) ~ arm)
-  
-  
-  
+
+
+
 }
 
 forstplot <- function(formula, data) {
-  
+
   fit <- survfit(formula, data = data)
-  
-  
+
+
 }
 
 library(survival)
 
-ATE <- data.frame(
+ADTTE <- data.frame(
   AVAL = abs(rnorm(100)),
   CNSR = sample(c(TRUE, FALSE), 100, TRUE, prob = c(.7,.3)),
   ARM = factor(sample(c("ARM A", "ARM B"), 100, TRUE), levels = c("ARM A", "ARM B"))
@@ -38,13 +38,13 @@ ATE <- data.frame(
 
 kmPlot <- function(formula, data) {
   fit <- survfit(formula, data)
-  fit 
+  fit
 }
 
 
 kmPlot(Surv(tte, event) ~ arm, data = df)
 
-kmPlot(formula("Surv(AVAL, I(1-CNSR)) ~ ARM"), data = ATE)
+kmPlot(formula("Surv(AVAL, I(1-CNSR)) ~ ARM"), data = ADTTE)
 
 
 ##

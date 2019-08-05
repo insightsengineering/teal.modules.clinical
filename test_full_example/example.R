@@ -5,13 +5,13 @@ library(teal.modules.clinical)
 library(random.cdisc.data)
 
 ## Generate Data
-ASL <- radsl(seed = 1)
-ATE <- radtte(ADSL = ASL, seed = 1)
-ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")
+ADSL <- radsl(seed = 1)
+ADTTE <- radtte(ADSL = ADSL, seed = 1)
+ADRS <- subset(radrs(ADSL = ADSL, seed = 1), AVISIT == "Follow Up")
 
-attr(ASL, "source") <- "random.cdisc.data::radsl(seed = 1)"
-attr(ATE, "source") <- "random.cdisc.data::radtte(ASL, seed = 1)"
-attr(ARS, "source") <- 'subset(random.cdisc.data::radrs(ASL, seed = 1), AVISIT == "Follow Up")'
+attr(ADSL, "source") <- "random.cdisc.data::radsl(seed = 1)"
+attr(ADTTE, "source") <- "random.cdisc.data::radtte(ADSL, seed = 1)"
+attr(ADRS, "source") <- 'subset(random.cdisc.data::radrs(ADSL, seed = 1), AVISIT == "Follow Up")'
 
 ## Reusable Configuration For Modules
 cs_arm_var <- choices_selected(c("ARM", "ARMCD", "ARM1", "STRATA1", "STRATA2"), "ARM")
@@ -20,11 +20,11 @@ cs_strata_var <- choices_selected(c("STRATA1", "STRATA2"), "STRATA1")
 
 cs_facet_var <- choices_selected(c("STRATA1", "STRATA2", "SEX"), "STRATA1")
 
-cs_paramcd_tte <- choices_selected(ATE$PARAMCD, "OS")
+cs_paramcd_tte <- choices_selected(ADTTE$PARAMCD, "OS")
 
-cs_paramcd_rsp <- choices_selected(ARS$PARAMCD)
+cs_paramcd_rsp <- choices_selected(ADRS$PARAMCD)
 
-fact_vars_asl <- names(Filter(isTRUE, sapply(ASL, is.factor)))
+fact_vars_adsl <- names(Filter(isTRUE, sapply(ADSL, is.factor)))
 
 
 # reference & comparison arm selection when switching the arm variable
@@ -35,9 +35,9 @@ arm_ref_comp <- list(
 
 ## Setup App
 app <- teal::init(
-  data = cdisc_data(ASL = ASL, ARS = ARS, ATE = ATE, code = 'ASL <- radsl(seed = 1)
-ATE <- radtte(ADSL = ASL, seed = 1)
-ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
+  data = cdisc_dataset(cdisc_data("ADSL", ADSL), cdisc_dataset("ADRS", ADRS), cdisc_dataset("ADTTE", ADTTE), code = 'ADSL <- radsl(seed = 1)
+ADTTE <- radtte(ADSL = ADSL, seed = 1)
+ADRS <- subset(radrs(ADSL = ADSL, seed = 1), AVISIT == "Follow Up")'),
   modules = root_modules(
     module(
       label = "Study Information",
@@ -53,10 +53,10 @@ ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
     ),
     tm_t_summary(
       label = "Demographic Table",
-      dataname = "ASL",
+      dataname = "ADSL",
       arm_var = cs_arm_var,
       summarize_vars = choices_selected(
-        choices = setdiff(names(ASL), c("USUBJID", "SUBJID")),
+        choices = setdiff(names(ADSL), c("USUBJID", "SUBJID")),
         selected = c("SEX", "AGE", "RACE")
       )
     ),
@@ -64,14 +64,14 @@ ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
       "Forest Plots",
       tm_g_forest_tte(
         label = "Survival Forest Plot",
-        dataname = "ATE",
+        dataname = "ADTTE",
         arm_var = cs_arm_var,
         subgroup_var = cs_strata_var,
         paramcd = cs_paramcd_tte
       ),
       tm_g_forest_rsp(
         label = "Response Forest Plot",
-        dataname = "ARS",
+        dataname = "ADRS",
         arm_var = cs_arm_var,
         subgroup_var = cs_strata_var,
         paramcd = cs_paramcd_rsp
@@ -79,7 +79,7 @@ ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
     ),
     tm_g_km(
       label = "Kaplan Meier Plot",
-      dataname = "ATE",
+      dataname = "ADTTE",
       arm_var = cs_arm_var,
       arm_ref_comp = arm_ref_comp,
       paramcd = cs_paramcd_tte,
@@ -88,7 +88,7 @@ ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
     ),
     tm_t_rsp(
       label = "Response Table",
-      dataname = "ARS",
+      dataname = "ADRS",
       arm_var = cs_arm_var,
       arm_ref_comp = arm_ref_comp,
       paramcd = cs_paramcd_rsp,
@@ -96,7 +96,7 @@ ARS <- subset(radrs(ADSL = ASL, seed = 1), AVISIT == "Follow Up")'),
     ),
     tm_t_tte(
       label = "Time To Event Table",
-      dataname = "ATE",
+      dataname = "ADTTE",
       arm_var = cs_arm_var,
       paramcd = cs_paramcd_tte,
       strata_var = cs_strata_var,

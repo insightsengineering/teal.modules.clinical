@@ -12,30 +12,30 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- cadsl
-#' ATE <- cadtte
+#' ADSL <- cadsl
+#' ADTTE <- cadtte
 #'
-#' ASL$RACE <- droplevels(ASL$RACE)
-#' keys(ASL) <- c("USUBJID", "STUDYID")
-#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' ADSL$RACE <- droplevels(ADSL$RACE)
+#' keys(ADSL) <- c("USUBJID", "STUDYID")
+#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL,
-#'     ATE = ATE,
-#'     code = 'ASL <- cadsl
-#'             ATE <- cadtte
-#'             ASL$RACE <- droplevels(ASL$RACE)
-#'             keys(ASL) <- c("USUBJID", "STUDYID")
-#'             keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")',
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADTTE", ADTTE),
+#'     code = 'ADSL <- cadsl
+#'             ADTTE <- cadtte
+#'             ADSL$RACE <- droplevels(ADSL$RACE)
+#'             keys(ADSL) <- c("USUBJID", "STUDYID")
+#'             keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")',
 #'     check = FALSE
 #'     ),
 #'   modules = root_modules(
 #'     tm_g_forest_tte(
 #'        label = "Forest Survival",
-#'        dataname = "ATE",
+#'        dataname = "ADTTE",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+#'        subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
 #'        paramcd = choices_selected(c("OS", "PFS"), "OS"),
 #'        plot_height = c(600, 200, 2000)
 #'     )
@@ -110,7 +110,7 @@ ui_g_forest_tte <- function(id, ...) {
                           a$subgroup_var$choices,
                           a$subgroup_var$selected,
                           multiple = TRUE,
-                          label_help = helpText("are taken from", tags$code("ASL"))),
+                          label_help = helpText("are taken from", tags$code("ADSL"))),
       tags$label("Plot Settings", class = "text-primary", style = "margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),
@@ -129,13 +129,13 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
 
   output$forest_plot <- renderPlot({
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) #nolint
+    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) #nolint
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) #nolint
 
     paramcd <- input$paramcd
@@ -146,8 +146,8 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
     # validate your input values
     validate_standard_inputs(
-      asl = ASL_FILTERED,
-      aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      adsl = ADSL_FILTERED,
+      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       anl = ANL_FILTERED,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALU", "CNSR"),
       arm_var = arm_var,
@@ -162,17 +162,17 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
     chunks_reset(envir = environment())
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
     chunks_push(
       expression = bquote({
         ref_arm <- .(ref_arm)
         comp_arm <- .(comp_arm)
-        asl_p <- subset(ASL_FILTERED, ASL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+        adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
         anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
-        anl <- merge(asl_p[, .(asl_vars)], anl_p[, .(anl_vars)],
+        anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
                      all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
         arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
         arm <- combine_levels(arm, ref_arm)

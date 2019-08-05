@@ -15,19 +15,19 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- cadsl
-#' keys(ASL) <- c("STUDYID", "USUBJID")
+#' ADSL <- cadsl
+#' keys(ADSL) <- c("STUDYID", "USUBJID")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL,
-#'     code = 'ASL <- cadsl
-#'             keys(ASL) <- c("STUDYID", "USUBJID")',
+#'     cdisc_dataset("ADSL", ADSL),
+#'     code = 'ADSL <- cadsl
+#'             keys(ADSL) <- c("STUDYID", "USUBJID")',
 #'     check = FALSE),
 #'   modules = root_modules(
 #'     tm_t_summary(
 #'       label = "Demographic Table",
-#'       dataname = "ASL",
+#'       dataname = "ADSL",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
 #'     )

@@ -19,11 +19,11 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- cadsl
-#' ATE <- cadtte
+#' ADSL <- cadsl
+#' ADTTE <- cadtte
 #'
-#' keys(ASL) <- c("USUBJID", "STUDYID")
-#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' keys(ADSL) <- c("USUBJID", "STUDYID")
+#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -38,17 +38,17 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL, ATE = ATE,
-#'     code = "ASL <- cadsl
-#'             ATE <- cadtte
-#'             keys(ASL) <- c('USUBJID', 'STUDYID')
-#'             keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+#'     code = "ADSL <- cadsl
+#'             ADTTE <- cadtte
+#'             keys(ADSL) <- c('USUBJID', 'STUDYID')
+#'             keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_km(
 #'       label = "KM PLOT",
-#'       dataname = "ATE",
+#'       dataname = "ADTTE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(c("OS", "PFS"), "OS"),
@@ -121,7 +121,7 @@ ui_g_km <- function(id, ...) {
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ASL")
+        label_help = helpText("currently taken from ADSL")
       ),
       optionalSelectInput(
         ns("facet_var"),
@@ -129,7 +129,7 @@ ui_g_km <- function(id, ...) {
         choices = a$facet_var$choices,
         selected = a$facet_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ASL")
+        label_help = helpText("currently taken from ADSL")
       ),
       selectInput(
         ns("ref_arm"),
@@ -202,7 +202,7 @@ srv_g_km <- function(input,
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_km"
   )
@@ -216,7 +216,7 @@ srv_g_km <- function(input,
 
   output$plot <- renderPlot({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
+    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) # nolint
 
     paramcd <- input$paramcd
     arm_var <- input$arm_var
@@ -238,8 +238,8 @@ srv_g_km <- function(input,
     }
 
     validate_standard_inputs(
-      asl = ASL_FILTERED,
-      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
+      adsl = ADSL_FILTERED,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
       arm_var = arm_var,
@@ -260,11 +260,11 @@ srv_g_km <- function(input,
     chunks_push(expression = bquote(facet_var <- .(facet_var)))
     chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
+    chunks_push(expression = bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    chunks_push(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(expression = bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
     chunks_push(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
-    chunks_push(expression = bquote(anl <- merge(asl_p[, asl_vars],
+    chunks_push(expression = bquote(anl <- merge(adsl_p[, adsl_vars],
       anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
       all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
     )))

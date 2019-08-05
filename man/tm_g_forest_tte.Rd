@@ -45,30 +45,30 @@ with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ASL <- cadsl
-ATE <- cadtte
+ADSL <- cadsl
+ADTTE <- cadtte
 
-ASL$RACE <- droplevels(ASL$RACE)
-keys(ASL) <- c("USUBJID", "STUDYID")
-keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+ADSL$RACE <- droplevels(ADSL$RACE)
+keys(ADSL) <- c("USUBJID", "STUDYID")
+keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL,
-    ATE = ATE,
-    code = 'ASL <- cadsl
-            ATE <- cadtte
-            ASL$RACE <- droplevels(ASL$RACE)
-            keys(ASL) <- c("USUBJID", "STUDYID")
-            keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")',
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADTTE", ADTTE),
+    code = 'ADSL <- cadsl
+            ADTTE <- cadtte
+            ADSL$RACE <- droplevels(ADSL$RACE)
+            keys(ADSL) <- c("USUBJID", "STUDYID")
+            keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")',
     check = FALSE
     ),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
-       dataname = "ATE",
+       dataname = "ADTTE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
        paramcd = choices_selected(c("OS", "PFS"), "OS"),
        plot_height = c(600, 200, 2000)
     )
