@@ -16,28 +16,28 @@
 #' library(random.cdisc.data)
 #' library(dplyr)
 #'
-#' ASL <- cadsl
-#' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
+#' ADSL <- cadsl
+#' ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 #'
-#' keys(ASL) <- c("STUDYID", "USUBJID")
-#' keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
+#' keys(ADSL) <- c("STUDYID", "USUBJID")
+#' keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'    ASL = ASL,
-#'    ARS = ARS,
-#'    code = 'ASL <- cadsl
-#'            ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-#'            keys(ASL) <- c("STUDYID", "USUBJID")
-#'            keys(ARS) <- c("STUDYID", "USUBJID")',
+#'    cdisc_dataset("ADSL", ADSL),
+#'    cdisc_dataset("ADRS", ADRS),
+#'    code = 'ADSL <- cadsl
+#'            ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
+#'            keys(ADSL) <- c("STUDYID", "USUBJID")
+#'            keys(ADRS) <- c("STUDYID", "USUBJID")',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
-#'       dataname = "ARS",
+#'       dataname = "ADRS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-#'       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+#'       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
 #'       plot_height = c(600L, 200L, 2000L)
 #'     )
 #'   )
@@ -149,7 +149,7 @@ ui_g_forest_rsp <- function(id, ...) {
         a$subgroup_var$choices,
         a$subgroup_var$selected,
         multiple = TRUE,
-        label_help = helpText("are taken from", tags$code("ASL"))
+        label_help = helpText("are taken from", tags$code("ADSL"))
       ),
       tags$label(
         "Plot Settings",
@@ -197,7 +197,7 @@ srv_g_forest_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_rsp"
   )
@@ -218,7 +218,7 @@ srv_g_forest_rsp <- function(input,
 
 
   output$forest_plot <- renderPlot({
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
@@ -230,8 +230,8 @@ srv_g_forest_rsp <- function(input,
 
     # validate your input values
     validate_standard_inputs(
-      asl = asl_filtered,
-      aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var,
@@ -245,19 +245,19 @@ srv_g_forest_rsp <- function(input,
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
-    asl_name <- "ASL_FILTERED"
-    assign(asl_name, asl_filtered)
+    adsl_name <- "ADSL_FILTERED"
+    assign(adsl_name, adsl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVALC")
 
     chunks_reset(envir = environment())
 
     chunk_data_expr <- bquote({
-      asl_p <- subset(.(as.name(asl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
+      adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
 
-      anl <- merge(asl_p[, .(asl_vars)], anl_p[, .(anl_vars)],
+      anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
 
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])

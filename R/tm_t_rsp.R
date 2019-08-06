@@ -33,28 +33,28 @@
 #' library(random.cdisc.data)
 #' library(dplyr)
 #'
-#' ASL <- cadsl
-#' keys(ASL) <- c("STUDYID", "USUBJID")
+#' ADSL <- cadsl
+#' keys(ADSL) <- c("STUDYID", "USUBJID")
 #'
-#' ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-#' keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
+#' ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
+#' keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL,
-#'     ARS = ARS,
-#'     code = "ASL <- cadsl
-#'             ARS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
-#'             keys(ASL) <- c('STUDYID', 'USUBJID')
-#'             keys(ARS) <- c('STUDYID', 'USUBJID', 'PARAMCD')",
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADRS", ADRS),
+#'     code = "ADSL <- cadsl
+#'             ADRS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
+#'             keys(ADSL) <- c('STUDYID', 'USUBJID')
+#'             keys(ADRS) <- c('STUDYID', 'USUBJID', 'PARAMCD')",
 #'      check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
 #'       label = "Response Table",
-#'       dataname = 'ARS',
+#'       dataname = 'ADRS',
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
+#'       paramcd = choices_selected(unique(ADRS$PARAMCD), "BESRSPI"),
 #'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )
@@ -173,7 +173,7 @@ ui_t_rsp <- function(id, ...) {
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("taken from:", tags$code("ASL"))
+        label_help = helpText("taken from:", tags$code("ADSL"))
       )
     ),
     forms = actionButton(
@@ -224,7 +224,7 @@ srv_t_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_rsp"
   )
@@ -245,7 +245,7 @@ srv_t_rsp <- function(input,
   })
 
   tm_t_rsp_call <- reactive({
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
@@ -262,8 +262,8 @@ srv_t_rsp <- function(input,
 
     # Validate your input
     validate_standard_inputs(
-      asl = asl_filtered,
-      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var,
@@ -278,22 +278,22 @@ srv_t_rsp <- function(input,
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
-    asl_name <- "ASL_FILTERED"
-    assign(asl_name, asl_filtered)
+    adsl_name <- "ADSL_FILTERED"
+    assign(adsl_name, adsl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
 
 
     chunks_reset(envir = environment())
 
-    chunk_call_asl_p <- bquote(
-      asl_p <- subset(
-        .(as.name(asl_name)),
+    chunk_call_adsl_p <- bquote(
+      adsl_p <- subset(
+        .(as.name(adsl_name)),
         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
     )
-    chunks_push(expression = chunk_call_asl_p, id = "tm_t_rsp_asl_p")
+    chunks_push(expression = chunk_call_adsl_p, id = "tm_t_rsp_adsl_p")
 
     chunk_call_anl_endpoint <- bquote(
       anl_endpoint <- subset(
@@ -305,7 +305,7 @@ srv_t_rsp <- function(input,
 
     chunk_call_anl <- bquote(
       anl <- merge(
-        x = asl_p[, .(asl_vars), drop = FALSE],
+        x = adsl_p[, .(adsl_vars), drop = FALSE],
         y = anl_endpoint[, .(anl_vars), drop = FALSE],
         all.x = FALSE,
         all.y = FALSE,

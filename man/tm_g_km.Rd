@@ -21,7 +21,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{ADSL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -51,11 +51,11 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ASL <- cadsl
-ATE <- cadtte
+ADSL <- cadsl
+ADTTE <- cadtte
 
-keys(ASL) <- c("USUBJID", "STUDYID")
-keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+keys(ADSL) <- c("USUBJID", "STUDYID")
+keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -70,17 +70,17 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL, ATE = ATE,
-    code = "ASL <- cadsl
-            ATE <- cadtte
-            keys(ASL) <- c('USUBJID', 'STUDYID')
-            keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+    cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+    code = "ADSL <- cadsl
+            ADTTE <- cadtte
+            keys(ADSL) <- c('USUBJID', 'STUDYID')
+            keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
     check = FALSE
   ),
   modules = root_modules(
     tm_g_km(
       label = "KM PLOT",
-      dataname = "ATE",
+      dataname = "ADTTE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(c("OS", "PFS"), "OS"),

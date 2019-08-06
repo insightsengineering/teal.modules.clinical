@@ -12,7 +12,7 @@
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as \code{arm_var}
 #' @param arm_ref_comp (\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-#'   element corresponding to an arm variable in \code{ASL} and the element must
+#'   element corresponding to an arm variable in \code{ADSL} and the element must
 #'   be another list with the elements named \code{ref} and \code{comp} that the
 #'   defined the default reference and comparison arms when the arm variable is
 #'   changed.
@@ -37,7 +37,7 @@
 #'  filtering for \code{paramcd} one observation per patient is expected
 #' }
 #'
-#' The arm variables, stratification variables and taken from the \code{ASL}
+#' The arm variables, stratification variables and taken from the \code{ADSL}
 #' data.
 #'
 #'
@@ -50,25 +50,25 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- cadsl
-#' ATE <- cadtte
+#' ADSL <- cadsl
+#' ADTTE <- cadtte
 #'
-#' keys(ASL) <- c("USUBJID", "STUDYID")
-#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' keys(ADSL) <- c("USUBJID", "STUDYID")
+#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' app <- init(
-#'     data = cdisc_data(ASL = ASL, ATE = ATE,
-#'         code = "ASL <- cadsl
-#'                 ATE <- cadtte
-#'                 keys(ASL) <- c('USUBJID', 'STUDYID')
-#'                 keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+#'         code = "ADSL <- cadsl
+#'                 ADTTE <- cadtte
+#'                 keys(ADSL) <- c('USUBJID', 'STUDYID')
+#'                 keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'             label = "Time To Event Table",
-#'             dataname = 'ATE',
+#'             dataname = 'ADTTE',
 #'             arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'             paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+#'             paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
 #'             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
 #'             time_points = choices_selected(c(6, 8), 6),
 #'             time_unit = "month",
@@ -90,13 +90,13 @@
 #' library(dplyr)
 #' library(magrittr)
 #'
-#' ASL <- mutate(radsl(seed = 1),
+#' ADSL <- mutate(radsl(seed = 1),
 #'   ARM1 = sample(c("DUMMY A", "DUMMY B"),
 #'   n(), TRUE))
-#' ATE <- radtte(ASL, seed = 1)
+#' ADTTE <- radtte(ADSL, seed = 1)
 #'
-#' keys(ASL) <- c("USUBJID", "STUDYID")
-#' keys(ATE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' keys(ADSL) <- c("USUBJID", "STUDYID")
+#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -109,20 +109,20 @@
 #'   )
 #' )
 #' app <- init(
-#'     data = cdisc_data(ASL = ASL, ATE = ATE,
-#'         code = "ASL <- radsl(seed = 1) %>%
+#'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+#'         code = "ADSL <- radsl(seed = 1) %>%
 #'                 mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-#'                 ATE <- radtte(ASL, seed = 1)
-#'                 keys(ASL) <- c('USUBJID', 'STUDYID')
-#'                 keys(ATE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'                 ADTTE <- radtte(ADSL, seed = 1)
+#'                 keys(ADSL) <- c('USUBJID', 'STUDYID')
+#'                 keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'          label = "Time To Event Table",
-#'          dataname = 'ATE',
+#'          dataname = 'ADTTE',
 #'          arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'          arm_ref_comp = arm_ref_comp,
-#'          paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+#'          paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
 #'          strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
 #'          time_points = choices_selected(c(6, 8), 6),
 #'          time_unit = "months",
@@ -212,7 +212,7 @@ ui_t_tte <- function(id, ...) {
                           a$strata_var$choices,
                           a$strata_var$selected,
                           multiple = TRUE,
-                          label_help = helpText("from ", tags$code("ASL"))),
+                          label_help = helpText("from ", tags$code("ADSL"))),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
@@ -247,7 +247,7 @@ srv_t_tte <- function(input,
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte"
   )
@@ -256,7 +256,7 @@ srv_t_tte <- function(input,
   table_reactive <- reactive({
     # resolve all reactive expressions
     # nolint start
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     # nolint end
 
@@ -280,8 +280,8 @@ srv_t_tte <- function(input,
 
     # validate your input values
     validate_standard_inputs(
-      asl = ASL_FILTERED,
-      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      adsl = ADSL_FILTERED,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = ANL_FILTERED,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desc_var),
       arm_var = arm_var,
@@ -298,7 +298,7 @@ srv_t_tte <- function(input,
 
     chunks_reset(envir = environment())
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var))
 
     ## Now comes the analysis code
@@ -307,11 +307,11 @@ srv_t_tte <- function(input,
     chunks_push(expression = bquote(strata_var <- .(strata_var)))
     chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(expression = bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
     chunks_push(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
     chunks_push(expression = bquote(anl <- merge(
-      x = asl_p[, .(asl_vars)],
+      x = adsl_p[, .(adsl_vars)],
       y = anl_endpoint[, .(anl_vars)],
       all.x = FALSE, all.y = FALSE,
       by = c("USUBJID", "STUDYID")

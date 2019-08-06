@@ -45,28 +45,28 @@ This is teal module produces a grid style Forest plot for response data with ADa
 library(random.cdisc.data)
 library(dplyr)
 
-ASL <- cadsl
-ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
+ADSL <- cadsl
+ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
 
-keys(ASL) <- c("STUDYID", "USUBJID")
-keys(ARS) <- c("STUDYID", "USUBJID", "PARAMCD")
+keys(ADSL) <- c("STUDYID", "USUBJID")
+keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
 
 app <- init(
   data = cdisc_data(
-   ASL = ASL,
-   ARS = ARS,
-   code = 'ASL <- cadsl
-           ARS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-           keys(ASL) <- c("STUDYID", "USUBJID")
-           keys(ARS) <- c("STUDYID", "USUBJID")',
+   cdisc_dataset("ADSL", ADSL),
+   cdisc_dataset("ADRS", ADRS),
+   code = 'ADSL <- cadsl
+           ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
+           keys(ADSL) <- c("STUDYID", "USUBJID")
+           keys(ADRS) <- c("STUDYID", "USUBJID")',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
       label = "Forest Response",
-      dataname = "ARS",
+      dataname = "ADRS",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-      subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+      subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
       plot_height = c(600L, 200L, 2000L)
     )
   )
