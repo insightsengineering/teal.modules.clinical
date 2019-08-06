@@ -20,9 +20,9 @@ cs_strata_var <- choices_selected(c("STRATA1", "STRATA2"), "STRATA1")
 
 cs_facet_var <- choices_selected(c("STRATA1", "STRATA2", "SEX"), "STRATA1")
 
-cs_paramcd_tte <- choices_selected(ADTTE$PARAMCD, "OS")
+cs_paramcd_tte <- choices_selected(unique(ADTTE$PARAMCD), "OS")
 
-cs_paramcd_rsp <- choices_selected(ADRS$PARAMCD)
+cs_paramcd_rsp <- choices_selected(levels(ADRS$PARAMCD))
 
 fact_vars_adsl <- names(Filter(isTRUE, sapply(ADSL, is.factor)))
 
@@ -35,9 +35,13 @@ arm_ref_comp <- list(
 
 ## Setup App
 app <- teal::init(
-  data = cdisc_dataset(cdisc_data("ADSL", ADSL), cdisc_dataset("ADRS", ADRS), cdisc_dataset("ADTTE", ADTTE), code = 'ADSL <- radsl(seed = 1)
-ADTTE <- radtte(ADSL = ADSL, seed = 1)
-ADRS <- subset(radrs(ADSL = ADSL, seed = 1), AVISIT == "Follow Up")'),
+  data = cdisc_data(
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADRS", ADRS),
+    cdisc_dataset("ADTTE", ADTTE),
+    code = 'ADSL <- radsl(seed = 1)
+    ADTTE <- radtte(ADSL = ADSL, seed = 1)
+    ADRS <- subset(radrs(ADSL = ADSL, seed = 1), AVISIT == "Follow Up")'),
   modules = root_modules(
     module(
       label = "Study Information",
