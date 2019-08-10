@@ -35,14 +35,12 @@ This module is for \code{\link[tern]{t_summary}}.
 \examples{
 library(random.cdisc.data)
 
-ADSL <- cadsl
-keys(ADSL) <- c("STUDYID", "USUBJID")
+ADSL <- radsl(cached = TRUE)
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
-    code = 'ADSL <- cadsl
-            keys(ADSL) <- c("STUDYID", "USUBJID")',
+    code = 'ADSL <- radsl(cached = TRUE)',
     check = FALSE),
   modules = root_modules(
     tm_t_summary(

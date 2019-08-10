@@ -45,22 +45,18 @@ with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ADSL <- cadsl
-ADTTE <- cadtte
+ADSL <- radsl(cached = TRUE)
+ADTTE <- radtte(ADSL, cached = TRUE)
 
 ADSL$RACE <- droplevels(ADSL$RACE)
-keys(ADSL) <- c("USUBJID", "STUDYID")
-keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADTTE", ADTTE),
-    code = 'ADSL <- cadsl
-            ADTTE <- cadtte
-            ADSL$RACE <- droplevels(ADSL$RACE)
-            keys(ADSL) <- c("USUBJID", "STUDYID")
-            keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")',
+    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+            ADTTE <- radtte(ADSL, cached = TRUE)
+            ADSL$RACE <- droplevels(ADSL$RACE)',
     check = FALSE
     ),
   modules = root_modules(

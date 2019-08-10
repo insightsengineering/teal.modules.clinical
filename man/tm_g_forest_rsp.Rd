@@ -45,20 +45,15 @@ This is teal module produces a grid style Forest plot for response data with ADa
 library(random.cdisc.data)
 library(dplyr)
 
-ADSL <- cadsl
-ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-
-keys(ADSL) <- c("STUDYID", "USUBJID")
-keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
+ADSL <- radsl(cached = TRUE)
+ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "Follow Up")
 
 app <- init(
   data = cdisc_data(
    cdisc_dataset("ADSL", ADSL),
    cdisc_dataset("ADRS", ADRS),
-   code = 'ADSL <- cadsl
-           ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-           keys(ADSL) <- c("STUDYID", "USUBJID")
-           keys(ADRS) <- c("STUDYID", "USUBJID")',
+   code = 'ADSL <- radsl(cached = TRUE)
+           ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "Follow Up")',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
