@@ -88,9 +88,10 @@ ui_t_summary <- function(id, ...) {
 }
 
 srv_t_summary <- function(input, output, session, datasets, dataname) {
+
   init_chunks()
 
-  table_call <- reactive({
+  output$table <- renderUI({
     anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     arm_var <- input$arm_var
@@ -109,29 +110,20 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
 
     chunks_reset(envir = environment())
 
-
-    cl_col_by <- bquote(as.factor(.(as.name(data_name))[[.(arm_var)]]))
-
-    if (add_total) {
-      cl_col_by <- bquote(.(cl_col_by) %>% by_add_total("All Patients"))
-    }
+    total <- if(add_total) "All Patients" else NULL
 
     table_chunk_expr <- bquote({
       tbl <- t_summary(
         x = .(as.name(data_name))[, .(summarize_vars), drop = FALSE],
-        col_by = .(cl_col_by),
+        col_by = as.factor(.(as.name(data_name))[[.(arm_var)]]),
+        total = .(total),
         useNA = "ifany"
       )
       tbl
     })
     chunks_push(expression = table_chunk_expr, id = "tm_t_summary_tbl")
 
-    return(invisible(NULL))
-  })
-
-  output$table <- renderUI({
-    table_call()
-
+    # now evaluate the chunks
     chunks_eval()
     chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
