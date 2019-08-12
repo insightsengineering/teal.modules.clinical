@@ -51,11 +51,8 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ADSL <- cadsl
-ADTTE <- cadtte
-
-keys(ADSL) <- c("USUBJID", "STUDYID")
-keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
+ADSL <- radsl(cached = TRUE)
+ADTTE <- radtte(ADSL, cached = TRUE)
 
 arm_ref_comp <- list(
   ARM = list(
@@ -71,10 +68,8 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-    code = "ADSL <- cadsl
-            ADTTE <- cadtte
-            keys(ADSL) <- c('USUBJID', 'STUDYID')
-            keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+    code = "radsl(cached = TRUE)
+            ADTTE <- radtte(ADSL, cached = TRUE)",
     check = FALSE
   ),
   modules = root_modules(

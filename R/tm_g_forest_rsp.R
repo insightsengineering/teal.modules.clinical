@@ -16,20 +16,15 @@
 #' library(random.cdisc.data)
 #' library(dplyr)
 #'
-#' ADSL <- cadsl
-#' ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-#'
-#' keys(ADSL) <- c("STUDYID", "USUBJID")
-#' keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
+#' ADSL <- radsl(cached = TRUE)
+#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'    cdisc_dataset("ADSL", ADSL),
 #'    cdisc_dataset("ADRS", ADRS),
-#'    code = 'ADSL <- cadsl
-#'            ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-#'            keys(ADSL) <- c("STUDYID", "USUBJID")
-#'            keys(ADRS) <- c("STUDYID", "USUBJID")',
+#'    code = 'ADSL <- radsl(cached = TRUE)
+#'            ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
@@ -286,13 +281,12 @@ srv_g_forest_rsp <- function(input,
       tbl <- t_forest_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
-        group_data = .(if (length(subgroup_var) > 0) {
+        row_by_list = .(if (length(subgroup_var) > 0) {
           bquote(anl[, .(subgroup_var), drop = FALSE])
         } else {
           bquote(NULL)
         }),
         total = "All Patients",
-        na_omit_group = TRUE,
         dense_header = TRUE
       )
     )

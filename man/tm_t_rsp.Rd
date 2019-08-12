@@ -68,20 +68,15 @@ Additional standard UI inputs include \code{responders},
 library(random.cdisc.data)
 library(dplyr)
 
-ADSL <- cadsl
-keys(ADSL) <- c("STUDYID", "USUBJID")
-
-ADRS <- dplyr::filter(cadrs, AVISIT == "Follow Up")
-keys(ADRS) <- c("STUDYID", "USUBJID", "PARAMCD")
+ADSL <- radsl(cached = TRUE)
+ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "Follow Up")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADRS", ADRS),
-    code = "ADSL <- cadsl
-            ADRS <- dplyr::filter(cadrs, AVISIT == 'Follow Up')
-            keys(ADSL) <- c('STUDYID', 'USUBJID')
-            keys(ADRS) <- c('STUDYID', 'USUBJID', 'PARAMCD')",
+    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+            ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "Follow Up")',
      check = FALSE
   ),
   modules = root_modules(

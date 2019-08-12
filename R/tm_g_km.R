@@ -19,11 +19,8 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ADSL <- cadsl
-#' ADTTE <- cadtte
-#'
-#' keys(ADSL) <- c("USUBJID", "STUDYID")
-#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
+#' ADSL <- radsl(cached = TRUE)
+#' ADTTE <- radtte(ADSL, cached = TRUE)
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -39,10 +36,8 @@
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'     code = "ADSL <- cadsl
-#'             ADTTE <- cadtte
-#'             keys(ADSL) <- c('USUBJID', 'STUDYID')
-#'             keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'     code = "radsl(cached = TRUE)
+#'             ADTTE <- radtte(ADSL, cached = TRUE)",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
@@ -153,7 +148,6 @@ ui_g_km <- function(id, ...) {
       ),
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
-      textInput(ns("xlab"), "X-axis label", "Overall survival in "),
       plot_height_input(id = ns("myplot"), value = a$plot_height),
       accordion(
         accordion_panel(
@@ -178,7 +172,8 @@ ui_g_km <- function(id, ...) {
             label = "Show CoxPH table",
             value = TRUE,
             width = "100%"
-          )
+          ),
+          textInput(ns("xlab"), "X-axis label", "Overall survival in ")
         )
       )
     ),

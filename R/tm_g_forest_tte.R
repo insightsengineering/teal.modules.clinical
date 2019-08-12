@@ -12,22 +12,18 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ADSL <- cadsl
-#' ADTTE <- cadtte
+#' ADSL <- radsl(cached = TRUE)
+#' ADTTE <- radtte(ADSL, cached = TRUE)
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
-#' keys(ADSL) <- c("USUBJID", "STUDYID")
-#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADTTE", ADTTE),
-#'     code = 'ADSL <- cadsl
-#'             ADTTE <- cadtte
-#'             ADSL$RACE <- droplevels(ADSL$RACE)
-#'             keys(ADSL) <- c("USUBJID", "STUDYID")
-#'             keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")',
+#'     code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+#'             ADTTE <- radtte(ADSL, cached = TRUE)
+#'             ADSL$RACE <- droplevels(ADSL$RACE)',
 #'     check = FALSE
 #'     ),
 #'   modules = root_modules(
@@ -199,13 +195,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
           is_event = anl$CNSR == 0,
           col_by = anl[[.(arm_var)]],
           time_unit = tolower(anl$AVALU[1]),
-          group_data = if (length(.(subgroup_var)) > 0) {
+          row_by_list = if (length(.(subgroup_var)) > 0) {
               anl[, .(subgroup_var), drop = FALSE]
             } else {
               NULL
             },
           total = "All Patients",
-          na_omit_group = TRUE,
           dense_header = TRUE
         )
 

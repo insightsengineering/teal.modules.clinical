@@ -50,18 +50,14 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ADSL <- cadsl
-#' ADTTE <- cadtte
+#' ADSL <- radsl(cached = TRUE)
+#' ADTTE <- radtte(ADSL, cached = TRUE)
 #'
-#' keys(ADSL) <- c("USUBJID", "STUDYID")
-#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' app <- init(
 #'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'         code = "ADSL <- cadsl
-#'                 ADTTE <- cadtte
-#'                 keys(ADSL) <- c('USUBJID', 'STUDYID')
-#'                 keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'         code = "ADSL <- radsl(cached = TRUE)
+#'                 ADTTE <- radtte(ADSL, cached = TRUE)",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(
@@ -79,9 +75,7 @@
 #'
 #'
 #' \dontrun{
-#'  \donttest{
-#'    shinyApp(app$ui, app$server)
-#'   }
+#'  shinyApp(app$ui, app$server)
 #' }
 #'
 #' ## Define default reference & comparison arms based on
@@ -95,8 +89,6 @@
 #'   n(), TRUE))
 #' ADTTE <- radtte(ADSL, seed = 1)
 #'
-#' keys(ADSL) <- c("USUBJID", "STUDYID")
-#' keys(ADTTE) <- c("USUBJID", "STUDYID", "PARAMCD")
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -112,9 +104,7 @@
 #'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
 #'         code = "ADSL <- radsl(seed = 1) %>%
 #'                 mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-#'                 ADTTE <- radtte(ADSL, seed = 1)
-#'                 keys(ADSL) <- c('USUBJID', 'STUDYID')
-#'                 keys(ADTTE) <- c('USUBJID', 'STUDYID', 'PARAMCD')",
+#'                 ADTTE <- radtte(ADSL, seed = 1)",
 #'         check = FALSE),
 #'     modules = root_modules(
 #'         tm_t_tte(

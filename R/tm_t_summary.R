@@ -15,14 +15,12 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ADSL <- cadsl
-#' keys(ADSL) <- c("STUDYID", "USUBJID")
+#' ADSL <- radsl(cached = TRUE)
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
-#'     code = 'ADSL <- cadsl
-#'             keys(ADSL) <- c("STUDYID", "USUBJID")',
+#'     code = 'ADSL <- radsl(cached = TRUE)',
 #'     check = FALSE),
 #'   modules = root_modules(
 #'     tm_t_summary(
@@ -75,6 +73,7 @@ ui_t_summary <- function(id, ...) {
                           a$arm_var$choices,
                           a$arm_var$selected,
                           multiple = FALSE),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
       optionalSelectInput(ns("summarize_vars"),
                           "Summarize Variables",
                           a$summarize_vars$choices,
@@ -89,14 +88,17 @@ ui_t_summary <- function(id, ...) {
 }
 
 srv_t_summary <- function(input, output, session, datasets, dataname) {
+
   init_chunks()
 
-  table_call <- reactive({
+  output$table <- renderUI({
     anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     arm_var <- input$arm_var
+    add_total <- input$add_total
     summarize_vars <- input$summarize_vars
 
+    validate(need(is.logical(add_total), "add total is not logical"))
     validate_has_data(anl_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
@@ -108,23 +110,20 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
 
     chunks_reset(envir = environment())
 
+    total <- if(add_total) "All Patients" else NULL
+
     table_chunk_expr <- bquote({
       tbl <- t_summary(
         x = .(as.name(data_name))[, .(summarize_vars), drop = FALSE],
         col_by = as.factor(.(as.name(data_name))[[.(arm_var)]]),
-        total = "All Patients",
+        total = .(total),
         useNA = "ifany"
       )
       tbl
     })
     chunks_push(expression = table_chunk_expr, id = "tm_t_summary_tbl")
 
-    return(invisible(NULL))
-  })
-
-  output$table <- renderUI({
-    table_call()
-
+    # now evaluate the chunks
     chunks_eval()
     chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
 
