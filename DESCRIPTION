@@ -15,18 +15,18 @@ Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encoding within teal.
 Depends:
   R (>= 3.3),
+  dplyr,
   shiny,
   teal (>= 0.7),
   tern (>= 0.6.2),
-  teal.devel (>= 0.1),
-  dplyr
+  teal.devel (>= 0.1)
 Imports:
   forcats,
   grid,
-  rtables,
   gridExtra,
   magrittr,
   methods,
+  rtables,
   survival,
   stats,
   utils,
