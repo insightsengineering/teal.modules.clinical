@@ -6,7 +6,8 @@
 #' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary
 #'
-#' @importFrom rtables as_html
+#' @importFrom dplyr select
+#' @importFrom rtables as_html var_relabel
 #'
 #' @export
 #'
@@ -110,12 +111,33 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
 
     chunks_reset(envir = environment())
 
-    total <- if(add_total) "All Patients" else NULL
+    chunks_push(expression = {
+      call(
+        "<-",
+        as.name("ANL"),
+        Reduce(
+          function(x, y) call("%>%", x, y),
+          c(
+            as.name(data_name),
+            as.call(c(
+              list(quote(dplyr::select)),
+              lapply(c(summarize_vars, arm_var), as.name)
+            )),
+            as.call(append(
+              quote(rtables::var_relabel),
+              datasets$get_data_attr(dataname = "ADSL", "labels")$column_labels[summarize_vars]
+            ))
+          )
+        )
+      )
+    }, id = "tm_t_summary_anl")
+
+    total <- if (add_total) "All Patients" else NULL
 
     table_chunk_expr <- bquote({
       tbl <- t_summary(
-        x = .(as.name(data_name))[, .(summarize_vars), drop = FALSE],
-        col_by = as.factor(.(as.name(data_name))[[.(arm_var)]]),
+        x = .(as.name("ANL"))[, .(summarize_vars), drop = FALSE],
+        col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
         total = .(total),
         useNA = "ifany"
       )
