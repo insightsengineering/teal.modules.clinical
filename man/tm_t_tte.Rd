@@ -105,6 +105,7 @@ library(magrittr)
 ADSL <- mutate(radsl(seed = 1),
   ARM1 = sample(c("DUMMY A", "DUMMY B"),
   n(), TRUE))
+attr(ADSL$ARM1, "label") <- "dummy"
 ADTTE <- radtte(ADSL, seed = 1)
 
 
