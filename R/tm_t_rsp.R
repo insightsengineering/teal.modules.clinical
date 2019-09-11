@@ -34,14 +34,14 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")
+#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code = 'ADSL <- ADSL <- radsl(cached = TRUE)
-#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")',
+#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
 #'      check = FALSE
 #'   ),
 #'   modules = root_modules(
@@ -49,7 +49,7 @@
 #'       label = "Response Table",
 #'       dataname = 'ADRS',
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(unique(ADRS$PARAMCD), "BESRSPI"),
+#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
 #'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )

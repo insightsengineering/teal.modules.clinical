@@ -17,21 +17,21 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")
+#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'    cdisc_dataset("ADSL", ADSL),
 #'    cdisc_dataset("ADRS", ADRS),
 #'    code = 'ADSL <- radsl(cached = TRUE)
-#'            ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "Follow Up")',
+#'            ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
+#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
 #'       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
 #'       plot_height = c(600L, 200L, 2000L)
 #'     )

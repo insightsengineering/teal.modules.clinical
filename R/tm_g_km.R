@@ -173,6 +173,12 @@ ui_g_km <- function(id, ...) {
             value = TRUE,
             width = "100%"
           ),
+          radioButtons(
+            ns("pval_method"),
+            "p-value method",
+            choices = c("wald", "logrank", "likelihood"),
+            selected = "wald"
+          ),
           textInput(ns("xlab"), "X-axis label", "Overall survival in ")
         )
       )
@@ -220,6 +226,7 @@ srv_g_km <- function(input,
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
+    pval_method <- input$pval_method
     xlab <- input$xlab
     tbl_fontsize <- input$font_size
     if_show_km <- input$show_km_table
@@ -260,8 +267,8 @@ srv_g_km <- function(input,
     chunks_push(expression = bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
     chunks_push(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
     chunks_push(expression = bquote(anl <- merge(adsl_p[, adsl_vars],
-      anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
-      all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
+                                                 anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
+                                                 all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
     )))
     chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
     chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
@@ -322,7 +329,7 @@ srv_g_km <- function(input,
           if (if_show_coxph) {
             bquote({
               fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
-              tbl_coxph <- t_coxph(fit_coxph)
+              tbl_coxph <- t_coxph(fit_coxph, pval_method = pval_method)
               text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
               coxph_grob <- textGrob(
                 label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
@@ -386,7 +393,7 @@ srv_g_km <- function(input,
               if (if_show_coxph) {
                 bquote({
                   fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-                  tbl_coxph <- t_coxph(fit_coxph)
+                  tbl_coxph <- t_coxph(fit_coxph, pval_method = .(pval_method))
                   text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
                   coxph_grob <- textGrob(
                     label = text_coxph,
@@ -419,9 +426,9 @@ srv_g_km <- function(input,
 
   # Insert the plot into a plot_height module from teal.devel
   callModule(plot_with_height,
-    id = "myplot",
-    plot_height = reactive(input$myplot),
-    plot_id = session$ns("plot")
+             id = "myplot",
+             plot_height = reactive(input$myplot),
+             plot_id = session$ns("plot")
   )
 
   observeEvent(input$show_rcode, {
