@@ -31,29 +31,25 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 1)
-#' keys(ASL) <- c("STUDYID", "USUBJID")
-#'
-#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-#' keys(ARS) <- c("STUDYID", "USUBJID")
+#' ADSL <- radsl(cached = TRUE)
+#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL,
-#'     ARS = ARS,
-#'     code = "ASL <- radsl(seed = 1)
-#'             ARS <- subset(radrs(ASL, seed = 1), AVISIT == 'Follow Up')
-#'             keys(ASL) <- c('STUDYID', 'USUBJID')
-#'             keys(ARS) <- c('STUDYID', 'USUBJID')",
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADRS", ADRS),
+#'     code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
 #'      check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
 #'       label = "Response Table",
-#'       dataname = 'ARS',
+#'       dataname = 'ADRS',
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
+#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
 #'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )
@@ -172,7 +168,7 @@ ui_t_rsp <- function(id, ...) {
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("taken from:", tags$code("ASL"))
+        label_help = helpText("taken from:", tags$code("ADSL"))
       )
     ),
     forms = actionButton(
@@ -223,7 +219,7 @@ srv_t_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_rsp"
   )
@@ -244,7 +240,7 @@ srv_t_rsp <- function(input,
   })
 
   tm_t_rsp_call <- reactive({
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
@@ -261,8 +257,8 @@ srv_t_rsp <- function(input,
 
     # Validate your input
     validate_standard_inputs(
-      asl = asl_filtered,
-      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var,
@@ -277,41 +273,38 @@ srv_t_rsp <- function(input,
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
-    asl_name <- "ASL_FILTERED"
-    assign(asl_name, asl_filtered)
+    adsl_name <- "ADSL_FILTERED"
+    assign(adsl_name, adsl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
 
 
     chunks_reset(envir = environment())
 
-    chunk_call_asl_p <- bquote(
-      asl_p <- subset(
-        .(as.name(asl_name)),
+    chunks_push(bquote({
+      adsl_p <- subset(
+        .(as.name(adsl_name)),
         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
-    )
-    chunks_push(expression = chunk_call_asl_p, id = "tm_t_rsp_asl_p")
+    }))
 
-    chunk_call_anl_endpoint <- bquote(
+    chunks_push(bquote({
       anl_endpoint <- subset(
         .(as.name(anl_name)),
         PARAMCD == .(paramcd)
       )
-    )
-    chunks_push(expression = chunk_call_anl_endpoint, id = "tm_t_rsp_anl_endpoint")
+    }))
 
-    chunk_call_anl <- bquote(
+    chunks_push(bquote({
       anl <- merge(
-        x = asl_p[, .(asl_vars), drop = FALSE],
+        x = adsl_p[, .(adsl_vars), drop = FALSE],
         y = anl_endpoint[, .(anl_vars), drop = FALSE],
         all.x = FALSE,
         all.y = FALSE,
         by = c("USUBJID", "STUDYID")
       )
-    )
-    chunks_push(expression = chunk_call_anl, id = "tm_t_rsp_anl")
+    }))
 
     chunk_call_arm <- bquote({
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -323,12 +316,11 @@ srv_t_rsp <- function(input,
         arm <- combine_levels(arm, .(comp_arm))
       })
     }
-    chunks_push(expression = chunk_call_arm, id = "tm_t_rsp_arm")
+    chunks_push(chunk_call_arm)
 
-    chunk_call_arm_var <- bquote(
+    chunks_push(bquote(
       anl[[.(arm_var)]] <- droplevels(arm)
-    )
-    chunks_push(expression = chunk_call_arm_var, id = "tm_t_rsp_arm_var")
+    ))
 
     strata_data <- if (length(strata_var) > 0) {
       quote(anl[, strata_var, drop = FALSE]) %>%
@@ -337,7 +329,7 @@ srv_t_rsp <- function(input,
       NULL
     }
 
-    chunk_table_expr <- bquote({
+    chunks_push(bquote({
       tbl <- t_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
@@ -345,8 +337,7 @@ srv_t_rsp <- function(input,
         strata_data = .(strata_data)
       )
       tbl
-    })
-    chunks_push(expression = chunk_table_expr, id = "tm_t_rsp")
+    }))
 
     invisible(NULL)
   })
@@ -355,7 +346,7 @@ srv_t_rsp <- function(input,
   output$response_table <- renderUI({
     tm_t_rsp_call()
 
-    chunks_eval()
+    chunks_safe_eval()
 
     anl_endpoint <- chunks_get_var("anl_endpoint")
     if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {

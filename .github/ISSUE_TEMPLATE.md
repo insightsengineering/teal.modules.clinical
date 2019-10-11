@@ -21,18 +21,18 @@ library(teal.modules.clinical)
 # your reproducible example here, e.g.
 
 library(random.cdisc.data)
-ASL <- radsl(seed = 1)
+ADSL <- radsl(seed = 1)
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL
-    code = "ASL <- radsl(seed = 1)"
+    cdisc_dataset("ADSL", ADSL)
+    code = "ADSL <- radsl(seed = 1)"
     check = TRUE
   ),
   modules = root_modules(
     tm_t_summary(
     	label = "Demographic Table",
-    	dataname = "ASL",
+    	dataname = "ADSL",
         arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
         summarize_vars = choices_selected(c("SEX", "RACE"), "SEX")
     )

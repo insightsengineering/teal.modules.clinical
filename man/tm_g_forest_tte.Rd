@@ -45,28 +45,26 @@ with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
+ADSL <- radsl(cached = TRUE)
+ADTTE <- radtte(ADSL, cached = TRUE)
 
-ASL$RACE <- droplevels(ASL$RACE)
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+ADSL$RACE <- droplevels(ADSL$RACE)
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL,
-    ATE = ATE,
-    code = 'ASL <- radsl(seed = 1)
-            ATE <- radtte(ASL, seed = 1)
-            ASL$RACE <- droplevels(ASL$RACE)
-            keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")',
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADTTE", ADTTE),
+    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+            ADTTE <- radtte(ADSL, cached = TRUE)
+            ADSL$RACE <- droplevels(ADSL$RACE)',
     check = FALSE
     ),
   modules = root_modules(
     tm_g_forest_tte(
        label = "Forest Survival",
-       dataname = "ATE",
+       dataname = "ADTTE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
        paramcd = choices_selected(c("OS", "PFS"), "OS"),
        plot_height = c(600, 200, 2000)
     )

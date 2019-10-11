@@ -19,7 +19,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{ADSL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -66,29 +66,25 @@ Additional standard UI inputs include \code{responders},
 }
 \examples{
 library(random.cdisc.data)
+library(dplyr)
 
-ASL <- radsl(seed = 1)
-keys(ASL) <- c("STUDYID", "USUBJID")
-
-ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-keys(ARS) <- c("STUDYID", "USUBJID")
+ADSL <- radsl(cached = TRUE)
+ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL,
-    ARS = ARS,
-    code = "ASL <- radsl(seed = 1)
-            ARS <- subset(radrs(ASL, seed = 1), AVISIT == 'Follow Up')
-            keys(ASL) <- c('STUDYID', 'USUBJID')
-            keys(ARS) <- c('STUDYID', 'USUBJID')",
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADRS", ADRS),
+    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+            ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")',
      check = FALSE
   ),
   modules = root_modules(
     tm_t_rsp(
       label = "Response Table",
-      dataname = 'ARS',
+      dataname = 'ADRS',
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      paramcd = choices_selected(unique(ARS$PARAMCD), "BESRSPI"),
+      paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )

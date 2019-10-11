@@ -35,19 +35,17 @@ This module is for \code{\link[tern]{t_summary}}.
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-keys(ASL) <- c("STUDYID", "USUBJID")
+ADSL <- radsl(cached = TRUE)
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL,
-    code = 'ASL <- radsl(seed = 1)
-            keys(ASL) <- c("STUDYID", "USUBJID")',
+    cdisc_dataset("ADSL", ADSL),
+    code = 'ADSL <- radsl(cached = TRUE)',
     check = FALSE),
   modules = root_modules(
     tm_t_summary(
       label = "Demographic Table",
-      dataname = "ASL",
+      dataname = "ADSL",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
     )

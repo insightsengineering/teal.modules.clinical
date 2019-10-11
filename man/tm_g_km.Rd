@@ -6,7 +6,6 @@
 \usage{
 tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
   facet_var, strata_var, plot_height = c(1200, 400, 5000),
-  tbl_fontsize = 8,
   pre_output = helpText("x-axes for different factes may not have the same scale"),
   post_output = NULL)
 }
@@ -22,7 +21,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{ADSL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -38,8 +37,6 @@ for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{tbl_fontsize}{\code{fontsize} for text annotation}
-
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
@@ -54,10 +51,8 @@ This is teal module produces a grid style KM plot for data with ADaM structure
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
-
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+ADSL <- radsl(cached = TRUE)
+ADTTE <- radtte(ADSL, cached = TRUE)
 
 arm_ref_comp <- list(
   ARM = list(
@@ -72,22 +67,20 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    ASL = ASL, ATE = ATE,
-    code = "ASL <- radsl(seed = 1)
-            ATE <- radtte(ASL, seed = 1)
-            keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+    cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+    code = "radsl(cached = TRUE)
+            ADTTE <- radtte(ADSL, cached = TRUE)",
     check = FALSE
   ),
   modules = root_modules(
     tm_g_km(
       label = "KM PLOT",
-      dataname = "ATE",
+      dataname = "ADTTE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(c("OS", "PFS"), "OS"),
       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-      tbl_fontsize = 12
+      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
     )
   )
 )

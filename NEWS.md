@@ -1,3 +1,7 @@
+# teal.modules.clinical 0.8.0
+
+* optionally show KM and CoxPH table in `tm_g_km`
+
 # teal.modules.clinical 0.7.0
 
 * use `teal.devel`

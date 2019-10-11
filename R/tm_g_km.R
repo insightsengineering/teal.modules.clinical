@@ -6,7 +6,6 @@
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
 #' @param plot_height vector with three elements defining selected, min and max plot height
-#' @param tbl_fontsize \code{fontsize} for text annotation
 #'
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -20,10 +19,8 @@
 #' @examples
 #' library(random.cdisc.data)
 #'
-#' ASL <- radsl(seed = 1)
-#' ATE <- radtte(ASL, seed = 1)
-#'
-#' keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+#' ADSL <- radsl(cached = TRUE)
+#' ADTTE <- radtte(ADSL, cached = TRUE)
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -38,22 +35,20 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ASL = ASL, ATE = ATE,
-#'     code = "ASL <- radsl(seed = 1)
-#'             ATE <- radtte(ASL, seed = 1)
-#'             keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+#'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+#'     code = "radsl(cached = TRUE)
+#'             ADTTE <- radtte(ADSL, cached = TRUE)",
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_km(
 #'       label = "KM PLOT",
-#'       dataname = "ATE",
+#'       dataname = "ADTTE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(c("OS", "PFS"), "OS"),
 #'       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
-#'       tbl_fontsize = 12
+#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
 #'     )
 #'   )
 #' )
@@ -68,7 +63,6 @@ tm_g_km <- function(label,
                     facet_var,
                     strata_var,
                     plot_height = c(1200, 400, 5000),
-                    tbl_fontsize = 8,
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
@@ -85,7 +79,6 @@ tm_g_km <- function(label,
     server_args = list(
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
-      tbl_fontsize = tbl_fontsize,
       label = label
     ),
     ui = ui_g_km,
@@ -103,45 +96,92 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
+      optionalSelectInput(
+        ns("arm_var"),
         "Arm Variable",
         choices = a$arm_var$choices,
         selected = a$arm_var$selected,
         multiple = FALSE
       ),
-      optionalSelectInput(ns("paramcd"),
+      optionalSelectInput(
+        ns("paramcd"),
         "Time to Event (Endpoint)",
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
         multiple = FALSE
       ),
-      optionalSelectInput(ns("strata_var"),
+      optionalSelectInput(
+        ns("strata_var"),
         "Stratify by",
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ASL")
+        label_help = helpText("currently taken from ADSL")
       ),
-      optionalSelectInput(ns("facet_var"),
+      optionalSelectInput(
+        ns("facet_var"),
         "Facet Plots by:",
         choices = a$facet_var$choices,
         selected = a$facet_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ASL")
+        label_help = helpText("currently taken from ADSL")
       ),
-      selectInput(ns("ref_arm"),
+      selectInput(
+        ns("ref_arm"),
         "Reference Arm",
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
       helpText("Reference groups automatically combined into a single group if more than one value selected."),
-      selectInput(ns("comp_arm"), "Comparison Group", choices = NULL, selected = NULL, multiple = TRUE),
-      checkboxInput(ns("combine_comp_arms"), "Combine all comparison groups?", value = FALSE),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE
+      ),
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
-      textInput(ns("xlab"), "X-axis label", "Overall survival in "),
-      plot_height_input(id = ns("myplot"), value = a$plot_height)
+      plot_height_input(id = ns("myplot"), value = a$plot_height),
+      panel_group(
+        panel_item(
+          "Additional plot settings",
+          numericInput(
+            inputId = ns('font_size'),
+            label = "Font size",
+            value = 8,
+            min = 5,
+            max = 15,
+            step = 1,
+            width = "100%"
+          ),
+          checkboxInput(
+            inputId = ns('show_km_table'),
+            label = "Show KM table",
+            value = TRUE,
+            width = "100%"
+          ),
+          checkboxInput(
+            inputId = ns('show_coxph_table'),
+            label = "Show CoxPH table",
+            value = TRUE,
+            width = "100%"
+          ),
+          radioButtons(
+            ns("pval_method"),
+            "p-value method",
+            choices = c("wald", "logrank", "likelihood"),
+            selected = "wald"
+          ),
+          textInput(ns("xlab"), "X-axis label", "Overall survival in ")
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -154,7 +194,6 @@ srv_g_km <- function(input,
                      output,
                      session,
                      datasets,
-                     tbl_fontsize,
                      dataname,
                      arm_ref_comp,
                      label) {
@@ -163,8 +202,10 @@ srv_g_km <- function(input,
 
   arm_ref_comp_observer(
     session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = "arm_var",
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_km"
   )
@@ -178,7 +219,7 @@ srv_g_km <- function(input,
 
   output$plot <- renderPlot({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    ASL_FILTERED <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE) # nolint
+    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) # nolint
 
     paramcd <- input$paramcd
     arm_var <- input$arm_var
@@ -187,7 +228,11 @@ srv_g_km <- function(input,
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
+    pval_method <- input$pval_method
     xlab <- input$xlab
+    tbl_fontsize <- input$font_size
+    if_show_km <- input$show_km_table
+    if_show_coxph <- input$show_coxph_table
 
     if (length(facet_var) == 0) {
       facet_var <<- NULL
@@ -197,8 +242,8 @@ srv_g_km <- function(input,
     }
 
     validate_standard_inputs(
-      asl = ASL_FILTERED,
-      aslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
+      adsl = ADSL_FILTERED,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
       arm_var = arm_var,
@@ -213,83 +258,104 @@ srv_g_km <- function(input,
 
     chunks_reset(envir = environment())
 
-    chunks_push(expression = bquote(ref_arm <- .(ref_arm)))
-    chunks_push(expression = bquote(comp_arm <- .(comp_arm)))
-    chunks_push(expression = bquote(strata_var <- .(strata_var)))
-    chunks_push(expression = bquote(facet_var <- .(facet_var)))
-    chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(bquote(ref_arm <- .(ref_arm)))
+    chunks_push(bquote(comp_arm <- .(comp_arm)))
+    chunks_push(bquote(strata_var <- .(strata_var)))
+    chunks_push(bquote(facet_var <- .(facet_var)))
+    chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(expression = bquote(asl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
+    chunks_push(bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    chunks_push(expression = bquote(asl_p <- subset(ASL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-    chunks_push(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
-    chunks_push(expression = bquote(anl <- merge(asl_p[, asl_vars],
-      anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
-      all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
-    )))
-    chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
+    chunks_push(bquote({
+      anl <- merge(
+        adsl_p[, adsl_vars],
+        anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
+        all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
+      )
+    }))
+    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
 
     if (combine_comp_arms) {
-      chunks_push(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+      chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
 
-    chunks_push(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-    chunks_push(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
-    chunks_push(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
+    chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
+    chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
 
-    chunks_eval()
+    chunks_safe_eval()
 
     validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
     validate(need(length(chunks_get_var("time_unit")) == 1, "Time Unit is not consistant"))
 
-    chunks_push(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
+    chunks_push(bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
 
-    chunks_push(expression = bquote(formula_coxph <- as.formula(
-      .(paste0(
-        "Surv(AVAL, 1-CNSR) ~ ", arm_var,
-        ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
-      ))
-    )))
-    chunks_push(expression = bquote(info_coxph <- .(paste0(
-      "Cox Proportional Model: ",
-      ifelse(is.null(strata_var),
-             "Unstratified Analysis",
-             paste0("Stratified by ", paste(strata_var, collapse = ","))
+    chunks_push(bquote({
+      formula_coxph <- as.formula(
+        .(paste0(
+          "Surv(AVAL, 1-CNSR) ~ ", arm_var,
+          ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
+        ))
       )
-    ))))
+    }))
+    chunks_push(bquote({
+      info_coxph <- .(paste0(
+        "Cox Proportional Model: ",
+        ifelse(is.null(strata_var),
+               "Unstratified Analysis",
+               paste0("Stratified by ", paste(strata_var, collapse = ","))
+        )
+      ))
+    }))
 
     if (is.null(facet_var)) {
-      chunks_push(expression = bquote({
+      chunks_push(bquote({
         fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
-        fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
-        tbl_km <- t_km(fit_km)
-        tbl_coxph <- t_coxph(fit_coxph)
-        text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-        coxph_grob <- textGrob(
-          label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
-          just = c("left", "bottom"),
-          gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-          vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-        )
-        km_grob <- textGrob(
-          label = toString(tbl_km, gap = 1),
-          x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-          y = unit(1, "npc") - unit(1, "lines"),
-          just = c("left", "top"),
-          gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-          vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-        )
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
-        p <- addGrob(p, km_grob)
-        p <- addGrob(p, coxph_grob)
-        plot <- grid.draw(p)
 
+        .(
+          if (if_show_km) {
+            bquote({
+              tbl_km <- t_km(fit_km)
+              km_grob <- textGrob(
+                label = toString(tbl_km, gap = 1),
+                x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                y = unit(1, "npc") - unit(1, "lines"),
+                just = c("left", "top"),
+                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+              )
+              p <- addGrob(p, km_grob)
+            })
+          }
+        )
+
+        .(
+          if (if_show_coxph) {
+            bquote({
+              fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
+              tbl_coxph <- t_coxph(fit_coxph, pval_method = pval_method)
+              text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+              coxph_grob <- textGrob(
+                label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
+                just = c("left", "bottom"),
+                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+              )
+              p <- addGrob(p, coxph_grob)
+            })
+          }
+        )
+
+        plot <- grid.draw(p)
         plot
       }))
     } else {
-      chunks_push(expression = bquote({
+      chunks_push(bquote({
         facet_df <- anl[.(facet_var)]
 
         lab <- Map(
@@ -310,34 +376,46 @@ srv_g_km <- function(input,
           } else {
             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
             fit_km <- survfit(formula_km, data = x, conf.type = "plain")
-            fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-            tbl_km <- t_km(fit_km)
-            tbl_coxph <- t_coxph(fit_coxph)
-            text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-            coxph_grob <- textGrob(
-              label = text_coxph,
-              x = unit(1, "lines"),
-              y = unit(1, "lines"),
-              just = c("left", "bottom"),
-              gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-              vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-            )
-            km_grob <- textGrob(
-              label = toString(tbl_km, gap = 1),
-              x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-              y = unit(1, "npc") - unit(1, "lines"),
-              just = c("left", "top"),
-              gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-              vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-            )
-
-
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
               xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
             )
-            p <- addGrob(p, km_grob)
-            p <- addGrob(p, coxph_grob)
+
+            .(
+              if (if_show_km) {
+                bquote({
+                  tbl_km <- t_km(fit_km)
+                  km_grob <- textGrob(
+                    label = toString(tbl_km, gap = 1),
+                    x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+                    y = unit(1, "npc") - unit(1, "lines"),
+                    just = c("left", "top"),
+                    gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                    vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                  )
+                  p <- addGrob(p, km_grob)
+                })
+              }
+            )
+
+            .(
+              if (if_show_coxph) {
+                bquote({
+                  fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
+                  tbl_coxph <- t_coxph(fit_coxph, pval_method = .(pval_method))
+                  text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+                  coxph_grob <- textGrob(
+                    label = text_coxph,
+                    x = unit(1, "lines"),
+                    y = unit(1, "lines"),
+                    just = c("left", "bottom"),
+                    gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+                    vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+                  )
+                  p <- addGrob(p, coxph_grob)
+                })
+              }
+            )
 
             p
           }
@@ -348,18 +426,16 @@ srv_g_km <- function(input,
       }))
     }
 
-    p <- chunks_eval()
-
-    chunks_validate_is_ok()
+    p <- chunks_safe_eval()
 
     p
   })
 
   # Insert the plot into a plot_height module from teal.devel
   callModule(plot_with_height,
-    id = "myplot",
-    plot_height = reactive(input$myplot),
-    plot_id = session$ns("plot")
+             id = "myplot",
+             plot_height = reactive(input$myplot),
+             plot_id = session$ns("plot")
   )
 
   observeEvent(input$show_rcode, {

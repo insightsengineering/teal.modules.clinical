@@ -20,7 +20,7 @@ Note that the data is expected to be in vertical form with the
 for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ASL} and the element must
+element corresponding to an arm variable in \code{ADSL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
@@ -62,29 +62,27 @@ This modules expects that the analysis data has the following variables
  filtering for \code{paramcd} one observation per patient is expected
 }
 
-The arm variables, stratification variables and taken from the \code{ASL}
+The arm variables, stratification variables and taken from the \code{ADSL}
 data.
 }
 \examples{
 library(random.cdisc.data)
 
-ASL <- radsl(seed = 1)
-ATE <- radtte(ASL, seed = 1)
+ADSL <- radsl(cached = TRUE)
+ADTTE <- radtte(ADSL, cached = TRUE)
 
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
 
 app <- init(
-    data = cdisc_data(ASL = ASL, ATE = ATE,
-        code = "ASL <- radsl(seed = 1)
-                ATE <- radtte(ASL, seed = 1)
-                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+    data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+        code = "ADSL <- radsl(cached = TRUE)
+                ADTTE <- radtte(ADSL, cached = TRUE)",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(
             label = "Time To Event Table",
-            dataname = 'ATE',
+            dataname = 'ADTTE',
             arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-            paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+            paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
             time_points = choices_selected(c(6, 8), 6),
             time_unit = "month",
@@ -95,9 +93,7 @@ app <- init(
 
 
 \dontrun{
- \donttest{
-   shinyApp(app$ui, app$server)
-  }
+ shinyApp(app$ui, app$server)
 }
 
 ## Define default reference & comparison arms based on
@@ -106,11 +102,12 @@ library(teal)
 library(dplyr)
 library(magrittr)
 
-ASL <- mutate(radsl(seed = 1),
+ADSL <- mutate(radsl(seed = 1),
   ARM1 = sample(c("DUMMY A", "DUMMY B"),
   n(), TRUE))
-ATE <- radtte(ASL, seed = 1)
-keys(ASL) <- keys(ATE) <- c("USUBJID", "STUDYID")
+attr(ADSL$ARM1, "label") <- "dummy"
+ADTTE <- radtte(ADSL, seed = 1)
+
 
 arm_ref_comp = list(
   ACTARMCD = list(
@@ -123,19 +120,18 @@ arm_ref_comp = list(
   )
 )
 app <- init(
-    data = cdisc_data(ASL = ASL, ATE = ATE,
-        code = "ASL <- radsl(seed = 1) \%>\%
+    data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
+        code = "ADSL <- radsl(seed = 1) \%>\%
                 mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-                ATE <- radtte(ASL, seed = 1)
-                keys(ASL) <- keys(ATE) <- c('USUBJID', 'STUDYID')",
+                ADTTE <- radtte(ADSL, seed = 1)",
         check = FALSE),
     modules = root_modules(
         tm_t_tte(
          label = "Time To Event Table",
-         dataname = 'ATE',
+         dataname = 'ADTTE',
          arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
          arm_ref_comp = arm_ref_comp,
-         paramcd = choices_selected(unique(ATE$PARAMCD), "OS"),
+         paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
          strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
          time_points = choices_selected(c(6, 8), 6),
          time_unit = "months",

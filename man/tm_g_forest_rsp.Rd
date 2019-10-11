@@ -43,29 +43,25 @@ This is teal module produces a grid style Forest plot for response data with ADa
 }
 \examples{
 library(random.cdisc.data)
+library(dplyr)
 
-ASL <- radsl(seed = 1)
-ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-
-keys(ASL) <- c("STUDYID", "USUBJID")
-keys(ARS) <- c("STUDYID", "USUBJID")
+ADSL <- radsl(cached = TRUE)
+ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
 
 app <- init(
   data = cdisc_data(
-   ASL = ASL,
-   ARS = ARS,
-   code = 'ASL <- radsl(seed = 1)
-           ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-           keys(ASL) <- c("STUDYID", "USUBJID")
-           keys(ARS) <- c("STUDYID", "USUBJID")',
+   cdisc_dataset("ADSL", ADSL),
+   cdisc_dataset("ADRS", ADRS),
+   code = 'ADSL <- radsl(cached = TRUE)
+           ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
       label = "Forest Response",
-      dataname = "ARS",
+      dataname = "ADRS",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-      subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+      paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
+      subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
       plot_height = c(600L, 200L, 2000L)
     )
   )

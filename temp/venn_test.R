@@ -2,9 +2,9 @@
 library(atezo.data)
 library(grid)
 
-ASL <- asl(com.roche.cdt30019.go29436.re)
-IC <- ASL$ICLEVEL %in% c("2", "3")
-TC <- ASL$TCLEVEL %in% c(2, 3)
+ADSL <- asl(com.roche.cdt30019.go29436.re)
+IC <- ADSL$ICLEVEL %in% c("2", "3")
+TC <- ADSL$TCLEVEL %in% c(2, 3)
 abs <- table(IC, TC)
 per <- round(abs/length(IC)*100,digits = 1)
 
@@ -28,9 +28,9 @@ ay <- sqrt((abs[2,1]+abs[2,2])/pi) #radius of 2nd circle
 
 #solve for d, the distance between the 2 centers of the cicles
 
-d_solve<- uniroot(function(d) ay^2*acos((d^2+ay^2-ax^2)/(2*d*ay)) 
-        + ax^2*acos((d^2+ax^2-ay^2)/(2*d*ax)) 
-        - 1/2 * sqrt((-d+ay+ax)*(d+ay-ax)*(d-ay+ax)*(d+ay+ax))-abs[2,2], 
+d_solve<- uniroot(function(d) ay^2*acos((d^2+ay^2-ax^2)/(2*d*ay))
+        + ax^2*acos((d^2+ax^2-ay^2)/(2*d*ax))
+        - 1/2 * sqrt((-d+ay+ax)*(d+ay-ax)*(d-ay+ax)*(d+ay+ax))-abs[2,2],
         lower=abs(ax-ay)+1e-9, upper=ax+ay-1e-9,tol = 1e-9)$root
 
 #solve for a (the cord connecting the cusps of the lens)
@@ -52,8 +52,8 @@ dy_num_scale <- dy_num/(2*(ax+ay))*0.9*viewport_width
 dx <- unit(dx_num_scale, "cm")
 dy <- unit(dy_num_scale, "cm")
 
-rx <- unit(ax/(2*(ax+ay))*0.9*viewport_width, "cm") 
-ry <- unit(ay/(2*(ax+ay))*0.9*viewport_width, "cm") 
+rx <- unit(ax/(2*(ax+ay))*0.9*viewport_width, "cm")
+ry <- unit(ay/(2*(ax+ay))*0.9*viewport_width, "cm")
 
 #draw circles
 

@@ -3,14 +3,11 @@ url: https://pages.github.roche.com/NEST/teal.modules.clinical
 template:
   params:
     bootswatch: cerulean
-    
+
 navbar:
   right:
     - icon: fa-github
       href: https://github.roche.com/NEST/teal.modules.clinical
-
-development:
-  mode: release
 
 reference:
   - title:
@@ -21,5 +18,5 @@ reference:
       -  starts_with("tm_t_")
   - title: Graphs
     contents:
-      - starts_with("tm_g_")      
+      - starts_with("tm_g_")
 

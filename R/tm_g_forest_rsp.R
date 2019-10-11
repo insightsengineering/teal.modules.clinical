@@ -14,29 +14,25 @@
 #'
 #' @examples
 #' library(random.cdisc.data)
+#' library(dplyr)
 #'
-#' ASL <- radsl(seed = 1)
-#' ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-#'
-#' keys(ASL) <- c("STUDYID", "USUBJID")
-#' keys(ARS) <- c("STUDYID", "USUBJID")
+#' ADSL <- radsl(cached = TRUE)
+#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'    ASL = ASL,
-#'    ARS = ARS,
-#'    code = 'ASL <- radsl(seed = 1)
-#'            ARS <- subset(radrs(ASL, seed = 1), AVISIT == "Follow Up")
-#'            keys(ASL) <- c("STUDYID", "USUBJID")
-#'            keys(ARS) <- c("STUDYID", "USUBJID")',
+#'    cdisc_dataset("ADSL", ADSL),
+#'    cdisc_dataset("ADRS", ADRS),
+#'    code = 'ADSL <- radsl(cached = TRUE)
+#'            ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
-#'       dataname = "ARS",
+#'       dataname = "ADRS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(c("BESRSPI", "INVET", "OVRINV" ), "OVRINV"),
-#'       subgroup_var = choices_selected(names(ASL), c("RACE", "SEX")),
+#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
+#'       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
 #'       plot_height = c(600L, 200L, 2000L)
 #'     )
 #'   )
@@ -148,7 +144,7 @@ ui_g_forest_rsp <- function(id, ...) {
         a$subgroup_var$choices,
         a$subgroup_var$selected,
         multiple = TRUE,
-        label_help = helpText("are taken from", tags$code("ASL"))
+        label_help = helpText("are taken from", tags$code("ADSL"))
       ),
       tags$label(
         "Plot Settings",
@@ -159,6 +155,12 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("plot_height"),
         "plot height",
         a$plot_height,
+        ticks = FALSE
+      ),
+      optionalSliderInputValMinMax(
+        ns("plot_width"),
+        "plot width",
+        c(980L, 500L, 2000L),
         ticks = FALSE
       )
     ),
@@ -190,7 +192,7 @@ srv_g_forest_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    asl = datasets$get_data("ASL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_rsp"
   )
@@ -211,7 +213,7 @@ srv_g_forest_rsp <- function(input,
 
 
   output$forest_plot <- renderPlot({
-    asl_filtered <- datasets$get_data("ASL", reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
 
     paramcd <- input$paramcd
@@ -223,8 +225,8 @@ srv_g_forest_rsp <- function(input,
 
     # validate your input values
     validate_standard_inputs(
-      asl = asl_filtered,
-      aslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var,
@@ -232,25 +234,25 @@ srv_g_forest_rsp <- function(input,
       comp_arm = comp_arm
     )
 
-    validate_in(responders, anl_filtered$AVALC, "responder values cannot be found in AVALC")
-    validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD")
+    validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
+    validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
 
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
-    asl_name <- "ASL_FILTERED"
-    assign(asl_name, asl_filtered)
+    adsl_name <- "ADSL_FILTERED"
+    assign(adsl_name, adsl_filtered)
 
-    asl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVALC")
 
     chunks_reset(envir = environment())
 
-    chunk_data_expr <- bquote({
-      asl_p <- subset(.(as.name(asl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
+    chunks_push(bquote({
+      adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
 
-      anl <- merge(asl_p[, .(asl_vars)], anl_p[, .(anl_vars)],
+      anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
 
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -266,45 +268,40 @@ srv_g_forest_rsp <- function(input,
           paste(strwrap(x, width = 15), collapse = "\n")
         }
       )
-    })
-    chunks_push(expression = chunk_data_expr, id = "tm_g_forest_rsp_data")
+    }))
 
-    chunks_eval()
+    chunks_safe_eval()
     anl <- chunks_get_var("anl")
 
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    chunk_table_expr <- bquote(
+    chunks_push(bquote({
       tbl <- t_forest_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
-        group_data = .(if (length(subgroup_var) > 0) {
+        row_by_list = .(if (length(subgroup_var) > 0) {
           bquote(anl[, .(subgroup_var), drop = FALSE])
         } else {
           bquote(NULL)
         }),
         total = "All Patients",
-        na_omit_group = TRUE,
         dense_header = TRUE
       )
-    )
-    chunks_push(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
+    }))
 
-    chunks_eval()
-    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
+    chunks_safe_eval()
 
-    chunk_row_expr <- quote(
+    chunks_push(quote({
       row.names(tbl) <- sapply(
         row.names(tbl),
         function(x) {
           paste(strwrap(x, width = 20), collapse = "\n")
         }
       )
-    )
-    chunks_push(expression = chunk_row_expr, id = "tm_g_forest_rsp_row")
+    }))
 
-    chunk_g_expr <- call(
+    chunks_push(call(
       "g_forest",
       tbl = quote(tbl),
       col_x = 8,
@@ -314,12 +311,9 @@ srv_g_forest_rsp <- function(input,
       xlim = c(.1, 10),
       logx = TRUE,
       x_at = c(.1, 1, 10)
-    )
-    chunks_push(expression = chunk_g_expr, id = "tm_g_forest_rsp")
+    ))
 
-    p <- chunks_eval()
-
-    chunks_validate_is_ok()
+    p <- chunks_safe_eval()
 
     p
   })
@@ -327,8 +321,13 @@ srv_g_forest_rsp <- function(input,
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
+    plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
+    div(style = 'overflow-x: scroll',
+        plotOutput(session$ns("forest_plot"),
+                   height = plot_height,
+                   width = plot_width)
+    )
   })
 
 
