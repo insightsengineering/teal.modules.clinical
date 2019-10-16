@@ -100,18 +100,18 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     summarize_vars <- input$summarize_vars
 
     validate(need(is.logical(add_total), "add total is not logical"))
-    validate_has_data(anl_f, min_nrow = 3)
     validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
     validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
-    validate(need(anl_f[[arm_var]], "Arm variable does not exist"))
-    validate(need(!("" %in% anl_f[[arm_var]]), "arm values can not contain empty strings ''"))
+    validate(need(!is.null(arm_var), "please select 'arm variable'"))
+    validate(need(arm_var %in% names(anl_f), "arm variable does not exist"))
+    validate_has_data(anl_f, min_nrow = 3)
 
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
 
     chunks_reset(envir = environment())
 
-    chunks_push(expression = {
+    chunks_push(
       call(
         "<-",
         as.name("ANL"),
@@ -130,11 +130,11 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
           )
         )
       )
-    }, id = "tm_t_summary_anl")
+    )
 
     total <- if (add_total) "All Patients" else NULL
 
-    table_chunk_expr <- bquote({
+    chunks_push(bquote({
       tbl <- t_summary(
         x = .(as.name("ANL"))[, .(summarize_vars), drop = FALSE],
         col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
@@ -142,12 +142,9 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
         useNA = "ifany"
       )
       tbl
-    })
-    chunks_push(expression = table_chunk_expr, id = "tm_t_summary_tbl")
+    }))
 
-    # now evaluate the chunks
-    chunks_eval()
-    chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
+    chunks_safe_eval()
 
     tbl <- chunks_get_var("tbl")
     as_html(tbl)

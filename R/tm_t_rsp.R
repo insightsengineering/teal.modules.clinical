@@ -282,23 +282,21 @@ srv_t_rsp <- function(input,
 
     chunks_reset(envir = environment())
 
-    chunk_call_adsl_p <- bquote(
+    chunks_push(bquote({
       adsl_p <- subset(
         .(as.name(adsl_name)),
         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
       )
-    )
-    chunks_push(expression = chunk_call_adsl_p, id = "tm_t_rsp_adsl_p")
+    }))
 
-    chunk_call_anl_endpoint <- bquote(
+    chunks_push(bquote({
       anl_endpoint <- subset(
         .(as.name(anl_name)),
         PARAMCD == .(paramcd)
       )
-    )
-    chunks_push(expression = chunk_call_anl_endpoint, id = "tm_t_rsp_anl_endpoint")
+    }))
 
-    chunk_call_anl <- bquote(
+    chunks_push(bquote({
       anl <- merge(
         x = adsl_p[, .(adsl_vars), drop = FALSE],
         y = anl_endpoint[, .(anl_vars), drop = FALSE],
@@ -306,8 +304,7 @@ srv_t_rsp <- function(input,
         all.y = FALSE,
         by = c("USUBJID", "STUDYID")
       )
-    )
-    chunks_push(expression = chunk_call_anl, id = "tm_t_rsp_anl")
+    }))
 
     chunk_call_arm <- bquote({
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -319,12 +316,11 @@ srv_t_rsp <- function(input,
         arm <- combine_levels(arm, .(comp_arm))
       })
     }
-    chunks_push(expression = chunk_call_arm, id = "tm_t_rsp_arm")
+    chunks_push(chunk_call_arm)
 
-    chunk_call_arm_var <- bquote(
+    chunks_push(bquote(
       anl[[.(arm_var)]] <- droplevels(arm)
-    )
-    chunks_push(expression = chunk_call_arm_var, id = "tm_t_rsp_arm_var")
+    ))
 
     strata_data <- if (length(strata_var) > 0) {
       quote(anl[, strata_var, drop = FALSE]) %>%
@@ -333,7 +329,7 @@ srv_t_rsp <- function(input,
       NULL
     }
 
-    chunk_table_expr <- bquote({
+    chunks_push(bquote({
       tbl <- t_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
@@ -341,8 +337,7 @@ srv_t_rsp <- function(input,
         strata_data = .(strata_data)
       )
       tbl
-    })
-    chunks_push(expression = chunk_table_expr, id = "tm_t_rsp")
+    }))
 
     invisible(NULL)
   })
@@ -351,7 +346,7 @@ srv_t_rsp <- function(input,
   output$response_table <- renderUI({
     tm_t_rsp_call()
 
-    chunks_eval()
+    chunks_safe_eval()
 
     anl_endpoint <- chunks_get_var("anl_endpoint")
     if (any(duplicated(anl_endpoint[, c("USUBJID", "STUDYID")]))) {

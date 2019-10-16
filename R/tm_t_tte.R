@@ -293,33 +293,35 @@ srv_t_tte <- function(input,
     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var))
 
     ## Now comes the analysis code
-    chunks_push(expression = bquote(ref_arm <- .(ref_arm)))
-    chunks_push(expression = bquote(comp_arm <- .(comp_arm)))
-    chunks_push(expression = bquote(strata_var <- .(strata_var)))
-    chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(bquote(ref_arm <- .(ref_arm)))
+    chunks_push(bquote(comp_arm <- .(comp_arm)))
+    chunks_push(bquote(strata_var <- .(strata_var)))
+    chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(expression = bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-    chunks_push(expression = bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
+    chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
-    chunks_push(expression = bquote(anl <- merge(
-      x = adsl_p[, .(adsl_vars)],
-      y = anl_endpoint[, .(anl_vars)],
-      all.x = FALSE, all.y = FALSE,
-      by = c("USUBJID", "STUDYID")
-    )))
+    chunks_push(bquote({
+      anl <- merge(
+        x = adsl_p[, .(adsl_vars)],
+        y = anl_endpoint[, .(anl_vars)],
+        all.x = FALSE, all.y = FALSE,
+        by = c("USUBJID", "STUDYID")
+      )
+    }))
 
-    chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
     if (combine_comp_arms) {
-      chunks_push(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+      chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
-    chunks_push(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
-    chunks_eval()
+    chunks_safe_eval()
 
     validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
 
-    table_expr <- bquote({
+    chunks_push(bquote({
       tbl <- t_tte(
         formula = .(as.formula(
           paste0(
@@ -328,23 +330,22 @@ srv_t_tte <- function(input,
               ""
             } else {
               paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
-            }))),
+            }
+          )
+        )),
         data = anl,
         event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
         time_points = .(time_points),
         time_unit = .(time_unit)
       )
       tbl
-    })
-
-    chunks_push(expression = table_expr, id = "final_table")
+    }))
   })
 
   output$tte_table <- renderUI({
     table_reactive()
 
-    chunks_eval()
-    chunks_validate_all("tbl", "rtable", "Evaluation with tern t_tte failed.")
+    chunks_safe_eval()
 
     tbl <- chunks_get_var("tbl")
     as_html(tbl)

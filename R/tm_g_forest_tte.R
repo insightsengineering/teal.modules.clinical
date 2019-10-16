@@ -123,8 +123,11 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
   arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
+    session,
+    input,
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = "arm_var", # from UI
     adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
@@ -161,75 +164,63 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
-    chunks_push(
-      expression = bquote({
-        ref_arm <- .(ref_arm)
-        comp_arm <- .(comp_arm)
-        adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
-        anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
+    chunks_push(bquote({
+      ref_arm <- .(ref_arm)
+      comp_arm <- .(comp_arm)
+      adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+      anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
-        anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
-                     all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
-        arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
-        arm <- combine_levels(arm, ref_arm)
-        arm <- combine_levels(arm, comp_arm)
+      anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
+                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
+      arm <- combine_levels(arm, ref_arm)
+      arm <- combine_levels(arm, comp_arm)
 
-        anl[[.(arm_var)]] <- droplevels(arm)
+      anl[[.(arm_var)]] <- droplevels(arm)
 
-        levels(anl[[.(arm_var)]]) <- sapply(
-          levels(anl[[.(arm_var)]]),
-          function(x) paste(strwrap(x, width = 15), collapse = "\n")
-        )
-      }),
-      id = "tm_g_forest_tte_anl"
-    )
+      levels(anl[[.(arm_var)]]) <- sapply(
+        levels(anl[[.(arm_var)]]),
+        function(x) paste(strwrap(x, width = 15), collapse = "\n")
+      )
+    }))
 
-    chunks_eval()
+    chunks_safe_eval()
     anl <- chunks_get_var("anl")
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
 
-    chunks_push(
-      expression = bquote({
-        tbl <- t_forest_tte(
-          tte = anl$AVAL,
-          is_event = anl$CNSR == 0,
-          col_by = anl[[.(arm_var)]],
-          time_unit = tolower(anl$AVALU[1]),
-          row_by_list = if (length(.(subgroup_var)) > 0) {
-              anl[, .(subgroup_var), drop = FALSE]
-            } else {
-              NULL
-            },
-          total = "All Patients",
-          dense_header = TRUE
-        )
+    chunks_push(bquote({
+      tbl <- t_forest_tte(
+        tte = anl$AVAL,
+        is_event = anl$CNSR == 0,
+        col_by = anl[[.(arm_var)]],
+        time_unit = tolower(anl$AVALU[1]),
+        row_by_list = if (length(.(subgroup_var)) > 0) {
+            anl[, .(subgroup_var), drop = FALSE]
+          } else {
+            NULL
+          },
+        total = "All Patients",
+        dense_header = TRUE
+      )
 
-        row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
-      }),
-      id = "tm_g_forest_tte_tbl"
-    )
+      row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
+    }))
 
-    chunks_eval()
-    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
+    chunks_safe_eval()
 
-    chunks_push(
-      expression = call(
-        "g_forest",
-        tbl = quote(tbl),
-        col_x = 8,
-        col_ci = 9,
-        vline = 1,
-        forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
-        xlim = c(.1, 10),
-        logx = TRUE,
-        x_at = c(.1, 1, 10)
-      ),
-      id = "tm_g_forest_tte_plot"
-    )
+    chunks_push(call(
+      "g_forest",
+      tbl = quote(tbl),
+      col_x = 8,
+      col_ci = 9,
+      vline = 1,
+      forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
+      xlim = c(.1, 10),
+      logx = TRUE,
+      x_at = c(.1, 1, 10)
+    ))
 
-    p <- chunks_eval()
-
-    chunks_validate_is_ok()
+    p <- chunks_safe_eval()
 
     p
   })

@@ -149,8 +149,8 @@ ui_g_km <- function(id, ...) {
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       plot_height_input(id = ns("myplot"), value = a$plot_height),
-      accordion(
-        accordion_panel(
+      panel_group(
+        panel_item(
           "Additional plot settings",
           numericInput(
             inputId = ns('font_size'),
@@ -202,7 +202,9 @@ srv_g_km <- function(input,
 
   arm_ref_comp_observer(
     session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = "arm_var",
     adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_km"
@@ -256,54 +258,61 @@ srv_g_km <- function(input,
 
     chunks_reset(envir = environment())
 
-    chunks_push(expression = bquote(ref_arm <- .(ref_arm)))
-    chunks_push(expression = bquote(comp_arm <- .(comp_arm)))
-    chunks_push(expression = bquote(strata_var <- .(strata_var)))
-    chunks_push(expression = bquote(facet_var <- .(facet_var)))
-    chunks_push(expression = bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(bquote(ref_arm <- .(ref_arm)))
+    chunks_push(bquote(comp_arm <- .(comp_arm)))
+    chunks_push(bquote(strata_var <- .(strata_var)))
+    chunks_push(bquote(facet_var <- .(facet_var)))
+    chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(expression = bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
+    chunks_push(bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    chunks_push(expression = bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-    chunks_push(expression = bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
-    chunks_push(expression = bquote(anl <- merge(adsl_p[, adsl_vars],
-                                                 anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
-                                                 all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
-    )))
-    chunks_push(expression = bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    chunks_push(expression = bquote(arm <- combine_levels(arm, ref_arm)))
+    chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    chunks_push(bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
+    chunks_push(bquote({
+      anl <- merge(
+        adsl_p[, adsl_vars],
+        anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
+        all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
+      )
+    }))
+    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
 
     if (combine_comp_arms) {
-      chunks_push(expression = bquote(arm <- combine_levels(arm, comp_arm)))
+      chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
 
-    chunks_push(expression = bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-    chunks_push(expression = bquote(time_unit <- unique(anl[["AVALU"]])))
-    chunks_push(expression = bquote(tbl_fontsize <- .(tbl_fontsize)))
+    chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
+    chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
+    chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
 
-    chunks_eval()
+    chunks_safe_eval()
 
     validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
     validate(need(length(chunks_get_var("time_unit")) == 1, "Time Unit is not consistant"))
 
-    chunks_push(expression = bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
+    chunks_push(bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
 
-    chunks_push(expression = bquote(formula_coxph <- as.formula(
-      .(paste0(
-        "Surv(AVAL, 1-CNSR) ~ ", arm_var,
-        ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
-      ))
-    )))
-    chunks_push(expression = bquote(info_coxph <- .(paste0(
-      "Cox Proportional Model: ",
-      ifelse(is.null(strata_var),
-             "Unstratified Analysis",
-             paste0("Stratified by ", paste(strata_var, collapse = ","))
+    chunks_push(bquote({
+      formula_coxph <- as.formula(
+        .(paste0(
+          "Surv(AVAL, 1-CNSR) ~ ", arm_var,
+          ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
+        ))
       )
-    ))))
+    }))
+    chunks_push(bquote({
+      info_coxph <- .(paste0(
+        "Cox Proportional Model: ",
+        ifelse(is.null(strata_var),
+               "Unstratified Analysis",
+               paste0("Stratified by ", paste(strata_var, collapse = ","))
+        )
+      ))
+    }))
 
     if (is.null(facet_var)) {
-      chunks_push(expression = bquote({
+      chunks_push(bquote({
         fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
@@ -346,7 +355,7 @@ srv_g_km <- function(input,
         plot
       }))
     } else {
-      chunks_push(expression = bquote({
+      chunks_push(bquote({
         facet_df <- anl[.(facet_var)]
 
         lab <- Map(
@@ -417,9 +426,7 @@ srv_g_km <- function(input,
       }))
     }
 
-    p <- chunks_eval()
-
-    chunks_validate_is_ok()
+    p <- chunks_safe_eval()
 
     p
   })

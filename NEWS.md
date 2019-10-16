@@ -1,4 +1,4 @@
-# teal.modules.clinical next release
+# teal.modules.clinical 0.8.0
 
 * optionally show KM and CoxPH table in `tm_g_km`
 

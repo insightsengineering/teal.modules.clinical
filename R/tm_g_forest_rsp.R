@@ -234,8 +234,8 @@ srv_g_forest_rsp <- function(input,
       comp_arm = comp_arm
     )
 
-    validate_in(responders, anl_filtered$AVALC, "responder values cannot be found in AVALC")
-    validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD")
+    validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
+    validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
 
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
@@ -248,7 +248,7 @@ srv_g_forest_rsp <- function(input,
 
     chunks_reset(envir = environment())
 
-    chunk_data_expr <- bquote({
+    chunks_push(bquote({
       adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
 
@@ -268,16 +268,15 @@ srv_g_forest_rsp <- function(input,
           paste(strwrap(x, width = 15), collapse = "\n")
         }
       )
-    })
-    chunks_push(expression = chunk_data_expr, id = "tm_g_forest_rsp_data")
+    }))
 
-    chunks_eval()
+    chunks_safe_eval()
     anl <- chunks_get_var("anl")
 
     validate(need(nrow(anl) > 15, "need at least 15 data points"))
     validate(need(!any(duplicated(anl$USUBJID)), "patients have multiple records in the analysis data."))
 
-    chunk_table_expr <- bquote(
+    chunks_push(bquote({
       tbl <- t_forest_rsp(
         rsp = anl$AVALC %in% .(responders),
         col_by = anl[[.(arm_var)]],
@@ -289,23 +288,20 @@ srv_g_forest_rsp <- function(input,
         total = "All Patients",
         dense_header = TRUE
       )
-    )
-    chunks_push(expression = chunk_table_expr, id = "tm_g_forest_rsp_table")
+    }))
 
-    chunks_eval()
-    chunks_validate_is("tbl", "rtable", "could not calculate forest table")
+    chunks_safe_eval()
 
-    chunk_row_expr <- quote(
+    chunks_push(quote({
       row.names(tbl) <- sapply(
         row.names(tbl),
         function(x) {
           paste(strwrap(x, width = 20), collapse = "\n")
         }
       )
-    )
-    chunks_push(expression = chunk_row_expr, id = "tm_g_forest_rsp_row")
+    }))
 
-    chunk_g_expr <- call(
+    chunks_push(call(
       "g_forest",
       tbl = quote(tbl),
       col_x = 8,
@@ -315,12 +311,9 @@ srv_g_forest_rsp <- function(input,
       xlim = c(.1, 10),
       logx = TRUE,
       x_at = c(.1, 1, 10)
-    )
-    chunks_push(expression = chunk_g_expr, id = "tm_g_forest_rsp")
+    ))
 
-    p <- chunks_eval()
-
-    chunks_validate_is_ok()
+    p <- chunks_safe_eval()
 
     p
   })
