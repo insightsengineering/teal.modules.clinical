@@ -51,20 +51,20 @@ tm_g_forest_rsp <- function(label,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
                             post_output = NULL) {
 
-  stop_if_not(list(is.character.single(label), "Label should be single (i.e. not vector) character type of object"))
-  stop_if_not(list(is.character.vector(dataname), "Dataname should vector of characters"))
+  stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
+  stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
   stop_if_not(list(
-    is.integer.vector(plot_height) && length(plot_height) == 3,
+    is_integer_vector(plot_height) && length(plot_height) == 3,
     "plot_height should be vector of three integers specyfing selected height, min and max height"
   ))
   stop_if_not(list(
     plot_height[2] < plot_height[3] && plot_height[1] >= plot_height[2] && plot_height[1] <= plot_height[3],
     "selected plot_height should be between min and max, min should be lower than max"
   ))
-  stop_if_not(list(is.numeric.single(cex), "cex should be single numeric object))"))
+  stop_if_not(list(is_numeric_single(cex), "cex should be single numeric object))"))
   stop_if_not(list(
     is.null(pre_output) || is(pre_output, "shiny.tag"),
     "pre_output should be either null or shiny.tag type of object"
