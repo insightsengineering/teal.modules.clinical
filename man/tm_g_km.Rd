@@ -10,7 +10,7 @@ tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
   post_output = NULL)
 }
 \arguments{
-\item{label}{menue item label of the module in the teal app}
+\item{label}{menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.

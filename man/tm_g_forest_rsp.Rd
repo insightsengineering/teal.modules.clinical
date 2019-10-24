@@ -10,7 +10,7 @@ tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
   post_output = NULL)
 }
 \arguments{
-\item{label}{menue item label of the module in the teal app}
+\item{label}{menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -28,7 +28,7 @@ for variable names that can be used as the default subgroups}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
-\item{cex}{multiplier applied to overall fontsize}
+\item{cex}{multiplier applied to overall font size}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the

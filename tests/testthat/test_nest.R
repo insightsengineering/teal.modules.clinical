@@ -1,5 +1,8 @@
+library(test.nest)
 library(random.cdisc.data)
 
-#test.nest::test_lintr()
-test.nest::test_strict()
-test.nest::test_regexp()
+
+#test_lintr()
+test_strict()
+test_regexp()
+test_spell()
