@@ -125,7 +125,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
             )),
             as.call(append(
               quote(rtables::var_relabel),
-              datasets$get_data_attr(dataname = "ADSL", "labels")$column_labels[summarize_vars]
+              datasets$get_data_labels("ADSL", summarize_vars)
             ))
           )
         )
