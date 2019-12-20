@@ -116,17 +116,14 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
         "<-",
         as.name("ANL"),
         Reduce(
-          function(x, y) call("%>%", x, y),
+          function(x, y) `if`(!is.null(y), call("%>%", x, y), x),
           c(
             as.name(data_name),
             as.call(c(
               list(quote(dplyr::select)),
               lapply(c(summarize_vars, arm_var), as.name)
             )),
-            as.call(append(
-              quote(rtables::var_relabel),
-              datasets$get_data_attr(dataname = "ADSL", "labels")$column_labels[summarize_vars]
-            ))
+            get_relabel_call(datasets, dataname, summarize_vars)
           )
         )
       )
