@@ -1,3 +1,9 @@
+# teal.modules.clinical 0.8.1.9000
+
+# teal.modules.clinical 0.8.1
+
+* new `tm_t_events` and `tm_t_events_by_grade` modules
+
 # teal.modules.clinical 0.8.0
 
 * optionally show KM and CoxPH table in `tm_g_km`
