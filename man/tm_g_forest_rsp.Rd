@@ -4,10 +4,17 @@
 \alias{tm_g_forest_rsp}
 \title{Forest Response Plot teal module}
 \usage{
-tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
-  plot_height = c(700L, 200L, 2000L), cex = 1.3,
+tm_g_forest_rsp(
+  label,
+  dataname,
+  arm_var,
+  paramcd,
+  subgroup_var,
+  plot_height = c(700L, 200L, 2000L),
+  cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL)
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

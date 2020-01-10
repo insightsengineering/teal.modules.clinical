@@ -4,9 +4,19 @@
 \alias{tm_t_tte}
 \title{Time To Event Table Teal Module}
 \usage{
-tm_t_tte(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
-  strata_var, time_points, time_unit = "months", event_desc_var = NULL,
-  pre_output = NULL, post_output = NULL)
+tm_t_tte(
+  label,
+  dataname,
+  arm_var,
+  arm_ref_comp = NULL,
+  paramcd,
+  strata_var,
+  time_points,
+  time_unit = "months",
+  event_desc_var = NULL,
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

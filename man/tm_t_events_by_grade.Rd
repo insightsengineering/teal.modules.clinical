@@ -4,8 +4,15 @@
 \alias{tm_t_events_by_grade}
 \title{Adverse Events Table Teal Module}
 \usage{
-tm_t_events_by_grade(label, dataname, arm_var, hlt, llt, grade,
-  add_total = TRUE)
+tm_t_events_by_grade(
+  label,
+  dataname,
+  arm_var,
+  hlt,
+  llt,
+  grade,
+  add_total = TRUE
+)
 }
 \arguments{
 \item{label}{(\code{character}) module label displayed in UI}
@@ -46,7 +53,7 @@ app <- init(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADAE", ADAE),
     code = 'ADSL <- radsl(cached = TRUE)
-            ADAE <- radrs(cached = TRUE)',
+            ADAE <- radae(cached = TRUE)',
     check = FALSE
   ),
   modules = root_modules(

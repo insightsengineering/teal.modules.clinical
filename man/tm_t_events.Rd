@@ -4,8 +4,14 @@
 \alias{tm_t_events}
 \title{Adverse Events by Term Table Teal Module}
 \usage{
-tm_t_events(label, dataname, arm_var, term_var, add_total = TRUE,
-  event_type = "event")
+tm_t_events(
+  label,
+  dataname,
+  arm_var,
+  term_var,
+  add_total = TRUE,
+  event_type = "event"
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

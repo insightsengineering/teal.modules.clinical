@@ -4,10 +4,18 @@
 \alias{tm_g_km}
 \title{teal module for Kaplan-Meier Plot from grid}
 \usage{
-tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
-  facet_var, strata_var, plot_height = c(1200, 400, 5000),
+tm_g_km(
+  label,
+  dataname,
+  arm_var,
+  arm_ref_comp = NULL,
+  paramcd,
+  facet_var,
+  strata_var,
+  plot_height = c(1200, 400, 5000),
   pre_output = helpText("x-axes for different factes may not have the same scale"),
-  post_output = NULL)
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

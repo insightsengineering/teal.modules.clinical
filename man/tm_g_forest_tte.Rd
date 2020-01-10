@@ -4,10 +4,17 @@
 \alias{tm_g_forest_tte}
 \title{Forest Survival Plot teal Module}
 \usage{
-tm_g_forest_tte(label, dataname, arm_var, subgroup_var, paramcd,
-  plot_height = c(600, 200, 2000), cex = 1.3,
+tm_g_forest_tte(
+  label,
+  dataname,
+  arm_var,
+  subgroup_var,
+  paramcd,
+  plot_height = c(600, 200, 2000),
+  cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL)
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
