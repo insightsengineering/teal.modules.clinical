@@ -22,8 +22,11 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.}
 \item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as \code{arm_var}}
 
-\item{term_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{term_var} to represent events information.}
+\item{hlt}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used to specify the high level term for events}
+
+\item{llt}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used to specify the low level term for events}
 
 \item{add_total}{(\code{logical}) optional, whether show column with total number of patients}
 
@@ -55,9 +58,14 @@ app <- teal::init(
       label = "Adverse Event Table",
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      term_var = choices_selected(
-         choices = variable_choices(ADAE, c("AETERM", "AEDECOD", "AEBODSYS")),
-         selected = c("AEBODSYS", "AEDECOD")),
+      llt = choices_selected(
+        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
+        selected = c("AEDECOD")
+       ),
+      hlt = choices_selected(
+        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+        selected = "AEBODSYS"
+       ),
       add_total = TRUE,
       event_type = "adverse event"
     )
