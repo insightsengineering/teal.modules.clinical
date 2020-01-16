@@ -11,7 +11,8 @@ tm_t_events_by_grade(
   hlt,
   llt,
   grade,
-  add_total = TRUE
+  add_total = TRUE,
+  grade_levels = NULL
 )
 }
 \arguments{
@@ -34,6 +35,15 @@ for variable names that can be used to specify the event grade}
 
 \item{add_total}{(\code{logical}) optional, whether show column with total number of patients
 (\code{TRUE} on default)}
+
+\item{grade_levels}{a factor. The values of the factor define the ordering of the rows
+in the resulting table. The levels of the factor define the severity of the grade.
+For example, \code{factor(c("c", "b", "a"), levels = c("a", "b", "c"))} will display
+the most severe grade "c" at the top of the table, the least severe grade "a" at the bottom.
+If \code{grade} is a factor, \code{grade_levels} will overwrite the level orders in \code{grade}.
+If set to \code{NULL} (default), it is assumed that intensity corresponds to the order of
+the factor levels of \code{grade}.
+If \code{grade} is not a factor, \code{grade_levels} is required.}
 }
 \value{
 an \code{\link[teal]{module}} object
@@ -73,7 +83,8 @@ app <- init(
         choices = variable_choices(ADAE, c("AETOXGR")),
         selected = "AETOXGR"
       ),
-      add_total = TRUE
+      add_total = TRUE,
+      grade_levels = factor(1:5, levels = 1:5)
     )
   )
 )
