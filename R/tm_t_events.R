@@ -172,32 +172,38 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
       )
     )
 
+
     chunks_push(
       call(
         "<-",
         as.name("ANL_MERGED"),
         call(
           "%>%",
-          as.call(c(
-            quote(merge),
-            list(
-              x = as.name("ADSL_S"),
-              y = as.name("ANL_S"),
-              all.x = FALSE,
-              all.y = FALSE,
-              by = c("USUBJID", "STUDYID")
-            )
-          )),
-          as.call(c(
-            quote(rtables::var_relabel),
-            {
-              labels <- c(
-                datasets$get_data_labels("ADSL", adsl_vars),
-                datasets$get_data_labels(dataname, anl_vars)
+          call(
+            "%>%",
+            as.call(c(
+              quote(merge),
+              list(
+                x = as.name("ADSL_S"),
+                y = as.name("ANL_S"),
+                all.x = FALSE,
+                all.y = FALSE,
+                by = c("USUBJID", "STUDYID")
               )
-              labels[!duplicated(labels)]
-            }
-          ))
+            )),
+            as.call(c(
+              quote(rtables::var_relabel),
+              {
+                labels <- c(
+                  datasets$get_data_labels("ADSL", adsl_vars),
+                  datasets$get_data_labels(dataname, anl_vars)
+                )
+                labels[!duplicated(labels)]
+              }
+            ))
+          ),
+          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
+                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
         )
       )
     )

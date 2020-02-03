@@ -226,26 +226,31 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname, gr
         as.name("ANL"),
         call(
           "%>%",
-          as.call(append(
-            quote(merge),
-            list(
-              x = as.name("ADSL_P"),
-              y = as.name("ANL_ENDPOINT"),
-              all.x = FALSE,
-              all.y = FALSE,
-              by = c("USUBJID", "STUDYID")
-            )
-          )),
-          as.call(c(
-            quote(rtables::var_relabel),
-            {
-              labels <- c(
-                datasets$get_data_labels("ADSL", adsl_vars),
-                datasets$get_data_labels(dataname, anl_vars)
+          call(
+            "%>%",
+            as.call(append(
+              quote(merge),
+              list(
+                x = as.name("ADSL_P"),
+                y = as.name("ANL_ENDPOINT"),
+                all.x = FALSE,
+                all.y = FALSE,
+                by = c("USUBJID", "STUDYID")
               )
-              labels[!duplicated(labels)]
-            }
-          ))
+            )),
+            as.call(c(
+              quote(rtables::var_relabel),
+              {
+                labels <- c(
+                  datasets$get_data_labels("ADSL", adsl_vars),
+                  datasets$get_data_labels(dataname, anl_vars)
+                )
+                labels[!duplicated(labels)]
+              }
+            ))
+          ),
+          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
+                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
         )
       )
     )
