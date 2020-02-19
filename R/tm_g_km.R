@@ -36,7 +36,7 @@
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'     code = "radsl(cached = TRUE)
+#'     code = "ADSL <- radsl(cached = TRUE)
 #'             ADTTE <- radtte(ADSL, cached = TRUE)",
 #'     check = FALSE
 #'   ),
@@ -62,6 +62,7 @@ tm_g_km <- function(label,
                     paramcd,
                     facet_var,
                     strata_var,
+                    conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
                     plot_height = c(1200, 400, 5000),
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL) {
@@ -176,9 +177,14 @@ ui_g_km <- function(id, ...) {
           radioButtons(
             ns("pval_method"),
             "p-value method",
-            choices = c("wald", "logrank", "likelihood"),
-            selected = "wald"
+            choices = c("wald", "log-rank", "likelihood"),
+            selected = "log-rank"
           ),
+          optionalSelectInput(ns("conf_int"),
+                              "Level of Confidence",
+                              a$conf_int$choices,
+                              a$conf_int$selected,
+                              multiple = FALSE),
           textInput(ns("xlab"), "X-axis label", "Overall survival in ")
         )
       )
@@ -229,6 +235,7 @@ srv_g_km <- function(input,
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     pval_method <- input$pval_method
+    conf_int <- as.numeric(input$conf_int)
     xlab <- input$xlab
     tbl_fontsize <- input$font_size
     if_show_km <- input$show_km_table
@@ -296,7 +303,7 @@ srv_g_km <- function(input,
     chunks_push(bquote({
       formula_coxph <- as.formula(
         .(paste0(
-          "Surv(AVAL, 1-CNSR) ~ ", arm_var,
+          "Surv(AVAL, 1-CNSR) ~ arm(", arm_var, ")",
           ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
         ))
       )
@@ -313,14 +320,14 @@ srv_g_km <- function(input,
 
     if (is.null(facet_var)) {
       chunks_push(bquote({
-        fit_km <- survfit(formula_km, data = anl, conf.type = "plain")
+        fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
         grid.newpage()
         p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
 
         .(
           if (if_show_km) {
             bquote({
-              tbl_km <- t_km(fit_km)
+              tbl_km <- t_km(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
               km_grob <- textGrob(
                 label = toString(tbl_km, gap = 1),
                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
@@ -337,8 +344,7 @@ srv_g_km <- function(input,
         .(
           if (if_show_coxph) {
             bquote({
-              fit_coxph <- coxph(formula_coxph, data = anl, ties = "exact")
-              tbl_coxph <- t_coxph(fit_coxph, pval_method = pval_method)
+              tbl_coxph <- t_coxph(formula_coxph, data = anl,conf.int = .(conf_int), pval_method = .(pval_method), ties = "exact")
               text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
               coxph_grob <- textGrob(
                 label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
@@ -375,7 +381,7 @@ srv_g_km <- function(input,
             textGrob(paste0("Less than 5 patients in ", label, " group"))
           } else {
             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-            fit_km <- survfit(formula_km, data = x, conf.type = "plain")
+            fit_km <- survfit(formula_km, data = x, conf.int = .(conf_int), conf.type = "plain")
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
               xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
@@ -384,7 +390,7 @@ srv_g_km <- function(input,
             .(
               if (if_show_km) {
                 bquote({
-                  tbl_km <- t_km(fit_km)
+                  tbl_km <- t_km(formula_km, data = x, conf.int = .(conf_int), conf.type = "plain")
                   km_grob <- textGrob(
                     label = toString(tbl_km, gap = 1),
                     x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
@@ -401,8 +407,7 @@ srv_g_km <- function(input,
             .(
               if (if_show_coxph) {
                 bquote({
-                  fit_coxph <- coxph(formula_coxph, data = x, ties = "exact")
-                  tbl_coxph <- t_coxph(fit_coxph, pval_method = .(pval_method))
+                  tbl_coxph <- t_coxph(formula_coxph, data = x, conf.int = .(conf_int), pval_method = .(pval_method), ties = "exact")
                   text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
                   coxph_grob <- textGrob(
                     label = text_coxph,
