@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.1.9000
 
+* new `tm_t_mmrm` module
+
 * new `tm_t_summary_by` module
 
 # teal.modules.clinical 0.8.1
