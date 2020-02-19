@@ -8,7 +8,8 @@ tm_t_events(
   label,
   dataname,
   arm_var,
-  term_var,
+  hlt,
+  llt,
   add_total = TRUE,
   event_type = "event"
 )

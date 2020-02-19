@@ -103,7 +103,8 @@ app <- init(
           dataname = "ADSL",
           select = select_spec(
             choices = variable_choices(ADSL,
-                                       c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                       c("ARM", "ACTARM", "SEX",
+                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
             selected = NULL,
             multiple = FALSE
@@ -123,7 +124,8 @@ app <- init(
           dataname = "ADSL",
           select = select_spec(
             choices = variable_choices(ADSL,
-                                       c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                       c("ARM", "ACTARM", "SEX",
+                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
             selected = NULL,
             multiple = FALSE
