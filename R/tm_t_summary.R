@@ -73,13 +73,17 @@ ui_t_summary <- function(id, ...) {
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed
+      ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
       optionalSelectInput(ns("summarize_vars"),
                           "Summarize Variables",
                           a$summarize_vars$choices,
                           a$summarize_vars$selected,
-                          multiple = TRUE)
+                          multiple = TRUE,
+                          fixed = a$summarize_vars$fixed
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,

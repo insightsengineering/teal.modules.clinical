@@ -83,12 +83,16 @@ ui_g_forest_tte <- function(id, ...) {
                           div("PARAMCD", tags$br(), helpText("Select an endpoint to analyze.")),
                           a$paramcd$choices,
                           a$paramcd$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$paramcd$fixed
+      ),
       optionalSelectInput(ns("arm_var"),
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed
+      ),
       selectInput(ns("ref_arm"),
                   "Reference Arm",
                   choices = NULL,
@@ -106,7 +110,9 @@ ui_g_forest_tte <- function(id, ...) {
                           a$subgroup_var$choices,
                           a$subgroup_var$selected,
                           multiple = TRUE,
-                          label_help = helpText("are taken from", tags$code("ADSL"))),
+                          label_help = helpText("are taken from", tags$code("ADSL")),
+                          fixed = a$subgroup_var$fixed
+      ),
       tags$label("Plot Settings", class = "text-primary", style = "margin-top: 15px;"),
       optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
     ),

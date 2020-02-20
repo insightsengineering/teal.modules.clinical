@@ -117,22 +117,24 @@ ui_t_summary_by <- function(id, ...) {
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
-
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed
+      ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-
       optionalSelectInput(ns("by_vars"),
                           "Row By Variable",
                           a$by_vars$choices,
                           a$by_vars$selected,
-                          multiple = TRUE),
-
+                          multiple = TRUE,
+                          fixed = a$by_vars$fixed
+      ),
       optionalSelectInput(ns("summarize_vars"),
                           "Summarize Variables",
                           a$summarize_vars$choices,
                           a$summarize_vars$selected,
-                          multiple = TRUE),
-
+                          multiple = TRUE,
+                          fixed = a$summarize_vars$fixed
+      ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),

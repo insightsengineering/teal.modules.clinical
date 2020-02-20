@@ -143,12 +143,16 @@ ui_t_tte <- function(id, ...) {
                           "Select Endpoint",
                           a$paramcd$choices,
                           a$paramcd$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$paramcd$fixed
+      ),
       optionalSelectInput(ns("arm_var"),
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed
+      ),
       selectInput(ns("ref_arm"),
                   "Reference Group",
                   choices = NULL,
@@ -168,7 +172,9 @@ ui_t_tte <- function(id, ...) {
                           a$strata_var$choices,
                           a$strata_var$selected,
                           multiple = TRUE,
-                          label_help = helpText("from ", tags$code("ADSL"))),
+                          label_help = helpText("from ", tags$code("ADSL")),
+                          fixed = a$strata_var$fixed
+      ),
       radioButtons(
         ns("pval_method"),
         "p-value method",
@@ -179,13 +185,16 @@ ui_t_tte <- function(id, ...) {
                           "Level of Confidence",
                           a$conf_int$choices,
                           a$conf_int$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$conf_int$fixed
+      ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
                           a$time_points$selected,
-                          multiple = TRUE),
-
+                          multiple = TRUE,
+                          fixed = a$time_points$fixed
+      ),
       if (!is.null(a$event_desc_var)) {
         helpText("Event Description Variable: ", tags$code(a$event_desc_var))
       }

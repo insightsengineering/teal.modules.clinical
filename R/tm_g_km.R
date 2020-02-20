@@ -102,14 +102,16 @@ ui_g_km <- function(id, ...) {
         "Arm Variable",
         choices = a$arm_var$choices,
         selected = a$arm_var$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
       optionalSelectInput(
         ns("paramcd"),
         "Time to Event (Endpoint)",
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$paramcd$fixed
       ),
       optionalSelectInput(
         ns("strata_var"),
@@ -117,7 +119,8 @@ ui_g_km <- function(id, ...) {
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ADSL")
+        label_help = helpText("currently taken from ADSL"),
+        fixed = a$strata_var$fixed
       ),
       optionalSelectInput(
         ns("facet_var"),
@@ -125,7 +128,8 @@ ui_g_km <- function(id, ...) {
         choices = a$facet_var$choices,
         selected = a$facet_var$selected,
         multiple = TRUE,
-        label_help = helpText("currently taken from ADSL")
+        label_help = helpText("currently taken from ADSL"),
+        fixed = a$facet_var$fixed
       ),
       selectInput(
         ns("ref_arm"),
@@ -184,7 +188,9 @@ ui_g_km <- function(id, ...) {
                               "Level of Confidence",
                               a$conf_int$choices,
                               a$conf_int$selected,
-                              multiple = FALSE),
+                              multiple = FALSE,
+                              fixed = a$conf_int$fixed
+          ),
           textInput(ns("xlab"), "X-axis label", "Overall survival in ")
         )
       )

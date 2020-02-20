@@ -106,7 +106,8 @@ ui_g_forest_rsp <- function(id, ...) {
         div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
         a$paramcd$choices,
         a$paramcd$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$paramcd$fixed
       ),
       selectInput(
         ns("responders"),
@@ -120,7 +121,8 @@ ui_g_forest_rsp <- function(id, ...) {
         "Arm Variable",
         a$arm_var$choices,
         a$arm_var$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
       selectInput(
         ns("ref_arm"),
@@ -144,7 +146,8 @@ ui_g_forest_rsp <- function(id, ...) {
         a$subgroup_var$choices,
         a$subgroup_var$selected,
         multiple = TRUE,
-        label_help = helpText("are taken from", tags$code("ADSL"))
+        label_help = helpText("are taken from", tags$code("ADSL")),
+        fixed = a$subgroup_var$fixed
       ),
       tags$label(
         "Plot Settings",

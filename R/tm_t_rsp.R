@@ -50,7 +50,7 @@
 #'       dataname = 'ADRS',
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
-#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
+#'       strata_var = choices_selected(c("SEX", "BMRKR2"), NULL)
 #'     )
 #'   )
 #' )
@@ -124,7 +124,8 @@ ui_t_rsp <- function(id, ...) {
         div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$paramcd$fixed
       ),
       selectInput(
         ns("responders"),
@@ -139,7 +140,8 @@ ui_t_rsp <- function(id, ...) {
         "Arm Variable",
         choices = a$arm_var$choices,
         selected = a$arm_var$selected,
-        multiple = FALSE
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
       selectInput(
         ns("ref_arm"),
@@ -168,7 +170,8 @@ ui_t_rsp <- function(id, ...) {
         choices = a$strata_var$choices,
         selected = a$strata_var$selected,
         multiple = TRUE,
-        label_help = helpText("taken from:", tags$code("ADSL"))
+        label_help = helpText("taken from:", tags$code("ADSL")),
+        fixed = a$strata_var$fixed
       )
     ),
     forms = actionButton(
