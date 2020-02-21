@@ -121,11 +121,12 @@ ui_t_rsp <- function(id, ...) {
       #Response related parameters
       optionalSelectInput(
         ns("paramcd"),
-        div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
+        "PARAMCD",
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
         multiple = FALSE,
-        fixed = a$paramcd$fixed
+        fixed = a$paramcd$fixed,
+        label_help = helpText("Select one type of response to analyze.")
       ),
       selectInput(
         ns("responders"),

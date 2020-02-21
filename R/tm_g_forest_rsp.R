@@ -103,11 +103,12 @@ ui_g_forest_rsp <- function(id, ...) {
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(
         ns("paramcd"),
-        div("PARAMCD", tags$br(), helpText("Select one type of response to analyze.")),
+        "PARAMCD",
         a$paramcd$choices,
         a$paramcd$selected,
         multiple = FALSE,
-        fixed = a$paramcd$fixed
+        fixed = a$paramcd$fixed,
+        label_help = helpText("Select one type of response to analyze.")
       ),
       selectInput(
         ns("responders"),

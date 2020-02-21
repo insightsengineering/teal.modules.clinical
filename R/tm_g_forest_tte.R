@@ -80,11 +80,12 @@ ui_g_forest_tte <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(ns("paramcd"),
-                          div("PARAMCD", tags$br(), helpText("Select an endpoint to analyze.")),
+                          "PARAMCD",
                           a$paramcd$choices,
                           a$paramcd$selected,
                           multiple = FALSE,
-                          fixed = a$paramcd$fixed
+                          fixed = a$paramcd$fixed,
+                          label_help = helpText("Select an endpoint to analyze.")
       ),
       optionalSelectInput(ns("arm_var"),
                           "Arm Variable",
