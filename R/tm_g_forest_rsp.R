@@ -17,14 +17,18 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
+#' ADRS <- radrs(ADSL, cached = TRUE) %>%
+#'      dplyr::filter(AVISIT == "FOLLOW UP" & SEX %in% c("F", "M")) %>%
+#'      dplyr::mutate(SEX = droplevels(SEX))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'    cdisc_dataset("ADSL", ADSL),
 #'    cdisc_dataset("ADRS", ADRS),
 #'    code = 'ADSL <- radsl(cached = TRUE)
-#'            ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
+#'            ADRS <- radrs(ADSL, cached = TRUE) %>%
+#'            dplyr::filter(AVISIT == "FOLLOW UP" & SEX %in% c("F", "M")) %>%
+#'            dplyr::mutate(SEX = droplevels(SEX))',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
@@ -32,7 +36,8 @@
 #'       dataname = "ADRS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
-#'       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
+#'       subgroup_var = choices_selected(names(ADSL), c("BMRKR2", "SEX")),
+#'       strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
 #'       plot_height = c(600L, 200L, 2000L)
 #'     )
 #'   )
@@ -46,6 +51,7 @@ tm_g_forest_rsp <- function(label,
                             arm_var,
                             paramcd,
                             subgroup_var,
+                            strata_var,
                             plot_height = c(700L, 200L, 2000L),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -56,6 +62,7 @@ tm_g_forest_rsp <- function(label,
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
+  stopifnot(is.choices_selected(strata_var))
   stop_if_not(list(
     is_integer_vector(plot_height) && length(plot_height) == 3,
     "plot_height should be vector of three integers specyfing selected height, min and max height"
@@ -150,6 +157,14 @@ ui_g_forest_rsp <- function(id, ...) {
         label_help = helpText("are taken from", tags$code("ADSL")),
         fixed = a$subgroup_var$fixed
       ),
+      optionalSelectInput(ns("strata_var"),
+                          "Stratify by",
+                          a$strata_var$choices,
+                          a$strata_var$selected,
+                          multiple = TRUE,
+                          label_help = helpText("from ", tags$code("ADSL")),
+                          fixed = a$strata_var$fixed
+      ),
       tags$label(
         "Plot Settings",
         class = "text-primary",
@@ -226,11 +241,11 @@ srv_g_forest_rsp <- function(input,
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
-
+    strata_var <- input$strata_var
     # validate your input values
     validate_standard_inputs(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var,
@@ -247,12 +262,13 @@ srv_g_forest_rsp <- function(input,
     adsl_name <- "ADSL_FILTERED"
     assign(adsl_name, adsl_filtered)
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var))
     anl_vars <- c("USUBJID", "STUDYID", "AVALC")
 
     chunks_reset(envir = environment())
 
     chunks_push(bquote({
+
       adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
 
@@ -289,14 +305,15 @@ srv_g_forest_rsp <- function(input,
         } else {
           bquote(NULL)
         }),
+        strata_data = if (!is.null(.(strata_var))){
+          anl[, .(strata_var), drop = FALSE]
+        } else {
+          NULL
+        },
         total = "All Patients",
         dense_header = TRUE
       )
-    }))
 
-    chunks_safe_eval()
-
-    chunks_push(quote({
       row.names(tbl) <- sapply(
         row.names(tbl),
         function(x) {
@@ -305,21 +322,31 @@ srv_g_forest_rsp <- function(input,
       )
     }))
 
-    chunks_push(call(
-      "g_forest",
-      tbl = quote(tbl),
-      col_x = 8,
-      col_ci = 9,
-      vline = 1,
-      forest_header = bquote(paste0(levels(anl[[.(arm_var)]]), "\nbetter")),
-      xlim = c(.1, 10),
-      logx = TRUE,
-      x_at = c(.1, 1, 10)
-    ))
+    chunks_safe_eval()
 
-    p <- chunks_safe_eval()
+    chunks_push(bquote({
+      p <- g_forest(
+        tbl = tbl,
+        col_x = 8,
+        col_ci = 9,
+        vline = 1,
+        forest_header = paste0(levels(anl[[.(arm_var)]]), "\nbetter"),
+        xlim = c(.1, 10),
+        logx = TRUE,
+        x_at = c(.1, 1, 10),
+        draw = FALSE
+      )
+      if (!is.null(footnotes(p))){
+        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
+                           gp_footnotes = gpar(fontsize = 12))
+      }
+      grid.newpage()
+      grid.draw(p)
+    }))
 
-    p
+
+    chunks_safe_eval()
+
   })
 
   ## dynamic plot height

@@ -10,6 +10,7 @@ tm_g_forest_tte(
   arm_var,
   subgroup_var,
   paramcd,
+  strata_var,
   plot_height = c(600, 200, 2000),
   cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -32,6 +33,9 @@ for variable names that can be used as the default subgroups}
 
 \item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
 variable names that can be used as \code{PARAMCD} variable}
+
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -71,8 +75,9 @@ app <- init(
        label = "Forest Survival",
        dataname = "ADTTE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
+       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX", "BMRKR2")),
        paramcd = choices_selected(c("OS", "PFS"), "OS"),
+       strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
        plot_height = c(600, 200, 2000)
     )
   )

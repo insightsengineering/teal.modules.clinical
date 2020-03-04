@@ -10,6 +10,7 @@ tm_g_forest_rsp(
   arm_var,
   paramcd,
   subgroup_var,
+  strata_var,
   plot_height = c(700L, 200L, 2000L),
   cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -33,6 +34,9 @@ variable names that can be used as \code{PARAMCD} variable}
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as the default subgroups}
 
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
+
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
 \item{cex}{multiplier applied to overall font size}
@@ -53,14 +57,18 @@ library(random.cdisc.data)
 library(dplyr)
 
 ADSL <- radsl(cached = TRUE)
-ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
+ADRS <- radrs(ADSL, cached = TRUE) \%>\%
+     dplyr::filter(AVISIT == "FOLLOW UP" & SEX \%in\% c("F", "M")) \%>\%
+     dplyr::mutate(SEX = droplevels(SEX))
 
 app <- init(
   data = cdisc_data(
    cdisc_dataset("ADSL", ADSL),
    cdisc_dataset("ADRS", ADRS),
    code = 'ADSL <- radsl(cached = TRUE)
-           ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")',
+           ADRS <- radrs(ADSL, cached = TRUE) \%>\%
+           dplyr::filter(AVISIT == "FOLLOW UP" & SEX \%in\% c("F", "M")) \%>\%
+           dplyr::mutate(SEX = droplevels(SEX))',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
@@ -68,7 +76,8 @@ app <- init(
       dataname = "ADRS",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
-      subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
+      subgroup_var = choices_selected(names(ADSL), c("BMRKR2", "SEX")),
+      strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
       plot_height = c(600L, 200L, 2000L)
     )
   )

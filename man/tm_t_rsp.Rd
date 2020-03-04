@@ -93,7 +93,7 @@ app <- init(
       dataname = 'ADRS',
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
-      strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
+      strata_var = choices_selected(c("SEX", "BMRKR2"), NULL)
     )
   )
 )
