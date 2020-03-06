@@ -11,7 +11,8 @@ tm_t_tte(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
+  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+    TRUE),
   time_points,
   time_unit = "months",
   event_desc_var = NULL,

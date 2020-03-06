@@ -11,6 +11,9 @@ tm_g_forest_tte(
   subgroup_var,
   paramcd,
   strata_var,
+  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+    TRUE),
+  fixed_symbol_size = TRUE,
   plot_height = c(600, 200, 2000),
   cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -36,6 +39,12 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
+
+\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for confidence level for computation of the confidence intervals.}
+
+\item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
+estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 

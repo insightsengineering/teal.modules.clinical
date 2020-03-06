@@ -48,6 +48,8 @@ tm_g_forest_tte <- function(label,
                             subgroup_var,
                             paramcd,
                             strata_var,
+                            conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                            fixed_symbol_size = TRUE,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -57,6 +59,9 @@ tm_g_forest_tte <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
   stopifnot(is.choices_selected(strata_var))
+  stopifnot(is.choices_selected(conf_int))
+  stopifnot(is_logical_single(fixed_symbol_size))
+
   args <- as.list(environment())
 
   module(
@@ -125,7 +130,32 @@ ui_g_forest_tte <- function(id, ...) {
                           fixed = a$strata_var$fixed
       ),
       tags$label("Plot Settings", class = "text-primary", style = "margin-top: 15px;"),
-      optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
+      optionalSliderInputValMinMax(
+        ns("plot_height"),
+        "plot height",
+        a$plot_height,
+        ticks = FALSE
+      ),
+      optionalSliderInputValMinMax(
+        ns("plot_width"),
+        "plot width",
+        c(980L, 500L, 2000L),
+        ticks = FALSE
+      ),
+      panel_group(
+        panel_item(
+          "Additional plot settings",
+          optionalSelectInput(
+            ns("conf_int"),
+            "Level of Confidence",
+            a$conf_int$choices,
+            a$conf_int$selected,
+            multiple = FALSE,
+            fixed = a$conf_int$fixed
+          ),
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -164,6 +194,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     if (length(strata_var) == 0) {
       strata_var <- NULL
     }
+    conf_int <- as.numeric(input$conf_int)
+    col_symbol_size <- if(input$fixed_symbol_size){
+      NULL
+    } else {
+      1
+    }
     # validate your input values
     validate_standard_inputs(
       adsl = ADSL_FILTERED,
@@ -176,6 +212,11 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     )
 
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    validate(
+      need(length(conf_int)==1, "Please select level of confidence."),
+      need(all(vapply(ADSL_FILTERED[, subgroup_var], is.factor, logical(1))),
+           "Not all subgroup variables are factors.")
+    )
 
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
@@ -190,6 +231,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
       adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+      adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
       anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
       anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
@@ -229,6 +271,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
           bquote(NULL)
         }),
         total = "All Patients",
+        conf_int = .(conf_int),
         dense_header = TRUE
       )
 
@@ -249,6 +292,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         xlim = c(.1, 10),
         logx = TRUE,
         x_at = c(.1, 1, 10),
+        col_symbol_size = .(col_symbol_size),
         draw = FALSE)
       if (!is.null(footnotes(p))){
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
@@ -265,8 +309,14 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
+    plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
+    validate(need(plot_width, "need valid plot width"))
+    div(style = 'overflow-x: scroll',
+        plotOutput(session$ns("forest_plot"),
+                   height = plot_height,
+                   width = plot_width)
+    )
   })
 
 

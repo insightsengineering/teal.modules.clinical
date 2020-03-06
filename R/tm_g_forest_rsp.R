@@ -4,6 +4,8 @@
 #'
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
+#' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
+#' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #' @param cex multiplier applied to overall font size
 #'
@@ -17,25 +19,23 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(ADSL, cached = TRUE) %>%
-#'      dplyr::filter(AVISIT == "FOLLOW UP" & SEX %in% c("F", "M")) %>%
-#'      dplyr::mutate(SEX = droplevels(SEX))
+#' ADRS <- radrs(cached = TRUE) %>%
+#'      dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'    cdisc_dataset("ADSL", ADSL),
 #'    cdisc_dataset("ADRS", ADRS),
 #'    code = 'ADSL <- radsl(cached = TRUE)
-#'            ADRS <- radrs(ADSL, cached = TRUE) %>%
-#'            dplyr::filter(AVISIT == "FOLLOW UP" & SEX %in% c("F", "M")) %>%
-#'            dplyr::mutate(SEX = droplevels(SEX))',
+#'            ADRS <- radrs(cached = TRUE) %>%
+#'            dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))',
 #'    check = FALSE),
 #'   modules = root_modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
+#'       paramcd = choices_selected(c("BESRSPI", "INVET"), "BESRSPI"),
 #'       subgroup_var = choices_selected(names(ADSL), c("BMRKR2", "SEX")),
 #'       strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
 #'       plot_height = c(600L, 200L, 2000L)
@@ -52,6 +52,8 @@ tm_g_forest_rsp <- function(label,
                             paramcd,
                             subgroup_var,
                             strata_var,
+                            conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                            fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -63,6 +65,8 @@ tm_g_forest_rsp <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
   stopifnot(is.choices_selected(strata_var))
+  stopifnot(is.choices_selected(conf_int))
+  stopifnot(is_logical_single(fixed_symbol_size))
   stop_if_not(list(
     is_integer_vector(plot_height) && length(plot_height) == 3,
     "plot_height should be vector of three integers specyfing selected height, min and max height"
@@ -181,7 +185,21 @@ ui_g_forest_rsp <- function(id, ...) {
         "plot width",
         c(980L, 500L, 2000L),
         ticks = FALSE
+      ),
+      panel_group(
+        panel_item(
+        "Additional plot settings",
+        optionalSelectInput(
+          ns("conf_int"),
+          "Level of Confidence",
+          a$conf_int$choices,
+          a$conf_int$selected,
+          multiple = FALSE,
+          fixed = a$conf_int$fixed
+        ),
+        checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
       )
+     )
     ),
     forms = actionButton(
       ns("show_rcode"),
@@ -242,6 +260,13 @@ srv_g_forest_rsp <- function(input,
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
     strata_var <- input$strata_var
+    conf_int <- as.numeric(input$conf_int)
+    col_symbol_size <- if(input$fixed_symbol_size){
+      NULL
+    } else {
+      1
+    }
+
     # validate your input values
     validate_standard_inputs(
       adsl = adsl_filtered,
@@ -255,6 +280,11 @@ srv_g_forest_rsp <- function(input,
 
     validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
     validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
+    validate(
+      need(length(conf_int)==1, "Please select level of confidence."),
+      need(all(vapply(adsl_filtered[, subgroup_var], is.factor, logical(1))),
+           "Not all subgroup variables are factors.")
+    )
 
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
@@ -272,6 +302,7 @@ srv_g_forest_rsp <- function(input,
       adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
 
+      adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
       anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
 
@@ -310,6 +341,7 @@ srv_g_forest_rsp <- function(input,
         } else {
           NULL
         },
+        conf_int = .(conf_int),
         total = "All Patients",
         dense_header = TRUE
       )
@@ -334,7 +366,8 @@ srv_g_forest_rsp <- function(input,
         xlim = c(.1, 10),
         logx = TRUE,
         x_at = c(.1, 1, 10),
-        draw = FALSE
+        draw = FALSE,
+        col_symbol_size = .(col_symbol_size)
       )
       if (!is.null(footnotes(p))){
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
@@ -354,6 +387,7 @@ srv_g_forest_rsp <- function(input,
     plot_height <- input$plot_height
     plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
+    validate(need(plot_width, "need valid plot width"))
     div(style = 'overflow-x: scroll',
         plotOutput(session$ns("forest_plot"),
                    height = plot_height,
