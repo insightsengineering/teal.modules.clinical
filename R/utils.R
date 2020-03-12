@@ -8,7 +8,7 @@
 #'
 #' @importFrom rtables var_relabel
 get_relabel_call <- function(datasets, dataname, vars) {
-  labels <- datasets$get_data_labels(dataname, vars)
+  labels <- datasets$get_column_labels(dataname, vars)
 
   if (length(labels) == 0) {
     return(NULL)

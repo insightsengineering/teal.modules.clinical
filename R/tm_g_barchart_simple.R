@@ -713,7 +713,7 @@ get_relabel_call2 <- function(columns_source, datasets, dataframe_name = "ANL") 
       if (is_empty(column_names)) {
         return(NULL)
       }
-      column_labels <- datasets$get_data_labels(attr(selector, "dataname"), column_names)
+      column_labels <- datasets$get_column_labels(attr(selector, "dataname"), column_names)
       return(if_not_null(column_labels, setNames(column_labels, selector)))
     }
   )))

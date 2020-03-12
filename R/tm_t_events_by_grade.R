@@ -246,8 +246,8 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname, gr
               quote(rtables::var_relabel),
               {
                 labels <- c(
-                  datasets$get_data_labels("ADSL", adsl_vars),
-                  datasets$get_data_labels(dataname, anl_vars)
+                  datasets$get_column_labels("ADSL", adsl_vars),
+                  datasets$get_column_labels(dataname, anl_vars)
                 )
                 labels[!duplicated(labels)]
               }
