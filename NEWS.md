@@ -2,7 +2,7 @@
 
 * new `tm_t_mmrm` module
 
-* new `tm_t_summary_by` module
+* new modules `tm_t_summary_by` and `tm_t_events_summary`
 
 * add stratified analysis to `tm_g_forest_tte` and `tm_g_forest_rsp`
 

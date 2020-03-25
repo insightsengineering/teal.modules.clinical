@@ -93,9 +93,12 @@ library(random.cdisc.data)
 ADSL <- radsl(cached = TRUE)
 ADQS <- radqs(cached = TRUE) \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
-  mutate(
+  dplyr::mutate(
     AVISIT = as.factor(AVISIT),
-    AVISITN = rank(AVISITN) \%>\% as.factor() \%>\% as.numeric() \%>\% as.factor() #making consecutive numeric factor
+    AVISITN = rank(AVISITN) \%>\%
+      as.factor() \%>\%
+      as.numeric() \%>\%
+      as.factor() # making consecutive numeric factor
   )
 
 arm_ref_comp = list(
@@ -110,7 +113,15 @@ app <- init(
       cdisc_dataset("ADSL", ADSL),
       cdisc_dataset("ADQS", ADQS),
       code = "ADSL <- radsl(cached = TRUE)
-              ADQS <- radqs(cached = TRUE) \%>\% dplyr::filter(ABLFL != 'Y' & ABLFL2 != 'Y')",
+              ADQS <- radqs(cached = TRUE) \%>\%
+                dplyr::filter(ABLFL != 'Y' & ABLFL2 != 'Y') \%>\%
+                dplyr::mutate(
+                  AVISIT = as.factor(AVISIT),
+                  AVISITN = rank(AVISITN) \%>\%
+                    as.factor() \%>\%
+                    as.numeric() \%>\%
+                    as.factor()
+                )",
       check = FALSE),
     modules = root_modules(
         tm_t_mmrm(
@@ -126,9 +137,13 @@ app <- init(
               selected = "FKSI-FWB"
             ),
             formula = choices_selected(
-              choices = c('BASE + AVISITN + ARMCD + ARMCD*AVISITN + SEX', 'BASE + AVISIT + ARMCD + ARMCD*AVISIT + SEX', 'BASE + AVISIT + ARM + ARM*AVISIT + SEX'),
+              choices = c('BASE + AVISITN + ARMCD + ARMCD*AVISITN + SEX',
+                          'BASE + AVISIT + ARMCD + ARMCD*AVISIT + SEX',
+                          'BASE + AVISIT + ARM + ARM*AVISIT + SEX'),
               selected = 'BASE + AVISIT + ARMCD + ARMCD*AVISIT + SEX'),
-            mode = choices_selected(c("auto", "df.error", "boot-satterthwaite"), "boot-satterthwaite"),
+            mode = choices_selected(
+              choices = c("auto", "df.error", "boot-satterthwaite"),
+              selected = "boot-satterthwaite"),
             conf.level = choices_selected(c("0.95", "0.9", "0.8"), "0.95"),
             weights_emmeans = choices_selected(c("proportional", "equal"), "proportional"),
             corStruct = choices_selected(c("corSymm", "corAR1"), "corSymm")

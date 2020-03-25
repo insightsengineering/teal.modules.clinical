@@ -132,8 +132,8 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
     validate_has_elements(llt, "Please select \"LOW LEVEL TERM\" variable")
     validate_has_elements(arm_var, "please select 'arm variables'")
     validate_has_variable(adsl_filtered, arm_var, "arm variable does not exist")
-    validate_has_data(adsl_filtered, 0)
-    validate_has_data(anl_filtered, 0)
+    validate_has_data(adsl_filtered, min_nrow = 1)
+    validate_has_data(anl_filtered, min_nrow = 1)
 
     adsl_name <- "ADSL_FILTERED"
     assign(adsl_name, adsl_filtered)
