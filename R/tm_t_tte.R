@@ -323,14 +323,13 @@ srv_t_tte <- function(input,
           )
         )),
         data = anl,
-        conf_int_survfit = .(conf_int),
-        conf_int_coxph = .(conf_int),
-        conf_int_ztest = .(conf_int),
+        col_N = table(anl[["ARM"]]),
         event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
         time_points = .(time_points),
         time_unit = .(time_unit),
-        pval_method = .(pval_method),
-        ties = "exact"
+        conf_level = .(conf_int),
+        pval_method_coxph = .(pval_method),
+        ties_coxph = "exact"
       )
       tbl
     }))
