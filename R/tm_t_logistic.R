@@ -17,15 +17,15 @@
 #' library(teal.modules.clinical)
 #' ADSL <- radsl(cached = TRUE)
 #' ADRS <- radrs(ADSL, seed = 2)
-#' ADRS_f <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
-#' ADRS_f$PARAMCD <- droplevels(ADRS_f$PARAMCD)
+#' ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
+#' ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADRS", ADRS),
 #'     code = 'ADSL <- radsl(cached = TRUE)
 #'             ADRS <- radrs(ADSL, seed = 2)
-#'             ADRS_f <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
-#'             ADRS_f$PARAMCD <- droplevels(ADRS_f$PARAMCD)',
+#'             ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
+#'             ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)',
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
