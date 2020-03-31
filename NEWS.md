@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.1.9000
 
+* new `tm_t_logistic` module
+
 * new `tm_t_mmrm` module
 
 * new modules `tm_t_summary_by` and `tm_t_events_summary`
