@@ -4,10 +4,19 @@
 \alias{tm_g_km}
 \title{teal module for Kaplan-Meier Plot from grid}
 \usage{
-tm_g_km(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
-  facet_var, strata_var, plot_height = c(1200, 400, 5000),
+tm_g_km(
+  label,
+  dataname,
+  arm_var,
+  arm_ref_comp = NULL,
+  paramcd,
+  facet_var,
+  strata_var,
+  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
+  plot_height = c(1200, 400, 5000),
   pre_output = helpText("x-axes for different factes may not have the same scale"),
-  post_output = NULL)
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -34,6 +43,9 @@ for variable names that can be used for facet plotting}
 
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
+
+\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for confidence level for computation of the confidence intervals.}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -68,7 +80,7 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-    code = "radsl(cached = TRUE)
+    code = "ADSL <- radsl(cached = TRUE)
             ADTTE <- radtte(ADSL, cached = TRUE)",
     check = FALSE
   ),

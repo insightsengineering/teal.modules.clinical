@@ -4,8 +4,14 @@
 \alias{tm_t_summary}
 \title{Summarize Variables Module}
 \usage{
-tm_t_summary(label, dataname, arm_var, summarize_vars, pre_output = NULL,
-  post_output = NULL)
+tm_t_summary(
+  label,
+  dataname,
+  arm_var,
+  summarize_vars,
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

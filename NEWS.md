@@ -1,3 +1,15 @@
+# teal.modules.clinical 0.8.2
+
+* new `tm_t_logistic` module
+
+* new `tm_t_mmrm` module
+
+* new modules `tm_t_summary_by` and `tm_t_events_summary`
+
+* add stratified analysis to `tm_g_forest_tte` and `tm_g_forest_rsp`
+
+* add confidence level and plotting symbol size options to `tm_g_forest_rsp` and `tm_g_forest_tte`
+
 # teal.modules.clinical 0.8.1
 
 * new `tm_t_events` and `tm_t_events_by_grade` modules

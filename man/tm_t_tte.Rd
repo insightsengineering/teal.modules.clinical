@@ -4,9 +4,21 @@
 \alias{tm_t_tte}
 \title{Time To Event Table Teal Module}
 \usage{
-tm_t_tte(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
-  strata_var, time_points, time_unit = "months", event_desc_var = NULL,
-  pre_output = NULL, post_output = NULL)
+tm_t_tte(
+  label,
+  dataname,
+  arm_var,
+  arm_ref_comp = NULL,
+  paramcd,
+  strata_var,
+  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+    TRUE),
+  time_points,
+  time_unit = "months",
+  event_desc_var = NULL,
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -30,6 +42,9 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
+
+\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for confidence level for computation of the confidence intervals.}
 
 \item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used \code{\link[tern]{t_tte}}}
@@ -71,6 +86,16 @@ library(random.cdisc.data)
 ADSL <- radsl(cached = TRUE)
 ADTTE <- radtte(ADSL, cached = TRUE)
 
+arm_ref_comp = list(
+  ACTARMCD = list(
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
+  ),
+   ARM = list(
+    ref = "B: Placebo",
+    comp = c("A: Drug X", "C: Combination")
+  )
+)
 
 app <- init(
     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
@@ -81,61 +106,13 @@ app <- init(
         tm_t_tte(
             label = "Time To Event Table",
             dataname = 'ADTTE',
-            arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-            paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
+            arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+            arm_ref_comp = arm_ref_comp,
+            paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
             time_points = choices_selected(c(6, 8), 6),
             time_unit = "month",
             event_desc_var = "EVNTDESC"
-        )
-    )
-)
-
-
-\dontrun{
- shinyApp(app$ui, app$server)
-}
-
-## Define default reference & comparison arms based on
-## ARM variable
-library(teal)
-library(dplyr)
-library(magrittr)
-
-ADSL <- mutate(radsl(seed = 1),
-  ARM1 = sample(c("DUMMY A", "DUMMY B"),
-  n(), TRUE))
-attr(ADSL$ARM1, "label") <- "dummy"
-ADTTE <- radtte(ADSL, seed = 1)
-
-
-arm_ref_comp = list(
-  ACTARMCD = list(
-    ref = "ARM A",
-    comp = c("ARM B", "ARM C")
-  ),
-  ARM1 = list(
-    ref = "DUMMY B",
-    comp = "DUMMY A"
-  )
-)
-app <- init(
-    data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-        code = "ADSL <- radsl(seed = 1) \%>\%
-                mutate(., ARM1 = sample(c('DUMMY A', 'DUMMY B'), n(), TRUE))
-                ADTTE <- radtte(ADSL, seed = 1)",
-        check = FALSE),
-    modules = root_modules(
-        tm_t_tte(
-         label = "Time To Event Table",
-         dataname = 'ADTTE',
-         arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-         arm_ref_comp = arm_ref_comp,
-         paramcd = choices_selected(unique(ADTTE$PARAMCD), "OS"),
-         strata_var = choices_selected(c("SEX", "MLIVER"), "SEX"),
-         time_points = choices_selected(c(6, 8), 6),
-         time_unit = "months",
-         event_desc_var = "EVNTDESC"
         )
     )
 )

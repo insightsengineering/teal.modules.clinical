@@ -31,8 +31,9 @@
 #'        label = "Forest Survival",
 #'        dataname = "ADTTE",
 #'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
+#'        subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX", "BMRKR2")),
 #'        paramcd = choices_selected(c("OS", "PFS"), "OS"),
+#'        strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
 #'        plot_height = c(600, 200, 2000)
 #'     )
 #'   )
@@ -46,6 +47,9 @@ tm_g_forest_tte <- function(label,
                             arm_var,
                             subgroup_var,
                             paramcd,
+                            strata_var,
+                            conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                            fixed_symbol_size = TRUE,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
                             pre_output = helpText("graph needs to be of a certain width to be displayed"),
@@ -54,6 +58,9 @@ tm_g_forest_tte <- function(label,
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
+  stopifnot(is.choices_selected(strata_var))
+  stopifnot(is.choices_selected(conf_int))
+  stopifnot(is_logical_single(fixed_symbol_size))
 
   args <- as.list(environment())
 
@@ -80,15 +87,20 @@ ui_g_forest_tte <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(ns("paramcd"),
-                          div("PARAMCD", tags$br(), helpText("Select an endpoint to analyze.")),
+                          "PARAMCD",
                           a$paramcd$choices,
                           a$paramcd$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$paramcd$fixed,
+                          label_help = helpText("Select an endpoint to analyze.")
+      ),
       optionalSelectInput(ns("arm_var"),
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed
+      ),
       selectInput(ns("ref_arm"),
                   "Reference Arm",
                   choices = NULL,
@@ -106,9 +118,44 @@ ui_g_forest_tte <- function(id, ...) {
                           a$subgroup_var$choices,
                           a$subgroup_var$selected,
                           multiple = TRUE,
-                          label_help = helpText("are taken from", tags$code("ADSL"))),
+                          label_help = helpText("are taken from", tags$code("ADSL")),
+                          fixed = a$subgroup_var$fixed
+      ),
+      optionalSelectInput(ns("strata_var"),
+                          "Stratify by",
+                          a$strata_var$choices,
+                          a$strata_var$selected,
+                          multiple = TRUE,
+                          label_help = helpText("from ", tags$code("ADSL")),
+                          fixed = a$strata_var$fixed
+      ),
       tags$label("Plot Settings", class = "text-primary", style = "margin-top: 15px;"),
-      optionalSliderInputValMinMax(ns("plot_height"), "plot height", a$plot_height, ticks = FALSE)
+      optionalSliderInputValMinMax(
+        ns("plot_height"),
+        "plot height",
+        a$plot_height,
+        ticks = FALSE
+      ),
+      optionalSliderInputValMinMax(
+        ns("plot_width"),
+        "plot width",
+        c(980L, 500L, 2000L),
+        ticks = FALSE
+      ),
+      panel_group(
+        panel_item(
+          "Additional plot settings",
+          optionalSelectInput(
+            ns("conf_int"),
+            "Level of Confidence",
+            a$conf_int$choices,
+            a$conf_int$selected,
+            multiple = FALSE,
+            fixed = a$conf_int$fixed
+          ),
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -142,11 +189,21 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
+    strata_var <- input$strata_var
 
+    if (length(strata_var) == 0) {
+      strata_var <- NULL
+    }
+    conf_int <- as.numeric(input$conf_int)
+    col_symbol_size <- if (input$fixed_symbol_size) {
+      NULL
+    } else {
+      1
+    }
     # validate your input values
     validate_standard_inputs(
       adsl = ADSL_FILTERED,
-      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var),
+      adslvars = c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var),
       anl = ANL_FILTERED,
       anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "AVALU", "CNSR"),
       arm_var = arm_var,
@@ -155,19 +212,26 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     )
 
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
+    validate(
+      need(length(conf_int) == 1, "Please select level of confidence."),
+      need(all(vapply(ADSL_FILTERED[, subgroup_var], is.factor, logical(1))),
+           "Not all subgroup variables are factors.")
+    )
 
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
 
     chunks_reset(envir = environment())
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var)) #nolint
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var)) #nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
     chunks_push(bquote({
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
+      strata_var <- .(strata_var)
       adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
+      adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
       anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
       anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
@@ -182,6 +246,8 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         levels(anl[[.(arm_var)]]),
         function(x) paste(strwrap(x, width = 15), collapse = "\n")
       )
+
+
     }))
 
     chunks_safe_eval()
@@ -194,42 +260,63 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         is_event = anl$CNSR == 0,
         col_by = anl[[.(arm_var)]],
         time_unit = tolower(anl$AVALU[1]),
-        row_by_list = if (length(.(subgroup_var)) > 0) {
-            anl[, .(subgroup_var), drop = FALSE]
+        row_by_list = .(if (length(subgroup_var) > 0) {
+            bquote(anl[, .(subgroup_var), drop = FALSE])
           } else {
-            NULL
-          },
+            bquote(NULL)
+          }),
+        strata_data = .(if (!is.null(strata_var)) {
+          bquote(anl[, .(strata_var), drop = FALSE])
+        } else {
+          bquote(NULL)
+        }),
         total = "All Patients",
+        conf_int = .(conf_int),
         dense_header = TRUE
       )
 
       row.names(tbl) <- sapply(row.names(tbl), function(x) paste(strwrap(x, width = 20), collapse = "\n"))
+
     }))
 
     chunks_safe_eval()
 
-    chunks_push(call(
-      "g_forest",
-      tbl = quote(tbl),
-      col_x = 8,
-      col_ci = 9,
-      vline = 1,
-      forest_header = bquote(paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter")),
-      xlim = c(.1, 10),
-      logx = TRUE,
-      x_at = c(.1, 1, 10)
-    ))
+    chunks_push(bquote({
 
-    p <- chunks_safe_eval()
+      p <- g_forest(
+        tbl = tbl,
+        col_x = 8,
+        col_ci = 9,
+        vline = 1,
+        forest_header =  paste0(rev(levels(anl[[.(arm_var)]])), "\nbetter"),
+        xlim = c(.1, 10),
+        logx = TRUE,
+        x_at = c(.1, 1, 10),
+        col_symbol_size = .(col_symbol_size),
+        draw = FALSE)
+      if (!is.null(footnotes(p))) {
+        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
+                           gp_footnotes = gpar(fontsize = 12))
+      }
+      grid.newpage()
+      grid.draw(p)
+    }))
 
-    p
+    chunks_safe_eval()
+
   })
 
   ## dynamic plot height
   output$plot_ui <- renderUI({
     plot_height <- input$plot_height
+    plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("forest_plot"), height = plot_height)
+    validate(need(plot_width, "need valid plot width"))
+    div(style = "overflow-x: scroll",
+        plotOutput(session$ns("forest_plot"),
+                   height = plot_height,
+                   width = plot_width)
+    )
   })
 
 

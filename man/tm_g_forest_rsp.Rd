@@ -4,10 +4,21 @@
 \alias{tm_g_forest_rsp}
 \title{Forest Response Plot teal module}
 \usage{
-tm_g_forest_rsp(label, dataname, arm_var, paramcd, subgroup_var,
-  plot_height = c(700L, 200L, 2000L), cex = 1.3,
+tm_g_forest_rsp(
+  label,
+  dataname,
+  arm_var,
+  paramcd,
+  subgroup_var,
+  strata_var,
+  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+    TRUE),
+  fixed_symbol_size = TRUE,
+  plot_height = c(700L, 200L, 2000L),
+  cex = 1.3,
   pre_output = helpText("graph needs to be of a certain width to be displayed"),
-  post_output = NULL)
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -25,6 +36,15 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as the default subgroups}
+
+\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for stratification}
+
+\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names that can be used for confidence level for computation of the confidence intervals.}
+
+\item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
+estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 
@@ -46,22 +66,25 @@ library(random.cdisc.data)
 library(dplyr)
 
 ADSL <- radsl(cached = TRUE)
-ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
+ADRS <- radrs(cached = TRUE) \%>\%
+     dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
 app <- init(
   data = cdisc_data(
    cdisc_dataset("ADSL", ADSL),
    cdisc_dataset("ADRS", ADRS),
    code = 'ADSL <- radsl(cached = TRUE)
-           ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")',
+           ADRS <- radrs(cached = TRUE) \%>\%
+           dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))',
    check = FALSE),
   modules = root_modules(
     tm_g_forest_rsp(
       label = "Forest Response",
       dataname = "ADRS",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      paramcd = choices_selected(levels(ADRS$PARAMCD), "OVRINV"),
-      subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX")),
+      paramcd = choices_selected(c("BESRSPI", "INVET"), "BESRSPI"),
+      subgroup_var = choices_selected(names(ADSL), c("BMRKR2", "SEX")),
+      strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
       plot_height = c(600L, 200L, 2000L)
     )
   )

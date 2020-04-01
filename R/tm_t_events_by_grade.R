@@ -15,6 +15,14 @@
 #' for variable names that can be used to specify the event grade
 #' @param add_total (\code{logical}) optional, whether show column with total number of patients
 #'   (\code{TRUE} on default)
+#' @param grade_levels a factor. The values of the factor define the ordering of the rows
+#'   in the resulting table. The levels of the factor define the severity of the grade.
+#'   For example, \code{factor(c("c", "b", "a"), levels = c("a", "b", "c"))} will display
+#'   the most severe grade "c" at the top of the table, the least severe grade "a" at the bottom.
+#'   If \code{grade} is a factor, \code{grade_levels} will overwrite the level orders in \code{grade}.
+#'   If set to \code{NULL} (default), it is assumed that intensity corresponds to the order of
+#'   the factor levels of \code{grade}.
+#'   If \code{grade} is not a factor, \code{grade_levels} is required.
 #'
 #' @return an \code{\link[teal]{module}} object
 #'
@@ -52,7 +60,8 @@
 #'         choices = variable_choices(ADAE, c("AETOXGR")),
 #'         selected = "AETOXGR"
 #'       ),
-#'       add_total = TRUE
+#'       add_total = TRUE,
+#'       grade_levels = factor(1:5, levels = 1:5)
 #'     )
 #'   )
 #' )
@@ -66,7 +75,8 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
-                                 add_total = TRUE) {
+                                 add_total = TRUE,
+                                 grade_levels = NULL) {
 
   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
@@ -74,6 +84,7 @@ tm_t_events_by_grade <- function(label,
   stopifnot(is.choices_selected(hlt))
   stopifnot(is.choices_selected(llt))
   stopifnot(is.choices_selected(grade))
+  stopifnot(is.factor(grade_levels) || is.null(grade_levels))
 
   stopifnot(is_logical_single(add_total))
 
@@ -85,7 +96,8 @@ tm_t_events_by_grade <- function(label,
     ui = ui_t_events_by_grade,
     ui_args = args,
     server_args = list(
-      dataname = dataname
+      dataname = dataname,
+      grade_levels = grade_levels
     ),
     filters = dataname
   )
@@ -106,22 +118,26 @@ ui_t_events_by_grade <- function(id, ...) {
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed),
       optionalSelectInput(ns("hlt"),
                           "Event High Level Term",
                           a$hlt$choices,
                           a$hlt$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$hlt$fixed),
       optionalSelectInput(ns("llt"),
                           "Event Low Level Term",
                           a$llt$choices,
                           a$llt$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$llt$fixed),
       optionalSelectInput(ns("grade"),
                           "Event Grade",
                           a$grade$choices,
                           a$grade$selected,
-                          multiple = FALSE),
+                          multiple = FALSE,
+                          fixed = a$grade$fixed),
       checkboxInput(ns("add_total"),
                     "Add All Patients column",
                     value = a$add_total)
@@ -135,7 +151,7 @@ ui_t_events_by_grade <- function(id, ...) {
 #' @importFrom dplyr filter mutate select
 #' @importFrom rtables var_relabel
 #' @importFrom tern t_events_per_term_grade_id
-srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
+srv_t_events_by_grade <- function(input, output, session, datasets, dataname, grade_levels) {
 
   init_chunks()
 
@@ -214,26 +230,30 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
         as.name("ANL"),
         call(
           "%>%",
-          as.call(append(
-            quote(merge),
-            list(
-              x = as.name("ADSL_P"),
-              y = as.name("ANL_ENDPOINT"),
-              all.x = FALSE,
-              all.y = FALSE,
-              by = c("USUBJID", "STUDYID")
-            )
-          )),
-          as.call(c(
-            quote(rtables::var_relabel),
-            {
-              labels <- c(
-                datasets$get_data_labels("ADSL", adsl_vars),
-                datasets$get_data_labels(dataname, anl_vars)
+          call(
+            "%>%",
+            as.call(append(
+              quote(merge),
+              list(
+                x = as.name("ADSL_P"),
+                y = as.name("ANL_ENDPOINT"),
+                all.x = FALSE,
+                all.y = FALSE,
+                by = c("USUBJID", "STUDYID")
               )
-              labels[!duplicated(labels)]
-            }
-          ))
+            )),
+            as.call(c(
+              quote(rtables::var_relabel), {
+                labels <- c(
+                  datasets$get_column_labels("ADSL", adsl_vars),
+                  datasets$get_column_labels(dataname, anl_vars)
+                )
+                labels[!duplicated(labels)]
+              }
+            ))
+          ),
+          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
+                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
         )
       )
     )
@@ -253,7 +273,8 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
         id = ANL[["USUBJID"]],
         grade = ANL[[.(grade)]],
         col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
-        grade_levels = c(1:5),
+        col_N = table(ADSL_P[[.(arm_var)]]),
+        grade_levels = .(grade_levels),
         total = .(total)
       )
       tbl

@@ -8,8 +8,10 @@
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as \code{arm_var}
-#' @param term_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as \code{term_var} to represent events information.
+#' @param hlt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for variable names that can be used to specify the high level term for events
+#' @param llt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for variable names that can be used to specify the low level term for events
 #' @param add_total (\code{logical}) optional, whether show column with total number of patients
 #' @param event_type  type of event that is summarized (e.g. adverse event, treatment). Default is "event".
 #'
@@ -35,9 +37,14 @@
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       term_var = choices_selected(
-#'          choices = variable_choices(ADAE, c("AETERM", "AEDECOD", "AEBODSYS")),
-#'          selected = c("AEBODSYS", "AEDECOD")),
+#'       llt = choices_selected(
+#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
+#'         selected = c("AEDECOD")
+#'        ),
+#'       hlt = choices_selected(
+#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+#'         selected = "AEBODSYS"
+#'        ),
 #'       add_total = TRUE,
 #'       event_type = "adverse event"
 #'     )
@@ -50,14 +57,16 @@
 tm_t_events <- function(label,
                         dataname,
                         arm_var,
-                        term_var,
+                        hlt,
+                        llt,
                         add_total = TRUE,
                         event_type = "event"){
 
   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(term_var))
+  stopifnot(is.choices_selected(hlt))
+  stopifnot(is.choices_selected(llt))
   stopifnot(is_logical_single(add_total))
   stop_if_not(is_character_single(event_type))
   args <- as.list(environment())
@@ -86,13 +95,21 @@ ui_t_events_byterm <- function(id, ...){
                           "Arm Variable",
                           a$arm_var$choices,
                           a$arm_var$selected,
-                          multiple = FALSE),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      optionalSelectInput(ns("term_var"),
-                          "Term Variables",
-                          a$term_var$choices,
-                          a$term_var$selected,
-                          multiple = TRUE)
+                          multiple = FALSE,
+                          fixed = a$arm_var$fixed),
+      optionalSelectInput(ns("hlt"),
+                          "Event High Level Term",
+                          a$hlt$choices,
+                          a$hlt$selected,
+                          multiple = FALSE,
+                          fixed = a$hlt$fixed),
+      optionalSelectInput(ns("llt"),
+                          "Event Low Level Term",
+                          a$llt$choices,
+                          a$llt$selected,
+                          multiple = FALSE,
+                          fixed = a$llt$fixed),
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -108,15 +125,15 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
 
     arm_var <- input$arm_var
     add_total <- input$add_total
-    term_var <- input$term_var
+    hlt <- input$hlt
+    llt <- input$llt
 
     validate(need(is.logical(add_total), "add total is not logical"))
-    validate_has_elements(term_var, "please select 'term variables'")
+    validate_has_elements(llt, "Please select \"LOW LEVEL TERM\" variable")
     validate_has_elements(arm_var, "please select 'arm variables'")
     validate_has_variable(adsl_filtered, arm_var, "arm variable does not exist")
-    validate_has_variable(anl_filtered, term_var, "term variable does not exist")
-    validate_has_data(adsl_filtered, 0)
-    validate_has_data(anl_filtered, 0)
+    validate_has_data(adsl_filtered, min_nrow = 1)
+    validate_has_data(anl_filtered, min_nrow = 1)
 
     adsl_name <- "ADSL_FILTERED"
     assign(adsl_name, adsl_filtered)
@@ -126,7 +143,7 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
     chunks_reset(envir = environment())
 
     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var))
-    anl_vars <- c("USUBJID", "STUDYID", term_var)
+    anl_vars <- c("USUBJID", "STUDYID", llt, hlt)
 
     chunks_push(
       call(
@@ -158,41 +175,46 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
       )
     )
 
+
     chunks_push(
       call(
         "<-",
         as.name("ANL_MERGED"),
         call(
           "%>%",
-          as.call(c(
-            quote(merge),
-            list(
-              x = as.name("ADSL_S"),
-              y = as.name("ANL_S"),
-              all.x = FALSE,
-              all.y = FALSE,
-              by = c("USUBJID", "STUDYID")
-            )
-          )),
-          as.call(c(
-            quote(rtables::var_relabel),
-            {
-              labels <- c(
-                datasets$get_data_labels("ADSL", adsl_vars),
-                datasets$get_data_labels(dataname, anl_vars)
+          call(
+            "%>%",
+            as.call(c(
+              quote(merge),
+              list(
+                x = as.name("ADSL_S"),
+                y = as.name("ANL_S"),
+                all.x = FALSE,
+                all.y = FALSE,
+                by = c("USUBJID", "STUDYID")
               )
-              labels[!duplicated(labels)]
-            }
-          ))
+            )),
+            as.call(c(
+              quote(rtables::var_relabel), {
+                labels <- c(
+                  datasets$get_column_labels("ADSL", adsl_vars),
+                  datasets$get_column_labels(dataname, anl_vars)
+                )
+                labels[!duplicated(labels)]
+              }
+            ))
+          ),
+          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
+                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
         )
       )
     )
 
-    total <- if (add_total) "All Patients" else NULL
+    total <- if (add_total) "All Patients" else NULL # nolint
 
     chunks_push(bquote({
       tbl <- t_events_per_term_id(
-        terms = ANL_MERGED[, .(term_var), drop = FALSE],
+        terms = ANL_MERGED[, .(c(hlt, llt)), drop = FALSE],
         id = ANL_MERGED[["USUBJID"]],
         col_by = as.factor(ANL_MERGED[[.(arm_var)]]),
         col_N = table(.(as.name(adsl_name))[[.(arm_var)]]),
