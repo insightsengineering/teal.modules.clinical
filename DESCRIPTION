@@ -41,7 +41,7 @@ Suggests:
   rmarkdown,
   random.cdisc.data (>= 0.3.2),
   test.nest (>= 0.2.2),
-  testthat
+  testthat (>= 2.0)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
