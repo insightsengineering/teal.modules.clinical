@@ -23,17 +23,14 @@ Depends:
   teal.devel (>= 0.2.4)
 Imports:
   forcats,
-  ggpubr,
   grid,
   gridExtra,
   magrittr,
   methods,
   rtables (>= 0.1.5),
   scales,
-  shinyjs,
   survival,
   stats,
-  tidyr,
   utils,
   utils.nest (>= 0.2.2)
 Suggests:
