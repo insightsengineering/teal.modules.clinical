@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.2
 
+* optionally use only single term in `tm_t_events` and `tm_t_events_by_grade` modules
+
 * new `tm_t_logistic` module
 
 * new `tm_t_mmrm` module

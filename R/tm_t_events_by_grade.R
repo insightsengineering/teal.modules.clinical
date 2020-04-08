@@ -232,7 +232,7 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname, gr
           "%>%",
           call(
             "%>%",
-            as.call(append(
+            as.call(c(
               quote(merge),
               list(
                 x = as.name("ADSL_P"),
@@ -243,17 +243,22 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname, gr
               )
             )),
             as.call(c(
-              quote(rtables::var_relabel), {
-                labels <- c(
-                  datasets$get_column_labels("ADSL", adsl_vars),
-                  datasets$get_column_labels(dataname, anl_vars)
-                )
-                labels[!duplicated(labels)]
-              }
+              quote(df_explicit_na),
+              list(
+                omit_columns = c("USUBJID", "STUDYID", arm_var, grade),
+                char_as_factor =  FALSE
+              )
             ))
           ),
-          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
-                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
+          as.call(c(
+            quote(rtables::var_relabel), {
+              labels <- c(
+                datasets$get_column_labels("ADSL", adsl_vars),
+                datasets$get_column_labels(dataname, anl_vars)
+              )
+              labels[!duplicated(labels)]
+            }
+          ))
         )
       )
     )
