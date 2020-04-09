@@ -20,8 +20,6 @@
 #' variable names that can be used as \code{PARAMCD} variable
 #' @param strata_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for stratification
-#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for confidence level for computation of the confidence intervals.
 #' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used \code{\link[tern]{t_tte}}
 #' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
@@ -95,7 +93,6 @@ tm_t_tte <- function(label,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
-                     conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
                      time_points,
                      time_unit = "months",
                      event_desc_var = NULL,
@@ -108,7 +105,6 @@ tm_t_tte <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
   stopifnot(is.choices_selected(time_points))
-  stopifnot(is.choices_selected(conf_int))
 
   args <- as.list(environment())
 
@@ -176,19 +172,6 @@ ui_t_tte <- function(id, ...) {
                           label_help = helpText("from ", tags$code("ADSL")),
                           fixed = a$strata_var$fixed
       ),
-      radioButtons(
-        ns("pval_method"),
-        "p-value method",
-        choices = c("wald", "log-rank", "likelihood"),
-        selected = "log-rank"
-      ),
-      optionalSelectInput(ns("conf_int"),
-                          "Level of Confidence",
-                          a$conf_int$choices,
-                          a$conf_int$selected,
-                          multiple = FALSE,
-                          fixed = a$conf_int$fixed
-      ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
@@ -198,7 +181,84 @@ ui_t_tte <- function(id, ...) {
       ),
       if (!is.null(a$event_desc_var)) {
         helpText("Event Description Variable: ", tags$code(a$event_desc_var))
-      }
+      },
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          radioButtons(
+            ns("pval_method_coxph"),
+            label = HTML(paste("p-value method for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)",
+                               sep = "")
+            ),
+            choices = c("wald", "log-rank", "likelihood"),
+            selected = "log-rank"
+          ),
+          radioButtons(
+            ns("ties_coxph"),
+            label = HTML(paste("Ties for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)",
+                               sep = "")
+            ),
+            choices = c("exact", "breslow", "efron"),
+            selected = "exact"
+          ),
+          numericInput(
+            inputId = ns("conf_level_coxph"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)", sep = "")
+                         ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("conf_level_ztest"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Z-test"), # nolint
+                               " (Difference in Event Free Rate)",
+                               sep = "")
+                         ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("conf_level_survfit"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Survfit"), # nolint
+                               " (KM Median Estimate & Event Free Rate)",
+                               sep = "")
+            ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          radioButtons(
+            ns("conf_type_survfit"),
+            "Confidence Level Type for Survfit",
+            choices = c("plain", "log", "log-log"),
+            selected = "plain"
+          ),
+          sliderInput(
+            inputId = ns("probs_survfit"),
+            label = "KM Estimate Percentiles",
+            min = 0.01,
+            max = 0.99,
+            value = c(0.25, 0.75),
+            width = "100%"
+          )
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -245,8 +305,13 @@ srv_t_tte <- function(input,
     comp_arm <- input$comp_arm
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
-    pval_method <- input$pval_method # nolint
-    conf_int <- as.numeric(input$conf_int) # nolint
+    pval_method_coxph <- input$pval_method_coxph # nolint
+    conf_level <- c(survfit = input$conf_level_survfit, coxph = input$conf_level_coxph,
+                   ztest = input$conf_level_ztest)
+    conf_type_survfit <- input$conf_type_survfit
+    probs_survfit <- input$probs_survfit
+    ties_coxph <- input$ties_coxph
+
 
     if (length(strata_var) == 0) {
       strata_var <- NULL
@@ -270,6 +335,9 @@ srv_t_tte <- function(input,
     )
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
+    validate(need(!is.null(conf_type_survfit), "Must select one Confidence Level Type for Survfit"))
+    validate(need(!is.null(probs_survfit), "Must select percentiles for KM median estimate"))
+    validate(need(!is.null(ties_coxph), "Must select ties for Coxph"))
 
     # do analysis
 
@@ -327,9 +395,11 @@ srv_t_tte <- function(input,
         event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
         time_points = .(time_points),
         time_unit = .(time_unit),
-        conf_level = .(conf_int),
-        pval_method_coxph = .(pval_method),
-        ties_coxph = "exact"
+        conf_level = .(conf_level),
+        conf_type_survfit = .(conf_type_survfit),
+        probs_survfit = .(probs_survfit),
+        pval_method_coxph = .(pval_method_coxph),
+        ties_coxph = .(ties_coxph)
       )
       tbl
     }))

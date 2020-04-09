@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.2
 
+* add confidence level for `survfit`, `coxph`, `ztest`; add confidence type, ties, percentiles to `tm_t_tte`
+
 * optionally use only single term in `tm_t_events` and `tm_t_events_by_grade` modules
 
 * new `tm_t_logistic` module

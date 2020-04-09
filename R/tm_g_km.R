@@ -5,6 +5,8 @@
 #' @inheritParams tm_t_tte
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
+#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for confidence level, each within range of (0, 1).
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #'
 #' @importFrom survival Surv strata

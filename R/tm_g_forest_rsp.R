@@ -4,6 +4,8 @@
 #'
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
+#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for confidence level, each within range of (0, 1).
 #' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param plot_height vector with three elements defining selected, min and max plot height

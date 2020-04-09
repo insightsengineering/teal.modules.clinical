@@ -41,7 +41,7 @@ variable names that can be used as \code{PARAMCD} variable}
 for variable names that can be used for stratification}
 
 \item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for confidence level for computation of the confidence intervals.}
+for confidence level, each within range of (0, 1).}
 
 \item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
