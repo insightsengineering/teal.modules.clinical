@@ -4,10 +4,17 @@
 \alias{tm_t_summary_by}
 \title{Summarize variables with by group module}
 \usage{
-tm_t_summary_by(label, dataname, arm_var, by_vars, summarize_vars,
-  parallel_vars = FALSE, useNA = c("ifany", "no", "always"),
-  denominator = c("N", "n", "omit"), pre_output = NULL,
-  post_output = NULL)
+tm_t_summary_by(
+  label,
+  dataname,
+  arm_var,
+  by_vars,
+  summarize_vars,
+  parallel_vars = FALSE,
+  denominator = c("n", "N", "omit"),
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -27,12 +34,8 @@ for variable names that can be used for summary}
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
-\item{useNA}{choose whether missing data (NAs) should be displayed as a level}
-
-\item{denominator}{either "n", "N" or "omit". "n" and "N" are for calculating the level
-associated percentage. With option "N", the reference population from col_N is used
-as the denominator. With option "n", the number of non-missing records from x is used
-as the denominator. If "omit" is chosen the percentage is omitted.}
+\item{denominator}{for calculating percentages. Only applies to categorical variables.
+See "denominator" in \code{\link[tern]{t_summary.factor}} for details.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
