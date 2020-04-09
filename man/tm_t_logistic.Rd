@@ -4,19 +4,10 @@
 \alias{tm_t_logistic}
 \title{teal module for multi-variable logistic regression}
 \usage{
-tm_t_logistic(
-  label,
-  dataname,
-  arm_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  covariate_var,
-  interaction_var,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
-    TRUE),
-  pre_output = NULL,
-  post_output = NULL
-)
+tm_t_logistic(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
+  covariate_var, interaction_var, conf_level = choices_selected(c(0.8,
+  0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+  pre_output = NULL, post_output = NULL)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

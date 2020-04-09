@@ -4,14 +4,9 @@
 \alias{tm_t_summary}
 \title{Summarize Variables Module}
 \usage{
-tm_t_summary(
-  label,
-  dataname,
-  arm_var,
-  summarize_vars,
-  pre_output = NULL,
-  post_output = NULL
-)
+tm_t_summary(label, dataname, arm_var, summarize_vars, useNA = c("ifany",
+  "no", "always"), denominator = c("N", "n", "omit"),
+  pre_output = NULL, post_output = NULL)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -26,6 +21,13 @@ for variable names that can be used as \code{arm_var}}
 
 \item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for summary}
+
+\item{useNA}{choose whether missing data (NAs) should be displayed as a level}
+
+\item{denominator}{either "n", "N" or "omit". "n" and "N" are for calculating the level
+associated percentage. With option "N", the reference population from col_N is used
+as the denominator. With option "n", the number of non-missing records from x is used
+as the denominator. If "omit" is chosen the percentage is omitted.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the

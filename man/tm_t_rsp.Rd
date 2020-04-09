@@ -4,16 +4,8 @@
 \alias{tm_t_rsp}
 \title{Response Table Teal Module}
 \usage{
-tm_t_rsp(
-  label,
-  dataname,
-  arm_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  strata_var,
-  pre_output = NULL,
-  post_output = NULL
-)
+tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, paramcd,
+  strata_var, pre_output = NULL, post_output = NULL)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}

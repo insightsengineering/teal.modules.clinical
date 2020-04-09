@@ -5,6 +5,11 @@
 #' @inheritParams tm_t_tte
 #' @param summarize_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names that can be used for summary
+#' @param useNA choose whether missing data (NAs) should be displayed as a level
+#' @param denominator either "n", "N" or "omit". "n" and "N" are for calculating the level
+#'   associated percentage. With option "N", the reference population from col_N is used
+#'   as the denominator. With option "n", the number of non-missing records from x is used
+#'   as the denominator. If "omit" is chosen the percentage is omitted.
 #'
 #' @importFrom dplyr select
 #' @importFrom rtables as_html var_relabel
@@ -40,11 +45,15 @@ tm_t_summary <- function(label,
                          dataname,
                          arm_var,
                          summarize_vars,
+                         useNA = c("ifany", "no", "always"),
+                         denominator = c("N", "n", "omit"),
                          pre_output = NULL,
                          post_output = NULL) {
 
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(summarize_vars))
+  denominator <- match.arg(denominator)
+  useNA <- match.arg(useNA)
 
   args <- as.list(environment())
 
@@ -53,7 +62,7 @@ tm_t_summary <- function(label,
     server = srv_t_summary,
     ui = ui_t_summary,
     ui_args = args,
-    server_args = list(dataname = dataname),
+    server_args = list(dataname = dataname, useNA = useNA, denominator = denominator),
     filters = dataname
   )
 
@@ -92,7 +101,7 @@ ui_t_summary <- function(id, ...) {
 
 }
 
-srv_t_summary <- function(input, output, session, datasets, dataname) {
+srv_t_summary <- function(input, output, session, datasets, dataname, useNA, denominator) {
 
   init_chunks()
 
@@ -140,7 +149,8 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
         x = .(as.name("ANL"))[, .(summarize_vars), drop = FALSE],
         col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
         total = .(total),
-        useNA = "ifany"
+        useNA = .(useNA),
+        denominator = .(denominator)
       )
       tbl
     }))

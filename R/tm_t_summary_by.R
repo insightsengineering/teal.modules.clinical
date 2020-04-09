@@ -9,8 +9,11 @@
 #'   for variable names used to split the summary by rows.
 #' @param parallel_vars (\code{logical}) used to display \code{summarize_vars} as parallel columns
 #'  (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.
-#' @param denominator for calculating percentages. Only applies to categorical variables.
-#'   See "denominator" in \code{\link[tern]{t_summary.factor}} for details.
+#' @param useNA choose whether missing data (NAs) should be displayed as a level
+#' @param denominator either "n", "N" or "omit". "n" and "N" are for calculating the level
+#'   associated percentage. With option "N", the reference population from col_N is used
+#'   as the denominator. With option "n", the number of non-missing records from x is used
+#'   as the denominator. If "omit" is chosen the percentage is omitted.
 #'
 #' @return a \code{\link[teal]{module}} object
 #'
@@ -77,7 +80,8 @@ tm_t_summary_by <- function(label,
                          by_vars,
                          summarize_vars,
                          parallel_vars = FALSE,
-                         denominator = c("n", "N", "omit"),
+                         useNA = c("ifany", "no", "always"),
+                         denominator = c("N", "n", "omit"),
                          pre_output = NULL,
                          post_output = NULL) {
 
@@ -85,6 +89,7 @@ tm_t_summary_by <- function(label,
   stopifnot(is.choices_selected(by_vars))
   stopifnot(is.choices_selected(summarize_vars))
   denominator <- match.arg(denominator)
+  useNA <- match.arg(useNA)
 
   args <- as.list(environment())
 
@@ -95,6 +100,7 @@ tm_t_summary_by <- function(label,
     ui_args = args,
     server_args = list(
       dataname = dataname,
+      useNA = useNA,
       denominator = denominator
     ),
     filters = dataname
@@ -144,7 +150,7 @@ ui_t_summary_by <- function(id, ...) {
 
 }
 
-srv_t_summary_by <- function(input, output, session, datasets, dataname, denominator) {
+srv_t_summary_by <- function(input, output, session, datasets, dataname, useNA, denominator) {
 
   init_chunks()
 
@@ -251,17 +257,17 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
         as.name("tbl"),
         call(
           "t_summary_by",
-          x = if (bquote(.(parallel_vars))) {
+          x = if (parallel_vars) {
             bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
                      compare_in_header())
           } else {
-            if (is.null(bquote(.(by_vars)))) {
+            if (is.null(by_vars)) {
               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE])
             } else {
               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = TRUE])
             }
           },
-          row_by = if (is.null(bquote(.(by_vars)))) {
+          row_by = if (is.null(by_vars)) {
             bquote(factor(rep("All", nrow(.(as.name("ANL_MERGED"))))))
           } else {
             bquote(nested_by(.(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE]))
@@ -269,7 +275,7 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
           col_by = bquote(as.factor(.(as.name("ANL_MERGED"))[[.(arm_var)]])),
           col_N = bquote(table(.(as.name(adsl_name))[[.(arm_var)]])),
           total = bquote(.(total)),
-          useNA = "ifany",
+          useNA = bquote(.(useNA)),
           denominator = bquote(.(denominator))
         )
       )
