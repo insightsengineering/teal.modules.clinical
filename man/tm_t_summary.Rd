@@ -4,14 +4,9 @@
 \alias{tm_t_summary}
 \title{Summarize Variables Module}
 \usage{
-tm_t_summary(
-  label,
-  dataname,
-  arm_var,
-  summarize_vars,
-  pre_output = NULL,
-  post_output = NULL
-)
+tm_t_summary(label, dataname, arm_var, summarize_vars, useNA = c("ifany",
+  "no"), denominator = c("N", "n", "omit"), pre_output = NULL,
+  post_output = NULL)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -26,6 +21,12 @@ for variable names that can be used as \code{arm_var}}
 
 \item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for summary}
+
+\item{useNA}{default option in UI whether to display NA values, see \code{t_summary}}
+
+\item{denominator}{default option in UI for denominator, for calculating percentages.
+Only applies to categorical variables.
+See "denominator" in \code{\link[tern]{t_summary.factor}} for details.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example the
@@ -43,6 +44,8 @@ library(random.cdisc.data)
 
 ADSL <- radsl(cached = TRUE)
 
+# use EOSDY, DCSREAS columns in ADSL because they contain NA data
+stopifnot(all(vapply(ADSL[c("EOSDY", "DCSREAS")], function(x) any(is.na(x)), logical(1))))
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
@@ -53,7 +56,11 @@ app <- init(
       label = "Demographic Table",
       dataname = "ADSL",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      summarize_vars = choices_selected(c("SEX", "RACE", "BMRKR2"), c("SEX", "RACE"))
+      summarize_vars = choices_selected(
+        c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS"),
+        c("SEX", "RACE")
+      ),
+      useNA = "ifany"
     )
   )
 )

@@ -4,23 +4,9 @@
 \alias{tm_t_mmrm}
 \title{Mix model with repeated measurements (\code{MMRM}) Table Teal Module}
 \usage{
-tm_t_mmrm(
-  label,
-  dataname,
-  endpoint_var,
-  id_var,
-  arm_var,
-  visit_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  formula,
-  mode,
-  conf_level,
-  weights_emmeans,
-  cor_struct,
-  pre_output = NULL,
-  post_output = NULL
-)
+tm_t_mmrm(label, dataname, endpoint_var, id_var, arm_var, visit_var,
+  arm_ref_comp = NULL, paramcd, formula, mode, conf_level,
+  weights_emmeans, cor_struct, pre_output = NULL, post_output = NULL)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
