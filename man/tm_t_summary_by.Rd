@@ -4,10 +4,18 @@
 \alias{tm_t_summary_by}
 \title{Summarize variables with by group module}
 \usage{
-tm_t_summary_by(label, dataname, arm_var, by_vars, summarize_vars,
-  parallel_vars = FALSE, useNA = c("ifany", "no"),
-  denominator = c("n", "N", "omit"), pre_output = NULL,
-  post_output = NULL)
+tm_t_summary_by(
+  label,
+  dataname,
+  arm_var,
+  by_vars,
+  summarize_vars,
+  parallel_vars = FALSE,
+  useNA = c("ifany", "no"),
+  denominator = c("n", "N", "omit"),
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -21,7 +29,7 @@ for variable names that can be used as \code{arm_var}}
 \item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names used to split the summary by rows.}
 
-\item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{summarize_vars}{\verb{\link[teal]\{choices_selected\}} object with all available choices and preselected option
 for variable names that can be used for summary}
 
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns

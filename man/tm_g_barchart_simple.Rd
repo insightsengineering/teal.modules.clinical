@@ -4,8 +4,14 @@
 \alias{tm_g_barchart_simple}
 \title{Simple barchart plot that shows counts per category.}
 \usage{
-tm_g_barchart_simple(x = NULL, fill = NULL, x_facet = NULL,
-  y_facet = NULL, label = "Count Barchart", plot_options = NULL)
+tm_g_barchart_simple(
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
+  label = "Count Barchart",
+  plot_options = NULL
+)
 }
 \arguments{
 \item{x}{\code{data_extract_spec} variable on x-axis}

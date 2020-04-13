@@ -4,9 +4,16 @@
 \alias{tm_t_summary}
 \title{Summarize Variables Module}
 \usage{
-tm_t_summary(label, dataname, arm_var, summarize_vars, useNA = c("ifany",
-  "no"), denominator = c("N", "n", "omit"), pre_output = NULL,
-  post_output = NULL)
+tm_t_summary(
+  label,
+  dataname,
+  arm_var,
+  summarize_vars,
+  useNA = c("ifany", "no"),
+  denominator = c("N", "n", "omit"),
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
@@ -19,7 +26,7 @@ Note that the data is expected to be in vertical form with the
 \item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as \code{arm_var}}
 
-\item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{summarize_vars}{\verb{\link[teal]\{choices_selected\}} object with all available choices and preselected option
 for variable names that can be used for summary}
 
 \item{useNA}{default option in UI whether to display NA values, see \code{t_summary}}
@@ -37,7 +44,7 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-This module is for \code{\link[tern]{t_summary}}.
+This module is for \verb{\link[tern]\{t_summary\}}.
 }
 \examples{
 library(random.cdisc.data)

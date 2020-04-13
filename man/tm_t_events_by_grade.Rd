@@ -4,8 +4,16 @@
 \alias{tm_t_events_by_grade}
 \title{Adverse Events Table Teal Module}
 \usage{
-tm_t_events_by_grade(label, dataname, arm_var, hlt, llt, grade,
-  add_total = TRUE, grade_levels = NULL)
+tm_t_events_by_grade(
+  label,
+  dataname,
+  arm_var,
+  hlt,
+  llt,
+  grade,
+  add_total = TRUE,
+  grade_levels = NULL
+)
 }
 \arguments{
 \item{label}{(\code{character}) module label displayed in UI}

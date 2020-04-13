@@ -159,6 +159,10 @@ ui_g_km <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
+          textInput(
+            inputId = ns("user_xaxis"),
+            label = "Specify break intervals for x-axis"
+          ),
           numericInput(
             inputId = ns("font_size"),
             label = "Font size",
@@ -248,6 +252,15 @@ srv_g_km <- function(input,
     tbl_fontsize <- input$font_size # nolint
     if_show_km <- input$show_km_table # nolint
     if_show_coxph <- input$show_coxph_table # nolint
+    xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
+      strsplit(., ",") %>%
+      unlist() %>%
+      as.numeric()
+    if (length(xticks) == 0) {
+      xticks <- NULL
+    } else {
+      validate(need(all(!is.na(xticks)), "Not all values entered were numeric"))
+    }
 
     if (length(facet_var) == 0) {
       facet_var <<- NULL
@@ -297,6 +310,7 @@ srv_g_km <- function(input,
       chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
 
+
     chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
     chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
@@ -330,7 +344,7 @@ srv_g_km <- function(input,
       chunks_push(bquote({
         fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
+        p <- g_km(fit_km = fit_km, xticks = .(xticks), col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
 
         .(
           if (if_show_km) {
@@ -388,7 +402,13 @@ srv_g_km <- function(input,
         max_min <- min(sapply(dfs, function(x) {
           max(x[["AVAL"]], na.rm = TRUE)
         }))
-        xticks <- max(1, floor(max_min / 10))
+        xticks <- .(xticks)
+        if (is.null(xticks)){
+          xticks <- max(1, floor(max_min / 10))
+        } else {
+          xticks <- .(xticks)
+        }
+
         grid.newpage()
         pl <- Map(function(x, label) {
           if (nrow(x) < 5) {

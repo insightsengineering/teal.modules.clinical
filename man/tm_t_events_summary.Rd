@@ -4,9 +4,17 @@
 \alias{tm_t_events_summary}
 \title{Adverse Events Summary Teal Module}
 \usage{
-tm_t_events_summary(label, dataname, arm_var, add_total = TRUE,
-  flag_var_anl = NULL, flag_var_aesi = NULL, count_subj = TRUE,
-  count_pt = FALSE, count_events = FALSE)
+tm_t_events_summary(
+  label,
+  dataname,
+  arm_var,
+  add_total = TRUE,
+  flag_var_anl = NULL,
+  flag_var_aesi = NULL,
+  count_subj = TRUE,
+  count_pt = FALSE,
+  count_events = FALSE
+)
 }
 \arguments{
 \item{label}{menu item label of the module in the teal app}
