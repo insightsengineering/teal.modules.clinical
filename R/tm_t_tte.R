@@ -391,7 +391,7 @@ srv_t_tte <- function(input,
           )
         )),
         data = anl,
-        col_N = table(anl[["ARM"]]),
+        col_N = table(anl[[.(arm_var)]]),
         event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
         time_points = .(time_points),
         time_unit = .(time_unit),
