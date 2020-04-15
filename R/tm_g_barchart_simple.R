@@ -25,20 +25,25 @@
 #' ADAE <- radae(cached = TRUE)
 #' ADLB <- radlb(cached = TRUE)
 #'
-#' ADAE <- ADAE %>% dplyr::filter( !( (AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X") ) )
+#' adae_labels <- var_labels(ADAE)
+#' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#'
+#' # reinstate labels
+#' ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+#'
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADAE", ADAE), cdisc_dataset("ADLB", ADLB),
-#'     code = ("
-#'
+#'     code = "
 #'     ADSL <- radsl(cached = TRUE)
-#'     ADAE <- radae(cached = TRUE)
-#'     ADAE <- ADAE %>% dplyr::filter( !( (AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X') ) )
 #'     ADLB <- radlb(cached = TRUE)
-#'
-#'     "),
-#'     check = TRUE
+#'     ADAE <- radae(cached = TRUE)
+#'     adae_labels <- var_labels(ADAE)
+#'     ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
+#'     ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+#'     ",
+#'     check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_barchart_simple(
@@ -48,7 +53,7 @@
 #'         select = select_spec(
 #'           choices = variable_choices(ADSL,
 #'                                      c("ARM", "ACTARM", "SEX",
-#'                                      "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
 #'           ),
 #'           selected = "ACTARM",
 #'           multiple = FALSE
@@ -60,7 +65,7 @@
 #'           select = select_spec(
 #'             choices = variable_choices(ADSL,
 #'                                        c("ARM", "ACTARM", "SEX",
-#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
 #'             ),
 #'             selected = "SEX",
 #'             multiple = FALSE
@@ -89,7 +94,7 @@
 #'           select = select_spec(
 #'             choices = variable_choices(ADSL,
 #'                                        c("ARM", "ACTARM", "SEX",
-#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -110,7 +115,7 @@
 #'           select = select_spec(
 #'             choices = variable_choices(ADSL,
 #'                                        c("ARM", "ACTARM", "SEX",
-#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -285,14 +290,11 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     validate_has_data(ANL, 3)
     chunk <- chunks$new()
     chunk$reset(envir = list2env(list(ANL = ANL)))
-
-    chunks_safe_eval(chunk)
     chunk
   })
 
   count_chunk <- reactive({
     chunk <- data_chunk()$clone(deep = TRUE)
-
     groupby_vars <- r_groupby_vars()
     groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
@@ -547,7 +549,7 @@ add_plot_call <- function(chunk,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      guides(fill = guide_legend(title = column_annotation_label(counts, .(fill_name))))
+      guides(fill = guide_legend(title = utils.nest::column_annotation_label(counts, .(fill_name))))
     ))
   }
 
@@ -555,8 +557,8 @@ add_plot_call <- function(chunk,
   plot_args <- c(
     plot_args,
     quote(theme(plot.title = element_text(hjust = 0.5))),
-    if (!is.null(x_name)) bquote(xlab(column_annotation_label(counts, .(x_name)))),
-    bquote(ylab(column_annotation_label(counts, .(y_name))))
+    if (!is.null(x_name)) bquote(xlab(utils.nest::column_annotation_label(counts, .(x_name)))),
+    bquote(ylab(utils.nest::column_annotation_label(counts, .(y_name))))
   )
 
   # when x_name is NULL, modify theme to not show x-ticks
@@ -605,7 +607,7 @@ apply_simple_ggplot_options <- function(chunk,
 
   if (!is.null(expand_y_range)) {
     plot_args <- c(plot_args, bquote(scale_y_continuous(
-      labels = comma,
+      labels = scales::comma,
       expand = expand_scale(c(0, .(expand_y_range)))
     )))
   }
