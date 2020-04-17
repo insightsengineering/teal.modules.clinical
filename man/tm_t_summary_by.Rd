@@ -11,6 +11,7 @@ tm_t_summary_by(
   by_vars,
   summarize_vars,
   parallel_vars = FALSE,
+  useNA = c("ifany", "no"),
   denominator = c("n", "N", "omit"),
   pre_output = NULL,
   post_output = NULL
@@ -28,13 +29,16 @@ for variable names that can be used as \code{arm_var}}
 \item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names used to split the summary by rows.}
 
-\item{summarize_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{summarize_vars}{\verb{\link[teal]\{choices_selected\}} object with all available choices and preselected option
 for variable names that can be used for summary}
 
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
-\item{denominator}{for calculating percentages. Only applies to categorical variables.
+\item{useNA}{default option in UI whether to display NA values, see \code{t_summary}}
+
+\item{denominator}{default option in UI for denominator, for calculating percentages.
+Only applies to categorical variables.
 See "denominator" in \code{\link[tern]{t_summary.factor}} for details.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
@@ -65,6 +69,9 @@ mutate(
    )
  ) \%>\%
  var_relabel(CHGCAT1 = "Change from Baseline Category 1")
+
+# CHG in ADLB contains NA values so useNA can be tested
+stopifnot(all(vapply(ADLB[c("CHG")], function(x) any(is.na(x)), logical(1))))
 
 app <- init(
  data = cdisc_data(
@@ -98,7 +105,8 @@ app <- init(
        choices = variable_choices(ADLB, c("AVAL", "CHG", "CHGCAT1")),
        selected = c("AVAL")
      ),
-     denominator = "N"
+     denominator = "N",
+     useNA = "ifany"
    )
  )
 )

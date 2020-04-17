@@ -175,7 +175,6 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
       )
     )
 
-
     chunks_push(
       call(
         "<-",
@@ -195,23 +194,27 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
               )
             )),
             as.call(c(
-              quote(rtables::var_relabel),
-              {
-                labels <- c(
-                  datasets$get_column_labels("ADSL", adsl_vars),
-                  datasets$get_column_labels(dataname, anl_vars)
-                )
-                labels[!duplicated(labels)]
-              }
+              quote(df_explicit_na),
+              list(
+                omit_columns = c("USUBJID", "STUDYID", arm_var),
+                char_as_factor =  FALSE
+              )
             ))
           ),
-          expr(mutate(!!!setNames(list(expr(explicit_na(sas_na(!!sym(hlt)))),
-                                       expr(explicit_na(sas_na(!!sym(llt))))), c(hlt, llt))))
+          as.call(c(
+            quote(rtables::var_relabel), {
+              labels <- c(
+                datasets$get_column_labels("ADSL", adsl_vars),
+                datasets$get_column_labels(dataname, anl_vars)
+              )
+              labels[!duplicated(labels)]
+            }
+          ))
         )
       )
     )
 
-    total <- if (add_total) "All Patients" else NULL
+    total <- if (add_total) "All Patients" else NULL # nolint
 
     chunks_push(bquote({
       tbl <- t_events_per_term_id(

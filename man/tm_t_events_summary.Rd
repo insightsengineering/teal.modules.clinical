@@ -51,8 +51,8 @@ This module produces an Adverse Event summary table that matches the
   STREAM template \code{AET01}.
 }
 \details{
-This module should be used to produce summaries based only on events-level dataset (e.g. \code{ADAE}). For tabulation of
-variables from subject-level datasets like \code{ADSL}, use \code{\link{tm_t_summary}}.
+This module should be used to produce summaries based only on events-level dataset (e.g. \code{ADAE}).
+For tabulation of variables from subject-level datasets like \code{ADSL}, use \code{\link{tm_t_summary}}.
 }
 \examples{
 
@@ -98,27 +98,27 @@ app <- teal::init(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADAE", ADAE),
     # code = get_code("app.R"),
-    code = 'ADSL <- radsl(cached = TRUE)
+    code = "ADSL <- radsl(cached = TRUE)
             ADAE <- radae(cached = TRUE)
             add_event_flags <- function(dat){
               dat \%>\%
                 dplyr::mutate(
-                  TMPFL_SER = AESER == "Y",
-                  TMPFL_REL = AEREL == "Y",
-                  TMPFL_GR5 = AETOXGR == "5",
-                  TMP_SMQ01 = AEDECOD \%in\% c("dcd B.2.1.2.1", "dcd C.2.1.2.1"),
-                  TMP_CQ01 = AEDECOD \%in\% c("dcd D.1.1.1.1", "dcd A.1.1.1.2")
+                  TMPFL_SER = AESER == 'Y',
+                  TMPFL_REL = AEREL == 'Y',
+                  TMPFL_GR5 = AETOXGR == '5',
+                  TMP_SMQ01 = AEDECOD \%in\% c('dcd B.2.1.2.1', 'dcd C.2.1.2.1'),
+                  TMP_CQ01 = AEDECOD \%in\% c('dcd D.1.1.1.1', 'dcd A.1.1.1.2')
                 ) \%>\%
                 var_relabel(
-                  TMPFL_SER = "Serious AE",
-                  TMPFL_REL = "Related AE",
-                  TMPFL_GR5 = "Grade 5 AE",
-                  TMP_SMQ01 = "B.2.1.2.1/C.2.1.2.1 (SMQ) (broad)",
-                  TMP_CQ01 = "AESI D1.A1"
+                  TMPFL_SER = 'Serious AE',
+                  TMPFL_REL = 'Related AE',
+                  TMPFL_GR5 = 'Grade 5 AE',
+                  TMP_SMQ01 = 'B.2.1.2.1/C.2.1.2.1 (SMQ) (broad)',
+                  TMP_CQ01 = 'AESI D1.A1'
                 )
               }
            ADAE <- ADAE \%>\%
-             add_event_flags()'
+             add_event_flags()"
            ),
   modules = root_modules(
     tm_t_events_summary(

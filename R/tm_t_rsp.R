@@ -280,8 +280,8 @@ srv_t_rsp <- function(input,
     adsl_name <- "ADSL_FILTERED"
     assign(adsl_name, adsl_filtered)
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
-    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
+    anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
 
 
     chunks_reset(envir = environment())

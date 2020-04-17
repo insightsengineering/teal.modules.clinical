@@ -15,9 +15,9 @@ tm_t_mmrm(
   paramcd,
   formula,
   mode,
-  conf.level,
+  conf_level,
   weights_emmeans,
-  corStruct,
+  cor_struct,
   pre_output = NULL,
   post_output = NULL
 )
@@ -51,18 +51,19 @@ changed.}
 \item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
 variable names that can be used as \code{PARAMCD} variable}
 
-\item{formula}{\code{\link[teal]{choices_selected}} object specifying the string type of options for module formula (regressors only).}
+\item{formula}{\code{\link[teal]{choices_selected}} object specifying the string type of options for module formula
+(regressors only).}
 
 \item{mode}{\code{\link[teal]{choices_selected}} object specifying the algorithm for degree of freedom:
 \code{auto}, \code{df.error} or \code{boot-satterthwaite}.}
 
-\item{conf.level}{\code{\link[teal]{choices_selected}} object specifying the confidence level. Greater than 0 and less
-than 1.}
+\item{conf_level}{\code{\link[teal]{choices_selected}} object specifying the confidence level. Greater than 0 and
+less than 1.}
 
 \item{weights_emmeans}{\code{\link[teal]{choices_selected}} object specifying the \code{emmeans} weights:
 "proportional" or "equal".}
 
-\item{corStruct}{\code{\link[teal]{choices_selected}} object with \code{NULL} and other possible choices specifying
+\item{cor_struct}{\code{\link[teal]{choices_selected}} object with \code{NULL} and other possible choices specifying
 the name of \code{\link[nlme]{corClasses}}.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
@@ -144,9 +145,9 @@ app <- init(
             mode = choices_selected(
               choices = c("auto", "df.error", "boot-satterthwaite"),
               selected = "boot-satterthwaite"),
-            conf.level = choices_selected(c("0.95", "0.9", "0.8"), "0.95"),
+            conf_level = choices_selected(c("0.95", "0.9", "0.8"), "0.95"),
             weights_emmeans = choices_selected(c("proportional", "equal"), "proportional"),
-            corStruct = choices_selected(c("corSymm", "corAR1"), "corSymm")
+            cor_struct = choices_selected(c("corSymm", "corAR1"), "corSymm")
         )
     )
 )

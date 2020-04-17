@@ -9,8 +9,11 @@
 #'   for variable names used to split the summary by rows.
 #' @param parallel_vars (\code{logical}) used to display \code{summarize_vars} as parallel columns
 #'  (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.
-#' @param denominator for calculating percentages. Only applies to categorical variables.
+#' @param useNA default option in UI whether to display NA values, see `t_summary`
+#' @param denominator default option in UI for denominator, for calculating percentages.
+#'   Only applies to categorical variables.
 #'   See "denominator" in \code{\link[tern]{t_summary.factor}} for details.
+#' @md
 #'
 #' @return a \code{\link[teal]{module}} object
 #'
@@ -30,6 +33,9 @@
 #'    )
 #'  ) %>%
 #'  var_relabel(CHGCAT1 = "Change from Baseline Category 1")
+#'
+#' # CHG in ADLB contains NA values so useNA can be tested
+#' stopifnot(all(vapply(ADLB[c("CHG")], function(x) any(is.na(x)), logical(1))))
 #'
 #' app <- init(
 #'  data = cdisc_data(
@@ -63,7 +69,8 @@
 #'        choices = variable_choices(ADLB, c("AVAL", "CHG", "CHGCAT1")),
 #'        selected = c("AVAL")
 #'      ),
-#'      denominator = "N"
+#'      denominator = "N",
+#'      useNA = "ifany"
 #'    )
 #'  )
 #' )
@@ -77,6 +84,7 @@ tm_t_summary_by <- function(label,
                          by_vars,
                          summarize_vars,
                          parallel_vars = FALSE,
+                         useNA = c("ifany", "no"), # nolintr
                          denominator = c("n", "N", "omit"),
                          pre_output = NULL,
                          post_output = NULL) {
@@ -84,6 +92,7 @@ tm_t_summary_by <- function(label,
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(by_vars))
   stopifnot(is.choices_selected(summarize_vars))
+  useNA <- match.arg(useNA) # nolintr
   denominator <- match.arg(denominator)
 
   args <- as.list(environment())
@@ -94,8 +103,7 @@ tm_t_summary_by <- function(label,
     ui = ui_t_summary_by,
     ui_args = args,
     server_args = list(
-      dataname = dataname,
-      denominator = denominator
+      dataname = dataname
     ),
     filters = dataname
   )
@@ -105,46 +113,63 @@ tm_t_summary_by <- function(label,
 ui_t_summary_by <- function(id, ...) {
 
   ns <- NS(id)
-  a <- list(...)
+  args <- list(...)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(a$dataname)),
+      helpText("Analysis data:", tags$code(args$dataname)),
 
       optionalSelectInput(ns("arm_var"),
                           "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
+                          args$arm_var$choices,
+                          args$arm_var$selected,
                           multiple = FALSE,
-                          fixed = a$arm_var$fixed
+                          fixed = args$arm_var$fixed
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
       optionalSelectInput(ns("by_vars"),
                           "Row By Variable",
-                          a$by_vars$choices,
-                          a$by_vars$selected,
+                          args$by_vars$choices,
+                          args$by_vars$selected,
                           multiple = TRUE,
-                          fixed = a$by_vars$fixed
+                          fixed = args$by_vars$fixed
       ),
       optionalSelectInput(ns("summarize_vars"),
                           "Summarize Variables",
-                          a$summarize_vars$choices,
-                          a$summarize_vars$selected,
+                          args$summarize_vars$choices,
+                          args$summarize_vars$selected,
                           multiple = TRUE,
-                          fixed = a$summarize_vars$fixed
+                          fixed = args$summarize_vars$fixed
       ),
-      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars)
+      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = args$parallel_vars),
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          radioButtons(
+            ns("useNA"),
+            label = "Display NA counts",
+            choices = c("ifany", "no"),
+            selected = args$useNA
+          ),
+          radioButtons(
+            ns("denominator"),
+            label = "Denominator choice",
+            choices = c("N", "n", "omit"),
+            selected = args$denominator
+          )
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = args$pre_output,
+    post_output = args$post_output
   )
 
 }
 
-srv_t_summary_by <- function(input, output, session, datasets, dataname, denominator) {
+srv_t_summary_by <- function(input, output, session, datasets, dataname) {
 
   init_chunks()
 
@@ -177,7 +202,7 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var))
     anl_vars <- unique(c("USUBJID", "STUDYID", by_vars, summarize_vars))
 
-    if(parallel_vars){
+    if (parallel_vars) {
       validate(need(all(vapply(anl_filtered[summarize_vars],
                                FUN =  is.numeric,
                                FUN.VALUE = TRUE)),
@@ -231,8 +256,7 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
             )
           )),
           as.call(c(
-            quote(rtables::var_relabel),
-            {
+            quote(rtables::var_relabel), {
               labels <- c(
                 datasets$get_column_labels("ADSL", adsl_vars),
                 datasets$get_column_labels(dataname, anl_vars)
@@ -244,7 +268,7 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
       )
     )
 
-    total <- if (add_total) "All Patients" else NULL
+    total <- if (add_total) "All Patients" else NULL # nolint
 
     chunks_push(
       call(
@@ -252,17 +276,17 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
         as.name("tbl"),
         call(
           "t_summary_by",
-          x = if(bquote(.(parallel_vars))){
+          x = if (bquote(.(parallel_vars))) {
             bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
                      compare_in_header())
           } else {
-            if(is.null(bquote(.(by_vars)))){
+            if (is.null(bquote(.(by_vars)))) {
               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE])
             } else {
               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = TRUE])
             }
           },
-          row_by = if(is.null(bquote(.(by_vars)))){
+          row_by = if (is.null(bquote(.(by_vars)))) {
             bquote(factor(rep("All", nrow(.(as.name("ANL_MERGED"))))))
           } else {
             bquote(nested_by(.(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE]))
@@ -270,13 +294,13 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname, denomin
           col_by = bquote(as.factor(.(as.name("ANL_MERGED"))[[.(arm_var)]])),
           col_N = bquote(table(.(as.name(adsl_name))[[.(arm_var)]])),
           total = bquote(.(total)),
-          useNA = "ifany",
-          denominator = bquote(.(denominator))
+          useNA = bquote(.(input$useNA)),
+          denominator = bquote(.(input$denominator))
         )
       )
     )
 
-    if(is.null(by_vars)){
+    if (is.null(by_vars)) {
       chunks_push(
         call(
           "<-",

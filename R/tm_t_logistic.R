@@ -186,6 +186,7 @@ ui_t_logistic <- function(id, ...){
 
 #' server part of tm_t_logistic
 #'
+#' @importFrom stats median
 #'
 #' @noRd
 srv_t_logistic <- function(input,
@@ -227,11 +228,13 @@ srv_t_logistic <- function(input,
     interaction_var <- input$interaction_var
 
     if (length(interaction_var) != 0) {
-      if (is.numeric(anl[[interaction_var]])){
-        def_val <- median(anl[[interaction_var]], na.rm = TRUE) %>% ceiling()
-        return(tagList(textInput(session$ns("interaction_values"),
-                                 label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
-                                 value = as.character(def_val))))
+      if (is.numeric(anl[[interaction_var]])) {
+        def_val <- ceiling(stats::median(anl[[interaction_var]], na.rm = TRUE))
+        return(
+          tagList(textInput(session$ns("interaction_values"),
+                            label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
+                            value = as.character(def_val)))
+        )
       } else {
         return(NULL)
       }
@@ -256,11 +259,12 @@ srv_t_logistic <- function(input,
      interaction_var <- NULL
      increments <- NULL
    } else {
-     if (is.numeric(anl_filtered[[interaction_var]])){
-       increments <-  input$interaction_values %>% trimws() %>%
-         gsub(";", ",", .) %>% gsub(" ", ",", .) %>% strsplit( ",")  %>%
-         unlist()  %>% as.numeric()
-       if (length(increments)==0){
+     if (is.numeric(anl_filtered[[interaction_var]])) {
+       increments <- gsub(";", ",", trimws(input$interaction_values)) %>%
+         strsplit(., ",") %>%
+         unlist() %>%
+         as.numeric()
+       if (length(increments) == 0) {
          increments <- NULL
        } else {
          validate(need(all(!is.na(increments)), "Not all values entered were numeric"))
@@ -275,7 +279,7 @@ srv_t_logistic <- function(input,
        increments <- NULL
      }
    }
-   conf_level <- as.numeric(input$conf_level)
+   conf_level <- as.numeric(input$conf_level) # nolint
    # Validate your input
    validate_standard_inputs(
      adsl = adsl_filtered,
@@ -291,8 +295,8 @@ srv_t_logistic <- function(input,
    assign(anl_name, anl_filtered)
    adsl_name <- "ADSL_FILTERED"
    assign(adsl_name, adsl_filtered)
-   adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, covariate_var, interaction_var))
-   anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD")
+   adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, covariate_var, interaction_var)) # nolint
+   anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
 
    validate_in(events, anl_filtered$AVALC, "event values do not exist")
    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
@@ -344,13 +348,12 @@ srv_t_logistic <- function(input,
 
 
    chunks_push(bquote({
-     anl <- anl %>% mutate(EVENT = case_when(AVALC %in% events ~ 1,
-                                             TRUE ~ 0))
+     anl <- mutate(anl, EVENT = case_when(AVALC %in% events ~ 1, TRUE ~ 0))
    }))
 
-   if (!is.null(interaction_var)){
-     if (!is.null(covariate_var)){
-       if (interaction_var %in% covariate_var){
+   if (!is.null(interaction_var)) {
+     if (!is.null(covariate_var)) {
+       if (interaction_var %in% covariate_var) {
          covariate_var <- covariate_var[which(covariate_var != interaction_var)]
          if (length(covariate_var) == 0) covariate_var <- NULL
        }
@@ -372,10 +375,15 @@ srv_t_logistic <- function(input,
     terms_label <- c("Treatment", .(covariate_var))
     names(terms_label) <- c(.(arm_var), .(covariate_var))
   }))
-  if (!is.null(interaction_var)){
+  if (!is.null(interaction_var)) {
     chunks_push(bquote({
       terms_label <- c(terms_label, .(interaction_var), paste0("Interaction of Treatment * ", .(interaction_var)))
-      names(terms_label) <- c(.(arm_var), .(covariate_var), .(interaction_var), paste0(.(arm_var), ":", .(interaction_var)))
+      names(terms_label) <- c(
+        .(arm_var),
+        .(covariate_var),
+        .(interaction_var),
+        paste0(.(arm_var), ":", .(interaction_var))
+      )
     }))
   }
   chunks_push(bquote(increments <- .(increments)))

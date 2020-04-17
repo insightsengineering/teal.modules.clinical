@@ -4,6 +4,8 @@
 #'
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
+#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for confidence level, each within range of (0, 1).
 #' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param plot_height vector with three elements defining selected, min and max plot height
@@ -261,7 +263,7 @@ srv_g_forest_rsp <- function(input,
     subgroup_var <- input$subgroup_var
     strata_var <- input$strata_var
     conf_int <- as.numeric(input$conf_int)
-    col_symbol_size <- if(input$fixed_symbol_size){
+    col_symbol_size <- if (input$fixed_symbol_size) {
       NULL
     } else {
       1
@@ -281,7 +283,7 @@ srv_g_forest_rsp <- function(input,
     validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
     validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
     validate(
-      need(length(conf_int)==1, "Please select level of confidence."),
+      need(length(conf_int) == 1, "Please select level of confidence."),
       need(all(vapply(adsl_filtered[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
     )
@@ -292,8 +294,8 @@ srv_g_forest_rsp <- function(input,
     adsl_name <- "ADSL_FILTERED"
     assign(adsl_name, adsl_filtered)
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var))
-    anl_vars <- c("USUBJID", "STUDYID", "AVALC")
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, subgroup_var, strata_var)) # nolint
+    anl_vars <- c("USUBJID", "STUDYID", "AVALC") # nolint
 
     chunks_reset(envir = environment())
 
@@ -336,7 +338,7 @@ srv_g_forest_rsp <- function(input,
         } else {
           bquote(NULL)
         }),
-        strata_data = if (!is.null(.(strata_var))){
+        strata_data = if (!is.null(.(strata_var))) {
           anl[, .(strata_var), drop = FALSE]
         } else {
           NULL
@@ -369,7 +371,7 @@ srv_g_forest_rsp <- function(input,
         draw = FALSE,
         col_symbol_size = .(col_symbol_size)
       )
-      if (!is.null(footnotes(p))){
+      if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
                            gp_footnotes = gpar(fontsize = 12))
       }
@@ -388,7 +390,7 @@ srv_g_forest_rsp <- function(input,
     plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
     validate(need(plot_width, "need valid plot width"))
-    div(style = 'overflow-x: scroll',
+    div(style = "overflow-x: scroll",
         plotOutput(session$ns("forest_plot"),
                    height = plot_height,
                    width = plot_width)

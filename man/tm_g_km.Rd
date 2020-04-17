@@ -45,7 +45,7 @@ for variable names that can be used for facet plotting}
 for variable names that can be used for stratification}
 
 \item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for confidence level for computation of the confidence intervals.}
+for confidence level, each within range of (0, 1).}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}
 

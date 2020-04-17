@@ -176,19 +176,6 @@ ui_t_tte <- function(id, ...) {
                           label_help = helpText("from ", tags$code("ADSL")),
                           fixed = a$strata_var$fixed
       ),
-      radioButtons(
-        ns("pval_method"),
-        "p-value method",
-        choices = c("wald", "log-rank", "likelihood"),
-        selected = "log-rank"
-      ),
-      optionalSelectInput(ns("conf_int"),
-                          "Level of Confidence",
-                          a$conf_int$choices,
-                          a$conf_int$selected,
-                          multiple = FALSE,
-                          fixed = a$conf_int$fixed
-      ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
@@ -198,7 +185,84 @@ ui_t_tte <- function(id, ...) {
       ),
       if (!is.null(a$event_desc_var)) {
         helpText("Event Description Variable: ", tags$code(a$event_desc_var))
-      }
+      },
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          radioButtons(
+            ns("pval_method_coxph"),
+            label = HTML(paste("p-value method for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)",
+                               sep = "")
+            ),
+            choices = c("wald", "log-rank", "likelihood"),
+            selected = "log-rank"
+          ),
+          radioButtons(
+            ns("ties_coxph"),
+            label = HTML(paste("Ties for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)",
+                               sep = "")
+            ),
+            choices = c("exact", "breslow", "efron"),
+            selected = "exact"
+          ),
+          numericInput(
+            inputId = ns("conf_level_coxph"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Coxph"), # nolint
+                               " (Hazard Ratio)", sep = "")
+                         ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("conf_level_ztest"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Z-test"), # nolint
+                               " (Difference in Event Free Rate)",
+                               sep = "")
+                         ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("conf_level_survfit"),
+            label = HTML(paste("Confidence Level for ",
+                               tags$span(style="color:darkblue", "Survfit"), # nolint
+                               " (KM Median Estimate & Event Free Rate)",
+                               sep = "")
+            ),
+            value = 0.95,
+            min = 0.01,
+            max = 0.99,
+            step = 0.01,
+            width = "100%"
+          ),
+          radioButtons(
+            ns("conf_type_survfit"),
+            "Confidence Level Type for Survfit",
+            choices = c("plain", "log", "log-log"),
+            selected = "plain"
+          ),
+          sliderInput(
+            inputId = ns("probs_survfit"),
+            label = "KM Estimate Percentiles",
+            min = 0.01,
+            max = 0.99,
+            value = c(0.25, 0.75),
+            width = "100%"
+          )
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -238,15 +302,20 @@ srv_t_tte <- function(input,
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
     # nolint end
 
-    paramcd <- input$paramcd
+    paramcd <- input$paramcd # nolint
     strata_var <- input$strata_var
     arm_var <- input$arm_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     combine_comp_arms <- input$combine_comp_arms
     time_points <- as.numeric(input$time_points)
-    pval_method <- input$pval_method
-    conf_int <- as.numeric(input$conf_int)
+    pval_method_coxph <- input$pval_method_coxph # nolint
+    conf_level <- c(survfit = input$conf_level_survfit, coxph = input$conf_level_coxph,
+                   ztest = input$conf_level_ztest)
+    conf_type_survfit <- input$conf_type_survfit
+    probs_survfit <- input$probs_survfit
+    ties_coxph <- input$ties_coxph
+
 
     if (length(strata_var) == 0) {
       strata_var <- NULL
@@ -270,6 +339,9 @@ srv_t_tte <- function(input,
     )
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
+    validate(need(!is.null(conf_type_survfit), "Must select one Confidence Level Type for Survfit"))
+    validate(need(!is.null(probs_survfit), "Must select percentiles for KM median estimate"))
+    validate(need(!is.null(ties_coxph), "Must select ties for Coxph"))
 
     # do analysis
 
@@ -278,8 +350,8 @@ srv_t_tte <- function(input,
 
     chunks_reset(envir = environment())
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var))
-    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var))
+    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
+    anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) # nolint
 
     ## Now comes the analysis code
     chunks_push(bquote(ref_arm <- .(ref_arm)))
@@ -323,13 +395,15 @@ srv_t_tte <- function(input,
           )
         )),
         data = anl,
-        col_N = table(anl[["ARM"]]),
+        col_N = table(anl[[.(arm_var)]]),
         event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
         time_points = .(time_points),
         time_unit = .(time_unit),
-        conf_level = .(conf_int),
-        pval_method_coxph = .(pval_method),
-        ties_coxph = "exact"
+        conf_level = .(conf_level),
+        conf_type_survfit = .(conf_type_survfit),
+        probs_survfit = .(probs_survfit),
+        pval_method_coxph = .(pval_method_coxph),
+        ties_coxph = .(ties_coxph)
       )
       tbl
     }))

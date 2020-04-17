@@ -24,14 +24,15 @@
 #'   changed.
 #' @param paramcd \code{\link[teal]{choices_selected}} object with all available choices and preselected option for
 #'   variable names that can be used as \code{PARAMCD} variable
-#' @param formula \code{\link[teal]{choices_selected}} object specifying the string type of options for module formula (regressors only).
+#' @param formula \code{\link[teal]{choices_selected}} object specifying the string type of options for module formula
+#'   (regressors only).
 #' @param mode \code{\link[teal]{choices_selected}} object specifying the algorithm for degree of freedom:
 #'   \code{auto}, \code{df.error} or \code{boot-satterthwaite}.
-#' @param conf.level \code{\link[teal]{choices_selected}} object specifying the confidence level. Greater than 0 and less
-#'   than 1.
+#' @param conf_level \code{\link[teal]{choices_selected}} object specifying the confidence level. Greater than 0 and
+#'   less than 1.
 #' @param weights_emmeans \code{\link[teal]{choices_selected}} object specifying the \code{emmeans} weights:
 #'   "proportional" or "equal".
-#' @param corStruct \code{\link[teal]{choices_selected}} object with \code{NULL} and other possible choices specifying
+#' @param cor_struct \code{\link[teal]{choices_selected}} object with \code{NULL} and other possible choices specifying
 #'   the name of \code{\link[nlme]{corClasses}}.
 #'
 #' @details
@@ -104,9 +105,9 @@
 #'             mode = choices_selected(
 #'               choices = c("auto", "df.error", "boot-satterthwaite"),
 #'               selected = "boot-satterthwaite"),
-#'             conf.level = choices_selected(c("0.95", "0.9", "0.8"), "0.95"),
+#'             conf_level = choices_selected(c("0.95", "0.9", "0.8"), "0.95"),
 #'             weights_emmeans = choices_selected(c("proportional", "equal"), "proportional"),
-#'             corStruct = choices_selected(c("corSymm", "corAR1"), "corSymm")
+#'             cor_struct = choices_selected(c("corSymm", "corAR1"), "corSymm")
 #'         )
 #'     )
 #' )
@@ -125,9 +126,9 @@ tm_t_mmrm <- function(label,
                       paramcd,
                       formula,
                       mode,
-                      conf.level,
+                      conf_level,
                       weights_emmeans,
-                      corStruct,
+                      cor_struct,
                       pre_output = NULL,
                       post_output = NULL
 ) {
@@ -140,9 +141,9 @@ tm_t_mmrm <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(formula))
   stopifnot(is.choices_selected(mode))
-  stopifnot(is.choices_selected(conf.level))
+  stopifnot(is.choices_selected(conf_level))
   stopifnot(is.choices_selected(weights_emmeans))
-  stopifnot(is.choices_selected(corStruct))
+  stopifnot(is.choices_selected(cor_struct))
 
 
   args <- as.list(environment())
@@ -242,19 +243,19 @@ ui_t_mmrm <- function(id, ...) {
                           multiple = FALSE,
                           fixed = a$weights_emmeans$fixed
       ),
-      optionalSelectInput(ns("corStruct"),
+      optionalSelectInput(ns("cor_struct"),
                           "Correlation Structure",
-                          a$corStruct$choices,
-                          a$corStruct$selected,
+                          a$cor_struct$choices,
+                          a$cor_struct$selected,
                           multiple = FALSE,
-                          fixed = a$corStruct$fixed
+                          fixed = a$cor_struct$fixed
       ),
-      optionalSelectInput(ns("conf.level"),
+      optionalSelectInput(ns("conf_level"),
                           "Confidence Level",
-                          a$conf.level$choices,
-                          a$conf.level$selected,
+                          a$conf_level$choices,
+                          a$conf_level$selected,
                           multiple = FALSE,
-                          fixed = a$conf.level$fixed
+                          fixed = a$conf_level$fixed
       )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
@@ -300,10 +301,10 @@ srv_t_mmrm <- function(input,
     combine_comp_arms <- input$combine_comp_arms
     visit_var <- input$visit_var
     id_var <- input$id_var
-    mode <- input$mode
-    weights_emmeans <- input$weights_emmeans
-    corStruct <- input$corStruct
-    conf.level <- as.numeric(input$conf.level)
+    mode <- input$mode # nolint
+    weights_emmeans <- input$weights_emmeans # nolint
+    cor_struct <- input$cor_struct # nolint
+    conf_level <- as.numeric(input$conf_level) # nolint
 
     formula <- as.formula(
       paste(endpoint_var, "~", input$formula)
@@ -334,7 +335,6 @@ srv_t_mmrm <- function(input,
     )
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    #validate(need(eval(formula, parent.frame()), "formula must be GLS formula")) # need help on formula evaluation
 
     # do analysis
 
@@ -388,7 +388,6 @@ srv_t_mmrm <- function(input,
     }
 
     chunks_push(bquote(ADSL_P[[.(arm_var)]] <- droplevels(arm)))
-    #print(table(ADSL_P[[.(arm_var)]]))
 
 
     # Create ANL_ENDPOINT
@@ -435,8 +434,7 @@ srv_t_mmrm <- function(input,
             )
           )),
           as.call(c(
-            quote(rtables::var_relabel),
-            {
+            quote(rtables::var_relabel), {
               labels <- c(
                 datasets$get_column_labels("ADSL", adsl_vars),
                 datasets$get_column_labels(dataname, anl_vars)
@@ -476,9 +474,9 @@ srv_t_mmrm <- function(input,
         visit_var = .(visit_var),
         col_N = table(ADSL_P[[.(arm_var)]] %>% droplevels()),
         mode = .(mode),
-        conf.level = .(conf.level),
+        conf_level = .(conf_level),
         weights_emmeans = .(weights_emmeans),
-        corStruct = .(corStruct),
+        corStruct = .(cor_struct),
         table_tree = FALSE
       )
       tbl
@@ -510,4 +508,3 @@ srv_t_mmrm <- function(input,
   })
 
 }
-

@@ -45,14 +45,14 @@ ADAE <- ADAE \%>\% dplyr::filter( !( (AETOXGR == 1) & (AESEV == "MILD") & (ARM =
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADAE", ADAE), cdisc_dataset("ADLB", ADLB),
-    code = ('
+    code = ("
 
     ADSL <- radsl(cached = TRUE)
     ADAE <- radae(cached = TRUE)
-    ADAE <- ADAE \%>\% dplyr::filter( !( (AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X") ) )
+    ADAE <- ADAE \%>\% dplyr::filter( !( (AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X') ) )
     ADLB <- radlb(cached = TRUE)
 
-    '),
+    "),
     check = TRUE
   ),
   modules = root_modules(

@@ -5,6 +5,8 @@
 #' @inheritParams tm_t_tte
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
+#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' for confidence level, each within range of (0, 1).
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #'
 #' @importFrom survival Surv strata
@@ -157,8 +159,12 @@ ui_g_km <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
+          textInput(
+            inputId = ns("user_xaxis"),
+            label = "Specify break intervals for x-axis"
+          ),
           numericInput(
-            inputId = ns('font_size'),
+            inputId = ns("font_size"),
             label = "Font size",
             value = 8,
             min = 5,
@@ -167,13 +173,13 @@ ui_g_km <- function(id, ...) {
             width = "100%"
           ),
           checkboxInput(
-            inputId = ns('show_km_table'),
+            inputId = ns("show_km_table"),
             label = "Show KM table",
             value = TRUE,
             width = "100%"
           ),
           checkboxInput(
-            inputId = ns('show_coxph_table'),
+            inputId = ns("show_coxph_table"),
             label = "Show CoxPH table",
             value = TRUE,
             width = "100%"
@@ -233,19 +239,28 @@ srv_g_km <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
     ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) # nolint
 
-    paramcd <- input$paramcd
+    paramcd <- input$paramcd # nolint
     arm_var <- input$arm_var
     facet_var <- input$facet_var
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
-    pval_method <- input$pval_method
-    conf_int <- as.numeric(input$conf_int)
-    xlab <- input$xlab
-    tbl_fontsize <- input$font_size
-    if_show_km <- input$show_km_table
-    if_show_coxph <- input$show_coxph_table
+    pval_method <- input$pval_method # nolint
+    conf_int <- as.numeric(input$conf_int) # nolint
+    xlab <- input$xlab # nolint
+    tbl_fontsize <- input$font_size # nolint
+    if_show_km <- input$show_km_table # nolint
+    if_show_coxph <- input$show_coxph_table # nolint
+    xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
+      strsplit(., ",") %>%
+      unlist() %>%
+      as.numeric()
+    if (length(xticks) == 0) {
+      xticks <- NULL
+    } else {
+      validate(need(all(!is.na(xticks)), "Not all values entered were numeric"))
+    }
 
     if (length(facet_var) == 0) {
       facet_var <<- NULL
@@ -295,6 +310,7 @@ srv_g_km <- function(input,
       chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
 
+
     chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
     chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
@@ -328,7 +344,7 @@ srv_g_km <- function(input,
       chunks_push(bquote({
         fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
         grid.newpage()
-        p <- g_km(fit_km = fit_km, col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
+        p <- g_km(fit_km = fit_km, xticks = .(xticks), col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
 
         .(
           if (if_show_km) {
@@ -350,7 +366,13 @@ srv_g_km <- function(input,
         .(
           if (if_show_coxph) {
             bquote({
-              tbl_coxph <- t_coxph(formula_coxph, data = anl,conf.int = .(conf_int), pval_method = .(pval_method), ties = "exact")
+              tbl_coxph <- t_coxph(
+                formula_coxph,
+                data = anl,
+                conf.int = .(conf_int),
+                pval_method = .(pval_method),
+                ties = "exact"
+              )
               text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
               coxph_grob <- textGrob(
                 label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
@@ -380,7 +402,13 @@ srv_g_km <- function(input,
         max_min <- min(sapply(dfs, function(x) {
           max(x[["AVAL"]], na.rm = TRUE)
         }))
-        xticks <- max(1, floor(max_min / 10))
+        xticks <- .(xticks)
+        if (is.null(xticks)){
+          xticks <- max(1, floor(max_min / 10))
+        } else {
+          xticks <- .(xticks)
+        }
+
         grid.newpage()
         pl <- Map(function(x, label) {
           if (nrow(x) < 5) {
@@ -413,7 +441,13 @@ srv_g_km <- function(input,
             .(
               if (if_show_coxph) {
                 bquote({
-                  tbl_coxph <- t_coxph(formula_coxph, data = x, conf.int = .(conf_int), pval_method = .(pval_method), ties = "exact")
+                  tbl_coxph <- t_coxph(
+                    formula_coxph,
+                    data = x,
+                    conf.int = .(conf_int),
+                    pval_method = .(pval_method),
+                    ties = "exact"
+                  )
                   text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
                   coxph_grob <- textGrob(
                     label = text_coxph,

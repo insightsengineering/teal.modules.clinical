@@ -195,7 +195,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       strata_var <- NULL
     }
     conf_int <- as.numeric(input$conf_int)
-    col_symbol_size <- if(input$fixed_symbol_size){
+    col_symbol_size <- if (input$fixed_symbol_size) {
       NULL
     } else {
       1
@@ -213,7 +213,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
     validate(
-      need(length(conf_int)==1, "Please select level of confidence."),
+      need(length(conf_int) == 1, "Please select level of confidence."),
       need(all(vapply(ADSL_FILTERED[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
     )
@@ -265,7 +265,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
           } else {
             bquote(NULL)
           }),
-        strata_data = .(if (!is.null(strata_var)){
+        strata_data = .(if (!is.null(strata_var)) {
           bquote(anl[, .(strata_var), drop = FALSE])
         } else {
           bquote(NULL)
@@ -284,7 +284,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     chunks_push(bquote({
 
       p <- g_forest(
-        tbl = tbl ,
+        tbl = tbl,
         col_x = 8,
         col_ci = 9,
         vline = 1,
@@ -294,7 +294,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         x_at = c(.1, 1, 10),
         col_symbol_size = .(col_symbol_size),
         draw = FALSE)
-      if (!is.null(footnotes(p))){
+      if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
                            gp_footnotes = gpar(fontsize = 12))
       }
@@ -312,7 +312,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     plot_width <- input$plot_width
     validate(need(plot_height, "need valid plot height"))
     validate(need(plot_width, "need valid plot width"))
-    div(style = 'overflow-x: scroll',
+    div(style = "overflow-x: scroll",
         plotOutput(session$ns("forest_plot"),
                    height = plot_height,
                    width = plot_width)

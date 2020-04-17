@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Date: 2019-12-30
-Version: 0.8.1.9000
+Date: 2020-03-31
+Version: 0.8.2.9000
 Authors@R: c(
   person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre")),
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = "aut"),
@@ -18,9 +18,9 @@ Depends:
   R (>= 3.3),
   dplyr,
   shiny,
-  teal (>= 0.8.2),
-  tern (>= 0.6.4),
-  teal.devel (>= 0.2.3)
+  teal (>= 0.8.3),
+  tern (>= 0.6.5),
+  teal.devel (>= 0.2.4)
 Imports:
   forcats,
   ggpubr,
@@ -28,20 +28,19 @@ Imports:
   gridExtra,
   magrittr,
   methods,
-  rtables (>= 0.1.3),
+  rtables (>= 0.1.5),
   scales,
-  shinyjs,
   survival,
   stats,
   tidyr,
   utils,
-  utils.nest (>= 0.2.1)
+  utils.nest (>= 0.2.2)
 Suggests:
   knitr,
   rmarkdown,
-  random.cdisc.data (>= 0.3.1),
-  test.nest (>= 0.2.1),
-  testthat
+  random.cdisc.data (>= 0.3.2),
+  test.nest (>= 0.2.2),
+  testthat (>= 2.0)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true

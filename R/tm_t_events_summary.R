@@ -17,8 +17,8 @@
 #' @param count_events whether to show count of events. Only applies if event flag variables are provided.
 #'
 #' @details
-#' This module should be used to produce summaries based only on events-level dataset (e.g. \code{ADAE}). For tabulation of
-#' variables from subject-level datasets like \code{ADSL}, use \code{\link{tm_t_summary}}.
+#' This module should be used to produce summaries based only on events-level dataset (e.g. \code{ADAE}).
+#' For tabulation of variables from subject-level datasets like \code{ADSL}, use \code{\link{tm_t_summary}}.
 #'
 #' @return an \code{\link[teal]{module}} object
 #'
@@ -68,27 +68,27 @@
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADAE", ADAE),
 #'     # code = get_code("app.R"),
-#'     code = 'ADSL <- radsl(cached = TRUE)
+#'     code = "ADSL <- radsl(cached = TRUE)
 #'             ADAE <- radae(cached = TRUE)
 #'             add_event_flags <- function(dat){
 #'               dat %>%
 #'                 dplyr::mutate(
-#'                   TMPFL_SER = AESER == "Y",
-#'                   TMPFL_REL = AEREL == "Y",
-#'                   TMPFL_GR5 = AETOXGR == "5",
-#'                   TMP_SMQ01 = AEDECOD %in% c("dcd B.2.1.2.1", "dcd C.2.1.2.1"),
-#'                   TMP_CQ01 = AEDECOD %in% c("dcd D.1.1.1.1", "dcd A.1.1.1.2")
+#'                   TMPFL_SER = AESER == 'Y',
+#'                   TMPFL_REL = AEREL == 'Y',
+#'                   TMPFL_GR5 = AETOXGR == '5',
+#'                   TMP_SMQ01 = AEDECOD %in% c('dcd B.2.1.2.1', 'dcd C.2.1.2.1'),
+#'                   TMP_CQ01 = AEDECOD %in% c('dcd D.1.1.1.1', 'dcd A.1.1.1.2')
 #'                 ) %>%
 #'                 var_relabel(
-#'                   TMPFL_SER = "Serious AE",
-#'                   TMPFL_REL = "Related AE",
-#'                   TMPFL_GR5 = "Grade 5 AE",
-#'                   TMP_SMQ01 = "B.2.1.2.1/C.2.1.2.1 (SMQ) (broad)",
-#'                   TMP_CQ01 = "AESI D1.A1"
+#'                   TMPFL_SER = 'Serious AE',
+#'                   TMPFL_REL = 'Related AE',
+#'                   TMPFL_GR5 = 'Grade 5 AE',
+#'                   TMP_SMQ01 = 'B.2.1.2.1/C.2.1.2.1 (SMQ) (broad)',
+#'                   TMP_CQ01 = 'AESI D1.A1'
 #'                 )
 #'               }
 #'            ADAE <- ADAE %>%
-#'              add_event_flags()'
+#'              add_event_flags()"
 #'            ),
 #'   modules = root_modules(
 #'     tm_t_events_summary(
@@ -121,9 +121,9 @@ tm_t_events_summary <- function(label,
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is_logical_single(add_total))
-  stop_if_not(list(is_character_vector(flag_var_anl)||is.null(flag_var_anl),
+  stop_if_not(list(is_character_vector(flag_var_anl) || is.null(flag_var_anl),
               "flag_var_anl should be NULL or a character vector object."))
-  stop_if_not(list(is_character_vector(flag_var_aesi)||is.null(flag_var_aesi),
+  stop_if_not(list(is_character_vector(flag_var_aesi) || is.null(flag_var_aesi),
               "flag_var_aesi should be NULL or a character vector object."))
   stopifnot(is_logical_single(count_subj))
   stopifnot(is_logical_single(count_pt))
@@ -172,8 +172,13 @@ ui_t_events_summary <- function(id, ...){
 }
 
 
-srv_t_events_summary <- function(input, output, session, datasets, dataname,
-                                 flag_var_anl = NULL, flag_var_aesi = NULL ){
+srv_t_events_summary <- function(input,
+                                 output,
+                                 session,
+                                 datasets,
+                                 dataname,
+                                 flag_var_anl = NULL,
+                                 flag_var_aesi = NULL){
 
    init_chunks()
 
@@ -193,13 +198,13 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
     validate_has_variable(anl_filtered, "AEDECOD", "AEDECOD variable does not exist")
     validate_has_data(adsl_filtered, min_nrow = 1)
     validate_has_data(anl_filtered, min_nrow = 1)
-    if(!is.null(flag_var_anl)){
+    if (!is.null(flag_var_anl)) {
       validate_in(flag_var_anl, names(anl_filtered),
                   "Not all flag_var_anl variables exist in dataset.")
       validate(need(all(vapply(anl_filtered[, flag_var_anl], is.logical, FUN.VALUE = logical(1))),
                     "Not all variables from flag_var_anl are of type logical."))
     }
-    if(!is.null(flag_var_aesi)){
+    if (!is.null(flag_var_aesi)) {
       validate_in(flag_var_aesi, names(anl_filtered),
                   "Not all flag_var_aesi variables exist in dataset.")
       validate(need(all(vapply(anl_filtered[, flag_var_aesi], is.logical, FUN.VALUE = logical(1))),
@@ -220,10 +225,9 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
       datasets$get_column_labels(dataname, anl_vars)
     )
     chunks_push(bquote({
-      ADSL_S <- ADSL_FILTERED[, .(adsl_vars)]
-      ANL_S <- .(as.name(anl_name))[, .(anl_vars)]
-      ANL_MERGED <- merge(ADSL_S, ANL_S,
-                 all.x = FALSE, all.y = FALSE, by = c("STUDYID", "USUBJID"))
+      ADSL_S <- ADSL_FILTERED[, .(adsl_vars)] # nolint
+      ANL_S <- .(as.name(anl_name))[, .(anl_vars)] # nolint
+      ANL_MERGED <- merge(ADSL_S, ANL_S, all.x = FALSE, all.y = FALSE, by = c("STUDYID", "USUBJID")) # nolint
       })
     )
 
@@ -242,7 +246,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
         )
       )
 
-    total <- if (add_total) "All Patients" else NULL
+    total <- if (add_total) "All Patients" else NULL # nolint
 
     chunks_push(bquote({
 
@@ -256,7 +260,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
       )
     }))
 
-    if(isTRUE(count_subj) && !is.null(flag_var_anl)) {
+    if (isTRUE(count_subj) && !is.null(flag_var_anl)) {
 
       chunks_push(bquote({
 
@@ -282,7 +286,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
 
     }
 
-    if(isTRUE(count_subj) && !is.null(flag_var_aesi)){
+    if (isTRUE(count_subj) && !is.null(flag_var_aesi)) {
 
       chunks_push(bquote({
 
@@ -308,7 +312,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
 
     }
 
-    if(isTRUE(count_pt) && !is.null(flag_var_anl)){
+    if (isTRUE(count_pt) && !is.null(flag_var_anl)) {
 
       chunks_push(bquote({
 
@@ -335,7 +339,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
     }
 
 
-    if (isTRUE(count_pt) && !is.null(flag_var_aesi)){
+    if (isTRUE(count_pt) && !is.null(flag_var_aesi)) {
 
       chunks_push(bquote({
 
@@ -362,7 +366,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
     }
 
 
-    if(isTRUE(count_events) && !is.null(flag_var_anl)){
+    if (isTRUE(count_events) && !is.null(flag_var_anl)) {
 
       chunks_push(bquote({
 
@@ -386,7 +390,7 @@ srv_t_events_summary <- function(input, output, session, datasets, dataname,
       }))
     }
 
-    if(isTRUE(count_events) && !is.null(flag_var_aesi)){
+    if (isTRUE(count_events) && !is.null(flag_var_aesi)) {
 
       chunks_push(bquote({
 
