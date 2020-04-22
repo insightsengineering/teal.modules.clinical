@@ -34,21 +34,24 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
+#' ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
 #' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
-#'
+#' ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADRS", ADRS),
-#'     code = 'ADSL <- ADSL <- radsl(cached = TRUE)
-#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")',
+#'     code = 'ADSL <- radsl(cached = TRUE)
+#'             ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
+#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
+#'             ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))',
 #'      check = FALSE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
 #'       label = "Response Table",
 #'       dataname = 'ADRS',
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       arm_var = choices_selected(c("ARM", "ARMCD", "Dum_ARM"), "ARM"),
 #'       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
 #'       strata_var = choices_selected(c("SEX", "BMRKR2"), NULL)
 #'     )
@@ -259,16 +262,29 @@ srv_t_rsp <- function(input,
       strata_var <- NULL
     }
 
-    # Validate your input
-    validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm
-    )
+    if (length(unique(adsl_filtered[[arm_var]])) == 1){
+      # Validate your input
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        min_n_levels_armvar = NULL
+      )
+    } else {
+      # Validate your input
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm
+      )
+    }
 
     validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
@@ -285,64 +301,85 @@ srv_t_rsp <- function(input,
 
 
     chunks_reset(envir = environment())
-
-    chunks_push(bquote({
-      adsl_p <- subset(
-        .(as.name(adsl_name)),
-        .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
-      )
-    }))
-
     chunks_push(bquote({
       anl_endpoint <- subset(
         .(as.name(anl_name)),
         PARAMCD == .(paramcd)
       )
     }))
+    if (length(unique(adsl_filtered[[arm_var]])) == 1){
+      chunks_push(bquote({
+        anl <- merge(
+          x = ADSL_FILTERED[, .(adsl_vars), drop = FALSE],
+          y = anl_endpoint[, .(anl_vars), drop = FALSE],
+          all.x = FALSE,
+          all.y = FALSE,
+          by = c("USUBJID", "STUDYID")
+        )
+      }))
 
-    chunks_push(bquote({
-      anl <- merge(
-        x = adsl_p[, .(adsl_vars), drop = FALSE],
-        y = anl_endpoint[, .(anl_vars), drop = FALSE],
-        all.x = FALSE,
-        all.y = FALSE,
-        by = c("USUBJID", "STUDYID")
-      )
-    }))
-
-    chunk_call_arm <- bquote({
-      arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
-      arm <- combine_levels(arm, .(ref_arm))
-    })
-    if (combine_comp_arms) {
-      chunk_call_arm <- bquote({
-        .(chunk_call_arm)
-        arm <- combine_levels(arm, .(comp_arm))
-      })
-    }
-    chunks_push(chunk_call_arm)
-
-    chunks_push(bquote(
-      anl[[.(arm_var)]] <- droplevels(arm)
-    ))
-
-    strata_data <- if (length(strata_var) > 0) {
-      quote(anl[, strata_var, drop = FALSE]) %>%
-          substituteDirect(list(strata_var = strata_var))
+      chunks_push(bquote({
+        anl[[.(arm_var)]] <- as.factor(anl[[.(arm_var)]])
+        anl[[.(arm_var)]] <- droplevels(anl[[.(arm_var)]])
+        tbl <- t_rsp(
+          rsp = anl$AVALC %in% .(responders),
+          col_by = anl[[.(arm_var)]],
+          partition_rsp_by = as.factor(anl$AVALC),
+          strata_data = NULL
+        )
+        tbl
+      }))
     } else {
-      NULL
+      chunks_push(bquote({
+        adsl_p <- subset(
+          .(as.name(adsl_name)),
+          .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
+        )
+      }))
+
+      chunks_push(bquote({
+        anl <- merge(
+          x = adsl_p[, .(adsl_vars), drop = FALSE],
+          y = anl_endpoint[, .(anl_vars), drop = FALSE],
+          all.x = FALSE,
+          all.y = FALSE,
+          by = c("USUBJID", "STUDYID")
+        )
+      }))
+
+      chunk_call_arm <- bquote({
+        arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
+        arm <- combine_levels(arm, .(ref_arm))
+      })
+      if (combine_comp_arms) {
+        chunk_call_arm <- bquote({
+          .(chunk_call_arm)
+          arm <- combine_levels(arm, .(comp_arm))
+        })
+      }
+      chunks_push(chunk_call_arm)
+
+      chunks_push(bquote(
+        anl[[.(arm_var)]] <- droplevels(arm)
+      ))
+
+      strata_data <- if (length(strata_var) > 0) {
+        quote(anl[, strata_var, drop = FALSE]) %>%
+          substituteDirect(list(strata_var = strata_var))
+      } else {
+        NULL
+      }
+
+      chunks_push(bquote({
+        tbl <- t_rsp(
+          rsp = anl$AVALC %in% .(responders),
+          col_by = anl[[.(arm_var)]],
+          partition_rsp_by = as.factor(anl$AVALC),
+          strata_data = .(strata_data)
+        )
+        tbl
+      }))
     }
-
-    chunks_push(bquote({
-      tbl <- t_rsp(
-        rsp = anl$AVALC %in% .(responders),
-        col_by = anl[[.(arm_var)]],
-        partition_rsp_by = as.factor(anl$AVALC),
-        strata_data = .(strata_data)
-      )
-      tbl
-    }))
-
     invisible(NULL)
   })
 

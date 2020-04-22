@@ -1,5 +1,6 @@
 # teal.modules.clinical 0.8.2.9000
 
+* response table is updated for single arm 
 
 # teal.modules.clinical 0.8.2
 

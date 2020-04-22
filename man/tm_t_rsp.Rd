@@ -77,21 +77,24 @@ library(random.cdisc.data)
 library(dplyr)
 
 ADSL <- radsl(cached = TRUE)
+ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
 ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
-
+ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADRS", ADRS),
-    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
-            ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")',
+    code = 'ADSL <- radsl(cached = TRUE)
+            ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
+            ADRS <- radrs(ADSL, cached = TRUE) \%>\% dplyr::filter(AVISIT == "FOLLOW UP")
+            ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))',
      check = FALSE
   ),
   modules = root_modules(
     tm_t_rsp(
       label = "Response Table",
       dataname = 'ADRS',
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_var = choices_selected(c("ARM", "ARMCD", "Dum_ARM"), "ARM"),
       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
       strata_var = choices_selected(c("SEX", "BMRKR2"), NULL)
     )
