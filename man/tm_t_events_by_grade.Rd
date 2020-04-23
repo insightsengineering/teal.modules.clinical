@@ -11,45 +11,35 @@ tm_t_events_by_grade(
   hlt,
   llt,
   grade,
-  add_total = TRUE,
-  grade_levels = NULL
+  add_total = TRUE
 )
 }
 \arguments{
-\item{label}{(\code{character}) module label displayed in UI}
+\item{label}{(\code{character}) module label displayed in UI.}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.}
 
 \item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+for variable names that can be used as \code{arm_var}.}
 
 \item{hlt}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used to specify the high level term for events}
+for variable names that can be used to specify the high level term for events.}
 
 \item{llt}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used to specify the low level term for events}
+for variable names that can be used to specify the low level term for events.}
 
 \item{grade}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used to specify the event grade}
+for variable names that can be used to specify the event grade.}
 
 \item{add_total}{(\code{logical}) optional, whether show column with total number of patients
-(\code{TRUE} on default)}
-
-\item{grade_levels}{a factor. The values of the factor define the ordering of the rows
-in the resulting table. The levels of the factor define the severity of the grade.
-For example, \code{factor(c("c", "b", "a"), levels = c("a", "b", "c"))} will display
-the most severe grade "c" at the top of the table, the least severe grade "a" at the bottom.
-If \code{grade} is a factor, \code{grade_levels} will overwrite the level orders in \code{grade}.
-If set to \code{NULL} (default), it is assumed that intensity corresponds to the order of
-the factor levels of \code{grade}.
-If \code{grade} is not a factor, \code{grade_levels} is required.}
+(\code{TRUE} on default).}
 }
 \value{
-an \code{\link[teal]{module}} object
+a \code{\link[teal]{module}} object.
 }
 \description{
-This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates
+This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates.
 }
 \examples{
 library(random.cdisc.data)
@@ -83,8 +73,7 @@ app <- init(
         choices = variable_choices(ADAE, c("AETOXGR")),
         selected = "AETOXGR"
       ),
-      add_total = TRUE,
-      grade_levels = factor(1:5, levels = 1:5)
+      add_total = TRUE
     )
   )
 )

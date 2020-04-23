@@ -1,30 +1,22 @@
 #' Adverse Events Table Teal Module
 #'
-#' This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates
+#' This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates.
 #'
-#' @param label (\code{character}) module label displayed in UI
+#' @param label (\code{character}) module label displayed in UI.
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as \code{arm_var}
+#' for variable names that can be used as \code{arm_var}.
 #' @param hlt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the high level term for events
+#' for variable names that can be used to specify the high level term for events.
 #' @param llt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the low level term for events
+#' for variable names that can be used to specify the low level term for events.
 #' @param grade \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the event grade
+#' for variable names that can be used to specify the event grade.
 #' @param add_total (\code{logical}) optional, whether show column with total number of patients
-#'   (\code{TRUE} on default)
-#' @param grade_levels a factor. The values of the factor define the ordering of the rows
-#'   in the resulting table. The levels of the factor define the severity of the grade.
-#'   For example, \code{factor(c("c", "b", "a"), levels = c("a", "b", "c"))} will display
-#'   the most severe grade "c" at the top of the table, the least severe grade "a" at the bottom.
-#'   If \code{grade} is a factor, \code{grade_levels} will overwrite the level orders in \code{grade}.
-#'   If set to \code{NULL} (default), it is assumed that intensity corresponds to the order of
-#'   the factor levels of \code{grade}.
-#'   If \code{grade} is not a factor, \code{grade_levels} is required.
+#'   (\code{TRUE} on default).
 #'
-#' @return an \code{\link[teal]{module}} object
+#' @return a \code{\link[teal]{module}} object.
 #'
 #' @export
 #'
@@ -60,8 +52,7 @@
 #'         choices = variable_choices(ADAE, c("AETOXGR")),
 #'         selected = "AETOXGR"
 #'       ),
-#'       add_total = TRUE,
-#'       grade_levels = factor(1:5, levels = 1:5)
+#'       add_total = TRUE
 #'     )
 #'   )
 #' )
@@ -75,8 +66,7 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
-                                 add_total = TRUE,
-                                 grade_levels = NULL) {
+                                 add_total = TRUE) {
 
   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
@@ -84,7 +74,6 @@ tm_t_events_by_grade <- function(label,
   stopifnot(is.choices_selected(hlt))
   stopifnot(is.choices_selected(llt))
   stopifnot(is.choices_selected(grade))
-  stopifnot(is.factor(grade_levels) || is.null(grade_levels))
 
   stopifnot(is_logical_single(add_total))
 
@@ -96,8 +85,7 @@ tm_t_events_by_grade <- function(label,
     ui = ui_t_events_by_grade,
     ui_args = args,
     server_args = list(
-      dataname = dataname,
-      grade_levels = grade_levels
+      dataname = dataname
     ),
     filters = dataname
   )
@@ -151,7 +139,7 @@ ui_t_events_by_grade <- function(id, ...) {
 #' @importFrom dplyr filter mutate select
 #' @importFrom rtables var_relabel
 #' @importFrom tern t_events_per_term_grade_id
-srv_t_events_by_grade <- function(input, output, session, datasets, dataname, grade_levels) {
+srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
 
   init_chunks()
 
@@ -279,7 +267,6 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname, gr
         grade = ANL[[.(grade)]],
         col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
         col_N = table(ADSL_P[[.(arm_var)]]),
-        grade_levels = .(grade_levels),
         total = .(total)
       )
       tbl
