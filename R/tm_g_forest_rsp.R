@@ -4,7 +4,7 @@
 #'
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
-#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for confidence level, each within range of (0, 1).
 #' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
@@ -54,7 +54,8 @@ tm_g_forest_rsp <- function(label,
                             paramcd,
                             subgroup_var,
                             strata_var,
-                            conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                            conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
+                                                          0.95, keep_order = TRUE),
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             cex = 1.3,
@@ -67,7 +68,7 @@ tm_g_forest_rsp <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(subgroup_var))
   stopifnot(is.choices_selected(strata_var))
-  stopifnot(is.choices_selected(conf_int))
+  stopifnot(is.choices_selected(conf_level))
   stopifnot(is_logical_single(fixed_symbol_size))
   stop_if_not(list(
     is_integer_vector(plot_height) && length(plot_height) == 3,
@@ -192,12 +193,12 @@ ui_g_forest_rsp <- function(id, ...) {
         panel_item(
         "Additional plot settings",
         optionalSelectInput(
-          ns("conf_int"),
+          ns("conf_level"),
           "Level of Confidence",
-          a$conf_int$choices,
-          a$conf_int$selected,
+          a$conf_level$choices,
+          a$conf_level$selected,
           multiple = FALSE,
-          fixed = a$conf_int$fixed
+          fixed = a$conf_level$fixed
         ),
         checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
       )
@@ -262,7 +263,7 @@ srv_g_forest_rsp <- function(input,
     comp_arm <- input$comp_arm
     subgroup_var <- input$subgroup_var
     strata_var <- input$strata_var
-    conf_int <- as.numeric(input$conf_int)
+    conf_level <- as.numeric(input$conf_level)
     col_symbol_size <- if (input$fixed_symbol_size) {
       NULL
     } else {
@@ -283,7 +284,7 @@ srv_g_forest_rsp <- function(input,
     validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
     validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
     validate(
-      need(length(conf_int) == 1, "Please select level of confidence."),
+      need(length(conf_level) == 1, "Please select level of confidence."),
       need(all(vapply(adsl_filtered[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
     )
@@ -343,7 +344,7 @@ srv_g_forest_rsp <- function(input,
         } else {
           NULL
         },
-        conf_int = .(conf_int),
+        conf_level = .(conf_level),
         total = "All Patients",
         dense_header = TRUE
       )

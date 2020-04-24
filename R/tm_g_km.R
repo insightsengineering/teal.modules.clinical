@@ -5,7 +5,7 @@
 #' @inheritParams tm_t_tte
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
-#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for confidence level, each within range of (0, 1).
 #' @param plot_height vector with three elements defining selected, min and max plot height
 #'
@@ -64,7 +64,7 @@ tm_g_km <- function(label,
                     paramcd,
                     facet_var,
                     strata_var,
-                    conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
+                    conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
                     plot_height = c(1200, 400, 5000),
                     pre_output = helpText("x-axes for different factes may not have the same scale"),
                     post_output = NULL) {
@@ -190,12 +190,12 @@ ui_g_km <- function(id, ...) {
             choices = c("wald", "log-rank", "likelihood"),
             selected = "log-rank"
           ),
-          optionalSelectInput(ns("conf_int"),
+          optionalSelectInput(ns("conf_level"),
                               "Level of Confidence",
-                              a$conf_int$choices,
-                              a$conf_int$selected,
+                              a$conf_level$choices,
+                              a$conf_level$selected,
                               multiple = FALSE,
-                              fixed = a$conf_int$fixed
+                              fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Overall survival in ")
         )
@@ -247,7 +247,7 @@ srv_g_km <- function(input,
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     pval_method <- input$pval_method # nolint
-    conf_int <- as.numeric(input$conf_int) # nolint
+    conf_level <- as.numeric(input$conf_level) # nolint
     xlab <- input$xlab # nolint
     tbl_fontsize <- input$font_size # nolint
     if_show_km <- input$show_km_table # nolint
@@ -342,14 +342,14 @@ srv_g_km <- function(input,
 
     if (is.null(facet_var)) {
       chunks_push(bquote({
-        fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
+        fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_level), conf.type = "plain")
         grid.newpage()
         p <- g_km(fit_km = fit_km, xticks = .(xticks), col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
 
         .(
           if (if_show_km) {
             bquote({
-              tbl_km <- t_km(formula_km, data = anl, conf.int = .(conf_int), conf.type = "plain")
+              tbl_km <- t_km(formula_km, data = anl, conf_level = .(conf_level), conf.type = "plain")
               km_grob <- textGrob(
                 label = toString(tbl_km, gap = 1),
                 x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
@@ -369,7 +369,7 @@ srv_g_km <- function(input,
               tbl_coxph <- t_coxph(
                 formula_coxph,
                 data = anl,
-                conf.int = .(conf_int),
+                conf_level = .(conf_level),
                 pval_method = .(pval_method),
                 ties = "exact"
               )
@@ -415,7 +415,7 @@ srv_g_km <- function(input,
             textGrob(paste0("Less than 5 patients in ", label, " group"))
           } else {
             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-            fit_km <- survfit(formula_km, data = x, conf.int = .(conf_int), conf.type = "plain")
+            fit_km <- survfit(formula_km, data = x, conf.int = .(conf_level), conf.type = "plain")
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
               xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
@@ -424,7 +424,7 @@ srv_g_km <- function(input,
             .(
               if (if_show_km) {
                 bquote({
-                  tbl_km <- t_km(formula_km, data = x, conf.int = .(conf_int), conf.type = "plain")
+                  tbl_km <- t_km(formula_km, data = x, conf_level = .(conf_level), conf.type = "plain")
                   km_grob <- textGrob(
                     label = toString(tbl_km, gap = 1),
                     x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
@@ -444,7 +444,7 @@ srv_g_km <- function(input,
                   tbl_coxph <- t_coxph(
                     formula_coxph,
                     data = x,
-                    conf.int = .(conf_int),
+                    conf_level = .(conf_level),
                     pval_method = .(pval_method),
                     ties = "exact"
                   )

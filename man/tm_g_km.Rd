@@ -12,7 +12,7 @@ tm_g_km(
   paramcd,
   facet_var,
   strata_var,
-  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
+  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
   plot_height = c(1200, 400, 5000),
   pre_output = helpText("x-axes for different factes may not have the same scale"),
   post_output = NULL
@@ -44,7 +44,7 @@ for variable names that can be used for facet plotting}
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
 
-\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for confidence level, each within range of (0, 1).}
 
 \item{plot_height}{vector with three elements defining selected, min and max plot height}

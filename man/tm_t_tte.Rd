@@ -11,6 +11,8 @@ tm_t_tte(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
+  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+    TRUE),
   time_points,
   time_unit = "months",
   event_desc_var = NULL,
@@ -41,7 +43,7 @@ variable names that can be used as \code{PARAMCD} variable}
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
 
-\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for confidence level for computation of the confidence intervals.}
 
 \item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option

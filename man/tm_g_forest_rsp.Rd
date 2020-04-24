@@ -11,7 +11,7 @@ tm_g_forest_rsp(
   paramcd,
   subgroup_var,
   strata_var,
-  conf_int = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
+  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
     TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
@@ -40,7 +40,7 @@ for variable names that can be used as the default subgroups}
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
 
-\item{conf_int}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for confidence level, each within range of (0, 1).}
 
 \item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each

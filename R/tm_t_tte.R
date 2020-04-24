@@ -20,7 +20,7 @@
 #' variable names that can be used as \code{PARAMCD} variable
 #' @param strata_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for stratification
-#' @param conf_int \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for confidence level for computation of the confidence intervals.
 #' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used \code{\link[tern]{t_tte}}
@@ -95,7 +95,7 @@ tm_t_tte <- function(label,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
-                     conf_int = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
                      time_points,
                      time_unit = "months",
                      event_desc_var = NULL,
@@ -108,7 +108,7 @@ tm_t_tte <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
   stopifnot(is.choices_selected(time_points))
-  stopifnot(is.choices_selected(conf_int))
+  stopifnot(is.choices_selected(conf_level))
 
   args <- as.list(environment())
 
