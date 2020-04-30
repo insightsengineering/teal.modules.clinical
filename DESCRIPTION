@@ -48,7 +48,3 @@ RoxygenNote: 7.0.2
 VignetteBuilder: knitr
 URL: https://pages.github.roche.com/NEST/teal.modules.clinical/
 BugReports: https://github.roche.com/NEST/teal.modules.clinical/issues
-Additional_repositories:
-  https://github.roche.com/NEST/teal,
-  https://github.roche.com/NEST/tern,
-  https://github.com/Roche/rtables
