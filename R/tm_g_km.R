@@ -366,7 +366,7 @@ srv_g_km <- function(input,
         .(
           if (if_show_coxph) {
             bquote({
-              tbl_coxph <- t_coxph(
+              tbl_coxph <- t_coxph_pairwise(
                 formula_coxph,
                 data = anl,
                 conf_level = .(conf_level),
@@ -441,7 +441,7 @@ srv_g_km <- function(input,
             .(
               if (if_show_coxph) {
                 bquote({
-                  tbl_coxph <- t_coxph(
+                  tbl_coxph <- t_coxph_pairwise(
                     formula_coxph,
                     data = x,
                     conf_level = .(conf_level),
