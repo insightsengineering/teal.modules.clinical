@@ -4,6 +4,8 @@
 
 * response table is updated for single arm 
 
+* new `tm_t_abnormality` module
+
 # teal.modules.clinical 0.8.2
 
 * add confidence level for `survfit`, `coxph`, `ztest`; add confidence type, ties, percentiles to `tm_t_tte`
