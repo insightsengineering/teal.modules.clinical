@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.2.9000
 
+* new `tm_t_events_patyear` module: events rate adjusted for patient-year at risk table
+
 * remove `grade_levels` argument from `tm_t_events_by_grade`
 
 * response table is updated for single arm 
