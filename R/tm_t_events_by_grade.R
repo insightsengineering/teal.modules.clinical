@@ -164,7 +164,8 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
       adslvars = c("USUBJID", "STUDYID", arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", llt, hlt, grade),
-      arm_var = arm_var
+      arm_var = arm_var,
+      min_nrow = 1
     )
 
     anl_name <- paste0(dataname, "_FILTERED")
