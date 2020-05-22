@@ -144,7 +144,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
     validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
     validate(need(!is.null(arm_var), "please select 'arm variable'"))
     validate(need(arm_var %in% names(anl_f), "arm variable does not exist"))
-    validate_has_data(anl_f, min_nrow = 3)
+    validate_has_data(anl_f, min_nrow = 1)
 
     data_name <- paste0(dataname, "_FILTERED")
     assign(data_name, anl_f)
