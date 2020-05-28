@@ -30,6 +30,7 @@ Imports:
   methods,
   rtables (>= 0.1.5),
   scales,
+  shinyWidgets,
   survival,
   stats,
   tidyr,
