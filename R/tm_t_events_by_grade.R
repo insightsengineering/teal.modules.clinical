@@ -165,6 +165,7 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", llt, hlt, grade),
       arm_var = arm_var,
+      max_n_levels_armvar = NULL,
       min_nrow = 1
     )
 

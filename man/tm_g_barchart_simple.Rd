@@ -40,20 +40,25 @@ ADSL <- radsl(cached = TRUE)
 ADAE <- radae(cached = TRUE)
 ADLB <- radlb(cached = TRUE)
 
-ADAE <- ADAE \%>\% dplyr::filter( !( (AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X") ) )
+adae_labels <- var_labels(ADAE)
+ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+
+# reinstate labels
+ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADAE", ADAE), cdisc_dataset("ADLB", ADLB),
-    code = ("
-
+    code = "
     ADSL <- radsl(cached = TRUE)
-    ADAE <- radae(cached = TRUE)
-    ADAE <- ADAE \%>\% dplyr::filter( !( (AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X') ) )
     ADLB <- radlb(cached = TRUE)
-
-    "),
-    check = TRUE
+    ADAE <- radae(cached = TRUE)
+    adae_labels <- var_labels(ADAE)
+    ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
+    ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+    ",
+    check = FALSE
   ),
   modules = root_modules(
     tm_g_barchart_simple(
@@ -63,7 +68,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADSL,
                                      c("ARM", "ACTARM", "SEX",
-                                     "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
           ),
           selected = "ACTARM",
           multiple = FALSE
@@ -75,7 +80,7 @@ app <- init(
           select = select_spec(
             choices = variable_choices(ADSL,
                                        c("ARM", "ACTARM", "SEX",
-                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
             selected = "SEX",
             multiple = FALSE
@@ -104,7 +109,7 @@ app <- init(
           select = select_spec(
             choices = variable_choices(ADSL,
                                        c("ARM", "ACTARM", "SEX",
-                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
             selected = NULL,
             multiple = FALSE
@@ -125,7 +130,7 @@ app <- init(
           select = select_spec(
             choices = variable_choices(ADSL,
                                        c("ARM", "ACTARM", "SEX",
-                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
+                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
             selected = NULL,
             multiple = FALSE
