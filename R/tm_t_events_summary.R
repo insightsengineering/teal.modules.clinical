@@ -220,10 +220,6 @@ srv_t_events_summary <- function(input,
 
     adsl_vars <- unique(c("STUDYID", "USUBJID", arm_var))
     anl_vars <- unique(c("STUDYID", "USUBJID", "AEDECOD", flag_var_anl, flag_var_aesi))
-    labels <- c(
-      datasets$get_column_labels("ADSL", adsl_vars),
-      datasets$get_column_labels(dataname, anl_vars)
-    )
     chunks_push(bquote({
       ADSL_S <- ADSL_FILTERED[, .(adsl_vars)] # nolint
       ANL_S <- .(as.name(anl_name))[, .(anl_vars)] # nolint
@@ -238,10 +234,12 @@ srv_t_events_summary <- function(input,
         call(
           "%>%",
             as.name("ANL_MERGED"),
-            as.call(c(
-              quote(rtables::var_relabel),
-                labels[!duplicated(labels)]
-            ))
+            teal.devel::get_relabel_call(
+              labels = c(
+                datasets$get_column_labels("ADSL", adsl_vars),
+                datasets$get_column_labels(dataname, anl_vars)
+              )
+            )
           )
         )
       )

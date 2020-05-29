@@ -341,8 +341,10 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     }))
 
     # dplyr::select loses labels
-    chunk$push(get_relabel_call2(
-      columns_source = merged_data()()$columns_source, datasets = datasets, dataframe_name = "counts"
+    chunk$push(teal.devel::get_anl_relabel_call(
+      columns_source = merged_data()()$columns_source,
+      datasets = datasets,
+      anl_name = "counts"
     ))
 
     chunks_safe_eval(chunk)
@@ -694,45 +696,4 @@ add_plot_title <- function(chunk, groupby_vars) {
     )
     plot <- plot + ggtitle(plot_title)
   }))
-}
-
-#' Get relabel call
-#'
-#' @md
-#' @param columns_source named list where names are column names, values are labels + additional attribute dataname
-#' @param datasets `datasets`, e.g. argument in Shiny server function
-#' @param dataframe_name `character.single` name of dataframe to add labels to
-#'
-#' @return (\code{call})
-#'
-#' @importFrom stats setNames
-#' @importFrom rtables var_relabel
-get_relabel_call2 <- function(columns_source, datasets, dataframe_name = "ANL") {
-  labels_vector <- unlist(unname(lapply(
-    columns_source,
-    function(selector) {
-      column_names <- names(selector)
-      if (is_empty(column_names)) {
-        return(NULL)
-      }
-      column_labels <- datasets$get_column_labels(attr(selector, "dataname"), column_names)
-      return(if_not_null(column_labels, setNames(column_labels, selector)))
-    }
-  )))
-
-  if (length(labels_vector) == 0) {
-    return(NULL)
-  }
-
-  res <- call(
-    "<-",
-    as.name(dataframe_name), #modified
-    call(
-      "%>%",
-      as.name(dataframe_name), #modified
-      as.call(append(quote(rtables::var_relabel), labels_vector))
-    )
-  )
-
-  return(res)
 }

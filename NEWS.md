@@ -10,6 +10,9 @@
 
 * new `tm_t_abnormality` module
 
+* removed `get_relabel_call` and `get_relabel_call2` in favor of `teal.devel::get_relabel_call` and
+`teal.devel::get_anl_relabel_call`.
+
 # teal.modules.clinical 0.8.2
 
 * add confidence level for `survfit`, `coxph`, `ztest`; add confidence type, ties, percentiles to `tm_t_tte`

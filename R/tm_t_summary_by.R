@@ -255,15 +255,12 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
               by = c("USUBJID", "STUDYID")
             )
           )),
-          as.call(c(
-            quote(rtables::var_relabel), {
-              labels <- c(
-                datasets$get_column_labels("ADSL", adsl_vars),
-                datasets$get_column_labels(dataname, anl_vars)
-              )
-              labels[!duplicated(labels)]
-            }
-          ))
+          teal.devel::get_relabel_call(
+            labels = c(
+              datasets$get_column_labels("ADSL", adsl_vars),
+              datasets$get_column_labels(dataname, anl_vars)
+            )
+          )
         )
       )
     )

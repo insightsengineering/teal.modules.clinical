@@ -163,7 +163,9 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
               list(quote(dplyr::select)),
               lapply(c(summarize_vars, arm_var), as.name)
             )),
-            get_relabel_call(datasets, dataname, summarize_vars)
+            teal.devel::get_relabel_call(
+              labels = datasets$get_column_labels(dataname, summarize_vars)
+            )
           )
         )
       )
