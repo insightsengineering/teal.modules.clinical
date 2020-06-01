@@ -114,7 +114,7 @@
 #'
 #'
 #' \dontrun{
-#'  shinyApp(app$ui, app$server)
+#' shinyApp(app$ui, app$server)
 #' }
 tm_t_mmrm <- function(label,
                       dataname,
