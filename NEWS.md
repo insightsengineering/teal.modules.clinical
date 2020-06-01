@@ -1,13 +1,10 @@
 # teal.modules.clinical 0.8.2.9000
 
+* new `tm_t_coxreg` module for multi-variable Cox regressions
 * new `tm_t_binary_outcome` module
-
 * new `tm_t_events_patyear` module: events rate adjusted for patient-year at risk table
-
 * remove `grade_levels` argument from `tm_t_events_by_grade`
-
 * response table is updated for single arm 
-
 * new `tm_t_abnormality` module
 
 * removed `get_relabel_call` and `get_relabel_call2` in favor of `teal.devel::get_relabel_call` and
