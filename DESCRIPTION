@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
 Date: 2020-03-31
-Version: 0.8.2.9000
+Version: 0.8.3
 Authors@R: c(
   person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre")),
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = "aut"),

@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.2.9000
+# teal.modules.clinical 0.8.3
 
 * new `tm_t_coxreg` module for multi-variable Cox regressions
 * new `tm_t_binary_outcome` module
