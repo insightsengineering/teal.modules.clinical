@@ -131,7 +131,7 @@ ui_t_binary_outcome <- function(id, ...) {
       div(
         class = "arm-comp-box",
         tags$label("Compare Arms"),
-        shinyWidgets::switchInput(inputId = ns("compare_arms"), value = TRUE, size = "mini"),
+        shinyWidgets::switchInput(inputId = ns("compare_arms"), value = !is.null(a$arm_ref_comp), size = "mini"),
 
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
@@ -278,7 +278,8 @@ srv_t_binary_outcome <- function(input,
     id_arm_var = "arm_var",
     adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
     arm_ref_comp = arm_ref_comp,
-    module = "tm_t_binary_outcome"
+    module = "tm_t_binary_outcome",
+    on_off = reactive(input$compare_arms)
   )
 
 
@@ -319,29 +320,27 @@ srv_t_binary_outcome <- function(input,
       strata_var <- NULL
     }
 
-    if (length(unique(adsl_filtered[[arm_var]])) == 1){
 
-      validate_standard_inputs(
-        adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
-        arm_var = arm_var,
-        ref_arm = ref_arm,
-        min_n_levels_armvar = NULL
-      )
+    validate_args <- list(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
+      arm_var = arm_var
+    )
+
+    if (uniqueN(adsl_filtered[[arm_var]]) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm))
+      }
     } else {
-
-      validate_standard_inputs(
-        adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
-        arm_var = arm_var,
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm, comp_arm = comp_arm))
+      }
     }
+
+    do.call(what = "validate_standard_inputs", validate_args)
 
     validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
