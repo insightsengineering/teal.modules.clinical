@@ -321,7 +321,7 @@ srv_t_abnormality <- function(input,
     if (is.null(by_vars)) {
       chunks_push(bquote(row_by <- factor(rep("All", nrow(.(as.name("ANL_MERGED")))))))
     } else {
-      chunks_push(bquote(row_by <- nested_by(.(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE])
+      chunks_push(bquote(row_by <- .(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE]
       ))
     }
 

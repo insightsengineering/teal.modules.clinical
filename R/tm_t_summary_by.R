@@ -286,7 +286,7 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
           row_by = if (is.null(bquote(.(by_vars)))) {
             bquote(factor(rep("All", nrow(.(as.name("ANL_MERGED"))))))
           } else {
-            bquote(nested_by(.(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE]))
+            bquote(.(as.name("ANL_MERGED"))[, .(by_vars), drop = FALSE])
           },
           col_by = bquote(as.factor(.(as.name("ANL_MERGED"))[[.(arm_var)]])),
           col_N = bquote(table(.(as.name(adsl_name))[[.(arm_var)]])),
