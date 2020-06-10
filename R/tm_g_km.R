@@ -253,7 +253,7 @@ srv_g_km <- function(input,
     if_show_km <- input$show_km_table # nolint
     if_show_coxph <- input$show_coxph_table # nolint
     xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
-      strsplit(.data, ",") %>%
+      strsplit(",") %>%
       unlist() %>%
       as.numeric()
     if (length(xticks) == 0) {

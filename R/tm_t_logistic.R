@@ -261,7 +261,7 @@ srv_t_logistic <- function(input,
    } else {
      if (is.numeric(anl_filtered[[interaction_var]])) {
        increments <- gsub(";", ",", trimws(input$interaction_values)) %>%
-         strsplit(.data, ",") %>%
+         strsplit(",") %>%
          unlist() %>%
          as.numeric()
        if (length(increments) == 0) {
