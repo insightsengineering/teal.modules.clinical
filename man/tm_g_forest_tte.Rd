@@ -73,7 +73,7 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADTTE", ADTTE),
-    code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+    code = 'ADSL <- radsl(cached = TRUE)
             ADTTE <- radtte(ADSL, cached = TRUE)
             ADSL$RACE <- droplevels(ADSL$RACE)',
     check = FALSE

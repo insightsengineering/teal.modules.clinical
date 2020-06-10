@@ -13,6 +13,7 @@
 #'
 #' @inheritParams tm_t_tte
 #' @export
+#' @importFrom rtables var_labels "var_labels<-"
 #'
 #' @template author_song24
 #'
@@ -253,8 +254,16 @@ srv_g_forest_rsp <- function(input,
 
 
   output$forest_plot <- renderPlot({
+
     adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
+    var_labels(adsl_filtered) <- var_labels(
+      datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+    )
+
     anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    var_labels(anl_filtered) <- var_labels(
+      datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+      )
 
     paramcd <- input$paramcd
     responders <- input$responders
@@ -322,6 +331,14 @@ srv_g_forest_rsp <- function(input,
           paste(strwrap(x, width = 15), collapse = "\n")
         }
       )
+
+      var_labels(anl) <- .(
+        c(
+          var_labels(adsl_filtered[adsl_vars]),
+          var_labels(anl_filtered[c("AVALC")])
+        )
+      )
+
     }))
 
     chunks_safe_eval()

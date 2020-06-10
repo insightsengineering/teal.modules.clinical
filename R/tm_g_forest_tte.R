@@ -6,6 +6,7 @@
 #' @inheritParams tm_g_forest_rsp
 #'
 #' @export
+#' @importFrom rtables var_labels "var_labels<-"
 #'
 #' @template author_song24
 #'
@@ -21,7 +22,7 @@
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADTTE", ADTTE),
-#'     code = 'ADSL <- ADSL <- radsl(cached = TRUE)
+#'     code = 'ADSL <- radsl(cached = TRUE)
 #'             ADTTE <- radtte(ADSL, cached = TRUE)
 #'             ADSL$RACE <- droplevels(ADSL$RACE)',
 #'     check = FALSE
@@ -181,9 +182,18 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     module = "tm_g_forest_tte"
   )
 
+
   output$forest_plot <- renderPlot({
+
     ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) #nolint
+    var_labels(ADSL_FILTERED) <- var_labels(
+      datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+    )
+
     ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) #nolint
+    var_labels(ANL_FILTERED) <- var_labels(
+      datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+      )
 
     paramcd <- input$paramcd
     arm_var <- input$arm_var
@@ -228,11 +238,13 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALU", "CNSR") #nolint
 
     chunks_push(bquote({
+
       ref_arm <- .(ref_arm)
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
       adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
       adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
+
       anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
       anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
@@ -248,6 +260,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
         function(x) paste(strwrap(x, width = 15), collapse = "\n")
       )
 
+      var_labels(anl) <- .(
+        c(
+          var_labels(ADSL_FILTERED[adsl_vars]),
+          var_labels(ANL_FILTERED[c("AVAL", "AVALU", "CNSR")])
+        )
+      )
 
     }))
 
@@ -301,6 +319,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       }
       grid.newpage()
       grid.draw(p)
+
     }))
 
     chunks_safe_eval()
