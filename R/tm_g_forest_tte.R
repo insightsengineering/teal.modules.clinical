@@ -224,10 +224,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
     validate_in(paramcd, ANL_FILTERED$PARAMCD, "Time-to-Event Endpoint cannot be found in PARAMCD")
     validate(
-      need(length(conf_level) == 1, "Please select level of confidence."),
+      need(length(conf_level) == 1, "Please select level of confidence.")
+    )
+    if (!is.null(subgroup_var)){
       need(all(vapply(ADSL_FILTERED[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
-    )
+    }
 
     anl_data_name <- paste0(dataname, "_FILTERED")
     assign(anl_data_name, ANL_FILTERED)
@@ -243,7 +245,16 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
       comp_arm <- .(comp_arm)
       strata_var <- .(strata_var)
       adsl_p <- subset(ADSL_FILTERED, ADSL_FILTERED[[.(arm_var)]] %in% c(ref_arm, comp_arm))
-      adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
+
+    }))
+
+    if (!is.null(subgroup_var)) {
+      chunks_push(bquote({
+        adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
+      }))
+    }
+
+    chunks_push(bquote({
 
       anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 

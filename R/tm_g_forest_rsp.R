@@ -293,10 +293,12 @@ srv_g_forest_rsp <- function(input,
     validate_in(responders, anl_filtered$AVALC, "Responder values cannot be found in AVALC.")
     validate_in(paramcd, anl_filtered$PARAMCD, "Response parameter cannot be found in PARAMCD.")
     validate(
-      need(length(conf_level) == 1, "Please select level of confidence."),
+      need(length(conf_level) == 1, "Please select level of confidence.")
+    )
+    if (!is.null(subgroup_var)){
       need(all(vapply(adsl_filtered[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
-    )
+    }
 
     # perform analysis
     anl_name <- paste0(dataname, "_FILTERED")
@@ -310,11 +312,17 @@ srv_g_forest_rsp <- function(input,
     chunks_reset(envir = environment())
 
     chunks_push(bquote({
-
       adsl_p <- subset(.(as.name(adsl_name)), .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm)))
       anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))
+    }))
 
-      adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
+    if (!is.null(subgroup_var)) {
+      chunks_push(bquote({
+        adsl_p[, .(subgroup_var)] <- droplevels(adsl_p[, .(subgroup_var)])
+      }))
+    }
+
+    chunks_push(bquote({
       anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
                    all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
 
