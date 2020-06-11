@@ -44,7 +44,7 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-This module produces a multi-variable logistic regression table that matches the
+This module produces an event rate adjusted for patient-years at risk table that matches the
   STREAM template \code{aet05} and \code{aet05_all}
 }
 \examples{

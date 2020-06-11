@@ -1,6 +1,6 @@
 #' teal module for event rates adjusted for patient-years
 #'
-#' @description This module produces a multi-variable logistic regression table that matches the
+#' @description This module produces an event rate adjusted for patient-years at risk table that matches the
 #'   STREAM template \code{aet05} and \code{aet05_all}
 #' @inheritParams tm_t_rsp
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
