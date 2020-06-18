@@ -10,6 +10,8 @@
 #' for variable names that can be used for interaction variable selection
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for confidence level for computation of the confidence intervals.
+#' @importFrom rtables var_labels "var_labels<-"
+#'
 #' @export
 #' @examples
 #' library(random.cdisc.data)
@@ -17,15 +19,19 @@
 #' library(teal.modules.clinical)
 #' ADSL <- radsl(cached = TRUE)
 #' ADRS <- radrs(ADSL, seed = 2)
+#' varlabel_adrs <- var_labels(ADRS)
 #' ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
 #' ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
+#' var_labels(ADRS) <- varlabel_adrs
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADRS", ADRS),
 #'     code = 'ADSL <- radsl(cached = TRUE)
 #'             ADRS <- radrs(ADSL, seed = 2)
+#'             varlabel_adrs <- var_labels(ADRS)
 #'             ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
-#'             ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)',
+#'             ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
+#'             var_labels(ADRS) <- varlabel_adrs',
 #'     check = FALSE
 #'   ),
 #'   modules = root_modules(
@@ -224,12 +230,14 @@ srv_t_logistic <- function(input,
   })
 
   output$interaction_input <- renderUI({
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    adsl <- datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
     interaction_var <- input$interaction_var
 
     if (length(interaction_var) != 0) {
-      if (is.numeric(anl[[interaction_var]])) {
-        def_val <- ceiling(stats::median(anl[[interaction_var]], na.rm = TRUE))
+      validate(need(interaction_var %in% colnames(adsl),
+                    paste0(interaction_var, " is not in ADSL")))
+      if (is.numeric(adsl[[interaction_var]])) {
+        def_val <- ceiling(stats::median(adsl[[interaction_var]], na.rm = TRUE))
         return(
           tagList(textInput(session$ns("interaction_values"),
                             label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
@@ -243,7 +251,13 @@ srv_t_logistic <- function(input,
 
  output$logistic_table <- renderUI({
    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
+   var_labels(adsl_filtered) <- var_labels(
+     datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+   )
    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+   var_labels(anl_filtered) <- var_labels(
+     datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+   )
    paramcd <- input$paramcd
    events <- input$events
    arm_var <- input$arm_var
@@ -259,7 +273,9 @@ srv_t_logistic <- function(input,
      interaction_var <- NULL
      increments <- NULL
    } else {
-     if (is.numeric(anl_filtered[[interaction_var]])) {
+     validate(need(interaction_var %in% colnames(adsl_filtered),
+                   paste0(interaction_var, " is not in ADSL")))
+     if (is.numeric(adsl_filtered[[interaction_var]])) {
        increments <- gsub(";", ",", trimws(input$interaction_values)) %>%
          strsplit(",") %>%
          unlist() %>%
@@ -273,7 +289,7 @@ srv_t_logistic <- function(input,
        }
      } else {
        validate(
-         need(all(table(anl_filtered[[interaction_var]], anl_filtered[[arm_var]]) > 0),
+         need(all(table(adsl_filtered[[interaction_var]], adsl_filtered[[arm_var]]) > 0),
               paste0("0 count for some cells of ", arm_var, "*", interaction_var))
        )
        increments <- NULL
@@ -283,7 +299,7 @@ srv_t_logistic <- function(input,
    # Validate your input
    validate_standard_inputs(
      adsl = adsl_filtered,
-     adslvars = c("USUBJID", "STUDYID", arm_var, covariate_var),
+     adslvars = c("USUBJID", "STUDYID", arm_var, covariate_var, interaction_var),
      anl = anl_filtered,
      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
      arm_var = arm_var,
@@ -349,6 +365,13 @@ srv_t_logistic <- function(input,
 
    chunks_push(bquote({
      anl <- mutate(anl, EVENT = case_when(AVALC %in% events ~ 1, TRUE ~ 0))
+     var_labels(anl) <- .(
+       c(
+         var_labels(adsl_filtered[adsl_vars]),
+         var_labels(anl_filtered[c("AVAL", "AVALC", "PARAMCD")]),
+         "Responders"
+       )
+     )
    }))
 
    if (!is.null(interaction_var)) {
@@ -370,32 +393,12 @@ srv_t_logistic <- function(input,
      )
    }))
 
-
-  chunks_push(bquote({
-    terms_label <- c("Treatment", .(covariate_var))
-    names(terms_label) <- c(.(arm_var), .(covariate_var))
-  }))
-  if (!is.null(interaction_var)) {
-    chunks_push(bquote({
-      terms_label <- c(terms_label, .(interaction_var), paste0("Interaction of Treatment * ", .(interaction_var)))
-      names(terms_label) <- c(
-        .(arm_var),
-        .(covariate_var),
-        .(interaction_var),
-        paste0(.(arm_var), ":", .(interaction_var))
-      )
-    }))
-  }
   chunks_push(bquote(increments <- .(increments)))
 
    chunks_push(bquote({
      tbl <- t_logistic(
-        glm_model = glm(
-          formula = formula_glm,
-          data = anl,
-          family = "binomial"
-        ),
-        terms_label = terms_label,
+       formula = formula_glm,
+       data = anl,
         increments = increments,
         conf_level = .(conf_level)
 

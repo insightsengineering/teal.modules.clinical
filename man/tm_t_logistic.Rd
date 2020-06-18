@@ -64,15 +64,19 @@ library(dplyr)
 library(teal.modules.clinical)
 ADSL <- radsl(cached = TRUE)
 ADRS <- radrs(ADSL, seed = 2)
+varlabel_adrs <- var_labels(ADRS)
 ADRS <- subset(ADRS, PARAMCD \%in\% c("BESRSPI", "INVET"))
 ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
+var_labels(ADRS) <- varlabel_adrs
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADRS", ADRS),
     code = 'ADSL <- radsl(cached = TRUE)
             ADRS <- radrs(ADSL, seed = 2)
+            varlabel_adrs <- var_labels(ADRS)
             ADRS <- subset(ADRS, PARAMCD \%in\% c("BESRSPI", "INVET"))
-            ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)',
+            ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
+            var_labels(ADRS) <- varlabel_adrs',
     check = FALSE
   ),
   modules = root_modules(
