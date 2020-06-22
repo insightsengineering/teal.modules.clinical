@@ -129,7 +129,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
   init_chunks()
 
   output$table <- renderUI({
-    anl_f <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    anl_f <- datasets$get_data(dataname, filtered = TRUE)
 
     arm_var <- input$arm_var
     add_total <- input$add_total
@@ -164,7 +164,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
               lapply(c(summarize_vars, arm_var), as.name)
             )),
             teal.devel::get_relabel_call(
-              labels = datasets$get_column_labels(dataname, summarize_vars)
+              labels = datasets$get_variable_labels(dataname, summarize_vars)
             )
           )
         )

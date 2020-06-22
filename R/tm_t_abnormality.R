@@ -99,14 +99,9 @@
 #'      ),
 #'      exclude_base_abn = FALSE
 #'    )
-#'  )
+#'  ),
+#'  filter_states = list(ADLB = list(ABLFL = "", ABLFL2 = ""))
 #')
-#'
-#'# important to filter out baseline records for table numbers to be correct
-#'app$datasets$hold_filtering()
-#'app$datasets$set_filter_state("ADLB", "ABLFL", "")
-#'app$datasets$set_filter_state("ADLB", "ABLFL2", "")
-#'app$datasets$continue_filtering()
 #'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
@@ -222,7 +217,7 @@ srv_t_abnormality <- function(input,
 
   # Update UI choices depending on selection of previous options
   observe({
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
 
     validate_has_elements(input$grade, "plesae select 'Grade Variable'")
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
@@ -243,8 +238,8 @@ srv_t_abnormality <- function(input,
   # Create output
   output$table <- renderUI({
 
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     arm_var <- input$arm_var
     id_var <- input$id_var
@@ -308,8 +303,8 @@ srv_t_abnormality <- function(input,
           as.name("ANL_MERGED"),
           teal.devel::get_relabel_call(
             labels = c(
-              datasets$get_column_labels("ADSL", adsl_vars),
-              datasets$get_column_labels(dataname, anl_vars)
+              datasets$get_variable_labels("ADSL", adsl_vars),
+              datasets$get_variable_labels(dataname, anl_vars)
             )
           )
         )

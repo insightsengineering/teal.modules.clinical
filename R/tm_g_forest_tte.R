@@ -177,7 +177,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var", # from UI
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
@@ -185,14 +185,14 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
 
   output$forest_plot <- renderPlot({
 
-    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) #nolint
+    ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE) #nolint
     var_labels(ADSL_FILTERED) <- var_labels(
-      datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+      datasets$get_data("ADSL", filtered = FALSE)
     )
 
-    ANL_FILTERED <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE) #nolint
+    ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE) #nolint
     var_labels(ANL_FILTERED) <- var_labels(
-      datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+      datasets$get_data(dataname, filtered = FALSE)
       )
 
     paramcd <- input$paramcd

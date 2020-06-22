@@ -280,7 +280,7 @@ srv_t_mmrm <- function(input,
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_mmrm"
   )
@@ -289,8 +289,8 @@ srv_t_mmrm <- function(input,
   table_reactive <- reactive({
     # resolve all reactive expressions
     # nolint start
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     # nolint end
 
     endpoint_var <- input$endpoint_var
@@ -435,8 +435,8 @@ srv_t_mmrm <- function(input,
           )),
           teal.devel::get_relabel_call(
             labels = c(
-              datasets$get_column_labels("ADSL", adsl_vars),
-              datasets$get_column_labels(dataname, anl_vars)
+              datasets$get_variable_labels("ADSL", adsl_vars),
+              datasets$get_variable_labels(dataname, anl_vars)
             )
           )
         )

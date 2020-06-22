@@ -223,7 +223,7 @@ srv_g_km <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_km"
   )
@@ -236,8 +236,8 @@ srv_g_km <- function(input,
   })
 
   output$plot <- renderPlot({
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE, reactive = TRUE)
-    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE) # nolint
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE) # nolint
 
     paramcd <- input$paramcd # nolint
     arm_var <- input$arm_var

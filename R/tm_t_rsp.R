@@ -226,7 +226,7 @@ srv_t_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_rsp"
   )
@@ -234,7 +234,7 @@ srv_t_rsp <- function(input,
 
   # Update UI choices depending on selection of previous options
   observe({
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
     paramcd <- input$paramcd
 
     responder_choices <- unique(anl$AVALC[anl$PARAMCD == paramcd])
@@ -247,8 +247,8 @@ srv_t_rsp <- function(input,
   })
 
   tm_t_rsp_call <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     paramcd <- input$paramcd
     responders <- input$responders

@@ -174,8 +174,8 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
   init_chunks()
 
   output$table <- renderUI({
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     arm_var <- input$arm_var
     add_total <- input$add_total
@@ -257,8 +257,8 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
           )),
           teal.devel::get_relabel_call(
             labels = c(
-              datasets$get_column_labels("ADSL", adsl_vars),
-              datasets$get_column_labels(dataname, anl_vars)
+              datasets$get_variable_labels("ADSL", adsl_vars),
+              datasets$get_variable_labels(dataname, anl_vars)
             )
           )
         )

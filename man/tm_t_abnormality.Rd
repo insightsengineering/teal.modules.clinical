@@ -135,14 +135,9 @@ data = cdisc_data(
      ),
      exclude_base_abn = FALSE
    )
- )
+ ),
+ filter_states = list(ADLB = list(ABLFL = "", ABLFL2 = ""))
 )
-
-# important to filter out baseline records for table numbers to be correct
-app$datasets$hold_filtering()
-app$datasets$set_filter_state("ADLB", "ABLFL", "")
-app$datasets$set_filter_state("ADLB", "ABLFL2", "")
-app$datasets$continue_filtering()
 
 \dontrun{
 shinyApp(app$ui, app$server)

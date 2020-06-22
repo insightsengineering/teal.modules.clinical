@@ -233,7 +233,7 @@ srv_g_forest_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = NULL,
     module = "tm_g_forest_rsp"
   )
@@ -242,7 +242,7 @@ srv_g_forest_rsp <- function(input,
   # Update UI choices depending on selection of previous options
   observe({
     paramcd <- input$paramcd
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
     rsp_choices <- unique(anl$AVALC[anl$PARAMCD == paramcd])
 
     updateSelectInput(
@@ -255,14 +255,14 @@ srv_g_forest_rsp <- function(input,
 
   output$forest_plot <- renderPlot({
 
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
     var_labels(adsl_filtered) <- var_labels(
-      datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+      datasets$get_data("ADSL", filtered = FALSE)
     )
 
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     var_labels(anl_filtered) <- var_labels(
-      datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+      datasets$get_data(dataname, filtered = FALSE)
       )
 
     paramcd <- input$paramcd

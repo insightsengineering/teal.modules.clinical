@@ -211,13 +211,13 @@ srv_t_logistic <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_logistic"
   )
   # Update UI choices depending on selection of previous options
   observe({
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
     paramcd <- input$paramcd
 
     responder_choices <- unique(anl$AVALC[anl$PARAMCD == paramcd])
@@ -230,7 +230,7 @@ srv_t_logistic <- function(input,
   })
 
   output$interaction_input <- renderUI({
-    adsl <- datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+    adsl <- datasets$get_data("ADSL", filtered = FALSE)
     interaction_var <- input$interaction_var
 
     if (length(interaction_var) != 0) {
@@ -250,13 +250,13 @@ srv_t_logistic <- function(input,
   })
 
  output$logistic_table <- renderUI({
-   adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
+   adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
    var_labels(adsl_filtered) <- var_labels(
-     datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE)
+     datasets$get_data("ADSL", filtered = FALSE)
    )
-   anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+   anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
    var_labels(anl_filtered) <- var_labels(
-     datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+     datasets$get_data(dataname, filtered = FALSE)
    )
    paramcd <- input$paramcd
    events <- input$events

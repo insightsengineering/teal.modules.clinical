@@ -264,7 +264,7 @@ srv_t_coxreg <- function(input,
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # from UI
-    adsl = datasets$get_data("ADSL", filtered = FALSE, reactive = FALSE),
+    adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte"
   )
@@ -275,9 +275,9 @@ srv_t_coxreg <- function(input,
     ## resolve all reactive expressions ----
 
     # nolint start
-    ADSL_FILTERED <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
+    ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE)
     ANL_FILTERED  <- datasets$get_data(
-      dataname, reactive = TRUE, filtered = TRUE
+      dataname, filtered = TRUE
     )
     # nolint end
 

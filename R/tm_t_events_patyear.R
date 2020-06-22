@@ -149,7 +149,7 @@ srv_t_events_patyear <- function(input,
 
   init_chunks()
   observe({
-    anl <- datasets$get_data(dataname, filtered = FALSE, reactive = FALSE)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
     paramcd <- input$paramcd
 
     events_choices <- unique(anl$CNSR[anl$PARAMCD == paramcd]) %>% sort
@@ -161,8 +161,8 @@ srv_t_events_patyear <- function(input,
     )
   })
   output$patyear_table <- renderUI({
-    adsl_filtered <- datasets$get_data("ADSL", reactive = TRUE, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, reactive = TRUE, filtered = TRUE)
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     paramcd <- input$paramcd
     events_indicator <- input$events_indicator
     arm_var <- input$arm_var
