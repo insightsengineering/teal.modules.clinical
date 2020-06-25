@@ -1,6 +1,6 @@
 # teal.modules.clinical 0.8.3.9000
 
-* issues with no comments: 
+* Extend `tm_t_coxreg` to optionally produce univariate Cox regressions.
 
 # teal.modules.clinical 0.8.3
 

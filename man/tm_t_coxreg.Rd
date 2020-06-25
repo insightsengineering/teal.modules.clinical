@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{tm_t_coxreg}
 \alias{tm_t_coxreg}
-\title{Cox Multiple Regression Model}
+\title{Cox Regression Model}
 \usage{
 tm_t_coxreg(
   label,
@@ -12,6 +12,7 @@ tm_t_coxreg(
   paramcd,
   cov_var,
   strata_var,
+  multivariate = TRUE,
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
     TRUE),
   pre_output = NULL,
@@ -48,6 +49,10 @@ covariates in the model.}
 available choices and preselected option for variable names that can be
 used for stratification}
 
+\item{multivariate}{If \code{FALSE}, the univariate approach is be computed
+(equivalent to \code{COXT01} standard) instead of the multivariate model
+(equivalent to \code{COXT02} standard).}
+
 \item{conf_level}{\code{\link[teal]{choices_selected}} object with all
 available choices and preselected option for variable names that can be
 used for confidence level for computation of the confidence intervals.}
@@ -60,12 +65,20 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-Teal module to program the simple effects of a multi-variable Cox regression
-models such as: \code{Surv(time, event) ~ Arm + Cov1 + ... }.
-This provides the \code{COXT02} standard output.
+Teal module to fit Cox univariate or multivariate models consistent with
+\code{COXT01} and \code{COXT02} standard outputs, respectively.
 }
 \details{
-This modules expects that the analysis data has the following variables
+The Cox Proportional Hazards (PH) model is the most commonly used method to
+estimate the magnitude of
+the effect in survival analysis. It assumes proportional hazards: the ratio
+of the hazards between groups (e.g., two arms) is constant over time.
+This ratio is referred to as the "hazard ratio" (HR) and is one of the most
+commonly reported metrics to describe the effect size in survival analysis.
+For further information about the Cox Proportional Hazards Model, check
+"Statistical Analysis of Clinical Trials Data with R", NEST team.
+
+This modules expects that the analysis data has the following variables:
 
 \tabular{ll}{
 \code{AVAL} \tab time to event\cr
@@ -79,11 +92,20 @@ The arm variables, stratification and covariate variables are taken from the
 }
 \section{Note}{
 
-The likelihood ratio test is not supported for model including strata,
+\itemize{
+\item The likelihood ratio test is not supported for model including strata,
 Wald test will be substituted.
+\item Multivariate is the default choice for backward compatibility.
+}
 }
 
 \examples{
+## First example
+## =============
+## The example below is based on the usual approach involving creation of
+## a random CDISC dataset and then running the application.
+
+library(teal.modules.clinical)
 library(random.cdisc.data)
 
 ADSL  <- radsl(cached = TRUE)
@@ -111,14 +133,94 @@ app <- init(
       dataname = "ADTTE",
       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-      strata_var = choices_selected(c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"),
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      ),
+      strata_var = choices_selected(
+        c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
+      ),
       cov_var    = choices_selected(
         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
-      )
+      ),
+      multivariate = TRUE
     )
   )
 )
+\dontrun{
+shinyApp(app$ui, app$server)
+}
+
+## Second example
+## ==============
+## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
+## where ties and pval_method matter.
+
+## Dataset fabrication
+## -------------------
+
+ADTTE <- data.frame(
+  STUDYID = "LUNG",
+  AVAL    = c(        4,   3,   1,   1,   2,   2,   3,   1,   2),
+  CNSR    = c(        1,   1,   1,   0,   1,   1,   0,   0,   0),
+  ARMCD   = factor(
+    c(                0,   1,   1,   1,   1,   0,   0,   0,   0),
+    labels = c("ARM A", "ARM B")
+  ),
+  SEX     = factor(
+    c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
+    labels = c("F", "M")
+  ),
+  INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A"))
+)
+ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
+ADTTE <- dplyr::as_tibble(ADTTE)
+set.seed(1)
+ADTTE$INST <- sample(ADTTE$INST)
+ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
+ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
+ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
+ADSL <- subset(
+  ADTTE, select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
+)
+
+## Teal application
+## ================
+## Note that the R code exported by `Show R Code` does not include the data
+## preprocessing. You will need to create the dataset as above before
+## running the exported R code.
+
+library(teal.modules.clinical)
+arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+app <- init(
+  data = cdisc_data(
+    dataset(
+      dataname = "ADSL", data = ADSL,
+      keys = keys(primary = c("USUBJID"), foreign = NULL, parent  = NULL)
+    ),
+    dataset(
+      dataname = "ADTTE", data = ADTTE,
+      keys = keys(
+        primary = c("USUBJID", "PARAMCD"), foreign = c("USUBJID"),
+        parent = "ADSL"
+      )
+    )
+  ),
+  modules = root_modules(
+    tm_t_coxreg(
+      label = "Cox Reg.",
+      dataname = "ADTTE",
+      arm_var = choices_selected(c("ARMCD"), "ARMCD"),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      ),
+      strata_var = choices_selected(c("INST"), NULL),
+      cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
+      multivariate = TRUE
+    )
+  )
+)
+
 \dontrun{
 shinyApp(app$ui, app$server)
 }

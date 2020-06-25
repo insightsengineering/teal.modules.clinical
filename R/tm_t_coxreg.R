@@ -1,8 +1,7 @@
-#' Cox Multiple Regression Model
+#' Cox Regression Model
 #'
-#' Teal module to program the simple effects of a multi-variable Cox regression
-#' models such as: `Surv(time, event) ~ Arm + Cov1 + ... `.
-#' This provides the `COXT02` standard output.
+#' Teal module to fit Cox univariate or multivariate models consistent with
+#' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @param label Menu item label of the module in the teal app.
@@ -27,12 +26,24 @@
 #' @param strata_var \code{\link[teal]{choices_selected}} object with all
 #'   available choices and preselected option for variable names that can be
 #'   used for stratification
+#' @param multivariate If `FALSE`, the univariate approach is be computed
+#'   (equivalent to `COXT01` standard) instead of the multivariate model
+#'   (equivalent to `COXT02` standard).
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all
 #'   available choices and preselected option for variable names that can be
 #'   used for confidence level for computation of the confidence intervals.
 #'
 #' @details
-#' This modules expects that the analysis data has the following variables
+#' The Cox Proportional Hazards (PH) model is the most commonly used method to
+#' estimate the magnitude of
+#' the effect in survival analysis. It assumes proportional hazards: the ratio
+#' of the hazards between groups (e.g., two arms) is constant over time.
+#' This ratio is referred to as the "hazard ratio" (HR) and is one of the most
+#' commonly reported metrics to describe the effect size in survival analysis.
+#' For further information about the Cox Proportional Hazards Model, check
+#' "Statistical Analysis of Clinical Trials Data with R", NEST team.
+#'
+#' This modules expects that the analysis data has the following variables:
 #'
 #' \tabular{ll}{
 #'  `AVAL` \tab time to event\cr
@@ -45,15 +56,23 @@
 #' `ADSL` data.
 #'
 #' @section Note:
-#' The likelihood ratio test is not supported for model including strata,
-#' Wald test will be substituted.
+#' - The likelihood ratio test is not supported for model including strata,
+#'   Wald test will be substituted.
+#' - Multivariate is the default choice for backward compatibility.
 #'
 #' @export
 #' @import magrittr
+#' @importFrom stats setNames
 #'
 #' @md
 #'
 #' @examples
+#' ## First example
+#' ## =============
+#' ## The example below is based on the usual approach involving creation of
+#' ## a random CDISC dataset and then running the application.
+#'
+#' library(teal.modules.clinical)
 #' library(random.cdisc.data)
 #'
 #' ADSL  <- radsl(cached = TRUE)
@@ -81,17 +100,98 @@
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-#'       strata_var = choices_selected(c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"),
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'       ),
+#'       strata_var = choices_selected(
+#'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
+#'       ),
 #'       cov_var    = choices_selected(
 #'         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
-#'       )
+#'       ),
+#'       multivariate = TRUE
 #'     )
 #'   )
 #' )
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
+#'
+#' ## Second example
+#' ## ==============
+#' ## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
+#' ## where ties and pval_method matter.
+#'
+#' ## Dataset fabrication
+#' ## -------------------
+#'
+#' ADTTE <- data.frame(
+#'   STUDYID = "LUNG",
+#'   AVAL    = c(        4,   3,   1,   1,   2,   2,   3,   1,   2),
+#'   CNSR    = c(        1,   1,   1,   0,   1,   1,   0,   0,   0),
+#'   ARMCD   = factor(
+#'     c(                0,   1,   1,   1,   1,   0,   0,   0,   0),
+#'     labels = c("ARM A", "ARM B")
+#'   ),
+#'   SEX     = factor(
+#'     c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
+#'     labels = c("F", "M")
+#'   ),
+#'   INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A"))
+#' )
+#' ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
+#' ADTTE <- dplyr::as_tibble(ADTTE)
+#' set.seed(1)
+#' ADTTE$INST <- sample(ADTTE$INST)
+#' ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
+#' ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
+#' ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
+#' ADSL <- subset(
+#'   ADTTE, select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
+#' )
+#'
+#' ## Teal application
+#' ## ================
+#' ## Note that the R code exported by `Show R Code` does not include the data
+#' ## preprocessing. You will need to create the dataset as above before
+#' ## running the exported R code.
+#'
+#' library(teal.modules.clinical)
+#' arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+#' app <- init(
+#'   data = cdisc_data(
+#'     dataset(
+#'       dataname = "ADSL", data = ADSL,
+#'       keys = keys(primary = c("USUBJID"), foreign = NULL, parent  = NULL)
+#'     ),
+#'     dataset(
+#'       dataname = "ADTTE", data = ADTTE,
+#'       keys = keys(
+#'         primary = c("USUBJID", "PARAMCD"), foreign = c("USUBJID"),
+#'         parent = "ADSL"
+#'       )
+#'     )
+#'   ),
+#'   modules = root_modules(
+#'     tm_t_coxreg(
+#'       label = "Cox Reg.",
+#'       dataname = "ADTTE",
+#'       arm_var = choices_selected(c("ARMCD"), "ARMCD"),
+#'       arm_ref_comp = arm_ref_comp,
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'       ),
+#'       strata_var = choices_selected(c("INST"), NULL),
+#'       cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
+#'       multivariate = TRUE
+#'     )
+#'   )
+#' )
+#'
+#' \dontrun{
+#' shinyApp(app$ui, app$server)
+#' }
+
 tm_t_coxreg <- function(label,
                         dataname,
                         arm_var,
@@ -99,6 +199,7 @@ tm_t_coxreg <- function(label,
                         paramcd,
                         cov_var,
                         strata_var,
+                        multivariate = TRUE,
                         conf_level = choices_selected(
                           c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
                           0.95, keep_order = TRUE
@@ -106,7 +207,6 @@ tm_t_coxreg <- function(label,
                         pre_output = NULL,
                         post_output = NULL
 ) {
-
 
   stopifnot(length(dataname) == 1)
   stopifnot(is.choices_selected(arm_var))
@@ -141,6 +241,13 @@ ui_t_coxreg <- function(id, ...) {
   standard_layout(
     output = white_small_well(uiOutput(ns("coxreg_table"))),
     encoding = div(
+      radioButtons(
+        ns("coxreg_type"),
+        label = tags$label("Type of regression", class = "text-primary"),
+        choices = c("univariate", "multivariate"),
+        selected = ifelse(a$multivariate, "multivariate", "univariate"),
+        inline   = FALSE
+      ),
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
       optionalSelectInput(
@@ -188,6 +295,8 @@ ui_t_coxreg <- function(id, ...) {
         label_help = helpText("from ", tags$code("ADSL")),
         fixed = a$cov_var$fixed
       ),
+      uiOutput(outputId = ns("ui_inter")),
+      uiOutput(ns("interaction_input")),
       optionalSelectInput(
         ns("strata_var"),
         "Stratify by",
@@ -200,18 +309,7 @@ ui_t_coxreg <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional table settings",
-          radioButtons(
-            ns("pval_method"),
-            label = HTML(
-              paste(
-                "p-value method for ",
-                tags$span(style="color:darkblue", "Coxph"), # nolint
-                " (Hazard Ratio)", sep = ""
-              )
-            ),
-            choices = c("wald", "likelihood"),
-            selected = "wald"
-          ),
+          uiOutput(outputId = ns("ui_pval_method")),
           radioButtons(
             ns("ties"),
             label = HTML(
@@ -269,6 +367,94 @@ srv_t_coxreg <- function(input,
     module = "tm_t_tte"
   )
 
+  # The estimation of an interaction effect is an option that should be
+  # accessible only in the context of standard `COXT01` (univariate).
+  output$ui_inter <- renderUI({
+    if (input$coxreg_type == "univariate") {
+      tagList(
+        checkboxInput(
+          session$ns("include_interactions"),
+          "Interaction terms",
+          value = FALSE
+        )
+      )
+    } else if (input$coxreg_type != "univariate") {
+      return(NULL)
+    }
+  })
+
+  # For every numeric covariate, the numeric level for the Hazard Ration
+  # estimation is proposed only if the covariate is included in the model:
+  # for this purpose, a function and a UI-rendered output.
+  open_textinput <- function(x, anl) {
+
+    y <- signif(stats::median(anl[[x]], na.rm = TRUE), 3)
+    y <- tagList(
+      textInput(
+        session$ns(paste0("interact_", x)),
+        label = paste0("Hazard Ratios for ", x, " at:"),
+        value = as.character(y)
+      )
+    )
+
+    return(y)
+  }
+
+  output$interaction_input <- renderUI({
+
+    # The idea is to exclude cases when increments are not necessary and
+    # finally accessing the UI-rendering function defined above.
+    if (is.null(input$include_interactions)) {
+      return(NULL)
+    } else if (input$coxreg_type != "univariate") {
+      return(NULL)
+    } else if (!input$include_interactions | is.null(input$cov_var)) {
+      return(NULL)
+    } else {
+      anl <- datasets$get_data(dataname, filtered = FALSE)
+      cov_is_numeric <- vapply(
+        anl[input$cov_var], FUN = is.numeric, FUN.VALUE = TRUE
+      )
+      interaction_var <- input$cov_var[cov_is_numeric]
+    }
+
+    if (length(interaction_var) == 0) {
+      return(NULL)
+    } else {
+      y <- lapply(
+        X = interaction_var,
+        FUN = open_textinput,
+        anl = anl
+      )
+      return(y)
+    }
+
+  })
+
+  output$ui_pval_method <- renderUI({
+
+    if (is.null(input$strata_var)) {
+      tagList(
+
+        radioButtons(
+          session$ns("pval_method"),
+          label = HTML(
+            paste(
+              "p-value method for ",
+              tags$span(style="color:darkblue", "Coxph"), # nolint
+              " (Hazard Ratio)", sep = ""
+            )
+          ),
+          choices = c("wald", "likelihood"),
+          selected = "wald"
+        )
+      )
+    } else {
+      NULL
+    }
+
+  })
+
   # Create output
   table_reactive <- reactive({
 
@@ -288,15 +474,51 @@ srv_t_coxreg <- function(input,
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     combine_comp_arms <- input$combine_comp_arms
-    pval_method <- input$pval_method # nolint
+    pval_method <- if (is.null(input$pval_method)) {
+      "wald"
+    } else {
+      input$pval_method
+    } # nolint
     ties <- input$ties
     conf_level <- input$conf_level
+    multivariate <- input$coxreg_type == "multivariate"
+    include_interactions <- any(input$include_interactions)
+
+    # Preparation of the `increment` argument. This is where the output of
+    #  UI-rendered `interaction_input` is processed. Basically it:
+    #  (1) screens for all inputs with names starting by "interact_",
+    #  (2) processes the text input to keep only numeric values,
+    #  (3) renders a list conformable with `increments` as in `tern::t_coxreg`.
+    if (include_interactions) {
+
+      pattern <- "interact_"
+      increments <- as.list(
+        grep(pattern = pattern, x = names(input), value = TRUE)
+      )
+      increments <- setNames(nm = increments)
+      increments <- lapply(
+        increments, function(x) {
+          y <- input[[x]]
+          y <- gsub(pattern = "[^[:digit:]|^\\.]", replacement = ",", x = y)
+          y <- strsplit(x = y, split = ",")
+          y <- unlist(y)
+          y <- y[!(y %in% c("", "."))]
+          y <- as.numeric(y)
+          return(y)
+        }
+      )
+      names(increments) <- gsub(
+        pattern = pattern, replacement = "", x = names(increments)
+      )
+
+    } else {
+      increments <- NULL
+    }
 
     if (length(strata_var) == 0) strata_var <- NULL
     if (length(cov_var) == 0)    cov_var    <- NULL
 
-
-    ## validate your input values ----
+    ## validate input values ----
     validate_standard_inputs(
       adsl = ADSL_FILTERED,
       adslvars = c("USUBJID", "STUDYID", arm_var, strata_var, cov_var),
@@ -307,8 +529,10 @@ srv_t_coxreg <- function(input,
       comp_arm = comp_arm
     )
 
-    validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    validate(need(!is.null(ties), "Must select ties for Coxph"))
+    validate(
+      need(is.logical(combine_comp_arms), "Need combine arm information.")
+    )
+    validate(need(!is.null(ties), "Select ties for Coxph."))
     validate(
       need(
         conf_level >= 0 & conf_level <= 1,
@@ -316,14 +540,18 @@ srv_t_coxreg <- function(input,
       )
     )
 
-    ## Analysis ----
+    validate(need(!is.null(cov_var), "Select at least one covariate."))
 
+
+    ## Analysis ----
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, ANL_FILTERED)
 
     chunks_reset(envir = environment())
 
-    adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var, cov_var)) # nolint
+    adsl_vars <- unique(
+      c("USUBJID", "STUDYID", arm_var, strata_var, cov_var)
+    ) # nolint
     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR")) # nolint
 
     chunks_push(bquote(ref_arm <- .(ref_arm)))
@@ -351,30 +579,63 @@ srv_t_coxreg <- function(input,
         )
       })
     )
-    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+    chunks_push(
+      bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1]))
+    )
     chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
     if (combine_comp_arms) {
       chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
     }
     chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
-    form <- stats::as.formula(paste0("Surv(AVAL, !CNSR) ~ ", arm_var, ""))
-    if (length(strata_var) > 0) form <- stats::update.formula(
-      old = form,
-      new = paste0(" ~.  + strata(", paste(strata_var, collapse = ", "), ")")
-    )
-    if (length(cov_var) > 0) form <- stats::update.formula(
-      old = form, new = paste(" ~ . + ", paste(cov_var, collapse = " + "))
-    )
+    # Preparation of the formula for `tern::t_coxreg` in three steps.
+    ## (1/3) Prepare the original formula ...
+    form <- if (!multivariate) {
+      stats::as.formula(
+        paste0("Surv(AVAL, !CNSR) ~ pairwise(", arm_var, ")")
+      )
+    } else {
+      stats::as.formula(
+        paste0("Surv(AVAL, !CNSR) ~ ", arm_var, "")
+      )
+    }
+
+    ## (2/3) ... then deal with candidate covariates if any ...
+    form <- if (!multivariate & !include_interactions & length(cov_var) > 0) {
+      form <- stats::update.formula(
+        old = form,
+        new = paste(" ~ . + univariate(", paste(cov_var, collapse = ", "), ")")
+      )
+    } else if (!multivariate & include_interactions & length(cov_var) > 0) {
+      stats::update.formula(
+        old = form,
+        new = paste(" ~ . * univariate(", paste(cov_var, collapse = ", "), ")")
+      )
+    } else if (multivariate & length(cov_var) > 0) {
+      stats::update.formula(
+        old = form,
+        new = paste(" ~ . + ", paste(cov_var, collapse = " + "))
+      )
+    }
+
+    ## (3/3) ... finally add the strata if any.
+    if (length(strata_var) > 0) {
+      form <- stats::update.formula(
+        old = form,
+        new = paste0(" ~.  + strata(", paste(strata_var, collapse = ", "), ")")
+      )
+    }
 
     chunks_push(
       bquote({
-        tbl <- t_coxreg(
+        tbl <- tern::t_coxreg(
           formula = .(form),
           data = anl,
           conf_level  = .(conf_level),
           pval_method = .(pval_method),
-          ties = .(ties)
+          ties = .(ties),
+          simplify = FALSE,
+          increments = .(increments)
         )
         tbl
       })
@@ -386,9 +647,15 @@ srv_t_coxreg <- function(input,
   })
 
   output$coxreg_table <- renderUI({
+    # Note that COXT02 (multivariate) returns a single `rtable` object while
+    # COXT01 (univariate) returns a list of `rtable` (one level per treatment).
     table_reactive()
     tbl <- chunks_get_var("tbl")
-    as_html(tbl)
+    if (input$coxreg_type == "univariate") {
+      lapply(tbl, as_html)
+    } else if (input$coxreg_type != "univariate") {
+      as_html(tbl)
+    }
   })
 
   observeEvent(input$show_rcode, {

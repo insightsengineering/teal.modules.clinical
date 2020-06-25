@@ -37,14 +37,10 @@
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADLB0 <- radlb(cached = TRUE)
-#' # create BNRIND
-#' ADLB_base <- ADLB0 %>%
-#'   dplyr::filter(ABLFL == "Y") %>%
-#'   dplyr::select(USUBJID, PARAM, ANRIND) %>%
-#'   dplyr::rename(BNRIND = ANRIND)
+#' ADLB <- radlb(cached = TRUE)
+#' ADLB <- ADLB %>% dplyr::filter(ABLFL == "Y")
 #'
-#' ADLB <- merge(ADLB0, ADLB_base, by = c("USUBJID", "PARAM")) %>%
+#' ADLB <- ADLB %>%
 #'   var_relabel(
 #'     PARAM = "Parameters",
 #'     BNRIND = "Baseline Reference Range Indicator",
@@ -53,60 +49,56 @@
 #'   )
 #'
 #' app <- init(
-#' data = cdisc_data(
-#'   cdisc_dataset("ADSL", ADSL),
-#'   cdisc_dataset("ADLB", ADLB),
-#'   code = 'ADSL <- radsl(cached = TRUE)
-#'          ADLB0 <- radlb(cached = TRUE)
-#'          ADLB_base <- ADLB0 %>%
-#'            dplyr::filter(ABLFL == "Y") %>%
-#'            dplyr::select(USUBJID, PARAM, ANRIND) %>%
-#'            dplyr::rename(BNRIND = ANRIND)
-#'          ADLB <- merge(ADLB0, ADLB_base, by = c("USUBJID", "PARAM")) %>%
-#'            var_relabel(
-#'              PARAM = "Parameters",
-#'              ANRIND = "Analysis Reference Range Indicator",
-#'              AVISIT = "Analysis Visit")',
-#'   check = FALSE),
-#'  modules = root_modules(
-#'    tm_t_abnormality(
-#'      label = "Abnormality Table",
-#'      dataname = 'ADLB',
-#'      arm_var = choices_selected(
-#'        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-#'        selected = "ARM"
-#'      ),
-#'      id_var = choices_selected(
-#'        choices = variable_choices(ADSL, subset = c("USUBJID", "SUBJID")),
-#'        selected = "USUBJID",
-#'        fixed = TRUE
-#'      ),
-#'      by_vars = choices_selected(
-#'        choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
-#'        selected = c("PARAM", "AVISIT"),
-#'        keep_order = TRUE
-#'      ),
-#'      grade = choices_selected(
-#'        choices = variable_choices(ADLB, subset = "ANRIND"),
-#'        selected = "ANRIND",
-#'        fixed = TRUE
-#'      ),
-#'      abnormal = c("LOW", "HIGH"),
-#'      baseline = choices_selected(
-#'        choices = variable_choices(ADLB, subset = "BNRIND"),
-#'        selected = "BNRIND",
-#'        fixed = TRUE
-#'      ),
-#'      exclude_base_abn = FALSE
-#'    )
-#'  ),
-#'  filter_states = list(ADLB = list(ABLFL = "", ABLFL2 = ""))
-#')
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADLB", ADLB),
+#'     code = 'ADSL <- radsl(cached = TRUE)
+#'             ADLB <- radlb(cached = TRUE)
+#'             ADLB <- ADLB %>% dplyr::filter(ABLFL == "Y")
+#'             ADLB <- ADLB %>% var_relabel(
+#'               PARAM = "Parameters",
+#'               BNRIND = "Baseline Reference Range Indicator",
+#'               ANRIND = "Analysis Reference Range Indicator",
+#'               AVISIT = "Analysis Visit"
+#'             )',
+#'     check = FALSE),
+#'   modules = root_modules(
+#'     tm_t_abnormality(
+#'       label = "Abnormality Table",
+#'       dataname = 'ADLB',
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
+#'         selected = "ARM"
+#'       ),
+#'       id_var = choices_selected(
+#'         choices = variable_choices(ADSL, subset = c("USUBJID", "SUBJID")),
+#'         selected = "USUBJID",
+#'         fixed = TRUE
+#'       ),
+#'       by_vars = choices_selected(
+#'         choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
+#'         selected = c("PARAM", "AVISIT"),
+#'         keep_order = TRUE
+#'       ),
+#'       grade = choices_selected(
+#'         choices = variable_choices(ADLB, subset = "ANRIND"),
+#'         selected = "ANRIND",
+#'         fixed = TRUE
+#'       ),
+#'       abnormal = c("LOW", "HIGH"),
+#'       baseline = choices_selected(
+#'         choices = variable_choices(ADLB, subset = "BNRIND"),
+#'         selected = "BNRIND",
+#'         fixed = TRUE
+#'       ),
+#'       exclude_base_abn = FALSE
+#'     )
+#'   )
+#' )
 #'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-
 tm_t_abnormality <- function(label,
                              dataname,
                              arm_var,
