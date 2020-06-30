@@ -89,7 +89,6 @@ tm_g_km <- function(label,
   )
 }
 
-
 ui_g_km <- function(id, ...) {
   a <- list(...)
   ns <- NS(id)
@@ -100,29 +99,12 @@ ui_g_km <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
       optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        choices = a$arm_var$choices,
-        selected = a$arm_var$selected,
-        multiple = FALSE,
-        fixed = a$arm_var$fixed
-      ),
-      optionalSelectInput(
         ns("paramcd"),
         "Time to Event (Endpoint)",
         choices = a$paramcd$choices,
         selected = a$paramcd$selected,
         multiple = FALSE,
         fixed = a$paramcd$fixed
-      ),
-      optionalSelectInput(
-        ns("strata_var"),
-        "Stratify by",
-        choices = a$strata_var$choices,
-        selected = a$strata_var$selected,
-        multiple = TRUE,
-        label_help = helpText("currently taken from ADSL"),
-        fixed = a$strata_var$fixed
       ),
       optionalSelectInput(
         ns("facet_var"),
@@ -133,25 +115,53 @@ ui_g_km <- function(id, ...) {
         label_help = helpText("currently taken from ADSL"),
         fixed = a$facet_var$fixed
       ),
-      selectInput(
-        ns("ref_arm"),
-        "Reference Arm",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
+      # arm related parameters
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        choices = a$arm_var$choices,
+        selected = a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
-      helpText("Reference groups automatically combined into a single group if more than one value selected."),
-      selectInput(
-        ns("comp_arm"),
-        "Comparison Group",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
-      checkboxInput(
-        ns("combine_comp_arms"),
-        "Combine all comparison groups?",
-        value = FALSE
+      div(
+        class = "arm-comp-box",
+        tags$label("Compare Arms"),
+        shinyWidgets::switchInput(inputId = ns("compare_arms"), value = !is.null(a$arm_ref_comp), size = "mini"),
+        conditionalPanel(
+          condition = paste0("input['", ns("compare_arms"), "']"),
+          div(
+            selectInput(
+              ns("ref_arm"),
+              "Reference Arm",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            helpText("Reference groups automatically combined into a single group if more than one value selected."),
+            selectInput(
+              ns("comp_arm"),
+              "Comparison Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
+            ),
+            optionalSelectInput(
+              ns("strata_var"),
+              "Stratify by",
+              choices = a$strata_var$choices,
+              selected = a$strata_var$selected,
+              multiple = TRUE,
+              label_help = helpText("currently taken from ADSL"),
+              fixed = a$strata_var$fixed
+            )
+          )
+        )
       ),
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
@@ -219,13 +229,15 @@ srv_g_km <- function(input,
   init_chunks()
 
   arm_ref_comp_observer(
-    session, input,
+    session,
+    input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
     adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
-    module = "tm_g_km"
+    module = "tm_g_km",
+    on_off = reactive(input$compare_arms)
   )
 
   ## dynamic plot height
@@ -246,12 +258,14 @@ srv_g_km <- function(input,
     comp_arm <- input$comp_arm
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
+    compare_arms <- input$compare_arms
     pval_method <- input$pval_method # nolint
     conf_level <- as.numeric(input$conf_level) # nolint
     xlab <- input$xlab # nolint
     tbl_fontsize <- input$font_size # nolint
     if_show_km <- input$show_km_table # nolint
-    if_show_coxph <- input$show_coxph_table # nolint
+    if_show_coxph <- ifelse(isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1,
+                            FALSE, input$show_coxph_table) # nolint
     xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
       strsplit(",") %>%
       unlist() %>%
@@ -269,15 +283,27 @@ srv_g_km <- function(input,
       strata_var <- NULL
     }
 
-    validate_standard_inputs(
+    # validate inputs
+    validate_args <- list(
       adsl = ADSL_FILTERED,
       adslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm
+      arm_var = arm_var
     )
+
+    if (length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm))
+      }
+    } else {
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm, comp_arm = comp_arm))
+      }
+    }
+
+    do.call(what = "validate_standard_inputs", validate_args)
 
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
@@ -294,7 +320,12 @@ srv_g_km <- function(input,
 
     chunks_push(bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
-    chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      chunks_push(bquote(adsl_p <- ADSL_FILTERED))
+    } else{
+      chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    }
+
     chunks_push(bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
     chunks_push(bquote({
       anl <- merge(
@@ -303,15 +334,18 @@ srv_g_km <- function(input,
         all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
       )
     }))
-    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
 
-    if (combine_comp_arms) {
-      chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
+    if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      chunks_push(bquote(arm <- as.factor(anl[[.(arm_var)]])))
+    } else {
+      chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+      chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
+      if (combine_comp_arms) {
+        chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
+      }
+      chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     }
 
-
-    chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
     chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
 
@@ -345,49 +379,48 @@ srv_g_km <- function(input,
         fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_level), conf.type = "plain")
         grid.newpage()
         p <- g_km(fit_km = fit_km, xticks = .(xticks), col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
+      }))
 
-        .(
-          if (if_show_km) {
-            bquote({
-              tbl_km <- t_km(formula_km, data = anl, conf_level = .(conf_level), conf.type = "plain")
-              km_grob <- textGrob(
-                label = toString(tbl_km, gap = 1),
-                x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-                y = unit(1, "npc") - unit(1, "lines"),
-                just = c("left", "top"),
-                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-              )
-              p <- addGrob(p, km_grob)
-            })
-          }
-        )
+      if (if_show_km) {
+        chunks_push(bquote({
+          tbl_km <- t_km(formula_km, data = anl, conf_level = .(conf_level), conf.type = "plain")
+          km_grob <- textGrob(
+            label = toString(tbl_km, gap = 1),
+            x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
+            y = unit(1, "npc") - unit(1, "lines"),
+            just = c("left", "top"),
+            gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+            vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+          )
+          p <- addGrob(p, km_grob)
+        }))
+      }
 
-        .(
-          if (if_show_coxph) {
-            bquote({
-              tbl_coxph <- t_coxph_pairwise(
-                formula_coxph,
-                data = anl,
-                conf_level = .(conf_level),
-                pval_method = .(pval_method),
-                ties = "exact"
-              )
-              text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-              coxph_grob <- textGrob(
-                label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
-                just = c("left", "bottom"),
-                gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-                vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-              )
-              p <- addGrob(p, coxph_grob)
-            })
-          }
-        )
+      if (if_show_coxph){
+        chunks_push(bquote({
+          tbl_coxph <- t_coxph_pairwise(
+            formula_coxph,
+            data = anl,
+            conf_level = .(conf_level),
+            pval_method = .(pval_method),
+            ties = "exact"
+          )
+          text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
+          coxph_grob <- textGrob(
+            label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
+            just = c("left", "bottom"),
+            gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
+            vp = vpPath("mainPlot", "kmCurve", "curvePlot")
+          )
+          p <- addGrob(p, coxph_grob)
+        }))
+      }
 
+      chunks_push(bquote({
         plot <- grid.draw(p)
         plot
       }))
+
     } else {
       chunks_push(bquote({
         facet_df <- anl[.(facet_var)]
