@@ -11,16 +11,21 @@ ADTTE
 ADVS
 ADaM
 AE
+Agresti
+Anderson
 BCE
 CDISC
 CMD
+Coull
 CoxPH
 Evaluable
 Facetting
 Gabe
 Genetech
+Hauck
 Kaplan
 NEST
+Newcombe
 PARAMCD
 Roche
 SDTM
@@ -40,6 +45,7 @@ cdisc
 covr
 dataname
 datanames
+Fisher
 funder
 ggplot
 github
@@ -59,6 +65,7 @@ reproducibility
 roche
 Roche
 scrollbar
+Schouten
 shiny's
 shinyServer
 songy

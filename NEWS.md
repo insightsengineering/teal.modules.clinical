@@ -1,6 +1,7 @@
 # teal.modules.clinical 0.8.3.9000
 
 * Extend `tm_t_coxreg` to optionally produce univariate Cox regressions.
+* Updated `tm_t_binary_outcome` to display Odds Ratio estimates and include new methods for CIs and p-values.
 
 # teal.modules.clinical 0.8.3
 

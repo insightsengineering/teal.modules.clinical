@@ -168,7 +168,9 @@ ui_t_binary_outcome <- function(id, ...) {
             choices = c("Wald, without correction" = "wald",
                         "Wald, with correction" = "waldcc",
                         "Clopper-Pearson" = "clopper-pearson",
-                        "Wilson" = "wilson"
+                        "Wilson" = "wilson",
+                        "Jeffreys" = "jeffreys",
+                        "Agresti-Coull" = "agresti-coull"
             ),
             selected = "waldcc",
             multiple = FALSE,
@@ -189,23 +191,29 @@ ui_t_binary_outcome <- function(id, ...) {
         panel_item(
           "Unstratified analysis settings",
           optionalSelectInput(
-            ns("u_diff_ci_method"),
+            ns("u_diff_ci"),
             label = "Method for Difference of Proportions CI",
             choices = c("Wald, without correction" = "wald",
-                        "Wald, with correction" = "waldcc"
+                        "Wald, with correction" = "waldcc",
+                        "Anderson-Hauck" = "anderson-hauck",
+                        "Newcombe" = "newcombe"
             ),
             selected = "waldcc",
             multiple = FALSE,
             fixed = FALSE
           ),
           optionalSelectInput(
-            ns("u_diff_test_method"),
+            ns("u_diff_test"),
             label = "Method for Difference of Proportions Test",
-            choices = c("Chi-squared Test" = "chisq"),
+            choices = c("Chi-squared Test" = "chisq",
+                        "Fisher's Exact Test" = "fisher",
+                        "Chi-Squared Test with Schouten correction" = "schouten"),
             selected = "chisq",
             multiple = FALSE,
             fixed = FALSE
           ),
+          tags$label("Odds Ratio Estimation"),
+          shinyWidgets::switchInput(inputId = ns("u_odds_ratio"), value = TRUE, size = "mini")
         )
       ),
       panel_group(
@@ -221,24 +229,28 @@ ui_t_binary_outcome <- function(id, ...) {
             fixed = a$strata_var$fixed
           ),
           optionalSelectInput(
-            ns("s_diff_ci_method"),
+            ns("s_diff_ci"),
             label = "Method for Difference of Proportions CI",
             choices = c("Wald" = "wald",
                         "Wald, with correction" = "waldcc",
-                        "CMH, without correction" = "cmh"
+                        "CMH, without correction" = "cmh",
+                        "Anderson-Hauck" = "anderson-hauck",
+                        "Newcombe" = "newcombe"
             ),
             selected = "waldcc",
             multiple = FALSE,
             fixed = FALSE
           ),
           optionalSelectInput(
-            ns("s_diff_test_method"),
+            ns("s_diff_test"),
             label = "Method for Difference of Proportions Test",
             choices = c("CMH Test" = "cmh"),
             selected = "cmh",
             multiple = FALSE,
             fixed = FALSE
           ),
+          tags$label("Odds Ratio Estimation"),
+          shinyWidgets::switchInput(inputId = ns("s_odds_ratio"), value = TRUE, size = "mini")
         )
       )
     ),
@@ -265,11 +277,10 @@ srv_t_binary_outcome <- function(input,
                                  datasets,
                                  dataname,
                                  arm_ref_comp) {
-
   init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel
+  # comparison arms for encoding panel.
   arm_ref_comp_observer(
     session,
     input,
@@ -282,8 +293,7 @@ srv_t_binary_outcome <- function(input,
     on_off = reactive(input$compare_arms)
   )
 
-
-  # Update UI choices depending on selection of previous options
+  # Update UI choices depending on selection of previous options.
   observe({
     anl <- datasets$get_data(dataname, filtered = FALSE)
     paramcd <- input$paramcd
@@ -313,13 +323,20 @@ srv_t_binary_outcome <- function(input,
     strata_var <- input$strata_var
     conf_level <- input$conf_level #nolint
     prop_ci_method <- input$prop_ci_method #nolint
-    u_analysis <- c("diff_ci_method" = input$u_diff_ci_method, "diff_test" = input$u_diff_test_method) #nolint
-    s_analysis <- c("diff_ci_method" = input$s_diff_ci_method, "diff_test" = input$s_diff_test_method) #nolint
+    u_analysis <- tern::control_binary_comparison(
+      diff_ci = input$u_diff_ci,
+      diff_test = input$u_diff_test,
+      odds_ratio = input$u_odds_ratio
+    )
+    s_analysis <- tern::control_binary_comparison(
+      diff_ci = input$s_diff_ci,
+      diff_test = input$s_diff_test,
+      odds_ratio = input$s_odds_ratio
+    )
 
     if (length(strata_var) == 0) {
       strata_var <- NULL
     }
-
 
     validate_args <- list(
       adsl = adsl_filtered,
@@ -345,8 +362,7 @@ srv_t_binary_outcome <- function(input,
     validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
 
-
-    # perform analysis
+    # Perform analysis.
     anl_name <- paste0(dataname, "_FILTERED")
     assign(anl_name, anl_filtered)
     adsl_name <- "ADSL_FILTERED"
@@ -354,7 +370,6 @@ srv_t_binary_outcome <- function(input,
 
     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
-
 
     chunks_reset(envir = environment())
     chunks_push(bquote({
@@ -384,7 +399,7 @@ srv_t_binary_outcome <- function(input,
           anl[[.(arm_var)]] <- as.factor(anl[[.(arm_var)]])
           anl[[.(arm_var)]] <- droplevels(anl[[.(arm_var)]])
 
-          tbl <- t_binary_outcome(
+          tbl <- tern::t_binary_outcome(
             rsp = anl$AVALC %in% .(responders),
             col_by = anl[[.(arm_var)]],
             unstrat_analysis = NULL,
@@ -395,8 +410,10 @@ srv_t_binary_outcome <- function(input,
           tbl
         })
       )
-      # compare arms
+
     } else {
+      # Compare arms.
+
       chunks_push(
         bquote({
           adsl_p <- subset(
@@ -444,7 +461,7 @@ srv_t_binary_outcome <- function(input,
 
       chunks_push(
         bquote({
-          tbl <- t_binary_outcome(
+          tbl <- tern::t_binary_outcome(
             rsp = anl$AVALC %in% .(responders),
             col_by = anl[[.(arm_var)]],
             strata_data = .(strata_data),
@@ -481,7 +498,6 @@ srv_t_binary_outcome <- function(input,
     as_html(tbl)
   })
 
-
   observeEvent(input$show_rcode, {
     show_rcode_modal(
       title = "Summary",
@@ -491,5 +507,4 @@ srv_t_binary_outcome <- function(input,
       )
     )
   })
-
 }
