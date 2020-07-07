@@ -154,27 +154,45 @@ ui_t_tte <- function(id, ...) {
                           multiple = FALSE,
                           fixed = a$arm_var$fixed
       ),
-      selectInput(ns("ref_arm"),
-                  "Reference Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
-      helpText("Multiple reference groups are automatically combined into a single group."),
-      selectInput(ns("comp_arm"),
-                  "Comparison Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
-      checkboxInput(ns("combine_comp_arms"),
-                    "Combine all comparison groups?",
-                    value = FALSE),
-      optionalSelectInput(ns("strata_var"),
-                          "Stratify by",
-                          a$strata_var$choices,
-                          a$strata_var$selected,
-                          multiple = TRUE,
-                          label_help = helpText("from ", tags$code("ADSL")),
-                          fixed = a$strata_var$fixed
+      div(
+        class = "arm-comp-box",
+        tags$label("Compare Arms"),
+        shinyWidgets::switchInput(inputId = ns("compare_arms"), value = !is.null(a$arm_ref_comp), size = "mini"),
+
+        conditionalPanel(
+          condition = paste0("input['", ns("compare_arms"), "']"),
+          div(
+            selectInput(
+              ns("ref_arm"),
+              "Reference Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            helpText("Multiple reference groups are automatically combined into a single group."),
+            selectInput(
+              ns("comp_arm"),
+              "Comparison Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
+            ),
+            optionalSelectInput(
+              ns("strata_var"),
+              "Stratify by",
+              a$strata_var$choices,
+              a$strata_var$selected,
+              multiple = TRUE,
+              label_help = helpText("from ", tags$code("ADSL")),
+              fixed = a$strata_var$fixed
+            )
+          )
+        )
       ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
@@ -186,9 +204,10 @@ ui_t_tte <- function(id, ...) {
       if (!is.null(a$event_desc_var)) {
         helpText("Event Description Variable: ", tags$code(a$event_desc_var))
       },
-      panel_group(
+      conditionalPanel(
+        condition = paste0("input['", ns("compare_arms"), "']"),
         panel_item(
-          "Additional table settings",
+          "Comparison settings",
           radioButtons(
             ns("pval_method_coxph"),
             label = HTML(paste("p-value method for ",
@@ -214,7 +233,7 @@ ui_t_tte <- function(id, ...) {
             label = HTML(paste("Confidence Level for ",
                                tags$span(style="color:darkblue", "Coxph"), # nolint
                                " (Hazard Ratio)", sep = "")
-                         ),
+            ),
             value = 0.95,
             min = 0.01,
             max = 0.99,
@@ -227,40 +246,43 @@ ui_t_tte <- function(id, ...) {
                                tags$span(style="color:darkblue", "Z-test"), # nolint
                                " (Difference in Event Free Rate)",
                                sep = "")
-                         ),
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
-          ),
-          numericInput(
-            inputId = ns("conf_level_survfit"),
-            label = HTML(paste("Confidence Level for ",
-                               tags$span(style="color:darkblue", "Survfit"), # nolint
-                               " (KM Median Estimate & Event Free Rate)",
-                               sep = "")
             ),
             value = 0.95,
             min = 0.01,
             max = 0.99,
             step = 0.01,
             width = "100%"
-          ),
-          radioButtons(
-            ns("conf_type_survfit"),
-            "Confidence Level Type for Survfit",
-            choices = c("plain", "log", "log-log"),
-            selected = "plain"
-          ),
-          sliderInput(
-            inputId = ns("probs_survfit"),
-            label = "KM Estimate Percentiles",
-            min = 0.01,
-            max = 0.99,
-            value = c(0.25, 0.75),
-            width = "100%"
           )
+        )
+      ),
+      panel_item(
+        "Additional table settings",
+        numericInput(
+          inputId = ns("conf_level_survfit"),
+          label = HTML(paste("Confidence Level for ",
+                             tags$span(style="color:darkblue", "Survfit"), # nolint
+                             " (KM Median Estimate & Event Free Rate)",
+                             sep = "")
+          ),
+          value = 0.95,
+          min = 0.01,
+          max = 0.99,
+          step = 0.01,
+          width = "100%"
+        ),
+        radioButtons(
+          ns("conf_type_survfit"),
+          "Confidence Level Type for Survfit",
+          choices = c("plain", "log", "log-log"),
+          selected = "plain"
+        ),
+        sliderInput(
+          inputId = ns("probs_survfit"),
+          label = "KM Estimate Percentiles",
+          min = 0.01,
+          max = 0.99,
+          value = c(0.25, 0.75),
+          width = "100%"
         )
       )
     ),
@@ -291,7 +313,8 @@ srv_t_tte <- function(input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
     adsl = datasets$get_data("ADSL", filtered = FALSE),
     arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte"
+    module = "tm_t_tte",
+    on_off = reactive(input$compare_arms)
   )
 
   # Create output
@@ -308,13 +331,15 @@ srv_t_tte <- function(input,
     ref_arm <- input$ref_arm
     comp_arm <- input$comp_arm
     combine_comp_arms <- input$combine_comp_arms
+    compare_arms <- input$compare_arms
+
     time_points <- as.numeric(input$time_points)
     pval_method_coxph <- input$pval_method_coxph # nolint
-    conf_level <- c(survfit = input$conf_level_survfit, coxph = input$conf_level_coxph,
-                   ztest = input$conf_level_ztest)
-    conf_type_survfit <- input$conf_type_survfit
+    conf_level <- c(survfit = input$conf_level_survfit, ztest = input$conf_level_ztest) # nolint
+    conf_type_survfit <- input$conf_type_survfit # nolint
     probs_survfit <- input$probs_survfit
-    ties_coxph <- input$ties_coxph
+    ties_coxph <- input$ties_coxph # nolint
+    conf_level_coxph <- input$conf_level_coxph # nolint
 
 
     if (length(strata_var) == 0) {
@@ -327,21 +352,31 @@ srv_t_tte <- function(input,
       sort(time_points)
     }
 
-    # validate your input values
-    validate_standard_inputs(
+    # validate inputs
+    validate_args <- list(
       adsl = ADSL_FILTERED,
       adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
       anl = ANL_FILTERED,
-      anlvars = c("USUBJID", "STUDYID",  "PARAMCD", "AVAL", "CNSR", event_desc_var),
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", event_desc_var),
+      arm_var = arm_var
     )
 
+    # validate arm levels
+    if (length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm))
+      }
+    } else {
+      if (compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = ref_arm, comp_arm = comp_arm))
+      }
+    }
+
+    do.call(what = "validate_standard_inputs", validate_args)
+
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-    validate(need(!is.null(conf_type_survfit), "Must select one Confidence Level Type for Survfit"))
     validate(need(!is.null(probs_survfit), "Must select percentiles for KM median estimate"))
-    validate(need(!is.null(ties_coxph), "Must select ties for Coxph"))
 
     # do analysis
 
@@ -359,7 +394,11 @@ srv_t_tte <- function(input,
     chunks_push(bquote(strata_var <- .(strata_var)))
     chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
 
-    chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      chunks_push(bquote(adsl_p <- ADSL_FILTERED))
+    } else{
+      chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
+    }
     chunks_push(bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
 
     chunks_push(bquote({
@@ -371,42 +410,70 @@ srv_t_tte <- function(input,
       )
     }))
 
-    chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-    chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
-    if (combine_comp_arms) {
-      chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
+    if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      chunks_push(bquote(arm <- as.factor(anl[[.(arm_var)]])))
+    } else {
+      chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
+      chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
+      if (combine_comp_arms) {
+        chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
+      }
+      chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     }
-    chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
     chunks_safe_eval()
 
-    validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
+    validate(need(nrow(chunks_get_var("anl")) > 10, "need at least 10 data points"))
 
-    chunks_push(bquote({
-      tbl <- t_tte(
-        formula = .(as.formula(
-          paste0(
-            "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
-            if (length(strata_var) == 0) {
-              ""
-            } else {
-              paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
-            }
-          )
-        )),
-        data = anl,
-        col_N = table(anl[[.(arm_var)]]),
-        event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
-        time_points = .(time_points),
-        time_unit = .(time_unit),
-        conf_level = .(conf_level),
-        conf_type_survfit = .(conf_type_survfit),
-        probs_survfit = .(probs_survfit),
-        pval_method_coxph = .(pval_method_coxph),
-        ties_coxph = .(ties_coxph)
-      )
-      tbl
-    }))
+    if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+      chunks_push(bquote({
+        tbl <- t_tte(
+          formula = .(as.formula(
+            paste0(
+              "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")"
+            )
+          )),
+          data = anl,
+          col_N = table(anl[[.(arm_var)]]),
+          event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
+          time_points = .(time_points),
+          time_unit = .(time_unit),
+          conf_level = .(conf_level),
+          conf_type_survfit = .(conf_type_survfit),
+          probs_survfit = .(probs_survfit),
+          comparison = NULL
+        )
+        tbl
+      }))
+    } else {
+      chunks_push(bquote({
+        tbl <- t_tte(
+          formula = .(as.formula(
+            paste0(
+              "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
+              if (length(strata_var) == 0) {
+                ""
+              } else {
+                paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
+              }
+            )
+          )),
+          data = anl,
+          col_N = table(anl[[.(arm_var)]]),
+          event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
+          time_points = .(time_points),
+          time_unit = .(time_unit),
+          conf_level = .(conf_level),
+          conf_type_survfit = .(conf_type_survfit),
+          probs_survfit = .(probs_survfit),
+          comparison = control_coxph(pval_method = .(pval_method_coxph),
+                                     ties = .(ties_coxph),
+                                     conf = .(conf_level_coxph))
+        )
+        tbl
+      }))
+    }
+
   })
 
   output$tte_table <- renderUI({
