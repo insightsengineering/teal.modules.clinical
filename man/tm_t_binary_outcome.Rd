@@ -11,6 +11,7 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
+  show_rsp_categories = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -37,6 +38,9 @@ variable names that can be used as \code{PARAMCD} variable}
 
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for stratification}
+
+\item{show_rsp_categories}{(\code{logical}) If \code{TRUE}, table includes a section for
+for each response category observed in the dataset for variable \code{AVALC}.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

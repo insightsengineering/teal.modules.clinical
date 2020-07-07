@@ -1,6 +1,8 @@
 #' @title Binary Outcome Table Teal Module
 #'
 #' @inheritParams tm_t_tte
+#' @param  show_rsp_categories (\code{logical}) If \code{TRUE}, table includes a section for
+#'  for each response category observed in the dataset for variable \code{AVALC}.
 #'
 #' @details This module produces a response summary table that is similar to
 #'   STREAM template \code{rspt01}. The core functionality is based on
@@ -60,6 +62,7 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
+                                show_rsp_categories = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL) {
 
@@ -184,6 +187,12 @@ ui_t_binary_outcome <- function(id, ...) {
             max = 0.99,
             step = 0.01,
             width = "100%"
+          ),
+          tags$label("Show All Reponse Categories"),
+          shinyWidgets::switchInput(
+            inputId = ns("show_rsp_categories"),
+            value = a$show_rsp_categories,
+            size = "mini"
           )
         )
       ),
@@ -333,6 +342,7 @@ srv_t_binary_outcome <- function(input,
       diff_test = input$s_diff_test,
       odds_ratio = input$s_odds_ratio
     )
+    show_rsp_categories <- input$show_rsp_categories
 
     if (length(strata_var) == 0) {
       strata_var <- NULL
@@ -360,7 +370,9 @@ srv_t_binary_outcome <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate_in(responders, anl_filtered$AVALC, "responder values do not exist")
+    validate(need(is.factor(anl_filtered$AVALC), "need AVALC to be a factor"))
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
+    validate(need(is.logical(show_rsp_categories), "show_rsp_categories is not logical"))
 
     # Perform analysis.
     anl_name <- paste0(dataname, "_FILTERED")
@@ -394,6 +406,20 @@ srv_t_binary_outcome <- function(input,
         })
       )
 
+      if (show_rsp_categories) {
+        chunks_push(
+          bquote({
+            rsp_categories <- anl$AVALC
+          })
+        )
+      } else {
+        chunks_push(
+          bquote({
+            rsp_categories <- NULL
+          })
+        )
+      }
+
       chunks_push(
         bquote({
           anl[[.(arm_var)]] <- as.factor(anl[[.(arm_var)]])
@@ -405,7 +431,8 @@ srv_t_binary_outcome <- function(input,
             unstrat_analysis = NULL,
             strat_analysis = NULL,
             conf_level = .(conf_level),
-            prop_ci_method = .(prop_ci_method)
+            prop_ci_method = .(prop_ci_method),
+            rsp_multinomial = rsp_categories
           )
           tbl
         })
@@ -434,6 +461,20 @@ srv_t_binary_outcome <- function(input,
           )
         })
       )
+
+      if (show_rsp_categories) {
+        chunks_push(
+          bquote({
+            rsp_categories <- anl$AVALC
+          })
+        )
+      } else {
+        chunks_push(
+          bquote({
+            rsp_categories <- NULL
+          })
+        )
+      }
 
       chunk_call_arm <- bquote({
         arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
@@ -468,7 +509,8 @@ srv_t_binary_outcome <- function(input,
             conf_level = .(conf_level),
             prop_ci_method = .(prop_ci_method),
             unstrat_analysis = .(u_analysis),
-            strat_analysis = .(s_analysis)
+            strat_analysis = .(s_analysis),
+            rsp_multinomial = rsp_categories
           )
           tbl
         })
