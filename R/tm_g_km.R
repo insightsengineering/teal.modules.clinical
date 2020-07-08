@@ -166,6 +166,34 @@ ui_g_km <- function(id, ...) {
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       plot_height_input(id = ns("myplot"), value = a$plot_height),
+      conditionalPanel(
+        condition = paste0("input['", ns("compare_arms"), "']"),
+        panel_group(
+          panel_item(
+            "Comparison settings",
+            radioButtons(
+              ns("pval_method_coxph"),
+              label = HTML(paste("p-value method for ",
+                                 tags$span(style="color:darkblue", "Coxph"), # nolint
+                                 " (Hazard Ratio)",
+                                 sep = "")
+              ),
+              choices = c("wald", "log-rank", "likelihood"),
+              selected = "log-rank"
+            ),
+            radioButtons(
+              ns("ties_coxph"),
+              label = HTML(paste("Ties for ",
+                                 tags$span(style="color:darkblue", "Coxph"), # nolint
+                                 " (Hazard Ratio)",
+                                 sep = "")
+              ),
+              choices = c("exact", "breslow", "efron"),
+              selected = "exact"
+            )
+          )
+        )
+      ),
       panel_group(
         panel_item(
           "Additional plot settings",
@@ -187,18 +215,6 @@ ui_g_km <- function(id, ...) {
             label = "Show KM table",
             value = TRUE,
             width = "100%"
-          ),
-          checkboxInput(
-            inputId = ns("show_coxph_table"),
-            label = "Show CoxPH table",
-            value = TRUE,
-            width = "100%"
-          ),
-          radioButtons(
-            ns("pval_method"),
-            "p-value method",
-            choices = c("wald", "log-rank", "likelihood"),
-            selected = "log-rank"
           ),
           optionalSelectInput(ns("conf_level"),
                               "Level of Confidence",
@@ -259,13 +275,12 @@ srv_g_km <- function(input,
     strata_var <- input$strata_var
     combine_comp_arms <- input$combine_comp_arms
     compare_arms <- input$compare_arms
-    pval_method <- input$pval_method # nolint
+    pval_method_coxph <- input$pval_method_coxph # nolint
+    ties_coxph <- input$ties_coxph # nolint
     conf_level <- as.numeric(input$conf_level) # nolint
     xlab <- input$xlab # nolint
     tbl_fontsize <- input$font_size # nolint
     if_show_km <- input$show_km_table # nolint
-    if_show_coxph <- ifelse(isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1,
-                            FALSE, input$show_coxph_table) # nolint
     xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
       strsplit(",") %>%
       unlist() %>%
@@ -396,14 +411,14 @@ srv_g_km <- function(input,
         }))
       }
 
-      if (if_show_coxph){
+      if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1){
         chunks_push(bquote({
           tbl_coxph <- t_coxph_pairwise(
             formula_coxph,
             data = anl,
             conf_level = .(conf_level),
-            pval_method = .(pval_method),
-            ties = "exact"
+            pval_method = .(pval_method_coxph),
+            ties = .(ties_coxph)
           )
           text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
           coxph_grob <- textGrob(
@@ -472,14 +487,14 @@ srv_g_km <- function(input,
             )
 
             .(
-              if (if_show_coxph) {
+              if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1) {
                 bquote({
                   tbl_coxph <- t_coxph_pairwise(
                     formula_coxph,
                     data = x,
                     conf_level = .(conf_level),
-                    pval_method = .(pval_method),
-                    ties = "exact"
+                    pval_method = .(pval_method_coxph),
+                    ties = .(ties_coxph)
                   )
                   text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
                   coxph_grob <- textGrob(
@@ -518,7 +533,7 @@ srv_g_km <- function(input,
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(
-      title = "Kaplan Meyer Plot",
+      title = "Kaplan Meier Plot",
       rcode = get_rcode(
         datasets = datasets,
         title = label
