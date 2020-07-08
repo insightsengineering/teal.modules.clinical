@@ -162,104 +162,105 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
-      panel_group(
-        panel_item(
-          "Additional table settings",
-          optionalSelectInput(
-            inputId = ns("prop_ci_method"),
-            label = "Method for Proportion CI",
-            choices = c("Wald, without correction" = "wald",
-                        "Wald, with correction" = "waldcc",
-                        "Clopper-Pearson" = "clopper-pearson",
-                        "Wilson" = "wilson",
-                        "Jeffreys" = "jeffreys",
-                        "Agresti-Coull" = "agresti-coull"
+      conditionalPanel(
+        condition = paste0("input['", ns("compare_arms"), "']"),
+        panel_group(
+          panel_item(
+            "Unstratified analysis settings",
+            optionalSelectInput(
+              ns("u_diff_ci"),
+              label = "Method for Difference of Proportions CI",
+              choices = c("Wald, without correction" = "wald",
+                          "Wald, with correction" = "waldcc",
+                          "Anderson-Hauck" = "anderson-hauck",
+                          "Newcombe" = "newcombe"
+              ),
+              selected = "waldcc",
+              multiple = FALSE,
+              fixed = FALSE
             ),
-            selected = "waldcc",
-            multiple = FALSE,
-            fixed = FALSE
-          ),
-          numericInput(
-            inputId = ns("conf_level"),
-            label = "Confidence Level",
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
-          ),
-          tags$label("Show All Reponse Categories"),
-          shinyWidgets::switchInput(
-            inputId = ns("show_rsp_categories"),
-            value = a$show_rsp_categories,
-            size = "mini"
+            optionalSelectInput(
+              ns("u_diff_test"),
+              label = "Method for Difference of Proportions Test",
+              choices = c("Chi-squared Test" = "chisq",
+                          "Fisher's Exact Test" = "fisher",
+                          "Chi-Squared Test with Schouten correction" = "schouten"),
+              selected = "chisq",
+              multiple = FALSE,
+              fixed = FALSE
+            ),
+            tags$label("Odds Ratio Estimation"),
+            shinyWidgets::switchInput(inputId = ns("u_odds_ratio"), value = TRUE, size = "mini")
+          )
+        ),
+        panel_group(
+          panel_item(
+            "Stratified analysis settings",
+            optionalSelectInput(
+              ns("strata_var"),
+              "Stratification Factors",
+              choices = a$strata_var$choices,
+              selected = a$strata_var$selected,
+              multiple = TRUE,
+              label_help = helpText("taken from:", tags$code("ADSL")),
+              fixed = a$strata_var$fixed
+            ),
+            optionalSelectInput(
+              ns("s_diff_ci"),
+              label = "Method for Difference of Proportions CI",
+              choices = c("Wald" = "wald",
+                          "Wald, with correction" = "waldcc",
+                          "CMH, without correction" = "cmh",
+                          "Anderson-Hauck" = "anderson-hauck",
+                          "Newcombe" = "newcombe"
+              ),
+              selected = "waldcc",
+              multiple = FALSE,
+              fixed = FALSE
+            ),
+            optionalSelectInput(
+              ns("s_diff_test"),
+              label = "Method for Difference of Proportions Test",
+              choices = c("CMH Test" = "cmh"),
+              selected = "cmh",
+              multiple = FALSE,
+              fixed = FALSE
+            ),
+            tags$label("Odds Ratio Estimation"),
+            shinyWidgets::switchInput(inputId = ns("s_odds_ratio"), value = TRUE, size = "mini")
           )
         )
       ),
-      panel_group(
-        panel_item(
-          "Unstratified analysis settings",
-          optionalSelectInput(
-            ns("u_diff_ci"),
-            label = "Method for Difference of Proportions CI",
-            choices = c("Wald, without correction" = "wald",
-                        "Wald, with correction" = "waldcc",
-                        "Anderson-Hauck" = "anderson-hauck",
-                        "Newcombe" = "newcombe"
-            ),
-            selected = "waldcc",
-            multiple = FALSE,
-            fixed = FALSE
+      panel_item(
+        "Additional table settings",
+        optionalSelectInput(
+          inputId = ns("prop_ci_method"),
+          label = "Method for Proportion CI",
+          choices = c("Wald, without correction" = "wald",
+                      "Wald, with correction" = "waldcc",
+                      "Clopper-Pearson" = "clopper-pearson",
+                      "Wilson" = "wilson",
+                      "Jeffreys" = "jeffreys",
+                      "Agresti-Coull" = "agresti-coull"
           ),
-          optionalSelectInput(
-            ns("u_diff_test"),
-            label = "Method for Difference of Proportions Test",
-            choices = c("Chi-squared Test" = "chisq",
-                        "Fisher's Exact Test" = "fisher",
-                        "Chi-Squared Test with Schouten correction" = "schouten"),
-            selected = "chisq",
-            multiple = FALSE,
-            fixed = FALSE
-          ),
-          tags$label("Odds Ratio Estimation"),
-          shinyWidgets::switchInput(inputId = ns("u_odds_ratio"), value = TRUE, size = "mini")
-        )
-      ),
-      panel_group(
-        panel_item(
-          "Stratified analysis settings",
-          optionalSelectInput(
-            ns("strata_var"),
-            "Stratification Factors",
-            choices = a$strata_var$choices,
-            selected = a$strata_var$selected,
-            multiple = TRUE,
-            label_help = helpText("taken from:", tags$code("ADSL")),
-            fixed = a$strata_var$fixed
-          ),
-          optionalSelectInput(
-            ns("s_diff_ci"),
-            label = "Method for Difference of Proportions CI",
-            choices = c("Wald" = "wald",
-                        "Wald, with correction" = "waldcc",
-                        "CMH, without correction" = "cmh",
-                        "Anderson-Hauck" = "anderson-hauck",
-                        "Newcombe" = "newcombe"
-            ),
-            selected = "waldcc",
-            multiple = FALSE,
-            fixed = FALSE
-          ),
-          optionalSelectInput(
-            ns("s_diff_test"),
-            label = "Method for Difference of Proportions Test",
-            choices = c("CMH Test" = "cmh"),
-            selected = "cmh",
-            multiple = FALSE,
-            fixed = FALSE
-          ),
-          tags$label("Odds Ratio Estimation"),
-          shinyWidgets::switchInput(inputId = ns("s_odds_ratio"), value = TRUE, size = "mini")
+          selected = "waldcc",
+          multiple = FALSE,
+          fixed = FALSE
+        ),
+        numericInput(
+          inputId = ns("conf_level"),
+          label = "Confidence Level",
+          value = 0.95,
+          min = 0.01,
+          max = 0.99,
+          step = 0.01,
+          width = "100%"
+        ),
+        tags$label("Show All Reponse Categories"),
+        shinyWidgets::switchInput(
+          inputId = ns("show_rsp_categories"),
+          value = a$show_rsp_categories,
+          size = "mini"
         )
       )
     ),
