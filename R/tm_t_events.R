@@ -234,6 +234,7 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
+        datanames = dataname,
         title = "Event Table"
       )
     )

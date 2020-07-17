@@ -491,6 +491,7 @@ srv_t_tte <- function(input,
       title = "Cross Table",
       rcode = get_rcode(
         datasets = datasets,
+        datanames = dataname,
         title = label
       )
     )

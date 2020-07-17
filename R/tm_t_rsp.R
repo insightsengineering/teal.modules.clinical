@@ -410,6 +410,7 @@ srv_t_rsp <- function(input,
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
+        datanames = dataname,
         title = "Response Table"
       )
     )

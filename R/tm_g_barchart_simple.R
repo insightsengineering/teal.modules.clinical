@@ -441,6 +441,7 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
+    dataname = get_extract_datanames(list(x, fill, x_facet, y_facet)),
     merge_expression = merge_ex111(),
     #merge_expression = merged_data()()$expr, # not working
     modal_title = "Bar Chart"

@@ -195,6 +195,7 @@ srv_t_summary <- function(input, output, session, datasets, dataname) {
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
+        datanames = dataname,
         title = "Summary table"
       )
     )

@@ -417,6 +417,7 @@ srv_t_logistic <- function(input,
      title = "Logistic Table",
      rcode = get_rcode(
        datasets = datasets,
+       datanames = dataname,
        title = "Logistic Regression Table"
      )
    )

@@ -346,6 +346,7 @@ srv_t_abnormality <- function(input,
       title = "Abnormality Table",
       rcode = get_rcode(
         datasets = datasets,
+        datanames = dataname,
         title = "Abnormality Table"
       )
     )

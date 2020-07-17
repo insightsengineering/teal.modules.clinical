@@ -428,6 +428,7 @@ srv_t_events_summary <- function(input,
        title = "Summary",
        rcode = get_rcode(
          datasets = datasets,
+         datanames = dataname,
          title = "Event Table"
        )
      )
