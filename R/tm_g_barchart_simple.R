@@ -378,6 +378,10 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     # also adds total n
     add_plot_title(chunk, groupby_vars)
 
+    #explicitly calling print on the plot inside the chunk evaluates
+    #the ggplot call and therefore catches errors
+    chunk$push(quote(print(plot)))
+
     chunks_safe_eval(chunk)
     chunk
   })

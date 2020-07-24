@@ -432,8 +432,7 @@ srv_g_km <- function(input,
       }
 
       chunks_push(bquote({
-        plot <- grid.draw(p)
-        plot
+        grid.draw(p)
       }))
 
     } else {
@@ -513,15 +512,11 @@ srv_g_km <- function(input,
             p
           }
         }, dfs, levels(lab))
-        plot <- grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
-
-        plot
+        grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
       }))
     }
 
-    p <- chunks_safe_eval()
-
-    p
+    chunks_safe_eval()
   })
 
   # Insert the plot into a plot_height module from teal.devel
