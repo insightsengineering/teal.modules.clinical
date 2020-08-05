@@ -1,8 +1,5 @@
 #' Time To Event Table Teal Module
 #'
-#' Time to event table as defined in \code{\link[tern]{t_tte}} in the
-#' \code{tern} package
-#'
 #' @inheritParams teal.devel::standard_layout
 #' @param label menu item label of the module in the teal app
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
@@ -20,8 +17,6 @@
 #' variable names that can be used as \code{PARAMCD} variable
 #' @param strata_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for stratification
-#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for confidence level for computation of the confidence intervals.
 #' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used \code{\link[tern]{t_tte}}
 #' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
@@ -29,7 +24,9 @@
 #' @param event_desc_var (\code{character}) variable name with the event description information,
 #'   optional
 #'
-#' @details
+#' @details This module produces a response summary table that is similar to
+#'   STREAM template \code{ttet01}. The core functionality is based on
+#'   \code{\link[tern]{t_tte}} from the \code{tern} package.\cr
 #' This modules expects that the analysis data has the following variables
 #'
 #' \tabular{ll}{
@@ -95,7 +92,6 @@ tm_t_tte <- function(label,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
-                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
                      time_points,
                      time_unit = "months",
                      event_desc_var = NULL,
@@ -108,7 +104,6 @@ tm_t_tte <- function(label,
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(strata_var))
   stopifnot(is.choices_selected(time_points))
-  stopifnot(is.choices_selected(conf_level))
 
   args <- as.list(environment())
 
@@ -412,6 +407,7 @@ srv_t_tte <- function(input,
 
     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
       chunks_push(bquote(arm <- as.factor(anl[[.(arm_var)]])))
+      chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
     } else {
       chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
       chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
