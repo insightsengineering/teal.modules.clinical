@@ -14,7 +14,7 @@ tm_g_km(
   strata_var,
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
   plot_height = c(1200, 400, 5000),
-  pre_output = helpText("x-axes for different factes may not have the same scale"),
+  pre_output = helpText("x-axes for different facets may not have the same scale"),
   post_output = NULL
 )
 }
