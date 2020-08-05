@@ -347,6 +347,7 @@ ui_t_coxreg <- function(id, ...) {
 
 #' @import teal.devel
 #' @importFrom rtables as_html
+#' @importFrom utils.nest as_num
 srv_t_coxreg <- function(input,
                          output,
                          session,
@@ -499,11 +500,7 @@ srv_t_coxreg <- function(input,
       increments <- lapply(
         increments, function(x) {
           y <- input[[x]]
-          y <- gsub(pattern = "[^[:digit:]|^\\.]", replacement = ",", x = y)
-          y <- strsplit(x = y, split = ",")
-          y <- unlist(y)
-          y <- y[!(y %in% c("", "."))]
-          y <- as.numeric(y)
+          y <- unlist(utils.nest::as_num(y))
           return(y)
         }
       )
