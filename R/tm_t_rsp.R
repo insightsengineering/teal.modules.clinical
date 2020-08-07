@@ -410,7 +410,7 @@ srv_t_rsp <- function(input,
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = "Response Table"
       )
     )

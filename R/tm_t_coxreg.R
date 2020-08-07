@@ -660,7 +660,7 @@ srv_t_coxreg <- function(input,
       title = "(Multi-variable) Cox proportional hazard regression model",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = label
       )
     )

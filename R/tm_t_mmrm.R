@@ -499,7 +499,7 @@ srv_t_mmrm <- function(input,
       title = "MMRM Table",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = label
       )
     )

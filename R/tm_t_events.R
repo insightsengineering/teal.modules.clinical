@@ -234,7 +234,7 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = "Event Table"
       )
     )

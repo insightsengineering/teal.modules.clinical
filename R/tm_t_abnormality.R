@@ -346,7 +346,7 @@ srv_t_abnormality <- function(input,
       title = "Abnormality Table",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = "Abnormality Table"
       )
     )

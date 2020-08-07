@@ -282,7 +282,7 @@ srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
       title = "Event by grade",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = dataname,
+        datanames = union("ADSL", dataname),
         title = "Event table by grade"
       )
     )
