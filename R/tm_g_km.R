@@ -66,7 +66,7 @@ tm_g_km <- function(label,
                     strata_var,
                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
                     plot_height = c(1200, 400, 5000),
-                    pre_output = helpText("x-axes for different facets may not have the same scale"),
+                    pre_output = NULL,
                     post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
@@ -197,6 +197,12 @@ ui_g_km <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
+          checkboxInput(
+            inputId = ns("scale_x_axis"),
+            label = "Scale multiple X axis range",
+            value = FALSE,
+            width = "100%"
+          ),
           textInput(
             inputId = ns("user_xaxis"),
             label = "Specify break intervals for x-axis"
@@ -285,6 +291,7 @@ srv_g_km <- function(input,
       strsplit(",") %>%
       unlist() %>%
       as.numeric()
+    scale_x_axis <- input$scale_x_axis
     if (length(xticks) == 0) {
       xticks <- NULL
     } else {
@@ -332,6 +339,7 @@ srv_g_km <- function(input,
     chunks_push(bquote(strata_var <- .(strata_var)))
     chunks_push(bquote(facet_var <- .(facet_var)))
     chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
+    chunks_push(bquote(scale_x_axis <- .(scale_x_axis)))
 
     chunks_push(bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
 
@@ -455,6 +463,12 @@ srv_g_km <- function(input,
         } else {
           xticks <- .(xticks)
         }
+        max_time <- NULL
+        if (scale_x_axis) {
+          max_time <- max(sapply(dfs, function(x) {
+            max(x[["AVAL"]], na.rm = TRUE)
+          }))
+        }
 
         grid.newpage()
         pl <- Map(function(x, label) {
@@ -465,7 +479,7 @@ srv_g_km <- function(input,
             fit_km <- survfit(formula_km, data = x, conf.int = .(conf_level), conf.type = "plain")
             p <- g_km(
               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
-              xticks = xticks, draw = FALSE, xlab = paste(.(xlab), time_unit)
+              xticks = xticks, max_time = max_time, draw = FALSE, xlab = paste(.(xlab), time_unit)
             )
 
             .(
