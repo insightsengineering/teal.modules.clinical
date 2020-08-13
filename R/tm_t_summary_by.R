@@ -312,7 +312,9 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
     }
 
     chunks_push(
-      quote({tbl})
+      quote({
+        tbl
+        })
     )
 
     chunks_safe_eval()

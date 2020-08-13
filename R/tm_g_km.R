@@ -291,7 +291,7 @@ srv_g_km <- function(input,
       strsplit(",") %>%
       unlist() %>%
       as.numeric()
-    scale_x_axis <- input$scale_x_axis
+    scale_x_axis <- input$scale_x_axis # nolint
     if (length(xticks) == 0) {
       xticks <- NULL
     } else {
