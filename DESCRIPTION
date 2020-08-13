@@ -23,7 +23,6 @@ Depends:
   teal.devel (>= 0.2.5)
 Imports:
   forcats,
-  ggpubr,
   grid,
   gridExtra,
   magrittr,
@@ -33,7 +32,6 @@ Imports:
   shinyWidgets,
   survival,
   stats,
-  tidyr,
   utils,
   utils.nest (>= 0.2.4)
 Suggests:

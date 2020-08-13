@@ -416,6 +416,7 @@ srv_t_events_summary <- function(input,
       tbl <- rbindl_rtables(list(tbl_ae_overall,
                                  tbl_anl_subj, tbl_anl_pt, tbl_anl_events,
                                  tbl_aesi_subj, tbl_aesi_pt, tbl_aesi_events), gap = 1)
+      tbl
     }))
 
     chunks_safe_eval()

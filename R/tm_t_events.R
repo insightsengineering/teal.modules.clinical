@@ -222,6 +222,7 @@ srv_t_events_byterm <- function(input, output, session, datasets, dataname, even
         total = .(total),
         event_type = .(event_type)
       )
+      tbl
     }))
 
     chunks_safe_eval()

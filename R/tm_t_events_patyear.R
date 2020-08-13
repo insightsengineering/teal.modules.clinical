@@ -234,6 +234,7 @@ srv_t_events_patyear <- function(input,
         lambda = 100,
         event_type = .(event_type)
       )
+      tbl
     }))
     chunks_safe_eval()
     tbl <- chunks_get_var("tbl")

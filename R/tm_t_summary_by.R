@@ -311,6 +311,10 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
       )
     }
 
+    chunks_push(
+      quote({tbl})
+    )
+
     chunks_safe_eval()
 
     tbl <- chunks_get_var("tbl")

@@ -326,6 +326,7 @@ srv_t_abnormality <- function(input,
         total = .(total),
         table_tree = FALSE
       )
+      tbl
 
     }))
 
