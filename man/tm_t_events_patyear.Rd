@@ -9,8 +9,8 @@ tm_t_events_patyear(
   dataname,
   arm_var,
   paramcd,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
-    TRUE),
+  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
+    = TRUE),
   event_type = "event",
   pre_output = NULL,
   post_output = NULL

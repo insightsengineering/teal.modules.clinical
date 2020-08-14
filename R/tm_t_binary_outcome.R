@@ -345,6 +345,7 @@ srv_t_binary_outcome <- function(input,
     )
     show_rsp_categories <- input$show_rsp_categories
 
+
     if (length(strata_var) == 0) {
       strata_var <- NULL
     }
@@ -374,6 +375,15 @@ srv_t_binary_outcome <- function(input,
     validate(need(is.factor(anl_filtered$AVALC), "need AVALC to be a factor"))
     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
     validate(need(is.logical(show_rsp_categories), "show_rsp_categories is not logical"))
+
+    if (show_rsp_categories) {
+      rsp_categories <- unique(anl_filtered$AVALC[anl_filtered$PARAMCD == paramcd])
+      rsp_categories[trimws(rsp_categories) == ""] <- NA
+      validate(
+        need(all(!is.na(unique(rsp_categories))),
+             paste("there is missing value in AVALC for the selected endpoint", paramcd))
+      )
+    }
 
     # Perform analysis.
     anl_name <- paste0(dataname, "_FILTERED")
@@ -411,6 +421,7 @@ srv_t_binary_outcome <- function(input,
         chunks_push(
           bquote({
             rsp_categories <- anl$AVALC
+            rsp_categories <- droplevels(rsp_categories)
           })
         )
       } else {
@@ -467,6 +478,7 @@ srv_t_binary_outcome <- function(input,
         chunks_push(
           bquote({
             rsp_categories <- anl$AVALC
+            rsp_categories <- droplevels(rsp_categories)
           })
         )
       } else {

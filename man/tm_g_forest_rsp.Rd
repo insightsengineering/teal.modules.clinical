@@ -11,8 +11,8 @@ tm_g_forest_rsp(
   paramcd,
   subgroup_var,
   strata_var,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order =
-    TRUE),
+  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
+    = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   cex = 1.3,
