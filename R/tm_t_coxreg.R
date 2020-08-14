@@ -526,6 +526,20 @@ srv_t_coxreg <- function(input,
       comp_arm = comp_arm
     )
 
+    if (!is.null(strata_var) & !is.null(cov_var)) {
+
+      validate(
+        need(
+          expr = !any(strata_var %in% cov_var),
+          message = paste(
+            "A stratification variable is also selected as a covariate",
+            "and blocks the model fit."
+          )
+        )
+      )
+
+    }
+
     validate(
       need(is.logical(combine_comp_arms), "Need combine arm information.")
     )
