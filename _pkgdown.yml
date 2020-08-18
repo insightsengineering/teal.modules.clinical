@@ -19,4 +19,7 @@ reference:
   - title: Graphs
     contents:
       - starts_with("tm_g_")
+  - title: General analyses
+    contents:
+      - starts_with("tm_a_")
 

@@ -29,6 +29,7 @@ Imports:
   methods,
   rtables (>= 0.1.6),
   scales,
+  shinyjs,
   shinyWidgets,
   survival,
   stats,
