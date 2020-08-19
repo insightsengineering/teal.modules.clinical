@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_mmrm.R
 \name{tm_t_mmrm}
 \alias{tm_t_mmrm}
-\title{Mix model with repeated measurements (\code{MMRM}) Table Teal Module}
+\title{(Deprecated) Mix model with repeated measurements (\code{MMRM}) Table Teal Module}
 \usage{
 tm_t_mmrm(
   label,
@@ -87,6 +87,12 @@ This modules expects that the analysis data has the following variables
 
 The arm, subject ID, baseline characteristics variables are taken from the \code{ADSL} data.
 }
+\section{Warning}{
+
+This module has been deprecated and will eventually be removed. Please use instead
+the module `tm_a_mmrm`.
+}
+
 \examples{
 library(random.cdisc.data)
 
@@ -108,6 +114,7 @@ arm_ref_comp = list(
   )
 )
 
+\dontrun{
 app <- init(
     data = cdisc_data(
       cdisc_dataset("ADSL", ADSL),
@@ -151,8 +158,6 @@ app <- init(
     )
 )
 
-
-\dontrun{
 shinyApp(app$ui, app$server)
 }
 }

@@ -1,4 +1,4 @@
-#' Mix model with repeated measurements (\code{MMRM}) Table Teal Module
+#' (Deprecated) Mix model with repeated measurements (\code{MMRM}) Table Teal Module
 #'
 #' \code{MMRM} as defined in \code{\link[tern]{t_mmrm}} in the
 #' \code{tern} package
@@ -35,6 +35,10 @@
 #' @param cor_struct \code{\link[teal]{choices_selected}} object with \code{NULL} and other possible choices specifying
 #'   the name of \code{\link[nlme]{corClasses}}.
 #'
+#' @section Warning:
+#' This module has been deprecated and will eventually be removed. Please use instead
+#' the module `tm_a_mmrm`.
+#'
 #' @details
 #' This modules expects that the analysis data has the following variables
 #'
@@ -69,6 +73,7 @@
 #'   )
 #' )
 #'
+#' \dontrun{
 #' app <- init(
 #'     data = cdisc_data(
 #'       cdisc_dataset("ADSL", ADSL),
@@ -112,8 +117,6 @@
 #'     )
 #' )
 #'
-#'
-#' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_mmrm <- function(label,
@@ -132,6 +135,14 @@ tm_t_mmrm <- function(label,
                       pre_output = NULL,
                       post_output = NULL
 ) {
+
+  .Deprecated(
+    new = "tm_a_mmrm",
+    msg = paste(
+      "This module has been deprecated and will eventually be removed.",
+      "Please use instead the module `tm_a_mmrm`."
+    )
+  )
 
   stopifnot(length(dataname) == 1)
   stopifnot(is.choices_selected(endpoint_var))

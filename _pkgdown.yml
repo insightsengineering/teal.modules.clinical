@@ -22,4 +22,7 @@ reference:
   - title: General analyses
     contents:
       - starts_with("tm_a_")
-
+  - title: Deprecated Functions
+    desc: These functions will eventually be removed
+    contents:
+      - tm_t_mmrm

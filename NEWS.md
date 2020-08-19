@@ -7,6 +7,7 @@ display a summary for individual response categories.
 * Updated `tm_g_km` to optionally compare between arms.
 * Extend `tm_g_km` to optionally scale X axis range in case of multiple plots.
 * New `tm_a_mmrm` for MMRM analysis.
+* Deprecated `tm_t_mmrm` (superseded by `tm_a_mmrm`).
 
 # teal.modules.clinical 0.8.3
 
