@@ -38,6 +38,12 @@
 #'
 #' The arm, subject ID, and covariate variables are taken from the \code{ADSL} data.
 #'
+#' @note
+#' The ordering of the input data sets can lead to slightly different numerical results or
+#' different convergence behavior. This is a known observation with the used package
+#' \code{lme4}. However, once convergence is achieved, the results are reliable up to
+#' numerical precision.
+#'
 #' @export
 #' @importFrom stats terms complete.cases
 #' @importFrom shinyjs show hide
