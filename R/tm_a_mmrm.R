@@ -541,6 +541,7 @@ srv_mmrm <- function(input,
     # nolint end
 
     # Input on model features.
+    # nolint start
     response_var <- input$response_var
     paramcd <- input$paramcd
     arm_var <- input$arm_var
@@ -551,11 +552,12 @@ srv_mmrm <- function(input,
     covariate_vars <- input$covariate_vars
     covariate_vars <- no_selected_as_NULL(covariate_vars)
     id_var <- input$id_var
-    weights_emmeans <- input$weights_emmeans # nolint
-    cor_struct <- input$cor_struct # nolint
-    conf_level <- as.numeric(input$conf_level) # nolint
+    weights_emmeans <- input$weights_emmeans
+    cor_struct <- input$cor_struct
+    conf_level <- as.numeric(input$conf_level)
     optimizer <- input$optimizer
     parallel <- input$parallel
+    # nolint end
 
     # Validate the input variables.
     validate_has_data(adsl_filtered, 1)
@@ -606,7 +608,7 @@ srv_mmrm <- function(input,
     # Create ADSL_P: Select only adsl_vars from as.name(adsl_name).
     fit_stack_push(bquote(keep_adsl_columns <- .(adsl_vars)))
     fit_stack_push(bquote({
-      ADSL_P <- .(as.name(adsl_name)) %>%
+      ADSL_P <- .(as.name(adsl_name)) %>% # nolint
         dplyr::filter(.(as.name(arm_var)) %in% .(c(ref_arm, comp_arm))) %>%
         dplyr::select(!!!syms(keep_adsl_columns))
     }))
@@ -624,7 +626,7 @@ srv_mmrm <- function(input,
     # Create ANL_ENDPOINT: Filter PARAMCD and select only anl_vars from as.name(anl_name).
     fit_stack_push(bquote(keep_anl_columns <- .(anl_vars)))
     fit_stack_push(bquote({
-      ANL_ENDPOINT <- .(as.name(anl_name)) %>%
+      ANL_ENDPOINT <- .(as.name(anl_name)) %>% # nolint
         dplyr::filter(.(as.name("PARAMCD")) == .(paramcd)) %>%
         dplyr::select(!!!syms(keep_anl_columns))
     }))
@@ -737,7 +739,7 @@ srv_mmrm <- function(input,
     # Input on output type.
     output_function <- input$output_function
     # Additional setting.
-    show_relative <- input$t_mmrm_lsmeans_show_relative
+    show_relative <- input$t_mmrm_lsmeans_show_relative # nolint
 
     # If the output is not a table, stop here.
     if (!isTRUE(grepl("^t_", output_function))) return(NULL)
@@ -798,11 +800,13 @@ srv_mmrm <- function(input,
     output_function <- input$output_function
 
     # Input on output features.
+    # nolint start
     select <- input$g_mmrm_lsmeans_select
     width <- input$g_mmrm_lsmeans_width
     show_pval <- input$g_mmrm_lsmeans_contrasts_show_pval
     type <- input$g_mmrm_diagnostic_type
     z_threshold <- input$g_mmrm_diagnostic_z_threshold
+    # nolint end
 
     # Stop here if the output is not a plot.
     if (!isTRUE(grepl("^g_", output_function))) return(NULL)
