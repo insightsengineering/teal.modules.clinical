@@ -18,28 +18,28 @@ Depends:
   R (>= 3.3),
   dplyr,
   shiny,
-  teal (>= 0.8.4),
-  tern (>= 0.6.7),
-  teal.devel (>= 0.2.5)
+  teal (>= 0.9.0),
+  tern (>= 0.6.8),
+  teal.devel (>= 0.2.6)
 Imports:
   forcats,
   grid,
   gridExtra,
   magrittr,
   methods,
-  rtables (>= 0.1.6),
+  rtables (>= 0.1.7),
   scales,
   shinyjs,
   shinyWidgets,
   survival,
   stats,
   utils,
-  utils.nest (>= 0.2.4)
+  utils.nest (>= 0.2.5)
 Suggests:
   knitr,
   rmarkdown,
-  random.cdisc.data (>= 0.3.4),
-  test.nest (>= 0.2.3),
+  random.cdisc.data (>= 0.3.5),
+  test.nest (>= 0.2.4),
   testthat (>= 2.0)
 License: file LICENSE
 Encoding: UTF-8
