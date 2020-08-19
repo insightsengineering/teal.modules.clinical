@@ -25,8 +25,8 @@
 #'   changed.
 #' @param paramcd \code{\link[teal]{choices_selected}} object with all available choices and preselected option for
 #'   variable names that can be used as \code{PARAMCD} variable (i.e., types of response that can be selected).
-#' @param conf_level \code{\link[teal]{choices_selected}} object specifying the confidence level (numeric values, need to be
-#'   greater than 0 and less than 1).
+#' @param conf_level \code{\link[teal]{choices_selected}} object specifying the confidence level (numeric values,
+#'   need to be greater than 0 and less than 1).
 #'
 #' @details
 #' This modules expects that the analysis data has the following variables:

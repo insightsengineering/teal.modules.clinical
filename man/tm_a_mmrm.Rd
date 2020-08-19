@@ -53,8 +53,8 @@ changed.}
 \item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
 variable names that can be used as \code{PARAMCD} variable (i.e., types of response that can be selected).}
 
-\item{conf_level}{\code{\link[teal]{choices_selected}} object specifying the confidence level (numeric values, need to be
-greater than 0 and less than 1).}
+\item{conf_level}{\code{\link[teal]{choices_selected}} object specifying the confidence level (numeric values,
+need to be greater than 0 and less than 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
