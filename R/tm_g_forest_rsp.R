@@ -14,6 +14,7 @@
 #' @inheritParams tm_t_tte
 #' @export
 #' @importFrom rtables var_labels "var_labels<-"
+#' @importFrom grDevices dev.size
 #'
 #' @template author_song24
 #'
@@ -60,7 +61,7 @@ tm_g_forest_rsp <- function(label,
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             cex = 1.3,
-                            pre_output = helpText("graph needs to be of a certain width to be displayed"),
+                            pre_output = NULL,
                             post_output = NULL) {
 
   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
@@ -180,16 +181,17 @@ ui_g_forest_rsp <- function(id, ...) {
       ),
       optionalSliderInputValMinMax(
         ns("plot_height"),
-        "plot height",
+        "Plot Height",
         a$plot_height,
         ticks = FALSE
       ),
       optionalSliderInputValMinMax(
         ns("plot_width"),
-        "plot width",
+        "Plot Width",
         c(980L, 500L, 2000L),
         ticks = FALSE
       ),
+      uiOutput(ns("valid_width")),
       panel_group(
         panel_item(
         "Additional plot settings",
@@ -423,6 +425,12 @@ srv_g_forest_rsp <- function(input,
     )
   })
 
+  output$valid_width <- renderUI({
+    # get device width: (horizontal, vertical)
+    if (input$plot_width < grDevices::dev.size("px")[1]) {
+      helpText(icon("exclamation-triangle"), "Note: Graph may be cut off for small plot widths.")
+    }
+  })
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(

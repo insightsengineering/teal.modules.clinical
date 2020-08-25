@@ -16,7 +16,7 @@ tm_g_forest_tte(
   fixed_symbol_size = TRUE,
   plot_height = c(600, 200, 2000),
   cex = 1.3,
-  pre_output = helpText("graph needs to be of a certain width to be displayed"),
+  pre_output = NULL,
   post_output = NULL
 )
 }

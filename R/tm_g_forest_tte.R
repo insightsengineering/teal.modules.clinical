@@ -7,6 +7,7 @@
 #'
 #' @export
 #' @importFrom rtables var_labels "var_labels<-"
+#' @importFrom grDevices dev.size
 #'
 #' @template author_song24
 #'
@@ -54,7 +55,7 @@ tm_g_forest_tte <- function(label,
                             fixed_symbol_size = TRUE,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
-                            pre_output = helpText("graph needs to be of a certain width to be displayed"),
+                            pre_output = NULL,
                             post_output = NULL) {
 
   stopifnot(is.choices_selected(arm_var))
@@ -134,16 +135,17 @@ ui_g_forest_tte <- function(id, ...) {
       tags$label("Plot Settings", class = "text-primary", style = "margin-top: 15px;"),
       optionalSliderInputValMinMax(
         ns("plot_height"),
-        "plot height",
+        "Plot Height",
         a$plot_height,
         ticks = FALSE
       ),
       optionalSliderInputValMinMax(
         ns("plot_width"),
-        "plot width",
+        "Plot Width",
         c(980L, 500L, 2000L),
         ticks = FALSE
       ),
+      uiOutput(ns("valid_width")),
       panel_group(
         panel_item(
           "Additional plot settings",
@@ -350,6 +352,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, cex = 1
     )
   })
 
+  output$valid_width <- renderUI({
+    # get device width: (horizontal, vertical)
+    if (input$plot_width < grDevices::dev.size("px")[1]) {
+      helpText(icon("exclamation-triangle"), "Note: Graph may be cut off for small plot widths.")
+    }
+  })
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(
