@@ -204,7 +204,6 @@ ui_t_rsp <- function(id, ...) {
 #' Reference arms automatically combined if multiple arms selected as reference
 #' group.
 #'
-#' @importFrom forcats fct_relevel fct_collapse
 #' @importFrom rtables as_html
 #' @importFrom methods substituteDirect
 #' @noRd

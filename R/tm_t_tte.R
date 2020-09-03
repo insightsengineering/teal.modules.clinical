@@ -44,7 +44,6 @@
 #'
 #' @export
 #' @import magrittr
-#' @importFrom forcats fct_collapse fct_relevel
 #'
 #' @examples
 #' library(random.cdisc.data)
