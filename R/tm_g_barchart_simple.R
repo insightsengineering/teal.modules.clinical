@@ -654,6 +654,7 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
 #' @param bin_op binary operator to concatenate it with
 #'
 #' @examples
+#' \dontrun{
 #' # What we want to achieve
 #' call("+", quote(f), quote(g))
 #' call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
@@ -665,11 +666,9 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
 #' call_concatenate(list(quote(f)))
 #' call_concatenate(list())
 #' call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg)))))
-#' \dontrun{
+#'
 #' eval(call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))))
 #' }
-#'
-#' @export
 call_concatenate <- function(args, bin_op = "+") {
   stopifnot(
     is_character_single(bin_op),

@@ -137,8 +137,8 @@
 #'     c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
 #'     labels = c("F", "M")
 #'   ),
-#'   INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A"))
-#' )
+#'   INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
+#' stringsAsFactors = FALSE)
 #' ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
 #' ADTTE <- dplyr::as_tibble(ADTTE)
 #' set.seed(1)
