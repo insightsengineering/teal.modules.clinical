@@ -33,7 +33,7 @@ for variable names that can be used for summary}
 
 \item{denominator}{default option in UI for denominator, for calculating percentages.
 Only applies to categorical variables.
-See "denominator" in \code{\link[tern]{t_summary.factor}} for details.}
+See "denominator" in \code{REFACTOR} for details.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

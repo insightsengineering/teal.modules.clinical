@@ -42,7 +42,7 @@ variable names that can be used as \code{PARAMCD} variable}
 for variable names that can be used for stratification}
 
 \item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used \code{\link[tern]{t_tte}}}
+for variable names that can be used \code{REFACTOR}}
 
 \item{time_unit}{(\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
 of months}
@@ -63,7 +63,7 @@ Time To Event Table Teal Module
 \details{
 This module produces a response summary table that is similar to
   STREAM template \code{ttet01}. The core functionality is based on
-  \code{\link[tern]{t_tte}} from the \code{tern} package.\cr
+  \code{REFACTOR} from the \code{tern} package.\cr
 This modules expects that the analysis data has the following variables
 
 \tabular{ll}{

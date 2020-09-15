@@ -74,7 +74,7 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-\code{MMRM} as defined in \code{\link[tern]{t_mmrm}} in the
+\code{MMRM} as defined in \code{REFACTOR} in the
 \code{tern} package
 }
 \details{

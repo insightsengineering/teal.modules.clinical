@@ -3,7 +3,7 @@
 \name{tm_t_abnormality}
 \alias{tm_t_abnormality}
 \title{This module produces a summary table that includes abnormality counts based
-on \code{\link[tern]{t_abnormality}}. For correct results, please use the
+on \code{REFACTOR}. For correct results, please use the
 filter panel to select only post-baseline records.}
 \usage{
 tm_t_abnormality(
@@ -65,7 +65,7 @@ a \code{\link[teal]{module}} object
 }
 \description{
 This module produces a summary table that includes abnormality counts based
-on \code{\link[tern]{t_abnormality}}. For correct results, please use the
+on \code{REFACTOR}. For correct results, please use the
 filter panel to select only post-baseline records.
 }
 \examples{

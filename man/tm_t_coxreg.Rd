@@ -172,7 +172,7 @@ ADTTE <- data.frame(
   ),
   INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
 stringsAsFactors = FALSE)
-ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
+ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
 ADTTE <- dplyr::as_tibble(ADTTE)
 set.seed(1)
 ADTTE$INST <- sample(ADTTE$INST)
