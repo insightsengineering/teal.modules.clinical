@@ -99,7 +99,8 @@ tm_g_forest_rsp <- function(label,
     ui_args = args,
     server_args = list(
       dataname = dataname,
-      cex = cex
+      cex = cex,
+      plot_height = plot_height
     ),
     filters = dataname
   )
@@ -113,7 +114,7 @@ ui_g_forest_rsp <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = uiOutput(ns("plot_ui")),
+    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = c(980L, 500L, 2000L)),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -179,19 +180,6 @@ ui_g_forest_rsp <- function(id, ...) {
         class = "text-primary",
         style = "margin-top: 15px;"
       ),
-      optionalSliderInputValMinMax(
-        ns("plot_height"),
-        "Plot Height",
-        a$plot_height,
-        ticks = FALSE
-      ),
-      optionalSliderInputValMinMax(
-        ns("plot_width"),
-        "Plot Width",
-        c(980L, 500L, 2000L),
-        ticks = FALSE
-      ),
-      uiOutput(ns("valid_width")),
       panel_group(
         panel_item(
         "Additional plot settings",
@@ -223,7 +211,8 @@ srv_g_forest_rsp <- function(input,
                              session,
                              datasets,
                              dataname,
-                             cex) {
+                             cex,
+                             plot_height) {
 
   init_chunks()
 
@@ -255,7 +244,7 @@ srv_g_forest_rsp <- function(input,
   })
 
 
-  output$forest_plot <- renderPlot({
+  plot_r <- reactive({
 
     adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
     var_labels(adsl_filtered) <- var_labels(
@@ -412,25 +401,15 @@ srv_g_forest_rsp <- function(input,
 
   })
 
-  ## dynamic plot height
-  output$plot_ui <- renderUI({
-    plot_height <- input$plot_height
-    plot_width <- input$plot_width
-    validate(need(plot_height, "need valid plot height"))
-    validate(need(plot_width, "need valid plot width"))
-    div(style = "overflow-x: scroll",
-        plotOutput(session$ns("forest_plot"),
-                   height = plot_height,
-                   width = plot_width)
-    )
-  })
-
-  output$valid_width <- renderUI({
-    # get device width: (horizontal, vertical)
-    if (input$plot_width < grDevices::dev.size("px")[1]) {
-      helpText(icon("exclamation-triangle"), "Note: Graph may be cut off for small plot widths.")
-    }
-  })
+  callModule(
+    plot_with_settings_srv,
+    id = "myplot",
+    plot_r = plot_r,
+    height = plot_height,
+    # main plot width slider options scaled proportionally to the difference
+    # between main plot width area and the modal plot width area
+    width = c(1658, 846, 3385)
+  )
 
   observeEvent(input$show_rcode, {
     show_rcode_modal(

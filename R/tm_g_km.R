@@ -82,7 +82,8 @@ tm_g_km <- function(label,
     server_args = list(
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
-      label = label
+      label = label,
+      plot_height = plot_height
     ),
     ui = ui_g_km,
     ui_args = args
@@ -94,7 +95,7 @@ ui_g_km <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = white_small_well(plot_height_output(id = ns("myplot"))),
+    output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height)),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
@@ -165,7 +166,6 @@ ui_g_km <- function(id, ...) {
       ),
       tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
-      plot_height_input(id = ns("myplot"), value = a$plot_height),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         panel_group(
@@ -246,7 +246,8 @@ srv_g_km <- function(input,
                      datasets,
                      dataname,
                      arm_ref_comp,
-                     label) {
+                     label,
+                     plot_height) {
 
   init_chunks()
 
@@ -262,14 +263,7 @@ srv_g_km <- function(input,
     on_off = reactive(input$compare_arms)
   )
 
-  ## dynamic plot height
-  output$plot_ui <- renderUI({
-    plot_height <- input$plot_height
-    validate(need(plot_height, "need valid plot height"))
-    plotOutput(session$ns("kmplot"), height = plot_height)
-  })
-
-  output$plot <- renderPlot({
+  plot_r <- reactive({
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE) # nolint
 
@@ -533,11 +527,12 @@ srv_g_km <- function(input,
     chunks_safe_eval()
   })
 
-  # Insert the plot into a plot_height module from teal.devel
-  callModule(plot_with_height,
-             id = "myplot",
-             plot_height = reactive(input$myplot),
-             plot_id = session$ns("plot")
+  # Insert the plot into a plot with settings module from teal.devel
+  callModule(
+    plot_with_settings_srv,
+    id = "myplot",
+    plot_r = plot_r,
+    height = plot_height
   )
 
   observeEvent(input$show_rcode, {

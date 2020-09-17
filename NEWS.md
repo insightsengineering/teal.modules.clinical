@@ -1,5 +1,6 @@
 # teal.modules.clinical 0.8.4.9000
 
+* Replace `plot_with_height` module with new `plot_with_settings` module.
 * issues with no news:
 
 # teal.modules.clinical 0.8.4
