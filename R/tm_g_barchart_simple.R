@@ -179,7 +179,7 @@ ui_g_barchart_simple <- function(id, ...) {
 
   standard_layout(
     output = white_small_well(
-      plot_height_output(id = ns("myplot")),
+      plot_with_settings_ui(id = ns("myplot")),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(
@@ -187,28 +187,28 @@ ui_g_barchart_simple <- function(id, ...) {
       if (!is.null(args$x)) {
         data_extract_input(
           id = ns("x"),
-          label = "x:",
+          label = "X variable",
           data_extract_spec = args$x
         )
       },
       if (!is.null(args$fill)) {
         data_extract_input(
           id = ns("fill"),
-          label = "fill:",
+          label = "Fill",
           data_extract_spec = args$fill
         )
       },
       if (!is.null(args$x_facet)) {
         data_extract_input(
           id = ns("x_facet"),
-          label = "x facetting:",
+          label = "Column facetting variable",
           data_extract_spec = args$x_facet
         )
       },
       if (!is.null(args$y_facet)) {
         data_extract_input(
           id = ns("y_facet"),
-          label = "y facetting:",
+          label = "Row facetting variable",
           data_extract_spec = args$y_facet
         )
       },
@@ -263,8 +263,7 @@ ui_g_barchart_simple <- function(id, ...) {
             step = 0.1
           )
         )
-      ),
-      plot_height_input(id = ns("myplot"), value = c(600, 200, 2000))
+      )
     ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
@@ -394,7 +393,7 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     chunk
   })
 
-  output$plot <- renderPlot({
+  plot_r <- reactive({
     generate_code()$get("plot")
   })
 
@@ -432,12 +431,11 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
     res
   }
 
-  # generic code ----
+  # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_height,
+    plot_with_settings_srv,
     id = "myplot",
-    plot_height = reactive(input$myplot),
-    plot_id = session$ns("plot")
+    plot_r = plot_r
   )
 
   merge_ex111 <- reactive(merged_data()()$expr)
