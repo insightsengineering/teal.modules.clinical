@@ -54,8 +54,6 @@
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-#'
-#' @importFrom methods substituteDirect
 tm_t_binary_outcome <- function(label,
                                 dataname,
                                 arm_var,

@@ -106,15 +106,14 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_events_summary <- function(label,
-                        dataname,
-                        arm_var,
-                        add_total = TRUE,
-                        flag_var_anl = NULL,
-                        flag_var_aesi = NULL,
-                        count_subj = TRUE,
-                        count_pt = FALSE,
-                        count_events = FALSE
-                        ) {
+                                dataname,
+                                arm_var,
+                                add_total = TRUE,
+                                flag_var_anl = NULL,
+                                flag_var_aesi = NULL,
+                                count_subj = TRUE,
+                                count_pt = FALSE,
+                                count_events = FALSE) {
   module(
     label = label,
     ui = function(id, datasets) {

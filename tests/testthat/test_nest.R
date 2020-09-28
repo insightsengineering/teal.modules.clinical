@@ -1,8 +1,4 @@
 library(test.nest)
 library(random.cdisc.data)
 
-
-test_lintr()
-test_strict()
-test_regexp()
-test_spell()
+test_all(importfrom_args = list(skip = c("setNames", "terms")))

@@ -50,7 +50,7 @@
 #' The arm, subject ID, baseline characteristics variables are taken from the \code{ADSL} data.
 #'
 #' @export
-#' @importFrom stats terms complete.cases
+#' @importFrom stats terms
 #'
 #' @examples
 #' library(random.cdisc.data)

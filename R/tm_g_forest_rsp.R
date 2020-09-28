@@ -14,7 +14,6 @@
 #' @inheritParams tm_t_tte
 #' @export
 #' @importFrom rtables var_labels "var_labels<-"
-#' @importFrom grDevices dev.size
 #'
 #' @template author_song24
 #'
@@ -56,8 +55,7 @@ tm_g_forest_rsp <- function(label,
                             paramcd,
                             subgroup_var,
                             strata_var,
-                            conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
-                                                          0.95, keep_order = TRUE),
+                            conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE), # nolint
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             cex = 1.3,
@@ -314,8 +312,12 @@ srv_g_forest_rsp <- function(input,
     }
 
     chunks_push(bquote({
-      anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
-                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      anl <- merge(
+        adsl_p[, .(adsl_vars)],
+        anl_p[, .(anl_vars)],
+        all.x = FALSE,
+        all.y = FALSE,
+        by = c("USUBJID", "STUDYID"))
 
       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
 

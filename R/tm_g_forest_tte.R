@@ -7,7 +7,6 @@
 #'
 #' @export
 #' @importFrom rtables var_labels "var_labels<-"
-#' @importFrom grDevices dev.size
 #'
 #' @template author_song24
 #'
@@ -50,8 +49,7 @@ tm_g_forest_tte <- function(label,
                             subgroup_var,
                             paramcd,
                             strata_var,
-                            conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
-                                                          0.95, keep_order = TRUE),
+                            conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE), # nolint
                             fixed_symbol_size = TRUE,
                             plot_height = c(600, 200, 2000),
                             cex = 1.3,
@@ -72,9 +70,10 @@ tm_g_forest_tte <- function(label,
     server = srv_g_forest_tte,
     ui = ui_g_forest_tte,
     ui_args = args,
-    server_args = list(dataname = dataname,
-                       cex = cex,
-                       plot_height = plot_height),
+    server_args = list(
+      dataname = dataname,
+      cex = cex,
+      plot_height = plot_height),
     filters = dataname
   )
 }
@@ -91,40 +90,45 @@ ui_g_forest_tte <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("paramcd"),
-                          "PARAMCD",
-                          a$paramcd$choices,
-                          a$paramcd$selected,
-                          multiple = FALSE,
-                          fixed = a$paramcd$fixed,
-                          label_help = helpText("Select an endpoint to analyze.")
+      optionalSelectInput(
+        ns("paramcd"),
+        "PARAMCD",
+        a$paramcd$choices,
+        a$paramcd$selected,
+        multiple = FALSE,
+        fixed = a$paramcd$fixed,
+        label_help = helpText("Select an endpoint to analyze.")
       ),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
-      selectInput(ns("ref_arm"),
-                  "Reference Arm",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
+      selectInput(
+        ns("ref_arm"),
+        "Reference Arm",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
-      selectInput(ns("comp_arm"),
-                  "Comparison Arm",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Arm",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE),
       helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
-      optionalSelectInput(ns("subgroup_var"),
-                          "Subgroup Variables",
-                          a$subgroup_var$choices,
-                          a$subgroup_var$selected,
-                          multiple = TRUE,
-                          label_help = helpText("are taken from", tags$code("ADSL")),
-                          fixed = a$subgroup_var$fixed
+      optionalSelectInput(
+        ns("subgroup_var"),
+        "Subgroup Variables",
+        a$subgroup_var$choices,
+        a$subgroup_var$selected,
+        multiple = TRUE,
+        label_help = helpText("are taken from", tags$code("ADSL")),
+        fixed = a$subgroup_var$fixed
       ),
       optionalSelectInput(ns("strata_var"),
                           "Stratify by",
@@ -249,8 +253,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
 
       anl_p <- subset(.(as.name(anl_data_name)), PARAMCD %in% .(paramcd))
 
-      anl <- merge(adsl_p[, .(adsl_vars)], anl_p[, .(anl_vars)],
-                   all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID"))
+      anl <- merge(
+        adsl_p[, .(adsl_vars)],
+        anl_p[, .(anl_vars)],
+        all.x = FALSE,
+        all.y = FALSE,
+        by = c("USUBJID", "STUDYID"))
       arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])
       arm <- combine_levels(arm, ref_arm)
       arm <- combine_levels(arm, comp_arm)

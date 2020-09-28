@@ -79,15 +79,15 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_summary_by <- function(label,
-                         dataname,
-                         arm_var,
-                         by_vars,
-                         summarize_vars,
-                         parallel_vars = FALSE,
-                         useNA = c("ifany", "no"), # nolintr
-                         denominator = c("n", "N", "omit"),
-                         pre_output = NULL,
-                         post_output = NULL) {
+                            dataname,
+                            arm_var,
+                            by_vars,
+                            summarize_vars,
+                            parallel_vars = FALSE,
+                            useNA = c("ifany", "no"), # nolintr
+                            denominator = c("n", "N", "omit"),
+                            pre_output = NULL,
+                            post_output = NULL) {
   module(
     label = label,
     ui = function(id, datasets) {

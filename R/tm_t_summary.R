@@ -12,7 +12,6 @@
 #' @md
 #'
 #' @importFrom dplyr select
-#' @importFrom rtables as_html var_relabel
 #'
 #' @export
 #'
