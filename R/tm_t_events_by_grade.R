@@ -102,33 +102,38 @@ ui_t_events_by_grade <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed),
-      optionalSelectInput(ns("hlt"),
-                          "Event High Level Term",
-                          a$hlt$choices,
-                          a$hlt$selected,
-                          multiple = FALSE,
-                          fixed = a$hlt$fixed),
-      optionalSelectInput(ns("llt"),
-                          "Event Low Level Term",
-                          a$llt$choices,
-                          a$llt$selected,
-                          multiple = FALSE,
-                          fixed = a$llt$fixed),
-      optionalSelectInput(ns("grade"),
-                          "Event Grade",
-                          a$grade$choices,
-                          a$grade$selected,
-                          multiple = FALSE,
-                          fixed = a$grade$fixed),
-      checkboxInput(ns("add_total"),
-                    "Add All Patients column",
-                    value = a$add_total)
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed),
+      optionalSelectInput(
+        ns("hlt"),
+        "Event High Level Term",
+        a$hlt$choices,
+        a$hlt$selected,
+        multiple = FALSE,
+        fixed = a$hlt$fixed),
+      optionalSelectInput(
+        ns("llt"),
+        "Event Low Level Term",
+        a$llt$choices,
+        a$llt$selected,
+        multiple = FALSE,
+        fixed = a$llt$fixed),
+      optionalSelectInput(
+        ns("grade"),
+        "Event Grade",
+        a$grade$choices,
+        a$grade$selected,
+        multiple = FALSE,
+        fixed = a$grade$fixed),
+      checkboxInput(
+        ns("add_total"),
+        "Add All Patients column",
+        value = a$add_total)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -137,7 +142,6 @@ ui_t_events_by_grade <- function(id, ...) {
 }
 
 #' @importFrom dplyr filter mutate select
-#' @importFrom rtables var_relabel
 #' @importFrom tern t_events_per_term_grade_id
 srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
 

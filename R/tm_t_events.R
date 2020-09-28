@@ -60,8 +60,7 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
-                        event_type = "event"){
-
+                        event_type = "event") {
   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
@@ -91,24 +90,27 @@ ui_t_events_byterm <- function(id, ...){
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed),
-      optionalSelectInput(ns("hlt"),
-                          "Event High Level Term",
-                          a$hlt$choices,
-                          a$hlt$selected,
-                          multiple = FALSE,
-                          fixed = a$hlt$fixed),
-      optionalSelectInput(ns("llt"),
-                          "Event Low Level Term",
-                          a$llt$choices,
-                          a$llt$selected,
-                          multiple = FALSE,
-                          fixed = a$llt$fixed),
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed),
+      optionalSelectInput(
+        ns("hlt"),
+        "Event High Level Term",
+        a$hlt$choices,
+        a$hlt$selected,
+        multiple = FALSE,
+        fixed = a$hlt$fixed),
+      optionalSelectInput(
+        ns("llt"),
+        "Event Low Level Term",
+        a$llt$choices,
+        a$llt$selected,
+        multiple = FALSE,
+        fixed = a$llt$fixed),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),

@@ -146,50 +146,57 @@ ui_t_abnormality <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-      optionalSelectInput(ns("id_var"),
-                          "Subject Identifier",
-                          a$id_var$choices,
-                          a$id_var$selected,
-                          multiple = FALSE,
-                          fixed = a$id_var$fixed
+      optionalSelectInput(
+        ns("id_var"),
+        "Subject Identifier",
+        a$id_var$choices,
+        a$id_var$selected,
+        multiple = FALSE,
+        fixed = a$id_var$fixed
       ),
-      optionalSelectInput(ns("by_vars"),
-                          "Row By Variable",
-                          a$by_vars$choices,
-                          a$by_vars$selected,
-                          multiple = TRUE,
-                          fixed = a$by_vars$fixed
+      optionalSelectInput(
+        ns("by_vars"),
+        "Row By Variable",
+        a$by_vars$choices,
+        a$by_vars$selected,
+        multiple = TRUE,
+        fixed = a$by_vars$fixed
       ),
-      optionalSelectInput(ns("grade"),
-                          "Grade Variable",
-                          a$grade$choices,
-                          a$grade$selected,
-                          multiple = FALSE,
-                          fixed = a$grade$fixed
+      optionalSelectInput(
+        ns("grade"),
+        "Grade Variable",
+        a$grade$choices,
+        a$grade$selected,
+        multiple = FALSE,
+        fixed = a$grade$fixed
       ),
-      optionalSelectInput(ns("baseline"),
-                          "Variable for Baseline Grade",
-                          a$baseline$choices,
-                          a$baseline$selected,
-                          multiple = FALSE,
-                          fixed = a$baseline$fixed
+      optionalSelectInput(
+        ns("baseline"),
+        "Variable for Baseline Grade",
+        a$baseline$choices,
+        a$baseline$selected,
+        multiple = FALSE,
+        fixed = a$baseline$fixed
       ),
-      selectInput(ns("abnormal_values"),
-                  "Abnormality Indicator",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
-      checkboxInput(ns("exclude_base_abn"),
-                    "Exclude subjects whose baseline grade is the same as abnormal grade",
-                    value = a$exclude_base_abn),
+      selectInput(
+        ns("abnormal_values"),
+        "Abnormality Indicator",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE),
+      checkboxInput(
+        ns("exclude_base_abn"),
+        "Exclude subjects whose baseline grade is the same as abnormal grade",
+        value = a$exclude_base_abn),
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -204,7 +211,6 @@ srv_t_abnormality <- function(input,
                               datasets,
                               dataname,
                               abnormal) {
-
   init_chunks()
 
   # Update UI choices depending on selection of previous options

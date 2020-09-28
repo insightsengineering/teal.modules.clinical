@@ -45,7 +45,7 @@
 #' numerical precision.
 #'
 #' @export
-#' @importFrom stats terms
+#' @importFrom stats complete.cases terms
 #' @importFrom shinyjs show
 #'
 #' @examples
@@ -292,18 +292,14 @@ ui_mmrm <- function(id, ...) {
           collapsed = FALSE  # Start with having this panel opened.
         )
       ),
-      tags$style(".btn.disabled {
-         color: grey;
-         background-color: white
-      }"),
+      tags$style(".btn.disabled { color: grey; background-color: white; }"),
       actionButton(
         ns("button_start"),
         "Fit Model",
         icon = icon("calculator"),
         width = "100%",
         class = "btn action-button",
-        style = "color: black;
-                 background-color: orange"
+        style = "color: black; background-color: orange;"
       ),
       br(),
       br(),
@@ -378,8 +374,7 @@ ui_mmrm <- function(id, ...) {
       "Show R Code",
       width = "100%",
       class = "btn action-button",
-      style = "color: black;
-               background-color: green"
+      style = "color: black; background-color: green;"
     ),
     pre_output = a$pre_output,
     post_output = a$post_output

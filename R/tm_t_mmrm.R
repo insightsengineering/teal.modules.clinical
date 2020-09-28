@@ -184,89 +184,102 @@ ui_t_mmrm <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("endpoint_var"),
-                          "Select Endpoint",
-                          a$endpoint_var$choices,
-                          a$endpoint_var$selected,
-                          multiple = FALSE,
-                          fixed = a$endpoint_var$fixed
+      optionalSelectInput(
+        ns("endpoint_var"),
+        "Select Endpoint",
+        a$endpoint_var$choices,
+        a$endpoint_var$selected,
+        multiple = FALSE,
+        fixed = a$endpoint_var$fixed
       ),
-      optionalSelectInput(ns("paramcd"),
-                          "Select Parameter",
-                          a$paramcd$choices,
-                          a$paramcd$selected,
-                          multiple = FALSE,
-                          fixed = a$paramcd$fixed
+      optionalSelectInput(
+        ns("paramcd"),
+        "Select Parameter",
+        a$paramcd$choices,
+        a$paramcd$selected,
+        multiple = FALSE,
+        fixed = a$paramcd$fixed
       ),
-      optionalSelectInput(ns("formula"),
-                          "Formula (regressors only)",
-                          a$formula$choices,
-                          a$formula$selected,
-                          multiple = FALSE,
-                          fixed = a$formula$fixed
+      optionalSelectInput(
+        ns("formula"),
+        "Formula (regressors only)",
+        a$formula$choices,
+        a$formula$selected,
+        multiple = FALSE,
+        fixed = a$formula$fixed
       ),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable (match the one in formula)",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable (match the one in formula)",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed
       ),
-      optionalSelectInput(ns("visit_var"),
-                          "Visit Variable (match the one in formula)",
-                          a$visit_var$choices,
-                          a$visit_var$selected,
-                          multiple = FALSE,
-                          fixed = a$visit_var$fixed
+      optionalSelectInput(
+        ns("visit_var"),
+        "Visit Variable (match the one in formula)",
+        a$visit_var$choices,
+        a$visit_var$selected,
+        multiple = FALSE,
+        fixed = a$visit_var$fixed
       ),
-      selectInput(ns("ref_arm"),
-                  "Reference Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
+      selectInput(
+        ns("ref_arm"),
+        "Reference Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE),
       helpText("Multiple reference groups are automatically combined into a single group."),
-      selectInput(ns("comp_arm"),
-                  "Comparison Group",
-                  choices = NULL,
-                  selected = NULL,
-                  multiple = TRUE),
-      checkboxInput(ns("combine_comp_arms"),
-                    "Combine all comparison groups?",
-                    value = FALSE),
-      optionalSelectInput(ns("id_var"),
-                          "Subject Identifier",
-                          a$id_var$choices,
-                          a$id_var$selected,
-                          multiple = FALSE,
-                          fixed = a$id_var$fixed
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE),
+      optionalSelectInput(
+        ns("id_var"),
+        "Subject Identifier",
+        a$id_var$choices,
+        a$id_var$selected,
+        multiple = FALSE,
+        fixed = a$id_var$fixed
       ),
-      optionalSelectInput(ns("mode"),
-                          "Mode",
-                          a$mode$choices,
-                          a$mode$selected,
-                          multiple = FALSE,
-                          fixed = a$mode$fixed
+      optionalSelectInput(
+        ns("mode"),
+        "Mode",
+        a$mode$choices,
+        a$mode$selected,
+        multiple = FALSE,
+        fixed = a$mode$fixed
       ),
-      optionalSelectInput(ns("weights_emmeans"),
-                          "Weights for emmeans",
-                          a$weights_emmeans$choices,
-                          a$weights_emmeans$selected,
-                          multiple = FALSE,
-                          fixed = a$weights_emmeans$fixed
+      optionalSelectInput(
+        ns("weights_emmeans"),
+        "Weights for emmeans",
+        a$weights_emmeans$choices,
+        a$weights_emmeans$selected,
+        multiple = FALSE,
+        fixed = a$weights_emmeans$fixed
       ),
-      optionalSelectInput(ns("cor_struct"),
-                          "Correlation Structure",
-                          a$cor_struct$choices,
-                          a$cor_struct$selected,
-                          multiple = FALSE,
-                          fixed = a$cor_struct$fixed
+      optionalSelectInput(
+        ns("cor_struct"),
+        "Correlation Structure",
+        a$cor_struct$choices,
+        a$cor_struct$selected,
+        multiple = FALSE,
+        fixed = a$cor_struct$fixed
       ),
-      optionalSelectInput(ns("conf_level"),
-                          "Confidence Level",
-                          a$conf_level$choices,
-                          a$conf_level$selected,
-                          multiple = FALSE,
-                          fixed = a$conf_level$fixed
+      optionalSelectInput(
+        ns("conf_level"),
+        "Confidence Level",
+        a$conf_level$choices,
+        a$conf_level$selected,
+        multiple = FALSE,
+        fixed = a$conf_level$fixed
       )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
@@ -470,7 +483,7 @@ srv_t_mmrm <- function(input,
     validate(need(
       all(complete.cases(chunks_get_var("ANL"))),
       paste(c("Missing values found in formula vars",
-            chunks_get_var("ANL")[!complete.cases(chunks_get_var("ANL")), ]))
+              chunks_get_var("ANL")[!complete.cases(chunks_get_var("ANL")), ]))
     ))
 
     chunks_push(bquote({

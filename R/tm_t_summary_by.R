@@ -79,15 +79,15 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_summary_by <- function(label,
-                         dataname,
-                         arm_var,
-                         by_vars,
-                         summarize_vars,
-                         parallel_vars = FALSE,
-                         useNA = c("ifany", "no"), # nolintr
-                         denominator = c("n", "N", "omit"),
-                         pre_output = NULL,
-                         post_output = NULL) {
+                            dataname,
+                            arm_var,
+                            by_vars,
+                            summarize_vars,
+                            parallel_vars = FALSE,
+                            useNA = c("ifany", "no"), # nolintr
+                            denominator = c("n", "N", "omit"),
+                            pre_output = NULL,
+                            post_output = NULL) {
 
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(by_vars))
@@ -203,10 +203,10 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
     anl_vars <- unique(c("USUBJID", "STUDYID", by_vars, summarize_vars))
 
     if (parallel_vars) {
-      validate(need(all(vapply(anl_filtered[summarize_vars],
-                               FUN =  is.numeric,
-                               FUN.VALUE = TRUE)),
-                    "Summarize variables must all be numeric to display in parallel columns."))
+      validate(need(
+        all(vapply(anl_filtered[summarize_vars], FUN =  is.numeric, FUN.VALUE = TRUE)),
+        "Summarize variables must all be numeric to display in parallel columns."
+      ))
     }
 
     chunks_push(
@@ -274,8 +274,10 @@ srv_t_summary_by <- function(input, output, session, datasets, dataname) {
         call(
           "t_summary_by",
           x = if (bquote(.(parallel_vars))) {
-            bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
-                     compare_in_header())
+            bquote({
+              .(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
+                compare_in_header()
+            })
           } else {
             if (is.null(bquote(.(by_vars)))) {
               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE])

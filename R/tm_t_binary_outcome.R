@@ -180,9 +180,11 @@ ui_t_binary_outcome <- function(id, ...) {
             optionalSelectInput(
               ns("u_diff_test"),
               label = "Method for Difference of Proportions Test",
-              choices = c("Chi-squared Test" = "chisq",
-                          "Fisher's Exact Test" = "fisher",
-                          "Chi-Squared Test with Schouten correction" = "schouten"),
+              choices = c(
+                "Chi-squared Test" = "chisq",
+                "Fisher's Exact Test" = "fisher",
+                "Chi-Squared Test with Schouten correction" = "schouten"
+              ),
               selected = "chisq",
               multiple = FALSE,
               fixed = FALSE

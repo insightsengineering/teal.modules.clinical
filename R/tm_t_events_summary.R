@@ -106,25 +106,26 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_events_summary <- function(label,
-                        dataname,
-                        arm_var,
-                        add_total = TRUE,
-                        flag_var_anl = NULL,
-                        flag_var_aesi = NULL,
-                        count_subj = TRUE,
-                        count_pt = FALSE,
-                        count_events = FALSE
-                        ){
-
-  stop_if_not(list(is_character_single(label),
-                   "Label should be single (i.e. not vector) character type of object"))
+                                dataname,
+                                arm_var,
+                                add_total = TRUE,
+                                flag_var_anl = NULL,
+                                flag_var_aesi = NULL,
+                                count_subj = TRUE,
+                                count_pt = FALSE,
+                                count_events = FALSE) {
+  stop_if_not(list(
+    is_character_single(label),
+    "Label should be single (i.e. not vector) character type of object"))
   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is_logical_single(add_total))
-  stop_if_not(list(is_character_vector(flag_var_anl) || is.null(flag_var_anl),
-              "flag_var_anl should be NULL or a character vector object."))
-  stop_if_not(list(is_character_vector(flag_var_aesi) || is.null(flag_var_aesi),
-              "flag_var_aesi should be NULL or a character vector object."))
+  stop_if_not(list(
+    is_character_vector(flag_var_anl) || is.null(flag_var_anl),
+    "flag_var_anl should be NULL or a character vector object."))
+  stop_if_not(list(
+    is_character_vector(flag_var_aesi) || is.null(flag_var_aesi),
+    "flag_var_aesi should be NULL or a character vector object."))
   stopifnot(is_logical_single(count_subj))
   stopifnot(is_logical_single(count_pt))
   stopifnot(is_logical_single(count_events))
@@ -153,12 +154,13 @@ ui_t_events_summary <- function(id, ...){
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          a$arm_var$choices,
-                          a$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = a$arm_var$fixed),
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        a$arm_var$choices,
+        a$arm_var$selected,
+        multiple = FALSE,
+        fixed = a$arm_var$fixed),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       tags$label("Table Settings"),
       checkboxInput(ns("count_subj"), "Count patients", value = a$count_subj),
@@ -178,11 +180,10 @@ srv_t_events_summary <- function(input,
                                  datasets,
                                  dataname,
                                  flag_var_anl = NULL,
-                                 flag_var_aesi = NULL){
+                                 flag_var_aesi = NULL) {
+  init_chunks()
 
-   init_chunks()
-
-   output$table <- renderUI({
+  output$table <- renderUI({
     adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -199,16 +200,22 @@ srv_t_events_summary <- function(input,
     validate_has_data(adsl_filtered, min_nrow = 1)
     validate_has_data(anl_filtered, min_nrow = 1)
     if (!is.null(flag_var_anl)) {
-      validate_in(flag_var_anl, names(anl_filtered),
-                  "Not all flag_var_anl variables exist in dataset.")
-      validate(need(all(vapply(anl_filtered[, flag_var_anl], is.logical, FUN.VALUE = logical(1))),
-                    "Not all variables from flag_var_anl are of type logical."))
+      validate_in(
+        flag_var_anl,
+        names(anl_filtered),
+        "Not all flag_var_anl variables exist in dataset.")
+      validate(need(
+        all(vapply(anl_filtered[, flag_var_anl], is.logical, FUN.VALUE = logical(1))),
+        "Not all variables from flag_var_anl are of type logical."))
     }
     if (!is.null(flag_var_aesi)) {
-      validate_in(flag_var_aesi, names(anl_filtered),
-                  "Not all flag_var_aesi variables exist in dataset.")
-      validate(need(all(vapply(anl_filtered[, flag_var_aesi], is.logical, FUN.VALUE = logical(1))),
-                    "Not all variables from flag_var_aesi are of type logical."))
+      validate_in(
+        flag_var_aesi,
+        names(anl_filtered),
+        "Not all flag_var_aesi variables exist in dataset.")
+      validate(need(
+        all(vapply(anl_filtered[, flag_var_aesi], is.logical, FUN.VALUE = logical(1))),
+        "Not all variables from flag_var_aesi are of type logical."))
     }
 
     adsl_name <- "ADSL_FILTERED"
@@ -224,7 +231,7 @@ srv_t_events_summary <- function(input,
       ADSL_S <- ADSL_FILTERED[, .(adsl_vars)] # nolint
       ANL_S <- .(as.name(anl_name))[, .(anl_vars)] # nolint
       ANL_MERGED <- merge(ADSL_S, ANL_S, all.x = FALSE, all.y = FALSE, by = c("STUDYID", "USUBJID")) # nolint
-      })
+    })
     )
 
     chunks_push(
@@ -233,16 +240,16 @@ srv_t_events_summary <- function(input,
         as.name("ANL_MERGED"),
         call(
           "%>%",
-            as.name("ANL_MERGED"),
-            teal.devel::get_relabel_call(
-              labels = c(
-                datasets$get_variable_labels("ADSL", adsl_vars),
-                datasets$get_variable_labels(dataname, anl_vars)
-              )
+          as.name("ANL_MERGED"),
+          teal.devel::get_relabel_call(
+            labels = c(
+              datasets$get_variable_labels("ADSL", adsl_vars),
+              datasets$get_variable_labels(dataname, anl_vars)
             )
           )
         )
       )
+    )
 
     total <- if (add_total) "All Patients" else NULL # nolint
 
@@ -351,8 +358,10 @@ srv_t_events_summary <- function(input,
           denominator = "omit"
         )
 
-        tbl_aesi_pt <- insert_rrow(indent(tbl_aesi_pt),
-                      rrow("Medical concepts: number of unique preferred terms which are part of"))
+        tbl_aesi_pt <- insert_rrow(
+          indent(tbl_aesi_pt),
+          rrow("Medical concepts: number of unique preferred terms which are part of")
+        )
       }))
 
     } else {
@@ -376,8 +385,10 @@ srv_t_events_summary <- function(input,
           denominator = "omit"
         )
 
-        tbl_anl_events <- insert_rrow(indent(tbl_anl_events),
-                                      rrow("Total number of adverse events which are"))
+        tbl_anl_events <- insert_rrow(
+          indent(tbl_anl_events),
+          rrow("Total number of adverse events which are")
+        )
 
       }))
 
@@ -400,8 +411,10 @@ srv_t_events_summary <- function(input,
           denominator = "omit"
         )
 
-        tbl_aesi_events <- insert_rrow(indent(tbl_aesi_events),
-                            rrow("Medical concepts: number of adverse events which are part of"))
+        tbl_aesi_events <- insert_rrow(
+          indent(tbl_aesi_events),
+          rrow("Medical concepts: number of adverse events which are part of")
+        )
 
       }))
 
@@ -412,26 +425,33 @@ srv_t_events_summary <- function(input,
       }))
     }
 
-    chunks_push(bquote({
-      tbl <- rbindl_rtables(list(tbl_ae_overall,
-                                 tbl_anl_subj, tbl_anl_pt, tbl_anl_events,
-                                 tbl_aesi_subj, tbl_aesi_pt, tbl_aesi_events), gap = 1)
-      tbl
-    }))
+    chunks_push(
+      bquote({
+        tbl <- rbindl_rtables(
+          list(
+            tbl_ae_overall,
+            tbl_anl_subj, tbl_anl_pt, tbl_anl_events,
+            tbl_aesi_subj, tbl_aesi_pt, tbl_aesi_events
+          ),
+          gap = 1
+        )
+        tbl
+      })
+    )
 
     chunks_safe_eval()
     result_tbl <- chunks_get_var("tbl")
     as_html(result_tbl)
-   })
+  })
 
-   observeEvent(input$show_rcode, {
-     show_rcode_modal(
-       title = "Summary",
-       rcode = get_rcode(
-         datasets = datasets,
-         datanames = union("ADSL", dataname),
-         title = "Event Table"
-       )
-     )
-   })
+  observeEvent(input$show_rcode, {
+    show_rcode_modal(
+      title = "Summary",
+      rcode = get_rcode(
+        datasets = datasets,
+        datanames = union("ADSL", dataname),
+        title = "Event Table"
+      )
+    )
+  })
 }
