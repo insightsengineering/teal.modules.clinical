@@ -45,8 +45,8 @@
 #' numerical precision.
 #'
 #' @export
-#' @importFrom stats terms complete.cases
-#' @importFrom shinyjs show hide
+#' @importFrom stats terms
+#' @importFrom shinyjs show
 #'
 #' @examples
 #'

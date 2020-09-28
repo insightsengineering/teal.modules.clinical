@@ -693,8 +693,10 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 add_plot_title <- function(chunk, groupby_vars) {
   chunk$push(bquote({
     total_n <- nrow(ANL) # get it from original dataset
-    plot_title <- paste0("Number of patients (total N = ", total_n,
-                         .(paste0(") for each combination of (", paste(groupby_vars, collapse = ", "), ")"))
+    plot_title <- paste0(
+      "Number of patients (total N = ",
+      total_n,
+      .(paste0(") for each combination of (", paste(groupby_vars, collapse = ", "), ")"))
     )
     plot <- plot + ggtitle(plot_title)
   }))
