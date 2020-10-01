@@ -222,7 +222,7 @@ srv_g_forest_rsp <- function(input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var",
-    adsl = datasets$get_data("ADSL", filtered = FALSE),
+    datasets = datasets,
     arm_ref_comp = NULL,
     module = "tm_g_forest_rsp"
   )

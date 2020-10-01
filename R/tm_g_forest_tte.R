@@ -172,7 +172,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
     id_ref = "ref_arm",
     id_comp = "comp_arm",
     id_arm_var = "arm_var", # from UI
-    adsl = datasets$get_data("ADSL", filtered = FALSE),
+    datasets = datasets,
     arm_ref_comp = NULL,
     module = "tm_g_forest_tte"
   )
