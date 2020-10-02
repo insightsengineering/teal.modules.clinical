@@ -419,6 +419,9 @@ srv_t_tte <- function(input,
     chunks_safe_eval()
 
     validate(need(nrow(chunks_get_var("anl")) > 10, "need at least 10 data points"))
+    validate(need(
+      !all(chunks_get_var("anl")$CNSR == 1),
+      "No events have been observed for the selected subgroup/subpopulation"))
 
     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
       chunks_push(bquote({
