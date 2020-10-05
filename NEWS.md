@@ -1,5 +1,6 @@
 # teal.modules.clinical 0.8.5
 
+* `FilteredData` object is now passed to `arm_ref_comp_observer` and modules now support nested lists containing `delayed_data` objects.
 * Replace `plot_with_height` module with new `plot_with_settings` module.
 
 # teal.modules.clinical 0.8.4

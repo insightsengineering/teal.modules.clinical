@@ -398,7 +398,7 @@ srv_mmrm <- function(input,
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # From UI.
-    adsl = datasets$get_data("ADSL", filtered = FALSE),
+    datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_mmrm"
   )
