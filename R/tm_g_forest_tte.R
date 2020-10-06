@@ -14,19 +14,18 @@
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADTTE <- radtte(ADSL, cached = TRUE)
+#' ADTTE <- radtte(cached = TRUE)
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADTTE", ADTTE),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADTTE <- radtte(ADSL, cached = TRUE)
-#'             ADSL$RACE <- droplevels(ADSL$RACE)',
-#'     check = FALSE
-#'     ),
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = 'ADSL <- radsl(cached = TRUE)
+#'               ADSL$RACE <- droplevels(ADSL$RACE)'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE)'),
+#'     check = TRUE
+#'   ),
 #'   modules = root_modules(
 #'     tm_g_forest_tte(
 #'        label = "Forest Survival",

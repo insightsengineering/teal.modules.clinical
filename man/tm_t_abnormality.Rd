@@ -86,18 +86,19 @@ ADLB <- ADLB \%>\%
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADLB", ADLB),
-    code = 'ADSL <- radsl(cached = TRUE)
-            ADLB <- radlb(cached = TRUE)
-            ADLB <- ADLB \%>\% dplyr::filter(ABLFL == "Y")
-            ADLB <- ADLB \%>\% var_relabel(
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+    cdisc_dataset("ADLB", ADLB,
+      code = 'ADLB <- radlb(cached = TRUE)
+              ADLB <- ADLB \%>\% dplyr::filter(ABLFL == "Y")
+              ADLB <- ADLB \%>\% var_relabel(
               PARAM = "Parameters",
               BNRIND = "Baseline Reference Range Indicator",
               ANRIND = "Analysis Reference Range Indicator",
               AVISIT = "Analysis Visit"
-            )',
-    check = FALSE),
+            )'
+    ),
+    check = TRUE
+  ),
   modules = root_modules(
     tm_t_abnormality(
       label = "Abnormality Table",

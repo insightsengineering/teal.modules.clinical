@@ -19,7 +19,6 @@
 #' @examples
 #' library(dplyr)
 #' library(random.cdisc.data)
-#' library(teal.modules.clinical)
 #'
 #' ADSL <- radsl(cached = TRUE)
 #' ADAE <- radae(cached = TRUE)
@@ -34,16 +33,16 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADAE", ADAE), cdisc_dataset("ADLB", ADLB),
-#'     code = "
-#'     ADSL <- radsl(cached = TRUE)
-#'     ADLB <- radlb(cached = TRUE)
-#'     ADAE <- radae(cached = TRUE)
-#'     adae_labels <- var_labels(ADAE)
-#'     ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-#'     ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
-#'     ",
-#'     check = FALSE
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", ADAE,
+#'       code = "ADAE <- radae(cached = TRUE)
+#'               adae_labels <- var_labels(ADAE)
+#'               ADAE <- ADAE %>%
+#'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
+#'               ADAE <- do.call(rtables::var_relabel,
+#'                 append(list(x = ADAE), as.list(adae_labels)))"),
+#'     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_barchart_simple(
@@ -122,8 +121,6 @@
 #'           )
 #'         )
 #'       )
-#'       #stacked = FALSE,
-#'       #stat_type = "Count"
 #'     )
 #'   )
 #' )

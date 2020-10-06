@@ -32,7 +32,6 @@
 #' library(random.cdisc.data)
 #' library(dplyr)
 #'
-#' # code>
 #' ADSL <- radsl(cached = TRUE)
 #' ADAE <- radae(cached = TRUE)
 #'
@@ -58,19 +57,16 @@
 #'  ADAE <- ADAE %>%
 #'    add_event_flags()
 #'
-#' # <code
 #'
 #' anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
 #' aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_SMQ") | startsWith(names(ADAE), "TMP_CQ")]
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAE", ADAE),
-#'     # code = get_code("app.R"),
-#'     code = "ADSL <- radsl(cached = TRUE)
-#'             ADAE <- radae(cached = TRUE)
-#'             add_event_flags <- function(dat){
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", ADAE,
+#'       code = "ADAE <- radae(cached = TRUE)
+#'               add_event_flags <- function(dat){
 #'               dat %>%
 #'                 dplyr::mutate(
 #'                   TMPFL_SER = AESER == 'Y',
@@ -89,7 +85,9 @@
 #'               }
 #'            ADAE <- ADAE %>%
 #'              add_event_flags()"
-#'            ),
+#'       ),
+#'     check = TRUE
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_events_summary(
 #'       label = "Adverse Event Summary",

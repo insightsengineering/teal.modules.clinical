@@ -39,19 +39,18 @@
 #'
 #' app <- init(
 #'  data = cdisc_data(
-#'    cdisc_dataset("ADSL", ADSL),
-#'    cdisc_dataset("ADLB", ADLB),
-#'    code = 'ADSL <- radsl(cached = TRUE)
-#'            ADLB <- radlb(cached = TRUE) %>%
-#'             mutate(
+#'    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'    cdisc_dataset("ADLB", ADLB,
+#'      code = 'ADLB <- radlb(cached = TRUE) %>%
+#'              dplyr::mutate(
 #'                CHGCAT1 = case_when(
 #'                  CHG > 0 ~ "INCREASE",
 #'                  CHG < 0 ~ "DECREASE",
 #'                  CHG == 0 ~ "NO CHANGE"
 #'                )
 #'              ) %>%
-#'              var_relabel(CHGCAT1 = "Change from Baseline Category 1")',
-#'    check = FALSE
+#'              var_relabel(CHGCAT1 = "Change from Baseline Category 1")'),
+#'    check = TRUE
 #'  ),
 #'  modules = root_modules(
 #'    tm_t_summary_by(

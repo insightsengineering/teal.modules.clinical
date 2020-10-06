@@ -20,11 +20,10 @@
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAETTE", ADAETTE),
-#'     code = "ADSL <- radsl(cached = TRUE)
-#'             ADAETTE <- radaette(cached = TRUE)",
-#'     check = FALSE),
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAETTE", ADAETTE, code = "ADAETTE <- radaette(cached = TRUE)"),
+#'     check = TRUE
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_events_patyear(
 #'       label = "AE Rate adjusted for patient-years at risk Table",

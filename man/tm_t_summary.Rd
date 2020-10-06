@@ -54,9 +54,9 @@ ADSL <- radsl(cached = TRUE)
 stopifnot(all(vapply(ADSL[c("EOSDY", "DCSREAS")], function(x) any(is.na(x)), logical(1))))
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    code = 'ADSL <- radsl(cached = TRUE)',
-    check = FALSE),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+    check = TRUE
+  ),
   modules = root_modules(
     tm_t_summary(
       label = "Demographic Table",

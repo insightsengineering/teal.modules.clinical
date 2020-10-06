@@ -49,7 +49,7 @@
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADTTE <- radtte(ADSL, cached = TRUE)
+#' ADTTE <- radtte(cached = TRUE)
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -63,10 +63,11 @@
 #' )
 #'
 #' app <- init(
-#'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'         code = "ADSL <- radsl(cached = TRUE)
-#'                 ADTTE <- radtte(ADSL, cached = TRUE)",
-#'         check = FALSE),
+#'     data = cdisc_data(
+#'       cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'       cdisc_dataset("ADTTE", ADTTE, code = "ADTTE <- radtte(cached = TRUE)"),
+#'       check = TRUE
+#'     ),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'             label = "Time To Event Table",

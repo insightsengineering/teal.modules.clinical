@@ -106,10 +106,9 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADQS", ADQS),
-    code = 'ADSL <- radsl(cached = TRUE)
-            ADQS <- radqs(cached = TRUE) \%>\%
+    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADQS", ADQS,
+      code = 'ADQS <- radqs(cached = TRUE) \%>\%
               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
               dplyr::mutate(
                 AVISIT = as.factor(AVISIT),
@@ -118,6 +117,8 @@ app <- init(
                   as.numeric() \%>\%
                   as.factor() # making consecutive numeric factor
               )'
+    ),
+    check = TRUE
   ),
   modules = root_modules(
     tm_a_mmrm(
