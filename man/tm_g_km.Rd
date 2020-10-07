@@ -13,13 +13,14 @@ tm_g_km(
   facet_var,
   strata_var,
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95),
-  plot_height = c(1200, 400, 5000),
+  plot_height = c(1200L, 400L, 5000L),
+  plot_width = NULL,
   pre_output = NULL,
   post_output = NULL
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -47,7 +48,11 @@ for variable names that can be used for stratification}
 \item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for confidence level, each within range of (0, 1).}
 
-\item{plot_height}{vector with three elements defining selected, min and max plot height}
+\item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the height of the main plot.}
+
+\item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

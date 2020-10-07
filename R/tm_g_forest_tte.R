@@ -50,7 +50,8 @@ tm_g_forest_tte <- function(label,
                             strata_var,
                             conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE), # nolint
                             fixed_symbol_size = TRUE,
-                            plot_height = c(600, 200, 2000),
+                            plot_height = c(700L, 200L, 2000L),
+                            plot_width = c(980L, 500L, 2000L),
                             cex = 1.3,
                             pre_output = NULL,
                             post_output = NULL) {
@@ -61,6 +62,8 @@ tm_g_forest_tte <- function(label,
   stopifnot(is.choices_selected(strata_var))
   stopifnot(is.choices_selected(conf_level))
   stopifnot(is_logical_single(fixed_symbol_size))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
 
   args <- as.list(environment())
 
@@ -72,7 +75,8 @@ tm_g_forest_tte <- function(label,
     server_args = list(
       dataname = dataname,
       cex = cex,
-      plot_height = plot_height),
+      plot_height = plot_height,
+      plot_width = plot_width),
     filters = dataname
   )
 }
@@ -85,7 +89,7 @@ ui_g_forest_tte <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = c(980L, 500L, 2000L)),
+    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -159,7 +163,7 @@ ui_g_forest_tte <- function(id, ...) {
   )
 }
 
-srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_height, cex = 1.5) {
+srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_height, plot_width, cex = 1.5) {
 
   init_chunks()
 
@@ -340,9 +344,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,
-    # main plot width slider options scaled proportionally to the difference
-    # between main plot width area and the modal plot width area
-    width = c(1658, 846, 3385)
+    width = plot_width
   )
 
   observeEvent(input$show_rcode, {

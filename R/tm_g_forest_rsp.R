@@ -2,16 +2,16 @@
 #'
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
 #'
+#' @inheritParams tm_t_tte
+#' @inheritParams shared_params
 #' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used as the default subgroups
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for confidence level, each within range of (0, 1).
 #' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param plot_height vector with three elements defining selected, min and max plot height
-#' @param cex multiplier applied to overall font size
+#' @param cex (\code{numeric}) multiplier applied to overall font size
 #'
-#' @inheritParams tm_t_tte
 #' @export
 #' @importFrom rtables var_labels "var_labels<-"
 #'
@@ -58,6 +58,7 @@ tm_g_forest_rsp <- function(label,
                             conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE), # nolint
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
+                            plot_width = c(980L, 500L, 2000L),
                             cex = 1.3,
                             pre_output = NULL,
                             post_output = NULL) {
@@ -70,14 +71,8 @@ tm_g_forest_rsp <- function(label,
   stopifnot(is.choices_selected(strata_var))
   stopifnot(is.choices_selected(conf_level))
   stopifnot(is_logical_single(fixed_symbol_size))
-  stop_if_not(list(
-    is_integer_vector(plot_height) && length(plot_height) == 3,
-    "plot_height should be vector of three integers specyfing selected height, min and max height"
-  ))
-  stop_if_not(list(
-    plot_height[2] < plot_height[3] && plot_height[1] >= plot_height[2] && plot_height[1] <= plot_height[3],
-    "selected plot_height should be between min and max, min should be lower than max"
-  ))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
   stop_if_not(list(is_numeric_single(cex), "cex should be single numeric object))"))
   stop_if_not(list(
     is.null(pre_output) || is(pre_output, "shiny.tag"),
@@ -98,7 +93,8 @@ tm_g_forest_rsp <- function(label,
     server_args = list(
       dataname = dataname,
       cex = cex,
-      plot_height = plot_height
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     filters = dataname
   )
@@ -112,7 +108,7 @@ ui_g_forest_rsp <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = c(980L, 500L, 2000L)),
+    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis data:", tags$code(a$dataname)),
@@ -210,7 +206,8 @@ srv_g_forest_rsp <- function(input,
                              datasets,
                              dataname,
                              cex,
-                             plot_height) {
+                             plot_height,
+                             plot_width) {
 
   init_chunks()
 
@@ -408,9 +405,7 @@ srv_g_forest_rsp <- function(input,
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,
-    # main plot width slider options scaled proportionally to the difference
-    # between main plot width area and the modal plot width area
-    width = c(1658, 846, 3385)
+    width = plot_width
   )
 
   observeEvent(input$show_rcode, {

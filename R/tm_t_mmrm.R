@@ -4,7 +4,7 @@
 #' \code{tern} package
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label menu item label of the module in the teal app
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form where each subject has

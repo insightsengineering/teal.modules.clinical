@@ -3,7 +3,7 @@
 #' @description This module produces an Adverse Event summary table that matches the
 #'   STREAM template \code{aet02} or \code{cmt01}
 #'
-#' @param label menu item label of the module in the teal app
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option

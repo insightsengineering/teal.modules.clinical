@@ -10,7 +10,9 @@ tm_g_barchart_simple(
   x_facet = NULL,
   y_facet = NULL,
   label = "Count Barchart",
-  plot_options = NULL
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL
 )
 }
 \arguments{
@@ -22,9 +24,15 @@ tm_g_barchart_simple(
 
 \item{y_facet}{\code{data_extract_spec} variable on x-axis}
 
-\item{label}{\code{character.single} label of module}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{plot_options}{\code{list} list of plot options}
+
+\item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the height of the main plot.}
+
+\item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 }
 \description{
 Categories can be defined up to four levels deep and are defined through

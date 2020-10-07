@@ -3,11 +3,11 @@
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #'
 #' @inheritParams tm_t_tte
+#' @inheritParams shared_params
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for confidence level, each within range of (0, 1).
-#' @param plot_height vector with three elements defining selected, min and max plot height
 #'
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -64,13 +64,16 @@ tm_g_km <- function(label,
                     facet_var,
                     strata_var,
                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
-                    plot_height = c(1200, 400, 5000),
+                    plot_height = c(1200L, 400L, 5000L),
+                    plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(facet_var))
   stopifnot(is.choices_selected(strata_var))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
 
   args <- as.list(environment())
 
@@ -82,7 +85,8 @@ tm_g_km <- function(label,
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
       label = label,
-      plot_height = plot_height
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     ui = ui_g_km,
     ui_args = args
@@ -94,7 +98,7 @@ ui_g_km <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height)),
+    output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width)),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
@@ -246,7 +250,8 @@ srv_g_km <- function(input,
                      dataname,
                      arm_ref_comp,
                      label,
-                     plot_height) {
+                     plot_height,
+                     plot_width) {
 
   init_chunks()
 
@@ -531,7 +536,8 @@ srv_g_km <- function(input,
     plot_with_settings_srv,
     id = "myplot",
     plot_r = plot_r,
-    height = plot_height
+    height = plot_height,
+    width = plot_width
   )
 
   observeEvent(input$show_rcode, {

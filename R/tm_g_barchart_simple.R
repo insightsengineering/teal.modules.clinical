@@ -7,11 +7,11 @@
 #' it is ignored.
 #'
 #' @md
+#' @inheritParams shared_params
 #' @param x `data_extract_spec` variable on x-axis
 #' @param fill `data_extract_spec` variable on x-axis
 #' @param x_facet `data_extract_spec` variable on x-axis
 #' @param y_facet `data_extract_spec` variable on x-axis
-#' @param label `character.single` label of module
 #' @param plot_options `list` list of plot options
 #'
 #' @export
@@ -134,7 +134,9 @@ tm_g_barchart_simple <- function(x = NULL,
                                  x_facet = NULL,
                                  y_facet = NULL,
                                  label = "Count Barchart",
-                                 plot_options = NULL) {
+                                 plot_options = NULL,
+                                 plot_height = c(600L, 200L, 2000L),
+                                 plot_width = NULL) {
   stopifnot(
     is_character_single(label),
     is.null(plot_options) || is.list(plot_options)
@@ -148,6 +150,8 @@ tm_g_barchart_simple <- function(x = NULL,
   check_no_multiple_selection(fill)
   check_no_multiple_selection(x_facet)
   check_no_multiple_selection(y_facet)
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
 
   plot_options <- modifyList(
     list(stacked = FALSE), # default
@@ -164,7 +168,9 @@ tm_g_barchart_simple <- function(x = NULL,
       x = x,
       fill = fill,
       x_facet = x_facet,
-      y_facet = y_facet
+      y_facet = y_facet,
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     filters = "all"
   )
@@ -176,7 +182,7 @@ ui_g_barchart_simple <- function(id, ...) {
 
   standard_layout(
     output = white_small_well(
-      plot_with_settings_ui(id = ns("myplot")),
+      plot_with_settings_ui(id = ns("myplot"), height = args$plot_height, width = args$plot_width),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(
@@ -268,7 +274,16 @@ ui_g_barchart_simple <- function(id, ...) {
   )
 }
 
-srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_facet, y_facet) {
+srv_g_barchart_simple <- function(input,
+                                  output,
+                                  session,
+                                  datasets,
+                                  x,
+                                  fill,
+                                  x_facet,
+                                  y_facet,
+                                  plot_height,
+                                  plot_width) {
   data_extract <- list(
     x = x, fill = fill, x_facet = x_facet, y_facet = y_facet
   )
@@ -432,7 +447,9 @@ srv_g_barchart_simple <- function(input, output, session, datasets, x, fill, x_f
   callModule(
     plot_with_settings_srv,
     id = "myplot",
-    plot_r = plot_r
+    plot_r = plot_r,
+    height = plot_height,
+    width = plot_width
   )
 
   merge_ex111 <- reactive(merged_data()()$expr)
@@ -636,65 +653,5 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
       group_by_at(.(groupby_vars)) %>%
       mutate(.(as.symbol(n_name)) := n()) %>%
       ungroup()
-  }))
-}
-
-
-# Util functions ----
-#' Concatenate expressions via a binary operator
-#'
-#' e.g. combine with \code{+} for ggplot without introducing parentheses due to associativity
-#'
-#' @param args arguments to concatenate with operator
-#' @param bin_op binary operator to concatenate it with
-#'
-#' @examples
-#' \dontrun{
-#' # What we want to achieve
-#' call("+", quote(f), quote(g))
-#' call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
-#' call("+", call("+", quote(f), quote(g)), quote(h)) # as expected without unnecessary parentheses
-#' Reduce(function(existing, new) call("+", existing, new), list(quote(f), quote(g), quote(h)))
-#'
-#' # how we do it
-#' call_concatenate(list(quote(f), quote(g), quote(h)))
-#' call_concatenate(list(quote(f)))
-#' call_concatenate(list())
-#' call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg)))))
-#'
-#' eval(call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))))
-#' }
-call_concatenate <- function(args, bin_op = "+") {
-  stopifnot(
-    is_character_single(bin_op),
-    all(vapply(args, is.language, logical(1)))
-  )
-  # can be used for dplyr and ggplot2 to concatenate calls with +
-  Reduce(function(existing, new) call(bin_op, existing, new), args)
-}
-
-# needs columns like n_, n_ARM etc. to get count from
-add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- if_null(n_column, get_n_name(groupby_vars = column))
-  stopifnot(
-    is_character_single(column)
-  )
-
-  chunk$push(bquote({
-    counts <- counts %>% mutate(
-      .(as.symbol(column)) := paste0(.(as.symbol(column)), " (n = ", .(as.symbol(n_column)), ")")
-    )
-  }))
-}
-
-add_plot_title <- function(chunk, groupby_vars) {
-  chunk$push(bquote({
-    total_n <- nrow(ANL) # get it from original dataset
-    plot_title <- paste0(
-      "Number of patients (total N = ",
-      total_n,
-      .(paste0(") for each combination of (", paste(groupby_vars, collapse = ", "), ")"))
-    )
-    plot <- plot + ggtitle(plot_title)
   }))
 }

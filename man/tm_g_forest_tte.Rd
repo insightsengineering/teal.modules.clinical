@@ -14,14 +14,15 @@ tm_g_forest_tte(
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
     = TRUE),
   fixed_symbol_size = TRUE,
-  plot_height = c(600, 200, 2000),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = c(980L, 500L, 2000L),
   cex = 1.3,
   pre_output = NULL,
   post_output = NULL
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -46,9 +47,13 @@ for confidence level, each within range of (0, 1).}
 \item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{plot_height}{vector with three elements defining selected, min and max plot height}
+\item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the height of the main plot.}
 
-\item{cex}{multiplier applied to overall font size}
+\item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
+
+\item{cex}{(\code{numeric}) multiplier applied to overall font size}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

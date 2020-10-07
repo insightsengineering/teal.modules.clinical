@@ -2,7 +2,7 @@
 #'
 #' This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates.
 #'
-#' @param label (\code{character}) module label displayed in UI.
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option

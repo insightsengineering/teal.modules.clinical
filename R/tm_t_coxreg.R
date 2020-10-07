@@ -4,7 +4,7 @@
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label Menu item label of the module in the teal app.
+#' @inheritParams shared_params
 #' @param dataname `character` analysis data used in teal module, needs to be
 #'   available in the list passed to the `data` argument of
 #'   \code{\link[teal]{init}}. Note that the data is expected to be in vertical
