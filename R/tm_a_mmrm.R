@@ -118,6 +118,8 @@ tm_a_mmrm <- function(label,
                       arm_ref_comp = NULL,
                       paramcd,
                       conf_level,
+                      plot_height = c(700L, 200L, 2000L),
+                      plot_width = NULL,
                       pre_output = NULL,
                       post_output = NULL
 ) {
@@ -131,6 +133,8 @@ tm_a_mmrm <- function(label,
   stopifnot(is.choices_selected(covariate_vars))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(conf_level))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
 
   args <- as.list(environment())
 
@@ -142,7 +146,9 @@ tm_a_mmrm <- function(label,
     server_args = list(
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
-      label = label
+      label = label,
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     filters = dataname
   )
@@ -168,7 +174,7 @@ ui_mmrm <- function(id, ...) {
       ),
       h3(textOutput(ns("mmrm_title"))),
       uiOutput(ns("mmrm_table")),
-      plotOutput(ns("mmrm_plot"))
+      plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -388,11 +394,16 @@ srv_mmrm <- function(input,
                      datasets,
                      dataname,
                      arm_ref_comp,
-                     label) {
+                     label,
+                     plot_height,
+                     plot_width) {
   init_chunks()
 
   # Initially hide the output title because there is no output yet.
   shinyjs::hide("mmrm_title")
+
+  #reactiveVal used to send a signal to plot_with_settings module to hide the UI
+  show_plot_rv <- reactiveVal(FALSE)
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
@@ -409,11 +420,11 @@ srv_mmrm <- function(input,
   observeEvent(input$output_function, {
     output_function <- input$output_function
     if (isTRUE(grepl("^t_", output_function))) {
-      shinyjs::hide("mmrm_plot")
+      show_plot_rv(FALSE)
       shinyjs::show("mmrm_table")
     } else if (isTRUE(grepl("^g_", output_function)))  {
       shinyjs::hide("mmrm_table")
-      shinyjs::show("mmrm_plot")
+      show_plot_rv(TRUE)
     } else {
       stop("unknown output type")
     }
@@ -796,7 +807,7 @@ srv_mmrm <- function(input,
 
   # Endpoint:
   # Plot outputs.
-  output$mmrm_plot <- renderPlot({
+  mmrm_plot_reactive <- reactive({
 
     # Input on output type.
     output_function <- input$output_function
@@ -860,6 +871,16 @@ srv_mmrm <- function(input,
     # Return the plot.
     plt
   })
+
+  callModule(
+    plot_with_settings_srv,
+    id = "mmrm_plot",
+    plot_r = mmrm_plot_reactive,
+    height = plot_height,
+    width = plot_width,
+    show_hide_signal = reactive(show_plot_rv())
+  )
+
 
   # Endpoint:
   # Optimizer that was selected.

@@ -293,6 +293,8 @@ srv_g_km <- function(input,
       xticks <- NULL
     } else {
       validate(need(all(!is.na(xticks)), "Not all values entered were numeric"))
+      validate(need(all(xticks >= 0), "All break intervals for x-axis must be non-negative"))
+      validate(need(any(xticks > 0), "At least one break interval for x-axis must be positive"))
     }
 
     if (length(facet_var) == 0) {
