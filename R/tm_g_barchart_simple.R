@@ -217,7 +217,7 @@ ui_g_barchart_simple <- function(id, ...) {
       },
       panel_group(
         panel_item(
-          title = "Plot settings",
+          "Additional plot settings",
           if (!is.null(args$fill)) {
             radioButtons(
               inputId = ns("barlayout"),

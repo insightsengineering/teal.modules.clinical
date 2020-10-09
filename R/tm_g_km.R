@@ -167,7 +167,6 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),

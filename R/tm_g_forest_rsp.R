@@ -169,11 +169,6 @@ ui_g_forest_rsp <- function(id, ...) {
                           label_help = helpText("from ", tags$code("ADSL")),
                           fixed = a$strata_var$fixed
       ),
-      tags$label(
-        "Plot Settings",
-        class = "text-primary",
-        style = "margin-top: 15px;"
-      ),
       panel_group(
         panel_item(
         "Additional plot settings",
