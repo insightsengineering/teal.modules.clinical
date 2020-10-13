@@ -572,6 +572,13 @@ srv_mmrm <- function(input,
     parallel <- input$parallel
     # nolint end
 
+    validate(
+      need(response_var, "'Select Response' field is empty"),
+      need(paramcd, "'Select Parameter' field is empty"),
+      need(visit_var, "'Visit Variable' field is empty"),
+      need(id_var, "'Subject Identifier' field is empty"),
+      need(conf_level, "'Confidence Level' field is empty"))
+
     # Validate the input variables.
     validate_has_data(adsl_filtered, 1)
     validate_has_data(anl_filtered, 1)
