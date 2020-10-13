@@ -597,6 +597,10 @@ srv_t_coxreg <- function(input,
     }
     chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 
+    chunks_safe_eval()
+    validate(need(any(chunks_get_var("anl")[["CNSR"]] == 0), "No observed events in the data"))
+
+
     # Preparation of the formula for `tern::t_coxreg` in three steps.
     ## (1/3) Prepare the original formula ...
     form <- if (!multivariate) {
