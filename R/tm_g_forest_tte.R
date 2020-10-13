@@ -336,6 +336,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
 
     chunks_safe_eval()
 
+    chunks_get_var("p")
   })
 
   callModule(

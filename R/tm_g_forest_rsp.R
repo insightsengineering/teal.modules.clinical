@@ -393,6 +393,8 @@ srv_g_forest_rsp <- function(input,
 
     chunks_safe_eval()
 
+    chunks_get_var("p")
+
   })
 
   callModule(

@@ -525,11 +525,14 @@ srv_g_km <- function(input,
             p
           }
         }, dfs, levels(lab))
-        grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
+        g_final <- gridExtra::arrangeGrob(grobs = pl, ncol = 1)
+        grid.draw(g_final)
       }))
     }
 
     chunks_safe_eval()
+
+    chunks_get_var("g_final")
   })
 
   # Insert the plot into a plot with settings module from teal.devel
