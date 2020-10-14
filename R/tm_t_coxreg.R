@@ -467,6 +467,7 @@ srv_t_coxreg <- function(input,
     # nolint end
 
     paramcd <- input$paramcd # nolint
+    validate(need(paramcd, "'Select Endpoint' field is empty."))
     cov_var <- input$cov_var
     strata_var <- input$strata_var
     arm_var <- input$arm_var
@@ -599,7 +600,6 @@ srv_t_coxreg <- function(input,
 
     chunks_safe_eval()
     validate(need(any(chunks_get_var("anl")[["CNSR"]] == 0), "No observed events in the data"))
-
 
     # Preparation of the formula for `tern::t_coxreg` in three steps.
     ## (1/3) Prepare the original formula ...
