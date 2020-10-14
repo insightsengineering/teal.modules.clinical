@@ -46,7 +46,7 @@
 #'
 #' @export
 #' @importFrom stats complete.cases terms
-#' @importFrom shinyjs show
+#' @importFrom shinyjs show hide hidden enable disable
 #'
 #' @examples
 #'
@@ -172,6 +172,10 @@ ui_mmrm <- function(id, ...) {
           "Note that the 'Show R Code' button can only be clicked if the model fit is up to date."
         )
       ),
+      hidden(p(
+        id = ns("outdated_warning"),
+        "Inputs have changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+      )),
       h3(textOutput(ns("mmrm_title"))),
       uiOutput(ns("mmrm_table")),
       plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
@@ -405,6 +409,19 @@ srv_mmrm <- function(input,
   #reactiveVal used to send a signal to plot_with_settings module to hide the UI
   show_plot_rv <- reactiveVal(FALSE)
 
+  # applicable is set to TRUE only after a `Fit Button` press leads to a successful computation from the inputs
+  # it will store the current/last state of inputs and data that generatd a model-fit
+  # its purpose is so that any input change can be checked whether it resulted in an out of sync state
+  state <- reactiveValues(applicable = FALSE)
+
+  # Note:
+  # input$parallel does not get us out of sync (it just takes longer to get to same result)
+  sync_inputs <- c(
+    "response_var", "paramcd", "arm_var", "ref_arm", "comp_arm",
+    "combine_comp_arms", "visit_var", "covariate_vars",
+    "id_var", "weights_emmeans", "cor_struct", "conf_level",
+    "optimizer")
+
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
   arm_ref_comp_observer(
@@ -500,42 +517,69 @@ srv_mmrm <- function(input,
     shinyjs::show("mmrm_title")
     shinyjs::disable("button_start")
     shinyjs::enable("show_rcode")
+    shinyjs::hide("outdated_warning")
+  })
+
+  # all the inputs and data that can be out of sync with the fitted model
+  mmrm_inputs_reactive <- reactive({
+    encoding_inputs <- lapply(sync_inputs, function(x) input[[x]])
+    names(encoding_inputs) <- sync_inputs
+    c(list(
+      adsl_filtered = datasets$get_data("ADSL", filtered = TRUE),
+      anl_filtered = datasets$get_data(dataname, filtered = TRUE)),
+      encoding_inputs)
+  })
+
+  # compares the mmrm_inputs_reactive values with the values stored in 'state'
+  state_has_changed <- reactive({
+    displayed_state <- mmrm_inputs_reactive()
+    equal_ADSL <- all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+    equal_dataname <- all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
+    true_means_change <- vapply(
+      sync_inputs,
+      FUN = function(x) {
+        if (is.null(state$input[[x]])) {
+          if (is.null(displayed_state[[x]])) {
+            return(FALSE)
+          } else {
+            return(TRUE)
+          }
+        } else if (is.null(displayed_state[[x]])) {
+          return(TRUE)
+        }
+        if (length(state$input[[x]]) != length(displayed_state[[x]])) {
+          return(TRUE)
+        }
+        any(sort(state$input[[x]]) != sort(displayed_state[[x]]))
+      },
+      FUN.VALUE = logical(1))
+
+    # all_equal function either returns TRUE or a character scalar to describe where there is inequality
+    any(c(is.character(equal_ADSL), is.character(equal_dataname),  true_means_change))
   })
 
   # Event handler:
   # These trigger when we are out of sync and then enable the start button and
-  # disable the show R code button.
-  observeEvent(list(
-    # Data.
-    datasets$get_data("ADSL", filtered = TRUE),
-    datasets$get_data(dataname, filtered = TRUE),
-    # Relevant Encodings.
-    input$response_var,
-    input$paramcd,
-    input$arm_var,
-    input$ref_arm,
-    input$comp_arm,
-    input$combine_comp_arms,
-    input$visit_var,
-    input$covariate_vars,
-    input$id_var,
-    input$weights_emmeans,
-    input$cor_struct,
-    input$conf_level,
-    input$optimizer
-    # Note:
-    # input$parallel does not get us out of sync (it just takes longer to get to same result).
-  ), {
+  # disable the show R code button and show warning message
+  observeEvent(mmrm_inputs_reactive(), {
     shinyjs::enable("button_start")
     shinyjs::disable("show_rcode")
+    if (state$applicable) {
+      if (state_has_changed()) {
+        shinyjs::show("outdated_warning")
+      } else {
+        shinyjs::hide("outdated_warning")
+        shinyjs::enable("show_rcode")
+        shinyjs::disable("button_start")
+      }
+    }
   })
-
-
 
   # Connector:
   # Fit the MMRM, once the user clicks on the start button.
   mmrm_fit <- eventReactive(input$button_start, {
-
+    # set to FALSE because a button press does not always indicate a successful computation
+    state$applicable <- FALSE
     # Create a private stack for this function only.
     fit_stack <- chunks$new()
     fit_stack_push <- function(...) {
@@ -718,6 +762,12 @@ srv_mmrm <- function(input,
     # Evaluate all code on the fit stack, and return the fit stack, so we can further push
     # to it in the output rendering code below.
     chunks_safe_eval(chunks = fit_stack)
+
+    # when code execution reaches here, it indicates that the inputs generated a successful computation
+    # which in turn indicates that the inputs are valid, so they will be recorded as the current/last state of the app
+    state$applicable <- TRUE
+    state$input <- mmrm_inputs_reactive()
+
     fit_stack
   })
 
