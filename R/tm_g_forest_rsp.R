@@ -410,7 +410,7 @@ srv_g_forest_rsp <- function(input,
       title = "R Code for the Current Reponse Forest Plot",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = "Response Forest Plot"
       )
     )

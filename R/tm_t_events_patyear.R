@@ -244,7 +244,7 @@ srv_t_events_patyear <- function(input,
       title = "Event Rate adjusted for patient-year at risk",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = "Event Rate adjusted for patient-year Table"
       )
     )

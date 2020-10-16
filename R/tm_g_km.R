@@ -549,7 +549,7 @@ srv_g_km <- function(input,
       title = "Kaplan Meier Plot",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = label
       )
     )

@@ -447,7 +447,7 @@ srv_t_events_summary <- function(input,
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = "Event Table"
       )
     )

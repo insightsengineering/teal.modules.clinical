@@ -352,7 +352,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
       title = "R Code for the Current Time-to-Event Forest Plot",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = "Time-to-Event Forest Plot"
       )
     )

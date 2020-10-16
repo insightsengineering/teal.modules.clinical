@@ -557,7 +557,7 @@ srv_t_binary_outcome <- function(input,
       title = "Summary",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = "Binary Outcome Table"
       )
     )

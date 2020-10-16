@@ -966,7 +966,7 @@ srv_mmrm <- function(input,
       title = "MMRM Analysis",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = label
       )
     )
