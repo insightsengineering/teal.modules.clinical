@@ -356,8 +356,8 @@ srv_t_binary_outcome <- function(input,
       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
       arm_var = arm_var
     )
-    validate(need(arm_var, "arm variable does not exist"))
-    if (length(unique(adsl_filtered[[arm_var]])) == 1) {
+
+    if (length(arm_var) > 0 && length(unique(adsl_filtered[[arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       if (compare_arms) {
         validate_args <- append(validate_args, list(ref_arm = ref_arm))

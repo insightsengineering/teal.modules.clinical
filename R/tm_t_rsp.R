@@ -260,7 +260,7 @@ srv_t_rsp <- function(input,
       strata_var <- NULL
     }
 
-    if (length(unique(adsl_filtered[[arm_var]])) == 1){
+    if (length(arm_var) > 0 && length(unique(adsl_filtered[[arm_var]])) == 1) {
       # Validate your input
       validate_standard_inputs(
         adsl = adsl_filtered,

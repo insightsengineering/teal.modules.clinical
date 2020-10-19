@@ -313,7 +313,7 @@ srv_g_km <- function(input,
       arm_var = arm_var
     )
 
-    if (length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+    if (length(arm_var) > 0 && length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       if (compare_arms) {
         validate_args <- append(validate_args, list(ref_arm = ref_arm))
