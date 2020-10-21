@@ -39,19 +39,18 @@
 #'
 #' app <- init(
 #'  data = cdisc_data(
-#'    cdisc_dataset("ADSL", ADSL),
-#'    cdisc_dataset("ADLB", ADLB),
-#'    code = 'ADSL <- radsl(cached = TRUE)
-#'            ADLB <- radlb(cached = TRUE) %>%
-#'             mutate(
+#'    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'    cdisc_dataset("ADLB", ADLB,
+#'      code = 'ADLB <- radlb(cached = TRUE) %>%
+#'              dplyr::mutate(
 #'                CHGCAT1 = case_when(
 #'                  CHG > 0 ~ "INCREASE",
 #'                  CHG < 0 ~ "DECREASE",
 #'                  CHG == 0 ~ "NO CHANGE"
 #'                )
 #'              ) %>%
-#'              var_relabel(CHGCAT1 = "Change from Baseline Category 1")',
-#'    check = FALSE
+#'              var_relabel(CHGCAT1 = "Change from Baseline Category 1")'),
+#'    check = TRUE
 #'  ),
 #'  modules = root_modules(
 #'    tm_t_summary_by(
@@ -116,13 +115,13 @@ tm_t_summary_by <- function(label,
 #                             denominator = c("n", "N", "omit"),
 #                             pre_output = NULL,
 #                             post_output = NULL) {
-#   stopifnot(is.choices_selected(arm_var))
-#   stopifnot(is.choices_selected(by_vars))
-#   stopifnot(is.choices_selected(summarize_vars))
-#   useNA <- match.arg(useNA) # nolintr
-#   denominator <- match.arg(denominator)
+# stopifnot(is.choices_selected(arm_var))
+# stopifnot(is.choices_selected(by_vars))
+# stopifnot(is.choices_selected(summarize_vars))
+# useNA <- match.arg(useNA) # nolintr
+# denominator <- match.arg(denominator)
 #
-#   args <- as.list(environment())
+# args <- as.list(environment())
 #
 #   module(
 #     label = label,
@@ -230,10 +229,10 @@ tm_t_summary_by <- function(label,
 #     anl_vars <- unique(c("USUBJID", "STUDYID", by_vars, summarize_vars))
 #
 #     if (parallel_vars) {
-#       validate(need(all(vapply(anl_filtered[summarize_vars],
-#                                FUN =  is.numeric,
-#                                FUN.VALUE = TRUE)),
-#                     "Summarize variables must all be numeric to display in parallel columns."))
+#       validate(need(
+#         all(vapply(anl_filtered[summarize_vars], FUN =  is.numeric, FUN.VALUE = TRUE)),
+#         "Summarize variables must all be numeric to display in parallel columns."
+#       ))
 #     }
 #
 #     chunks_push(
@@ -301,8 +300,10 @@ tm_t_summary_by <- function(label,
 #         call(
 #           "t_summary_by",
 #           x = if (bquote(.(parallel_vars))) {
-#             bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
-#                      compare_in_header())
+#             bquote({
+#               .(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE] %>%
+#                 compare_in_header()
+#             })
 #           } else {
 #             if (is.null(bquote(.(by_vars)))) {
 #               bquote(.(as.name("ANL_MERGED"))[, .(summarize_vars), drop = FALSE])
@@ -355,7 +356,7 @@ tm_t_summary_by <- function(label,
 #       title = "Summary",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Summary-by table"
 #       )
 #     )

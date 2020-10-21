@@ -4,7 +4,7 @@
 #' filter panel to select only post-baseline records.
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label menu item label of the module in the teal app
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs
 #'   to be available in the list passed to the \code{data} argument of
 #'   \code{\link[teal]{init}}.
@@ -50,18 +50,19 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADLB", ADLB),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADLB <- radlb(cached = TRUE)
-#'             ADLB <- ADLB %>% dplyr::filter(ABLFL == "Y")
-#'             ADLB <- ADLB %>% var_relabel(
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'     cdisc_dataset("ADLB", ADLB,
+#'       code = 'ADLB <- radlb(cached = TRUE)
+#'               ADLB <- ADLB %>% dplyr::filter(ABLFL == "Y")
+#'               ADLB <- ADLB %>% var_relabel(
 #'               PARAM = "Parameters",
 #'               BNRIND = "Baseline Reference Range Indicator",
 #'               ANRIND = "Analysis Reference Range Indicator",
 #'               AVISIT = "Analysis Visit"
-#'             )',
-#'     check = FALSE),
+#'             )'
+#'     ),
+#'     check = TRUE
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_abnormality(
 #'       label = "Abnormality Table",
@@ -174,50 +175,57 @@ tm_t_abnormality <- function(label,
 #     encoding = div(
 #       tags$label("Encodings", class = "text-primary"),
 #       helpText("Analysis data:", tags$code(a$dataname)),
-#       optionalSelectInput(ns("arm_var"),
-#                           "Arm Variable",
-#                           a$arm_var$choices,
-#                           a$arm_var$selected,
-#                           multiple = FALSE,
-#                           fixed = a$arm_var$fixed
+#       optionalSelectInput(
+#         ns("arm_var"),
+#         "Arm Variable",
+#         a$arm_var$choices,
+#         a$arm_var$selected,
+#         multiple = FALSE,
+#         fixed = a$arm_var$fixed
 #       ),
 #       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-#       optionalSelectInput(ns("id_var"),
-#                           "Subject Identifier",
-#                           a$id_var$choices,
-#                           a$id_var$selected,
-#                           multiple = FALSE,
-#                           fixed = a$id_var$fixed
+#       optionalSelectInput(
+#         ns("id_var"),
+#         "Subject Identifier",
+#         a$id_var$choices,
+#         a$id_var$selected,
+#         multiple = FALSE,
+#         fixed = a$id_var$fixed
 #       ),
-#       optionalSelectInput(ns("by_vars"),
-#                           "Row By Variable",
-#                           a$by_vars$choices,
-#                           a$by_vars$selected,
-#                           multiple = TRUE,
-#                           fixed = a$by_vars$fixed
+#       optionalSelectInput(
+#         ns("by_vars"),
+#         "Row By Variable",
+#         a$by_vars$choices,
+#         a$by_vars$selected,
+#         multiple = TRUE,
+#         fixed = a$by_vars$fixed
 #       ),
-#       optionalSelectInput(ns("grade"),
-#                           "Grade Variable",
-#                           a$grade$choices,
-#                           a$grade$selected,
-#                           multiple = FALSE,
-#                           fixed = a$grade$fixed
+#       optionalSelectInput(
+#         ns("grade"),
+#         "Grade Variable",
+#         a$grade$choices,
+#         a$grade$selected,
+#         multiple = FALSE,
+#         fixed = a$grade$fixed
 #       ),
-#       optionalSelectInput(ns("baseline"),
-#                           "Variable for Baseline Grade",
-#                           a$baseline$choices,
-#                           a$baseline$selected,
-#                           multiple = FALSE,
-#                           fixed = a$baseline$fixed
+#       optionalSelectInput(
+#         ns("baseline"),
+#         "Variable for Baseline Grade",
+#         a$baseline$choices,
+#         a$baseline$selected,
+#         multiple = FALSE,
+#         fixed = a$baseline$fixed
 #       ),
-#       selectInput(ns("abnormal_values"),
-#                   "Abnormality Indicator",
-#                   choices = NULL,
-#                   selected = NULL,
-#                   multiple = TRUE),
-#       checkboxInput(ns("exclude_base_abn"),
-#                     "Exclude subjects whose baseline grade is the same as abnormal grade",
-#                     value = a$exclude_base_abn),
+#       selectInput(
+#         ns("abnormal_values"),
+#         "Abnormality Indicator",
+#         choices = NULL,
+#         selected = NULL,
+#         multiple = TRUE),
+#       checkboxInput(
+#         ns("exclude_base_abn"),
+#         "Exclude subjects whose baseline grade is the same as abnormal grade",
+#         value = a$exclude_base_abn),
 #     ),
 #     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
 #     pre_output = a$pre_output,
@@ -232,7 +240,6 @@ tm_t_abnormality <- function(label,
 #                               datasets,
 #                               dataname,
 #                               abnormal) {
-#
 #   init_chunks()
 #
 #   # Update UI choices depending on selection of previous options
@@ -375,7 +382,7 @@ tm_t_abnormality <- function(label,
 #       title = "Abnormality Table",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Abnormality Table"
 #       )
 #     )

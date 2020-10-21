@@ -10,7 +10,9 @@ tm_g_barchart_simple(
   x_facet = NULL,
   y_facet = NULL,
   label = "Count Barchart",
-  plot_options = NULL
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL
 )
 }
 \arguments{
@@ -22,9 +24,15 @@ tm_g_barchart_simple(
 
 \item{y_facet}{\code{data_extract_spec} variable on x-axis}
 
-\item{label}{\code{character.single} label of module}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{plot_options}{\code{list} list of plot options}
+
+\item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the height of the main plot.}
+
+\item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
+the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 }
 \description{
 Categories can be defined up to four levels deep and are defined through
@@ -34,7 +42,6 @@ it is ignored.
 \examples{
 library(dplyr)
 library(random.cdisc.data)
-library(teal.modules.clinical)
 
 ADSL <- radsl(cached = TRUE)
 ADAE <- radae(cached = TRUE)
@@ -49,16 +56,16 @@ ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADAE", ADAE), cdisc_dataset("ADLB", ADLB),
-    code = "
-    ADSL <- radsl(cached = TRUE)
-    ADLB <- radlb(cached = TRUE)
-    ADAE <- radae(cached = TRUE)
-    adae_labels <- var_labels(ADAE)
-    ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-    ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
-    ",
-    check = FALSE
+    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADAE", ADAE,
+      code = "ADAE <- radae(cached = TRUE)
+              adae_labels <- var_labels(ADAE)
+              ADAE <- ADAE \%>\%
+                dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
+              ADAE <- do.call(rtables::var_relabel,
+                append(list(x = ADAE), as.list(adae_labels)))"),
+    cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
+    check = TRUE
   ),
   modules = root_modules(
     tm_g_barchart_simple(
@@ -137,8 +144,6 @@ app <- init(
           )
         )
       )
-      #stacked = FALSE,
-      #stat_type = "Count"
     )
   )
 )

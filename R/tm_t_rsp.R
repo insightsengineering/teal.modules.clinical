@@ -35,17 +35,17 @@
 #'
 #' ADSL <- radsl(cached = TRUE)
 #' ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-#' ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
+#' ADRS <- radrs(cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
 #' ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-#'             ADRS <- radrs(ADSL, cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
-#'             ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))',
-#'      check = FALSE
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = 'ADSL <- radsl(cached = TRUE)
+#'               ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))'),
+#'     cdisc_dataset("ADRS", ADRS,
+#'       code = 'ADRS <- radrs(cached = TRUE) %>% dplyr::filter(AVISIT == "FOLLOW UP")
+#'             ADRS$Dum_ARM <- factor(rep("Single ARM", nrow(ADRS)))'),
+#'      check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
@@ -248,7 +248,7 @@ tm_t_rsp <- function(label,
 #     id_ref = "ref_arm",
 #     id_comp = "comp_arm",
 #     id_arm_var = "arm_var",
-#     adsl = datasets$get_data("ADSL", filtered = FALSE),
+#     datasets = datasets,
 #     arm_ref_comp = arm_ref_comp,
 #     module = "tm_t_rsp"
 #   )
@@ -284,7 +284,7 @@ tm_t_rsp <- function(label,
 #       strata_var <- NULL
 #     }
 #
-#     if (length(unique(adsl_filtered[[arm_var]])) == 1){
+#     if (length(arm_var) > 0 && length(unique(adsl_filtered[[arm_var]])) == 1) {
 #       # Validate your input
 #       validate_standard_inputs(
 #         adsl = adsl_filtered,
@@ -432,7 +432,7 @@ tm_t_rsp <- function(label,
 #       title = "Summary",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Response Table"
 #       )
 #     )

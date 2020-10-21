@@ -4,7 +4,7 @@
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label Menu item label of the module in the teal app.
+#' @inheritParams shared_params
 #' @param dataname `character` analysis data used in teal module, needs to be
 #'   available in the list passed to the `data` argument of
 #'   \code{\link[teal]{init}}. Note that the data is expected to be in vertical
@@ -72,7 +72,6 @@
 #' ## The example below is based on the usual approach involving creation of
 #' ## a random CDISC dataset and then running the application.
 #'
-#' library(teal.modules.clinical)
 #' library(random.cdisc.data)
 #'
 #' ADSL  <- radsl(cached = TRUE)
@@ -90,9 +89,9 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADTTE", ADTTE),
-#'     code = "ADSL  <- radsl(cached = TRUE);  ADTTE <- radtte(cached = TRUE)"
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE)'),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_coxreg(
@@ -156,7 +155,6 @@
 #' ## preprocessing. You will need to create the dataset as above before
 #' ## running the exported R code.
 #'
-#' library(teal.modules.clinical)
 #' arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' app <- init(
 #'   data = cdisc_data(
@@ -393,7 +391,7 @@ tm_t_coxreg <- function(label,
 #   arm_ref_comp_observer(
 #     session, input,
 #     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # from UI
-#     adsl = datasets$get_data("ADSL", filtered = FALSE),
+#     datasets = datasets,
 #     arm_ref_comp = arm_ref_comp,
 #     module = "tm_t_tte"
 #   )
@@ -499,6 +497,7 @@ tm_t_coxreg <- function(label,
 #     # nolint end
 #
 #     paramcd <- input$paramcd # nolint
+#     validate(need(paramcd, "'Select Endpoint' field is empty."))
 #     cov_var <- input$cov_var
 #     strata_var <- input$strata_var
 #     arm_var <- input$arm_var
@@ -629,6 +628,9 @@ tm_t_coxreg <- function(label,
 #     }
 #     chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
 #
+#     chunks_safe_eval()
+#     validate(need(any(chunks_get_var("anl")[["CNSR"]] == 0), "No observed events in the data"))
+#
 #     # Preparation of the formula for `tern::t_coxreg` in three steps.
 #     ## (1/3) Prepare the original formula ...
 #     form <- if (!multivariate) {
@@ -704,7 +706,7 @@ tm_t_coxreg <- function(label,
 #       title = "(Multi-variable) Cox proportional hazard regression model",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = label
 #       )
 #     )

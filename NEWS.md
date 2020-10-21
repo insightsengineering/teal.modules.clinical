@@ -1,8 +1,9 @@
-# teal.modules.clinical 0.8.4.9000
+# teal.modules.clinical 0.8.5
 
+* All graph modules now accept a `plot_width` argument which specifies the plot width and renders a slider to adjust the width interactively in the module.
 * `FilteredData` object is now passed to `arm_ref_comp_observer` and modules now support nested lists containing `delayed_data` objects.
 * Replace `plot_with_height` module with new `plot_with_settings` module.
-* issues with no news:
+* Update examples to use `code` argument inside `cdisc_dataset`.
 
 # teal.modules.clinical 0.8.4
 

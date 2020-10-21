@@ -1,7 +1,7 @@
 #' Teal module for Mixed Model Repeated Measurements (MMRM) analysis.
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label menu item label of the module in the teal app.
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form where each subject has
@@ -72,10 +72,9 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADQS", ADQS),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADQS <- radqs(cached = TRUE) %>%
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADQS", ADQS,
+#'       code = 'ADQS <- radqs(cached = TRUE) %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'               dplyr::mutate(
 #'                 AVISIT = as.factor(AVISIT),
@@ -84,6 +83,8 @@
 #'                   as.numeric() %>%
 #'                   as.factor() # making consecutive numeric factor
 #'               )'
+#'     ),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_a_mmrm(
@@ -117,6 +118,8 @@ tm_a_mmrm <- function(label,
                       arm_ref_comp = NULL,
                       paramcd,
                       conf_level,
+                      plot_height = c(700L, 200L, 2000L),
+                      plot_width = NULL,
                       pre_output = NULL,
                       post_output = NULL
 ) {
@@ -131,7 +134,7 @@ tm_a_mmrm <- function(label,
         p("Module is currently refactored")
       })
     },
-    filters = "ADSL"
+    filters = dataname
   )
 }
 
@@ -148,6 +151,8 @@ tm_a_mmrm <- function(label,
 #                       arm_ref_comp = NULL,
 #                       paramcd,
 #                       conf_level,
+#                       plot_height = c(700L, 200L, 2000L),
+#                       plot_width = NULL,
 #                       pre_output = NULL,
 #                       post_output = NULL
 # ) {
@@ -161,6 +166,8 @@ tm_a_mmrm <- function(label,
 #   stopifnot(is.choices_selected(covariate_vars))
 #   stopifnot(is.choices_selected(paramcd))
 #   stopifnot(is.choices_selected(conf_level))
+#   check_slider_input(plot_height, allow_null = FALSE)
+#   check_slider_input(plot_width)
 #
 #   args <- as.list(environment())
 #
@@ -196,9 +203,13 @@ tm_a_mmrm <- function(label,
 #           "Note that the 'Show R Code' button can only be clicked if the model fit is up to date."
 #         )
 #       ),
+#       hidden(p(
+#         id = ns("outdated_warning"),
+#         "Inputs have changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+#       )),
 #       h3(textOutput(ns("mmrm_title"))),
 #       uiOutput(ns("mmrm_table")),
-#       plotOutput(ns("mmrm_plot"))
+#       plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
 #     ),
 #     encoding = div(
 #       tags$label("Encodings", class = "text-primary"),
@@ -323,18 +334,14 @@ tm_a_mmrm <- function(label,
 #           collapsed = FALSE  # Start with having this panel opened.
 #         )
 #       ),
-#       tags$style(".btn.disabled {
-#          color: grey;
-#          background-color: white
-#       }"),
+#       tags$style(".btn.disabled { color: grey; background-color: white; }"),
 #       actionButton(
 #         ns("button_start"),
 #         "Fit Model",
 #         icon = icon("calculator"),
 #         width = "100%",
 #         class = "btn action-button",
-#         style = "color: black;
-#                  background-color: orange"
+#         style = "color: black; background-color: orange;"
 #       ),
 #       br(),
 #       br(),
@@ -409,8 +416,7 @@ tm_a_mmrm <- function(label,
 #       "Show R Code",
 #       width = "100%",
 #       class = "btn action-button",
-#       style = "color: black;
-#                background-color: green"
+#       style = "color: black; background-color: green;"
 #     ),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
@@ -423,18 +429,36 @@ tm_a_mmrm <- function(label,
 #                      datasets,
 #                      dataname,
 #                      arm_ref_comp,
-#                      label) {
+#                      label,
+#                      plot_height,
+#                      plot_width) {
 #   init_chunks()
 #
 #   # Initially hide the output title because there is no output yet.
 #   shinyjs::hide("mmrm_title")
+#
+#   #reactiveVal used to send a signal to plot_with_settings module to hide the UI
+#   show_plot_rv <- reactiveVal(FALSE)
+#
+#   # applicable is set to TRUE only after a `Fit Button` press leads to a successful computation from the inputs
+#   # it will store the current/last state of inputs and data that generatd a model-fit
+#   # its purpose is so that any input change can be checked whether it resulted in an out of sync state
+#   state <- reactiveValues(applicable = FALSE)
+#
+#   # Note:
+#   # input$parallel does not get us out of sync (it just takes longer to get to same result)
+#   sync_inputs <- c(
+#     "response_var", "paramcd", "arm_var", "ref_arm", "comp_arm",
+#     "combine_comp_arms", "visit_var", "covariate_vars",
+#     "id_var", "weights_emmeans", "cor_struct", "conf_level",
+#     "optimizer")
 #
 #   # Setup arm variable selection, default reference arms, and default
 #   # comparison arms for encoding panel.
 #   arm_ref_comp_observer(
 #     session, input,
 #     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # From UI.
-#     adsl = datasets$get_data("ADSL", filtered = FALSE),
+#     datasets = datasets,
 #     arm_ref_comp = arm_ref_comp,
 #     module = "tm_mmrm"
 #   )
@@ -444,11 +468,11 @@ tm_a_mmrm <- function(label,
 #   observeEvent(input$output_function, {
 #     output_function <- input$output_function
 #     if (isTRUE(grepl("^t_", output_function))) {
-#       shinyjs::hide("mmrm_plot")
+#       show_plot_rv(FALSE)
 #       shinyjs::show("mmrm_table")
 #     } else if (isTRUE(grepl("^g_", output_function)))  {
 #       shinyjs::hide("mmrm_table")
-#       shinyjs::show("mmrm_plot")
+#       show_plot_rv(TRUE)
 #     } else {
 #       stop("unknown output type")
 #     }
@@ -524,42 +548,69 @@ tm_a_mmrm <- function(label,
 #     shinyjs::show("mmrm_title")
 #     shinyjs::disable("button_start")
 #     shinyjs::enable("show_rcode")
+#     shinyjs::hide("outdated_warning")
+#   })
+#
+#   # all the inputs and data that can be out of sync with the fitted model
+#   mmrm_inputs_reactive <- reactive({
+#     encoding_inputs <- lapply(sync_inputs, function(x) input[[x]])
+#     names(encoding_inputs) <- sync_inputs
+#     c(list(
+#       adsl_filtered = datasets$get_data("ADSL", filtered = TRUE),
+#       anl_filtered = datasets$get_data(dataname, filtered = TRUE)),
+#       encoding_inputs)
+#   })
+#
+#   # compares the mmrm_inputs_reactive values with the values stored in 'state'
+#   state_has_changed <- reactive({
+#     displayed_state <- mmrm_inputs_reactive()
+#     equal_ADSL <- all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+#     equal_dataname <- all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
+#     true_means_change <- vapply(
+#       sync_inputs,
+#       FUN = function(x) {
+#         if (is.null(state$input[[x]])) {
+#           if (is.null(displayed_state[[x]])) {
+#             return(FALSE)
+#           } else {
+#             return(TRUE)
+#           }
+#         } else if (is.null(displayed_state[[x]])) {
+#           return(TRUE)
+#         }
+#         if (length(state$input[[x]]) != length(displayed_state[[x]])) {
+#           return(TRUE)
+#         }
+#         any(sort(state$input[[x]]) != sort(displayed_state[[x]]))
+#       },
+#       FUN.VALUE = logical(1))
+#
+#     # all_equal function either returns TRUE or a character scalar to describe where there is inequality
+#     any(c(is.character(equal_ADSL), is.character(equal_dataname),  true_means_change))
 #   })
 #
 #   # Event handler:
 #   # These trigger when we are out of sync and then enable the start button and
-#   # disable the show R code button.
-#   observeEvent(list(
-#     # Data.
-#     datasets$get_data("ADSL", filtered = TRUE),
-#     datasets$get_data(dataname, filtered = TRUE),
-#     # Relevant Encodings.
-#     input$response_var,
-#     input$paramcd,
-#     input$arm_var,
-#     input$ref_arm,
-#     input$comp_arm,
-#     input$combine_comp_arms,
-#     input$visit_var,
-#     input$covariate_vars,
-#     input$id_var,
-#     input$weights_emmeans,
-#     input$cor_struct,
-#     input$conf_level,
-#     input$optimizer
-#     # Note:
-#     # input$parallel does not get us out of sync (it just takes longer to get to same result).
-#   ), {
+#   # disable the show R code button and show warning message
+#   observeEvent(mmrm_inputs_reactive(), {
 #     shinyjs::enable("button_start")
 #     shinyjs::disable("show_rcode")
+#     if (state$applicable) {
+#       if (state_has_changed()) {
+#         shinyjs::show("outdated_warning")
+#       } else {
+#         shinyjs::hide("outdated_warning")
+#         shinyjs::enable("show_rcode")
+#         shinyjs::disable("button_start")
+#       }
+#     }
 #   })
-#
-#
 #
 #   # Connector:
 #   # Fit the MMRM, once the user clicks on the start button.
 #   mmrm_fit <- eventReactive(input$button_start, {
-#
+#     # set to FALSE because a button press does not always indicate a successful computation
+#     state$applicable <- FALSE
 #     # Create a private stack for this function only.
 #     fit_stack <- chunks$new()
 #     fit_stack_push <- function(...) {
@@ -595,6 +646,13 @@ tm_a_mmrm <- function(label,
 #     optimizer <- input$optimizer
 #     parallel <- input$parallel
 #     # nolint end
+#
+#     validate(
+#       need(response_var, "'Select Response' field is empty"),
+#       need(paramcd, "'Select Parameter' field is empty"),
+#       need(visit_var, "'Visit Variable' field is empty"),
+#       need(id_var, "'Subject Identifier' field is empty"),
+#       need(conf_level, "'Confidence Level' field is empty"))
 #
 #     # Validate the input variables.
 #     validate_has_data(adsl_filtered, 1)
@@ -735,6 +793,12 @@ tm_a_mmrm <- function(label,
 #     # Evaluate all code on the fit stack, and return the fit stack, so we can further push
 #     # to it in the output rendering code below.
 #     chunks_safe_eval(chunks = fit_stack)
+#
+#     # when code execution reaches here, it indicates that the inputs generated a successful computation
+#     # which in turn indicates that the inputs are valid, so they will be recorded as the current/last state of the app
+#     state$applicable <- TRUE
+#     state$input <- mmrm_inputs_reactive()
+#
 #     fit_stack
 #   })
 #
@@ -831,7 +895,7 @@ tm_a_mmrm <- function(label,
 #
 #   # Endpoint:
 #   # Plot outputs.
-#   output$mmrm_plot <- renderPlot({
+#   mmrm_plot_reactive <- reactive({
 #
 #     # Input on output type.
 #     output_function <- input$output_function
@@ -896,6 +960,16 @@ tm_a_mmrm <- function(label,
 #     plt
 #   })
 #
+#   callModule(
+#     plot_with_settings_srv,
+#     id = "mmrm_plot",
+#     plot_r = mmrm_plot_reactive,
+#     height = plot_height,
+#     width = plot_width,
+#     show_hide_signal = reactive(show_plot_rv())
+#   )
+#
+#
 #   # Endpoint:
 #   # Optimizer that was selected.
 #   output$optimizer_selected <- renderText({
@@ -923,7 +997,7 @@ tm_a_mmrm <- function(label,
 #       title = "MMRM Analysis",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = label
 #       )
 #     )

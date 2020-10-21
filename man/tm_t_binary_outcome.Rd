@@ -17,7 +17,7 @@ tm_t_binary_outcome(
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -61,26 +61,25 @@ This module produces a response summary table that is similar to
   \code{REFACTOR} from the \code{tern} package.
 }
 \examples{
-library(teal.modules.clinical)
 library(random.cdisc.data)
 library(dplyr)
 
 ADSL <- radsl(cached = TRUE)
 ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-ADRS <- radrs(ADSL, cached = TRUE) \%>\%
+ADRS <- radrs(cached = TRUE) \%>\%
   dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET")) \%>\%
   droplevels()
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADRS", ADRS),
-    code = 'ADSL <- radsl(cached = TRUE)
-            ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-            ADRS <- radrs(ADSL, cached = TRUE) \%>\%
+    cdisc_dataset("ADSL", ADSL,
+      code = 'ADSL <- radsl(cached = TRUE)
+              ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))'),
+    cdisc_dataset("ADRS", ADRS,
+      code = 'ADRS <- radrs(cached = TRUE) \%>\%
               dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET")) \%>\%
-              droplevels()',
-     check = FALSE
+              droplevels()'),
+     check = TRUE
   ),
   modules = root_modules(
     tm_t_binary_outcome(

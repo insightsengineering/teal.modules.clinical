@@ -12,7 +12,7 @@ Provides teal modules for the standard clinical trials outputs.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://pages.github.roche.com/NEST/teal.modules.clinical/}
+  \item \url{https://github.roche.com/NEST/teal.modules.clinical/}
   \item Report bugs at \url{https://github.roche.com/NEST/teal.modules.clinical/issues}
 }
 

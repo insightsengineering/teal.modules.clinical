@@ -3,11 +3,11 @@
 #' This is teal module produces a grid style KM plot for data with ADaM structure
 #'
 #' @inheritParams tm_t_tte
+#' @inheritParams shared_params
 #' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for facet plotting
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for confidence level, each within range of (0, 1).
-#' @param plot_height vector with three elements defining selected, min and max plot height
 #'
 #' @importFrom survival Surv strata
 #' @importFrom stats as.formula
@@ -22,7 +22,7 @@
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADTTE <- radtte(ADSL, cached = TRUE)
+#' ADTTE <- radtte(cached = TRUE)
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -37,10 +37,9 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'     code = "ADSL <- radsl(cached = TRUE)
-#'             ADTTE <- radtte(ADSL, cached = TRUE)",
-#'     check = FALSE
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADTTE", ADTTE, code = "ADTTE <- radtte(cached = TRUE)"),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_km(
@@ -65,13 +64,16 @@ tm_g_km <- function(label,
                     facet_var,
                     strata_var,
                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
-                    plot_height = c(1200, 400, 5000),
+                    plot_height = c(1200L, 400L, 5000L),
+                    plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
   stopifnot(is.choices_selected(arm_var))
   stopifnot(is.choices_selected(paramcd))
   stopifnot(is.choices_selected(facet_var))
   stopifnot(is.choices_selected(strata_var))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
 
   args <- as.list(environment())
 
@@ -83,7 +85,8 @@ tm_g_km <- function(label,
       dataname = dataname,
       arm_ref_comp = arm_ref_comp,
       label = label,
-      plot_height = plot_height
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     ui = ui_g_km,
     ui_args = args
@@ -95,7 +98,7 @@ ui_g_km <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height)),
+    output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width)),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis Data: ", tags$code(a$dataname)),
@@ -164,7 +167,6 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      tags$label("Plot Settings", class = "text-primary"),
       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
@@ -247,7 +249,8 @@ srv_g_km <- function(input,
                      dataname,
                      arm_ref_comp,
                      label,
-                     plot_height) {
+                     plot_height,
+                     plot_width) {
 
   init_chunks()
 
@@ -290,6 +293,8 @@ srv_g_km <- function(input,
       xticks <- NULL
     } else {
       validate(need(all(!is.na(xticks)), "Not all values entered were numeric"))
+      validate(need(all(xticks >= 0), "All break intervals for x-axis must be non-negative"))
+      validate(need(any(xticks > 0), "At least one break interval for x-axis must be positive"))
     }
 
     if (length(facet_var) == 0) {
@@ -308,7 +313,7 @@ srv_g_km <- function(input,
       arm_var = arm_var
     )
 
-    if (length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+    if (length(arm_var) > 0 && length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       if (compare_arms) {
         validate_args <- append(validate_args, list(ref_arm = ref_arm))
@@ -520,11 +525,14 @@ srv_g_km <- function(input,
             p
           }
         }, dfs, levels(lab))
-        grid.draw(gridExtra::arrangeGrob(grobs = pl, ncol = 1))
+        g_final <- gridExtra::arrangeGrob(grobs = pl, ncol = 1)
+        grid.draw(g_final)
       }))
     }
 
     chunks_safe_eval()
+
+    chunks_get_var("g_final")
   })
 
   # Insert the plot into a plot with settings module from teal.devel
@@ -532,7 +540,8 @@ srv_g_km <- function(input,
     plot_with_settings_srv,
     id = "myplot",
     plot_r = plot_r,
-    height = plot_height
+    height = plot_height,
+    width = plot_width
   )
 
   observeEvent(input$show_rcode, {
@@ -540,7 +549,7 @@ srv_g_km <- function(input,
       title = "Kaplan Meier Plot",
       rcode = get_rcode(
         datasets = datasets,
-        datanames = union("ADSL", dataname),
+        datanames = dataname,
         title = label
       )
     )

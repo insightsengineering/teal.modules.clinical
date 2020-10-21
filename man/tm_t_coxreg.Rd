@@ -20,7 +20,7 @@ tm_t_coxreg(
 )
 }
 \arguments{
-\item{label}{Menu item label of the module in the teal app.}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{\code{character} analysis data used in teal module, needs to be
 available in the list passed to the \code{data} argument of
@@ -105,7 +105,6 @@ Wald test will be substituted.
 ## The example below is based on the usual approach involving creation of
 ## a random CDISC dataset and then running the application.
 
-library(teal.modules.clinical)
 library(random.cdisc.data)
 
 ADSL  <- radsl(cached = TRUE)
@@ -123,9 +122,9 @@ arm_ref_comp = list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADTTE", ADTTE),
-    code = "ADSL  <- radsl(cached = TRUE);  ADTTE <- radtte(cached = TRUE)"
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE)'),
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_coxreg(
@@ -189,7 +188,6 @@ ADSL <- subset(
 ## preprocessing. You will need to create the dataset as above before
 ## running the exported R code.
 
-library(teal.modules.clinical)
 arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 app <- init(
   data = cdisc_data(

@@ -16,7 +16,7 @@ tm_t_summary(
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -54,9 +54,9 @@ ADSL <- radsl(cached = TRUE)
 stopifnot(all(vapply(ADSL[c("EOSDY", "DCSREAS")], function(x) any(is.na(x)), logical(1))))
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    code = 'ADSL <- radsl(cached = TRUE)',
-    check = FALSE),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+    check = TRUE
+  ),
   modules = root_modules(
     tm_t_summary(
       label = "Demographic Table",

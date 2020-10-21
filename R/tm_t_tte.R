@@ -1,7 +1,7 @@
 #' Time To Event Table Teal Module
 #'
 #' @inheritParams teal.devel::standard_layout
-#' @param label menu item label of the module in the teal app
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form with the
@@ -49,7 +49,7 @@
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
-#' ADTTE <- radtte(ADSL, cached = TRUE)
+#' ADTTE <- radtte(cached = TRUE)
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -63,10 +63,11 @@
 #' )
 #'
 #' app <- init(
-#'     data = cdisc_data(cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADTTE", ADTTE),
-#'         code = "ADSL <- radsl(cached = TRUE)
-#'                 ADTTE <- radtte(ADSL, cached = TRUE)",
-#'         check = FALSE),
+#'     data = cdisc_data(
+#'       cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'       cdisc_dataset("ADTTE", ADTTE, code = "ADTTE <- radtte(cached = TRUE)"),
+#'       check = TRUE
+#'     ),
 #'     modules = root_modules(
 #'         tm_t_tte(
 #'             label = "Time To Event Table",
@@ -334,7 +335,7 @@ tm_t_tte <- function(label,
 #   arm_ref_comp_observer(
 #     session, input,
 #     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
-#     adsl = datasets$get_data("ADSL", filtered = FALSE),
+#     datasets = datasets,
 #     arm_ref_comp = arm_ref_comp,
 #     module = "tm_t_tte",
 #     on_off = reactive(input$compare_arms)
@@ -385,7 +386,7 @@ tm_t_tte <- function(label,
 #     )
 #
 #     # validate arm levels
-#     if (length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
+#     if (length(arm_var) > 0 && length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
 #       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
 #       if (compare_arms) {
 #         validate_args <- append(validate_args, list(ref_arm = ref_arm))
@@ -448,6 +449,9 @@ tm_t_tte <- function(label,
 #     chunks_safe_eval()
 #
 #     validate(need(nrow(chunks_get_var("anl")) > 10, "need at least 10 data points"))
+#     validate(need(
+#       !all(chunks_get_var("anl")$CNSR == 1),
+#       "No events have been observed for the selected subgroup/subpopulation"))
 #
 #     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
 #       chunks_push(bquote({
@@ -515,7 +519,7 @@ tm_t_tte <- function(label,
 #       title = "Cross Table",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = label
 #       )
 #     )

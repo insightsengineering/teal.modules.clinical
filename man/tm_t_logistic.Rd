@@ -19,7 +19,7 @@ tm_t_logistic(
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -61,23 +61,22 @@ This module produces a multi-variable logistic regression table that matches the
 \examples{
 library(random.cdisc.data)
 library(dplyr)
-library(teal.modules.clinical)
 ADSL <- radsl(cached = TRUE)
-ADRS <- radrs(ADSL, seed = 2)
+ADRS <- radrs(cached = TRUE)
 varlabel_adrs <- var_labels(ADRS)
 ADRS <- subset(ADRS, PARAMCD \%in\% c("BESRSPI", "INVET"))
 ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
 var_labels(ADRS) <- varlabel_adrs
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL), cdisc_dataset("ADRS", ADRS),
-    code = 'ADSL <- radsl(cached = TRUE)
-            ADRS <- radrs(ADSL, seed = 2)
-            varlabel_adrs <- var_labels(ADRS)
-            ADRS <- subset(ADRS, PARAMCD \%in\% c("BESRSPI", "INVET"))
-            ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
-            var_labels(ADRS) <- varlabel_adrs',
-    check = FALSE
+    cdisc_dataset("ADSL", ADSL, code ='ADSL <- radsl(cached = TRUE)'),
+    cdisc_dataset("ADRS", ADRS,
+      code = 'ADRS <- radrs(cached = TRUE)
+              varlabel_adrs <- var_labels(ADRS)
+              ADRS <- subset(ADRS, PARAMCD \%in\% c("BESRSPI", "INVET"))
+              ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
+              var_labels(ADRS) <- varlabel_adrs'),
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_logistic(

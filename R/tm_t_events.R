@@ -3,7 +3,7 @@
 #' @description This module produces an Adverse Event summary table that matches the
 #'   STREAM template \code{aet02} or \code{cmt01}
 #'
-#' @param label menu item label of the module in the teal app
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
@@ -27,11 +27,10 @@
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAE", ADAE),
-#'     code = "ADSL <- radsl(cached = TRUE)
-#'             ADAE <- radae(cached = TRUE)",
-#'     check = FALSE),
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
+#'     check = TRUE
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
@@ -116,24 +115,27 @@ tm_t_events <- function(label,
 #     encoding = div(
 #       tags$label("Encodings", class = "text-primary"),
 #       helpText("Analysis data:", tags$code(a$dataname)),
-#       optionalSelectInput(ns("arm_var"),
-#                           "Arm Variable",
-#                           a$arm_var$choices,
-#                           a$arm_var$selected,
-#                           multiple = FALSE,
-#                           fixed = a$arm_var$fixed),
-#       optionalSelectInput(ns("hlt"),
-#                           "Event High Level Term",
-#                           a$hlt$choices,
-#                           a$hlt$selected,
-#                           multiple = FALSE,
-#                           fixed = a$hlt$fixed),
-#       optionalSelectInput(ns("llt"),
-#                           "Event Low Level Term",
-#                           a$llt$choices,
-#                           a$llt$selected,
-#                           multiple = FALSE,
-#                           fixed = a$llt$fixed),
+#       optionalSelectInput(
+#         ns("arm_var"),
+#         "Arm Variable",
+#         a$arm_var$choices,
+#         a$arm_var$selected,
+#         multiple = FALSE,
+#         fixed = a$arm_var$fixed),
+#       optionalSelectInput(
+#         ns("hlt"),
+#         "Event High Level Term",
+#         a$hlt$choices,
+#         a$hlt$selected,
+#         multiple = FALSE,
+#         fixed = a$hlt$fixed),
+#       optionalSelectInput(
+#         ns("llt"),
+#         "Event Low Level Term",
+#         a$llt$choices,
+#         a$llt$selected,
+#         multiple = FALSE,
+#         fixed = a$llt$fixed),
 #       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
 #     ),
 #     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
@@ -260,7 +262,7 @@ tm_t_events <- function(label,
 #       title = "Summary",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Event Table"
 #       )
 #     )

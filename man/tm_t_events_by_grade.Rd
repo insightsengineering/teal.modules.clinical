@@ -15,7 +15,7 @@ tm_t_events_by_grade(
 )
 }
 \arguments{
-\item{label}{(\code{character}) module label displayed in UI.}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.}
@@ -50,11 +50,9 @@ ADAE <- radae(cached = TRUE)
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADAE", ADAE),
-    code = 'ADSL <- radsl(cached = TRUE)
-            ADAE <- radae(cached = TRUE)',
-    check = FALSE
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+    cdisc_dataset("ADAE", ADAE,  code = 'ADAE <- radae(cached = TRUE)'),
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_events_by_grade(

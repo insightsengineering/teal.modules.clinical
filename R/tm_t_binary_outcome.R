@@ -13,26 +13,25 @@
 #' @export
 #'
 #' @examples
-#' library(teal.modules.clinical)
 #' library(random.cdisc.data)
 #' library(dplyr)
 #'
 #' ADSL <- radsl(cached = TRUE)
 #' ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-#' ADRS <- radrs(ADSL, cached = TRUE) %>%
+#' ADRS <- radrs(cached = TRUE) %>%
 #'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET")) %>%
 #'   droplevels()
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-#'             ADRS <- radrs(ADSL, cached = TRUE) %>%
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = 'ADSL <- radsl(cached = TRUE)
+#'               ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))'),
+#'     cdisc_dataset("ADRS", ADRS,
+#'       code = 'ADRS <- radrs(cached = TRUE) %>%
 #'               dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET")) %>%
-#'               droplevels()',
-#'      check = FALSE
+#'               droplevels()'),
+#'      check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_binary_outcome(
@@ -206,9 +205,11 @@ tm_t_binary_outcome <- function(label,
 #             optionalSelectInput(
 #               ns("u_diff_test"),
 #               label = "Method for Difference of Proportions Test",
-#               choices = c("Chi-squared Test" = "chisq",
-#                           "Fisher's Exact Test" = "fisher",
-#                           "Chi-Squared Test with Schouten correction" = "schouten"),
+#               choices = c(
+#                 "Chi-squared Test" = "chisq",
+#                 "Fisher's Exact Test" = "fisher",
+#                 "Chi-Squared Test with Schouten correction" = "schouten"
+#               ),
 #               selected = "chisq",
 #               multiple = FALSE,
 #               fixed = FALSE
@@ -321,7 +322,7 @@ tm_t_binary_outcome <- function(label,
 #     id_ref = "ref_arm",
 #     id_comp = "comp_arm",
 #     id_arm_var = "arm_var",
-#     adsl = datasets$get_data("ADSL", filtered = FALSE),
+#     datasets = datasets,
 #     arm_ref_comp = arm_ref_comp,
 #     module = "tm_t_binary_outcome",
 #     on_off = reactive(input$compare_arms)
@@ -382,7 +383,7 @@ tm_t_binary_outcome <- function(label,
 #       arm_var = arm_var
 #     )
 #
-#     if (length(unique(adsl_filtered[[arm_var]])) == 1) {
+#     if (length(arm_var) > 0 && length(unique(adsl_filtered[[arm_var]])) == 1) {
 #       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
 #       if (compare_arms) {
 #         validate_args <- append(validate_args, list(ref_arm = ref_arm))
@@ -582,7 +583,7 @@ tm_t_binary_outcome <- function(label,
 #       title = "Summary",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Binary Outcome Table"
 #       )
 #     )

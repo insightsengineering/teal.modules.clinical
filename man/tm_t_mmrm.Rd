@@ -23,7 +23,7 @@ tm_t_mmrm(
 )
 }
 \arguments{
-\item{label}{menu item label of the module in the teal app}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -117,10 +117,9 @@ arm_ref_comp = list(
 \dontrun{
 app <- init(
     data = cdisc_data(
-      cdisc_dataset("ADSL", ADSL),
-      cdisc_dataset("ADQS", ADQS),
-      code = "ADSL <- radsl(cached = TRUE)
-              ADQS <- radqs(cached = TRUE) \%>\%
+      cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+      cdisc_dataset("ADQS", ADQS,
+        code = "ADQS <- radqs(cached = TRUE) \%>\%
                 dplyr::filter(ABLFL != 'Y' & ABLFL2 != 'Y') \%>\%
                 dplyr::mutate(
                   AVISIT = as.factor(AVISIT),
@@ -128,8 +127,10 @@ app <- init(
                     as.factor() \%>\%
                     as.numeric() \%>\%
                     as.factor()
-                )",
-      check = FALSE),
+                )"
+      ),
+      check = TRUE
+    ),
     modules = root_modules(
         tm_t_mmrm(
             label = "MMRM",

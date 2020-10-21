@@ -2,7 +2,7 @@
 #'
 #' This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates.
 #'
-#' @param label (\code{character}) module label displayed in UI.
+#' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
@@ -29,11 +29,9 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAE", ADAE),
-#'     code = 'ADSL <- radsl(cached = TRUE)
-#'             ADAE <- radae(cached = TRUE)',
-#'     check = FALSE
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'     cdisc_dataset("ADAE", ADAE,  code = 'ADAE <- radae(cached = TRUE)'),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events_by_grade(
@@ -125,33 +123,38 @@ tm_t_events_by_grade <- function(label,
 #     encoding =  div(
 #       tags$label("Encodings", class = "text-primary"),
 #       helpText("Analysis data:", tags$code(a$dataname)),
-#       optionalSelectInput(ns("arm_var"),
-#                           "Arm Variable",
-#                           a$arm_var$choices,
-#                           a$arm_var$selected,
-#                           multiple = FALSE,
-#                           fixed = a$arm_var$fixed),
-#       optionalSelectInput(ns("hlt"),
-#                           "Event High Level Term",
-#                           a$hlt$choices,
-#                           a$hlt$selected,
-#                           multiple = FALSE,
-#                           fixed = a$hlt$fixed),
-#       optionalSelectInput(ns("llt"),
-#                           "Event Low Level Term",
-#                           a$llt$choices,
-#                           a$llt$selected,
-#                           multiple = FALSE,
-#                           fixed = a$llt$fixed),
-#       optionalSelectInput(ns("grade"),
-#                           "Event Grade",
-#                           a$grade$choices,
-#                           a$grade$selected,
-#                           multiple = FALSE,
-#                           fixed = a$grade$fixed),
-#       checkboxInput(ns("add_total"),
-#                     "Add All Patients column",
-#                     value = a$add_total)
+#       optionalSelectInput(
+#         ns("arm_var"),
+#         "Arm Variable",
+#         a$arm_var$choices,
+#         a$arm_var$selected,
+#         multiple = FALSE,
+#         fixed = a$arm_var$fixed),
+#       optionalSelectInput(
+#         ns("hlt"),
+#         "Event High Level Term",
+#         a$hlt$choices,
+#         a$hlt$selected,
+#         multiple = FALSE,
+#         fixed = a$hlt$fixed),
+#       optionalSelectInput(
+#         ns("llt"),
+#         "Event Low Level Term",
+#         a$llt$choices,
+#         a$llt$selected,
+#         multiple = FALSE,
+#         fixed = a$llt$fixed),
+#       optionalSelectInput(
+#         ns("grade"),
+#         "Event Grade",
+#         a$grade$choices,
+#         a$grade$selected,
+#         multiple = FALSE,
+#         fixed = a$grade$fixed),
+#       checkboxInput(
+#         ns("add_total"),
+#         "Add All Patients column",
+#         value = a$add_total)
 #     ),
 #     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
 #     pre_output = a$pre_output,
@@ -160,7 +163,6 @@ tm_t_events_by_grade <- function(label,
 # }
 #
 # #' @importFrom dplyr filter mutate select
-# #' @importFrom rtables var_relabel
 # srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
 #
 #   init_chunks()
@@ -304,7 +306,7 @@ tm_t_events_by_grade <- function(label,
 #       title = "Event by grade",
 #       rcode = get_rcode(
 #         datasets = datasets,
-#         datanames = union("ADSL", dataname),
+#         datanames = dataname,
 #         title = "Event table by grade"
 #       )
 #     )
