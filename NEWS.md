@@ -1,3 +1,7 @@
+# teal.modules.clinical 0.8.5.9000
+
+* issues with no news:
+
 # teal.modules.clinical 0.8.5
 
 * All graph modules now accept a `plot_width` argument which specifies the plot width and renders a slider to adjust the width interactively in the module.
