@@ -10,7 +10,6 @@
 #' for variable names that can be used for interaction variable selection
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for confidence level for computation of the confidence intervals.
-#' @importFrom rtables var_labels "var_labels<-"
 #'
 #' @export
 #' @examples

@@ -18,6 +18,7 @@ Depends:
   R (>= 3.3),
   dplyr,
   shiny,
+  ggplot2,
   teal (>= 0.9.1),
   tern (>= 0.6.9)
 Imports:
