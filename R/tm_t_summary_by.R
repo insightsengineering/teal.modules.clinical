@@ -188,7 +188,7 @@ tm_t_summary_by <- function(label,
 #         )
 #       )
 #     ),
-#     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = args$pre_output,
 #     post_output = args$post_output
 #   )
@@ -351,15 +351,13 @@ tm_t_summary_by <- function(label,
 #     as_html(tbl)
 #   })
 #
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Summary",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Summary-by table"
-#       )
-#     )
-#   })
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Summary-by table",
+#     code_header = "Summary-by table"
+#   )
 # }
 # nolint end

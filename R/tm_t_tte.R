@@ -310,7 +310,7 @@ tm_t_tte <- function(label,
 #         )
 #       )
 #     ),
-#     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -513,17 +513,13 @@ tm_t_tte <- function(label,
 #     as_html(tbl)
 #   })
 #
-#
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Cross Table",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = label
-#       )
-#     )
-#   })
-#
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Cross Table",
+#     code_header = label
+#   )
 # }
 # nolint end

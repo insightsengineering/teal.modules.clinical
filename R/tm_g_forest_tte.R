@@ -1,6 +1,6 @@
 #' Forest Survival Plot teal Module
 #'
-#' This is teal module produces a grid style Forest plot for time-to-event data
+#' This teal module produces a grid style Forest plot for time-to-event data
 #' with ADaM structure
 #'
 #' @inheritParams tm_g_forest_rsp
@@ -156,7 +156,7 @@ ui_g_forest_tte <- function(id, ...) {
         )
       )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -223,7 +223,7 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
     validate(
       need(length(conf_level) == 1, "Please select level of confidence.")
     )
-    if (!is.null(subgroup_var)){
+    if (!is.null(subgroup_var)) {
       need(all(vapply(ADSL_FILTERED[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
     }
@@ -347,14 +347,12 @@ srv_g_forest_tte <- function(input, output, session, datasets, dataname, plot_he
     width = plot_width
   )
 
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "R Code for the Current Time-to-Event Forest Plot",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = "Time-to-Event Forest Plot"
-      )
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "R Code for the Current Time-to-Event Forest Plot",
+    code_header = "Time-to-Event Forest Plot"
+  )
 }

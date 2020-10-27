@@ -63,7 +63,7 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-This is teal module produces a grid style Forest plot for time-to-event data
+This teal module produces a grid style Forest plot for time-to-event data
 with ADaM structure
 }
 \examples{

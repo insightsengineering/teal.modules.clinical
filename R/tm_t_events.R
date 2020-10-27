@@ -138,7 +138,7 @@ tm_t_events <- function(label,
 #         fixed = a$llt$fixed),
 #       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
 #     ),
-#     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -257,15 +257,13 @@ tm_t_events <- function(label,
 #     as_html(tbl)
 #   })
 #
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Summary",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Event Table"
-#       )
-#     )
-#   })
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Event Table",
+#     code_header = "Event Table"
+#   )
 # }
 # nolint end

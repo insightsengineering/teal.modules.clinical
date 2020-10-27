@@ -66,7 +66,7 @@ ADSL <- radsl(cached = TRUE)
 ADAE <- radae(cached = TRUE)
 
 # define analysis subgroups from ADAE
-add_event_flags <- function(dat){
+add_event_flags <- function(dat) {
   dat \%>\%
     dplyr::mutate(
       TMPFL_SER = AESER == "Y",
@@ -96,7 +96,7 @@ app <- teal::init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", ADAE,
       code = "ADAE <- radae(cached = TRUE)
-              add_event_flags <- function(dat){
+              add_event_flags <- function(dat) {
               dat \%>\%
                 dplyr::mutate(
                   TMPFL_SER = AESER == 'Y',

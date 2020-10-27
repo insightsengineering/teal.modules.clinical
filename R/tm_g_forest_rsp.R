@@ -184,11 +184,7 @@ ui_g_forest_rsp <- function(id, ...) {
       )
      )
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    ),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -276,7 +272,7 @@ srv_g_forest_rsp <- function(input,
     validate(
       need(length(conf_level) == 1, "Please select level of confidence.")
     )
-    if (!is.null(subgroup_var)){
+    if (!is.null(subgroup_var)) {
       need(all(vapply(adsl_filtered[, subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
     }
@@ -405,15 +401,12 @@ srv_g_forest_rsp <- function(input,
     width = plot_width
   )
 
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "R Code for the Current Reponse Forest Plot",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = "Response Forest Plot"
-      )
-    )
-  })
-
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "R Code for the Current Reponse Forest Plot",
+    code_header = "Response Forest Plot"
+  )
 }

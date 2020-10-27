@@ -36,7 +36,7 @@
 #' ADAE <- radae(cached = TRUE)
 #'
 #' # define analysis subgroups from ADAE
-#' add_event_flags <- function(dat){
+#' add_event_flags <- function(dat) {
 #'   dat %>%
 #'     dplyr::mutate(
 #'       TMPFL_SER = AESER == "Y",
@@ -66,7 +66,7 @@
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "ADAE <- radae(cached = TRUE)
-#'               add_event_flags <- function(dat){
+#'               add_event_flags <- function(dat) {
 #'               dat %>%
 #'                 dplyr::mutate(
 #'                   TMPFL_SER = AESER == 'Y',
@@ -193,7 +193,7 @@ tm_t_events_summary <- function(label,
 #       checkboxInput(ns("count_pt"), "Count preferred terms", value = a$count_pt),
 #       checkboxInput(ns("count_events"), "Count events", value = a$count_events)
 #     ),
-#     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -470,15 +470,13 @@ tm_t_events_summary <- function(label,
 #     as_html(result_tbl)
 #   })
 #
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Summary",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Event Table"
-#       )
-#     )
-#   })
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Event Table",
+#     code_header = "Event Table"
+#   )
 # }
 # nolint end

@@ -201,11 +201,7 @@ tm_t_rsp <- function(label,
 #         fixed = a$strata_var$fixed
 #       )
 #     ),
-#     forms = actionButton(
-#       ns("show_rcode"),
-#       "Show R Code",
-#       width = "100%"
-#     ),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -426,17 +422,13 @@ tm_t_rsp <- function(label,
 #     as_html(tbl)
 #   })
 #
-#
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Summary",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Response Table"
-#       )
-#     )
-#   })
-#
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Response Table",
+#     code_header = "Response Table"
+#   )
 # }
 # nolint end

@@ -454,12 +454,11 @@ srv_g_barchart_simple <- function(input,
 
   merge_ex111 <- reactive(merged_data()()$expr)
   callModule(
-    get_rcode_srv,
+    module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    dataname = get_extract_datanames(list(x, fill, x_facet, y_facet)),
+    datanames = get_extract_datanames(list(x, fill, x_facet, y_facet)),
     merge_expression = merge_ex111(),
-    #merge_expression = merged_data()()$expr, # not working
     modal_title = "Bar Chart"
   )
 }

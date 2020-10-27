@@ -235,7 +235,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -418,7 +418,7 @@ srv_g_km <- function(input,
         }))
       }
 
-      if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1){
+      if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1) {
         chunks_push(bquote({
           tbl_coxph <- t_coxph_pairwise(
             formula_coxph,
@@ -457,7 +457,7 @@ srv_g_km <- function(input,
           max(x[["AVAL"]], na.rm = TRUE)
         }))
         xticks <- .(xticks)
-        if (is.null(xticks)){
+        if (is.null(xticks)) {
           xticks <- max(1, floor(max_min / 10))
         } else {
           xticks <- .(xticks)
@@ -544,14 +544,12 @@ srv_g_km <- function(input,
     width = plot_width
   )
 
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "Kaplan Meier Plot",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = label
-      )
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "R Code for the Current Kaplan Meier Plot",
+    code_header = label
+  )
 }

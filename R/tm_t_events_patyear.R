@@ -148,11 +148,7 @@ tm_t_events_patyear <- function(label,
 #       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
 #
 #     ),
-#     forms = actionButton(
-#       ns("show_rcode"),
-#       "Show R Code",
-#       width = "100%"
-#     ),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -264,15 +260,14 @@ tm_t_events_patyear <- function(label,
 #     as_html(tbl)
 #
 #   })
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Event Rate adjusted for patient-year at risk",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Event Rate adjusted for patient-year Table"
-#       )
-#     )
-#   })
+#
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Event Rate adjusted for patient-year Table",
+#     code_header = "Event Rate adjusted for patient-year Table"
+#   )
 # }
 # nolint end

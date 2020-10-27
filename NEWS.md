@@ -1,5 +1,5 @@
 # teal.modules.clinical 0.8.5.9000
-
+* Change `show_rcode_modal` to `get_rcode_srv` in all modules.
 * issues with no news:
 
 # teal.modules.clinical 0.8.5

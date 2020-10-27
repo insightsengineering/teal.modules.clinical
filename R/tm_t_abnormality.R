@@ -227,7 +227,7 @@ tm_t_abnormality <- function(label,
 #         "Exclude subjects whose baseline grade is the same as abnormal grade",
 #         value = a$exclude_base_abn),
 #     ),
-#     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+#     forms = get_rcode_ui(ns("rcode")),
 #     pre_output = a$pre_output,
 #     post_output = a$post_output
 #   )
@@ -377,15 +377,13 @@ tm_t_abnormality <- function(label,
 #   })
 #
 #
-#   observeEvent(input$show_rcode, {
-#     show_rcode_modal(
-#       title = "Abnormality Table",
-#       rcode = get_rcode(
-#         datasets = datasets,
-#         datanames = dataname,
-#         title = "Abnormality Table"
-#       )
-#     )
-#   })
+#   callModule(
+#     module = get_rcode_srv,
+#     id = "rcode",
+#     datasets = datasets,
+#     datanames = dataname,
+#     modal_title = "R Code for the Current Abnormality Table",
+#     code_header = "Abnormality Table"
+#   )
 # }
 # nolint end
