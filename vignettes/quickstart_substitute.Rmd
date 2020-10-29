@@ -1,0 +1,244 @@
+---
+title: "Quick start: `substitute` for NSE"
+author: "Francois Collin"
+date: "`r Sys.Date()`"
+output: slidy_presentation
+vignette: >
+  %\VignetteIndexEntry{quickstart_substitute}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(
+  purl = TRUE,
+  collapse = TRUE,
+  dev = "svg"
+)
+library(magrittr)
+```
+
+# Introduction
+
+Considering an expression, R usually evaluates it and returns its value.
+Instead of focusing on the value, it is also possible to work with the **code**
+which generated the **value**. This is where non standard evaluation, or NSE,
+starts.
+The function `substitute` is an important element of non-standard evaluation.
+For instance, if we consider `a` defined such as `a <- 5`,
+then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns 
+the code to obtain the value: `a`.
+
+The principle on which relies `teal` is to:
+
+i. generate expressions.
+ii. return the result of the expression in the result panel of the app.
+iii. return the corresponding code (or expression) with `Show R Code`.
+
+The expression returning the displayed value must be reactive.
+The information in the encoding in one hand and the filtering panel on the
+other hand modify the expression and the displayed value. As so, teal needs to
+work both on expressions and values and relies heavily on NSE.
+
+The NSE is an advanced notion and mixing it with Shiny app development is a
+source of difficulties:
+
+- hindered efficient coding as the Shiny app must be run to check the good
+  execution of the code.
+- limited possibilities for testing.
+
+As an alternative, it is possible to focus first on the NSE aspects in plain R,
+and secondly, only once ready, integrate it in the Shiny App. Hereafter, are
+few practical examples demonstrating how NSE works.
+The choice was made to focus on `substitute`.
+
+# Basic
+
+## Principle
+
+```{r, error = TRUE}
+non_evaluated_expression <- substitute(expr = a + b)
+non_evaluated_expression
+eval(non_evaluated_expression)
+```
+
+What happened?
+
+- `substitute` returns the code and not the value,
+- it even does not try the code, therefore it is possible to return an
+  expression which does not make sense (yet), for instance involving two non
+  defined objects.
+- If the values of `a` and `b` exist, the expression can run without error (below).
+
+```{r}
+a <- 1
+b <- 5
+eval(non_evaluated_expression)
+```
+
+Now, the function name `substitute` is for a reason. Not only returning the
+expression, it also **operates substitutions** of some terms within a given
+expression.
+
+```{r}
+fun <- function(a, b) {
+  substitute(expr = a + b)
+}
+non_evaluated_expression <- fun(5, -2)
+non_evaluated_expression
+eval(non_evaluated_expression)
+```
+
+What happened?
+
+- the objects `a` and `b` exist in the function environment where `substitute`
+  is called.
+- the terms of the expression within `substitute` were replaced by the values
+  of `a` and `b`.
+
+Indeed, before returning the expression, `substitute` verifies if `a` and `b`
+don't have any value existing in the evaluation environment. If so, values of
+`a` and `b` are used in the expression.
+
+It is also possible to use the second argument of `substitute`, `env`, an
+environment (or a list) containing objects. If the expression submitted
+in `substitute` has corresponding objects in `env`, the terms within the
+expression will be substituted with provided values:
+
+```{r}
+non_evaluated_expression <- substitute(
+  expr = a + b,
+  env = list(a = 5, b = 5)
+)
+non_evaluated_expression
+eval(non_evaluated_expression)
+```
+
+What happened?
+
+- The environment in which the values of `a` and `b` were taken
+from was directly declared within the `substitute` expression (argument `expr`)
+and the values were substituted (argument `env`).
+- `substitute` returned a non-evaluated expression, use `eval()` to evaluate it.
+
+With a slightly more elaborated expression:
+
+```{r}
+non_evaluated_expression <- substitute(
+  expr = plot(x = x, y = exp(x), main = text),
+  env = list(x = 0:10, text = "A graph")
+)
+non_evaluated_expression
+eval(non_evaluated_expression)
+```
+
+Note that:
+
+- `x` as an argument name in plot as been preserved, while `x` as an
+ object has been replaced. 
+
+## Replace an object name
+
+In formulas, character strings are not accepted,
+how to operate the substitution?
+
+```{r, error = TRUE}
+# Error expected:
+plot_expr <- substitute(
+  expr = plot(y ~ x, data = iris, main = text),
+  env = list(
+    x = Sepal.Length,
+    y = Sepal.Width,
+    text = "Iris, again ..."
+  )
+)
+```
+
+
+```{r, error = TRUE}
+# Error expected:
+plot_expr <- substitute(
+  expr = plot(y ~ x, data = iris, main = text),
+  env = list(
+    x = "Sepal.Length",
+    y = "Sepal.Width",
+    text = "Iris, again ..."
+  )
+)
+plot_expr
+eval(plot_expr)
+```
+
+The object names have a special `name` _class_; `as.names` coerces a character
+string to an object name (alternatively, `as.symbol` provides identical result):
+
+```{r}
+plot_expr <- substitute(
+  expr = plot(y ~ x, data = iris, main = text),
+  env = list(
+    x = as.name("Sepal.Length"),
+    y = as.symbol("Sepal.Width"),
+    text = "Iris, again ..."
+  )
+)
+plot_expr
+eval(plot_expr)
+```
+
+
+## What with dataframe name?
+
+Lets imagine a pipe-flavored expression, with `df` being the term
+corresponding to the dataframe which should be substituted:
+`df %>% plot(y ~ x, data = ., main = text)`.
+
+The principle exposed above can work directly without addition. However,
+`df` in the expression is then replaced directly by the value of the object
+provided and not the expression generating the dataframe:
+the pipeline is working but not humanly readable.
+
+```{r}
+library(magrittr)
+short_iris <- head(iris)
+plot_expr <- substitute(
+  expr = df %>% plot(y ~ x, data = ., main = text),
+  env = list(
+    df = short_iris,
+    x = as.name("Sepal.Length"),
+    y = as.symbol("Sepal.Width"),
+    text = "Iris, again ..."
+  )
+)
+eval(plot_expr)
+plot_expr
+```
+
+How can we replace the value by the expression generating this value?
+
+That is pretty much the topic of the vignette: `substitute`.
+
+```{r}
+plot_expr <- substitute(
+  expr = df %>% plot(y ~ x, data = ., main = text),
+  env = list(
+    df = substitute(iris),
+    x = as.name("Sepal.Length"),
+    y = as.symbol("Sepal.Width"),
+    text = "Iris, again ..."
+  )
+)
+plot_expr
+eval(plot_expr)
+```
+
+## In a nutshell
+
+- `substitute` is relevant when the expression needs to be modified.
+  It takes 2 arguments:
+    + `expr` the expression to be (eventually) substituted.
+    + `env` the environment in which potential replacement value might be
+    needed.
+- If the replacement value should be slightly more special like:
+    + an **object name** (like in formulas e.g. `y ~ x`) then, use `as.name` or
+    `as.symbol`.
+    + a **data frame** name (like `iris`) then, use `substitute`.
