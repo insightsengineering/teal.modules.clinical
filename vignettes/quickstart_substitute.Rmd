@@ -2,7 +2,11 @@
 title: "Quick start: `substitute` for NSE"
 author: "Francois Collin"
 date: "`r Sys.Date()`"
-output: slidy_presentation
+output:
+  slidy_presentation:
+    slide_level: 2 
+    highlight: tango
+    incremental: true
 vignette: >
   %\VignetteIndexEntry{quickstart_substitute}
   %\VignetteEngine{knitr::rmarkdown}
@@ -19,6 +23,8 @@ library(magrittr)
 ```
 
 # Introduction
+
+## 
 
 Considering an expression, R usually evaluates it and returns its value.
 Instead of focusing on the value, it is also possible to work with the **code**
@@ -134,7 +140,7 @@ eval(non_evaluated_expression)
 
 Note that:
 
-- `x` as an argument name in plot as been preserved, while `x` as an
+- `x` as an argument name in plot has been preserved, while `x` as an
  object has been replaced. 
 
 ## Replace an object name
@@ -242,3 +248,349 @@ eval(plot_expr)
     + an **object name** (like in formulas e.g. `y ~ x`) then, use `as.name` or
     `as.symbol`.
     + a **data frame** name (like `iris`) then, use `substitute`.
+
+# `rtables`
+
+## Direct use of `substitute`
+
+The `substitute` approach can be used with the new `rtables` pipelines.
+
+Lets prepare an example for reporting data from LB domain. The example is based
+on the template `LBT01`; the target is to report in columns the lab test result
+per study arm, as values (`AVAL`) and changes from baseline (`CHG`),
+per analysis visit in rows.
+
+The data can be prepared as follows:
+
+```{r}
+library(random.cdisc.data)
+library(rtables)
+library(dplyr)
+library(tern)
+adlb <- radlb(cached = TRUE)
+adlb_f <- adlb %>%
+  filter(
+    PARAM == "Alanine Aminotransferase Measurement" &
+      ARMCD %in% c("ARM A", "ARM B") & AVISIT == "WEEK 1 DAY 8"
+  )
+```
+
+
+And the `rtables` expression is obtained as:
+
+```{r}
+rtables_expr <- substitute(
+  
+  expr = basic_table() %>%
+    split_cols_by(arm, split_fun = drop_split_levels) %>%
+    split_rows_by(visit, split_fun = drop_split_levels) %>%
+    split_cols_by_multivar(
+      vars = c("AVAL", "CHG"),
+      varlabels = c("Value", "Change")
+    ) %>%
+    summarize_colvars() %>%
+    build_table(df = df),
+  
+  env = list(
+    df = substitute(adlb_f),
+    arm = "ARM",
+    visit = "AVISIT"
+    )
+)
+```
+
+The expression is valid ... :
+```{r}
+eval(rtables_expr)
+```
+
+... but not easily readable ...:
+```{r}
+rtables_expr
+```
+
+... but that can be arranged:
+
+```{r, message = FALSE}
+library(teal.devel)
+#' Stylish code
+#'
+#' Deparse an expression and display the code following NEST conventions.
+#'
+#' @param expr (`call`)\cr or possibly understood as so.
+#'
+styled_expr <- function(expr) {
+  styler:::print.vertical(
+    styler::style_text(text = deparse(expr), style = teal.devel::nest_style),
+    colored = FALSE
+  )
+}
+#'
+#' @examples
+#'
+styled_expr(rtables_expr)
+```
+
+
+## `substitute` in a function
+
+Moving further, `substitute` can actually be wrapped in a function, this way
+the `rtables` pipelines are _programmatically_ obtained:
+
+```{r}
+rtables_expr <- function(df,
+                         arm,
+                         visit) {
+  substitute(
+    
+    expr = basic_table() %>%
+      split_cols_by(arm, split_fun = drop_split_levels) %>%
+      split_rows_by(visit, split_fun = drop_split_levels) %>%
+      split_cols_by_multivar(
+        vars = c("AVAL", "CHG"),
+        varlabels = c("Value", "Change")
+      ) %>%
+      summarize_colvars() %>%
+      build_table(df = df),
+    
+    env = list(
+      df = substitute(df),
+      arm = arm,
+      visit = visit
+    )
+  )
+}
+result <- rtables_expr(df = adlb_f, arm = "ARM", visit = "AVISIT")
+styled_expr(result)
+eval(result)
+```
+
+* The same results as before are obtained ...
+* while, fine tuning is easier.
+* For instance, the variable designating the study arm and the visit can be
+  changed, which is an expected feature in teal module encoding panel.
+
+```{r}
+result <- rtables_expr(df = adlb_f, arm = "ARMCD", visit = "AVISITN")
+eval(result)
+styled_expr(result)
+```
+
+## Chain expressions in a pipeline
+
+It is also possible to manipulate expressions, for instance, expressions
+might be chained in a pipeline.
+
+```{r}
+#' Expressions as a pipeline
+#'
+#' Accepts expressions to be chained using the `magrittr` pipeline-flavor.
+#' 
+#' @param ... (`call`)\cr or object which can be interpreted as so.
+#'    (e.g. `name`)
+#'
+pipe_expr <- function(...) {
+  exprs <- unlist(list(...))
+  exprs <- lapply(
+    exprs,
+    function(x) {
+      x <- deparse(x)
+      paste(x, collapse = " ")
+    }
+  )
+  exprs <- unlist(exprs)
+  exprs <- paste(exprs, collapse = " %>% ")
+  str2lang(exprs)
+}
+
+#' @examples
+#'
+result <- pipe_expr(
+  expr1 = substitute(df),
+  expr2 = substitute(head)
+  )
+result
+```
+
+* Expressions can be arranged in a list, this way, it is possible to
+  have **conditional** editing of expressions.
+* In the context of `rtables`, layers enclosing `analyze` call handle `.stats`
+  option. The lean expression should include the `.stats` option,
+  **only when the default value is changed**.
+* This is again an expected feature in teal module when rendering the code with
+  `Show R Code`:
+
+```{r}
+rtables_expr <- function(df,
+                         arm,
+                         visit,
+                         .stats = NULL) {
+  
+  # The rtables layout is decomposed into a list of expressions.
+  lyt <- list()
+  
+  # 1. First the columns and rows:
+  lyt$structure <- substitute(
+    
+    expr = basic_table() %>%
+      split_cols_by(arm, split_fun = drop_split_levels) %>%
+      split_rows_by(visit, split_fun = drop_split_levels) %>%
+      split_cols_by_multivar(
+        vars = c("AVAL", "CHG"),
+        varlabels = c("Value", "Change")
+      ),
+    
+    env = list(
+      arm = arm,
+      visit = visit
+    )
+  )
+  
+  # 2. The analyze layer which depends on the use of .stats.
+  lyt$analyze <- if (is.null(.stats)) {
+    substitute(
+      summarize_colvars()
+    )
+  } else {
+    substitute(
+      summarize_colvars(.stats = .stats),
+      list(.stats = .stats)
+    )
+  }
+  
+  # 3. And finishing with rtables::build_table.
+  lyt$build <- substitute(
+    build_table(df = df),
+    list(df = substitute(df))
+  )
+  
+  # As previously demonstrated, expressions can be manipulated and
+  # chained in a pipeline.
+  pipe_expr(lyt)
+}
+```
+
+* First application with standard statistics:
+
+```{r}
+result <- rtables_expr(df = adlb_f, arm = "ARM", visit = "AVISIT")
+styled_expr(result)
+eval(result)
+```
+
+* Then with statistics specifications:
+
+```{r}
+result <- rtables_expr(
+  df = adlb_f, arm = "ARM", visit = "AVISIT",
+  .stats = c("n", "mean_sd")
+)
+styled_expr(result)
+eval(result)
+```
+
+## Including pre-processing
+
+Finally, it would also be possible to wrap several expressions into a single
+function.
+
+* For instance, the teal module generally includes a pre-processing
+  section:
+
+```{r}
+rtables_expr <- function(df,
+                         paramcd,
+                         arm,
+                         visit,
+                         .stats = NULL) {
+  
+  # y is a list which will collect two expressions:
+  # 1. y$data with the preprocessing steps.
+  # 2. y$rtables the table layout and build.
+  y <- list()
+  
+  # 1. Preprocessing ---
+  y$data <- substitute(
+    df <- df %>%
+      filter(
+        PARAMCD == paramcd &
+          ARMCD %in% c("ARM A", "ARM B") & AVISIT == "WEEK 1 DAY 8"
+      ),
+    list(
+      df = substitute(df),
+      paramcd = paramcd
+    )
+  )
+  
+  # 2. rtables layout ---
+  lyt <- list()
+  lyt$structure <- substitute(
+    
+    expr = basic_table() %>%
+      split_cols_by(arm, split_fun = drop_split_levels) %>%
+      split_rows_by(visit, split_fun = drop_split_levels) %>%
+      split_cols_by_multivar(
+        vars = c("AVAL", "CHG"),
+        varlabels = c("Value", "Change")
+      ),
+    
+    env = list(
+      arm = arm,
+      visit = visit
+    )
+  )
+  
+  lyt$analyze <- if (is.null(.stats)) {
+    substitute(
+      summarize_colvars()
+    )
+  } else {
+    substitute(
+      summarize_colvars(.stats = .stats),
+      list(.stats = .stats)
+    )
+  }
+  lyt$build <- substitute(
+    build_table(df = df),
+    list(df = substitute(df))
+  )
+  y$rtables <- pipe_expr(lyt)
+  
+  # Finally returns y as a list with two expressions.
+  y
+}
+```
+
+It is now possible to modify the studied parameter (`PARAMCD`)
+in addition to the study arm and visit variables names.
+
+```{r}
+adlb <- radlb(cached = TRUE)
+result <- rtables_expr(
+  df = adlb, paramcd = "CRP", arm = "ARM", visit = "AVISIT",
+  .stats = c("n", "mean_sd")
+)
+```
+
+The two expressions are consistent:
+```{r}
+styled_expr(result$data)
+styled_expr(result$rtables)
+```
+
+
+The two expressions can be executed and return the `rtables`:
+```{r}
+result_exec <- mapply(eval, result)
+result_exec$rtables
+```
+
+## In a nutshell
+
+At this point, it is then possible to:
+
+- generate `rtables` pipelines.
+- chain expressions in a pipeline (e.g. `pipe_expr`)
+- decompose a `rtables` pipeline to add **conditional** layers (e.g. `.stats`).
+- group expressions into a single list and control both **pre-processing** and
+  **`rtables` pipeline**.
