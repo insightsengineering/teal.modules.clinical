@@ -62,15 +62,15 @@ Time To Event Table Teal Module
 }
 \details{
 This module produces a response summary table that is similar to
-  STREAM template \code{ttet01}. The core functionality is based on
-  \code{REFACTOR} from the \code{tern} package.\cr
+STREAM template \code{ttet01}. The core functionality is based on
+\code{REFACTOR} from the \code{tern} package.\cr
 This modules expects that the analysis data has the following variables
 
 \tabular{ll}{
- \code{AVAL} \tab time to event\cr
- \code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
- \code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
- filtering for \code{paramcd} one observation per patient is expected
+\code{AVAL} \tab time to event\cr
+\code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
+\code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
+filtering for \code{paramcd} one observation per patient is expected
 }
 
 The arm variables, stratification variables and taken from the \code{ADSL}

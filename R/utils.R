@@ -69,3 +69,129 @@ add_plot_title <- function(chunk, groupby_vars) {
     plot <- plot + ggtitle(plot_title)
   }))
 }
+
+
+#' Expression Deparsing
+#'
+#' Deparse an expression into a `string`.
+#'
+#' @param expr (`call`)\cr or an object which can be used as so.
+#'
+#' @export
+#' @return a `string`.
+#' @examples
+#' expr <- quote(
+#'   basic_table() %>%
+#'   split_cols_by(var = "ARMCD") %>%
+#'   test_proportion_diff(
+#'     vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'   ) %>%
+#'   build_table(df = dta)
+#' )
+#'
+#' h_concat_expr(expr)
+#'
+h_concat_expr <- function(expr) {
+  expr <- deparse(expr)
+  paste(expr, collapse = " ")
+}
+
+
+#' Expressions as a Pipeline
+#'
+#' Concatenate expressions in a single pipeline-flavor expression.
+#'
+#' @param ... (`call`)\cr or objects which can be used as so.
+#'    (e.g. `name`).
+#'
+#' @export
+#' @examples
+#'
+#' result <- pipe_expr(
+#'   expr1 = substitute(df),
+#'   expr2 = substitute(head)
+#' )
+#' result
+#'
+pipe_expr <- function(...) {
+  exprs <- unlist(list(...))
+  exprs <- lapply(exprs, h_concat_expr)
+  exprs <- unlist(exprs)
+  exprs <- paste(exprs, collapse = " %>% ")
+  str2lang(exprs)
+}
+
+
+#' Styled Code Printing
+#'
+#' Deparse an expression and display the code following NEST conventions.
+#'
+#' @param expr (`call`)\cr or possibly understood as so.
+#'
+#' @note The package `prettycode` must be installed to turn on colored output,
+#'   hence the warning.
+#' @importFrom styler style_text
+#' @export
+#' @examples
+#' expr <- quote(
+#'   basic_table() %>%
+#'     split_cols_by(var = "ARMCD") %>%
+#'     test_proportion_diff(
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'     ) %>%
+#'     build_table(df = dta)
+#' )
+#'
+#' styled_expr(expr)
+#'
+styled_expr <- function(expr) {
+  styler::style_text(text = deparse(expr), style = teal.devel::nest_style)
+}
+
+
+#' Expression List
+#'
+#' Add a new expression to a list (of expressions).
+#'
+#' @param expr_ls (`list` of `call`)\cr the list to which a new expression
+#'   should be added.
+#' @param new_expr (`call`)\cr the new expression to add.
+#'
+#' @return a `list` of `call`.
+#'
+#' @details Offers a stricter control to add new expressions to an existing
+#'   list. The list of expressions can be later used to generate a pipeline,
+#'   for instance with `pipe_expr`.
+#'
+#' @import assertthat
+#' @export
+#' @examples
+#'
+#' lyt <- list()
+#' lyt <- add_expr(lyt, substitute(basic_table()))
+#' lyt <- add_expr(
+#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+#' )
+#' lyt <- add_expr(
+#'   lyt,
+#'   substitute(
+#'     test_proportion_diff(
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'     )
+#'   )
+#' )
+#' lyt <- add_expr(lyt, quote(build_table(df = dta)))
+#' pipe_expr(lyt)
+#'
+add_expr <- function(expr_ls, new_expr) {
+
+  assert_that(
+    is.list(expr_ls),
+    is.call(new_expr)
+  )
+
+  c(
+    expr_ls,
+    list(new_expr)
+  )
+}

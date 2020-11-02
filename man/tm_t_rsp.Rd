@@ -50,26 +50,26 @@ an \code{\link[teal]{module}} object
 }
 \description{
 This module produces a response summary table that matches the
-  STREAM template \code{rspt01}
+STREAM template \code{rspt01}
 }
 \details{
 Additional standard UI inputs include \code{responders},
-  \code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
+\code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
 
-  Default values of the inputs \code{var_arm}, \code{ref_arm} and
-  \code{comp_arm} are set to NULL, and updated accordingly based on selection
-  of \code{paramcd} and \code{var_arm}
+Default values of the inputs \code{var_arm}, \code{ref_arm} and
+\code{comp_arm} are set to NULL, and updated accordingly based on selection
+of \code{paramcd} and \code{var_arm}
 
-  This display order of response categories in partitioned statistics section
-  inherits the factor level order of the source data. Use
-  \code{\link[base]{factor}} and its \code{levels} argument to manipulate
-  the source data in order to include/exclude or re-categorize response
-  categories and arrange the display order. If response categories are
-  "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
-  confidence interval will not be calculated.
+This display order of response categories in partitioned statistics section
+inherits the factor level order of the source data. Use
+\code{\link[base]{factor}} and its \code{levels} argument to manipulate
+the source data in order to include/exclude or re-categorize response
+categories and arrange the display order. If response categories are
+"Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\\%
+confidence interval will not be calculated.
 
-  Reference arms automatically combined if multiple arms selected as
-  reference group.
+Reference arms automatically combined if multiple arms selected as
+reference group.
 }
 \examples{
 library(random.cdisc.data)

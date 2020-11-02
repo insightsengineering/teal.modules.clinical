@@ -81,8 +81,8 @@ output to put the output into context. For example the
 This modules expects that the analysis data has the following variables
 
 \tabular{ll}{
- \code{PARAMCD} \tab variable used to filter for endpoint, after
- filtering for \code{paramcd} one observation per patient per time point is expected
+\code{PARAMCD} \tab variable used to filter for endpoint, after
+filtering for \code{paramcd} one observation per patient per time point is expected
 }
 
 The arm, subject ID, baseline characteristics variables are taken from the \code{ADSL} data.
@@ -90,7 +90,7 @@ The arm, subject ID, baseline characteristics variables are taken from the \code
 \section{Warning}{
 
 This module has been deprecated and will eventually be removed. Please use instead
-the module `tm_a_mmrm`.
+the module \code{tm_a_mmrm}.
 }
 
 \examples{

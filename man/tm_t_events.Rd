@@ -38,7 +38,7 @@ an \code{\link[teal]{module}} object
 }
 \description{
 This module produces an Adverse Event summary table that matches the
-  STREAM template \code{aet02} or \code{cmt01}
+STREAM template \code{aet02} or \code{cmt01}
 }
 \examples{
 library(random.cdisc.data)

@@ -78,8 +78,8 @@ Teal module for Mixed Model Repeated Measurements (MMRM) analysis.
 This modules expects that the analysis data has the following variables:
 
 \tabular{ll}{
- \code{PARAMCD} \tab variable used to filter for endpoint, after
- filtering for \code{paramcd} one observation per patient per time point is expected
+\code{PARAMCD} \tab variable used to filter for endpoint, after
+filtering for \code{paramcd} one observation per patient per time point is expected
 }
 
 The arm, subject ID, and covariate variables are taken from the \code{ADSL} data.

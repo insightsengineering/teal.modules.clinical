@@ -56,7 +56,7 @@ output to put the output into context. For example the
 }
 \description{
 This module produces a multi-variable logistic regression table that matches the
-  STREAM template \code{lgrt02}
+STREAM template \code{lgrt02}
 }
 \examples{
 library(random.cdisc.data)

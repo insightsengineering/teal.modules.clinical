@@ -14,5 +14,5 @@ the width of the main plot and renders a slider on the plot to interactively adj
 }
 \description{
 Contains arguments that are shared between multiple functions
-  in the package to avoid repetition using \code{inheritParams}.
+in the package to avoid repetition using \code{inheritParams}.
 }

@@ -1,6 +1,9 @@
 # teal.modules.clinical 0.8.5.9000
 * Change `show_rcode_modal` to `get_rcode_srv` in all modules.
 * Vignette about the topic `substitute`.
+* New utility function: `styled_expr`.
+* New utility function `pipe_expr` to concatenate expressions.
+* New utility function `add_expr` to add expressions to a list of expressions.
 * issues with no news:
 
 # teal.modules.clinical 0.8.5

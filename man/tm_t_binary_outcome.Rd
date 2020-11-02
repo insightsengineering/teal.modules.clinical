@@ -57,8 +57,8 @@ Binary Outcome Table Teal Module
 }
 \details{
 This module produces a response summary table that is similar to
-  STREAM template \code{rspt01}. The core functionality is based on
-  \code{REFACTOR} from the \code{tern} package.
+STREAM template \code{rspt01}. The core functionality is based on
+\code{REFACTOR} from the \code{tern} package.
 }
 \examples{
 library(random.cdisc.data)

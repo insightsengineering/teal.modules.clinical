@@ -48,7 +48,7 @@ an \code{\link[teal]{module}} object
 }
 \description{
 This module produces an Adverse Event summary table that matches the
-  STREAM template \code{AET01}.
+STREAM template \code{AET01}.
 }
 \details{
 This module should be used to produce summaries based only on events-level dataset (e.g. \code{ADAE}).
