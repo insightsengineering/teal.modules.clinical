@@ -3,7 +3,7 @@
 #' @description This module produces a multi-variable logistic regression table that matches the
 #'   STREAM template \code{lgrt02}
 #'
-#' @inheritParams tm_t_rsp
+#' @inheritParams tm_t_tte
 #' @param covariate_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for covariates selection
 #' @param interaction_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option

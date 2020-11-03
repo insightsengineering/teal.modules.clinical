@@ -4,11 +4,11 @@
 \alias{pipe_expr}
 \title{Expressions as a Pipeline}
 \usage{
-pipe_expr(...)
+pipe_expr(exprs)
 }
 \arguments{
-\item{...}{(\code{call})\cr or objects which can be used as so.
-(e.g. \code{name}).}
+\item{exprs}{(\code{list} of \code{call})\cr expressions to concatenate in a
+pipeline (\verb{\%>\%}).}
 }
 \description{
 Concatenate expressions in a single pipeline-flavor expression.
@@ -16,8 +16,10 @@ Concatenate expressions in a single pipeline-flavor expression.
 \examples{
 
 result <- pipe_expr(
-  expr1 = substitute(df),
-  expr2 = substitute(head)
+  list(
+    expr1 = substitute(df),
+    expr2 = substitute(head)
+  )
 )
 result
 

@@ -101,20 +101,21 @@ h_concat_expr <- function(expr) {
 #'
 #' Concatenate expressions in a single pipeline-flavor expression.
 #'
-#' @param ... (`call`)\cr or objects which can be used as so.
-#'    (e.g. `name`).
+#' @param exprs (`list` of `call`)\cr expressions to concatenate in a
+#'   pipeline (`%>%`).
 #'
 #' @export
 #' @examples
 #'
 #' result <- pipe_expr(
-#'   expr1 = substitute(df),
-#'   expr2 = substitute(head)
+#'   list(
+#'     expr1 = substitute(df),
+#'     expr2 = substitute(head)
+#'   )
 #' )
 #' result
 #'
-pipe_expr <- function(...) {
-  exprs <- unlist(list(...))
+pipe_expr <- function(exprs) {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
   exprs <- paste(exprs, collapse = " %>% ")
@@ -194,4 +195,58 @@ add_expr <- function(expr_ls, new_expr) {
     expr_ls,
     list(new_expr)
   )
+}
+
+
+#' Expressions in Brackets
+#'
+#' Groups several expressions in a single _bracketed_ expression.
+#'
+#' @param exprs (`list` of `call`)\cr expressions to concatenate into
+#'   a single _bracketed_ expression.
+#'
+#' @export
+#' @examples
+#' library(dplyr)
+#' library(random.cdisc.data)
+#' library(tern)
+#' adsl <- radsl(cached = TRUE)
+#' adrs <- radrs(cached = TRUE)
+#'
+#' expr1 <- substitute(
+#'   expr = anl <- subset(df, PARAMCD == param),
+#'   env = list(df = as.name("adrs"), param = "INVET")
+#' )
+#' expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+#' expr3 <- substitute(
+#'   expr = {
+#'     anl$is_rsp <- anl$rsp_lab %in%
+#'       c("Complete Response (CR)", "Partial Response (PR)")
+#'   }
+#' )
+#'
+#' res <- bracket_expr(list(expr1, expr2, expr3))
+#' eval(res)
+#' table(anl$rsp_lab, anl$is_rsp)
+#'
+bracket_expr <- function(exprs) {
+
+  expr <- lapply(exprs, deparse)
+
+  # Because `deparse` returns a vector accounting for line break attempted
+  # for string longer than max `width.cutoff = 500`.
+  expr <- lapply(expr, paste, collapse = " ")
+
+  expr <- paste(
+    c(
+      "{",
+      unlist(expr),
+      "}"
+    ),
+    collapse = "\n"
+  )
+  expr <- parse(text = expr)
+  expr <- as.call(expr)[[1]]
+  attributes(expr) <- NULL
+  expr
 }

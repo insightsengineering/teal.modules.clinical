@@ -2,7 +2,7 @@
 #'
 #' @description This module produces an event rate adjusted for patient-years at risk table that matches the
 #'   STREAM template \code{aet05} and \code{aet05_all}
-#' @inheritParams tm_t_rsp
+#' @inheritParams tm_t_tte
 #' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for confidence level for computation of the confidence intervals.
 #' @param event_type  named (\code{character} value) to specify the type of event that is summarized,
