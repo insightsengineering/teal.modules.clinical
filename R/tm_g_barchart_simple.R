@@ -179,7 +179,7 @@ tm_g_barchart_simple <- function(x = NULL,
 ui_g_barchart_simple <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
-
+  is_single_dataset_value <- is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
   standard_layout(
     output = white_small_well(
       plot_with_settings_ui(id = ns("myplot"), height = args$plot_height, width = args$plot_width),
@@ -187,32 +187,37 @@ ui_g_barchart_simple <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
+      datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
         data_extract_input(
           id = ns("x"),
           label = "X variable",
-          data_extract_spec = args$x
+          data_extract_spec = args$x,
+          is_single_dataset = is_single_dataset_value
         )
       },
       if (!is.null(args$fill)) {
         data_extract_input(
           id = ns("fill"),
           label = "Fill",
-          data_extract_spec = args$fill
+          data_extract_spec = args$fill,
+          is_single_dataset = is_single_dataset_value
         )
       },
       if (!is.null(args$x_facet)) {
         data_extract_input(
           id = ns("x_facet"),
           label = "Column facetting variable",
-          data_extract_spec = args$x_facet
+          data_extract_spec = args$x_facet,
+          is_single_dataset = is_single_dataset_value
         )
       },
       if (!is.null(args$y_facet)) {
         data_extract_input(
           id = ns("y_facet"),
           label = "Row facetting variable",
-          data_extract_spec = args$y_facet
+          data_extract_spec = args$y_facet,
+          is_single_dataset = is_single_dataset_value
         )
       },
       panel_group(
