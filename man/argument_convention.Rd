@@ -23,6 +23,9 @@ variable is changed.}
 \item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable name designating the studied parameter.}
 
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable name designating the studied parameter.}
+
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
 

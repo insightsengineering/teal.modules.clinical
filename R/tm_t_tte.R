@@ -1,6 +1,234 @@
 #' Time To Event Table Teal Module
 #'
 #' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
+#' @name timetoevent
+#'
+NULL
+
+
+#' Control Function for Time-to-Event Teal Module
+#'
+#' Controls the arguments for Cox regressions and Survival analysis results.
+#'
+#' @param coxph (`list`)\cr
+#'   parameters for comparison, specified using [tern::control_coxph].
+#' @param surv_time (`list`)\cr
+#'   parameters for comparison, specified using [tern::control_surv_time].
+#' @param surv_timepoint (`list`)\cr
+#'   parameters for comparison, specified using [tern::control_surv_timepoint].
+#' @export
+#' @examples
+#'
+#' control_tte(
+#'   coxph = control_coxph(conf_level = 0.8),
+#'   surv_time = control_surv_time(conf_type = "log-log")
+#' )
+#'
+control_tte <- function(
+  surv_time = list(
+    conf_level = 0.95,
+    conf_type = "plain",
+    quantiles = c(0.25, 0.75)
+  ),
+  coxph = list(
+    pval_method = "log-rank",
+    ties = "efron",
+    conf_level = 0.95
+  ),
+  surv_timepoint = control_surv_timepoint(
+    conf_level = 0.95,
+    conf_type = c("plain", "none", "log", "log-log")
+  )
+) {
+
+  list(
+    surv_time = do.call("control_surv_time", surv_time),
+    coxph = do.call("control_coxph", coxph),
+    surv_timepoint = do.call("control_surv_timepoint", surv_timepoint)
+  )
+}
+
+
+#' @describeIn timetoevent template for time-to-event analysis.
+#'
+#' @param time_points (`numeric`)\cr time points for the survival estimations.
+#' @param time_unit (`string`).
+#' @param event_desc_var (`string`)\cr variable name with the event description
+#'   information.
+#' @param control (`list`)\cr list of settings for the analysis.
+#' @export
+#' @examples
+#'
+#' library(random.cdisc.data)
+#' ADSL <- radsl(cached = TRUE)
+#' ADTTE <- radtte(cached = TRUE)
+#'
+#' a <- template_tte(
+#'   dataname = "ADTTE",
+#'   arm_var = "ARMCD",
+#'   compare_arm = TRUE,
+#'   ref_arm = "ARM A",
+#'   param = "OS",
+#'   strata_var = "SEX",
+#'   time_points = c(183, 365, 548),
+#'   event_desc_var = "EVNTDESC",
+#'   control = control_tte(
+#'     coxph = control_coxph(conf_level = 0.987),
+#'     surv_time = control_surv_time(quantiles = c(0.1, 0.9)),
+#'     surv_timepoint = control_surv_timepoint(conf_level = 0.123)
+#'   )
+#' )
+#'
+#' b <- mapply(eval, a)
+#' b$table
+#'
+template_tte <- function(dataname,
+                         arm_var = "ARMCD",
+                         ref_arm = NULL,
+                         compare_arm = TRUE,
+                         paramcd = "OS",
+                         strata_var = NULL,
+                         time_points = NULL,
+                         time_unit = "Days",
+                         event_desc_var = "EVNTDESC",
+                         control = control_tte()) {
+
+  y <- list()
+
+  y$data <- substitute(
+    expr = anl <- df  %>%
+      filter(PARAMCD == paramcd) %>%
+      mutate(
+        is_event = CNSR == 0,
+        is_not_event = CNSR == 1,
+        EVNT1 = factor(
+          case_when(
+            is_event == TRUE ~ "Patients with event (%)",
+            is_event == FALSE ~ "Patients without event (%)"
+          )
+        ),
+        EVNTDESC = factor(event_desc_var)
+      ),
+    env = list(
+      df = as.name(dataname),
+      paramcd = paramcd,
+      event_desc_var = as.name(event_desc_var)
+    )
+  )
+
+  layout_list <- list()
+
+  layout_list <- add_expr(layout_list, quote(basic_table()))
+
+  layout_list <- add_expr(
+    layout_list,
+    if (compare_arm) {
+      substitute(
+        expr = split_cols_by(var = arm_var, ref_group = ref_arm),
+        env = list(arm_var = arm_var, ref_arm = ref_arm)
+      )
+    } else {
+      substitute(
+        expr = split_cols_by(var = arm_var),
+        env = list(arm_var = arm_var)
+      )
+    }
+  )
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = add_colcounts() %>%
+        split_rows_by(
+          var = "EVNT1",
+          split_fun = keep_split_levels("Patients with event (%)")
+        ) %>%
+        summarize_row_groups() %>%
+        summarize_vars(vars = event_desc_var, .stats = "count") %>%
+        summarize_vars(
+          "is_not_event", .stats = "count_fraction",
+          .labels = c(count_fraction = "Patients without event (%)"),
+          nested = FALSE, show_labels = "hidden"
+        ),
+      env = list(event_desc_var = event_desc_var)
+    )
+  )
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = surv_time(
+        vars = "AVAL",
+        var_labels = "Time to Event (Months)",
+        is_event = "is_event",
+        control = list(
+          conf_level = conf_level,
+          conf_type = conf_type,
+          quantiles = quantiles
+        )
+      ),
+      env = control$surv_time
+    )
+  )
+
+  if (compare_arm) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = coxph_pairwise(
+          vars = "AVAL", is_event = "is_event",
+          var_labels = c("Unstratified Analysis"),
+          control = list(
+            pval_method = pval_method,
+            ties = ties,
+            conf_level = conf_level
+          )
+        ),
+        env = control$coxph
+      )
+    )
+  }
+
+  if (compare_arm && !is.null(strata_var)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = coxph_pairwise(
+          vars = "AVAL", is_event = "is_event",
+          var_labels = c("Stratified Analysis"),
+          strat = strata_var,
+          control = control_coxph(
+            pval_method = pval_method,
+            ties = ties,
+            conf_level = conf_level
+          )
+        ),
+        env = list(
+          strata_var = strata_var,
+          pval_method = control$coxph$pval_method,
+          ties = control$coxph$ties,
+          conf_level = control$coxph$conf_level
+        )
+      )
+    )
+  }
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+  y$table <- substitute(
+    expr = result <- build_table(lyt = lyt, df = anl)
+  )
+  y
+}
+
+
+#' Time To Event Table Teal Module
+#'
+#' @inheritParams teal.devel::standard_layout
 #' @inheritParams shared_params
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
@@ -97,7 +325,7 @@ tm_t_tte <- function(label,
                      event_desc_var = NULL,
                      pre_output = NULL,
                      post_output = NULL
-                     ) {
+) {
   module(
     label = label,
     ui = function(id, datasets) {
@@ -112,414 +340,3 @@ tm_t_tte <- function(label,
     filters = "ADSL"
   )
 }
-
-
-# REFACTOR
-# nolint start
-# tm_t_tte <- function(label,
-#                      dataname,
-#                      arm_var,
-#                      arm_ref_comp = NULL,
-#                      paramcd,
-#                      strata_var,
-#                      time_points,
-#                      time_unit = "months",
-#                      event_desc_var = NULL,
-#                      pre_output = NULL,
-#                      post_output = NULL
-# ) {
-#   stopifnot(length(dataname) == 1)
-#   stopifnot(is.choices_selected(arm_var))
-#   stopifnot(is.choices_selected(paramcd))
-#   stopifnot(is.choices_selected(strata_var))
-#   stopifnot(is.choices_selected(time_points))
-#
-#   args <- as.list(environment())
-#
-#   module(
-#     label = label,
-#     server = srv_t_tte,
-#     ui = ui_t_tte,
-#     ui_args = args,
-#     server_args = list(
-#       dataname = dataname,
-#       arm_ref_comp = arm_ref_comp,
-#       time_unit = time_unit,
-#       event_desc_var = event_desc_var,
-#       label = label
-#     ),
-#     filters = dataname
-#   )
-# }
-#
-# #' @import teal.devel
-# ui_t_tte <- function(id, ...) {
-#
-#   a <- list(...) # module args
-#
-#   ns <- NS(id)
-#
-#   standard_layout(
-#     output = white_small_well(uiOutput(ns("tte_table"))),
-#     encoding = div(
-#       tags$label("Encodings", class = "text-primary"),
-#       helpText("Analysis data:", tags$code(a$dataname)),
-#       optionalSelectInput(ns("paramcd"),
-#                           "Select Endpoint",
-#                           a$paramcd$choices,
-#                           a$paramcd$selected,
-#                           multiple = FALSE,
-#                           fixed = a$paramcd$fixed
-#       ),
-#       optionalSelectInput(ns("arm_var"),
-#                           "Arm Variable",
-#                           a$arm_var$choices,
-#                           a$arm_var$selected,
-#                           multiple = FALSE,
-#                           fixed = a$arm_var$fixed
-#       ),
-#       div(
-#         class = "arm-comp-box",
-#         tags$label("Compare Arms"),
-#         shinyWidgets::switchInput(inputId = ns("compare_arms"), value = !is.null(a$arm_ref_comp), size = "mini"),
-#
-#         conditionalPanel(
-#           condition = paste0("input['", ns("compare_arms"), "']"),
-#           div(
-#             selectInput(
-#               ns("ref_arm"),
-#               "Reference Group",
-#               choices = NULL,
-#               selected = NULL,
-#               multiple = TRUE
-#             ),
-#             helpText("Multiple reference groups are automatically combined into a single group."),
-#             selectInput(
-#               ns("comp_arm"),
-#               "Comparison Group",
-#               choices = NULL,
-#               selected = NULL,
-#               multiple = TRUE
-#             ),
-#             checkboxInput(
-#               ns("combine_comp_arms"),
-#               "Combine all comparison groups?",
-#               value = FALSE
-#             ),
-#             optionalSelectInput(
-#               ns("strata_var"),
-#               "Stratify by",
-#               a$strata_var$choices,
-#               a$strata_var$selected,
-#               multiple = TRUE,
-#               label_help = helpText("from ", tags$code("ADSL")),
-#               fixed = a$strata_var$fixed
-#             )
-#           )
-#         )
-#       ),
-#       optionalSelectInput(ns("time_points"),
-#                           "Time Points",
-#                           a$time_points$choices,
-#                           a$time_points$selected,
-#                           multiple = TRUE,
-#                           fixed = a$time_points$fixed
-#       ),
-#       if (!is.null(a$event_desc_var)) {
-#         helpText("Event Description Variable: ", tags$code(a$event_desc_var))
-#       },
-#       conditionalPanel(
-#         condition = paste0("input['", ns("compare_arms"), "']"),
-#         panel_item(
-#           "Comparison settings",
-#           radioButtons(
-#             ns("pval_method_coxph"),
-#             label = HTML(paste("p-value method for ",
-#                                tags$span(style="color:darkblue", "Coxph"), # nolint
-#                                " (Hazard Ratio)",
-#                                sep = "")
-#             ),
-#             choices = c("wald", "log-rank", "likelihood"),
-#             selected = "log-rank"
-#           ),
-#           radioButtons(
-#             ns("ties_coxph"),
-#             label = HTML(paste("Ties for ",
-#                                tags$span(style="color:darkblue", "Coxph"), # nolint
-#                                " (Hazard Ratio)",
-#                                sep = "")
-#             ),
-#             choices = c("exact", "breslow", "efron"),
-#             selected = "exact"
-#           ),
-#           numericInput(
-#             inputId = ns("conf_level_coxph"),
-#             label = HTML(paste("Confidence Level for ",
-#                                tags$span(style="color:darkblue", "Coxph"), # nolint
-#                                " (Hazard Ratio)", sep = "")
-#             ),
-#             value = 0.95,
-#             min = 0.01,
-#             max = 0.99,
-#             step = 0.01,
-#             width = "100%"
-#           ),
-#           numericInput(
-#             inputId = ns("conf_level_ztest"),
-#             label = HTML(paste("Confidence Level for ",
-#                                tags$span(style="color:darkblue", "Z-test"), # nolint
-#                                " (Difference in Event Free Rate)",
-#                                sep = "")
-#             ),
-#             value = 0.95,
-#             min = 0.01,
-#             max = 0.99,
-#             step = 0.01,
-#             width = "100%"
-#           )
-#         )
-#       ),
-#       panel_item(
-#         "Additional table settings",
-#         numericInput(
-#           inputId = ns("conf_level_survfit"),
-#           label = HTML(paste("Confidence Level for ",
-#                              tags$span(style="color:darkblue", "Survfit"), # nolint
-#                              " (KM Median Estimate & Event Free Rate)",
-#                              sep = "")
-#           ),
-#           value = 0.95,
-#           min = 0.01,
-#           max = 0.99,
-#           step = 0.01,
-#           width = "100%"
-#         ),
-#         radioButtons(
-#           ns("conf_type_survfit"),
-#           "Confidence Level Type for Survfit",
-#           choices = c("plain", "log", "log-log"),
-#           selected = "plain"
-#         ),
-#         sliderInput(
-#           inputId = ns("probs_survfit"),
-#           label = "KM Estimate Percentiles",
-#           min = 0.01,
-#           max = 0.99,
-#           value = c(0.25, 0.75),
-#           width = "100%"
-#         )
-#       )
-#     ),
-#     forms = get_rcode_ui(ns("rcode")),
-#     pre_output = a$pre_output,
-#     post_output = a$post_output
-#   )
-# }
-#
-# #' @import teal.devel
-# #' @importFrom rtables as_html
-# srv_t_tte <- function(input,
-#                       output,
-#                       session,
-#                       datasets,
-#                       dataname,
-#                       arm_ref_comp,
-#                       time_unit,
-#                       event_desc_var,
-#                       label) {
-#
-#   init_chunks()
-#
-#   # Setup arm variable selection, default reference arms, and default
-#   # comparison arms for encoding panel
-#   arm_ref_comp_observer(
-#     session, input,
-#     id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",    # from UI
-#     datasets = datasets,
-#     arm_ref_comp = arm_ref_comp,
-#     module = "tm_t_tte",
-#     on_off = reactive(input$compare_arms)
-#   )
-#
-#   # Create output
-#   table_reactive <- reactive({
-#     # resolve all reactive expressions
-#     # nolint start
-#     ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE)
-#     ANL_FILTERED <- datasets$get_data(dataname, filtered = TRUE)
-#     # nolint end
-#
-#     paramcd <- input$paramcd # nolint
-#     strata_var <- input$strata_var
-#     arm_var <- input$arm_var
-#     ref_arm <- input$ref_arm
-#     comp_arm <- input$comp_arm
-#     combine_comp_arms <- input$combine_comp_arms
-#     compare_arms <- input$compare_arms
-#
-#     time_points <- as.numeric(input$time_points)
-#     pval_method_coxph <- input$pval_method_coxph # nolint
-#     conf_level <- c(survfit = input$conf_level_survfit, ztest = input$conf_level_ztest) # nolint
-#     conf_type_survfit <- input$conf_type_survfit # nolint
-#     probs_survfit <- input$probs_survfit
-#     ties_coxph <- input$ties_coxph # nolint
-#     conf_level_coxph <- input$conf_level_coxph # nolint
-#
-#
-#     if (length(strata_var) == 0) {
-#       strata_var <- NULL
-#     }
-#
-#     time_points <- if (length(time_points) == 0) {
-#       NULL
-#     } else {
-#       sort(time_points)
-#     }
-#
-#     # validate inputs
-#     validate_args <- list(
-#       adsl = ADSL_FILTERED,
-#       adslvars = c("USUBJID", "STUDYID", arm_var, strata_var),
-#       anl = ANL_FILTERED,
-#       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", event_desc_var),
-#       arm_var = arm_var
-#     )
-#
-#     # validate arm levels
-#     if (length(arm_var) > 0 && length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-#       if (compare_arms) {
-#         validate_args <- append(validate_args, list(ref_arm = ref_arm))
-#       }
-#     } else {
-#       if (compare_arms) {
-#         validate_args <- append(validate_args, list(ref_arm = ref_arm, comp_arm = comp_arm))
-#       }
-#     }
-#
-#     do.call(what = "validate_standard_inputs", validate_args)
-#
-#     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-#     validate(need(!is.null(probs_survfit), "Must select percentiles for KM median estimate"))
-#
-#     # do analysis
-#
-#     anl_name <- paste0(dataname, "_FILTERED")
-#     assign(anl_name, ANL_FILTERED)
-#
-#     chunks_reset(envir = environment())
-#
-#     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, strata_var)) # nolint
-#     anl_vars <- unique(c("USUBJID", "STUDYID", "AVAL", "CNSR", event_desc_var)) # nolint
-#
-#     ## Now comes the analysis code
-#     chunks_push(bquote(ref_arm <- .(ref_arm)))
-#     chunks_push(bquote(comp_arm <- .(comp_arm)))
-#     chunks_push(bquote(strata_var <- .(strata_var)))
-#     chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
-#
-#     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       chunks_push(bquote(adsl_p <- ADSL_FILTERED))
-#     } else{
-#       chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-#     }
-#     chunks_push(bquote(anl_endpoint <- subset(.(as.name(anl_name)), PARAMCD == .(paramcd))))
-#
-#     chunks_push(bquote({
-#       anl <- merge(
-#         x = adsl_p[, .(adsl_vars)],
-#         y = anl_endpoint[, .(anl_vars)],
-#         all.x = FALSE, all.y = FALSE,
-#         by = c("USUBJID", "STUDYID")
-#       )
-#     }))
-#
-#     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       chunks_push(bquote(arm <- as.factor(anl[[.(arm_var)]])))
-#       chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-#     } else {
-#       chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-#       chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
-#       if (combine_comp_arms) {
-#         chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
-#       }
-#       chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-#     }
-#
-#     chunks_safe_eval()
-#
-#     validate(need(nrow(chunks_get_var("anl")) > 10, "need at least 10 data points"))
-#     validate(need(
-#       !all(chunks_get_var("anl")$CNSR == 1),
-#       "No events have been observed for the selected subgroup/subpopulation"))
-#
-#     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       chunks_push(bquote({
-#         tbl <- t_tte(
-#           formula = .(as.formula(
-#             paste0(
-#               "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")"
-#             )
-#           )),
-#           data = anl,
-#           col_N = table(anl[[.(arm_var)]]),
-#           event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
-#           time_points = .(time_points),
-#           time_unit = .(time_unit),
-#           conf_level = .(conf_level),
-#           conf_type_survfit = .(conf_type_survfit),
-#           probs_survfit = .(probs_survfit),
-#           comparison = NULL
-#         )
-#         tbl
-#       }))
-#     } else {
-#       chunks_push(bquote({
-#         tbl <- t_tte(
-#           formula = .(as.formula(
-#             paste0(
-#               "Surv(AVAL, !CNSR) ~ arm(", arm_var, ")",
-#               if (length(strata_var) == 0) {
-#                 ""
-#               } else {
-#                 paste0(" + strata(", paste(strata_var, collapse = ", "), ")")
-#               }
-#             )
-#           )),
-#           data = anl,
-#           col_N = table(anl[[.(arm_var)]]),
-#           event_descr = if (is.null(.(event_desc_var))) NULL else as.factor(anl[[.(event_desc_var)]]),
-#           time_points = .(time_points),
-#           time_unit = .(time_unit),
-#           conf_level = .(conf_level),
-#           conf_type_survfit = .(conf_type_survfit),
-#           probs_survfit = .(probs_survfit),
-#           comparison = control_coxph(pval_method = .(pval_method_coxph),
-#                                      ties = .(ties_coxph),
-#                                      conf = .(conf_level_coxph))
-#         )
-#         tbl
-#       }))
-#     }
-#
-#   })
-#
-#   output$tte_table <- renderUI({
-#     table_reactive()
-#
-#     chunks_safe_eval()
-#
-#     tbl <- chunks_get_var("tbl")
-#     as_html(tbl)
-#   })
-#
-#   callModule(
-#     module = get_rcode_srv,
-#     id = "rcode",
-#     datasets = datasets,
-#     datanames = dataname,
-#     modal_title = "R Code for the Current Cross Table",
-#     code_header = label
-#   )
-# }
-# nolint end

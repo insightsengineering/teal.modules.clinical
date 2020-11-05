@@ -22,6 +22,8 @@
 #' @param label (\code{character}) menu item label of the module in the teal app
 #' @param param (`string` or `choices_selected` with teal module)\cr
 #'   variable name designating the studied parameter.
+#' @param paramcd (`string` or `choices_selected` with teal module)\cr
+#'   variable name designating the studied parameter.
 #' @param ref_arm (`string`)\cr the level of reference arm in case of
 #'   arm comparison.
 #' @param strata_var (`string` or `choices_selected` with teal module)\cr
