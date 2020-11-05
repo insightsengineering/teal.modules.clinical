@@ -134,3 +134,28 @@ test_that("bracket_expr returns a single evaluable expression", {
   )
   expect_identical(result, expected)
 })
+
+test_that("styled_expr can format expressions", {
+  expr <- quote(
+    basic_table() %>%
+      split_cols_by(var = "ARMCD") %>%
+      test_proportion_diff(
+        vars = "rsp", method = "cmh", variables = list(strata = "strat")
+      ) %>%
+      build_table(df = dta)
+  )
+
+  result <- capture.output(styled_expr(expr))
+  expected <- c(
+    "basic_table() %>%",
+    "  split_cols_by(var = \"ARMCD\") %>%",
+    "  test_proportion_diff(",
+    "    vars = \"rsp\",",
+    "    method = \"cmh\",",
+    "    variables = list(strata = \"strat\")",
+    "  ) %>%",
+    "  build_table(df = dta)"
+  )
+
+  expect_identical(result, expected)
+})
