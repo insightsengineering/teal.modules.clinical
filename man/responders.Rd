@@ -24,7 +24,7 @@ tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, param, strata_var)
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
 \item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable name designating the studied parameter.}
+variable value designating the studied parameter.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}

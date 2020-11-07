@@ -30,7 +30,7 @@ arm comparison.}
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable name designating the studied parameter.}
+variable value designating the studied parameter.}
 
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}

@@ -16,21 +16,36 @@ variable is changed.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
+
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
 \item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable name designating the studied parameter.}
+variable value designating the studied parameter.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable name designating the studied parameter.}
+variable value designating the studied parameter.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
 
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
+
+\item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
+value of analysis visit \code{AVISIT} of interest.}
+
+\item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+names of the variables for covariates.}
+
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis}
+
+\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
+Default is 0.95.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules
