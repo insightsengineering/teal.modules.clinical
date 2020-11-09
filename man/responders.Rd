@@ -2,43 +2,18 @@
 % Please edit documentation in R/tm_t_rsp.R
 \name{responders}
 \alias{responders}
-\alias{template_rsp}
 \alias{tm_t_rsp}
 \title{Teal Module: Responders}
 \usage{
-template_rsp(
-  dataname,
-  param,
-  arm_var,
-  ref_arm,
-  compare_arm = TRUE,
-  show_rsp_cat = TRUE,
-  control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
-    list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
-    list(method_ci = "waldcc", method_test = "cmh", strat = NULL))
-)
-
 tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, param, strata_var)
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{label}{(\code{character}) menu item label of the module in the teal app}
 
-\item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
-
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
-
-\item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
-
-\item{show_rsp_cat}{(\code{flag})\cr display the multinomial response estimations.}
-
-\item{control}{(\code{list})\cr list of settings for the analysis.}
-
-\item{label}{(\code{character}) menu item label of the module in the teal app}
 
 \item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
 returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
@@ -46,6 +21,9 @@ with each element corresponding to an arm variable in \code{ADSL} and the
 element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
+
+\item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
@@ -55,39 +33,10 @@ Teal Module: Responders
 }
 \section{Functions}{
 \itemize{
-\item \code{template_rsp}: create the expression corresponding to the analysis.
-
 \item \code{tm_t_rsp}: Teal module for responders.
 }}
 
 \examples{
-
-# Preparation of the test case.
-library(dplyr)
-library(random.cdisc.data)
-library(tern)
-adsl <- radsl(cached = TRUE)
-adrs <- radrs(cached = TRUE)
-
-# Generate an expression for the analysis of responders.
-a <- template_rsp(
-  dataname = "adrs",
-  param = "INVET",
-  arm_var = "ARMCD",
-  ref_arm = "ARM A",
-  compare_arm = TRUE,
-  show_rsp_cat = TRUE
-)
-
-styled_expr(a$data)
-styled_expr(a$layout)
-styled_expr(a$table)
-
-b <- mapply(expr = a, FUN = eval)
-b$data
-b$layout
-b$table
-
 # Preparation of the test case.
 library(dplyr)
 library(random.cdisc.data)

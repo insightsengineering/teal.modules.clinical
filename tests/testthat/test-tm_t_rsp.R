@@ -40,6 +40,8 @@ test_that("template_rsp generates standard expressions", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
+
+  expect_equal(result, expected)
 })
 
 
@@ -79,6 +81,8 @@ test_that("template_rsp generates right expressions with non-default", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
+
+  expect_equal(result, expected)
 })
 
 test_that("template_rsp generates expression without arm comparison", {
@@ -110,6 +114,8 @@ test_that("template_rsp generates expression without arm comparison", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
+
+  expect_equal(result, expected)
 })
 
 
@@ -166,4 +172,5 @@ test_that("template_rsp generates expression with non-default controls.", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
+  expect_equal(result, expected)
 })

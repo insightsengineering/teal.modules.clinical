@@ -1,9 +1,11 @@
 # teal.modules.clinical 0.8.5.9000
+
 * Integrated `is_single_dataset` argument for `data_extract_input` function calls.
 * Change `show_rcode_modal` to `get_rcode_srv` in all modules.
 * Vignette about the topic `substitute`.
 * Add dynamic assertions.
 * Refactored `tm_t_rsp` with new function `template_rsp`.
+* Refactored `tm_t_tte` with new function `template_tte`.
 * New utility function: `styled_expr`.
 * New utility function `pipe_expr` to concatenate expressions.
 * New utility function `add_expr` to add expressions to a list of expressions.

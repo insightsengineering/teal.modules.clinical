@@ -24,11 +24,3 @@ parameters for comparison, specified using \link[tern:control_surv_timepoint]{te
 \description{
 Controls the arguments for Cox regressions and Survival analysis results.
 }
-\examples{
-
-control_tte(
-  coxph = control_coxph(conf_level = 0.8),
-  surv_time = control_surv_time(conf_type = "log-log")
-)
-
-}

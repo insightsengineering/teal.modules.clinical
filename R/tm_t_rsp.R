@@ -6,13 +6,14 @@
 #'
 NULL
 
-
-#' @describeIn responders create the expression corresponding to the analysis.
+#' Template for Responders
 #'
+#' Creates a valid expression for responder analysis.
+#'
+#' @inheritParams argument_convention
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param show_rsp_cat (`flag`)\cr display the multinomial response estimations.
 #'
-#' @export
 #' @examples
 #'
 #' # Preparation of the test case.
