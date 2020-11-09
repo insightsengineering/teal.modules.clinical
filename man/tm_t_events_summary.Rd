@@ -17,15 +17,14 @@ tm_t_events_summary(
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable names designating the study arm.}
 
-\item{add_total}{(\code{logical}) optional, whether show column with total number of patients}
+\item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
 \item{flag_var_anl}{vector with names of flag variables from \code{dataset} to count adverse
 event sub-groups (e.g. Serious events, Related events, etc.). All flag variables must be of type

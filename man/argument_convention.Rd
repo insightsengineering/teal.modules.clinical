@@ -21,7 +21,7 @@ usually this refers to \code{"ADSL"}.}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
@@ -46,6 +46,14 @@ name of the variable for the analysis}
 
 \item{conf_level}{(\code{proportion})\cr confidence level of the interval.
 Default is 0.95.}
+
+\item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
+
+\item{hlt}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable with high level term for events.}
+
+\item{llt}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable with low level term for events.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

@@ -8,7 +8,7 @@
 tm_t_rsp(label, dataname, arm_var, arm_ref_comp = NULL, param, strata_var)
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 

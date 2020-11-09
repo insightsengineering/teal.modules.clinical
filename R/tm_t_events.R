@@ -1,34 +1,196 @@
-#' Adverse Events by Term Table Teal Module
+#' Teal Module: Events by Term
 #'
-#' @description This module produces an Adverse Event summary table that matches the
-#'   STREAM template \code{aet02} or \code{cmt01}
+#' @name events_by_term
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
 #'
-#' @inheritParams shared_params
-#' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
-#'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-#' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as \code{arm_var}
-#' @param hlt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the high level term for events
-#' @param llt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the low level term for events
-#' @param add_total (\code{logical}) optional, whether show column with total number of patients
-#' @param event_type  type of event that is summarized (e.g. adverse event, treatment). Default is "event".
+#' @examples
+#' library(dplyr)
+#' library(random.cdisc.data)
+#' library(tern)
 #'
-#' @return an \code{\link[teal]{module}} object
+#' adsl <- radsl(cached = TRUE)
+#' adae <- radae(cached = TRUE)
+#'
+NULL
+
+#' @describeIn events_by_term create the expression corresponding to the analysis.
+#'
+#' @param event_type (`string`)\cr type of event that is summarized (e.g. adverse event, treatment).
+#'   Default is "event".
+#'
+#' @export
+#' @examples
+#'
+#' # Generate an expression for the analysis of events.
+#' a <- template_events(
+#'   dataname = "adae",
+#'   parentname = "adsl",
+#'   arm_var = "ACTARMCD",
+#'   hlt = "AEBODSYS",
+#'   llt = "AEDECOD"
+#' )
+#'
+#' styled_expr(a$data)
+#' styled_expr(a$layout)
+#' styled_expr(a$table)
+#' styled_expr(a$prune)
+#' styled_expr(a$sort)
+#'
+#' b <- mapply(expr = a, FUN = eval)
+#' b$data
+#' b$layout
+#' b$table
+#' b$prune
+#' b$sort
+#'
+template_events <- function(
+  dataname,
+  parentname,
+  arm_var,
+  hlt,
+  llt,
+  add_total = TRUE,
+  event_type = "event") {
+
+  # Data.
+  y <- list()
+  y$data <- substitute(
+    expr = anl <- df,
+    env = list(
+      df = as.name(dataname)
+    )
+  )
+
+  # Layout.
+  layout_list <- list()
+  layout_list <- add_expr(layout_list, substitute(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = split_cols_by(var = arm_var) %>%
+        add_colcounts(),
+      env = list(arm_var = arm_var)
+    )
+  )
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        add_overall_col(label = "All Patients")
+      )
+    )
+  }
+
+  unique_label <- paste0("Total number of patients with at least one ", event_type)
+  nonunique_label <- paste0("Overall total number of ", event_type, "s")
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      summarize_num_patients(
+        var = "USUBJID",
+        .stats = c("unique", "nonunique"),
+        .labels = c(
+          unique = unique_label,
+          nonunique = nonunique_label
+        )),
+      env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+    )
+  )
+
+  one_term <- is.null(hlt) || is.null(llt)
+
+  if (one_term) {
+    term_var <- ifelse(is.null(hlt), llt, hlt)
+
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = count_occurrences(vars = term_var, .indent_mods = -1L),
+        env = list(term_var = term_var)
+      )
+    )
+  }
+
+  # Case when both hlt and llt are used.
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      split_rows_by(hlt, child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(
+            unique = unique_label,
+            nonunique = nonunique_label
+          )) %>%
+        count_occurrences(vars = llt, .indent_mods = -1L),
+      env = list(hlt = hlt, llt = llt, unique_label = unique_label, nonunique_label = nonunique_label)
+    )
+  )
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+
+  col_counts <- substitute(
+    expr = table(parentname$arm_var),
+    env = list(parentname = as.name(parentname), arm_var = arm_var)
+  )
+
+  if (add_total) {
+    col_counts <- substitute(
+      expr = c(col_counts, "All Patients" = sum(col_counts))
+    )
+  }
+
+  # Full table.
+  y$table <- substitute(
+    expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
+    env = list(df = as.name(dataname), col_counts = col_counts)
+  )
+
+  # Pruned table.
+  y$prune <- substitute(
+    expr = pruned_result <- result %>% prune_table()
+  )
+
+  # Sort pruned table.
+  if (one_term) {
+    term_var <- ifelse(is.null(hlt), llt, hlt)
+
+    y$sort <- substitute(
+      expr = pruned_and_sorted_result <- pruned_result %>%
+        sort_at_path(path =  c(term_var), scorefun = score_occurrences),
+      env = list(term_var = term_var)
+    )
+  } else {
+    y$sort <- substitute(
+      expr = pruned_and_sorted_result <- pruned_result %>%
+        sort_at_path(path =  c(hlt), scorefun = cont_n_allcols) %>%
+        sort_at_path(path =  c(hlt, "*", llt), scorefun = score_occurrences),
+      env = list(llt = llt, hlt = hlt)
+    )
+  }
+
+  y
+
+}
+
+#' @describeIn events_by_term teal module for events by term.
 #' @export
 #'
 #' @examples
-#' library(random.cdisc.data)
-#' library(teal.modules.clinical)
-#'
-#' ADSL <- radsl(cached = TRUE)
-#' ADAE <- radae(cached = TRUE)
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)"),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(

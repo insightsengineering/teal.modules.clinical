@@ -21,7 +21,7 @@
 #' @param parentname (`string`)\cr parent analysis data used in teal module,
 #'   usually this refers to `"ADSL"`.
 #' @param dataname (`string`)\cr analysis data used in teal module.
-#' @param label (\code{character}) menu item label of the module in the teal app
+#' @param label (\code{character})\cr menu item label of the module in the teal app
 #' @param param (`string` or `choices_selected` with teal module)\cr
 #'   variable value designating the studied parameter.
 #' @param paramcd (`string` or `choices_selected` with teal module)\cr
@@ -38,6 +38,11 @@
 #'   name of the variable for the analysis
 #' @param conf_level (`proportion`)\cr confidence level of the interval.
 #'   Default is 0.95.
+#' @param add_total (`flag`)\cr whether to include column with total number of patients.
+#' @param hlt (`string` or `choices_selected` with teal module)\cr
+#'   name of the variable with high level term for events.
+#' @param llt (`string` or `choices_selected` with teal module)\cr
+#'   name of the variable with low level term for events.
 #'
 #' @name argument_convention
 NULL
