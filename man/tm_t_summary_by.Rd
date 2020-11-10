@@ -18,19 +18,19 @@ tm_t_summary_by(
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
 the list passed to the \code{data} argument of \code{\link[teal]{init}}.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable names designating the study arm.}
 
 \item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names used to split the summary by rows.}
 
-\item{summarize_vars}{\verb{\link[teal]\{choices_selected\}} object with all available choices and preselected option
-for variable names that can be used for summary}
+\item{summarize_vars}{(\code{choices_selected})\cr names of the variables
+that should be summarized.}
 
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}

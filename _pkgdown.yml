@@ -22,6 +22,8 @@ reference:
   - title: General analyses
     contents:
       - starts_with("tm_a_")
+  - title: Analysis Template Functions
+      - starts_with("template_")
   - title: Deprecated Functions
     desc: These functions will eventually be removed
     contents:

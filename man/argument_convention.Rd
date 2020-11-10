@@ -35,6 +35,17 @@ arm comparison.}
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
+\item{na.rm}{(\code{flag})\cr whether \code{NA} values should be removed prior to analysis.}
+
+\item{useNA}{(\code{string})\cr choose whether missing data (\code{NA}) should be displayed as a level.}
+
+\item{denominator}{(\code{string})\cr chooses how percentages are calculated.
+With option \code{N}, the reference population from the column total is used as
+the denominator. With option \code{n}, the number of non-missing records in this row and column
+intersection is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+
+\item{var_labels}{(named \code{character})\cr optional variable labels for relabeling the analysis variables.}
+
 \item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
 value of analysis visit \code{AVISIT} of interest.}
 

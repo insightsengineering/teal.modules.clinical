@@ -30,6 +30,13 @@
 #'   arm comparison.
 #' @param strata_var (`string` or `choices_selected` with teal module)\cr
 #'   names of the variables for stratified analysis.
+#' @param na.rm (`flag`)\cr whether `NA` values should be removed prior to analysis.
+#' @param useNA (`string`)\cr choose whether missing data (`NA`) should be displayed as a level.
+#' @param denominator (`string`)\cr chooses how percentages are calculated.
+#'   With option `N`, the reference population from the column total is used as
+#'   the denominator. With option `n`, the number of non-missing records in this row and column
+#'   intersection is used as the denominator. If `omit` is chosen, then the percentage is omitted.
+#' @param var_labels (named `character`)\cr optional variable labels for relabeling the analysis variables.
 #' @param avisit (`string` or `choices_selected` with teal module)\cr
 #'   value of analysis visit `AVISIT` of interest.
 #' @param cov_var (`string` or `choices_selected` with teal module)\cr
@@ -45,4 +52,5 @@
 #'   name of the variable with low level term for events.
 #'
 #' @name argument_convention
+#'
 NULL

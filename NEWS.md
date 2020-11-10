@@ -6,6 +6,7 @@
 * Add dynamic assertions.
 * Refactored `tm_t_rsp` with new function `template_rsp`.
 * Refactored `tm_t_tte` with new function `template_tte`.
+* Refactored `tm_t_summary` with new function `template_summary`.
 * New utility function: `styled_expr`.
 * New utility function `pipe_expr` to concatenate expressions.
 * New utility function `add_expr` to add expressions to a list of expressions.
