@@ -4,11 +4,13 @@
 \alias{pipe_expr}
 \title{Expressions as a Pipeline}
 \usage{
-pipe_expr(exprs)
+pipe_expr(exprs, pipe_str = "\%>\%")
 }
 \arguments{
 \item{exprs}{(\code{list} of \code{call})\cr expressions to concatenate in a
 pipeline (\verb{\%>\%}).}
+
+\item{pipe_str}{(\code{string})\cr the character which separates the expressions.}
 }
 \description{
 Concatenate expressions in a single pipeline-flavor expression.

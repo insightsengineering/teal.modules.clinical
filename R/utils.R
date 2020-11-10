@@ -103,6 +103,7 @@ h_concat_expr <- function(expr) {
 #'
 #' @param exprs (`list` of `call`)\cr expressions to concatenate in a
 #'   pipeline (`%>%`).
+#' @param pipe_str (`string`)\cr the character which separates the expressions.
 #'
 #' @export
 #' @examples
@@ -115,10 +116,10 @@ h_concat_expr <- function(expr) {
 #' )
 #' result
 #'
-pipe_expr <- function(exprs) {
+pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
-  exprs <- paste(exprs, collapse = " %>% ")
+  exprs <- paste(exprs, collapse = pipe_str)
   str2lang(exprs)
 }
 

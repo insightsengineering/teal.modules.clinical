@@ -399,7 +399,6 @@ template_tte <- function(dataname,
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-#'
 tm_t_tte <- function(label,
                      dataname,
                      arm_var,
