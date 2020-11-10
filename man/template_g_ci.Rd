@@ -8,9 +8,7 @@ template_g_ci(
   dataname,
   x_var,
   y_var,
-  grp_var,
-  paramcd,
-  avisit,
+  grp_var = NULL,
   stat = c("mean", "median"),
   conf_level = 0.95,
   unit_var = "AVALU"
@@ -25,12 +23,6 @@ template_g_ci(
 
 \item{grp_var}{(\code{string})\cr group variable corresponding to the colors
 point shape and line type.}
-
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
-
-\item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
-value of analysis visit \code{AVISIT} of interest.}
 
 \item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
 

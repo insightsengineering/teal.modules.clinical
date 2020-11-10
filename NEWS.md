@@ -4,6 +4,7 @@
 * Change `show_rcode_modal` to `get_rcode_srv` in all modules.
 * Vignette about the topic `substitute`.
 * Add dynamic assertions.
+* New teal module `tm_g_ci` for confidence interval plots.
 * Refactored `tm_t_rsp` with new function `template_rsp`.
 * Refactored `tm_t_tte` with new function `template_tte`.
 * Refactored `tm_t_summary` with new function `template_summary`.
