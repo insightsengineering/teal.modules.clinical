@@ -61,34 +61,9 @@ Teal Module: Events by Term
 \examples{
 library(dplyr)
 library(random.cdisc.data)
-library(tern)
 
 adsl <- radsl(cached = TRUE)
 adae <- radae(cached = TRUE)
-
-
-# Generate an expression for the analysis of events.
-a <- template_events(
-  dataname = "adae",
-  parentname = "adsl",
-  arm_var = "ACTARMCD",
-  hlt = "AEBODSYS",
-  llt = "AEDECOD"
-)
-
-styled_expr(a$data)
-styled_expr(a$layout)
-styled_expr(a$table)
-styled_expr(a$prune)
-styled_expr(a$sort)
-
-b <- mapply(expr = a, FUN = eval)
-b$data
-b$layout
-b$table
-b$prune
-b$sort
-
 
 app <- teal::init(
   data = cdisc_data(
@@ -102,11 +77,11 @@ app <- teal::init(
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
-        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
+        choices = variable_choices(adae, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
        ),
       hlt = choices_selected(
-        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+        choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
        ),
       add_total = TRUE,
