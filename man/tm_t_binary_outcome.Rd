@@ -17,30 +17,28 @@ tm_t_binary_outcome(
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-Note that the data is expected to be in vertical form with the
-\code{PARAMCD} variable filtering to one observation per patient.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable names designating the study arm.}
 
-\item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ADSL} and the element must
-be another list with the elements named \code{ref} and \code{comp} that the
-defined the default reference and comparison arms when the arm variable is
-changed.}
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
-variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for stratification}
+\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+names of the variables for stratified analysis.}
 
-\item{show_rsp_categories}{(\code{logical}) If \code{TRUE}, table includes a section for
-for each response category observed in the dataset for variable \code{AVALC}.}
+\item{show_rsp_categories}{(\code{flag})\cr display the multinomial response
+estimations.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -50,50 +48,40 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \value{
-an \code{\link[teal]{module}} object
+a \code{\link[teal:module]{teal::module()}} object
 }
 \description{
 Binary Outcome Table Teal Module
 }
-\details{
-This module produces a response summary table that is similar to
-STREAM template \code{rspt01}. The core functionality is based on
-\code{REFACTOR} from the \code{tern} package.
-}
 \examples{
-library(random.cdisc.data)
+
 library(dplyr)
-
-ADSL <- radsl(cached = TRUE)
-ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))
-ADRS <- radrs(cached = TRUE) \%>\%
-  dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET")) \%>\%
-  droplevels()
-
+library(random.cdisc.data)
+adsl <- radsl(cached = TRUE)
+adrs <- radrs(cached = TRUE)
+arm_ref_comp <- list(
+  ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
+  ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
+)
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- radsl(cached = TRUE)
-              ADSL$Dum_ARM <- factor(rep("Single ARM", nrow(ADSL)))'),
-    cdisc_dataset("ADRS", ADRS,
-      code = 'ADRS <- radrs(cached = TRUE) \%>\%
-              dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET")) \%>\%
-              droplevels()'),
-     check = TRUE
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADRS", adrs),
+    code =
+      "ADSL <- radsl(cached = TRUE)
+    ADRS <- radrs(cached = TRUE)"
   ),
   modules = root_modules(
     tm_t_binary_outcome(
-      label = "Response Table",
-      dataname = 'ADRS',
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARMCD", "ARM", "Dum_ARM")),
-        selected = "ARMCD"),
-      paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-        selected = "BESRSPI"),
+      label = "Binary responses",
+      dataname = "ADRS",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
+      paramcd = choices_selected(levels(adrs$PARAMCD), "BESRSPI"),
+      arm_ref_comp = NULL,
       strata_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("STRATA1", "STRATA2")),
-        selected = NULL)
+        choices = variable_choices(adsl, subset = c("STRATA1", "SEX")),
+        selected = "STRATA1"
+      )
     )
   )
 )
@@ -101,4 +89,5 @@ app <- init(
 \dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }

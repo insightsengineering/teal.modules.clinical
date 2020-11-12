@@ -5,7 +5,7 @@
 * Vignette about the topic `substitute`.
 * Add dynamic assertions.
 * New teal module `tm_g_ci` for confidence interval plots.
-* Refactored `tm_t_rsp` with new function `template_rsp`.
+* Refactored `tm_t_rsp` and `tm_t_binary_outcome` based on the new function `template_rsp`.
 * Refactored `tm_t_tte` with new function `template_tte`.
 * Refactored `tm_t_summary` with new function `template_summary`.
 * Refactored `tm_t_events` with new function `template_events`.
