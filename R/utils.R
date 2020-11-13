@@ -251,3 +251,46 @@ bracket_expr <- function(exprs) {
   attributes(expr) <- NULL
   expr
 }
+
+
+#' Reference and Treatment Group Combination
+#'
+#' Facilitate the re-combination of groups divided as reference and
+#' treatment groups; it helps in arranging groups of
+#' columns in the `rtables` framework and `teal.module`.
+#'
+#' @inheritParams base::paste
+#' @param fct (`factor`)\cr the variable with levels which needs to be grouped.
+#' @param ref (`string`)\cr the reference level(s).
+#'
+#' @export
+#' @return a `list` with first item `ref` (reference) and second item `trt`
+#'   (treatment).
+#'
+#' @examples
+#'
+#' library(rtables)
+#'
+#' groups <- combine_groups(
+#'   fct = DM$ARM,
+#'   ref = c("B: Placebo")
+#' )
+#'
+#' basic_table() %>%
+#'   split_cols_by_groups("ARM", groups) %>%
+#'   add_colcounts() %>%
+#'   summarize_vars("AGE") %>%
+#'   build_table(DM)
+#'
+combine_groups <- function(fct,
+                           ref = NULL,
+                           collapse = "/"
+) {
+  group_levels <- levels(fct)
+  if (is.null(ref)) ref <- group_levels[1]
+  groups <- list(
+    ref = group_levels[group_levels %in% ref],
+    trt = group_levels[!group_levels %in% ref]
+  )
+  setNames(groups, nm = lapply(groups, paste, collapse = collapse))
+}

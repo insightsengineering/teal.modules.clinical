@@ -17,6 +17,7 @@
 #'   element must be another list with the elements named `ref` and `comp`
 #'   that the defined the default reference and comparison arms when the arm
 #'   variable is changed.
+#' @param combine_arm (`flag`)\cr re-arrange arms in two groups, i.e. reference and treatment.
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
 #' @param parentname (`string`)\cr parent analysis data used in teal module,
 #'   usually this refers to `"ADSL"`.

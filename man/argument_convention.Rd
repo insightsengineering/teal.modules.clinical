@@ -14,6 +14,8 @@ element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
 
+\item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
+
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,

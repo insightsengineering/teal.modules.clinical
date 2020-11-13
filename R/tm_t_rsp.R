@@ -47,6 +47,7 @@ template_rsp <- function(dataname,
                          arm_var,
                          ref_arm,
                          compare_arm = TRUE,
+                         combine_arm = FALSE,
                          show_rsp_cat = TRUE,
                          control = list(
                            global = list(
@@ -81,17 +82,39 @@ template_rsp <- function(dataname,
     )
   )
 
+  if (combine_arm) {
+    y$combine_arm <- substitute(
+      expr = groups <- combine_groups(fct = anl[[group]], ref = ref_arm),
+      env = list(group = arm_var, ref_arm = ref_arm)
+    )
+  }
+
   layout_list <- list()
 
   layout_list <- add_expr(layout_list, substitute(basic_table()))
+
+  # There are 4 possible column split patterns depending on
+  # the 4 combination of boolean compare_arm and combine_arm.
   layout_list <- add_expr(
     layout_list,
-    if (compare_arm) {
+    if (compare_arm & combine_arm) {
+      substitute(
+        expr = split_cols_by_groups(
+          var = arm_var, groups_list = groups, ref_group = names(groups)[1]
+        ),
+        env = list(arm_var = arm_var)
+      )
+    } else if (compare_arm & !combine_arm) {
       substitute(
         expr = split_cols_by(var = arm_var, ref_group = ref_arm),
         env = list(arm_var = arm_var, ref_arm = ref_arm)
       )
-    } else {
+    } else if (!compare_arm & combine_arm) {
+      substitute(
+        expr = split_cols_by_groups(var = arm_var, groups_list = groups),
+        env = list(arm_var = arm_var)
+      )
+    } else if (!compare_arm & !combine_arm) {
       substitute(
         expr = split_cols_by(var = arm_var),
         env = list(arm_var = arm_var)
@@ -141,13 +164,8 @@ template_rsp <- function(dataname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = estimate_odds_ratio(
-            vars = "is_rsp",
-            conf_level = conf_level
-          ),
-          env = list(
-            conf_level = control$global$conf_level
-          )
+          expr = estimate_odds_ratio(vars = "is_rsp", conf_level = conf_level),
+          env = list(conf_level = control$global$conf_level)
         )
       )
     }
@@ -177,7 +195,6 @@ template_rsp <- function(dataname,
         )
       )
     }
-
   }
 
   if (show_rsp_cat) {

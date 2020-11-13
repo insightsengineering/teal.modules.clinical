@@ -10,6 +10,7 @@ template_rsp(
   arm_var,
   ref_arm,
   compare_arm = TRUE,
+  combine_arm = FALSE,
   show_rsp_cat = TRUE,
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
@@ -29,6 +30,8 @@ variable names designating the study arm.}
 arm comparison.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+
+\item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
 
 \item{show_rsp_cat}{(\code{flag})\cr display the multinomial response estimations.}
 
