@@ -17,6 +17,8 @@
 #'   element must be another list with the elements named `ref` and `comp`
 #'   that the defined the default reference and comparison arms when the arm
 #'   variable is changed.
+#' @param id_var (`choices_selected` with teal module)\cr object specifying the
+#'   variable name for subject id.
 #' @param combine_arm (`flag`)\cr re-arrange arms in two groups, i.e. reference and treatment.
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
 #' @param parentname (`string`)\cr parent analysis data used in teal module,

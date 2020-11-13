@@ -9,6 +9,7 @@
 * Refactored `tm_t_tte` with new function `template_tte`.
 * Refactored `tm_t_summary` with new function `template_summary`.
 * Refactored `tm_t_events` with new function `template_events`.
+* Refactored `tm_t_abnormality` with new function `template_abnormality`. Note that now patients with the same abnormality at baseline as on the treatment visit are automatically excluded in accordance with GDSR specifications.
 * Refactored `tm_t_events_by_grade` with new function `template_events_by_grade`.
 * New module `tm_t_ancova` with new function `template_ancova`.
 * New utility function: `styled_expr`.

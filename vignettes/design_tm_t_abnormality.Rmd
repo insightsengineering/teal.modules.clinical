@@ -1,0 +1,53 @@
+---
+title: "Design: ECG abnormalities"
+author: "Maximo Carreras"
+date: "`r Sys.Date()`"
+output:
+  slidy_presentation:
+    slide_level: 2 
+    highlight: tango
+    incremental: true
+vignette: >
+  %\VignetteIndexEntry{abnormalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(
+  purl = TRUE,
+  collapse = TRUE,
+  dev = "svg"
+)
+library(magrittr)
+```
+
+```{r setup}
+library(rtables)
+library(tern)
+
+packageVersion("tern")
+packageVersion("rtables")
+
+set.seed(1, kind = "Mersenne-Twister")
+
+library(dplyr)
+library(random.cdisc.data)
+
+```
+
+```{r data}
+adsl <- radsl(cached = TRUE)
+adlb <- radlb(cached = TRUE)
+adlb <- adlb %>% dplyr::filter(ABLFL == "Y")
+
+adlb <- adlb %>%
+   var_relabel(
+     PARAM = "Parameters",
+     BNRIND = "Baseline Reference Range Indicator",
+     ANRIND = "Analysis Reference Range Indicator",
+     AVISIT = "Analysis Visit"
+   )
+
+```
+
