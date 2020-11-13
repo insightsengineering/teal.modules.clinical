@@ -1,56 +1,263 @@
-#' Adverse Events Table Teal Module
+#' Teal Module: Events by Grade
 #'
-#' This module produces a Adverse Events summary table that matches with multiple STREAM Adverse Events templates.
+#' @name events_by_grade
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
 #'
-#' @inheritParams shared_params
-#' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
-#'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-#' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as \code{arm_var}.
-#' @param hlt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the high level term for events.
-#' @param llt \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the low level term for events.
-#' @param grade \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used to specify the event grade.
-#' @param add_total (\code{logical}) optional, whether show column with total number of patients
-#'   (\code{TRUE} on default).
+NULL
+
+#' @describeIn events_by_grade creates the expression corresponding to the
+#'   analysis.
+#' @param grade (`character`) \cr name of the severity level variable.
 #'
-#' @return a \code{\link[teal]{module}} object.
+template_events_by_grade <- function(dataname,
+                                     parentname,
+                                     arm_var,
+                                     hlt,
+                                     llt,
+                                     grade,
+                                     add_total = TRUE) {
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.string(hlt) || is.null(hlt),
+    is.string(llt) || is.null(llt),
+    is.string(grade),
+    is.flag(add_total)
+  )
+
+  y <- list()
+
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- dataname,
+      env = list(
+        dataname = as.name(dataname)
+      )
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = grade_groups <- list("- Any Intensity -" = levels(dataname$grade)),
+      env = list(
+        dataname = as.name(dataname),
+        grade = grade
+      )
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = col_counts <- table(parentname$arm_var),
+      env = list(
+        parentname = as.name(parentname),
+        arm_var = as.name(arm_var)
+      )
+    )
+  )
+  if (add_total) {
+    data_list <- add_expr(
+      data_list,
+      quote(
+        col_counts <- c(col_counts, "All Patients" = sum(col_counts))
+      )
+    )
+  }
+  y$data <- bracket_expr(data_list)
+
+  layout_list <- list()
+
+  layout_list <- add_expr(
+    layout_list,
+    quote(
+      basic_table()
+    )
+  )
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      exp = split_cols_by(arm_var),
+      env = list(arm_var = arm_var)
+    )
+  )
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      quote(
+        add_overall_col(label = "All Patients")
+      )
+    )
+  }
+
+  one_term <- is.null(hlt) || is.null(llt)
+
+  if (one_term){
+    term_var <- ifelse(is.null(hlt), llt, hlt)
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = add_colcounts() %>%
+          summarize_occurrences_by_grade(
+            var = grade,
+            grade_groups = grade_groups
+          ) %>%
+          split_rows_by(
+            term_var,
+            child_labels = "visible",
+            nested = TRUE,
+            indent_mod = -1L
+          ) %>%
+          summarize_num_patients(
+            var = "USUBJID",
+            .stats = "unique",
+            .labels = c("- Any Intensity -")
+          ) %>%
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L),
+        env = list(
+          arm_var = arm_var,
+          term_var = term_var,
+          grade = grade
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = add_colcounts() %>%
+          summarize_occurrences_by_grade(
+            var = grade,
+            grade_groups = grade_groups
+          ) %>%
+          split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = TRUE,
+            indent_mod = -1L
+          ) %>%
+          summarize_occurrences_by_grade(
+            var = grade,
+            grade_groups = grade_groups
+          ) %>%
+          split_rows_by(
+            llt,
+            child_labels = "visible",
+            nested = TRUE,
+            indent_mod = -1L
+          ) %>%
+          summarize_num_patients(
+            var = "USUBJID",
+            .stats = "unique",
+            .labels = c("- Any Intensity -")
+          ) %>%
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L),
+        env = list(
+          arm_var = arm_var,
+          hlt = hlt,
+          llt = llt,
+          grade = grade
+        )
+      )
+    )
+  }
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+  y$table <- quote(
+    result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+  )
+
+  scorefun <- if (add_total) {
+    quote(cont_n_onecol(length(col_counts)))
+  } else {
+    quote(cont_n_allcols)
+  }
+  if (one_term){
+    term_var <- ifelse(is.null(hlt), llt, hlt)
+    y$pruned_and_sorted_result <- substitute(
+      expr = result <- result %>%
+        trim_rows() %>%
+        sort_at_path(
+          path = term_var,
+          scorefun = scorefun,
+          decreasing = TRUE
+        ),
+      env = list(
+        term_var = term_var,
+        scorefun = scorefun
+      )
+    )
+  } else {
+    y$pruned_and_sorted_result <- substitute(
+      expr = result <- result %>%
+        trim_rows() %>%
+        sort_at_path(
+          path = hlt,
+          scorefun = scorefun,
+          decreasing = TRUE
+        ) %>%
+        sort_at_path(
+          path = c(hlt, "*", llt),
+          scorefun = scorefun,
+          decreasing = TRUE
+        ),
+      env = list(
+        hlt = hlt,
+        llt = llt,
+        scorefun = scorefun
+      )
+    )
+  }
+  y
+}
+
+
+#' @describeIn events_by_grade teal module for event by grade table.
 #'
 #' @export
-#'
 #' @examples
-#' library(random.cdisc.data)
 #' library(dplyr)
+#' library(random.cdisc.data)
+#' library(tern)
 #'
-#' ADSL <- radsl(cached = TRUE)
-#' ADAE <- radae(cached = TRUE)
+#' adsl <- radsl(cached = TRUE)
+#' adae <- radae(cached = TRUE)
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
-#'     cdisc_dataset("ADAE", ADAE,  code = 'ADAE <- radae(cached = TRUE)'),
-#'     check = TRUE
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADAE", adae),
+#'     code =
+#'       "ADSL <- radsl(cached = TRUE)
+#'       ADAE <- radae(cached = TRUE)"
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events_by_grade(
-#'       label = "AE Table by Grade",
+#'       label = "Adverse Events by Grade Table",
 #'       dataname = 'ADAE',
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       llt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
+#'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
-#'        ),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
-#'         selected = "AEBODSYS"
-#'        ),
-#'       grade = choices_selected(
-#'         choices = variable_choices(ADAE, c("AETOXGR")),
-#'         selected = "AETOXGR"
 #'       ),
-#'       add_total = TRUE
+#'       hlt = choices_selected(
+#'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
+#'         selected = "AEBODSYS"
+#'       ),
+#'       grade = choices_selected(
+#'         choices = variable_choices(adae, c("AETOXGR", "AESEV")),
+#'         selected = "AESEV"
+#'       )
 #'     )
 #'   )
 #' )
@@ -58,6 +265,7 @@
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
+#'
 tm_t_events_by_grade <- function(label,
                                  dataname,
                                  arm_var,
@@ -65,249 +273,132 @@ tm_t_events_by_grade <- function(label,
                                  llt,
                                  grade,
                                  add_total = TRUE) {
+
+  args <- as.list(environment())
+
   module(
     label = label,
-    ui = function(id, datasets) {
-      ns <- NS(id)
-      htmlOutput(ns("tbd"))
-    },
-    server = function(input, output, session, datasets) {
-      output$tbd <- renderUI({
-        p("Module is currently refactored")
-      })
-    },
-    filters = "ADSL"
+    server = srv_t_events_by_grade,
+    ui = ui_t_events_by_grade,
+    ui_args = args,
+    server_args = list(dataname = dataname),
+    filters = dataname
   )
 }
 
-# REFACTOR
-# nolint start
-# tm_t_events_by_grade <- function(label,
-#                                  dataname,
-#                                  arm_var,
-#                                  hlt,
-#                                  llt,
-#                                  grade,
-#                                  add_total = TRUE) {
-#   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
-#   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
-#   stopifnot(is.choices_selected(arm_var))
-#   stopifnot(is.choices_selected(hlt))
-#   stopifnot(is.choices_selected(llt))
-#   stopifnot(is.choices_selected(grade))
-#
-#   stopifnot(is_logical_single(add_total))
-#
-#   args <- as.list(environment())
-#
-#   module(
-#     label = label,
-#     server = srv_t_events_by_grade,
-#     ui = ui_t_events_by_grade,
-#     ui_args = args,
-#     server_args = list(
-#       dataname = dataname
-#     ),
-#     filters = dataname
-#   )
-#
-# }
-#
-# ui_t_events_by_grade <- function(id, ...) {
-#
-#   ns <- NS(id)
-#   a <- list(...)
-#
-#   standard_layout(
-#     output = white_small_well(uiOutput(ns("table"))),
-#     encoding =  div(
-#       tags$label("Encodings", class = "text-primary"),
-#       helpText("Analysis data:", tags$code(a$dataname)),
-#       optionalSelectInput(
-#         ns("arm_var"),
-#         "Arm Variable",
-#         a$arm_var$choices,
-#         a$arm_var$selected,
-#         multiple = FALSE,
-#         fixed = a$arm_var$fixed),
-#       optionalSelectInput(
-#         ns("hlt"),
-#         "Event High Level Term",
-#         a$hlt$choices,
-#         a$hlt$selected,
-#         multiple = FALSE,
-#         fixed = a$hlt$fixed),
-#       optionalSelectInput(
-#         ns("llt"),
-#         "Event Low Level Term",
-#         a$llt$choices,
-#         a$llt$selected,
-#         multiple = FALSE,
-#         fixed = a$llt$fixed),
-#       optionalSelectInput(
-#         ns("grade"),
-#         "Event Grade",
-#         a$grade$choices,
-#         a$grade$selected,
-#         multiple = FALSE,
-#         fixed = a$grade$fixed),
-#       checkboxInput(
-#         ns("add_total"),
-#         "Add All Patients column",
-#         value = a$add_total)
-#     ),
-#     forms = get_rcode_ui(ns("rcode")),
-#     pre_output = a$pre_output,
-#     post_output = a$post_output
-#   )
-# }
-#
-# #' @importFrom dplyr filter mutate select
-# srv_t_events_by_grade <- function(input, output, session, datasets, dataname) {
-#
-#   init_chunks()
-#
-#   output$table <- renderUI({
-#     adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
-#     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-#
-#     arm_var <- input$arm_var
-#     hlt <- input$hlt
-#     llt <- input$llt
-#     grade <- input$grade
-#     add_total <- input$add_total
-#
-#     validate_has_data(adsl_filtered, 1)
-#     validate_has_data(anl_filtered, 1)
-#     validate_has_elements(arm_var, "Please select \"ARM\" variable")
-#     validate_has_elements(llt, "Please select \"LOW LEVEL TERM\" variable")
-#     validate_has_elements(grade, "Please select \"GRADE\" variable")
-#
-#     validate_standard_inputs(
-#       adsl = adsl_filtered,
-#       adslvars = c("USUBJID", "STUDYID", arm_var),
-#       anl = anl_filtered,
-#       anlvars = c("USUBJID", "STUDYID", llt, hlt, grade),
-#       arm_var = arm_var,
-#       max_n_levels_armvar = NULL,
-#       min_nrow = 1
-#     )
-#
-#     anl_name <- paste0(dataname, "_FILTERED")
-#     assign(anl_name, anl_filtered)
-#     adsl_name <- "ADSL_FILTERED"
-#     assign(adsl_name, adsl_filtered)
-#
-#     chunks_reset(envir = environment())
-#
-#     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var))
-#     anl_vars <- unique(c("USUBJID", "STUDYID", llt, hlt, grade))
-#
-#     # Select only adsl_vars from as.name(adsl_name)
-#     chunks_push(
-#       call(
-#         "<-",
-#         as.name("ADSL_P"),
-#         call(
-#           "%>%",
-#           as.name(adsl_name),
-#           as.call(c(
-#             list(quote(dplyr::select)),
-#             lapply(adsl_vars, as.name)
-#           ))
-#         )
-#       )
-#     )
-#
-#     # Convert grade to factor, and filter out missing grade, and select only anl_vars fromas.name(anl_name)
-#     chunks_push(
-#       call(
-#         "<-",
-#         as.name("ANL_ENDPOINT"),
-#         Reduce(
-#           function(x, y) call("%>%", x, y),
-#           c(
-#             as.name(anl_name),
-#             as.call(append(
-#               quote(dplyr::select),
-#               lapply(anl_vars, as.name)
-#             ))
-#           )
-#         )
-#       )
-#     )
-#
-#     # Merge ANL_ENDPOINT and ADSL_P, relable original datasets labels
-#     chunks_push(
-#       call(
-#         "<-",
-#         as.name("ANL"),
-#         call(
-#           "%>%",
-#           call(
-#             "%>%",
-#             as.call(c(
-#               quote(merge),
-#               list(
-#                 x = as.name("ADSL_P"),
-#                 y = as.name("ANL_ENDPOINT"),
-#                 all.x = FALSE,
-#                 all.y = FALSE,
-#                 by = c("USUBJID", "STUDYID")
-#               )
-#             )),
-#             as.call(c(
-#               quote(df_explicit_na),
-#               list(
-#                 omit_columns = c("USUBJID", "STUDYID", arm_var, grade),
-#                 char_as_factor =  FALSE
-#               )
-#             ))
-#           ),
-#           teal.devel::get_relabel_call(
-#             labels = c(
-#               datasets$get_variable_labels("ADSL", adsl_vars),
-#               datasets$get_variable_labels(dataname, anl_vars)
-#             )
-#           )
-#         )
-#       )
-#     )
-#
-#     chunks_safe_eval()
-#     validate_has_data(chunks_get_var("ANL"), 1)
-#
-#     total <- if (add_total) {
-#       "All Patients"
-#     } else {
-#       NULL
-#     }
-#
-#     chunks_push(bquote({
-#       tbl <- t_events_per_term_grade_id(
-#         terms = ANL[, .(c(hlt, llt)), drop = FALSE],
-#         id = ANL[["USUBJID"]],
-#         grade = ANL[[.(grade)]],
-#         col_by = as.factor(.(as.name("ANL"))[[.(arm_var)]]),
-#         col_N = table(ADSL_P[[.(arm_var)]]),
-#         total = .(total)
-#       )
-#       tbl
-#     }))
-#
-#     chunks_safe_eval()
-#
-#     tbl <- chunks_get_var("tbl")
-#     as_html(tbl)
-#   })
-#
-#   callModule(
-#     module = get_rcode_srv,
-#     id = "rcode",
-#     datasets = datasets,
-#     datanames = dataname,
-#     modal_title = "R Code for the Current Event Table by Grade",
-#     code_header = "Event table by Grade"
-#   )
-# }
-# nolint end
+#' @noRd
+ui_t_events_by_grade <- function(id, ...) {
+
+  ns <- NS(id)
+  args <- list(...)
+
+  standard_layout(
+    output = white_small_well(uiOutput(ns("as_html"))),
+    encoding =  div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis data:", tags$code(args$dataname)),
+      optionalSelectInput(
+        ns("arm_var"),
+        "Arm Variable",
+        args$arm_var$choices,
+        args$arm_var$selected,
+        multiple = FALSE,
+        fixed = args$arm_var$fixed),
+      optionalSelectInput(
+        ns("hlt"),
+        "Event High Level Term",
+        args$hlt$choices,
+        args$hlt$selected,
+        multiple = FALSE,
+        fixed = args$hlt$fixed),
+      optionalSelectInput(
+        ns("llt"),
+        "Event Low Level Term",
+        args$llt$choices,
+        args$llt$selected,
+        multiple = FALSE,
+        fixed = args$llt$fixed),
+      optionalSelectInput(
+        ns("grade"),
+        "Event Grade",
+        args$grade$choices,
+        args$grade$selected,
+        multiple = FALSE,
+        fixed = args$grade$fixed),
+      checkboxInput(
+        ns("add_total"),
+        "Add All Patients column",
+        value = args$add_total)
+    ),
+    forms = actionButton(
+      ns("show_rcode"),
+      "Show R Code",
+      width = "100%"
+    )
+  )
+}
+
+#' @noRd
+srv_t_events_by_grade <- function(input,
+                                  output,
+                                  session,
+                                  datasets,
+                                  dataname,
+                                  label) {
+
+  init_chunks()
+
+  # Prepare the analysis environment (filter data, check data, populate envir).
+  prepared_env <- reactive({
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    arm_var <- input$arm_var
+    hlt <- input$hlt
+    llt <- input$llt
+
+    teal.devel::validate_has_elements(
+      c(llt, hlt),
+      "Please select at least one of \"LOW LEVEL TERM\"
+      or \"HIGH LEVEL TERM\" variables."
+    )
+    validate(
+      need(is.factor(adsl_filtered[[arm_var]]), "Arm variable is not a factor.")
+    )
+
+    # Send data where the analysis lives.
+    e <- new.env()
+    e[[paste0(dataname, "_FILTERED")]] <- anl_filtered
+    e$ADSL_FILTERED <- adsl_filtered #nolint
+    e
+  })
+
+  call_preparation <- reactive({
+    chunks_reset(envir = prepared_env())
+    my_calls <- template_events_by_grade(
+      dataname = paste0(dataname, "_FILTERED"),
+      parentname = "ADSL_FILTERED",
+      arm_var = input$arm_var,
+      hlt = input$hlt,
+      llt = input$llt,
+      grade = input$grade,
+      add_total = input$add_total
+    )
+    mapply(expression = my_calls, chunks_push)
+  })
+
+  # Outputs to render.
+  output$as_html <- renderUI({
+    call_preparation()
+    chunks_safe_eval()
+    as_html(chunks_get_var("result"))
+  })
+
+  # Render R code.
+  observeEvent(input$show_rcode, {
+    show_rcode_modal(
+      title = "AE by Grade Table",
+      rcode = get_rcode(datasets = datasets, title = input$label)
+    )
+  })
+}
