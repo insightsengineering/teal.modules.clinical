@@ -13,7 +13,8 @@ template_events(
   hlt,
   llt,
   add_total = TRUE,
-  event_type = "event"
+  event_type = "event",
+  sort_criteria = c("freq_desc", "alpha")
 )
 
 tm_t_events(
@@ -23,7 +24,8 @@ tm_t_events(
   hlt,
   llt,
   add_total = TRUE,
-  event_type = "event"
+  event_type = "event",
+  sort_criteria = c("freq_desc", "alpha")
 )
 }
 \arguments{
@@ -45,6 +47,10 @@ name of the variable with low level term for events.}
 
 \item{event_type}{(\code{string})\cr type of event that is summarized (e.g. adverse event, treatment).
 Default is "event".}
+
+\item{sort_criteria}{(\code{string})\cr how to sort the final table. Default option \code{freq_desc} sorts
+by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 }

@@ -10,7 +10,9 @@ NULL
 #'
 #' @param event_type (`string`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
-#'
+#' @param sort_criteria (`string`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
+#'   alphabetically.
 template_events <- function(
   dataname,
   parentname,
@@ -18,7 +20,9 @@ template_events <- function(
   hlt,
   llt,
   add_total = TRUE,
-  event_type = "event") {
+  event_type = "event",
+  sort_criteria = c("freq_desc", "alpha")
+  ) {
 
   assert_that(
     is.string(dataname),
@@ -30,6 +34,7 @@ template_events <- function(
     is.flag(add_total),
     is.string(event_type)
   )
+  sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
 
@@ -48,15 +53,48 @@ template_events <- function(
       quote(col_counts <- c(col_counts, sum(col_counts)))
     )
   }
+
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(llt, hlt))),
+      expr = anl <- df,
+      env = list(df = as.name(dataname))
+    )
+  )
+
+  if (sort_criteria == "alpha") {
+
+    if (!is.null(hlt)) {
+      data_list <- add_expr(
+        data_list,
+        substitute_names(
+          expr = anl <- anl %>% dplyr::mutate(a = as.character(a)),
+          names = list(a = as.name(hlt))
+        )
+      )
+    }
+
+    if (!is.null(llt)) {
+      data_list <- add_expr(
+        data_list,
+        substitute_names(
+          expr = anl <- anl %>% dplyr::mutate(a = as.character(a)),
+          names = list(a = as.name(llt))
+        )
+      )
+    }
+
+  }
+
+  term_vars <- c(hlt, llt)
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- anl %>%
+        df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
       env = list(
-        df = as.name(dataname),
-        llt = llt,
-        hlt = hlt
+        term_vars = term_vars
       )
     )
   )
@@ -149,22 +187,59 @@ template_events <- function(
   )
 
   # Sort pruned table.
-  if (one_term) {
-    term_var <- ifelse(is.null(hlt), llt, hlt)
+  if (sort_criteria == "alpha") {
 
-    y$sort <- substitute(
-      expr = pruned_and_sorted_result <- pruned_result %>%
-        sort_at_path(path =  c(term_var), scorefun = score_occurrences),
-      env = list(term_var = term_var)
+    # This is just a dummy step to get the right variable result.
+    # No additional sorting is needed because during the data pre-processing step,
+    # llt and/or hlt are converted to factors with alphabetically sorted levels.
+    # So the order in y$table table is already alphabetically sorted.
+
+    y$sort <- quote(
+      pruned_and_sorted_result <- pruned_result
     )
+
   } else {
-    y$sort <- substitute(
-      expr = pruned_and_sorted_result <- pruned_result %>%
-        sort_at_path(path =  c(hlt), scorefun = cont_n_allcols) %>%
-        sort_at_path(path =  c(hlt, "*", llt), scorefun = score_occurrences),
-      env = list(llt = llt, hlt = hlt)
-    )
+    # Sort by decreasing frequency.
+
+    # When the "All Patients" column is present we only use that for scoring.
+    scorefun_hlt <- if (add_total) {
+      quote(cont_n_onecol(length(col_counts)))
+    } else {
+      quote(cont_n_allcols)
+    }
+    scorefun_llt <- if (add_total) {
+      quote(score_occurrences_cols(col_indices = length(col_counts)))
+    } else {
+      quote(score_occurrences)
+    }
+
+    if (one_term) {
+      term_var <- ifelse(is.null(hlt), llt, hlt)
+
+      y$sort <- substitute(
+        expr = pruned_and_sorted_result <- pruned_result %>%
+          sort_at_path(path =  c(term_var), scorefun = scorefun_llt),
+        env = list(
+          term_var = term_var,
+          scorefun_llt = scorefun_llt
+          )
+      )
+    } else {
+      y$sort <- substitute(
+        expr = pruned_and_sorted_result <- pruned_result %>%
+          sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
+          sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt),
+        env = list(
+          llt = llt,
+          hlt = hlt,
+          scorefun_hlt = scorefun_hlt,
+          scorefun_llt = scorefun_llt
+        )
+      )
+    }
+
   }
+
 
   y
 
@@ -202,7 +277,19 @@ ui_t_events_byterm <- function(id, ...) {
         a$llt$selected,
         multiple = FALSE,
         fixed = a$llt$fixed),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      panel_item(
+        "Additional table settings",
+        selectInput(
+          inputId = ns("sort_criteria"),
+          label = "Sort Criteria",
+          choices = c("Decreasing frequency" = "freq_desc",
+                      "Alphabetically" = "alpha"
+          ),
+          selected = a$sort_criteria,
+          multiple = FALSE
+        )
+      )
     ),
     forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
     pre_output = a$pre_output,
@@ -262,7 +349,8 @@ srv_t_events_byterm <- function(input,
       hlt = input$hlt,
       llt = input$llt,
       add_total = input$add_total,
-      event_type = event_type
+      event_type = event_type,
+      sort_criteria = input$sort_criteria
     )
     mapply(expression = my_calls, chunks_push)
   })
@@ -332,7 +420,8 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
-                        event_type = "event") {
+                        event_type = "event",
+                        sort_criteria = c("freq_desc", "alpha")) {
 
   stop_if_not(
     list(is_character_single(label), "Label should be single (i.e. not vector) character type of object")
@@ -345,6 +434,7 @@ tm_t_events <- function(label,
   stopifnot(is.choices_selected(llt))
   stopifnot(is_logical_single(add_total))
   stop_if_not(is_character_single(event_type))
+  sort_criteria <- match.arg(sort_criteria)
 
   args <- as.list(environment())
 
