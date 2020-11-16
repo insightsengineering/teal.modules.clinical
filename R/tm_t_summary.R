@@ -7,8 +7,6 @@
 NULL
 
 #' @describeIn summary create the expressions corresponding to the analysis.
-#' @param sum_vars (`character`)\cr names of the variables
-#'   that should be summarized.
 #'
 template_summary <- function(dataname,
                              parentname,

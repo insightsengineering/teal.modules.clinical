@@ -37,8 +37,7 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
-\item{sum_vars}{(\code{character})\cr names of the variables
-that should be summarized.}
+\item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
 \item{var_labels}{(named \code{character})\cr optional variable labels for relabeling the analysis variables.}
 

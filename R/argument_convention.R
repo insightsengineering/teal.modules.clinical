@@ -20,6 +20,7 @@
 #' @param id_var (`choices_selected` with teal module)\cr object specifying the
 #'   variable name for subject id.
 #' @param combine_arm (`flag`)\cr re-arrange arms in two groups, i.e. reference and treatment.
+#' @param sum_vars (`character`)\cr names of the variables that should be summarized.
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
 #' @param parentname (`string`)\cr parent analysis data used in teal module,
 #'   usually this refers to `"ADSL"`.
@@ -53,6 +54,8 @@
 #'   name of the variable with high level term for events.
 #' @param llt (`string` or `choices_selected` with teal module)\cr
 #'   name of the variable with low level term for events.
+#' @param by_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
+#'   for variable names used to split the summary by rows.
 #'
 #' @name argument_convention
 #'

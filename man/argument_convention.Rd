@@ -19,6 +19,8 @@ variable name for subject id.}
 
 \item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
 
+\item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
+
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
@@ -70,6 +72,9 @@ name of the variable with high level term for events.}
 
 \item{llt}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable with low level term for events.}
+
+\item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names used to split the summary by rows.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules
