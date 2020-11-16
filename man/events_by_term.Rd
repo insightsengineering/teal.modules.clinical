@@ -14,7 +14,9 @@ template_events(
   llt,
   add_total = TRUE,
   event_type = "event",
-  sort_criteria = c("freq_desc", "alpha")
+  sort_criteria = c("freq_desc", "alpha"),
+  prune_freq = 0,
+  prune_diff = 0
 )
 
 tm_t_events(
@@ -25,7 +27,9 @@ tm_t_events(
   llt,
   add_total = TRUE,
   event_type = "event",
-  sort_criteria = c("freq_desc", "alpha")
+  sort_criteria = c("freq_desc", "alpha"),
+  prune_freq = 0,
+  prune_diff = 0
 )
 }
 \arguments{
@@ -52,6 +56,11 @@ Default is "event".}
 by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
 
+\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+
+\item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
+rates between any two columns.}
+
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 }
 \description{
@@ -71,11 +80,21 @@ library(random.cdisc.data)
 adsl <- radsl(cached = TRUE)
 adae <- radae(cached = TRUE)
 
+# Process `adcm` to keep only one path per treatment.
+adcm <- radcm(cached = TRUE) \%>\%
+ group_by(STUDYID, USUBJID, CMDECOD) \%>\%
+ slice(1) \%>\%
+ ungroup
+
 app <- teal::init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)"),
-    check = TRUE
+    cdisc_dataset("ADCM", adcm, code = "ADCM <- radcm(cached = TRUE) \%>\%
+        group_by(STUDYID, USUBJID, CMDECOD) \%>\%
+        slice(1) \%>\%
+        ungroup"
+    )
   ),
   modules = root_modules(
     tm_t_events(
@@ -92,6 +111,21 @@ app <- teal::init(
        ),
       add_total = TRUE,
       event_type = "adverse event"
+    ),
+    tm_t_events(
+      label = "Concomitant Medication Table",
+      dataname = "ADCM",
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      llt = choices_selected(
+        choices = variable_choices(adcm, "CMDECOD"),
+        selected = "CMDECOD"
+       ),
+      hlt = choices_selected(
+        choices = variable_choices(adcm, "CMCLAS"),
+        selected = NULL
+       ),
+      add_total = TRUE,
+      event_type = "treatment"
     )
   )
 )

@@ -13,17 +13,20 @@ NULL
 #' @param sort_criteria (`string`)\cr how to sort the final table. Default option `freq_desc` sorts
 #'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
 #'   alphabetically.
-template_events <- function(
-  dataname,
-  parentname,
-  arm_var,
-  hlt,
-  llt,
-  add_total = TRUE,
-  event_type = "event",
-  sort_criteria = c("freq_desc", "alpha")
-  ) {
-
+#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
+#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
+#'   rates between any two columns.
+#'
+template_events <- function(dataname,
+                            parentname,
+                            arm_var,
+                            hlt,
+                            llt,
+                            add_total = TRUE,
+                            event_type = "event",
+                            sort_criteria = c("freq_desc", "alpha"),
+                            prune_freq = 0,
+                            prune_diff = 0) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -32,25 +35,27 @@ template_events <- function(
     is.string(llt) || is.null(llt),
     is.character(c(llt, hlt)),
     is.flag(add_total),
-    is.string(event_type)
+    is.string(event_type),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff)
   )
   sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
 
-  # Data.
+  # Start data steps.
   data_list <- list()
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = col_counts <- table(parentname$arm_var),
+      expr = col_n <- table(parentname$arm_var),
       env = list(parentname = as.name(parentname), arm_var = arm_var)
     )
   )
   if (add_total) {
     data_list <- add_expr(
       data_list,
-      quote(col_counts <- c(col_counts, sum(col_counts)))
+      quote(col_n <- c(col_n, "All Patients" = sum(col_n)))
     )
   }
 
@@ -100,7 +105,7 @@ template_events <- function(
   )
   y$data <- bracket_expr(data_list)
 
-  # Layout.
+  # Start layout steps.
   layout_list <- list()
   layout_list <- add_expr(layout_list, quote(basic_table()))
   layout_list <- add_expr(
@@ -178,37 +183,129 @@ template_events <- function(
 
   # Full table.
   y$table <- quote(
-    result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+    result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
   )
 
-  # Pruned table.
-  y$prune <- quote(
-    pruned_result <- result %>% prune_table()
+  # Start pruning table.
+  prune_list <- list()
+  prune_list <- add_expr(
+    prune_list,
+    quote(
+      pruned_result <- result %>% prune_table()
+    )
   )
 
-  # Sort pruned table.
+  if (prune_freq > 0 || prune_diff > 0) {
+
+    # Do not use "All Patients" column for pruning conditions.
+    if (add_total) {
+      prune_list <- add_expr(
+        prune_list,
+        quote(
+          expr = col_indices <- seq_along(1:(length(col_n) - 1))
+        )
+      )
+    } else {
+      prune_list <- add_expr(
+        prune_list,
+        quote(
+          expr = col_indices <- seq_along(1:length(col_n))
+        )
+      )
+    }
+
+    if (prune_freq > 0 && prune_diff == 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+          env = list(prune_freq = prune_freq)
+        )
+      )
+
+    } else if (prune_freq == 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_diff = prune_diff)
+        )
+      )
+
+    } else if (prune_freq > 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices) &
+            has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_freq = prune_freq, prune_diff = prune_diff)
+        )
+      )
+    }
+
+    # Apply pruning conditions.
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      )
+    )
+  }
+
+  y$prune <- bracket_expr(prune_list)
+
+  # Start sorting pruned table.
+  sort_list <- list()
+
   if (sort_criteria == "alpha") {
 
-    # This is just a dummy step to get the right variable result.
-    # No additional sorting is needed because during the data pre-processing step,
-    # llt and/or hlt are converted to factors with alphabetically sorted levels.
-    # So the order in y$table table is already alphabetically sorted.
+    if (prune_freq == 0 && prune_diff == 0) {
 
-    y$sort <- quote(
-      pruned_and_sorted_result <- pruned_result
-    )
+      # This is just a dummy step to get the right variable result.
+      # No additional sorting is needed because during the data pre-processing step,
+      # llt and/or hlt are converted to factors with alphabetically sorted levels.
+      # So the order in y$table table is already alphabetically sorted.
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          pruned_and_sorted_result <- pruned_result
+        )
+      )
+
+    } else {
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          criteria_fun <- function(tr) {
+            is(tr, "ContentRow")
+          }
+        )
+      )
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          pruned_and_sorted_result <- trim_rows(pruned_result, criteria = criteria_fun)
+        )
+      )
+
+    }
 
   } else {
     # Sort by decreasing frequency.
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
-      quote(cont_n_onecol(length(col_counts)))
+      quote(cont_n_onecol(length(col_n)))
     } else {
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = length(col_counts)))
+      quote(score_occurrences_cols(col_indices = length(col_n)))
     } else {
       quote(score_occurrences)
     }
@@ -216,30 +313,58 @@ template_events <- function(
     if (one_term) {
       term_var <- ifelse(is.null(hlt), llt, hlt)
 
-      y$sort <- substitute(
-        expr = pruned_and_sorted_result <- pruned_result %>%
-          sort_at_path(path =  c(term_var), scorefun = scorefun_llt),
-        env = list(
-          term_var = term_var,
-          scorefun_llt = scorefun_llt
+      sort_list <- add_expr(
+        sort_list,
+        substitute(
+          expr = pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path =  c(term_var), scorefun = scorefun_llt),
+          env = list(
+            term_var = term_var,
+            scorefun_llt = scorefun_llt
           )
-      )
-    } else {
-      y$sort <- substitute(
-        expr = pruned_and_sorted_result <- pruned_result %>%
-          sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
-          sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt),
-        env = list(
-          llt = llt,
-          hlt = hlt,
-          scorefun_hlt = scorefun_hlt,
-          scorefun_llt = scorefun_llt
         )
       )
+
+    } else {
+      sort_list <- add_expr(
+        sort_list,
+        substitute(
+          expr = pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
+            sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt),
+          env = list(
+            llt = llt,
+            hlt = hlt,
+            scorefun_hlt = scorefun_hlt,
+            scorefun_llt = scorefun_llt
+          )
+        )
+      )
+
+      if (prune_freq > 0 || prune_diff > 0) {
+
+        sort_list <- add_expr(
+          sort_list,
+          quote(
+            criteria_fun <- function(tr) {
+              is(tr, "ContentRow")
+            }
+          )
+        )
+
+        sort_list <- add_expr(
+          sort_list,
+          quote(
+            pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+          )
+        )
+
+      }
+
     }
 
   }
-
+  y$sort <- bracket_expr(sort_list)
 
   y
 
@@ -288,6 +413,25 @@ ui_t_events_byterm <- function(id, ...) {
           ),
           selected = a$sort_criteria,
           multiple = FALSE
+        ),
+        helpText("Pruning Options"),
+        numericInput(
+          inputId = ns("prune_freq"),
+          label = "Incidence Rate (%)",
+          value = 0,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
+        ),
+        numericInput(
+          inputId = ns("prune_diff"),
+          label = "Difference Rate (%)",
+          value = 0,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
         )
       )
     ),
@@ -304,7 +448,6 @@ srv_t_events_byterm <- function(input,
                                 datasets,
                                 dataname,
                                 event_type) {
-
   init_chunks()
 
   # Prepare the analysis environment (filter data, check data, populate envir).
@@ -330,6 +473,14 @@ srv_t_events_byterm <- function(input,
       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
     )
     validate(need(is.factor(adsl_f[[arm_var]]), "Arm variable is not a factor."))
+    validate(need(
+      input$prune_freq >= 0 && input$prune_freq <= 100,
+      "Pruning threshold for incidence rate must be between 0 and 100.")
+    )
+    validate(need(
+      input$prune_diff >= 0 && input$prune_diff <= 100,
+      "Pruning threshold for difference rate must be between 0 and 100.")
+    )
 
     # Send data where the analysis lives.
     e <- new.env()
@@ -350,7 +501,9 @@ srv_t_events_byterm <- function(input,
       llt = input$llt,
       add_total = input$add_total,
       event_type = event_type,
-      sort_criteria = input$sort_criteria
+      sort_criteria = input$sort_criteria,
+      prune_freq <- input$prune_freq / 100,
+      prune_diff <- input$prune_diff / 100
     )
     mapply(expression = my_calls, chunks_push)
   })
@@ -386,11 +539,21 @@ srv_t_events_byterm <- function(input,
 #' adsl <- radsl(cached = TRUE)
 #' adae <- radae(cached = TRUE)
 #'
+#' # Process `adcm` to keep only one path per treatment.
+#' adcm <- radcm(cached = TRUE) %>%
+#'  group_by(STUDYID, USUBJID, CMDECOD) %>%
+#'  slice(1) %>%
+#'  ungroup
+#'
 #' app <- teal::init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
 #'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)"),
-#'     check = TRUE
+#'     cdisc_dataset("ADCM", adcm, code = "ADCM <- radcm(cached = TRUE) %>%
+#'         group_by(STUDYID, USUBJID, CMDECOD) %>%
+#'         slice(1) %>%
+#'         ungroup"
+#'     )
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events(
@@ -407,6 +570,21 @@ srv_t_events_byterm <- function(input,
 #'        ),
 #'       add_total = TRUE,
 #'       event_type = "adverse event"
+#'     ),
+#'     tm_t_events(
+#'       label = "Concomitant Medication Table",
+#'       dataname = "ADCM",
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       llt = choices_selected(
+#'         choices = variable_choices(adcm, "CMDECOD"),
+#'         selected = "CMDECOD"
+#'        ),
+#'       hlt = choices_selected(
+#'         choices = variable_choices(adcm, "CMCLAS"),
+#'         selected = NULL
+#'        ),
+#'       add_total = TRUE,
+#'       event_type = "treatment"
 #'     )
 #'   )
 #' )
@@ -421,7 +599,9 @@ tm_t_events <- function(label,
                         llt,
                         add_total = TRUE,
                         event_type = "event",
-                        sort_criteria = c("freq_desc", "alpha")) {
+                        sort_criteria = c("freq_desc", "alpha"),
+                        prune_freq = 0,
+                        prune_diff = 0) {
 
   stop_if_not(
     list(is_character_single(label), "Label should be single (i.e. not vector) character type of object")
@@ -435,6 +615,8 @@ tm_t_events <- function(label,
   stopifnot(is_logical_single(add_total))
   stop_if_not(is_character_single(event_type))
   sort_criteria <- match.arg(sort_criteria)
+  stop_if_not(is_numeric_single(prune_freq))
+  stop_if_not(is_numeric_single(prune_diff))
 
   args <- as.list(environment())
 
