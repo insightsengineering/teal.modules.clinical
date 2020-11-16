@@ -18,7 +18,8 @@ test_that("template_rsp generates standard expressions", {
           is_rsp = rsp_lab %in% c(
             "Complete Response (CR)", "Partial Response (PR)"
           )
-        )
+        ) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -63,7 +64,8 @@ test_that("template_rsp generates right expressions with non-default", {
         mutate(
           is_rsp = rsp_lab %in%
             c("Complete Response (CR)", "Partial Response (PR)")
-        )
+        ) %>%
+        mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -102,7 +104,8 @@ test_that("template_rsp generates expression without arm comparison", {
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>% mutate(
           is_rsp = rsp_lab %in%
             c("Complete Response (CR)", "Partial Response (PR)")
-        )
+        ) %>%
+        mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -143,7 +146,8 @@ test_that("template_rsp generates expression with non-default controls.", {
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>% mutate(
           is_rsp = rsp_lab %in%
             c("Complete Response (CR)", "Partial Response (PR)")
-        )
+        ) %>%
+        mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -195,7 +199,8 @@ test_that("template_rsp can combine arms", {
           is_rsp = rsp_lab %in% c(
             "Complete Response (CR)", "Partial Response (PR)"
           )
-        )
+        ) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
     ),
     combine_arm = quote(
       groups <- combine_groups(fct = anl[["ARMCD"]], ref = "ARM A")

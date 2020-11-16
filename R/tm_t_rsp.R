@@ -67,19 +67,37 @@ template_rsp <- function(dataname,
                          )
 ) {
   y <- list()
-  y$data <- substitute(
-    expr = anl <- df %>%
-      filter(PARAMCD == param) %>%
-      mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-      mutate(
-        is_rsp = rsp_lab %in% c(
-          "Complete Response (CR)", "Partial Response (PR)"
-        )
-      ),
-    env = list(
-      df = as.name(dataname),
-      param = param
+
+  data_list <- list()
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = df %>%
+        filter(PARAMCD == param) %>%
+        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
+        mutate(
+          is_rsp = rsp_lab %in% c(
+            "Complete Response (CR)", "Partial Response (PR)"
+          )
+        ),
+      env = list(
+        df = as.name(dataname),
+        param = param
+      )
     )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute_names(
+      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(ref_arm = ref_arm)
+    )
+  )
+
+  y$data <- substitute(
+    expr = anl <- data_pipe,
+    env = list(data_pipe = pipe_expr(data_list))
   )
 
   if (combine_arm) {
