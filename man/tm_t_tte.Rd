@@ -7,13 +7,17 @@
 tm_t_tte(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
+  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   time_points,
   time_unit = "months",
-  event_desc_var = NULL,
+  event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -26,29 +30,37 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
 
-\item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-element corresponding to an arm variable in \code{ADSL} and the element must
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}}
+
+\item{arm_ref_comp}{(\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
+list with each element corresponding to an arm variable in \code{ADSL} and the element must
 be another list with the elements named \code{ref} and \code{comp} that the
 defined the default reference and comparison arms when the arm variable is
 changed.}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
-variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for stratification}
+\item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
+choices and preselected option for variable names that can be used for stratification}
 
-\item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for analysis variable}
+
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
+
+\item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
 for variable names that can be used \code{REFACTOR}}
 
 \item{time_unit}{(\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
 of months}
 
-\item{event_desc_var}{(\code{character}) variable name with the event description information,
-optional}
+\item{event_desc_var}{(\code{character} or \code{data_extract_spec}) variable name with the event description
+information, optional}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -103,13 +115,22 @@ app <- init(
         tm_t_tte(
             label = "Time To Event Table",
             dataname = 'ADTTE',
-            arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+            arm_var = choices_selected(
+              variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+              "ARM"),
             arm_ref_comp = arm_ref_comp,
-            paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-            strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+            paramcd = choices_selected(
+              value_choices(ADTTE, "PARAMCD", "PARAM"),
+              "OS"),
+            strata_var = choices_selected(
+              variable_choices(ADSL, c("SEX", "BMRKR2")),
+              "SEX"),
             time_points = choices_selected(c(6, 8), 6),
             time_unit = "month",
-            event_desc_var = "EVNTDESC"
+            event_desc_var = choices_selected(
+              variable_choices(ADTTE, "EVNTDESC"),
+              "EVNTDESC",
+              fixed = TRUE)
         )
     )
 )

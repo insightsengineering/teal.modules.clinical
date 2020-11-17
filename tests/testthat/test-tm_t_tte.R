@@ -2,14 +2,15 @@
 test_that("template_tte healthy standard output", {
 
   result <- template_tte(
-    dataname = "adtte",
-    parentname = "adsl",
+    anl_name = "ANL",
+    parent_name = "ANL_ADSL",
     arm_var = "ARM",
     arm_ref_comp = "B: Placebo",
     comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = FALSE,
     combine_comp_arms = FALSE,
-    paramcd = "OS",
+    aval = "AVAL",
+    cnsr = "CNSR",
     strata_var = NULL,
     time_points = c(183, 365, 548),
     time_unit = "Days",
@@ -23,23 +24,16 @@ test_that("template_tte healthy standard output", {
 
   expected <- list(
     data = quote({
-      anl <- adtte %>%
-        filter(PARAMCD == "OS") %>%
+      ANL <- ANL %>% # nolint
         mutate(
           is_event = CNSR == 0,
-          is_not_event = CNSR == 1,
-          EVNT1 = factor(
-            case_when(
-              is_event == TRUE ~ "Patients with event (%)",
-              is_event == FALSE ~ "Patients without event (%)"
-            )
-          ),
+          is_not_event = CNSR ==  1,
+          EVNT1 = factor(case_when(
+            is_event == TRUE ~ "Patients with event (%)",
+            is_event == FALSE ~ "Patients without event (%)"
+          )),
           EVNTDESC = factor(EVNTDESC)
         )
-      anl <- anl[anl$ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination")), ]
-      adsl <- adsl[adsl$ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination")), ]
-      anl$ARM <- droplevels(relevel(anl$ARM, "B: Placebo")) # nolint
-      adsl$ARM <- droplevels(relevel(adsl$ARM, "B: Placebo")) # nolint
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -74,7 +68,7 @@ test_that("template_tte healthy standard output", {
         )
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, col_counts = table(adsl$ARM))
+      result <- build_table(lyt = lyt, df = ANL, col_counts = table(ANL_ADSL$ARM))
     )
   )
 

@@ -192,6 +192,15 @@ add_expr <- function(expr_ls, new_expr) {
     is.call(new_expr)
   )
 
+  # support nested expressions such as expr({a <- 1; b <- 2})
+  if (is(new_expr, "{")) {
+    res <- expr_ls
+    for (idx in seq_along(new_expr)[-1]) {
+      res <- add_expr(res, new_expr[[idx]])
+    }
+    return(res)
+  }
+
   c(
     expr_ls,
     list(new_expr)
@@ -250,6 +259,84 @@ bracket_expr <- function(exprs) {
   expr <- as.call(expr)[[1]]
   attributes(expr) <- NULL
   expr
+}
+
+#' Convert choices_selected to select_spec
+#'
+#' @param cs (\code{choices_selected}) object to be transformed
+#' @param multiple (\code{logical}) whether allow multiple selection in the select input
+#'
+#' @return (\code{selecte_spec})
+cs_to_select_spec <- function(cs, multiple = FALSE) {
+  stopifnot(is.choices_selected(cs))
+  stopifnot(is_logical_single(multiple))
+
+  select_spec(
+    choices = cs$choices,
+    selected = cs$selected,
+    fixed = cs$fixed,
+    multiple = multiple
+  )
+}
+
+#' Convert choices_selected to filter_spec
+#'
+#' @inheritParams cs_to_select_spec
+#'
+#' @return (\code{filter_spec})
+cs_to_filter_spec <- function(cs, multiple = FALSE) {
+  stopifnot(is.choices_selected(cs))
+  stopifnot(is_logical_single(multiple))
+
+  filter_spec(
+    vars = attr(cs$choices, "var_choices"),
+    choices = cs$choices,
+    selected = cs$selected,
+    multiple = multiple,
+    drop_keys = FALSE
+  )
+}
+
+#' Convert choices_selected to data_extract_spec with only select_spec
+#'
+#' @inheritParams cs_to_select_spec
+#' @param dataname (\code{character}) name of the data
+#'
+#' @return (\code{data_extract_spec})
+cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
+  stopifnot(is.choices_selected(cs))
+  stopifnot(is_character_single(dataname))
+  stopifnot(is_logical_single(multiple))
+
+  data_extract_spec(
+    dataname = dataname,
+    select = cs_to_select_spec(cs, multiple = multiple)
+  )
+}
+
+#' Convert choices_selected to data_extract_spec with only filter_spec
+#'
+#' @inheritParams cs_to_des_select
+#'
+#' @return (\code{data_extract_spec})
+cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
+  stopifnot(is.choices_selected(cs))
+  stopifnot(is_character_single(dataname))
+  stopifnot(is_logical_single(multiple))
+
+  data_extract_spec(
+    dataname = dataname,
+    filter = cs_to_filter_spec(cs, multiple = multiple)
+  )
+}
+
+#' Whether object is of class \code{choices_selected} or \code{data_extract_spec}
+#'
+#' @param x object to be checked
+#'
+#' @return (\code{logical})
+is.cs_or_des <- function(x) { # nolint
+  is.choices_selected(x) || is(x, "data_extract_spec")
 }
 
 

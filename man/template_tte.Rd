@@ -5,14 +5,15 @@
 \title{Template for Time-to-Event}
 \usage{
 template_tte(
-  dataname,
-  parentname,
+  anl_name = "ANL",
+  parent_name = "ADSL_FILTERED",
   arm_var = "ARM",
   arm_ref_comp = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
   combine_comp_arms = FALSE,
-  paramcd = "OS",
+  aval = "AVAL",
+  cnsr = "CNSR",
   strata_var = NULL,
   time_points = NULL,
   time_unit = "Days",
@@ -21,10 +22,7 @@ template_tte(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
-
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -38,20 +36,17 @@ variable is changed.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
-
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{time_points}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+\item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
 for variable names that can be used \code{REFACTOR}}
 
 \item{time_unit}{(\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
 of months}
 
-\item{event_desc_var}{(\code{character}) variable name with the event description information,
-optional}
+\item{event_desc_var}{(\code{character} or \code{data_extract_spec}) variable name with the event description
+information, optional}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}

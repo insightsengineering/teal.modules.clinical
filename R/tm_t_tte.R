@@ -47,14 +47,15 @@ control_tte <- function(
 #' @seealso [tm_t_tte()]
 #' @examples
 #'
-template_tte <- function(dataname,
-                         parentname,
+template_tte <- function(anl_name = "ANL",
+                         parent_name = "ADSL_FILTERED",
                          arm_var = "ARM",
                          arm_ref_comp = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
                          combine_comp_arms = FALSE,
-                         paramcd = "OS",
+                         aval = "AVAL",
+                         cnsr = "CNSR",
                          strata_var = NULL,
                          time_points = NULL,
                          time_unit = "Days",
@@ -67,12 +68,11 @@ template_tte <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    anl <- substitute(
-      expr = anl <- df  %>%
-        filter(PARAMCD == paramcd) %>%
+    substitute(
+      expr = anl <- anl %>%
         mutate(
-          is_event = CNSR == 0,
-          is_not_event = CNSR == 1,
+          is_event = cnsr == 0,
+          is_not_event = cnsr == 1,
           EVNT1 = factor(
             case_when(
               is_event == TRUE ~ "Patients with event (%)",
@@ -82,87 +82,64 @@ template_tte <- function(dataname,
           EVNTDESC = factor(event_desc_var)
         ),
       env = list(
-        df = as.name(dataname),
-        paramcd = paramcd,
+        anl = as.name(anl_name),
+        cnsr = as.name(cnsr),
         event_desc_var = as.name(event_desc_var)
       )
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- anl[anl$arm_var %in% c(arm_ref_comp, comp_arm), ],
-      env = list(
-        arm_var = arm_var,
-        arm_ref_comp = arm_ref_comp,
-        comp_arm = comp_arm
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = df <- df[df$arm_var %in% c(arm_ref_comp, comp_arm), ],
-      env = list(
-        df = as.name(parentname),
-        arm_var = arm_var,
-        arm_ref_comp = arm_ref_comp,
-        comp_arm = comp_arm
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl$arm_var <- droplevels(relevel(anl$arm_var, arm_ref_comp)),
-      env = list(
-        arm_var = arm_var,
-        arm_ref_comp = arm_ref_comp
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = df$arm_var <- droplevels(relevel(df$arm_var, arm_ref_comp)),
-      env = list(
-        df = as.name(parentname),
-        arm_var = arm_var,
-        arm_ref_comp = arm_ref_comp
-      )
-    )
-  )
-
-  if (combine_comp_arms) {
+  if (compare_arm) {
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = anl$arm_var <- combine_levels(
-          x = anl$arm_var,
-          levels = comp_arm
-        ),
+        expr = {
+          anl <- filter(anl, arm_var %in% arm_vals);
+          parent <- filter(parent, arm_var %in% arm_vals)
+        },
         env = list(
-          arm_var = arm_var,
-          arm_ref_comp = arm_ref_comp,
-          comp_arm = comp_arm
+          anl = as.name(anl_name),
+          parent = as.name(parent_name),
+          arm_var = as.name(arm_var),
+          arm_vals = c(arm_ref_comp, comp_arm)
         )
       )
     )
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = df$arm_var <- combine_levels(
-          x = df$arm_var,
-          levels = comp_arm
-        ),
+        expr = {
+          anl$arm_var <- droplevels(relevel(anl$arm_var, arm_ref_comp));
+          parent$arm_var <- droplevels(relevel(parent$arm_var, arm_ref_comp))
+        },
         env = list(
-          df = as.name(parentname),
+          anl = as.name(anl_name),
+          parent = as.name(parent_name),
           arm_var = arm_var,
-          arm_ref_comp = arm_ref_comp,
+          arm_ref_comp = arm_ref_comp
+        )
+      )
+    )
+  }
+
+  if (combine_comp_arms) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = {
+          anl$arm_var <- combine_levels(
+            x = anl$arm_var,
+            levels = comp_arm
+          );
+          parent$arm_var <- combine_levels(
+            x = parent$arm_var,
+            levels = comp_arm
+          )
+        },
+        env = list(
+          anl = as.name(anl_name),
+          parent = as.name(parent_name),
+          arm_var = arm_var,
           comp_arm = comp_arm
         )
       )
@@ -202,9 +179,11 @@ template_tte <- function(dataname,
         summarize_row_groups() %>%
         summarize_vars(vars = event_desc_var, .stats = "count") %>%
         summarize_vars(
-          "is_not_event", .stats = "count_fraction",
+          "is_not_event",
+          .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),
-          nested = FALSE, show_labels = "hidden"
+          nested = FALSE,
+          show_labels = "hidden"
         ),
       env = list(
         event_desc_var = event_desc_var
@@ -216,7 +195,7 @@ template_tte <- function(dataname,
     layout_list,
     substitute(
       expr = surv_time(
-        vars = "AVAL",
+        vars = aval,
         var_labels = "Time to Event (Months)",
         is_event = "is_event",
         control = list(
@@ -225,7 +204,10 @@ template_tte <- function(dataname,
           quantiles = quantiles
         )
       ),
-      env = control$surv_time
+      env = c(
+        aval = aval,
+        control$surv_time
+      )
     )
   )
 
@@ -234,7 +216,8 @@ template_tte <- function(dataname,
       layout_list,
       substitute(
         expr = coxph_pairwise(
-          vars = "AVAL", is_event = "is_event",
+          vars = aval,
+          is_event = "is_event",
           var_labels = c("Unstratified Analysis"),
           control = list(
             pval_method = pval_method,
@@ -242,7 +225,10 @@ template_tte <- function(dataname,
             conf_level = conf_level
           )
         ),
-        env = control$coxph
+        env = c(
+          aval = aval,
+          control$coxph
+        )
       )
     )
   }
@@ -252,7 +238,8 @@ template_tte <- function(dataname,
       layout_list,
       substitute(
         expr = coxph_pairwise(
-          vars = "AVAL", is_event = "is_event",
+          vars = aval,
+          is_event = "is_event",
           var_labels = c("Stratified Analysis"),
           strat = strata_var,
           control = control_coxph(
@@ -262,6 +249,7 @@ template_tte <- function(dataname,
           )
         ),
         env = list(
+          aval = aval,
           strata_var = strata_var,
           pval_method = control$coxph$pval_method,
           ties = control$coxph$ties,
@@ -277,13 +265,14 @@ template_tte <- function(dataname,
       layout_list,
       substitute(
         expr = surv_timepoint(
-          vars = "AVAL",
+          vars = aval,
           var_labels = time_unit,
           is_event = "is_event",
           time_point = time_points,
           method = method
         ),
         env = list(
+          aval = aval,
           time_points = time_points,
           method = method,
           time_unit = time_unit
@@ -298,13 +287,13 @@ template_tte <- function(dataname,
   )
 
   col_counts <- substitute(
-    expr = table(parentname$arm_var),
-    env = list(parentname = as.name(parentname), arm_var = arm_var)
+    expr = table(adsl$arm_var),
+    env = list(adsl = as.name(parent_name), arm_var = arm_var)
   )
 
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
-    env = list(col_counts = col_counts)
+    env = list(anl = as.name(anl_name), col_counts = col_counts)
   )
 
   y
@@ -319,23 +308,28 @@ template_tte <- function(dataname,
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form with the
 #'   \code{PARAMCD} variable filtering to one observation per patient.
-#' @param arm_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as \code{arm_var}
-#' @param arm_ref_comp (\code{\link[teal]{choices_selected}}) optional, if specified it must be a named list with each
-#'   element corresponding to an arm variable in \code{ADSL} and the element must
+#' @param parent_name (\code{character}) name of \code{ADSL} dataset used in the analysis.
+#' @param arm_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for variable names that can be used as \code{arm_var}
+#' @param arm_ref_comp (\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
+#'   list with each element corresponding to an arm variable in \code{ADSL} and the element must
 #'   be another list with the elements named \code{ref} and \code{comp} that the
 #'   defined the default reference and comparison arms when the arm variable is
 #'   changed.
-#' @param paramcd \code{\link[teal]{choices_selected}} object with all available choices and preselected option for
-#' variable names that can be used as \code{PARAMCD} variable
-#' @param strata_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for stratification
-#' @param time_points \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used \code{REFACTOR}
+#' @param paramcd (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for variable names that can be used as \code{PARAMCD} variable
+#' @param strata_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
+#'   choices and preselected option for variable names that can be used for stratification
+#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for analysis variable
+#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for censor variable
+#' @param time_points (\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
+#'   for variable names that can be used \code{REFACTOR}
 #' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
 #'   of months
-#' @param event_desc_var (\code{character}) variable name with the event description information,
-#'   optional
+#' @param event_desc_var (\code{character} or \code{data_extract_spec}) variable name with the event description
+#'   information, optional
 #'
 #' @details This module produces a response summary table that is similar to
 #'   STREAM template \code{ttet01}. The core functionality is based on
@@ -385,13 +379,22 @@ template_tte <- function(dataname,
 #'         tm_t_tte(
 #'             label = "Time To Event Table",
 #'             dataname = 'ADTTE',
-#'             arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+#'             arm_var = choices_selected(
+#'               variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'               "ARM"),
 #'             arm_ref_comp = arm_ref_comp,
-#'             paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-#'             strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX"),
+#'             paramcd = choices_selected(
+#'               value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'               "OS"),
+#'             strata_var = choices_selected(
+#'               variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'               "SEX"),
 #'             time_points = choices_selected(c(6, 8), 6),
 #'             time_unit = "month",
-#'             event_desc_var = "EVNTDESC"
+#'             event_desc_var = choices_selected(
+#'               variable_choices(ADTTE, "EVNTDESC"),
+#'               "EVNTDESC",
+#'               fixed = TRUE)
 #'         )
 #'     )
 #' )
@@ -401,38 +404,75 @@ template_tte <- function(dataname,
 #' }
 tm_t_tte <- function(label,
                      dataname,
+                     parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                      arm_var,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
+                     aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+                     cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                      time_points,
                      time_unit = "months",
-                     event_desc_var = NULL,
+                     event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      pre_output = NULL,
                      post_output = NULL
 ) {
 
   stopifnot(length(dataname) == 1)
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(paramcd))
-  stopifnot(is.choices_selected(strata_var))
+  stopifnot(is.cs_or_des(arm_var))
+  stopifnot(is.cs_or_des(paramcd))
+  stopifnot(is.cs_or_des(strata_var))
+  stopifnot(is.cs_or_des(event_desc_var))
   stopifnot(is.choices_selected(time_points))
 
+  # Convert choices-selected to data_extract_spec
+  if (is.choices_selected(arm_var)) {
+    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
+  }
+  if (is.choices_selected(paramcd)) {
+    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(aval_var)) {
+    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(cnsr_var)) {
+    cnsr_var <- cs_to_des_select(cnsr_var, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(strata_var)) {
+    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+  }
+  if (is.choices_selected(event_desc_var)) {
+    event_desc_var <- cs_to_des_select(event_desc_var, dataname = dataname, multiple = FALSE)
+  }
+
   args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm = arm_var,
+    paramcd = paramcd,
+    aval = aval_var,
+    cnsr = cnsr_var,
+    strata = strata_var,
+    event_desc = event_desc_var
+  )
 
   module(
     label = label,
     server = srv_t_tte,
     ui = ui_t_tte,
     ui_args = args,
-    server_args = list(
-      dataname = dataname,
-      arm_ref_comp = arm_ref_comp,
-      time_unit = time_unit,
-      event_desc_var = event_desc_var,
-      label = label
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        arm_ref_comp = arm_ref_comp,
+        time_unit = time_unit,
+        event_desc_var = event_desc_var,
+        label = label
+      )
     ),
-    filters = dataname
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
@@ -440,6 +480,7 @@ tm_t_tte <- function(label,
 ui_t_tte <- function(id, ...) {
 
   a <- list(...) # module args
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval, a$cnsr, a$strata, a$event_desc_var)
 
   ns <- NS(id)
 
@@ -447,22 +488,30 @@ ui_t_tte <- function(id, ...) {
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(
-        ns("paramcd"),
-        "Select Endpoint",
-        a$paramcd$choices,
-        a$paramcd$selected,
-        multiple = FALSE,
-        fixed = a$paramcd$fixed
+      datanames_input(a[c("arm_var", "paramcd", "aval", "cnsr", "strata", "event_desc_var")]),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        a$arm_var$choices,
-        a$arm_var$selected,
-        multiple = FALSE,
-        fixed = a$arm_var$fixed
+      data_extract_input(
+        id = ns("aval"),
+        label = "Analysis Variable",
+        data_extract_spec = a$aval,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("cnsr"),
+        label = "Censor Variable",
+        data_extract_spec = a$cnsr,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
       ),
       div(
         class = "arm-comp-box",
@@ -495,14 +544,11 @@ ui_t_tte <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            optionalSelectInput(
-              ns("strata_var"),
-              "Stratify by",
-              a$strata_var$choices,
-              a$strata_var$selected,
-              multiple = TRUE,
-              label_help = helpText("from ", tags$code("ADSL")),
-              fixed = a$strata_var$fixed
+            data_extract_input(
+              id = ns("strata_var"),
+              label = "Stratify by",
+              data_extract_spec = a$strata,
+              is_single_dataset = is_single_dataset_value
             )
           )
         )
@@ -514,9 +560,12 @@ ui_t_tte <- function(id, ...) {
                           multiple = TRUE,
                           fixed = a$time_points$fixed
       ),
-      if (!is.null(a$event_desc_var)) {
-        helpText("Event Description Variable: ", tags$code(a$event_desc_var))
-      },
+      data_extract_input(
+        id = ns("event_desc"),
+        label = "Event Description Variable",
+        data_extract_spec = a$event_desc_var,
+        is_single_dataset = is_single_dataset_value
+      ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         panel_item(
@@ -614,7 +663,7 @@ ui_t_tte <- function(id, ...) {
         )
       )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -626,7 +675,14 @@ srv_t_tte <- function(input,
                       output,
                       session,
                       datasets,
+                      arm,
+                      paramcd,
+                      aval,
+                      cnsr,
+                      strata,
+                      event_desc,
                       dataname,
+                      parent_name,
                       arm_ref_comp,
                       time_unit,
                       event_desc_var,
@@ -640,29 +696,53 @@ srv_t_tte <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = "arm_var", # from UI
+    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"), # from UI
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
     on_off = reactive(input$compare_arms)
   )
 
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm, paramcd, aval, cnsr, strata, event_desc),
+    input_id = c("arm_var", "paramcd", "aval", "cnsr", "strata_var", "event_desc"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm, strata),
+    input_id = c("arm_var", "strata_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+
+
   # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_event_desc <- as.vector(anl_m$columns_source$event_desc)
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input$arm_var, input$strata_var),
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", input$event_desc_var),
-      arm_var = input$arm_var
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var, input_event_desc),
+      arm_var = input_arm_var
     )
 
     # validate arm levels
-    if (length(input$arm_var) > 0 && length(unique(adsl_filtered[[input$arm_var]])) == 1) {
+    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       if (input$compare_arms) {
         validate_args <- append(validate_args, list(ref_arm = input$ref_arm))
@@ -675,29 +755,39 @@ srv_t_tte <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    # Send data where the analysis lives.
-    e <- new.env()
-    e$ADTTE_FILTERED <- anl_filtered # nolint
-    e$ADSL_FILTERED <- adsl_filtered # nolint
-    e
+    NULL
   })
 
   # The R-code corresponding to the analysis.
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    ANL <- chunks_get_var("ANL") # nolint
+    validate_has_data(ANL, 10)
+
     my_calls <- template_tte(
-      dataname = "ADTTE_FILTERED",
-      parentname = "ADSL_FILTERED",
-      arm_var = input$arm_var,
+      anl_name = "ANL",
+      parent_name = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
       arm_ref_comp = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      paramcd = input$paramcd,
-      strata_var = input$strata_var,
+      aval = as.vector(anl_m$columns_source$aval),
+      cnsr = as.vector(anl_m$columns_source$cnsr),
+      strata_var = as.vector(anl_m$columns_source$strata_var),
       time_points = as.numeric(input$time_points),
       time_unit = "Days",
-      event_desc_var = "EVNTDESC",
+      event_desc_var = as.vector(anl_m$columns_source$event_desc),
       control = control_tte(
         coxph = control_coxph(
           pval_method = input$pval_method_coxph,
@@ -724,15 +814,12 @@ srv_t_tte <- function(input,
     as_html(chunks_get_var("result"))
   })
 
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "Cross Table",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = label
-      )
-    )
-  })
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(arm, paramcd, strata, event_desc)),
+    modal_title = label
+  )
 
 }

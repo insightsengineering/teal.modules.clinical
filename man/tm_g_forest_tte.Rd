@@ -29,17 +29,17 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used as the default subgroups}
 
-\item{paramcd}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option for
-variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{PARAMCD} variable}
 
-\item{strata_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for stratification}
+\item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
+choices and preselected option for variable names that can be used for stratification}
 
 \item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for confidence level, each within range of (0, 1).}
