@@ -22,9 +22,13 @@
 #' @param combine_arm (`flag`)\cr re-arrange arms in two groups, i.e. reference and treatment.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
+#' @param combine_comp_arms (`flag`)\cr triggers the combination of comparison arms.
 #' @param parentname (`string`)\cr parent analysis data used in teal module,
 #'   usually this refers to `"ADSL"`.
+#' @param parent_name (`string`)\cr parent analysis data used in teal module,
+#'   usually this refers to `"ADSL"`.
 #' @param dataname (`string`)\cr analysis data used in teal module.
+#' @param anl_name (`string`)\cr analysis data used in teal module.
 #' @param label (\code{character})\cr menu item label of the module in the teal app
 #' @param param (`string` or `choices_selected` with teal module)\cr
 #'   variable value designating the studied parameter.

@@ -23,10 +23,17 @@ variable name for subject id.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
+\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
+
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
+
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
+
+\item{anl_name}{(\code{string})\cr analysis data used in teal module.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 

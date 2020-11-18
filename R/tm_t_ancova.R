@@ -2,6 +2,7 @@
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams argument_convention
+#' @inheritParams tm_t_tte
 #' @name tm_t_ancova
 #'
 NULL
@@ -10,51 +11,100 @@ NULL
 #'
 #' Creates a valid expression for analysis of variance summary table.
 #'
-template_ancova <- function(parentname, # nousage
-                            dataname,
+template_ancova <- function(anl_name = "ANL",
+                            parent_name = "ADSL_FILTERED",
                             arm_var,
-                            ref_arm,
-                            cov_var,
+                            arm_ref_comp = NULL,
+                            comp_arm = NULL,
+                            combine_comp_arms = FALSE,
                             aval_var,
-                            avisit,
+                            cov_var,
                             paramcd,
                             conf_level = 0.95
 ) {
 
+  assert_that(
+    is.string(anl_name),
+    is.string(parent_name),
+    is.string(arm_var),
+    is.flag(combine_comp_arms),
+    is.string(aval_var),
+    is.character(cov_var)
+  )
+
   y <- list()
 
   # Data processing.
-  y$data <- substitute(
-    expr = anl <- df %>%
-      filter(AVISIT %in% avisit & PARAMCD %in% paramcd) %>%
-      droplevels(),
-    env = list(
-      df = as.name(dataname),
-      avisit = avisit,
-      paramcd = paramcd
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = {
+        anl <- filter(anl, arm_var %in% arm_vals);
+        parent <- filter(parent, arm_var %in% arm_vals)
+      },
+      env = list(
+        anl = as.name(anl_name),
+        parent = as.name(parent_name),
+        arm_var = as.name(arm_var),
+        arm_vals = c(arm_ref_comp, comp_arm)
+      )
     )
   )
-
-  # Build layout.
-  layout_list <- list()
-
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
-
-  layout_list <- add_expr(
-    layout_list,
+  data_list <- add_expr(
+    data_list,
     substitute(
-      expr = split_cols_by(var = arm_var, ref_group = ref_arm),
+      expr = {
+        anl$arm_var <- droplevels(relevel(anl$arm_var, arm_ref_comp));
+        parent$arm_var <- droplevels(relevel(parent$arm_var, arm_ref_comp))
+      },
       env = list(
+        anl = as.name(anl_name),
+        parent = as.name(parent_name),
         arm_var = arm_var,
-        ref_arm = ref_arm
+        arm_ref_comp = arm_ref_comp
       )
     )
   )
 
+  if (combine_comp_arms) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = {
+          anl$arm_var <- combine_levels(
+            x = anl$arm_var,
+            levels = comp_arm
+          );
+          parent$arm_var <- combine_levels(
+            x = parent$arm_var,
+            levels = comp_arm
+          )
+        },
+        env = list(
+          anl = as.name(anl_name),
+          parent = as.name(parent_name),
+          arm_var = arm_var,
+          comp_arm = comp_arm
+        )
+      )
+    )
+  }
+
+  y$data <- bracket_expr(data_list)
+
+  # Build layout.
+  layout_list <- list()
+
+  layout_list <- add_expr(layout_list, quote(basic_table()))
+
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by("AVISIT", split_fun = drop_split_levels)
+      expr = split_cols_by(var = arm_var, ref_group = arm_ref_comp) %>%
+        split_rows_by("AVISIT", split_fun = drop_split_levels),
+      env = list(arm_var = arm_var, arm_ref_comp = arm_ref_comp)
     )
   )
 
@@ -62,7 +112,7 @@ template_ancova <- function(parentname, # nousage
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by("PARAMCD") %>%
+        split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -89,14 +139,14 @@ template_ancova <- function(parentname, # nousage
           var_labels = "Unadjusted comparison",
           .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means")
         ) %>%
-        summarize_ancova(
-          vars = aval_var,
-          variables = list(arm = arm_var, covariates = cov_var),
-          conf_level = conf_level,
-          var_labels = paste0(
-            "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-          )
-        ),
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = paste0(
+              "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
+            )
+          ),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
@@ -114,12 +164,12 @@ template_ancova <- function(parentname, # nousage
 
   # Build table.
   col_counts <- substitute(
-    expr = table(droplevels(parentname$arm_var)),
-    env = list(parentname = as.name(parentname), arm_var = arm_var)
+    expr = table(parent$arm_var),
+    env = list(parent = as.name(parent_name), arm_var = arm_var)
   )
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
-    env = list(col_counts = col_counts)
+    env = list(anl = as.name(anl_name), col_counts = col_counts)
   )
 
   y
@@ -132,8 +182,10 @@ template_ancova <- function(parentname, # nousage
 #' @inheritParams tm_t_tte
 #'
 #' @details This module produces an analysis of variance summary table that is
-#' similar to STREAM template `aovt01`. This modules expects that the analysis
-#' data has the following variables:
+#' similar to STREAM template `aovt01` when multiple endpoints are selected.
+#' When a single endpoint is selected, both unadjusted and adjusted comparison
+#' would be provided. This modules expects that the analysis data has the
+#' following variables:
 #'
 #' \tabular{ll}{
 #'  `AVISIT` \tab variable used to filter for analysis visits.\cr
@@ -153,6 +205,17 @@ template_ancova <- function(parentname, # nousage
 #' adsl <- radsl(cached = TRUE)
 #' adqs <- radqs(cached = TRUE)
 #'
+#' arm_ref_comp = list(
+#'   ARM = list(
+#'     ref = "B: Placebo",
+#'     comp = c("A: Drug X", "C: Combination")
+#'   ),
+#'   ACTARMCD = list(
+#'     ref = "ARM B",
+#'     comp = c("ARM A", "ARM C")
+#'   )
+#' )
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
@@ -169,10 +232,17 @@ template_ancova <- function(parentname, # nousage
 #'         choices = value_choices(adqs, "AVISIT"),
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
-#'       aval_var = choices_selected(c("CHG", "AVAL"), "CHG"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(adsl, c("ARM", "ACTARMCD")),
+#'         selected = "ARMCD"
+#'       ),
+#'       arm_ref_comp = arm_ref_comp,
+#'       aval_var = choices_selected(
+#'         choices = variable_choices(adqs, c("CHG", "AVAL")),
+#'         selected = "CHG"
+#'       ),
 #'       cov_var = choices_selected(
-#'         choices = variable_choices(adqs, subset = c("BASE", "STRATA1", "SEX")),
+#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
 #'         selected = "STRATA1"
 #'       ),
 #'       paramcd = choices_selected(
@@ -189,6 +259,7 @@ template_ancova <- function(parentname, # nousage
 #'
 tm_t_ancova <- function(label,
                         dataname,
+                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         arm_ref_comp = NULL,
                         aval_var,
@@ -200,64 +271,96 @@ tm_t_ancova <- function(label,
 ) {
 
   stopifnot(length(dataname) == 1)
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(aval_var))
-  stopifnot(is.choices_selected(cov_var))
-  stopifnot(is.choices_selected(avisit))
-  stopifnot(is.choices_selected(paramcd))
+  stopifnot(is.cs_or_des(arm_var))
+  stopifnot(is.cs_or_des(aval_var))
+  stopifnot(is.cs_or_des(cov_var))
+  stopifnot(is.cs_or_des(avisit))
+  stopifnot(is.cs_or_des(paramcd))
+
+  # Convert choices-selected to data_extract_spec.
+  if (is.choices_selected(arm_var)) {
+    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
+  }
+  if (is.choices_selected(aval_var)) {
+    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(cov_var)) {
+    cov_var <- cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+  }
+  if (is.choices_selected(avisit)) {
+    avisit <- cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE)
+  }
+  if (is.choices_selected(paramcd)) {
+    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
+  }
 
   args <- c(as.list(environment()))
+
+  data_extract_list <- list(
+    arm_var = arm_var,
+    aval_var = aval_var,
+    cov_var = cov_var,
+    avisit = avisit,
+    paramcd = paramcd
+  )
 
   module(
     label = label,
     ui = ui_ancova,
     ui_args = args,
     server = srv_ancova,
-    server_args = args,
-    filters = dataname
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        arm_ref_comp = arm_ref_comp,
+        label = label
+      )
+    ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
-#' @noRd
-ui_ancova <- function(id,
-                      datasets,
-                      dataname,
-                      ...) {
+#' @import teal.devel
+#'
+ui_ancova <- function(id, ...) {
+
   args <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    args$arm_var, args$aval_var, args$cov_var, args$avisit, args$paramcd
+  )
+
   ns <- NS(id)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(dataname)),
-      optionalSelectInput(
-        ns("avisit"), "Analysis Visit",
-        choices = args$avisit$choices,
-        selected = args$avisit$selected,
-        multiple = TRUE,
-        fixed = args$avisit$fixed
+      datanames_input(args[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      data_extract_input(
+        id = ns("avisit"),
+        label = "Analysis Visit",
+        data_extract_spec = args$avisit,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("paramcd"), "Select Endpoint",
-        choices = args$paramcd$choices,
-        selected = args$paramcd$selected,
-        multiple = TRUE,
-        fixed = args$paramcd$fixed
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = args$paramcd,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("aval_var"), "Analysis Variable",
-        choices = args$aval_var$choices,
-        selected = args$aval_var$selected,
-        multiple = FALSE,
-        fixed = args$aval_var$fixed
+      data_extract_input(
+        id = ns("aval_var"),
+        label = "Analysis Variable",
+        data_extract_spec = args$aval_var,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("arm_var"), "Arm Variable",
-        choices = args$arm_var$choices,
-        selected = args$arm_var$selected,
-        multiple = FALSE,
-        fixed = args$arm_var$fixed
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = args$arm_var,
+        is_single_dataset = is_single_dataset_value
       ),
       selectInput(
         ns("ref_arm"),
@@ -279,12 +382,11 @@ ui_ancova <- function(id,
         "Combine all comparison groups?",
         value = FALSE
       ),
-      optionalSelectInput(
-        ns("cov_var"), "Covariates",
-        choices = args$cov_var$choices,
-        selected = args$cov_var$selected,
-        multiple = TRUE,
-        fixed = args$cov_var$fixed
+      data_extract_input(
+        id = ns("cov_var"),
+        label = "Covariates",
+        data_extract_spec = args$cov_var,
+        is_single_dataset = is_single_dataset_value
       ),
       numericInput(
         inputId = ns("conf_level"),
@@ -296,74 +398,113 @@ ui_ancova <- function(id,
         width = "100%"
       )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
 }
 
-#' @noRd
+#' @import teal.devel
+#' @importFrom rtables as_html
+#'
 srv_ancova <- function(input,
                        output,
                        session,
                        datasets,
                        dataname,
+                       parent_name,
+                       arm_var,
                        arm_ref_comp,
-                       label,
-                       ...) {
+                       aval_var,
+                       cov_var,
+                       paramcd,
+                       avisit,
+                       label) {
 
   init_chunks()
 
+  # Setup arm variable selection, default reference arms, and default
+  # comparison arms for encoding panel.
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = "arm_var",
+    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_ancova"
   )
 
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, aval_var, cov_var, avisit, paramcd),
+    input_id = c("arm_var", "aval_var", "cov_var", "avisit", "paramcd"),
+    merge_function = "dplyr::inner_join"
+  )
 
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = "arm_var",
+    anl_name = "ANL_ADSL"
+  )
+
+  # Prepare the analysis environment (filter data, check data, populate envir).
+  validate_checks <- reactive({
+
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
 
     # Validate inputs.
     validate_args <- list(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input$arm_var),
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input$aval_var, input$cov_var),
-      arm_var = input$arm_var
+      anlvars = c("USUBJID", "STUDYID", "AVISIT", "PARAMCD", input_aval_var, input_cov_var),
+      arm_var = input_arm_var
     )
-
-    # Validate arm levels - comparison is needed for this module.
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     do.call(what = "validate_standard_inputs", validate_args)
 
-    # Send data where the analysis lives.
-    anl_name <- paste0(dataname, "_FILTERED")
+    # Validate arm levels - comparison is needed for this module.
+    validate(need(
+      length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
+      "ANCOVA table needs at least 2 arm groups to make comparisons."
+    ))
 
-    e <- new.env()
-    e$ADSL_FILTERED <- adsl_filtered # nolint
-    assign(anl_name, anl_filtered, envir = e)
-    e
   })
 
   # The R-code corresponding to the analysis.
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    ANL <- chunks_get_var("ANL") # nolint
+    validate_has_data(ANL, 10)
+
     my_calls <- template_ancova(
-      parentname = "ADSL_FILTERED",
-      dataname = paste0(dataname, "_FILTERED"),
-      arm_var = input$arm_var,
-      ref_arm = input$ref_arm,
-      cov_var = input$cov_var,
-      aval_var = input$aval_var,
-      avisit = input$avisit,
-      paramcd = input$paramcd,
+      parent_name = "ANL_ADSL",
+      anl_name = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_ref_comp = input$ref_arm,
+      comp_arm = input$comp_arm,
+      combine_comp_arms = input$combine_comp_arms,
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cov_var = as.vector(anl_m$columns_source$cov_var),
+      paramcd = unique(ANL[["PARAMCD"]]),
       conf_level = as.numeric(input$conf_level)
     )
     mapply(expression = my_calls, chunks_push)
@@ -377,10 +518,13 @@ srv_ancova <- function(input,
   })
 
   # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "ANCOVA",
-      rcode = get_rcode(datasets = datasets, title = label)
-    )
-  })
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(
+      list(arm_var, aval_var, cov_var, avisit, paramcd)
+    ),
+    modal_title = label
+  )
 }

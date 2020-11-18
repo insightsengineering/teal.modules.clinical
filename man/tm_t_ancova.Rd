@@ -7,6 +7,8 @@
 tm_t_ancova(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   aval_var,
@@ -21,6 +23,9 @@ tm_t_ancova(
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -56,8 +61,10 @@ ANCOVA Teal Module
 }
 \details{
 This module produces an analysis of variance summary table that is
-similar to STREAM template \code{aovt01}. This modules expects that the analysis
-data has the following variables:
+similar to STREAM template \code{aovt01} when multiple endpoints are selected.
+When a single endpoint is selected, both unadjusted and adjusted comparison
+would be provided. This modules expects that the analysis data has the
+following variables:
 
 \tabular{ll}{
 \code{AVISIT} \tab variable used to filter for analysis visits.\cr
@@ -79,6 +86,17 @@ library(random.cdisc.data)
 adsl <- radsl(cached = TRUE)
 adqs <- radqs(cached = TRUE)
 
+arm_ref_comp = list(
+  ARM = list(
+    ref = "B: Placebo",
+    comp = c("A: Drug X", "C: Combination")
+  ),
+  ACTARMCD = list(
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
+  )
+)
+
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
@@ -95,10 +113,17 @@ app <- init(
         choices = value_choices(adqs, "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),
-      aval_var = choices_selected(c("CHG", "AVAL"), "CHG"),
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, c("ARM", "ACTARMCD")),
+        selected = "ARMCD"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      aval_var = choices_selected(
+        choices = variable_choices(adqs, c("CHG", "AVAL")),
+        selected = "CHG"
+      ),
       cov_var = choices_selected(
-        choices = variable_choices(adqs, subset = c("BASE", "STRATA1", "SEX")),
+        choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
         selected = "STRATA1"
       ),
       paramcd = choices_selected(

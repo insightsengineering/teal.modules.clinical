@@ -22,7 +22,10 @@ template_tte(
 )
 }
 \arguments{
-\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{anl_name}{(\code{string})\cr analysis data used in teal module.}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -35,6 +38,8 @@ that the defined the default reference and comparison arms when the arm
 variable is changed.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+
+\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
