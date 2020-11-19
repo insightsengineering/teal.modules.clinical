@@ -35,7 +35,7 @@ test_that("template_summary_by generates correct expressions", {
       col_counts = c(table(adsl$ARM), sum(table(adsl$ARM)))
     ))
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
@@ -75,7 +75,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
                                         )
     )
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_summary_by generates correct expressions when `row_groups` is true", {
@@ -103,5 +103,5 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       summarize_row_groups()),
     table = quote(result <- build_table(lyt = lyt, df = anl, col_counts = table(adsl$ARM))))
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

@@ -56,7 +56,7 @@ test_that("template_events generates correct expressions", {
         )
     })
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_events can generate customized table", {
@@ -102,7 +102,7 @@ test_that("template_events can generate customized table", {
         sort_at_path(path =  c("CMDECOD"), scorefun = score_occurrences)
     })
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_events can generate customized table with alphabetical sorting", {
@@ -159,7 +159,7 @@ test_that("template_events can generate customized table with alphabetical sorti
       pruned_and_sorted_result <- pruned_result
     })
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_events can generate customized table with pruning", {
@@ -232,5 +232,5 @@ test_that("template_events can generate customized table with pruning", {
 
     })
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

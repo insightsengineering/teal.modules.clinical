@@ -1,4 +1,3 @@
-
 test_that("template_rsp generates standard expressions", {
   result <- template_rsp(
     dataname = "adrs",
@@ -42,7 +41,7 @@ test_that("template_rsp generates standard expressions", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 
@@ -84,7 +83,7 @@ test_that("template_rsp generates right expressions with non-default", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_rsp generates expression without arm comparison", {
@@ -118,7 +117,7 @@ test_that("template_rsp generates expression without arm comparison", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 
@@ -176,7 +175,7 @@ test_that("template_rsp generates expression with non-default controls.", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_rsp can combine arms", {
@@ -228,5 +227,5 @@ test_that("template_rsp can combine arms", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

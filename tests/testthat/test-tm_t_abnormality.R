@@ -11,7 +11,6 @@ test_that("template_abnormality generates correct expressions with default argum
     add_total = FALSE
   )
 
-
   expected <- list(
     data = quote({
       anl <- adlb %>% filter(ONTRTFL == "Y" & !is.na(ANRIND))
@@ -32,7 +31,7 @@ test_that("template_abnormality generates correct expressions with default argum
         prune_table()
     )
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_abnormality generates correct expressions with custom arguments", {
@@ -67,5 +66,5 @@ test_that("template_abnormality generates correct expressions with custom argume
         prune_table()
     )
   )
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

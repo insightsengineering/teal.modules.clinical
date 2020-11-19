@@ -1,4 +1,3 @@
-
 test_that("template_ancova generates expressions with multiple endpoints", {
   result <- template_ancova(
     anl_name = "adqs",
@@ -35,7 +34,7 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_ancova generates expressions with multiple endpoints with combined arms", {
@@ -76,7 +75,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_ancova generates expressions with single endpoint", {
@@ -123,5 +122,5 @@ test_that("template_ancova generates expressions with single endpoint", {
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

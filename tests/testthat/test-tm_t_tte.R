@@ -1,4 +1,3 @@
-
 test_that("template_tte healthy standard output", {
 
   result <- template_tte(
@@ -72,5 +71,5 @@ test_that("template_tte healthy standard output", {
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })

@@ -1,4 +1,3 @@
-
 test_that("template_events_patyear generates standard expressions", {
   result <- template_events_patyear(
     dataname = "adaette",
@@ -40,7 +39,7 @@ test_that("template_events_patyear generates standard expressions", {
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_events_patyear generates right expressions with non-default", {
@@ -83,7 +82,7 @@ test_that("template_events_patyear generates right expressions with non-default"
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_events_patyear generates right expressions with non-default controls", {
@@ -131,5 +130,5 @@ test_that("template_events_patyear generates right expressions with non-default 
     )
   )
 
-  expect_equal(result, expected)
+  expect_equal_expr_list(result, expected)
 })
