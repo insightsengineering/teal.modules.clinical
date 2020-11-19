@@ -339,45 +339,55 @@ is.cs_or_des <- function(x) { # nolint
   is.choices_selected(x) || is(x, "data_extract_spec")
 }
 
+#' Split-Column Expression
+#'
+#' Renders the expression for column split in `rtables` depending on:
+#' - the expected or not arm comparison
+#' - the expected or not arm combination
+#'
+#' @param compare (`flag`)\cr if `TRUE` the reference level is included.
+#' @param combine (`flag`)\cr if `TRUE` the group combination is included.
+#' @param ref (`string`)\cr the reference level (not used for `combine = TRUE`).
+#' @param group (`string`)\cr the grouping variable name.
+#'
+split_col_expr <- function(compare, combine, ref, group) {
 
-#' Reference and Treatment Group Combination
-#'
-#' Facilitate the re-combination of groups divided as reference and
-#' treatment groups; it helps in arranging groups of
-#' columns in the `rtables` framework and `teal.module`.
-#'
-#' @inheritParams base::paste
-#' @param fct (`factor`)\cr the variable with levels which needs to be grouped.
-#' @param ref (`string`)\cr the reference level(s).
-#'
-#' @export
-#' @return a `list` with first item `ref` (reference) and second item `trt`
-#'   (treatment).
-#'
-#' @examples
-#'
-#' library(rtables)
-#'
-#' groups <- combine_groups(
-#'   fct = DM$ARM,
-#'   ref = c("B: Placebo")
-#' )
-#'
-#' basic_table() %>%
-#'   split_cols_by_groups("ARM", groups) %>%
-#'   add_colcounts() %>%
-#'   summarize_vars("AGE") %>%
-#'   build_table(DM)
-#'
-combine_groups <- function(fct,
-                           ref = NULL,
-                           collapse = "/"
-) {
-  group_levels <- levels(fct)
-  if (is.null(ref)) ref <- group_levels[1]
-  groups <- list(
-    ref = group_levels[group_levels %in% ref],
-    trt = group_levels[!group_levels %in% ref]
-  )
-  setNames(groups, nm = lapply(groups, paste, collapse = collapse))
+  if  (compare & combine) {
+    substitute(
+      expr = split_cols_by_groups(
+        var = group,
+        groups_list = groups,
+        ref_group = names(groups)[1]
+      ),
+      env = list(
+        group = group
+      )
+    )
+  } else if (compare & !combine) {
+    substitute(
+      expr = split_cols_by(
+        var = group,
+        ref_group = ref
+      ),
+      env = list(
+        group = group,
+        ref = ref
+      )
+    )
+  } else if (!compare & combine) {
+    substitute(
+      expr = split_cols_by_groups(
+        var = group,
+        groups_list = groups
+      ),
+      env = list(
+        group = group
+      )
+    )
+  } else if (!compare & !combine) {
+    substitute(
+      expr = split_cols_by(var = group),
+      env = list(group = group)
+    )
+  }
 }

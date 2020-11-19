@@ -41,6 +41,7 @@ test_that("template_rsp generates standard expressions", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
+
   expect_equal_expr_list(result, expected)
 })
 
@@ -175,6 +176,7 @@ test_that("template_rsp generates expression with non-default controls.", {
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
+
   expect_equal_expr_list(result, expected)
 })
 
@@ -227,5 +229,21 @@ test_that("template_rsp can combine arms", {
     table = quote(result <- build_table(lyt = lyt, df = anl))
   )
 
+  expect_equal_expr_list(result, expected)
+})
+
+test_that("split_col_expr prepare the right four possible expressions", {
+  result <- list(
+    split_col_expr(compare = TRUE, combine = TRUE, group = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = TRUE, combine = FALSE, group = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = FALSE, combine = TRUE, group = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = FALSE, combine = FALSE, group = "ARMCD", ref = "ARM C")
+  )
+  expected <- list(
+    quote(split_cols_by_groups(var = "ARMCD", groups_list = groups, ref_group = names(groups)[1])),
+    quote(split_cols_by(var = "ARMCD", ref_group = "ARM C")),
+    quote(split_cols_by_groups(var = "ARMCD", groups_list = groups)),
+    quote(split_cols_by(var = "ARMCD"))
+  )
   expect_equal_expr_list(result, expected)
 })

@@ -2,7 +2,6 @@
 
 export(add_expr)
 export(bracket_expr)
-export(combine_groups)
 export(h_concat_expr)
 export(pipe_expr)
 export(styled_expr)

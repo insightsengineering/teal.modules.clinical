@@ -111,34 +111,16 @@ template_rsp <- function(dataname,
 
   layout_list <- add_expr(layout_list, substitute(basic_table()))
 
-  # There are 4 possible column split patterns depending on
-  # the 4 combination of boolean compare_arm and combine_arm.
   layout_list <- add_expr(
     layout_list,
-    if (compare_arm & combine_arm) {
-      substitute(
-        expr = split_cols_by_groups(
-          var = arm_var, groups_list = groups, ref_group = names(groups)[1]
-        ),
-        env = list(arm_var = arm_var)
+    split_col_expr(
+      compare = compare_arm,
+      combine = combine_arm,
+      group = arm_var,
+      ref = ref_arm
       )
-    } else if (compare_arm & !combine_arm) {
-      substitute(
-        expr = split_cols_by(var = arm_var, ref_group = ref_arm),
-        env = list(arm_var = arm_var, ref_arm = ref_arm)
-      )
-    } else if (!compare_arm & combine_arm) {
-      substitute(
-        expr = split_cols_by_groups(var = arm_var, groups_list = groups),
-        env = list(arm_var = arm_var)
-      )
-    } else if (!compare_arm & !combine_arm) {
-      substitute(
-        expr = split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var)
-      )
-    }
   )
+
 
   layout_list <- add_expr(
     layout_list,
@@ -244,6 +226,7 @@ template_rsp <- function(dataname,
 }
 
 #' @noRd
+#'
 ui_rsp <- function(id,
                    datasets,
                    dataname,
@@ -418,6 +401,7 @@ ui_rsp <- function(id,
 }
 
 #' @noRd
+#'
 srv_rsp <- function(input,
                     output,
                     session,
