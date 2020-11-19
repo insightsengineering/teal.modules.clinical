@@ -23,6 +23,7 @@ Depends:
   tern (>= 0.6.9)
 Imports:
   assertthat,
+  broom,
   grid,
   gridExtra,
   magrittr,
