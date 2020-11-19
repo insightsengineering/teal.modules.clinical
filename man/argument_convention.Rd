@@ -80,8 +80,15 @@ name of the variable with high level term for events.}
 \item{llt}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable with low level term for events.}
 
+\item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
+for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+
 \item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names used to split the summary by rows.}
+
+\item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+
+\item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

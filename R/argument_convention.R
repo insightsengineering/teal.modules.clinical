@@ -58,9 +58,12 @@
 #'   name of the variable with high level term for events.
 #' @param llt (`string` or `choices_selected` with teal module)\cr
 #'   name of the variable with low level term for events.
+#' @param visit_var [teal::choices_selected] object with all available choices and preselected option
+#'   for variable names that can be used as `visit` variable. Must be a factor in `dataname`.
 #' @param by_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names used to split the summary by rows.
-#'
+#' @param plot_height `numeric` vector to indicate default value, minimum and maximum values.
+#' @param plot_width `numeric` vector to indicate default value, minimum and maximum values.
 #' @name argument_convention
 #'
 NULL
