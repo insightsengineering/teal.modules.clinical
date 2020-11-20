@@ -2,12 +2,162 @@
 #'
 #' This is teal module produces a grid style Forest plot for response data with ADaM structure
 #'
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
 #' @inheritParams tm_t_tte
-#' @inheritParams shared_params
-#' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used as the default subgroups
-#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for confidence level, each within range of (0, 1).
+#' @name tm_g_forest_rsp
+#'
+NULL
+
+#' Template for Response Forest Plot
+#'
+#' Creates a valid expression for response forest plot.
+#'
+template_forest_rsp <- function(anl_name = "ANL", # nousage
+                                parent_name = "ADSL_FILTERED",
+                                arm_var,
+                                ref_arm = NULL,
+                                comp_arm = NULL,
+                                subgroup_var,
+                                strata_var = NULL,
+                                conf_level = 0.95) {
+
+  assert_that(
+    is.string(anl_name),
+    is.string(parent_name),
+    is.string(arm_var),
+    is.character(subgroup_var)
+  )
+
+  y <- list()
+
+  # Data processing.
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- anl %>%
+        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
+        mutate(
+          is_rsp = rsp_lab %in% c(
+            "Complete Response (CR)", "Partial Response (PR)"
+          )
+        ),
+      env = list(
+        anl = as.name(anl_name)
+      )
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = {
+        anl <- filter(anl, arm_var %in% arm_vals);
+        parent <- filter(parent, arm_var %in% arm_vals)
+      },
+      env = list(
+        anl = as.name(anl_name),
+        parent = as.name(parent_name),
+        arm_var = as.name(arm_var),
+        arm_vals = c(ref_arm, comp_arm)
+      )
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = {
+        anl$arm_var <- droplevels(relevel(anl$arm_var, ref_arm));
+        parent$arm_var <- droplevels(relevel(parent$arm_var, ref_arm))
+      },
+      env = list(
+        anl = as.name(anl_name),
+        parent = as.name(parent_name),
+        arm_var = arm_var,
+        ref_arm = ref_arm
+      )
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = {
+        anl$arm_var <- combine_levels(
+          x = anl$arm_var,
+          levels = comp_arm
+        );
+        parent$arm_var <- combine_levels(
+          x = parent$arm_var,
+          levels = comp_arm
+        )
+      },
+      env = list(
+        anl = as.name(anl_name),
+        parent = as.name(parent_name),
+        arm_var = arm_var,
+        comp_arm = comp_arm
+      )
+    )
+  )
+
+  y$data <- bracket_expr(data_list)
+
+  # Tabulate subgroup analysis of response.
+  summary_list <- list()
+
+  summary_list <- add_expr(
+    summary_list,
+    substitute(
+      expr = df <- extract_rsp_subgroups(
+        variables = list(
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strata_var = strata_var),
+        data = anl,
+        conf_level = conf_level
+      ),
+      env = list(
+        anl = as.name(anl_name),
+        arm_var = arm_var,
+        subgroup_var = subgroup_var,
+        strata_var = strata_var,
+        conf_level = conf_level
+      )
+    )
+  )
+
+  summary_list <- add_expr(
+    summary_list,
+    substitute(
+      expr = rsp_tab <- basic_table() %>%
+        tabulate_rsp_subgroups(vars = c("n", "prop")) %>%
+        build_table(df$prop)
+    )
+  )
+
+  summary_list <- add_expr(
+    summary_list,
+    substitute(
+      expr = or_tab <- basic_table() %>%
+        tabulate_rsp_subgroups(vars = c("n_tot", "or", "ci"), conf_level = conf_level) %>%
+        build_table(df$or),
+      env = list(conf_level = conf_level)
+    )
+  )
+
+  y$summary <- bracket_expr(summary_list)
+
+  # Table output.
+  y$table <- substitute(
+    result <- cbind_rtables(or_tab[, 1], rsp_tab, or_tab[, -1])
+  )
+
+  # g_forest will be added here
+
+  y
+}
+
+#' @describeIn tm_g_forest_rsp Teal module for response forest plot.
 #' @param fixed_symbol_size (\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param cex (\code{numeric}) multiplier applied to overall font size

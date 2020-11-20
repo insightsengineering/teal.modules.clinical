@@ -50,7 +50,7 @@
 #' @param cov_var (`string` or `choices_selected` with teal module)\cr
 #'   names of the variables for covariates.
 #' @param aval_var (`string` or `choices_selected` with teal module)\cr
-#'   name of the variable for the analysis
+#'   name of the variable for the analysis.
 #' @param conf_level (`proportion`)\cr confidence level of the interval.
 #'   Default is 0.95.
 #' @param add_total (`flag`)\cr whether to include column with total number of patients.
@@ -62,6 +62,8 @@
 #'   for variable names that can be used as `visit` variable. Must be a factor in `dataname`.
 #' @param by_vars \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #'   for variable names used to split the summary by rows.
+#' @param subgroup_var \code{\link[teal]{choices_selected}} object with all available choices and
+#'   preselected option for variable names that can be used as the default subgroups.
 #' @param plot_height `numeric` vector to indicate default value, minimum and maximum values.
 #' @param plot_width `numeric` vector to indicate default value, minimum and maximum values.
 #' @name argument_convention

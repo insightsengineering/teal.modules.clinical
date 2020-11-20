@@ -67,7 +67,7 @@ value of analysis visit \code{AVISIT} of interest.}
 names of the variables for covariates.}
 
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis}
+name of the variable for the analysis.}
 
 \item{conf_level}{(\code{proportion})\cr confidence level of the interval.
 Default is 0.95.}
@@ -85,6 +85,9 @@ for variable names that can be used as \code{visit} variable. Must be a factor i
 
 \item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names used to split the summary by rows.}
+
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
+preselected option for variable names that can be used as the default subgroups.}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

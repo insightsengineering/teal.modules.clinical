@@ -22,36 +22,31 @@ tm_g_forest_rsp(
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-Note that the data is expected to be in vertical form with the
-\code{PARAMCD} variable filtering to one observation per patient.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable names designating the study arm.}
 
-\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used as the default subgroups}
+\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
+preselected option for variable names that can be used as the default subgroups.}
 
-\item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
-choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+names of the variables for stratified analysis.}
 
-\item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
+Default is 0.95.}
 
 \item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
-the height of the main plot.}
+\item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 
-\item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
-the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
+\item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 
 \item{cex}{(\code{numeric}) multiplier applied to overall font size}
 
@@ -65,6 +60,11 @@ output to put the output into context. For example the
 \description{
 This is teal module produces a grid style Forest plot for response data with ADaM structure
 }
+\section{Functions}{
+\itemize{
+\item \code{tm_g_forest_rsp}: Teal module for response forest plot.
+}}
+
 \examples{
 library(random.cdisc.data)
 library(dplyr)

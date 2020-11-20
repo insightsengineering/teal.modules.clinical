@@ -38,7 +38,7 @@ that the defined the default reference and comparison arms when the arm
 variable is changed.}
 
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis}
+name of the variable for the analysis.}
 
 \item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for covariates.}
