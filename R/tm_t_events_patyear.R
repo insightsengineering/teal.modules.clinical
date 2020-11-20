@@ -178,6 +178,7 @@ srv_events_patyear <- function(input,
 
   init_chunks()
   observe({
+    anl <- datasets$get_data(dataname, filtered = FALSE)
     paramcd <- input$paramcd
     event_choices <- unique(anl$CNSR[anl$PARAMCD == paramcd]) %>% sort #nolint
     updateSelectInput(

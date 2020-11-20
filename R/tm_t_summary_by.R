@@ -307,6 +307,14 @@ tm_t_summary_by <- function(label,
                             denominator = c("n", "N", "omit"),
                             pre_output = NULL,
                             post_output = NULL) {
+
+  stopifnot(is.choices_selected(arm_var))
+  stopifnot(is.choices_selected(by_vars))
+  stopifnot(is.choices_selected(summarize_vars))
+  stopifnot(is.choices_selected(paramcd))
+  useNA <- match.arg(useNA) # nolintr
+  denominator <- match.arg(denominator)
+
   args <- c(as.list(environment()))
 
   module(
