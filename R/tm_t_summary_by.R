@@ -95,6 +95,17 @@ template_summary_by <- function(parentname,
     quote(add_colcounts())
   )
 
+  env_vars <- list(
+    sum_vars = sum_vars,
+    sum_var_labels = var_labels[sum_vars],
+    na.rm = na.rm,
+    denom = ifelse(denominator == "n", "n", "N_col"),
+    stats = c(
+      c("n", "mean_sd", "median", "range"),
+      ifelse(denominator == "omit", "count", "count_fraction")
+    )
+  )
+
   for (by_var in by_vars) {
 
     split_label <- substitute(
@@ -111,6 +122,7 @@ template_summary_by <- function(parentname,
         split_rows_by(
           by_var,
           split_label = split_label,
+          split_fun = drop_split_levels,
           visible_label = TRUE
         ),
         env = list(
@@ -119,6 +131,17 @@ template_summary_by <- function(parentname,
         )
       )
     )
+
+    if (row_groups) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = summarize_row_groups(
+          ),
+          env = env_vars
+        )
+      )
+    }
   }
 
   if (parallel_vars) {
@@ -139,71 +162,62 @@ template_summary_by <- function(parentname,
     )
   }
 
-  env_vars <- list(
-    sum_vars = sum_vars,
-    sum_var_labels = var_labels[sum_vars],
-    na.rm = na.rm,
-    denom = ifelse(denominator == "n", "n", "N_col"),
-    stats = c(
-      c("n", "mean_sd", "median", "range"),
-      ifelse(denominator == "omit", "count", "count_fraction")
-    )
-  )
 
-  layout_list <- add_expr(
-    layout_list,
-    if (row_groups) {
-        substitute(
-          expr = summarize_row_groups(
-          ),
-          env = env_vars
-        )
-    } else if (parallel_vars) {
-      if (length(var_labels) > 0) {
-        substitute(
-          expr = summarize_colvars(
-            na.rm = na.rm,
-            denom = denom,
-            .stats = stats
-          ),
-          env = env_vars
-        )
-      } else {
-        substitute(
-          expr = summarize_colvars(
-            vars = sum_vars,
-            na.rm = na.rm,
-            denom = denom,
-            .stats = stats
-          ),
-          env = env_vars)
-      }
-    } else {
-      if (length(var_labels > 0)) {
-        substitute(
-          expr = summarize_vars(
-            vars = sum_vars,
-            var_labels = sum_var_labels,
-            na.rm = na.rm,
-            denom = denom,
-            .stats = stats
-          ),
-          env = env_vars
-        )
+  if (row_groups) {
+    layout_list <- layout_list
+    }
+  else {
+    layout_list <- add_expr(
+      layout_list,
+      if (parallel_vars) {
+        if (length(var_labels) > 0) {
+          substitute(
+            expr = summarize_colvars(
+              na.rm = na.rm,
+              denom = denom,
+              .stats = stats
+            ),
+            env = env_vars
+          )
+        }
+        else {
+          substitute(
+            expr = summarize_colvars(
+              vars = sum_vars,
+              na.rm = na.rm,
+              denom = denom,
+              .stats = stats
+            ),
+            env = env_vars)
+        }
       }
       else {
-        substitute(
-          expr = summarize_vars(
-            vars = sum_vars,
-            na.rm = na.rm,
-            denom = denom,
-            .stats = stats
-          ),
-          env = env_vars
-        )
+        if (length(var_labels > 0)) {
+          substitute(
+            expr = summarize_vars(
+              vars = sum_vars,
+              var_labels = sum_var_labels,
+              na.rm = na.rm,
+              denom = denom,
+              .stats = stats
+            ),
+            env = env_vars
+          )
+        }
+        else {
+          substitute(
+            expr = summarize_vars(
+              vars = sum_vars,
+              na.rm = na.rm,
+              denom = denom,
+              .stats = stats
+            ),
+            env = env_vars
+          )
+        }
       }
-    }
-  )
+    )
+  }
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,

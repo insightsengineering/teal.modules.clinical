@@ -95,13 +95,30 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
 
   expected <- list(
     data = quote(anl <- adsl),
-    layout = quote(lyt <- basic_table() %>%
-      split_cols_by("ARM") %>%
-      add_colcounts() %>%
-      split_rows_by("SEX", split_label = var_labels(adsl)[["SEX"]], visible_label = TRUE) %>%
-      split_rows_by("COUNTRY", split_label = var_labels(adsl)[["COUNTRY"]], visible_label = TRUE) %>%
-      summarize_row_groups()),
-    table = quote(result <- build_table(lyt = lyt, df = anl, col_counts = table(adsl$ARM))))
-
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by("ARM") %>%
+        add_colcounts() %>%
+        split_rows_by(
+          "SEX",
+          split_label = var_labels(adsl)[["SEX"]],
+          split_fun = drop_split_levels,
+          visible_label = TRUE
+          ) %>%
+        summarize_row_groups() %>%
+        split_rows_by(
+          "COUNTRY",
+          split_label = var_labels(adsl)[["COUNTRY"]],
+          split_fun = drop_split_levels,
+          visible_label = TRUE
+          ) %>%
+        summarize_row_groups()
+    ),
+    table = quote(
+      result <- build_table(lyt = lyt,
+                            df = anl,
+                            col_counts = table(adsl$ARM)))
+  )
   expect_equal_expr_list(result, expected)
-})
+}
+)
