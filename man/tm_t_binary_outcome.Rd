@@ -7,11 +7,14 @@
 tm_t_binary_outcome(
   label,
   dataname,
+  parent_name = ifelse(test = is(arm_var, "data_extract_spec"), yes =
+    datanames_input(arm_var), no = "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  show_rsp_categories = TRUE,
+  avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
+    TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -20,6 +23,9 @@ tm_t_binary_outcome(
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -37,15 +43,15 @@ variable value designating the studied parameter.}
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{show_rsp_categories}{(\code{flag})\cr display the multinomial response
-estimations.}
-
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
 
 \item{post_output}{optional, \code{shiny.tag} with text placed after the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
+
+\item{show_rsp_categories}{(\code{flag})\cr display the multinomial response
+estimations.}
 }
 \value{
 a \code{\link[teal:module]{teal::module()}} object
@@ -54,6 +60,7 @@ a \code{\link[teal:module]{teal::module()}} object
 Binary Outcome Table Teal Module
 }
 \examples{
+#'
 
 library(dplyr)
 library(random.cdisc.data)
@@ -73,14 +80,20 @@ app <- init(
   ),
   modules = root_modules(
     tm_t_binary_outcome(
-      label = "Binary responses",
+      label = "Responders",
       dataname = "ADRS",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
-      paramcd = choices_selected(levels(adrs$PARAMCD), "BESRSPI"),
-      arm_ref_comp = NULL,
+      paramcd = choices_selected(
+        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+        selected = "BESRSPI"
+      ),
+      arm_var = choices_selected(
+        choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
+        selected = "ARM"
+      ),
+      arm_ref_comp = arm_ref_comp,
       strata_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("STRATA1", "SEX")),
-        selected = "STRATA1"
+        choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
+        select = NULL
       )
     )
   )

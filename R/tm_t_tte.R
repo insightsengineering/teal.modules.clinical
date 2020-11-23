@@ -759,6 +759,7 @@ srv_t_tte <- function(input,
   })
 
   # The R-code corresponding to the analysis.
+
   call_preparation <- reactive({
     validate_checks()
 

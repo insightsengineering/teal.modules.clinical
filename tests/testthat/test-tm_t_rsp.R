@@ -1,7 +1,6 @@
 test_that("template_rsp generates standard expressions", {
   result <- template_rsp(
     dataname = "adrs",
-    param = "INVET",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     compare_arm = TRUE,
@@ -11,13 +10,8 @@ test_that("template_rsp generates standard expressions", {
   expected <- list(
     data = quote(
       anl <- adrs %>%
-        filter(PARAMCD == "INVET") %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(
-          is_rsp = rsp_lab %in% c(
-            "Complete Response (CR)", "Partial Response (PR)"
-          )
-        ) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
     ),
     layout = quote(
@@ -25,17 +19,29 @@ test_that("template_rsp generates standard expressions", {
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
-        ) %>%
-        estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis", conf_level = 0.95,
+          vars = "is_rsp",
+          conf_level = 0.95,
           method = "waldcc"
         ) %>%
-        test_proportion_diff(vars = "is_rsp", method = "schouten") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.95) %>%
+        estimate_proportion_diff(
+          vars = "is_rsp",
+          show_labels = "visible",
+          var_labels = "Unstratified Analysis",
+          conf_level = 0.95,
+          method = "waldcc"
+        ) %>%
+        test_proportion_diff(
+          vars = "is_rsp",
+          method = "schouten"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          conf_level = 0.95
+        ) %>%
         estimate_multinomial_response(
-          var = "rsp_lab", conf_level = 0.95, method = "waldcc"
+          var = "rsp_lab",
+          conf_level = 0.95,
+          method = "waldcc"
         )
     ),
     table = quote(result <- build_table(lyt = lyt, df = anl))
@@ -49,22 +55,18 @@ test_that("template_rsp generates standard expressions", {
 test_that("template_rsp generates right expressions with non-default", {
   result <- template_rsp(
     dataname = "ADRS",
-    param = "BESRSPI",
     arm_var = "ARM",
     ref_arm = "ARM B",
     compare_arm = TRUE,
     show_rsp_cat = FALSE
   )
 
+  lapply(result, styled_expr)
   expected <- list(
     data = quote(
       anl <- ADRS %>%
-        filter(PARAMCD == "BESRSPI") %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(
-          is_rsp = rsp_lab %in%
-            c("Complete Response (CR)", "Partial Response (PR)")
-        ) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
@@ -90,7 +92,6 @@ test_that("template_rsp generates right expressions with non-default", {
 test_that("template_rsp generates expression without arm comparison", {
   result <- template_rsp(
     dataname = "ADRS",
-    param = "BESRSPI",
     arm_var = "ARM",
     ref_arm = "ARM B",
     compare_arm = FALSE,
@@ -100,11 +101,8 @@ test_that("template_rsp generates expression without arm comparison", {
   expected <- list(
     data = quote(
       anl <- ADRS %>%
-        filter(PARAMCD == "BESRSPI") %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>% mutate(
-          is_rsp = rsp_lab %in%
-            c("Complete Response (CR)", "Partial Response (PR)")
-        ) %>%
+        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
@@ -125,7 +123,6 @@ test_that("template_rsp generates expression without arm comparison", {
 test_that("template_rsp generates expression with non-default controls.", {
   result <- template_rsp(
     dataname = "ADRS",
-    param = "BESRSPI",
     arm_var = "ARM",
     ref_arm = "ARM B",
     compare_arm = TRUE,
@@ -142,11 +139,8 @@ test_that("template_rsp generates expression with non-default controls.", {
   expected <- list(
     data = quote(
       anl <- ADRS %>%
-        filter(PARAMCD == "BESRSPI") %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>% mutate(
-          is_rsp = rsp_lab %in%
-            c("Complete Response (CR)", "Partial Response (PR)")
-        ) %>%
+        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         mutate(ARM = relevel(ARM, ref = "ARM B"))
     ),
     layout = quote(
@@ -183,7 +177,6 @@ test_that("template_rsp generates expression with non-default controls.", {
 test_that("template_rsp can combine arms", {
   result <- template_rsp(
     dataname = "adrs",
-    param = "INVET",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     compare_arm = TRUE,
@@ -194,13 +187,8 @@ test_that("template_rsp can combine arms", {
   expected <- list(
     data = quote(
       anl <- adrs %>%
-        filter(PARAMCD == "INVET") %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(
-          is_rsp = rsp_lab %in% c(
-            "Complete Response (CR)", "Partial Response (PR)"
-          )
-        ) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
     ),
     combine_arm = quote(

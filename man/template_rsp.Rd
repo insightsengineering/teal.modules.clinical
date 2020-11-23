@@ -6,12 +6,12 @@
 \usage{
 template_rsp(
   dataname,
-  param,
   arm_var,
   ref_arm,
   compare_arm = TRUE,
   combine_arm = FALSE,
   show_rsp_cat = TRUE,
+  responder_val = c("CR", "PR"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "waldcc", method_test = "cmh", strat = NULL))
@@ -19,9 +19,6 @@ template_rsp(
 }
 \arguments{
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
-
-\item{param}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -34,6 +31,9 @@ arm comparison.}
 \item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
 
 \item{show_rsp_cat}{(\code{flag})\cr display the multinomial response estimations.}
+
+\item{responder_val}{(\code{character})\cr the short label for observations to
+translate \code{AVALC} into responder / non-responder.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 }
