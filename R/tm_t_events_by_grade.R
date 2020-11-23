@@ -82,7 +82,7 @@ template_events_by_grade <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      exp = split_cols_by(arm_var),
+      expr = split_cols_by(arm_var),
       env = list(arm_var = arm_var)
     )
   )

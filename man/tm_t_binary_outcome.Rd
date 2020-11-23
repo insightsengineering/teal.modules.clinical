@@ -43,15 +43,15 @@ variable value designating the studied parameter.}
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
+\item{avalc_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for analysis variable}
+
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
 
 \item{post_output}{optional, \code{shiny.tag} with text placed after the
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
-
-\item{show_rsp_categories}{(\code{flag})\cr display the multinomial response
-estimations.}
 }
 \value{
 a \code{\link[teal:module]{teal::module()}} object
@@ -60,20 +60,20 @@ a \code{\link[teal:module]{teal::module()}} object
 Binary Outcome Table Teal Module
 }
 \examples{
-#'
+
 
 library(dplyr)
 library(random.cdisc.data)
-adsl <- radsl(cached = TRUE)
-adrs <- radrs(cached = TRUE)
+ADSL <- radsl(cached = TRUE)
+ADRS <- radrs(cached = TRUE)
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 )
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADRS", adrs),
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADRS", ADRS),
     code =
       "ADSL <- radsl(cached = TRUE)
     ADRS <- radrs(cached = TRUE)"

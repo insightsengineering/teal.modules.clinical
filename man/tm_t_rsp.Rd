@@ -44,6 +44,9 @@ and preselected option for variable names that can be used as \code{PARAMCD} var
 \item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
 choices and preselected option for variable names that can be used for stratification}
 
+\item{avalc_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for analysis variable}
+
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
 

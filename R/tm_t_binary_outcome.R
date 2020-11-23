@@ -2,28 +2,27 @@
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams argument_convention
+#' @inheritParams tm_t_tte
 #' @inheritParams tm_t_rsp
-#' @param show_rsp_categories (`flag`)\cr display the multinomial response
-#'   estimations.
 #' @return a [teal::module()] object
 #'
 #' @export
 #'
 #' @examples
-#' #'
+#'
 #'
 #' library(dplyr)
 #' library(random.cdisc.data)
-#' adsl <- radsl(cached = TRUE)
-#' adrs <- radrs(cached = TRUE)
+#' ADSL <- radsl(cached = TRUE)
+#' ADRS <- radrs(cached = TRUE)
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 #' )
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADRS", adrs),
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADRS", ADRS),
 #'     code =
 #'       "ADSL <- radsl(cached = TRUE)
 #'     ADRS <- radrs(cached = TRUE)"
@@ -64,7 +63,10 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
+                                avalc_var = choices_selected(
+                                  variable_choices(dataname, "AVALC"),
+                                  "AVALC", fixed = TRUE
+                                  ),
                                 pre_output = NULL,
                                 post_output = NULL
 ) {

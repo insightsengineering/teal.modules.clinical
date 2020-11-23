@@ -451,6 +451,8 @@ srv_t_rsp <- function(input,
 #' STREAM template `rspt01`.
 #'
 #' @inheritParams tm_t_tte
+#' @param avalc_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for analysis variable
 #'
 #' @details Additional standard UI inputs include `responders`,
 #'   `ref_arm`, `comp_arm` and `combine_arm` (default FALSE)
