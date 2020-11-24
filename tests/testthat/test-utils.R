@@ -159,3 +159,10 @@ test_that("styled_expr can format expressions", {
 
   expect_identical(result, expected)
 })
+
+
+test_that("col_count_combine_grp works with standard inputs", {
+  result <- col_count_combine_grp(combine = TRUE, parent_name = "ADSL", group = "ARM")
+  expected <- quote(vapply(X = groups, FUN = function(x) sum(table(ADSL$ARM)[x]), FUN.VALUE = 1))
+  expect_equal(result, expected)
+})

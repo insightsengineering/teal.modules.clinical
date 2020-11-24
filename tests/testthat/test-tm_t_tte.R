@@ -22,18 +22,31 @@ test_that("template_tte healthy standard output", {
   )
 
   expected <- list(
-    data = quote({
-      ANL <- ANL %>% # nolint
-        mutate(
-          is_event = CNSR == 0,
-          is_not_event = CNSR ==  1,
-          EVNT1 = factor(case_when(
-            is_event == TRUE ~ "Patients with event (%)",
-            is_event == FALSE ~ "Patients without event (%)"
-          )),
-          EVNTDESC = factor(EVNTDESC)
+    data = bracket_expr(
+      list(
+        quote(
+          ANL <- ANL %>% # nolint
+            mutate(
+              is_event = CNSR == 0,
+              is_not_event = CNSR ==  1,
+              EVNT1 = factor(case_when(
+                is_event == TRUE ~ "Patients with event (%)",
+                is_event == FALSE ~ "Patients without event (%)"
+              )),
+              EVNTDESC = factor(EVNTDESC)
+            ) %>%
+            filter(ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination"))) %>%
+            mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+            mutate(ARM = droplevels(ARM))
+        ),
+        quote(
+          ANL_ADSL <- ANL_ADSL %>% # nolint
+            filter(ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination"))) %>%
+            mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+            mutate(ARM = droplevels(ARM))
         )
-    }),
+      )
+    ),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%

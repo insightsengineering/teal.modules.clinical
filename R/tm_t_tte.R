@@ -65,11 +65,10 @@ template_tte <- function(anl_name = "ANL",
   y <- list()
 
   data_list <- list()
-
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- anl %>%
+      expr = anl %>%
         mutate(
           is_event = cnsr == 0,
           is_not_event = cnsr == 1,
@@ -88,84 +87,77 @@ template_tte <- function(anl_name = "ANL",
       )
     )
   )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = filter(arm_var %in% c(arm_ref_comp, comp_arm)),
+      env = list(arm_var = as.name(arm_var), arm_ref_comp = arm_ref_comp, comp_arm = comp_arm)
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute_names(
+      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm)) %>%
+        mutate(arm_var = droplevels(arm_var)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(ref_arm = arm_ref_comp)
+    )
+  )
 
-  if (compare_arm) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = {
-          anl <- filter(anl, arm_var %in% arm_vals);
-          parent <- filter(parent, arm_var %in% arm_vals)
-        },
-        env = list(
-          anl = as.name(anl_name),
-          parent = as.name(parent_name),
-          arm_var = as.name(arm_var),
-          arm_vals = c(arm_ref_comp, comp_arm)
-        )
+  parent_data_list <- list()
+  parent_data_list <- add_expr(
+    parent_data_list,
+    substitute(
+      expr = parent %>%
+        filter(arm_var %in% c(arm_ref_comp, comp_arm)),
+      env = list(
+        parent = as.name(parent_name),
+        arm_var = as.name(arm_var),
+        arm_ref_comp = arm_ref_comp,
+        comp_arm = comp_arm
       )
     )
-    data_list <- add_expr(
-      data_list,
+  )
+  parent_data_list <- add_expr(
+    parent_data_list,
+    substitute_names(
+      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm)) %>%
+        mutate(arm_var = droplevels(arm_var)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(ref_arm = arm_ref_comp)
+    )
+  )
+
+  y$data <- bracket_expr(
+    list(
       substitute(
-        expr = {
-          anl$arm_var <- droplevels(relevel(anl$arm_var, arm_ref_comp));
-          parent$arm_var <- droplevels(relevel(parent$arm_var, arm_ref_comp))
-        },
-        env = list(
-          anl = as.name(anl_name),
-          parent = as.name(parent_name),
-          arm_var = arm_var,
-          arm_ref_comp = arm_ref_comp
-        )
+        expr = anl <- data_pipe, # nolint
+        env = list(anl = as.name(anl_name), data_pipe = pipe_expr(data_list))
+      ),
+      substitute(
+        expr = parent_data <- data_pipe, # nolint
+        env = list(parent_data = as.name(parent_name), data_pipe = pipe_expr(parent_data_list))
       )
     )
-  }
+  )
 
   if (combine_comp_arms) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = {
-          anl$arm_var <- combine_levels(
-            x = anl$arm_var,
-            levels = comp_arm
-          );
-          parent$arm_var <- combine_levels(
-            x = parent$arm_var,
-            levels = comp_arm
-          )
-        },
-        env = list(
-          anl = as.name(anl_name),
-          parent = as.name(parent_name),
-          arm_var = arm_var,
-          comp_arm = comp_arm
-        )
-      )
+    y$combine_arm <- substitute(
+      expr = groups <- combine_groups(fct = ANL[[group]], ref = ref_arm),
+      env = list(group = arm_var, ref_arm = arm_ref_comp)
     )
   }
 
-  y$data <- bracket_expr(data_list)
-
-
   layout_list <- list()
-
-  layout_list <- add_expr(layout_list, quote(basic_table()))
-
+  layout_list <- add_expr(layout_list, substitute(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    if (compare_arm) {
-      substitute(
-        expr = split_cols_by(var = arm_var, ref_group = arm_ref_comp),
-        env = list(arm_var = arm_var, arm_ref_comp = arm_ref_comp)
-      )
-    } else {
-      substitute(
-        expr = split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var)
-      )
-    }
+    split_col_expr(
+      compare = compare_arm,
+      combine = combine_comp_arms,
+      group = arm_var,
+      ref = arm_ref_comp
+    )
   )
 
   layout_list <- add_expr(
@@ -286,14 +278,28 @@ template_tte <- function(anl_name = "ANL",
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  col_counts <- substitute(
-    expr = table(adsl$arm_var),
-    env = list(adsl = as.name(parent_name), arm_var = arm_var)
-  )
+  col_counts <- if (combine_comp_arms) {
+    substitute(
+      expr = sapply(groups, function(x) sum(table(adsl$arm_var)[x])),
+      env = list(adsl = as.name(parent_name), arm_var = arm_var)
+    )
+  } else {
+    substitute(
+      expr = table(adsl$arm_var),
+      env = list(adsl = as.name(parent_name), arm_var = arm_var)
+    )
+  }
 
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
-    env = list(anl = as.name(anl_name), col_counts = col_counts)
+    env = list(
+      anl = as.name(anl_name),
+      col_counts = col_count_combine_grp(
+        combine = combine_comp_arms,
+        parent_name = parent_name,
+        group = arm_var
+      )
+    )
   )
 
   y
@@ -402,6 +408,7 @@ template_tte <- function(anl_name = "ANL",
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
+#'
 tm_t_tte <- function(label,
                      dataname,
                      parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
