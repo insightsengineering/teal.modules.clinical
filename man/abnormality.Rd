@@ -15,7 +15,8 @@ template_abnormality(
   grade = "ANRIND",
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
-  add_total = FALSE
+  add_total = FALSE,
+  exclude_base_abn = FALSE
 )
 
 tm_t_abnormality(
@@ -28,6 +29,7 @@ tm_t_abnormality(
   abnormal,
   treatment_flag_var,
   treatment_flag,
+  exclude_base_abn,
   pre_output = NULL,
   post_output = NULL
 )
@@ -54,6 +56,8 @@ specify the abnormality grade. Variable must be factor.}
 \item{treatment_flag}{(\code{string})\cr value indicating on treatment.}
 
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
+
+\item{exclude_base_abn}{(\code{flag})\cr whether to exclude patients who had abnormal values at baseline.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
@@ -141,7 +145,8 @@ app <- init(
         choices = "Y",
         selected = "Y",
         fixed = TRUE
-      )
+      ),
+      exclude_base_abn = FALSE
     )
   )
 )

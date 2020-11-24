@@ -10,6 +10,7 @@ NULL
 #' @param by_vars (`character`)\cr variable names of the row by variables.
 #' @param treatment_flag_var (`string`)\cr variable name of the treatment flag variable.
 #' @param treatment_flag (`string`)\cr value indicating on treatment.
+#' @param exclude_base_abn (`flag`)\cr whether to exclude patients who had abnormal values at baseline.
 #'
 template_abnormality <- function(parentname,
                                  dataname,
@@ -19,7 +20,8 @@ template_abnormality <- function(parentname,
                                  grade = "ANRIND",
                                  treatment_flag_var = "ONTRTFL",
                                  treatment_flag = "Y",
-                                 add_total = FALSE) {
+                                 add_total = FALSE,
+                                 exclude_base_abn = FALSE) {
   y <- list()
 
   data_list <- list()
@@ -109,10 +111,11 @@ template_abnormality <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_abnormal(grade, abnormal = abnormal),
+      expr = count_abnormal(grade, abnormal = abnormal, exclude_base_abn = exclude_base_abn),
       env = list(
         grade = grade,
-        abnormal = setNames(abnormal, tolower(abnormal))
+        abnormal = setNames(abnormal, tolower(abnormal)),
+        exclude_base_abn = exclude_base_abn
       )
     )
   )
@@ -201,7 +204,8 @@ template_abnormality <- function(parentname,
 #'         choices = "Y",
 #'         selected = "Y",
 #'         fixed = TRUE
-#'       )
+#'       ),
+#'       exclude_base_abn = FALSE
 #'     )
 #'   )
 #' )
@@ -218,6 +222,7 @@ tm_t_abnormality <- function(label,
                              abnormal,
                              treatment_flag_var,
                              treatment_flag,
+                             exclude_base_abn,
                              pre_output = NULL,
                              post_output = NULL) {
   stopifnot(is.string(dataname))
@@ -228,6 +233,7 @@ tm_t_abnormality <- function(label,
   stopifnot(is_character_vector(abnormal))
   stopifnot(is.choices_selected(treatment_flag_var))
   stopifnot(is.choices_selected(treatment_flag))
+  stopifnot(is_logical_single(exclude_base_abn))
 
   args <- as.list(environment())
 
@@ -309,7 +315,12 @@ ui_t_abnormality <- function(id, ...) {
         a$treatment_flag$selected,
         multiple = FALSE,
         fixed = a$treatment_flag$fixed
-      )
+      ),
+      checkboxInput(
+        ns("exclude_base_abn"),
+        "Exclude subjects whose baseline grade is the same as abnormal grade",
+        value = a$exclude_base_abn
+        )
     ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
@@ -356,10 +367,12 @@ srv_t_abnormality <- function(input,
     by_vars <- input$by_vars
     grade <- input$grade
     add_total <- input$add_total
+    exclude_base_abn <- input$exclude_base_abn
 
     validate_has_data(adsl_filtered, 1)
     validate_has_data(anl_filtered, 1)
     validate(need(is_logical_single(add_total), "add_total is not logical"))
+    validate(need(is_logical_single(exclude_base_abn), "exclude_base_abn is not logical"))
     validate(need(arm_var, "please select 'Arm variable'"))
     validate(need(id_var, "please select 'Subject Identifier'"))
     validate(need(grade, "please select 'Grade Variable'"))
@@ -394,7 +407,8 @@ srv_t_abnormality <- function(input,
       grade = input$grade,
       treatment_flag_var = input$treatment_flag_var,
       treatment_flag = input$treatment_flag,
-      add_total = input$add_total
+      add_total = input$add_total,
+      exclude_base_abn = input$exclude_base_abn
     )
     mapply(expression = my_calls, chunks_push)
   })

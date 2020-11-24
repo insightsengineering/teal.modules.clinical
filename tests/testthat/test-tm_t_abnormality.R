@@ -8,7 +8,8 @@ test_that("template_abnormality generates correct expressions with default argum
     grade = "ANRIND",
     treatment_flag_var = "ONTRTFL",
     treatment_flag = "Y",
-    add_total = FALSE
+    add_total = FALSE,
+    exclude_base_abn = FALSE
   )
 
   expected <- list(
@@ -44,7 +45,8 @@ test_that("template_abnormality generates correct expressions with custom argume
     grade = "MYANRIND",
     treatment_flag_var = "MYONTRTFL",
     treatment_flag = "YES",
-    add_total = TRUE
+    add_total = TRUE,
+    exclude_base_abn = TRUE
   )
 
   expected <- list(
@@ -59,7 +61,7 @@ test_that("template_abnormality generates correct expressions with custom argume
         add_colcounts() %>%
         split_rows_by("AVISIT", split_label = var_labels(adlb)[["AVISIT"]], visible_label = TRUE) %>%
         split_rows_by("PARAMCD", split_label = var_labels(adlb)[["PARAMCD"]], visible_label = TRUE) %>%
-        count_abnormal("MYANRIND", abnormal = c(low = "LOW", medium = "MEDIUM"))
+        count_abnormal("MYANRIND", abnormal = c(low = "LOW", medium = "MEDIUM"), exclude_base_abn = TRUE)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
