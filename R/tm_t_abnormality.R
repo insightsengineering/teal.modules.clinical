@@ -222,7 +222,7 @@ tm_t_abnormality <- function(label,
                              abnormal,
                              treatment_flag_var,
                              treatment_flag,
-                             exclude_base_abn,
+                             exclude_base_abn = FALSE,
                              pre_output = NULL,
                              post_output = NULL) {
   stopifnot(is.string(dataname))
@@ -297,7 +297,7 @@ ui_t_abnormality <- function(id, ...) {
         ns("abnormal_values"),
         "Abnormality Indicator",
         choices = c("LOW", "HIGH"),
-        selected = "LOW",
+        selected = c("LOW", "HIGH"),
         multiple = TRUE
       ),
       optionalSelectInput(

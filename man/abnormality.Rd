@@ -29,7 +29,7 @@ tm_t_abnormality(
   abnormal,
   treatment_flag_var,
   treatment_flag,
-  exclude_base_abn,
+  exclude_base_abn = FALSE,
   pre_output = NULL,
   post_output = NULL
 )
