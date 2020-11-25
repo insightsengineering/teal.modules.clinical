@@ -7,16 +7,19 @@
 tm_g_forest_tte(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   subgroup_var,
   paramcd,
   strata_var,
+  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
     = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
-  cex = 1.3,
   pre_output = NULL,
   post_output = NULL
 )
@@ -25,6 +28,8 @@ tm_g_forest_tte(
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
+
+\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
@@ -37,6 +42,12 @@ variable value designating the studied parameter.}
 
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
+
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for analysis variable}
+
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
 
 \item{conf_level}{(\code{proportion})\cr confidence level of the interval.
 Default is 0.95.}
@@ -80,8 +91,8 @@ app <- init(
        label = "Forest Survival",
        dataname = "ADTTE",
        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ADSL), c("RACE", "SEX", "BMRKR2")),
-       paramcd = choices_selected(c("OS", "PFS"), "OS"),
+       subgroup_var = choices_selected(names(ADSL), c("SEX", "BMRKR2")),
+       paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
        strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
        plot_height = c(600, 200, 2000)
     )
@@ -91,6 +102,7 @@ app <- init(
 \dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}
