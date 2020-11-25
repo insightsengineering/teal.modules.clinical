@@ -36,6 +36,8 @@
 #'   variable value designating the studied parameter.
 #' @param ref_arm (`string`)\cr the level of reference arm in case of
 #'   arm comparison.
+#' @param comp_arm (`character`)\cr the level of comparison arm in case of
+#'   arm comparison.
 #' @param strata_var (`string` or `choices_selected` with teal module)\cr
 #'   names of the variables for stratified analysis.
 #' @param na.rm (`flag`)\cr whether `NA` values should be removed prior to analysis.

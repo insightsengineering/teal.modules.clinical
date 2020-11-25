@@ -41,14 +41,12 @@ names of the variables for stratified analysis.}
 \item{conf_level}{(\code{proportion})\cr confidence level of the interval.
 Default is 0.95.}
 
-\item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
+\item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 
 \item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
-
-\item{cex}{(\code{numeric}) multiplier applied to overall font size}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

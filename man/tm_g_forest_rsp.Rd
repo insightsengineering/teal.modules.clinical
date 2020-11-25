@@ -7,16 +7,18 @@
 tm_g_forest_rsp(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
+  arm_ref_comp = NULL,
   paramcd,
+  aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
+    TRUE),
   subgroup_var,
   strata_var,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
-    = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
-  cex = 1.3,
   pre_output = NULL,
   post_output = NULL
 )
@@ -26,11 +28,24 @@ tm_g_forest_rsp(
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
+
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
+
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
+
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis.}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}
@@ -38,17 +53,12 @@ preselected option for variable names that can be used as the default subgroups.
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
-
-\item{fixed_symbol_size}{(\code{logical}) When (\code{TRUE}), the same symbol size is used for plotting each
+\item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 
 \item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
-
-\item{cex}{(\code{numeric}) multiplier applied to overall font size}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -66,29 +76,51 @@ This is teal module produces a grid style Forest plot for response data with ADa
 }}
 
 \examples{
+
 library(random.cdisc.data)
 library(dplyr)
 
 ADSL <- radsl(cached = TRUE)
-ADRS <- radrs(cached = TRUE) \%>\%
-     dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
+ADRS <- radrs(cached = TRUE)
+
+arm_ref_comp = list(
+  ARM = list(
+    ref = "B: Placebo",
+    comp = c("A: Drug X", "C: Combination")
+  ),
+  ARMCD = list(
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
+  )
+)
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
-    cdisc_dataset("ADRS", ADRS,
-      code = 'ADRS <- radrs(cached = TRUE) \%>\%
-              dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))'),
+    cdisc_dataset("ADRS", ADRS, code = 'ADRS <- radrs(cached = TRUE)'),
     check = TRUE
   ),
   modules = root_modules(
     tm_g_forest_rsp(
       label = "Forest Response",
       dataname = "ADRS",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      paramcd = choices_selected(c("BESRSPI", "INVET"), "BESRSPI"),
-      subgroup_var = choices_selected(names(ADSL), c("BMRKR2", "SEX")),
-      strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD")),
+        "ARMCD"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADRS, "PARAMCD", "PARAM"),
+        "BESRSPI"
+      ),
+      subgroup_var = choices_selected(
+        variable_choices(ADSL, names(ADSL)),
+        c("BMRKR2", "SEX")
+      ),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
+        "STRATA2"
+      ),
       plot_height = c(600L, 200L, 2000L)
     )
   )
@@ -97,6 +129,7 @@ app <- init(
 \dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }
 \author{
 Yuyao Song (songy24) \email{yuyao.song@roche.com}

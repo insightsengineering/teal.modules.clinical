@@ -46,6 +46,9 @@ variable value designating the studied parameter.}
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
 
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
+arm comparison.}
+
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 

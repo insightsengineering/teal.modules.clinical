@@ -37,6 +37,9 @@ element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
 
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
+arm comparison.}
+
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}

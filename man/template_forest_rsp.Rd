@@ -10,10 +10,20 @@ template_forest_rsp(
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
+  aval_var = "AVALC",
+  responders = c("CR", "PR"),
   subgroup_var,
   strata_var = NULL,
-  conf_level = 0.95
+  conf_level = 0.95,
+  col_symbol_size = NULL
 )
+}
+\arguments{
+\item{responders}{(\code{character})\cr values of \code{aval_var} that are considered to be responders.}
+
+\item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
+estimator plot symbol. Typically, the symbol size is proportional to the sample size used
+to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
 }
 \description{
 Creates a valid expression for response forest plot.

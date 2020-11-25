@@ -3,6 +3,7 @@
 #' This teal module produces a grid style Forest plot for time-to-event data
 #' with ADaM structure
 #'
+#' @inheritParams argument_convention
 #' @inheritParams tm_g_forest_rsp
 #'
 #' @export
