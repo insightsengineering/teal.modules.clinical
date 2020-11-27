@@ -8,9 +8,10 @@ template_coxreg(
   dataname,
   cov_var,
   arm_var,
+  cnsr_var,
+  aval_var,
   ref_arm,
   comp_arm,
-  paramcd,
   at = list(),
   strata = NULL,
   combine_comp_arms = FALSE,
@@ -27,14 +28,17 @@ names of the variables for covariates.}
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
+
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis.}
+
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}
-
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
 
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 

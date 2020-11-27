@@ -7,11 +7,15 @@
 tm_t_coxreg(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   cov_var,
   strata_var,
+  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   multivariate = TRUE,
   conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
     = TRUE),
@@ -26,6 +30,8 @@ tm_t_coxreg(
 available in the list passed to the \code{data} argument of
 \code{\link[teal]{init}}. Note that the data is expected to be in vertical
 form with the \code{PARAMCD} variable filtering to one observation per patient.}
+
+\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
 
 \item{arm_var}{\code{\link[teal]{choices_selected}} object with all available
 choices and preselected option for variable names that can be used as
@@ -48,6 +54,12 @@ covariates in the model.}
 \item{strata_var}{\code{\link[teal]{choices_selected}} object with all
 available choices and preselected option for variable names that can be
 used for stratification}
+
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for analysis variable}
+
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
 
 \item{multivariate}{If \code{FALSE}, the univariate approach is be computed
 (equivalent to \code{COXT01} standard) instead of the multivariate model

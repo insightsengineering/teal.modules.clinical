@@ -304,14 +304,20 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #'
 #' @return (\code{data_extract_spec})
 cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
-  stopifnot(is_character_single(dataname))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(
+    is.cs_or_des(cs),
+    is_character_single(dataname),
+    is_logical_single(multiple)
+    )
 
-  data_extract_spec(
-    dataname = dataname,
-    select = cs_to_select_spec(cs, multiple = multiple)
-  )
+  if (is.choices_selected(cs)) {
+    data_extract_spec(
+      dataname = dataname,
+      select = cs_to_select_spec(cs, multiple = multiple)
+    )
+  } else {
+    return(cs)
+  }
 }
 
 #' Convert choices_selected to data_extract_spec with only filter_spec
@@ -320,14 +326,20 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #'
 #' @return (\code{data_extract_spec})
 cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
-  stopifnot(is_character_single(dataname))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(
+    is.cs_or_des(cs),
+    is_character_single(dataname),
+    is_logical_single(multiple)
+    )
 
-  data_extract_spec(
-    dataname = dataname,
-    filter = cs_to_filter_spec(cs, multiple = multiple)
-  )
+  if (is.choices_selected(cs)) {
+    data_extract_spec(
+      dataname = dataname,
+      filter = cs_to_filter_spec(cs, multiple = multiple)
+    )
+  } else {
+    return(cs)
+  }
 }
 
 #' Whether object is of class \code{choices_selected} or \code{data_extract_spec}

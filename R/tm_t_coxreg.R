@@ -16,9 +16,10 @@
 template_coxreg <- function(dataname,
                             cov_var,
                             arm_var,
+                            cnsr_var,
+                            aval_var,
                             ref_arm,
                             comp_arm,
-                            paramcd,
                             at = list(),
                             strata = NULL,
                             combine_comp_arms = FALSE,
@@ -34,11 +35,10 @@ template_coxreg <- function(dataname,
     data_pipe,
     substitute(
       expr = df  %>%
-        filter(PARAMCD == paramcd) %>%
-        mutate(event = 1 - CNSR),
+        mutate(event = 1 - cnsr_var),
       env = list(
         df = as.name(dataname),
-        paramcd = paramcd
+        cnsr_var = as.name(cnsr_var)
       )
     )
   )
@@ -96,9 +96,10 @@ template_coxreg <- function(dataname,
     data_list,
     substitute(
       expr = variables <- list(
-        time = "AVAL", event = "event", arm = arm_var, covariates = cov_var
+        time = aval_var, event = "event", arm = arm_var, covariates = cov_var
       ),
       env = list(
+        aval_var = aval_var,
         arm_var = arm_var,
         cov_var = cov_var
       )
@@ -211,6 +212,7 @@ template_coxreg <- function(dataname,
 #'   available in the list passed to the `data` argument of
 #'   \code{\link[teal]{init}}. Note that the data is expected to be in vertical
 #'   form with the `PARAMCD` variable filtering to one observation per patient.
+#' @param parent_name (\code{character}) name of \code{ADSL} dataset used in the analysis.
 #' @param arm_var \code{\link[teal]{choices_selected}} object with all available
 #'   choices and preselected option for variable names that can be used as
 #'   `arm_var`
@@ -228,6 +230,10 @@ template_coxreg <- function(dataname,
 #' @param strata_var \code{\link[teal]{choices_selected}} object with all
 #'   available choices and preselected option for variable names that can be
 #'   used for stratification
+#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for analysis variable
+#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for censor variable
 #' @param multivariate If `FALSE`, the univariate approach is be computed
 #'   (equivalent to `COXT01` standard) instead of the multivariate model
 #'   (equivalent to `COXT02` standard).
@@ -394,11 +400,14 @@ template_coxreg <- function(dataname,
 #'
 tm_t_coxreg <- function(label,
                         dataname,
+                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         arm_ref_comp = NULL,
                         paramcd,
                         cov_var,
                         strata_var,
+                        aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+                        cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                         multivariate = TRUE,
                         conf_level = choices_selected(
                           c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
@@ -408,26 +417,35 @@ tm_t_coxreg <- function(label,
                         post_output = NULL) {
   stopifnot(
     length(dataname) == 1,
-    is.choices_selected(arm_var),
-    is.choices_selected(paramcd),
-    is.choices_selected(cov_var),
-    is.choices_selected(strata_var),
-    is.choices_selected(conf_level)
+    is.cs_or_des(conf_level)
     )
 
   args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+  )
 
   module(
     label = label,
     server = srv_t_coxreg,
     ui = ui_t_coxreg,
-    ui_args = args,
-    server_args = list(
-      arm_ref_comp = arm_ref_comp,
-      dataname = dataname,
-      label = label
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        arm_ref_comp = arm_ref_comp,
+        dataname = dataname,
+        parent_name = parent_name,
+        label = label
+      )
     ),
-    filters = dataname
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
@@ -436,6 +454,13 @@ tm_t_coxreg <- function(label,
 ui_t_coxreg <- function(id, ...) {
 
   a <- list(...) # module args
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$strata_var,
+    a$aval_var,
+    a$cnsr_var,
+    a$cov_var)
 
   ns <- NS(id)
 
@@ -449,20 +474,31 @@ ui_t_coxreg <- function(id, ...) {
         selected = if (a$multivariate) "Multivariate" else "Univariate"
       ),
       tags$label("Encodings", class = "text-primary"),
+      datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
       helpText("Analysis data:", code(a$dataname)),
-      optionalSelectInput(
-        ns("paramcd"),
-        "Select Endpoint",
-        a$paramcd$choices,
-        a$paramcd$selected,
-        fixed = a$paramcd$fixed
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        a$arm_var$choices,
-        a$arm_var$selected,
-        fixed = a$arm_var$fixed
+      data_extract_input(
+        id = ns("cnsr_var"),
+        label = "Censor Variable",
+        data_extract_spec = a$cnsr_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aval_var"),
+        label = "Analysis Variable",
+        data_extract_spec = a$aval_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
       ),
       selectInput(
         ns("ref_arm"),
@@ -483,14 +519,11 @@ ui_t_coxreg <- function(id, ...) {
           "Combine all comparison groups?"
         )
       ),
-      optionalSelectInput(
-        ns("cov_var"),
-        "Covariates",
-        a$cov_var$choices,
-        a$cov_var$selected,
-        multiple = TRUE,
-        label_help = helpText("from ", code("ADSL")),
-        fixed = a$cov_var$fixed
+      data_extract_input(
+        id = ns("cov_var"),
+        label = "Covariates",
+        data_extract_spec = a$cov_var,
+        is_single_dataset = is_single_dataset_value
       ),
       conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Univariate'"),
@@ -500,15 +533,12 @@ ui_t_coxreg <- function(id, ...) {
         )
       ),
       uiOutput(ns("interaction_input")),
-        optionalSelectInput(
-          ns("strata_var"),
-          "Stratify by",
-          a$strata_var$choices,
-          a$strata_var$selected,
-          multiple = TRUE,
-          label_help = helpText("from ", code("ADSL")),
-          fixed = a$strata_var$fixed
-        ),
+      data_extract_input(
+        id = ns("strata_var"),
+        label = "Stratify by",
+        data_extract_spec = a$strata_var,
+        is_single_dataset = is_single_dataset_value
+      ),
       panel_group(
         panel_item(
           "Additional table settings",
@@ -567,6 +597,13 @@ srv_t_coxreg <- function(input,
                          session,
                          datasets,
                          dataname,
+                         parent_name,
+                         arm_var,
+                         paramcd,
+                         strata_var,
+                         aval_var,
+                         cnsr_var,
+                         cov_var,
                          arm_ref_comp,
                          label) {
 
@@ -578,11 +615,26 @@ srv_t_coxreg <- function(input,
     input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = "arm_var",
+    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"), # from UI
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte"
+    module = "tm_t_coxreg"
   )
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var),
+    input_id = c("arm_var", "paramcd", "strata_var", "aval_var", "cnsr_var", "cov_var"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, strata_var),
+    input_id = c("arm_var", "strata_var"),
+    anl_name = "ANL_ADSL"
+  )
+
 
   ## render conditional strata levels input UI ----
   open_textinput <- function(x, anl) {
@@ -616,30 +668,33 @@ srv_t_coxreg <- function(input,
   })
 
   ## Prepare the call evaluation environment ----
-  prepared_env <- reactive({
-    # does not require parent dataset for column counts
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    validate(
-      need(input$arm_var, "Please select an arm variable"),
-      need(input$paramcd, "Please select an endpoint"),
-      need(input$ref_arm, "Please select a reference arm"),
-      need(input$comp_arm, "Please select a comparison arm")
-      )
-    validate_has_data(anl_filtered, min_nrow = 1)
-    # covariate variables are always needed in fit_coxreg_univar
-    # not only with interactions selected
-    validate(need(input$cov_var, "Please select an interaction variable"))
-    validate(
-      need(
-        c(input$ref_arm, input$comp_arm) %in% levels(anl_filtered[[input$arm_var]]),
-        "Arm variable is updating"
-        )
-      )
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
 
-    e <- new.env()
-    e[[paste0(dataname, "_FILTERED")]] <- anl_filtered
-    e
+    # validate inputs
+    validate_args <- list(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var),
+      arm_var = input_arm_var
+    )
+
+    # validate arm levels
+    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+    }
+
+    do.call(what = "validate_standard_inputs", validate_args)
+
+    NULL
   })
 
   at <- reactive({
@@ -655,17 +710,18 @@ srv_t_coxreg <- function(input,
     setNames(res, input$cov_var)
   })
 
-  call_template <- function(comp_arm) {
+  call_template <- function(comp_arm, anl) {
     template_coxreg(
-      dataname = paste0(dataname, "_FILTERED"),
-      cov_var = input$cov_var,
+      dataname = "ANL",
+      cov_var = as.vector(anl$columns_source$cov_var),
       at = if (!is.null(input$interactions) && input$interactions) at() else list(),
-      arm_var = input$arm_var,
+      arm_var = as.vector(anl$columns_source$arm_var),
+      cnsr_var = as.vector(anl$columns_source$cnsr_var),
+      aval_var = as.vector(anl$columns_source$aval_var),
       ref_arm = input$ref_arm,
       comp_arm = comp_arm,
-      strata = input$strata_var,
+      strata = as.vector(anl$columns_source$strata_var),
       combine_comp_arms = input$combine_comp_arms,
-      paramcd = input$paramcd,
       multivariate = input$type == "Multivariate",
       control = control_coxreg(
         pval_method = input$pval_method,
@@ -678,12 +734,24 @@ srv_t_coxreg <- function(input,
 
   ## generate table call with template and render table ----
   output$as_html <- renderUI({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    ANL <- chunks_get_var("ANL") # nolint
+    validate_has_data(ANL, 10)
 
     calls <- if (input$type != "Multivariate") {
-      lapply(input$comp_arm, call_template)
+      lapply(input$comp_arm, call_template, anl_m)
     } else {
-      list(call_template(input$comp_arm))
+      list(call_template(input$comp_arm, anl_m))
     }
 
     res <- lapply(
