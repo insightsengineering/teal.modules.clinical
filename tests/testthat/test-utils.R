@@ -112,17 +112,16 @@ test_that("bracket_expr concatenates expressions into a single expression", {
   expect_identical(result, expected)
 })
 
-
 test_that("bracket_expr returns a single evaluable expression", {
   eval(bracket_expr(list(expr1, expr2, expr3)))
   result <- table(anl$rsp_lab, anl$is_rsp)
   expected <- structure(
-    c(0L, 73L, 0L, 18L, 44L, 164L, 0L, 101L, 0L, 0L),
+    c(0L, 18L, 0L, 73L, 44L, 164L, 0L, 101L, 0L, 0L),
     .Dim = c(5L, 2L),
     .Dimnames = structure(
       list(
         c(
-          "Complete Response (CR)", "Non-CR or Non-PD (NON CR/PD)",
+          "Complete Response (CR)", "Not Evaluable (NE)",
           "Partial Response (PR)", "Progressive Disease (PD)",
           "Stable Disease (SD)"
         ),
@@ -132,31 +131,6 @@ test_that("bracket_expr returns a single evaluable expression", {
     ),
     class = "table"
   )
-  expect_identical(result, expected)
-})
-
-test_that("styled_expr can format expressions", {
-  expr <- quote(
-    basic_table() %>%
-      split_cols_by(var = "ARMCD") %>%
-      test_proportion_diff(
-        vars = "rsp", method = "cmh", variables = list(strata = "strat")
-      ) %>%
-      build_table(df = dta)
-  )
-
-  result <- capture.output(styled_expr(expr))
-  expected <- c(
-    "basic_table() %>%",
-    "  split_cols_by(var = \"ARMCD\") %>%",
-    "  test_proportion_diff(",
-    "    vars = \"rsp\",",
-    "    method = \"cmh\",",
-    "    variables = list(strata = \"strat\")",
-    "  ) %>%",
-    "  build_table(df = dta)"
-  )
-
   expect_identical(result, expected)
 })
 
