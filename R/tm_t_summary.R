@@ -169,26 +169,44 @@ template_summary <- function(dataname,
 #'
 tm_t_summary <- function(label,
                          dataname,
+                         parent_name = ifelse(
+                           is(arm_var, "data_extract_spec"),
+                           datanames_input(arm_var),
+                           "ADSL"
+                           ),
                          arm_var,
                          summarize_vars,
-                         useNA = c("ifany", "no"), # nolintr
+                         useNA = c("ifany", "no"), # nolint
                          denominator = c("N", "n", "omit"),
                          pre_output = NULL,
                          post_output = NULL) {
-
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(summarize_vars))
-  useNA <- match.arg(useNA) # nolintr
+  stopifnot(
+    is_character_single(dataname),
+    is_character_single(parent_name)
+  )
+  useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
 
   args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
+  )
 
   module(
     label = label,
     server = srv_summary,
     ui = ui_summary,
-    ui_args = args,
-    server_args = list(dataname = dataname, label = label),
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        label = label
+        )
+      ),
     filters = dataname
   )
 
@@ -198,27 +216,26 @@ tm_t_summary <- function(label,
 ui_summary <- function(id, ...) {
 
   ns <- NS(id)
-  args <- list(...)
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$summarize_vars)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(args$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          args$arm_var$choices,
-                          args$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = args$arm_var$fixed
+      datanames_input(a[c("arm_var", "summarize_vars")]),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-      optionalSelectInput(ns("summarize_vars"),
-                          "Summarize Variables",
-                          args$summarize_vars$choices,
-                          args$summarize_vars$selected,
-                          multiple = TRUE,
-                          fixed = args$summarize_vars$fixed
+      data_extract_input(
+        id = ns("summarize_vars"),
+        label = "Summarize Variables",
+        data_extract_spec = a$summarize_vars,
+        is_single_dataset = is_single_dataset_value
       ),
       panel_group(
         panel_item(
@@ -227,24 +244,20 @@ ui_summary <- function(id, ...) {
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
-            selected = args$useNA
+            selected = a$useNA
           ),
           radioButtons(
             ns("denominator"),
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
-            selected = args$denominator
+            selected = a$denominator
           )
         )
       )
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    ),
-    pre_output = args$pre_output,
-    post_output = args$post_output
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 
 }
@@ -255,50 +268,76 @@ srv_summary <- function(input,
                         session,
                         datasets,
                         dataname,
+                        parent_name,
+                        arm_var,
+                        summarize_vars,
                         label) {
   init_chunks()
 
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    anl_f <- datasets$get_data(dataname, filtered = TRUE)
-    adsl_f <- datasets$get_data("ADSL", filtered = TRUE)
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, summarize_vars),
+    input_id = c("arm_var", "summarize_vars"),
+    merge_function = "dplyr::inner_join"
+  )
 
-    arm_var <- input$arm_var
-    add_total <- input$add_total
-    summarize_vars <- input$summarize_vars
-    useNA <- input$useNA # nolint
-    denominator <- input$denominator
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
 
-    validate(need(is.logical(add_total), "add total is not logical"))
-    validate(need(useNA %in% c("ifany", "no"), "useNA must be ifany or no")) # nolint
-    validate(need(denominator %in% c("N", "n", "omit"), "denominator must be N, n, or omit"))
-    if (useNA == "ifany") {
-      validate(need(denominator != "n", "when useNA is ifany, denominator cannot be n"))
-    }
-    validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
-    validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
-    validate(need(!is.null(arm_var), "please select 'arm variable'"))
-    validate(need(arm_var %in% names(anl_f), "arm variable does not exist"))
-    validate_has_data(anl_f, min_nrow = 1)
+  # validate inputs
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    # Send data where the analysis lives.
-    e <- new.env()
-    e$ANL_FILTERED <- anl_f # nolint
-    e$ADSL_FILTERED <- adsl_f #nolint
-    e
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+
+    validate(
+      need(input_arm_var, "Please select an arm variable"),
+      need(input_summarize_vars, "Please select a summarize variable"),
+      need(
+        !(input$useNA == "ifany" && input$denominator == "n"),
+        "If NA values are removed, denominator cannot be n"
+      )
+    )
+
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", input_summarize_vars),
+      arm_var = input_arm_var
+    )
   })
 
-  # The R-code corresponding to the analysis.
+  # generate r code for the analysis
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    sum_vars <- as.vector(anl_m$columns_source$summarize_vars)
+
     my_calls <- template_summary(
-      dataname = paste0(dataname, "_FILTERED"),
-      parentname = "ADSL_FILTERED",
-      arm_var = input$arm_var,
-      sum_vars = input$summarize_vars,
-      var_labels = datasets$get_variable_labels(dataname, input$summarize_vars),
+      dataname = "ANL",
+      parentname = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      sum_vars = sum_vars,
+      var_labels = datasets$get_variable_labels(dataname, sum_vars),
       add_total = input$add_total,
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),  #nolint
+      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       denominator = input$denominator
     )
     mapply(expression = my_calls, chunks_push)
@@ -312,10 +351,12 @@ srv_summary <- function(input,
   })
 
   # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "R Code for the current Summary Table",
-      rcode = get_rcode(datasets = datasets, title = label)
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "R Code for the current Summary Table",
+    code_header = label
+  )
 }

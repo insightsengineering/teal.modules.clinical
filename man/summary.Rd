@@ -20,6 +20,8 @@ template_summary(
 tm_t_summary(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   summarize_vars,
   useNA = c("ifany", "no"),
@@ -51,6 +53,9 @@ the denominator. With option \code{n}, the number of non-missing records in this
 intersection is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
 \item{summarize_vars}{(\code{choices_selected})\cr names of the variables
 that should be summarized.}
