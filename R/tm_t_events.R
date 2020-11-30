@@ -370,166 +370,8 @@ template_events <- function(dataname,
 
 }
 
-#' @noRd
-ui_t_events_byterm <- function(id, ...) {
-
-  ns <- NS(id)
-  a <- list(...)
-
-  standard_layout(
-    output = white_small_well(uiOutput(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        a$arm_var$choices,
-        a$arm_var$selected,
-        multiple = FALSE,
-        fixed = a$arm_var$fixed),
-      optionalSelectInput(
-        ns("hlt"),
-        "Event High Level Term",
-        a$hlt$choices,
-        a$hlt$selected,
-        multiple = FALSE,
-        fixed = a$hlt$fixed),
-      optionalSelectInput(
-        ns("llt"),
-        "Event Low Level Term",
-        a$llt$choices,
-        a$llt$selected,
-        multiple = FALSE,
-        fixed = a$llt$fixed),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      panel_item(
-        "Additional table settings",
-        selectInput(
-          inputId = ns("sort_criteria"),
-          label = "Sort Criteria",
-          choices = c("Decreasing frequency" = "freq_desc",
-                      "Alphabetically" = "alpha"
-          ),
-          selected = a$sort_criteria,
-          multiple = FALSE
-        ),
-        helpText("Pruning Options"),
-        numericInput(
-          inputId = ns("prune_freq"),
-          label = "Incidence Rate (%)",
-          value = 0,
-          min = 0,
-          max = 100,
-          step = 1,
-          width = "100%"
-        ),
-        numericInput(
-          inputId = ns("prune_diff"),
-          label = "Difference Rate (%)",
-          value = 0,
-          min = 0,
-          max = 100,
-          step = 1,
-          width = "100%"
-        )
-      )
-    ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%"),
-    pre_output = a$pre_output,
-    post_output = a$post_output
-  )
-}
-
-#' @noRd
-srv_t_events_byterm <- function(input,
-                                output,
-                                session,
-                                datasets,
-                                dataname,
-                                event_type) {
-  init_chunks()
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    adsl_f <- datasets$get_data("ADSL", filtered = TRUE)
-    anl_f <- datasets$get_data(dataname, filtered = TRUE)
-
-    arm_var <- input$arm_var
-    hlt <- input$hlt
-    llt <- input$llt
-
-    validate_standard_inputs(
-      adsl = adsl_f,
-      adslvars = c("STUDYID", "USUBJID", arm_var),
-      anl = anl_f,
-      anlvars = c("STUDYID", "USUBJID", llt, hlt),
-      arm_var = arm_var,
-      max_n_levels_armvar = NULL,
-      min_nrow = 1
-    )
-    teal.devel::validate_has_elements(
-      c(llt, hlt),
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-    )
-    validate(need(is.factor(adsl_f[[arm_var]]), "Arm variable is not a factor."))
-    validate(need(
-      input$prune_freq >= 0 && input$prune_freq <= 100,
-      "Pruning threshold for incidence rate must be between 0 and 100.")
-    )
-    validate(need(
-      input$prune_diff >= 0 && input$prune_diff <= 100,
-      "Pruning threshold for difference rate must be between 0 and 100.")
-    )
-
-    # Send data where the analysis lives.
-    e <- new.env()
-    anl_name <- paste0(dataname, "_FILTERED")
-    e[[anl_name]] <- anl_f
-    e$ADSL_FILTERED <- adsl_f # nolint
-    e
-  })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
-    my_calls <- template_events(
-      dataname = paste0(dataname, "_FILTERED"),
-      parentname = "ADSL_FILTERED",
-      arm_var = input$arm_var,
-      hlt = input$hlt,
-      llt = input$llt,
-      add_total = input$add_total,
-      event_type = event_type,
-      sort_criteria = input$sort_criteria,
-      prune_freq <- input$prune_freq / 100,
-      prune_diff <- input$prune_diff / 100
-    )
-    mapply(expression = my_calls, chunks_push)
-  })
-
-  # Outputs to render.
-  output$table <- renderUI({
-    call_preparation()
-    chunks_safe_eval()
-    as_html(chunks_get_var("pruned_and_sorted_result"))
-  })
-
-  # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "Summary",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = "Event Table"
-      )
-    )
-  })
-}
-
-
 #' @describeIn events_by_term teal module for events by term.
+#'
 #' @export
 #'
 #' @examples
@@ -594,6 +436,7 @@ srv_t_events_byterm <- function(input,
 #' }
 tm_t_events <- function(label,
                         dataname,
+                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         hlt,
                         llt,
@@ -604,31 +447,223 @@ tm_t_events <- function(label,
                         prune_diff = 0) {
 
   stop_if_not(
-    list(is_character_single(label), "Label should be single (i.e. not vector) character type of object")
-  )
-  stop_if_not(
-    list(is_character_single(dataname), "Dataname should be single (i.e. not vector) character type of object")
-  )
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(hlt))
-  stopifnot(is.choices_selected(llt))
-  stopifnot(is_logical_single(add_total))
-  stop_if_not(is_character_single(event_type))
+    is_character_single(label),
+    is_character_single(dataname),
+    is_logical_single(add_total),
+    is_character_single(event_type),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff)
+    )
+
   sort_criteria <- match.arg(sort_criteria)
-  stop_if_not(is_numeric_single(prune_freq))
-  stop_if_not(is_numeric_single(prune_diff))
 
   args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    hlt = cs_to_des_select(hlt, dataname = dataname),
+    llt = cs_to_des_select(llt, dataname = dataname)
+  )
 
   module(
     label = label,
     ui = ui_t_events_byterm,
     server = srv_t_events_byterm,
-    ui_args = args,
-    server_args = list(
-      dataname = dataname,
-      event_type = event_type
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        event_type = event_type,
+        label = label
+        )
+      ),
+    filters = get_extract_datanames(data_extract_list)
+  )
+}
+
+#' @noRd
+ui_t_events_byterm <- function(id, ...) {
+
+  ns <- NS(id)
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt)
+
+  standard_layout(
+    output = white_small_well(uiOutput(ns("table"))),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(a[c("arm_var", "hlt", "llt")]),
+      helpText("Analysis data:", tags$code(a$dataname)),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("hlt"),
+        label = "Event High Level Term",
+        data_extract_spec = a$hlt,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("llt"),
+        label = "Event Low Level Term",
+        data_extract_spec = a$llt,
+        is_single_dataset = is_single_dataset_value
+      ),
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      panel_item(
+        "Additional table settings",
+        selectInput(
+          inputId = ns("sort_criteria"),
+          label = "Sort Criteria",
+          choices = c("Decreasing frequency" = "freq_desc",
+                      "Alphabetically" = "alpha"
+          ),
+          selected = a$sort_criteria,
+          multiple = FALSE
+        ),
+        helpText("Pruning Options"),
+        numericInput(
+          inputId = ns("prune_freq"),
+          label = "Incidence Rate (%)",
+          value = 0,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
+        ),
+        numericInput(
+          inputId = ns("prune_diff"),
+          label = "Difference Rate (%)",
+          value = 0,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
+        )
+      )
     ),
-    filters = dataname
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
+  )
+}
+
+#' @noRd
+srv_t_events_byterm <- function(input,
+                                output,
+                                session,
+                                datasets,
+                                dataname,
+                                parent_name,
+                                event_type,
+                                arm_var,
+                                hlt,
+                                llt,
+                                label) {
+  init_chunks()
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, hlt, llt),
+    input_id = c("arm_var", "hlt", "llt"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_level_term <- c(
+      as.vector(anl_m$columns_source$hlt),
+      as.vector(anl_m$columns_source$llt)
+    )
+
+    validate(need(input_arm_var, "Please select an ARM variable"))
+    teal.devel::validate_has_elements(
+      input_level_term,
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+    )
+    validate(
+      need(
+        nrow(anl_filtered[input_level_term]) > 0,
+        "Not enough observations in  \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+      )
+    )
+    validate(
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
+    )
+
+    # validate inputs
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", input_level_term),
+      arm_var = input_arm_var,
+      max_n_levels_armvar = NULL,
+      min_nrow = 1
+    )
+  })
+
+  # The R-code corresponding to the analysis.
+  call_preparation <- reactive({
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    input_hlt <- as.vector(anl_m$columns_source$hlt)
+    input_llt <- as.vector(anl_m$columns_source$llt)
+
+    my_calls <- template_events(
+      dataname = "ANL",
+      parentname = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+      llt = if (length(input_llt) != 0) input_llt else NULL,
+      add_total = input$add_total,
+      event_type = event_type,
+      sort_criteria = input$sort_criteria,
+      prune_freq <- input$prune_freq / 100,
+      prune_diff <- input$prune_diff / 100
+    )
+    mapply(expression = my_calls, chunks_push)
+  })
+
+  # Outputs to render.
+  output$table <- renderUI({
+    call_preparation()
+    chunks_safe_eval()
+    as_html(chunks_get_var("pruned_and_sorted_result"))
+  })
+
+  # Render R code.
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "Event Table",
+    code_header = label
   )
 }
