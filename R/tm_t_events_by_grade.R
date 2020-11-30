@@ -98,7 +98,7 @@ template_events_by_grade <- function(dataname,
 
   one_term <- is.null(hlt) || is.null(llt)
 
-  if (one_term){
+  if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
     layout_list <- add_expr(
       layout_list,
@@ -182,7 +182,7 @@ template_events_by_grade <- function(dataname,
   } else {
     quote(cont_n_allcols)
   }
-  if (one_term){
+  if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
     y$pruned_and_sorted_result <- substitute(
       expr = result <- result %>%
@@ -268,21 +268,47 @@ template_events_by_grade <- function(dataname,
 #'
 tm_t_events_by_grade <- function(label,
                                  dataname,
+                                 parent_name = ifelse(
+                                   is(arm_var, "data_extract_spec"),
+                                   datanames_input(arm_var),
+                                   "ADSL"
+                                   ),
                                  arm_var,
                                  hlt,
                                  llt,
                                  grade,
                                  add_total = TRUE) {
 
+  stop_if_not(
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parent_name),
+    is_logical_single(add_total)
+  )
+
   args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    hlt = cs_to_des_select(hlt, dataname = dataname),
+    llt = cs_to_des_select(llt, dataname = dataname),
+    grade = cs_to_des_select(grade, dataname = dataname)
+  )
 
   module(
     label = label,
     server = srv_t_events_by_grade,
     ui = ui_t_events_by_grade,
-    ui_args = args,
-    server_args = list(dataname = dataname),
-    filters = dataname
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        label = label
+      )
+    ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
@@ -290,51 +316,45 @@ tm_t_events_by_grade <- function(label,
 ui_t_events_by_grade <- function(id, ...) {
 
   ns <- NS(id)
-  args <- list(...)
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(args$dataname)),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        args$arm_var$choices,
-        args$arm_var$selected,
-        multiple = FALSE,
-        fixed = args$arm_var$fixed),
-      optionalSelectInput(
-        ns("hlt"),
-        "Event High Level Term",
-        args$hlt$choices,
-        args$hlt$selected,
-        multiple = FALSE,
-        fixed = args$hlt$fixed),
-      optionalSelectInput(
-        ns("llt"),
-        "Event Low Level Term",
-        args$llt$choices,
-        args$llt$selected,
-        multiple = FALSE,
-        fixed = args$llt$fixed),
-      optionalSelectInput(
-        ns("grade"),
-        "Event Grade",
-        args$grade$choices,
-        args$grade$selected,
-        multiple = FALSE,
-        fixed = args$grade$fixed),
+      datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
+      helpText("Analysis data:", code(a$dataname)),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("hlt"),
+        label = "Event High Level Term",
+        data_extract_spec = a$hlt,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("llt"),
+        label = "Event Low Level Term",
+        data_extract_spec = a$llt,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("grade"),
+        label = "Event Grade",
+        data_extract_spec = a$grade,
+        is_single_dataset = is_single_dataset_value
+      ),
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = args$add_total)
+        value = a$add_total)
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    )
+    forms = get_rcode_ui(ns("rcode"))
   )
 }
 
@@ -344,44 +364,93 @@ srv_t_events_by_grade <- function(input,
                                   session,
                                   datasets,
                                   dataname,
-                                  label) {
+                                  parent_name,
+                                  label,
+                                  arm_var,
+                                  hlt,
+                                  llt,
+                                  grade) {
 
   init_chunks()
 
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, hlt, llt, grade),
+    input_id = c("arm_var", "hlt", "llt", "grade"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    arm_var <- input$arm_var
-    hlt <- input$hlt
-    llt <- input$llt
-
-    teal.devel::validate_has_elements(
-      c(llt, hlt),
-      "Please select at least one of \"LOW LEVEL TERM\"
-      or \"HIGH LEVEL TERM\" variables."
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_level_term <- c(
+      as.vector(anl_m$columns_source$hlt),
+      as.vector(anl_m$columns_source$llt)
     )
+    input_grade <- as.vector(anl_m$columns_source$grade)
+
     validate(
-      need(is.factor(adsl_filtered[[arm_var]]), "Arm variable is not a factor.")
+      need(input_arm_var, "Please select an ARM variable"),
+      need(input_grade, "Please select a grade variable")
+      )
+    teal.devel::validate_has_elements(
+      input_level_term,
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+      )
+    validate(
+      need(
+        nrow(anl_filtered[input_level_term]) > 0,
+        "Not enough observations in  \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        )
+      )
+    validate(
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
     )
 
-    # Send data where the analysis lives.
-    e <- new.env()
-    e[[paste0(dataname, "_FILTERED")]] <- anl_filtered
-    e$ADSL_FILTERED <- adsl_filtered #nolint
-    e
+    # validate inputs
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", input_level_term, input_grade),
+      arm_var = input_arm_var,
+      max_n_levels_armvar = NULL,
+      min_nrow = 1
+    )
   })
 
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    input_hlt <- anl_m$columns_source$hlt
+    input_llt <- anl_m$columns_source$llt
+
     my_calls <- template_events_by_grade(
-      dataname = paste0(dataname, "_FILTERED"),
-      parentname = "ADSL_FILTERED",
-      arm_var = input$arm_var,
-      hlt = input$hlt,
-      llt = input$llt,
-      grade = input$grade,
+      dataname = "ANL",
+      parentname = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+      llt = if (length(input_llt) != 0) input_llt else NULL,
+      grade = as.vector(anl_m$columns_source$grade),
       add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
@@ -395,10 +464,12 @@ srv_t_events_by_grade <- function(input,
   })
 
   # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "AE by Grade Table",
-      rcode = get_rcode(datasets = datasets, title = input$label)
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "AE by Grade Table",
+    code_header = label
+  )
 }

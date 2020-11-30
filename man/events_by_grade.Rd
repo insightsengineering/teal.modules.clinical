@@ -19,6 +19,8 @@ template_events_by_grade(
 tm_t_events_by_grade(
   label,
   dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   hlt,
   llt,
@@ -46,6 +48,9 @@ name of the variable with low level term for events.}
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 }
 \description{
 Teal Module: Events by Grade
