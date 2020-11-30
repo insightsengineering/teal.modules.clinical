@@ -3,7 +3,6 @@ test_that("template_events_patyear generates standard expressions", {
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
-    paramcd = "AETTE1",
     control = control_incidence_rate(),
     event_indicator = 0,
     add_total = TRUE
@@ -12,7 +11,6 @@ test_that("template_events_patyear generates standard expressions", {
   expected <- list(
     data = quote(
       anl <- adaette %>%
-        filter(PARAMCD == "AETTE1") %>%
         mutate(is_event = CNSR == 0)
     ),
     layout = quote(
@@ -47,7 +45,6 @@ test_that("template_events_patyear generates right expressions with non-default"
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARM",
-    paramcd = "AETTE2",
     control = control_incidence_rate(),
     event_indicator = 0,
     add_total = FALSE
@@ -56,7 +53,6 @@ test_that("template_events_patyear generates right expressions with non-default"
   expected <- list(
     data = quote(
       anl <- adaette %>%
-        filter(PARAMCD == "AETTE2") %>%
         mutate(is_event = CNSR == 0)
     ),
     layout = quote(
@@ -90,7 +86,6 @@ test_that("template_events_patyear generates right expressions with non-default 
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
-    paramcd = "AETTE1",
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",
@@ -103,7 +98,6 @@ test_that("template_events_patyear generates right expressions with non-default 
   expected <- list(
     data = quote(
       anl <- adaette %>%
-        filter(PARAMCD == "AETTE1") %>%
         mutate(is_event = CNSR == 0)
     ),
     layout = quote(

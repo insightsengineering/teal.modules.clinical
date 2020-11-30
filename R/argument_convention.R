@@ -53,6 +53,8 @@
 #'   names of the variables for covariates.
 #' @param aval_var (`string` or `choices_selected` with teal module)\cr
 #'   name of the variable for the analysis.
+#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for censor variable
 #' @param conf_level (`proportion`)\cr confidence level of the interval.
 #'   Default is 0.95.
 #' @param add_total (`flag`)\cr whether to include column with total number of patients.

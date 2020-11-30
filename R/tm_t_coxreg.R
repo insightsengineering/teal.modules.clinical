@@ -460,7 +460,8 @@ ui_t_coxreg <- function(id, ...) {
     a$strata_var,
     a$aval_var,
     a$cnsr_var,
-    a$cov_var)
+    a$cov_var
+    )
 
   ns <- NS(id)
 

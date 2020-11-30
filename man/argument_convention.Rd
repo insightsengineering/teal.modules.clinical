@@ -72,6 +72,9 @@ names of the variables for covariates.}
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable for the analysis.}
 
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
+
 \item{conf_level}{(\code{proportion})\cr confidence level of the interval.
 Default is 0.95.}
 

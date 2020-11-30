@@ -10,13 +10,21 @@ template_events_patyear(
   dataname,
   parentname,
   arm_var,
-  paramcd,
   control = control_incidence_rate(),
   event_indicator = 0,
   add_total = TRUE
 )
 
-tm_t_events_patyear(label, dataname, arm_var, paramcd)
+tm_t_events_patyear(
+  label,
+  dataname,
+  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
+  arm_var,
+  paramcd,
+  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE)
+)
 }
 \arguments{
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
@@ -27,9 +35,6 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
-
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
 \item{event_indicator}{(\code{numeric})\cr code for event as opposed to censoring.}
@@ -37,6 +42,18 @@ variable value designating the studied parameter.}
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
+
+\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
+
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
+
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis.}
+
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
 }
 \description{
 Teal module: Event rates adjusted for patient-years
@@ -67,7 +84,7 @@ app <- init(
       label = "AE rate adjusted for patient-years at risk Table",
       dataname = "ADAETTE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
-      paramcd = choices_selected(levels(adaette$PARAMCD), "AETTE1")
+      paramcd = choices_selected(value_choices(adaette, "PARAMCD", "PARAM"), "AETTE1")
     )
   )
 )
