@@ -23,12 +23,11 @@ template_summary_by <- function(parentname,
                                 arm_var,
                                 sum_vars,
                                 by_vars,
-                                paramcd,
                                 var_labels = character(),
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 add_total = FALSE,
-                                na.rm = FALSE, # nolintr
+                                na.rm = FALSE, # nolint
                                 denominator = c("N", "n", "omit")) {
   assert_that(
     is.string(parentname),
@@ -36,7 +35,6 @@ template_summary_by <- function(parentname,
     is.string(arm_var),
     is.character(sum_vars),
     is.character(by_vars),
-    is.character(paramcd),
     is.character(var_labels),
     is.flag(parallel_vars),
     is.flag(row_groups),
@@ -49,19 +47,12 @@ template_summary_by <- function(parentname,
   y <- list()
 
   # Data processing
-  y$data <- if (dataname != parentname) {
-    substitute(
-      expr =  anl <- df %>% filter(PARAMCD %in% paramcd),
-      env = list(
-        df = as.name(dataname),
-        paramcd = paramcd)
+  y$data <- substitute(
+    expr =  anl <- df,
+    env = list(
+      df = as.name(dataname)
     )
-  } else {
-    substitute(
-      expr =  anl <- df,
-      env = list(df = as.name(dataname))
-    )
-  }
+  )
 
   # Build layout
   layout_list <- list()
@@ -226,7 +217,7 @@ template_summary_by <- function(parentname,
 
   # Adjust column counts when `parallel_vars` is selected
   if (add_total) {
-    if (parallel_vars){
+    if (parallel_vars) {
       col_counts <- substitute(
         expr = c(
           rep(table(parentname$arm_var), each = length(sum_vars)),
@@ -244,7 +235,7 @@ template_summary_by <- function(parentname,
       )
     }
   } else {
-    if (parallel_vars){
+    if (parallel_vars) {
       col_counts <- substitute(
         expr = rep(table(parentname$arm_var), each = length(sum_vars)),
         env = list(parentname = as.name(parentname), arm_var = arm_var, sum_vars = sum_vars)
@@ -258,7 +249,10 @@ template_summary_by <- function(parentname,
   }
 
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result
+      },
     env = list(col_counts = col_counts)
   )
   y
@@ -311,33 +305,48 @@ template_summary_by <- function(parentname,
 #' }
 tm_t_summary_by <- function(label,
                             dataname,
+                            parent_name = ifelse(
+                              is(arm_var, "data_extract_spec"),
+                              datanames_input(arm_var),
+                              "ADSL"
+                              ),
                             arm_var,
                             by_vars,
                             summarize_vars,
                             paramcd = choices_selected("", fixed = TRUE),
                             parallel_vars = FALSE,
                             row_groups = FALSE,
-                            useNA = c("ifany", "no"), # nolintr
+                            useNA = c("ifany", "no"), # nolint
                             denominator = c("n", "N", "omit"),
                             pre_output = NULL,
                             post_output = NULL) {
 
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(by_vars))
-  stopifnot(is.choices_selected(summarize_vars))
-  stopifnot(is.choices_selected(paramcd))
-  useNA <- match.arg(useNA) # nolintr
+  useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
 
   args <- c(as.list(environment()))
 
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
+    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
+  )
+
   module(
     label = label,
     ui = ui_summary_by,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server = srv_summary_by,
-    server_args = list(dataname = dataname),
-    filters = dataname
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parent_name = parent_name,
+        label = label
+        )
+      ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
@@ -345,43 +354,46 @@ tm_t_summary_by <- function(label,
 ui_summary_by <- function(id, ...) {
 
   ns <- NS(id)
-  args <- list(...)
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$by_vars,
+    a$summarize_vars
+    )
 
   standard_layout(
     output = white_small_well(uiOutput(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(args$dataname)),
-      optionalSelectInput(ns("arm_var"),
-                          "Arm Variable",
-                          args$arm_var$choices,
-                          args$arm_var$selected,
-                          multiple = FALSE,
-                          fixed = args$arm_var$fixed
+      datanames_input(a[c("arm_var", "paramcd", "by_vars", "summarize_vars")]),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("by_vars"),
+        label = "Row By Variable",
+        data_extract_spec = a$by_vars,
+        is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-      optionalSelectInput(ns("summarize_vars"),
-                          "Summarize Variables",
-                          args$summarize_vars$choices,
-                          args$summarize_vars$selected,
-                          multiple = TRUE,
-                          fixed = args$summarize_vars$fixed
+      data_extract_input(
+        id = ns("summarize_vars"),
+        label = "Summarize Variables",
+        data_extract_spec = a$summarize_vars,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(ns("paramcd"), "Select Parameter",
-                          choices = args$paramcd$choices,
-                          selected = args$paramcd$selected,
-                          multiple = TRUE,
-                          fixed = args$paramcd$fixed
-      ),
-      optionalSelectInput(ns("by_vars"),
-                          "Row By Variable",
-                          args$by_vars$choices,
-                          args$by_vars$selected,
-                          multiple = TRUE,
-                          fixed = args$by_vars$fixed
-      ),
-      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = args$parallel_vars),
-      checkboxInput(ns("row_groups"), "Show summarize variables in row groups", value = args$row_groups),
+      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
+      checkboxInput(ns("row_groups"), "Show summarize variables in row groups", value = a$row_groups),
       panel_group(
         panel_item(
           "Additional table settings",
@@ -389,24 +401,20 @@ ui_summary_by <- function(id, ...) {
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
-            selected = args$useNA
+            selected = a$useNA
           ),
           radioButtons(
             ns("denominator"),
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
-            selected = args$denominator
+            selected = a$denominator
           )
         )
       )
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    ),
-    pre_output = args$pre_output,
-    post_output = args$post_output
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
@@ -416,61 +424,84 @@ srv_summary_by <- function(input,
                            output,
                            session,
                            datasets,
-                           dataname) {
+                           dataname,
+                           parent_name,
+                           arm_var,
+                           paramcd,
+                           by_vars,
+                           summarize_vars,
+                           label) {
   init_chunks()
 
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, paramcd, by_vars, summarize_vars),
+    input_id = c("arm_var", "paramcd", "by_vars", "summarize_vars"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
   # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    adsl_f <- datasets$get_data("ADSL", filtered = TRUE)
-    anl_f <- datasets$get_data(dataname, filtered = TRUE)
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    arm_var <- input$arm_var
-    add_total <- input$add_total
-    summarize_vars <- input$summarize_vars
-    useNA <- input$useNA # nolint
-    denominator <- input$denominator
-    by_vars <- input$by_vars
-    paramcd <- input$paramcd
-    parallel_vars <- input$parallel_vars
-    row_groups <- input$row_groups # nolint
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_by_vars <- as.vector(anl_m$columns_source$by_vars)
+    input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
 
-    validate(need(is.logical(add_total), "add total is not logical"))
-    validate(need(useNA %in% c("ifany", "no"), "useNA must be ifany or no")) # nolint
-    validate(need(denominator %in% c("N", "n", "omit"), "denominator must be N, n, or omit"))
-    validate(need(!is.null(summarize_vars), "please select 'summarize variables'"))
-    validate(need(all(summarize_vars %in% names(anl_f)), "not all variables available"))
-    validate(need(!is.null(arm_var), "please select 'arm variable'"))
-    validate(need(!is.null(paramcd), "please select 'parameter'"))
-    validate(need(!is.null(by_vars), "please select 'By row variable'"))
-    validate(need(arm_var %in% names(anl_f), "arm variable does not exist"))
-    validate_has_data(anl_f, min_nrow = 1)
-    validate(need(all(by_vars %in% names(anl_f)), "not all by-variables available"))
-    if (parallel_vars) {
+    validate(
+      need(input_arm_var, "Please select an arm variable"),
+      need(input_summarize_vars, "Please select a summarize variable")
+    )
+
+    # validate inputs
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_by_vars, input_summarize_vars),
+      arm_var = input_arm_var,
+      min_nrow = 1
+    )
+
+    if (input$parallel_vars) {
       validate(need(
-        all(vapply(anl_f[summarize_vars], FUN =  is.numeric, FUN.VALUE = TRUE)),
+        all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
         "Summarize variables must all be numeric to display in parallel columns."
       ))
     }
-
-    # Send data where the analysis lives.
-    e <- new.env()
-    e$ADSL_FILTERED <- adsl_f #nolint
-    anl_name <- paste0(dataname, "_FILTERED")
-    e[[anl_name]] <- anl_f # nolint
-    e
   })
 
   # The R-code corresponding to the analysis.
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    sum_vars <- as.vector(anl_m$columns_source$summarize_vars)
+
     my_calls <- template_summary_by(
-      parentname = "ADSL_FILTERED",
-      dataname = paste0(dataname, "_FILTERED"),
-      arm_var = input$arm_var,
-      sum_vars = input$summarize_vars,
-      by_vars = input$by_vars,
-      var_labels = datasets$get_variable_labels(dataname, input$summarize_vars),
-      paramcd = input$paramcd,
+      parentname = "ANL_ADSL",
+      dataname = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      sum_vars = sum_vars,
+      by_vars = as.vector(anl_m$columns_source$by_vars),
+      var_labels = datasets$get_variable_labels(dataname, sum_vars),
       add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),  #nolint
       denominator = input$denominator,
@@ -488,14 +519,12 @@ srv_summary_by <- function(input,
   })
 
   # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "Summary",
-      rcode = get_rcode(
-        datasets = datasets,
-        datanames = dataname,
-        title = "Summary by Row Groups Table"
-      )
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "Summary by Row Groups Table",
+    code_header = label
+  )
 }

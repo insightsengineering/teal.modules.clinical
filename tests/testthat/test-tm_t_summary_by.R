@@ -4,7 +4,6 @@ test_that("template_summary_by generates correct expressions", {
     dataname = "adlb",
     arm_var = "ARM",
     sum_vars = c("AVAL"),
-    paramcd = c("ALT"),
     by_vars = c("AVISIT"),
     add_total = TRUE,
     na.rm = FALSE,
@@ -12,7 +11,7 @@ test_that("template_summary_by generates correct expressions", {
   )
 
   expected <- list(
-    data = quote(anl <- adlb %>% filter(PARAMCD %in% "ALT")),
+    data = quote(anl <- adlb),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
@@ -29,11 +28,10 @@ test_that("template_summary_by generates correct expressions", {
           .stats = c("n", "mean_sd", "median", "range", "count_fraction")
         )
     ),
-    table = quote(result <- build_table(
-      lyt = lyt,
-      df = anl,
-      col_counts = c(table(adsl$ARM), sum(table(adsl$ARM)))
-    ))
+    table = quote({
+      result <- build_table(lyt = lyt, df = anl, col_counts = c(table(adsl$ARM), sum(table(adsl$ARM))))
+      result
+    })
   )
   expect_equal_expr_list(result, expected)
 })
@@ -45,7 +43,6 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     arm_var = "ARM",
     sum_vars = c("AVAL", "CHG"),
     parallel_vars = TRUE,
-    paramcd = c("ALT"),
     by_vars = c("AVISIT"),
     add_total = TRUE,
     na.rm = FALSE,
@@ -53,7 +50,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
   )
 
   expected <- list(
-    data = quote(anl <- adlb %>% filter(PARAMCD %in% "ALT")),
+    data = quote(anl <- adlb),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
@@ -67,13 +64,17 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
           .stats = c("n", "mean_sd", "median", "range", "count_fraction")
         )
     ),
-    table = quote(result <- build_table(lyt = lyt,
-                                        df = anl,
-                                        col_counts = c(
-                                          rep(table(adsl$ARM), each = length(c("AVAL", "CHG"))),
-                                          rep(sum(table(adsl$ARM)), each = length(c("AVAL", "CHG"))))
-                                        )
-    )
+    table = quote({
+      result <- build_table(
+        lyt = lyt,
+        df = anl,
+        col_counts = c(
+          rep(table(adsl$ARM), each = length(c("AVAL", "CHG"))),
+          rep(sum(table(adsl$ARM)), each = length(c("AVAL", "CHG")))
+          )
+        )
+      result
+    })
   )
   expect_equal_expr_list(result, expected)
 })
@@ -85,7 +86,6 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
     arm_var = "ARM",
     sum_vars = c("AVAL"),
     parallel_vars = FALSE,
-    paramcd = "ALT",
     row_groups = TRUE,
     by_vars = c("SEX", "COUNTRY"),
     add_total = FALSE,
@@ -114,10 +114,10 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
           ) %>%
         summarize_row_groups()
     ),
-    table = quote(
-      result <- build_table(lyt = lyt,
-                            df = anl,
-                            col_counts = table(adsl$ARM)))
+    table = quote({
+      result <- build_table(lyt = lyt, df = anl, col_counts = table(adsl$ARM))
+      result
+    })
   )
   expect_equal_expr_list(result, expected)
 }

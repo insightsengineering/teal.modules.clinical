@@ -476,7 +476,6 @@ ui_t_coxreg <- function(id, ...) {
       ),
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
-      helpText("Analysis data:", code(a$dataname)),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -635,7 +634,6 @@ srv_t_coxreg <- function(input,
     input_id = c("arm_var", "strata_var"),
     anl_name = "ANL_ADSL"
   )
-
 
   ## render conditional strata levels input UI ----
   open_textinput <- function(x, anl) {
