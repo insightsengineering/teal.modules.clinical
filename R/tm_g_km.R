@@ -1,34 +1,217 @@
-#' teal module for Kaplan-Meier Plot from grid
+#' Teal Module: Kaplan-Meier
 #'
-#' This is teal module produces a grid style KM plot for data with ADaM structure
+#' This teal module produces a grid style Kaplan-Meier plot for data with
+#' ADaM structure.
 #'
+#' @name kaplan_meier
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
+#' @inheritParams tern::g_km
 #' @inheritParams tm_t_tte
 #' @inheritParams shared_params
-#' @param facet_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for facet plotting
-#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for confidence level, each within range of (0, 1).
+#' @param facet_var ([choices_selected()])\cr
+#'   object with all available choices and preselected option
+#'   for variable names that can be used for facet plotting.
+#' @param conf_level ([choices_selected()])\cr
+#'   object with all available choices and preselected option
+#'   for confidence level, each within range of (0, 1).
 #'
-#' @import grid
+NULL
+
+#' @describeIn kaplan_meier create the expression corresponding to the analysis.
+#' @order 2
 #'
-#' @template author_wangh107
-#'
+template_g_km <- function(anl_name = "ANL",
+                          arm_var = "ARM",
+                          arm_ref_comp = NULL,
+                          comp_arm = NULL,
+                          compare_arm = FALSE,
+                          combine_comp_arms = FALSE,
+                          aval = "AVAL",
+                          cnsr = "CNSR",
+                          strata_var = NULL,
+                          time_points = NULL,
+                          facet = "SEX",
+                          font_size = 8,
+                          conf_level = 0.95,
+                          ties = "efron",
+                          xlab = "Survival time in Days",
+                          pval_method = "log-rank",
+                          annot_surv_med = TRUE,
+                          annot_coxph = TRUE) {
+
+  y <- list()
+
+  data_list <- list()
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl %>%
+        mutate(
+          is_event = cnsr == 0
+        ),
+      env = list(
+        anl = as.name(anl_name),
+        cnsr = as.name(cnsr)
+      )
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = filter(arm_var %in% c(arm_ref_comp, comp_arm)),
+      env = list(arm_var = as.name(arm_var), arm_ref_comp = arm_ref_comp, comp_arm = comp_arm)
+    )
+  )
+  if (combine_comp_arms) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(
+          arm = factor(
+            x = case_when(
+              arm %in% arm_ref_comp ~ new_arm_ref_comp,
+              TRUE ~ new_comp_arm
+            ),
+            levels = c(new_arm_ref_comp, new_comp_arm)
+          )
+        ),
+        names = list(arm = as.name(arm_var)),
+        others = list(
+          arm_ref_comp = arm_ref_comp,
+          new_arm_ref_comp = paste(arm_ref_comp, collapse = "/"),
+          comp_arm = comp_arm,
+          new_comp_arm = paste(comp_arm, collapse = "/")
+        )
+      )
+    )
+  }
+
+  y$data <- substitute(
+    expr = anl <- data_pipe, # nolint
+    env = list(anl = as.name(anl_name), data_pipe = pipe_expr(data_list))
+  )
+
+  y$variables <- if (!is.null(strata_var) && length(strata_var) != 0) {
+    substitute(
+      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
+      env = list(tte = aval, arm = arm_var, strata_var = strata_var)
+    )
+  } else {
+    substitute(
+      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm),
+      env = list(tte = aval, arm = arm_var)
+    )
+  }
+  graph_list <- list()
+
+  if (!is.null(facet) && length(facet) != 0) {
+    graph_list <- add_expr(
+      graph_list,
+      quote(grid::grid.newpage())
+    )
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = lyt <- grid::grid.layout(nrow = nlevels(df$facet), ncol = 1) %>%
+          grid::viewport(layout = .) %>%
+          grid::pushViewport(),
+        env = list(
+          df = as.name(anl_name),
+          facet = as.name(facet)
+        )
+      )
+    )
+
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = result <- mapply(
+          df = split(df, f = df$facet), nrow = seq_along(levels(df$facet)),
+          FUN = function(df_i, nrow_i) {
+            g_km(
+              df = df_i,
+              variables = variables,
+              font_size = font_size,
+              xlab = xlab,
+              newpage = FALSE,
+              ggtheme = theme_minimal(),
+              annot_surv_med = annot_surv_med,
+              annot_coxph = annot_coxph,
+              control_surv = control_surv_timepoint(conf_level = conf_level),
+              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+              vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
+            )
+          }
+        ),
+        env = list(
+          df = as.name(anl_name),
+          font_size = font_size,
+          facet = as.name(facet),
+          xlab = xlab,
+          conf_level = conf_level,
+          pval_method = pval_method,
+          annot_surv_med = annot_surv_med,
+          annot_coxph = annot_coxph,
+          ties = ties
+        )
+      )
+    )
+  } else {
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = result <- g_km(
+          df = df,
+          variables = variables,
+          font_size = font_size,
+          xlab = xlab,
+          newpage = TRUE,
+          ggtheme = theme_minimal(),
+          control_surv = control_surv_timepoint(conf_level = conf_level),
+          control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+          annot_surv_med = annot_surv_med,
+          annot_coxph = annot_coxph
+        ),
+        env = list(
+          df = as.name(anl_name),
+          font_size = font_size,
+          xlab = xlab,
+          conf_level = conf_level,
+          pval_method = pval_method,
+          annot_surv_med = annot_surv_med,
+          annot_coxph = annot_coxph,
+          ties = ties
+        )
+      )
+    )
+  }
+
+  y$graph <- bracket_expr(graph_list)
+
+  y
+}
+
+
+#' @describeIn kaplan_meier teal module for Kaplan-Meier curves.
 #' @export
-#'
+#' @order 1
 #' @examples
+#'
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
 #' ADTTE <- radtte(cached = TRUE)
 #'
-#' arm_ref_comp <- list(
-#'   ARM = list(
-#'     ref = "A: Drug X",
-#'     comp = c("B: Placebo", "C: Combination")
-#'   ),
-#'   ARMCD = list(
+#' arm_ref_comp = list(
+#'   ACTARMCD = list(
 #'     ref = "ARM B",
-#'     comp = "ARM A"
+#'     comp = c("ARM A", "ARM C")
+#'   ),
+#'   ARM = list(
+#'     ref = "B: Placebo",
+#'     comp = c("A: Drug X", "C: Combination")
 #'   )
 #' )
 #'
@@ -42,541 +225,409 @@
 #'     tm_g_km(
 #'       label = "KM PLOT",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'         "ARM"
+#'       ),
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         "OS"
+#'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(c("OS", "PFS"), "OS"),
-#'       facet_var = choices_selected(c("SEX", "BMRKR2"), "BMRKR2"),
-#'       strata_var = choices_selected(c("SEX", "BMRKR2"), "SEX")
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         "SEX"
+#'       ),
+#'       facet_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         NULL
+#'       )
 #'     )
 #'   )
 #' )
+#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
+#'
 tm_g_km <- function(label,
                     dataname,
+                    parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                     arm_var,
                     arm_ref_comp = NULL,
                     paramcd,
-                    facet_var,
                     strata_var,
+                    facet_var,
+                    aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+                    cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
                     plot_height = c(1200L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
+
+  stopifnot(
+    is.cs_or_des(arm_var),
+    is.cs_or_des(paramcd),
+    is.cs_or_des(facet_var),
+    is.cs_or_des(strata_var)
+  )
+
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
+
+  # Convert choices-selected to data_extract_spec
+  if (is.choices_selected(arm_var)) {
+    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
+  }
+  if (is.choices_selected(paramcd)) {
+    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(strata_var)) {
+    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+  }
+  if (is.choices_selected(facet_var)) {
+    facet_var <- cs_to_des_select(facet_var, dataname = parent_name, multiple = TRUE)
+  }
+  if (is.choices_selected(aval_var)) {
+    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
+  }
+  if (is.choices_selected(cnsr_var)) {
+    cnsr_var <- cs_to_des_select(cnsr_var, dataname = dataname, multiple = FALSE)
+  }
+
+  args <- as.list(environment())
+  data_extract_list <- list(
+    arm = arm_var,
+    paramcd = paramcd,
+    strata = strata_var,
+    facet = facet_var,
+    aval = aval_var,
+    cnsr = cnsr_var
+  )
+
   module(
     label = label,
-    ui = function(id, datasets) {
-      ns <- NS(id)
-      htmlOutput(ns("tbd"))
-    },
-    server = function(input, output, session, datasets) {
-      output$tbd <- renderUI({
-        p("Module is currently refactored")
-      })
-    },
-    filters = dataname
+    server = srv_g_km,
+    ui = ui_g_km,
+    ui_args = args,
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        label = label,
+        parent_name = parent_name,
+        arm_ref_comp = arm_ref_comp,
+        plot_height = plot_height,
+        plot_width = plot_width
+      )
+    ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
-#REFACTOR
-#nolint start
-# tm_g_km <- function(label,
-#                     dataname,
-#                     arm_var,
-#                     arm_ref_comp = NULL,
-#                     paramcd,
-#                     facet_var,
-#                     strata_var,
-#                     conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
-#                     plot_height = c(1200L, 400L, 5000L),
-#                     plot_width = NULL,
-#                     pre_output = NULL,
-#                     post_output = NULL) {
-#   stopifnot(is.choices_selected(arm_var))
-#   stopifnot(is.choices_selected(paramcd))
-#   stopifnot(is.choices_selected(facet_var))
-#   stopifnot(is.choices_selected(strata_var))
-#   check_slider_input(plot_height, allow_null = FALSE)
-#   check_slider_input(plot_width)
-#
-#   args <- as.list(environment())
-#
-#   module(
-#     label = label,
-#     filters = dataname,
-#     server = srv_g_km,
-#     server_args = list(
-#       dataname = dataname,
-#       arm_ref_comp = arm_ref_comp,
-#       label = label,
-#       plot_height = plot_height,
-#       plot_width = plot_width
-#     ),
-#     ui = ui_g_km,
-#     ui_args = args
-#   )
-# }
-#
-# ui_g_km <- function(id, ...) {
-#   a <- list(...)
-#   ns <- NS(id)
-#
-#   standard_layout(
-#     output = white_small_well(plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width)),
-#     encoding = div(
-#       tags$label("Encodings", class = "text-primary"),
-#       helpText("Analysis Data: ", tags$code(a$dataname)),
-#       optionalSelectInput(
-#         ns("paramcd"),
-#         "Time to Event (Endpoint)",
-#         choices = a$paramcd$choices,
-#         selected = a$paramcd$selected,
-#         multiple = FALSE,
-#         fixed = a$paramcd$fixed
-#       ),
-#       optionalSelectInput(
-#         ns("facet_var"),
-#         "Facet Plots by:",
-#         choices = a$facet_var$choices,
-#         selected = a$facet_var$selected,
-#         multiple = TRUE,
-#         label_help = helpText("currently taken from ADSL"),
-#         fixed = a$facet_var$fixed
-#       ),
-#       # arm related parameters
-#       optionalSelectInput(
-#         ns("arm_var"),
-#         "Arm Variable",
-#         choices = a$arm_var$choices,
-#         selected = a$arm_var$selected,
-#         multiple = FALSE,
-#         fixed = a$arm_var$fixed
-#       ),
-#       div(
-#         class = "arm-comp-box",
-#         tags$label("Compare Arms"),
-#         shinyWidgets::switchInput(inputId = ns("compare_arms"), value = !is.null(a$arm_ref_comp), size = "mini"),
-#         conditionalPanel(
-#           condition = paste0("input['", ns("compare_arms"), "']"),
-#           div(
-#             selectInput(
-#               ns("ref_arm"),
-#               "Reference Arm",
-#               choices = NULL,
-#               selected = NULL,
-#               multiple = TRUE
-#             ),
-#             helpText("Reference groups automatically combined into a single group if more than one value selected."),
-#             selectInput(
-#               ns("comp_arm"),
-#               "Comparison Group",
-#               choices = NULL,
-#               selected = NULL,
-#               multiple = TRUE
-#             ),
-#             checkboxInput(
-#               ns("combine_comp_arms"),
-#               "Combine all comparison groups?",
-#               value = FALSE
-#             ),
-#             optionalSelectInput(
-#               ns("strata_var"),
-#               "Stratify by",
-#               choices = a$strata_var$choices,
-#               selected = a$strata_var$selected,
-#               multiple = TRUE,
-#               label_help = helpText("currently taken from ADSL"),
-#               fixed = a$strata_var$fixed
-#             )
-#           )
-#         )
-#       ),
-#       helpText("X-axis label will be combined with variable ", tags$code("AVALU")),
-#       conditionalPanel(
-#         condition = paste0("input['", ns("compare_arms"), "']"),
-#         panel_group(
-#           panel_item(
-#             "Comparison settings",
-#             radioButtons(
-#               ns("pval_method_coxph"),
-#               label = HTML(paste("p-value method for ",
-#                                  tags$span(style="color:darkblue", "Coxph"), # nolint
-#                                  " (Hazard Ratio)",
-#                                  sep = "")
-#               ),
-#               choices = c("wald", "log-rank", "likelihood"),
-#               selected = "log-rank"
-#             ),
-#             radioButtons(
-#               ns("ties_coxph"),
-#               label = HTML(paste("Ties for ",
-#                                  tags$span(style="color:darkblue", "Coxph"), # nolint
-#                                  " (Hazard Ratio)",
-#                                  sep = "")
-#               ),
-#               choices = c("exact", "breslow", "efron"),
-#               selected = "exact"
-#             )
-#           )
-#         )
-#       ),
-#       panel_group(
-#         panel_item(
-#           "Additional plot settings",
-#           checkboxInput(
-#             inputId = ns("scale_x_axis"),
-#             label = "Scale multiple X axis range",
-#             value = FALSE,
-#             width = "100%"
-#           ),
-#           textInput(
-#             inputId = ns("user_xaxis"),
-#             label = "Specify break intervals for x-axis"
-#           ),
-#           numericInput(
-#             inputId = ns("font_size"),
-#             label = "Font size",
-#             value = 8,
-#             min = 5,
-#             max = 15,
-#             step = 1,
-#             width = "100%"
-#           ),
-#           checkboxInput(
-#             inputId = ns("show_km_table"),
-#             label = "Show KM table",
-#             value = TRUE,
-#             width = "100%"
-#           ),
-#           optionalSelectInput(ns("conf_level"),
-#                               "Level of Confidence",
-#                               a$conf_level$choices,
-#                               a$conf_level$selected,
-#                               multiple = FALSE,
-#                               fixed = a$conf_level$fixed
-#           ),
-#           textInput(ns("xlab"), "X-axis label", "Overall survival in ")
-#         )
-#       )
-#     ),
-#     forms = get_rcode_ui(ns("rcode")),
-#     pre_output = a$pre_output,
-#     post_output = a$post_output
-#   )
-# }
-#
-#
-# srv_g_km <- function(input,
-#                      output,
-#                      session,
-#                      datasets,
-#                      dataname,
-#                      arm_ref_comp,
-#                      label,
-#                      plot_height,
-#                      plot_width) {
-#
-#   init_chunks()
-#
-#   arm_ref_comp_observer(
-#     session,
-#     input,
-#     id_ref = "ref_arm",
-#     id_comp = "comp_arm",
-#     id_arm_var = "arm_var",
-#     datasets = datasets,
-#     arm_ref_comp = arm_ref_comp,
-#     module = "tm_g_km",
-#     on_off = reactive(input$compare_arms)
-#   )
-#
-#   plot_r <- reactive({
-#     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-#     ADSL_FILTERED <- datasets$get_data("ADSL", filtered = TRUE) # nolint
-#
-#     paramcd <- input$paramcd # nolint
-#     arm_var <- input$arm_var
-#     facet_var <- input$facet_var
-#     ref_arm <- input$ref_arm
-#     comp_arm <- input$comp_arm
-#     strata_var <- input$strata_var
-#     combine_comp_arms <- input$combine_comp_arms
-#     compare_arms <- input$compare_arms
-#     pval_method_coxph <- input$pval_method_coxph # nolint
-#     ties_coxph <- input$ties_coxph # nolint
-#     conf_level <- as.numeric(input$conf_level) # nolint
-#     xlab <- input$xlab # nolint
-#     tbl_fontsize <- input$font_size # nolint
-#     if_show_km <- input$show_km_table # nolint
-#     xticks <- gsub(";", ",", trimws(input$user_xaxis)) %>%
-#       strsplit(",") %>%
-#       unlist() %>%
-#       as.numeric()
-#     scale_x_axis <- input$scale_x_axis # nolint
-#     if (length(xticks) == 0) {
-#       xticks <- NULL
-#     } else {
-#       validate(need(all(!is.na(xticks)), "Not all values entered were numeric"))
-#       validate(need(all(xticks >= 0), "All break intervals for x-axis must be non-negative"))
-#       validate(need(any(xticks > 0), "At least one break interval for x-axis must be positive"))
-#     }
-#
-#     if (length(facet_var) == 0) {
-#       facet_var <<- NULL
-#     }
-#     if (length(strata_var) == 0) {
-#       strata_var <- NULL
-#     }
-#
-#     # validate inputs
-#     validate_args <- list(
-#       adsl = ADSL_FILTERED,
-#       adslvars = c("USUBJID", "STUDYID", arm_var, strata_var, facet_var),
-#       anl = anl_filtered,
-#       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "CNSR", "AVALU"),
-#       arm_var = arm_var
-#     )
-#
-#     if (length(arm_var) > 0 && length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-#       if (compare_arms) {
-#         validate_args <- append(validate_args, list(ref_arm = ref_arm))
-#       }
-#     } else {
-#       if (compare_arms) {
-#         validate_args <- append(validate_args, list(ref_arm = ref_arm, comp_arm = comp_arm))
-#       }
-#     }
-#
-#     do.call(what = "validate_standard_inputs", validate_args)
-#
-#     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-#
-#     anl_name <- paste0(dataname, "_FILTERED")
-#     assign(anl_name, anl_filtered)
-#
-#     chunks_reset(envir = environment())
-#
-#     chunks_push(bquote(ref_arm <- .(ref_arm)))
-#     chunks_push(bquote(comp_arm <- .(comp_arm)))
-#     chunks_push(bquote(strata_var <- .(strata_var)))
-#     chunks_push(bquote(facet_var <- .(facet_var)))
-#     chunks_push(bquote(combine_comp_arms <- .(combine_comp_arms)))
-#     chunks_push(bquote(scale_x_axis <- .(scale_x_axis)))
-#
-#     chunks_push(bquote(adsl_vars <- unique(c("USUBJID", "STUDYID", .(arm_var), .(strata_var), .(facet_var)))))
-#
-#     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       chunks_push(bquote(adsl_p <- ADSL_FILTERED))
-#     } else{
-#       chunks_push(bquote(adsl_p <- subset(ADSL_FILTERED, .(as.name(arm_var)) %in% c(ref_arm, comp_arm))))
-#     }
-#
-#     chunks_push(bquote(anl_p <- subset(.(as.name(anl_name)), PARAMCD %in% .(paramcd))))
-#     chunks_push(bquote({
-#       anl <- merge(
-#         adsl_p[, adsl_vars],
-#         anl_p[, c("USUBJID", "STUDYID", "AVAL", "CNSR", "AVALU")],
-#         all.x = FALSE, all.y = FALSE, by = c("USUBJID", "STUDYID")
-#       )
-#     }))
-#
-#     if (isFALSE(compare_arms) || length(unique(ADSL_FILTERED[[arm_var]])) == 1) {
-#       chunks_push(bquote(arm <- as.factor(anl[[.(arm_var)]])))
-#     } else {
-#       chunks_push(bquote(arm <- relevel(as.factor(anl[[.(arm_var)]]), ref_arm[1])))
-#       chunks_push(bquote(arm <- combine_levels(arm, ref_arm)))
-#       if (combine_comp_arms) {
-#         chunks_push(bquote(arm <- combine_levels(arm, comp_arm)))
-#       }
-#       chunks_push(bquote(anl[[.(arm_var)]] <- droplevels(arm)))
-#     }
-#
-#     chunks_push(bquote(time_unit <- unique(anl[["AVALU"]])))
-#     chunks_push(bquote(tbl_fontsize <- .(tbl_fontsize)))
-#
-#     chunks_safe_eval()
-#
-#     validate(need(nrow(chunks_get_var("anl")) > 15, "need at least 15 data points"))
-#     validate(need(length(chunks_get_var("time_unit")) == 1, "Time Unit is not consistant"))
-#
-#     chunks_push(bquote(formula_km <- as.formula(.(paste0("Surv(AVAL, 1-CNSR) ~ ", arm_var)))))
-#
-#     chunks_push(bquote({
-#       formula_coxph <- as.formula(
-#         .(paste0(
-#           "Surv(AVAL, 1-CNSR) ~ arm(", arm_var, ")",
-#           ifelse(is.null(strata_var), "", paste0(" + strata(", paste(strata_var, collapse = ","), ")"))
-#         ))
-#       )
-#     }))
-#     chunks_push(bquote({
-#       info_coxph <- .(paste0(
-#         "Cox Proportional Model: ",
-#         ifelse(is.null(strata_var),
-#                "Unstratified Analysis",
-#                paste0("Stratified by ", paste(strata_var, collapse = ","))
-#         )
-#       ))
-#     }))
-#
-#     if (is.null(facet_var)) {
-#       chunks_push(bquote({
-#         fit_km <- survfit(formula_km, data = anl, conf.int = .(conf_level), conf.type = "plain")
-#         grid.newpage()
-#         p <- g_km(fit_km = fit_km, xticks = .(xticks), col = NA, draw = FALSE, xlab = paste(.(xlab), time_unit))
-#       }))
-#
-#       if (if_show_km) {
-#         chunks_push(bquote({
-#           tbl_km <- t_km(formula_km, data = anl, conf_level = .(conf_level), conf.type = "plain")
-#           km_grob <- textGrob(
-#             label = toString(tbl_km, gap = 1),
-#             x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-#             y = unit(1, "npc") - unit(1, "lines"),
-#             just = c("left", "top"),
-#             gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-#             vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-#           )
-#           p <- addGrob(p, km_grob)
-#         }))
-#       }
-#
-#       if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1){
-#         chunks_push(bquote({
-#           tbl_coxph <- t_coxph_pairwise(
-#             formula_coxph,
-#             data = anl,
-#             conf_level = .(conf_level),
-#             pval_method = .(pval_method_coxph),
-#             ties = .(ties_coxph)
-#           )
-#           text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-#           coxph_grob <- textGrob(
-#             label = text_coxph, x = unit(1, "lines"), y = unit(1, "lines"),
-#             just = c("left", "bottom"),
-#             gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-#             vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-#           )
-#           p <- addGrob(p, coxph_grob)
-#         }))
-#       }
-#
-#       chunks_push(bquote({
-#         grid.draw(p)
-#       }))
-#
-#     } else {
-#       chunks_push(bquote({
-#         facet_df <- anl[.(facet_var)]
-#
-#         lab <- Map(
-#           function(var, x) paste0(var, "= '", x, "'"),
-#           .(facet_var), facet_df
-#         )
-#         lab <- Reduce(function(x, y) paste(x, y, sep = ", "), unname(lab))
-#         lab <- factor(unlist(lab))
-#         dfs <- split(anl, lab)
-#         max_min <- min(sapply(dfs, function(x) {
-#           max(x[["AVAL"]], na.rm = TRUE)
-#         }))
-#         xticks <- .(xticks)
-#         if (is.null(xticks)){
-#           xticks <- max(1, floor(max_min / 10))
-#         } else {
-#           xticks <- .(xticks)
-#         }
-#         max_time <- NULL
-#         if (scale_x_axis) {
-#           max_time <- max(sapply(dfs, function(x) {
-#             max(x[["AVAL"]], na.rm = TRUE)
-#           }))
-#         }
-#
-#         grid.newpage()
-#         pl <- Map(function(x, label) {
-#           if (nrow(x) < 5) {
-#             textGrob(paste0("Less than 5 patients in ", label, " group"))
-#           } else {
-#             x[[.(arm_var)]] <- factor(x[[.(arm_var)]])
-#             fit_km <- survfit(formula_km, data = x, conf.int = .(conf_level), conf.type = "plain")
-#             p <- g_km(
-#               fit_km = fit_km, col = NA, title = paste0("Kaplan - Meier Plot for: ", label),
-#               xticks = xticks, max_time = max_time, draw = FALSE, xlab = paste(.(xlab), time_unit)
-#             )
-#
-#             .(
-#               if (if_show_km) {
-#                 bquote({
-#                   tbl_km <- t_km(formula_km, data = x, conf_level = .(conf_level), conf.type = "plain")
-#                   km_grob <- textGrob(
-#                     label = toString(tbl_km, gap = 1),
-#                     x = unit(1, "npc") - stringWidth(toString(tbl_km, gap = 1)) - unit(1, "lines"),
-#                     y = unit(1, "npc") - unit(1, "lines"),
-#                     just = c("left", "top"),
-#                     gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-#                     vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-#                   )
-#                   p <- addGrob(p, km_grob)
-#                 })
-#               }
-#             )
-#
-#             .(
-#               if (isTRUE(compare_arms) && length(unique(ADSL_FILTERED[[arm_var]])) > 1) {
-#                 bquote({
-#                   tbl_coxph <- t_coxph_pairwise(
-#                     formula_coxph,
-#                     data = x,
-#                     conf_level = .(conf_level),
-#                     pval_method = .(pval_method_coxph),
-#                     ties = .(ties_coxph)
-#                   )
-#                   text_coxph <- paste0(info_coxph, "\n", toString(tbl_coxph, gap = 1))
-#                   coxph_grob <- textGrob(
-#                     label = text_coxph,
-#                     x = unit(1, "lines"),
-#                     y = unit(1, "lines"),
-#                     just = c("left", "bottom"),
-#                     gp = gpar(fontfamily = "mono", fontsize = tbl_fontsize, fontface = "bold"),
-#                     vp = vpPath("mainPlot", "kmCurve", "curvePlot")
-#                   )
-#                   p <- addGrob(p, coxph_grob)
-#                 })
-#               }
-#             )
-#
-#             p
-#           }
-#         }, dfs, levels(lab))
-#         g_final <- gridExtra::arrangeGrob(grobs = pl, ncol = 1)
-#         grid.draw(g_final)
-#       }))
-#     }
-#
-#     chunks_safe_eval()
-#
-#     chunks_get_var("g_final")
-#   })
-#
-#   # Insert the plot into a plot with settings module from teal.devel
-#   callModule(
-#     plot_with_settings_srv,
-#     id = "myplot",
-#     plot_r = plot_r,
-#     height = plot_height,
-#     width = plot_width
-#   )
-#
-#   callModule(
-#     module = get_rcode_srv,
-#     id = "rcode",
-#     datasets = datasets,
-#     datanames = dataname,
-#     modal_title = "R Code for the Current Kaplan Meier Plot",
-#     code_header = label
-#   )
-# }
-# nolint end
+
+#' User Interface for KM Module
+#' @noRd
+#'
+ui_g_km <- function(id, ...) {
+
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var, a$param_cd, a$strata_var, a$facet_var,
+    a$aval_var, a$cnsr_var
+  )
+
+  ns <- NS(id)
+
+  standard_layout(
+    output = white_small_well(
+      verbatimTextOutput(outputId = ns("text")),
+      plot_with_settings_ui(
+        id = ns("myplot"), height = a$plot_height, width = a$plot_width
+      )
+    ),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(
+        a[
+          c(
+            "arm_var", "paramcd", "strata_var", "facet_var",
+            "aval_var", "cnsr_var"
+          )
+          ]
+      ),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aval"),
+        label = "Analysis Variable",
+        data_extract_spec = a$aval_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("cnsr"),
+        label = "Censor Variable",
+        data_extract_spec = a$cnsr_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("facet"),
+        label = "Facet Plots by",
+        data_extract_spec = a$facet_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      div(
+        class = "arm-comp-box",
+        tags$label("Compare Arms"),
+        shinyWidgets::switchInput(
+          inputId = ns("compare_arms"),
+          value = !is.null(a$arm_ref_comp),
+          size = "mini"
+        ),
+        conditionalPanel(
+          condition = paste0("input['", ns("compare_arms"), "']"),
+          div(
+            selectInput(
+              ns("ref_arm"),
+              "Reference Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            helpText("Multiple reference groups are automatically combined into a single group."),
+            selectInput(
+              ns("comp_arm"),
+              "Comparison Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
+            ),
+            data_extract_input(
+              id = ns("strata_var"),
+              label = "Stratify by",
+              data_extract_spec = a$strata_var,
+              is_single_dataset = is_single_dataset_value
+            )
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = paste0("input['", ns("compare_arms"), "']"),
+        panel_group(
+          panel_item(
+            "Comparison settings",
+            radioButtons(
+              ns("pval_method_coxph"),
+              label = HTML(
+                paste(
+                  "p-value method for ",
+                  tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  " (Hazard Ratio)",
+                  sep = ""
+                )
+              ),
+              choices = c("wald", "log-rank", "likelihood"),
+              selected = "log-rank"
+            ),
+            radioButtons(
+              ns("ties_coxph"),
+              label = HTML(
+                paste(
+                  "Ties for ",
+                  tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  " (Hazard Ratio)",
+                  sep = ""
+                )
+              ),
+              choices = c("exact", "breslow", "efron"),
+              selected = "exact"
+            )
+          )
+        )
+      ),
+      panel_group(
+        panel_item(
+          "Additional plot settings",
+          numericInput(
+            inputId = ns("font_size"),
+            label = "Font size",
+            value = 8,
+            min = 5,
+            max = 15,
+            step = 1,
+            width = "100%"
+          ),
+          checkboxInput(
+            inputId = ns("show_km_table"),
+            label = "Show KM table",
+            value = TRUE,
+            width = "100%"
+          ),
+          optionalSelectInput(
+            ns("conf_level"),
+            "Level of Confidence",
+            a$conf_level$choices,
+            a$conf_level$selected,
+            multiple = FALSE,
+            fixed = a$conf_level$fixed
+          ),
+          textInput(ns("xlab"), "X-axis label", "Overall survival in Days")
+        )
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
+  )
+}
+
+
+#' Server for KM Module
+#' @noRd
+#'
+srv_g_km <- function(input,
+                     output,
+                     session,
+                     datasets,
+                     dataname,
+                     parent_name,
+                     paramcd,
+                     arm,
+                     arm_ref_comp,
+                     strata,
+                     facet,
+                     aval,
+                     cnsr,
+                     label,
+                     plot_height,
+                     plot_width) {
+
+  init_chunks()
+
+  # Setup arm variable selection, default reference arms and default
+  # comparison arms for encoding panel
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", # from UI
+    id_comp = "comp_arm", # from UI
+    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"), # from UI
+    datasets = datasets,
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_t_tte",
+    on_off = reactive(input$compare_arms)
+  )
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(aval, cnsr, arm, paramcd, strata, facet),
+    input_id = c("aval", "cnsr", "arm_var", "paramcd", "strata_var", "facet"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  validate_checks <- reactive({
+
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata)
+    input_facet_var <- as.vector(anl_m$columns_source$facet)
+    input_aval_var <- as.vector(anl_m$columns_source$aval)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+
+    # validate inputs
+    validate_args <- list(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var),
+      arm_var = input_arm_var
+    )
+
+    # validate arm levels
+    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      if (input$compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = input$ref_arm))
+      }
+    } else {
+      if (input$compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      }
+    }
+
+    do.call(what = "validate_standard_inputs", validate_args)
+
+    NULL
+  })
+
+  call_preparation <- reactive({
+    validate_checks()
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    ANL <- chunks_get_var("ANL") # nolint
+    validate_has_data(ANL, 10)
+    my_calls <- template_g_km(
+      anl_name = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_ref_comp = input$ref_arm,
+      comp_arm = input$comp_arm,
+      compare_arm = input$compare_arms,
+      combine_comp_arms = input$combine_comp_arms,
+      aval = as.vector(anl_m$columns_source$aval),
+      cnsr = as.vector(anl_m$columns_source$cnsr),
+      strata_var = as.vector(anl_m$columns_source$strata),
+      time_points = NULL,
+      facet = as.vector(anl_m$columns_source$facet),
+      annot_surv_med = input$show_km_table,
+      annot_coxph = input$compare_arms,
+      font_size = input$font_size,
+      pval_method = input$pval_method_coxph,
+      conf_level = as.numeric(input$conf_level),
+      ties = input$ties_coxph,
+      xlab = input$xlab
+    )
+    mapply(expression = my_calls, chunks_push)
+  })
+
+  km_plot <- reactive({
+    call_preparation()
+    chunks_safe_eval()
+  })
+
+  # Insert the plot into a plot with settings module from teal.devel
+  callModule(
+    plot_with_settings_srv,
+    id = "myplot",
+    plot_r = km_plot,
+    height = plot_height,
+    width = plot_width
+  )
+
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(arm, paramcd, strata)),
+    modal_title = label
+  )
+
+}
