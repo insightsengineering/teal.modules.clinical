@@ -441,3 +441,46 @@ col_count_combine_grp <- function(combine,
     )
   }
 }
+
+#' Split `choices_selected` objects with interactions into
+#' their component variables
+#' @md
+#'
+#' @param x (`choices_selected`) object with interaction terms
+#'
+#' @note uses the regex `\\*|:` to perform the split.
+split_choices <- function(x) {
+  stopifnot(is.choices_selected(x))
+  stopifnot(is_character_vector(x$choices))
+
+  split_x <- x
+  split_x$choices <- split_interactions(x$choices)
+  if (!is.null(x$selected)) {
+    split_x$selected <- split_interactions(x$selected)
+  }
+
+  return(split_x)
+}
+
+#' Get input id for a data extract input
+#'
+#' @param varname (`character`) name of the variable corresponding to the
+#'   data extract input.
+#' @param dataname (`character`) name of the dataset corresponding to the
+#'   data extract input.
+extract_input <- function(varname, dataname) {
+  paste0(varname, "-dataset_", dataname, "_singleextract-select")
+}
+
+#' Split interaction terms into their component variables
+#'
+#' @param x (`character`) string representing the interaction
+#'  usually in the form `x:y` or `x*y`.
+#'
+split_interactions <- function(x, by = "\\*|:") {
+  if (length(x >= 1)) {
+    unique(unlist(strsplit(x, split = by)))
+  } else {
+    NULL
+  }
+}

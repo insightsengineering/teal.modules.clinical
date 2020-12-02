@@ -11,7 +11,6 @@
 template_fit_mmrm(
   parentname,
   dataname,
-  paramcd,
   aval_var,
   arm_var,
   ref_arm,
@@ -33,7 +32,8 @@ template_mmrm_tables(
   arm_var,
   ref_arm,
   visit_var,
-  show_relative = c("increase", "reduction", "none")
+  show_relative = c("increase", "reduction", "none"),
+  table_type = "t_mmrm_cov"
 )
 
 template_mmrm_plots(
@@ -46,6 +46,8 @@ template_mmrm_plots(
 tm_a_mmrm(
   label,
   dataname,
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   aval_var,
   id_var,
   arm_var,
@@ -65,9 +67,6 @@ tm_a_mmrm(
 usually this refers to \code{"ADSL"}.}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
-
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
 
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable for the analysis.}
@@ -113,6 +112,8 @@ machine (not default).}
 \item{show_relative}{should the "reduction" (\code{control - treatment}, default) or the "increase"
 (\code{treatment - control}) be shown for the relative change from baseline}
 
+\item{table_type}{(\code{character}) type of table to output.}
+
 \item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \link[tern:g_mmrm_lsmeans]{tern::g_mmrm_lsmeans}}
 
 \item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \link[tern:g_mmrm_diagnostic]{tern::g_mmrm_diagnostic}}
@@ -125,6 +126,9 @@ with each element corresponding to an arm variable in \code{ADSL} and the
 element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
+
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

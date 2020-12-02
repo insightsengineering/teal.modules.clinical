@@ -1,8 +1,7 @@
 test_that("template_fit_mmrm works as expected when not combining comparison arms", {
-  result1 <- template_fit_mmrm(
+  result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
-    paramcd = "FKSI-FWB",
     aval_var = "AVAL",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
@@ -12,18 +11,16 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
     visit_var = "AVISIT",
     cov_var = c()
   )
-  expected1 <- list(
+  expected <- list(
     data = quote({
-      anl <- adqs %>%
-        filter(PARAMCD %in% "FKSI-FWB") %>%
-        droplevels()
+      anl <- adqs
       adsl <- filter(adsl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
       anl <- filter(anl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
       adsl$ARMCD <- droplevels(relevel(adsl$ARMCD, "ARM A")) # nolint
       anl$ARMCD <- droplevels(relevel(anl$ARMCD, "ARM A")) # nolint
     }),
     col_counts = quote(
-      col_counts <- table(adsl$ARMCD) # nolint
+      col_counts <- table(adsl$ARMCD)
     ),
     fit = quote(
       fit <- fit_mmrm(
@@ -39,14 +36,13 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
         parallel = FALSE)
     )
   )
-  expect_equal_expr_list(result1, expected1)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_fit_mmrm works as expected when combining combination arms", {
-  result2 <- template_fit_mmrm(
+  result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
-    paramcd = "FKSI-FWB",
     aval_var = "AVAL",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
@@ -57,11 +53,9 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
     cov_var = c("SEX", "BASE", "AVISIT"),
     parallel = TRUE
   )
-  expected2 <- list(
+  expected <- list(
     data = quote({
-      anl <- adqs %>%
-        filter(PARAMCD %in% "FKSI-FWB") %>%
-        droplevels()
+      anl <- adqs
       adsl <- filter(adsl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
       anl <- filter(anl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
       adsl$ARMCD <- droplevels(relevel(adsl$ARMCD, "ARM A")) # nolint
@@ -89,7 +83,7 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
         parallel = TRUE)
     )
   )
-  expect_equal_expr_list(result2, expected2)
+  expect_equal_expr_list(result, expected)
 })
 
 test_that("template_mmrm_tables works as expected", {
@@ -109,12 +103,10 @@ test_that("template_mmrm_tables works as expected", {
         split_rows_by("AVISIT") %>%
         summarize_lsmeans(show_relative = "increase")
     ),
-    lsmeans_table = quote(
-      lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts)
-    ),
-    cov_matrix = quote(cov_matrix <- as.rtable(fit_mmrm, type = "cov")),
-    fixed_effects = quote(fixed_effects <- as.rtable(fit_mmrm, type = "fixed")),
-    diagnostic_table = quote(diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic"))
+    cov_matrix = quote({
+      cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+      cov_matrix
+    })
   )
   expect_equal_expr_list(result, expected)
 })
@@ -134,17 +126,19 @@ test_that("template_mmrm_plots works as expected", {
     )
   )
   expected <- list(
-    lsmeans_plot = quote(
+    lsmeans_plot = quote({
       lsmeans_plot <- g_mmrm_lsmeans(
-        fit_mmrm, select = c("estimates", "contrasts"),
-        width = 0.6, show_pval = FALSE
-      )
-    ),
-    diagnostic_plot = quote(
-      diagnostic_plot <- g_mmrm_diagnostic(
-        fit_mmrm, type = "fit-residual",
-        z_threshold = NULL
-      )
+        fit_mmrm,
+        select = c("estimates", "contrasts"),
+        width = 0.6,
+        show_pval = FALSE
+        )
+      lsmeans_plot
+    }),
+    diagnostic_plot = quote({
+      diagnostic_plot <- g_mmrm_diagnostic(fit_mmrm, type = "fit-residual", z_threshold = NULL)
+      diagnostic_plot
+    }
     )
   )
   expect_equal_expr_list(result, expected)

@@ -31,7 +31,6 @@ NULL
 #'
 template_fit_mmrm <- function(parentname,
                               dataname,
-                              paramcd,
                               aval_var,
                               arm_var,
                               ref_arm,
@@ -51,20 +50,16 @@ template_fit_mmrm <- function(parentname,
   y <- list()
 
   data_list <- list()
+
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- df %>%
-        filter(PARAMCD %in% paramcd) %>%
-        droplevels(),
+      expr = anl <- df,
       env = list(
-        df = as.name(dataname),
-        paramcd = paramcd
+        df = as.name(dataname)
       )
     )
   )
-
-
 
   data_list <- add_expr(
     data_list,
@@ -202,15 +197,15 @@ template_fit_mmrm <- function(parentname,
 #' @param colcounts_name name of column counts for MMRM LS means table
 #' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
 #'   (`treatment - control`) be shown for the relative change from baseline
+#' @param table_type (`character`) type of table to output.
 #'
 template_mmrm_tables <- function(fit_name,
                                  colcounts_name,
                                  arm_var,
                                  ref_arm,
                                  visit_var,
-                                 show_relative = c("increase", "reduction", "none")
-
-) {
+                                 show_relative = c("increase", "reduction", "none"),
+                                 table_type = "t_mmrm_cov") {
 
   y <- list()
   # Build layout.
@@ -269,37 +264,56 @@ template_mmrm_tables <- function(fit_name,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$lsmeans_table <- substitute(
-    expr = lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts),
-    env = list(
-      col_counts = as.name(colcounts_name),
-      fit_mmrm = as.name(fit_name)
-    )
-  )
-
-  y$cov_matrix <- substitute(
-    expr = cov_matrix <- as.rtable(fit_mmrm, type = "cov"),
-    env = list(
-      fit_mmrm = as.name(fit_name)
-    )
-  )
-
-  y$fixed_effects <- substitute(
-    expr = fixed_effects <- as.rtable(fit_mmrm, type = "fixed"),
-    env = list(
-      fit_mmrm = as.name(fit_name)
-    )
-  )
-
-  y$diagnostic_table <- substitute(
-    expr = diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic"),
-    env = list(
-      fit_mmrm = as.name(fit_name)
-    )
+  switch(
+    table_type,
+    t_mmrm_lsmeans = {
+      y$lsmeans_table <- substitute(
+        expr = {
+          lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts)
+          lsmeans_table
+        },
+        env = list(
+          col_counts = as.name(colcounts_name),
+          fit_mmrm = as.name(fit_name)
+        )
+      )
+    },
+    t_mmrm_cov = {
+      y$cov_matrix <- substitute(
+        expr = {
+          cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+          cov_matrix
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name)
+        )
+      )
+    },
+    t_mmrm_fixed = {
+      y$fixed_effects <- substitute(
+        expr = {
+          fixed_effects <- as.rtable(fit_mmrm, type = "fixed")
+          fixed_effects
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name)
+        )
+      )
+    },
+    t_mmrm_diagnostic = {
+      y$diagnostic_table <- substitute(
+        expr = {
+          diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic")
+          diagnostic_table
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name)
+        )
+      )
+    }
   )
 
   y
-
 }
 
 
@@ -308,7 +322,6 @@ template_mmrm_tables <- function(fit_name,
 #' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern::g_mmrm_lsmeans]
 #' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern::g_mmrm_diagnostic]
 #'
-
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
                                   select = c("estimates", "contrasts"),
@@ -318,40 +331,48 @@ template_mmrm_plots <- function(fit_name,
                                 diagnostic_plot = list(
                                   type = "fit-residual",
                                   z_threshold = NULL
-                                )
-
-) {
+                                )) {
   y <- list()
 
-  y$lsmeans_plot <- substitute(
-    expr = lsmeans_plot <- g_mmrm_lsmeans(
-      fit_mmrm,
-      select = select,
-      width = width,
-      show_pval = show_pval
-    ),
-    env = list(
-      fit_mmrm = as.name(fit_name),
-      select = lsmeans_plot$select,
-      width = lsmeans_plot$width,
-      show_pval = lsmeans_plot$show_pval
+  if (!is.null(lsmeans_plot)) {
+    y$lsmeans_plot <- substitute(
+      expr = {
+        lsmeans_plot <- g_mmrm_lsmeans(
+          fit_mmrm,
+          select = select,
+          width = width,
+          show_pval = show_pval
+        )
+        lsmeans_plot
+      },
+      env = list(
+        fit_mmrm = as.name(fit_name),
+        select = lsmeans_plot$select,
+        width = lsmeans_plot$width,
+        show_pval = lsmeans_plot$show_pval
+      )
     )
-  )
+  }
 
-  y$diagnostic_plot <- substitute(
-    expr = diagnostic_plot <- g_mmrm_diagnostic(
-      fit_mmrm,
-      type = type,
-      z_threshold = z_threshold
-    ),
-    env = list(
-      fit_mmrm = as.name(fit_name),
-      type = diagnostic_plot$type,
-      z_threshold = diagnostic_plot$z_threshold
+  if (!is.null(diagnostic_plot)) {
+    y$diagnostic_plot <- substitute(
+      expr = {
+        diagnostic_plot <- g_mmrm_diagnostic(
+          fit_mmrm,
+          type = type,
+          z_threshold = z_threshold
+        )
+        diagnostic_plot
+      },
+      env = list(
+        fit_mmrm = as.name(fit_name),
+        type = diagnostic_plot$type,
+        z_threshold = diagnostic_plot$z_threshold
+      )
     )
-  )
+  }
+
   y
-
 }
 
 #' @describeIn MMRM teal module for MMRM.
@@ -422,6 +443,7 @@ template_mmrm_plots <- function(fit_name,
 #' }
 tm_a_mmrm <- function(label,
                       dataname,
+                      parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                       aval_var,
                       id_var,
                       arm_var,
@@ -433,35 +455,45 @@ tm_a_mmrm <- function(label,
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
-                      post_output = NULL
-) {
+                      post_output = NULL) {
+
     cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
-    stopifnot(length(dataname) == 1)
-    stopifnot(is.choices_selected(aval_var))
-    stopifnot(is.choices_selected(id_var))
-    stopifnot(is.choices_selected(arm_var))
-    stopifnot(is.choices_selected(visit_var))
-    stopifnot(is.choices_selected(cov_var))
-    stopifnot(is.choices_selected(paramcd))
-    stopifnot(is.choices_selected(conf_level))
+    stopifnot(
+      is_character_single(dataname),
+      is.choices_selected(conf_level)
+      )
     check_slider_input(plot_height, allow_null = FALSE)
     check_slider_input(plot_width)
 
     args <- as.list(environment())
 
+    data_extract_list <- list(
+      arm_var = cs_to_des_select(arm_var, dataname = parentname),
+      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+      id_var = cs_to_des_select(id_var, dataname = dataname),
+      visit_var = cs_to_des_select(visit_var, dataname = dataname),
+      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+      split_covariates = cs_to_des_select(split_choices(cov_var), dataname = dataname, multiple = TRUE),
+      aval_var = cs_to_des_select(aval_var, dataname = dataname)
+    )
+
     module(
       label = label,
       server = srv_mmrm,
       ui = ui_mmrm,
-      ui_args = args,
-      server_args = list(
-        dataname = dataname,
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        plot_height = plot_height,
-        plot_width = plot_width
-      ),
-      filters = dataname
+      ui_args = c(data_extract_list, args),
+      server_args = c(
+        data_extract_list,
+        list(
+          dataname = dataname,
+          parentname = parentname,
+          arm_ref_comp = arm_ref_comp,
+          label = label,
+          plot_height = plot_height,
+          plot_width = plot_width
+          )
+        ),
+      filters = get_extract_datanames(data_extract_list)
     )
 }
 
@@ -469,8 +501,15 @@ tm_a_mmrm <- function(label,
 ui_mmrm <- function(id, ...) {
 
   a <- list(...) # module args
-
   ns <- NS(id)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$id_var,
+    a$visit_var,
+    a$cov_var,
+    a$aval_var
+    )
 
   standard_layout(
     output = white_small_well(
@@ -484,59 +523,53 @@ ui_mmrm <- function(id, ...) {
           "Note that the 'Show R Code' button can only be clicked if the model fit is up to date."
         )
       ),
-      hidden(p(
-        id = ns("outdated_warning"),
-        "Inputs have changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
-      )),
       h3(textOutput(ns("mmrm_title"))),
       uiOutput(ns("mmrm_table")),
       plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
+      datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
       panel_group(
         panel_item(
           "Model Settings",
-          helpText("Analysis data:", code(a$dataname)),
-          optionalSelectInput(
-            ns("aval_var"),
-            "Select Response",
-            a$aval_var$choices,
-            a$aval_var$selected,
-            multiple = FALSE,
-            fixed = a$aval_var$fixed
+          data_extract_input(
+            id = ns("aval_var"),
+            label = "Analysis Variable",
+            data_extract_spec = a$aval_var,
+            is_single_dataset = is_single_dataset_value
           ),
-          optionalSelectInput(
-            ns("paramcd"),
-            "Select Parameter",
-            a$paramcd$choices,
-            a$paramcd$selected,
-            multiple = FALSE,
-            fixed = a$paramcd$fixed
+          data_extract_input(
+            id = ns("paramcd"),
+            label = "Select Endpoint",
+            data_extract_spec = a$paramcd,
+            is_single_dataset = is_single_dataset_value
           ),
-          optionalSelectInput(
-            ns("arm_var"),
-            "Arm Variable",
-            a$arm_var$choices,
-            a$arm_var$selected,
-            multiple = FALSE,
-            fixed = a$arm_var$fixed
+          data_extract_input(
+            id = ns("visit_var"),
+            label = "Visit Variable",
+            data_extract_spec = a$visit_var,
+            is_single_dataset = is_single_dataset_value
           ),
-          optionalSelectInput(
-            ns("visit_var"),
-            "Visit Variable",
-            a$visit_var$choices,
-            a$visit_var$selected,
-            multiple = FALSE,
-            fixed = a$visit_var$fixed
+          data_extract_input(
+            id = ns("cov_var"),
+            label = "Covariates",
+            data_extract_spec = a$cov_var,
+            is_single_dataset = is_single_dataset_value
           ),
-          optionalSelectInput(
-            ns("cov_var"),
-            "Covariate Variables",
-            a$cov_var$choices,
-            a$cov_var$selected,
-            multiple = TRUE,
-            fixed = a$cov_var$fixed
+          hidden(
+            data_extract_input(
+              id = ns("split_covariates"),
+              label = "Split Covariates",
+              data_extract_spec = a$split_covariates,
+              is_single_dataset = is_single_dataset_value
+            )
+          ),
+          data_extract_input(
+            id = ns("arm_var"),
+            label = "Arm Variable",
+            data_extract_spec = a$arm_var,
+            is_single_dataset = is_single_dataset_value
           ),
           selectInput(
             ns("ref_arm"),
@@ -558,13 +591,11 @@ ui_mmrm <- function(id, ...) {
             "Combine all comparison groups?",
             value = FALSE
           ),
-          optionalSelectInput(
-            ns("id_var"),
-            "Subject Identifier",
-            a$id_var$choices,
-            a$id_var$selected,
-            multiple = FALSE,
-            fixed = a$id_var$fixed
+          data_extract_input(
+            id = ns("id_var"),
+            label = "Subject Identifier",
+            data_extract_spec = a$id_var,
+            is_single_dataset = is_single_dataset_value
           ),
           selectInput(
             ns("weights_emmeans"),
@@ -704,11 +735,43 @@ srv_mmrm <- function(input,
                      session,
                      datasets,
                      dataname,
+                     parentname,
+                     arm_var,
+                     paramcd,
+                     id_var,
+                     visit_var,
+                     cov_var,
+                     split_covariates,
+                     aval_var,
                      arm_ref_comp,
                      label,
                      plot_height,
                      plot_width) {
   init_chunks()
+
+  observeEvent(input[[extract_input("cov_var", dataname)]], {
+    # update covariates as actual variables
+    updateOptionalSelectInput(
+      session,
+      inputId = extract_input("split_covariates", dataname),
+      selected = split_interactions(input[[extract_input("cov_var", dataname)]])
+    )
+  })
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, paramcd, id_var, visit_var, split_covariates, aval_var),
+    input_id = c("arm_var", "paramcd", "id_var", "visit_var", "split_covariates", "aval_var"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
   # Initially hide the output title because there is no output yet.
   shinyjs::hide("mmrm_title")
 
@@ -723,29 +786,31 @@ srv_mmrm <- function(input,
   # Note:
   # input$parallel does not get us out of sync (it just takes longer to get to same result)
   sync_inputs <- c(
-    "aval_var", "paramcd", "arm_var", "ref_arm", "comp_arm",
-    "combine_comp_arms", "visit_var", "cov_var",
-    "id_var", "weights_emmeans", "cor_struct", "conf_level",
-    "optimizer")
+    extract_input("aval_var", dataname),
+    extract_input("paramcd", dataname),
+    extract_input("arm_var", parentname),
+    "ref_arm",
+    "comp_arm",
+    "combine_comp_arms",
+    extract_input("visit_var", dataname),
+    extract_input("cov_var", dataname),
+    extract_input("id_var", dataname),
+    "weights_emmeans",
+    "cor_struct",
+    "conf_level",
+    "optimizer"
+    )
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
   arm_ref_comp_observer(
     session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # From UI.
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = extract_input("arm_var", parentname),  # From UI.
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_mmrm"
-  )
-
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel.
-  arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", id_comp = "comp_arm", id_arm_var = "arm_var",  # From UI.
-    datasets = datasets,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_a_mmrm"
   )
 
   # Event handler:
@@ -832,8 +897,7 @@ srv_mmrm <- function(input,
     shinyjs::hide("initial_message")
     shinyjs::show("mmrm_title")
     shinyjs::disable("button_start")
-    shinyjs::enable("show_rcode")
-    shinyjs::hide("outdated_warning")
+    shinyjs::enable("rcode-show_rcode")
   })
 
   # all the inputs and data that can be out of sync with the fitted model
@@ -879,36 +943,34 @@ srv_mmrm <- function(input,
   # disable the show R code button and show warning message
   observeEvent(mmrm_inputs_reactive(), {
     shinyjs::enable("button_start")
-    shinyjs::disable("show_rcode")
+    shinyjs::disable("rcode-show_rcode")
     if (state$applicable) {
       if (state_has_changed()) {
-        shinyjs::show("outdated_warning")
+        shinyjs::disable("rcode-show_rcode")
       } else {
-        shinyjs::hide("outdated_warning")
-        shinyjs::enable("show_rcode")
+        shinyjs::enable("rcode-show_rcode")
         shinyjs::disable("button_start")
       }
     }
   })
 
   # Prepare the analysis environment (filter data, check data, populate envir).
-  prepared_env <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+  validate_checks <- reactive({
+
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    validate_has_data(adsl_filtered, 1)
-    validate_has_data(anl_filtered, 1)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_id_var <- as.vector(anl_m$columns_source$id_var)
+
     # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
-    cov_var <- input$cov_var
-    cov_var <- no_selected_as_NULL(cov_var)
-    covariate_parts <- if_not_null(
-      cov_var,
-      unique(unlist(strsplit(cov_var, split = "\\*|:")))
-    )
-    aval_var <- input$aval_var
-    arm_var <- input$arm_var
-    visit_var <- input$visit_var
-    id_var <- input$id_var
-    all_x_vars <- c(arm_var, visit_var, covariate_parts)
+    input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
+    covariate_parts <- split_interactions(input_cov_var)
+
+    all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
     all_x_vars_in_adsl <- intersect(
       all_x_vars,
       colnames(adsl_filtered)
@@ -918,50 +980,40 @@ srv_mmrm <- function(input,
       all_x_vars_in_adsl
     )
 
-    adslvars <- unique(c("USUBJID", "STUDYID", arm_var, id_var, all_x_vars_in_adsl))
-    anlvars <- unique(c("USUBJID", "STUDYID", "PARAMCD", aval_var, visit_var, all_x_vars_in_anl))
-    # validate inputs
-    validate_args <- list(
+    adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
+    anlvars <- unique(c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_visit_var, all_x_vars_in_anl))
+
+    validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = adslvars,
       anl = anl_filtered,
       anlvars = anlvars,
-      arm_var = input$arm_var
+      arm_var = input_arm_var,
+      ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm,
+      min_nrow = 5
     )
 
-    validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    do.call(what = "validate_standard_inputs", validate_args)
+    anl_data <- anl_m$data()
 
-    paramcd <- input$paramcd
-    anl_endpoint <- merge(
-      anl_filtered[anl_filtered$PARAMCD == paramcd, anlvars, drop = FALSE],
-      adsl_filtered[, adslvars, drop = FALSE],
-      all.x = FALSE,
-      all.y = FALSE,
-      by = c("USUBJID", "STUDYID")
-    )
-    validate(need(nrow(anl_endpoint) > 5, "need at least 5 data points"))
-    Map(function(visit_df, visit_name) {
+    Map(
+      function(visit_df, visit_name) {
+        dup <- any(duplicated(visit_df[[input_id_var]]))
+        validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
+        },
+      split(anl_data, anl_data[[input_visit_var]]),
+      levels(anl_data[[input_visit_var]])
+      )
 
-      dup <- any(duplicated(visit_df[[id_var]]))
-
-      validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
-
-    }, split(anl_endpoint, anl_endpoint[[visit_var]]),
-    levels(anl_endpoint[[visit_var]]))
-
-    validate(need(
-      all(complete.cases(anl_endpoint)),
-      paste(c("Missing values found in formula vars",
-              anl_endpoint[!complete.cases(anl_endpoint), ]))
-    ))
-    # Send data where the analysis lives.
-    e <- new.env()
-    e[[paste0(dataname, "_FILTERED")]] <- anl_filtered # nolint
-    e$ADSL_FILTERED <- adsl_filtered # nolint
-    e
+    validate(
+      need(
+        all(complete.cases(anl_data)),
+        paste(
+          c("Missing values found in formula vars", anl_data[!complete.cases(anl_data), ])
+          )
+        )
+      )
   })
-
 
   # Connector:
   # Fit the MMRM, once the user clicks on the start button.
@@ -976,22 +1028,29 @@ srv_mmrm <- function(input,
     fit_stack_get_var <- function(...) {
       chunks_get_var(..., chunks = fit_stack)
     }
-    chunks_reset(envir = prepared_env(), chunks = fit_stack)
+
+    validate_checks()
+
+    chunks_reset(chunks = fit_stack)
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m, chunks = fit_stack)
+    chunks_push_new_line(chunks = fit_stack)
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl, chunks = fit_stack)
+    chunks_push_new_line(chunks = fit_stack)
+
     my_calls <- template_fit_mmrm(
-      parentname = "ADSL_FILTERED",
-      dataname = paste0(dataname, "_FILTERED"),
-      paramcd = input$paramcd,
-      aval_var = input$aval_var,
-      arm_var = input$arm_var,
+      parentname = "ANL_ADSL",
+      dataname = "ANL",
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       combine_comp_arms = input$combine_comp_arms,
-      id_var = input$id_var,
-      visit_var = input$visit_var,
-      cov_var = if_not_null(
-        no_selected_as_NULL(input$cov_var),
-        unique(unlist(strsplit(no_selected_as_NULL(input$cov_var), split = "\\*|:")))
-      ),
+      id_var = as.vector(anl_m$columns_source$id_var),
+      visit_var = as.vector(anl_m$columns_source$visit_var),
+      cov_var = input[[extract_input("cov_var", dataname)]],
       conf_level = as.numeric(input$conf_level),
       cor_struct = input$cor_struct,
       weights_emmeans = input$weights_emmeans,
@@ -1035,6 +1094,14 @@ srv_mmrm <- function(input,
     })
 
     output$mmrm_table <- renderUI({
+      if (state$applicable) {
+        validate(
+          need(
+            !state_has_changed(),
+            "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+          )
+        )
+      }
       # Input on output type.
       output_function <- input$output_function
 
@@ -1053,29 +1120,34 @@ srv_mmrm <- function(input,
         chunks_push(..., chunks = table_stack)
       }
 
-      mmrm_table <- template_mmrm_tables(
-        "fit",
-        "col_counts",
-        arm_var = input$arm_var,
-        ref_arm = input$ref_arm,
-        visit_var = input$visit_var,
-        show_relative = input$t_mmrm_lsmeans_show_relative
-      )
-      mapply(expression = mmrm_table, table_stack_push)
-      chunks_push_chunks(fit_stack)
-      chunks_push_chunks(table_stack)
-      chunks_safe_eval()
+      anl_m <- anl_merged()
 
-      # Depending on the table function type, produce different code.
-      if (output_function == "t_mmrm_lsmeans") {
-        as_html(chunks_get_var("lsmeans_table"))
-      } else if (output_function == "t_mmrm_diagnostic") {
-        as_html(chunks_get_var("diagnostic_table"))
-      } else if (output_function == "t_mmrm_fixed") {
-        as_html(chunks_get_var("fixed_effects"))
-      } else if (output_function == "t_mmrm_cov") {
-        as_html(chunks_get_var("cov_matrix"))
+      mmrm_table <- function(table_type) {
+        res <- template_mmrm_tables(
+          fit_name = "fit",
+          colcounts_name = "col_counts",
+          arm_var = as.vector(anl_m$columns_source$arm_var),
+          ref_arm = input$ref_arm,
+          visit_var = as.vector(anl_m$columns_source$visit_var),
+          show_relative = input$t_mmrm_lsmeans_show_relative,
+          table_type = table_type
+          )
+
+        mapply(expression = res, table_stack_push)
+        chunks_push_chunks(table_stack)
+        chunks_safe_eval()
       }
+      chunks_push_chunks(fit_stack)
+      mmrm_table(output_function)
+
+      # Depending on the table function type, produce different code
+      switch(
+        output_function,
+        t_mmrm_lsmeans = as_html(chunks_get_var("lsmeans_table")),
+        t_mmrm_diagnostic = as_html(chunks_get_var("diagnostic_table")),
+        t_mmrm_fixed = as_html(chunks_get_var("fixed_effects")),
+        t_mmrm_cov = as_html(chunks_get_var("cov_matrix"))
+      )
     })
 
     # Endpoint:
@@ -1097,29 +1169,41 @@ srv_mmrm <- function(input,
         chunks_push(..., chunks = plot_stack)
       }
 
-      mmrm_plot <- template_mmrm_plots(
-        "fit",
-        lsmeans_plot = list(
-          select = input$g_mmrm_lsmeans_select,
-          width = input$g_mmrm_lsmeans_width,
-          show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
-        ),
-        diagnostic_plot = list(
-          type = input$g_mmrm_diagnostic_type,
-          z_threshold = input$g_mmrm_diagnostic_z_threshold
+      lsmeans_args <- list(
+        select = input$g_mmrm_lsmeans_select,
+        width = input$g_mmrm_lsmeans_width,
+        show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
         )
-      )
-      mapply(expression = mmrm_plot, plot_stack_push)
-      chunks_push_chunks(fit_stack)
-      chunks_push_chunks(plot_stack)
-      chunks_safe_eval()
-      # Depending on the plot function type, produce different code.
-      if (output_function == "g_mmrm_lsmeans") {
-        chunks_get_var("lsmeans_plot")
+      diagnostic_args <- list(
+        type = input$g_mmrm_diagnostic_type,
+        z_threshold = input$g_mmrm_diagnostic_z_threshold
+        )
 
-      } else if (output_function == "g_mmrm_diagnostic") {
-        chunks_get_var("diagnostic_plot")
+      mmrm_plot <- function(lsmeans_plot = lsmeans_args,
+                            diagnostic_plot = diagnostic_args) {
+
+        res <- template_mmrm_plots(
+          "fit",
+          lsmeans_plot = lsmeans_plot,
+          diagnostic_plot = diagnostic_plot
+          )
+        mapply(expression = res, plot_stack_push)
+        chunks_push_chunks(plot_stack)
+        chunks_safe_eval()
       }
+      chunks_push_chunks(fit_stack)
+      # Depending on the plot function type, produce different code.
+      switch(
+        output_function,
+        g_mmrm_lsmeans = {
+          mmrm_plot(diagnostic_plot = NULL)
+          chunks_get_var("lsmeans_plot")
+        },
+        g_mmrm_diagnostic = {
+          mmrm_plot(lsmeans_plot = NULL)
+          chunks_get_var("diagnostic_plot")
+        }
+      )
     })
 
     callModule(
@@ -1151,8 +1235,8 @@ srv_mmrm <- function(input,
       }
       return(result)
     })
-      # Handler:
-      # Show R code once button is pressed.
+
+    # Show R code once button is pressed.
     callModule(
       module = get_rcode_srv,
       id = "rcode",
