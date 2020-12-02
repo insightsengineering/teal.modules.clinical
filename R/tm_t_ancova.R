@@ -14,7 +14,7 @@ NULL
 template_ancova <- function(anl_name = "ANL",
                             parent_name = "ADSL_FILTERED",
                             arm_var,
-                            arm_ref_comp = NULL,
+                            ref_arm = NULL,
                             comp_arm = NULL,
                             combine_comp_arms = FALSE,
                             aval_var,
@@ -36,61 +36,154 @@ template_ancova <- function(anl_name = "ANL",
 
   # Data processing.
   data_list <- list()
+  anl_list <- list()
+  parent_list <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
 
-  data_list <- add_expr(
-    data_list,
+  anl_list <- add_expr(
+    anl_list,
     substitute(
-      expr = {
-        anl <- filter(anl, arm_var %in% arm_vals);
-        parent <- filter(parent, arm_var %in% arm_vals)
-      },
+      expr = anl %>%
+        filter(arm_var %in% arm_vals) %>%
+        droplevels(),
       env = list(
         anl = as.name(anl_name),
+        arm_var = as.name(arm_var),
+        arm_vals = c(ref_arm, comp_arm)
+      )
+    )
+  )
+
+  parent_list <- add_expr(
+    parent_list,
+    substitute(
+      parent %>%
+        filter(arm_var %in% arm_vals) %>%
+        droplevels(),
+      env = list(
         parent = as.name(parent_name),
         arm_var = as.name(arm_var),
-        arm_vals = c(arm_ref_comp, comp_arm)
-      )
-    )
-  )
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = {
-        anl$arm_var <- droplevels(relevel(anl$arm_var, arm_ref_comp));
-        parent$arm_var <- droplevels(relevel(parent$arm_var, arm_ref_comp))
-      },
-      env = list(
-        anl = as.name(anl_name),
-        parent = as.name(parent_name),
-        arm_var = arm_var,
-        arm_ref_comp = arm_ref_comp
+        arm_vals = c(ref_arm, comp_arm)
       )
     )
   )
 
-  if (combine_comp_arms) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = {
-          anl$arm_var <- combine_levels(
-            x = anl$arm_var,
-            levels = comp_arm
-          );
-          parent$arm_var <- combine_levels(
-            x = parent$arm_var,
-            levels = comp_arm
-          )
-        },
-        env = list(
-          anl = as.name(anl_name),
-          parent = as.name(parent_name),
-          arm_var = arm_var,
+  if (length(ref_arm) > 1) {
+    anl_list <- add_expr(
+      anl_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          ref_arm = ref_arm,
+          ref_arm_val = ref_arm_val
+        )
+      )
+    )
+    parent_list <- add_expr(
+      parent_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          ref_arm = ref_arm,
+          ref_arm_val = ref_arm_val
+        )
+      )
+    )
+  } else {
+    anl_list <- add_expr(
+      anl_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = relevel(arm_var, ref = ref_arm)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          ref_arm = ref_arm,
+          comp_arm = comp_arm
+        )
+      )
+    )
+    parent_list <- add_expr(
+      parent_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = relevel(arm_var, ref = ref_arm)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          ref_arm = ref_arm,
           comp_arm = comp_arm
         )
       )
     )
   }
+
+  if (combine_comp_arms) {
+    anl_list <- add_expr(
+      anl_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = combine_levels(arm_var, levels = comp_arm)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          comp_arm = comp_arm
+        )
+      )
+    )
+    parent_list <- add_expr(
+      parent_list,
+      substitute_names(
+        expr = mutate(
+          arm_var = combine_levels(arm_var, levels = comp_arm)
+        ),
+        names = list(
+          arm_var = as.name(arm_var)
+        ),
+        others = list(
+          comp_arm = comp_arm
+        )
+      )
+    )
+  }
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      anl <- anl_list,
+      env = list(
+        anl = as.name(anl_name),
+        anl_list = pipe_expr(anl_list)
+      )
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parent <- parent_list,
+      env = list(
+        parent = as.name(parent_name),
+        parent_list = pipe_expr(parent_list)
+      )
+    )
+  )
 
   y$data <- bracket_expr(data_list)
 
@@ -102,9 +195,12 @@ template_ancova <- function(anl_name = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(var = arm_var, ref_group = arm_ref_comp) %>%
+      expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
         split_rows_by("AVISIT", split_fun = drop_split_levels),
-      env = list(arm_var = arm_var, arm_ref_comp = arm_ref_comp)
+      env = list(
+        arm_var = arm_var,
+        ref_group = paste(ref_arm, collapse = "/")
+      )
     )
   )
 
@@ -167,9 +263,13 @@ template_ancova <- function(anl_name = "ANL",
     expr = table(parent$arm_var),
     env = list(parent = as.name(parent_name), arm_var = arm_var)
   )
+
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
-    env = list(anl = as.name(anl_name), col_counts = col_counts)
+    env = list(
+      anl = as.name(anl_name),
+      col_counts = col_counts
+    )
   )
 
   y
@@ -460,6 +560,19 @@ srv_ancova <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
 
+    # Validate PARAMCD and AVISIT input values.
+    input_names <- names(input)
+    input_avisit <- input_names[grepl("avisit", input_names) & grepl("filter", input_names)]
+    input_paramcd <- input_names[grepl("paramcd", input_names) & grepl("filter", input_names)]
+    validate(need(
+      all(input[[input_avisit]] %in% unique(anl_filtered[["AVISIT"]])),
+      "Analysis visit value does not exists in AVISIT variable in analysis data."
+    ))
+    validate(need(
+      all(input[[input_paramcd]] %in% unique(anl_filtered[["PARAMCD"]])),
+      "Endpoint value does not exists in PARAMCD variable in analysis data."
+    ))
+
     # Validate inputs.
     validate_args <- list(
       adsl = adsl_filtered,
@@ -471,7 +584,11 @@ srv_ancova <- function(input,
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     do.call(what = "validate_standard_inputs", validate_args)
 
-    # Validate arm levels - comparison is needed for this module.
+    # Other validations.
+    validate(need(
+      !is_empty(input_aval_var),
+      "Analysis variable cannot be empty."
+    ))
     validate(need(
       length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
       "ANCOVA table needs at least 2 arm groups to make comparisons."
@@ -499,7 +616,7 @@ srv_ancova <- function(input,
       parent_name = "ANL_ADSL",
       anl_name = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      arm_ref_comp = input$ref_arm,
+      ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       combine_comp_arms = input$combine_comp_arms,
       aval_var = as.vector(anl_m$columns_source$aval_var),

@@ -8,7 +8,7 @@ template_ancova(
   anl_name = "ANL",
   parent_name = "ADSL_FILTERED",
   arm_var,
-  arm_ref_comp = NULL,
+  ref_arm = NULL,
   comp_arm = NULL,
   combine_comp_arms = FALSE,
   aval_var,
