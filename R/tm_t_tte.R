@@ -261,13 +261,19 @@ template_tte <- function(anl_name = "ANL",
           var_labels = time_unit,
           is_event = "is_event",
           time_point = time_points,
-          method = method
+          method = method,
+          control = control_surv_timepoint(
+            conf_level = conf_level,
+            conf_type = conf_type
+          )
         ),
         env = list(
           aval = aval,
           time_points = time_points,
           method = method,
-          time_unit = time_unit
+          time_unit = time_unit,
+          conf_level = control$surv_timepoint$conf_level,
+          conf_type = control$surv_timepoint$conf_type
         )
       )
     )
@@ -610,22 +616,6 @@ ui_t_tte <- function(id, ...) {
                 "Confidence Level for ",
                 tags$span(style="color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)", sep = ""
-              )
-            ),
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
-          ),
-          numericInput(
-            inputId = ns("conf_level_ztest"),
-            label = HTML(
-              paste(
-                "Confidence Level for ",
-                tags$span(style="color:darkblue", "Z-test"), # nolint
-                " (Difference in Event Free Rate)",
-                sep = ""
               )
             ),
             value = 0.95,
