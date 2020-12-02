@@ -328,7 +328,7 @@ tm_t_summary_by <- function(label,
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parent_name),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
   )
