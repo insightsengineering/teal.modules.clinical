@@ -9,6 +9,9 @@ split_interactions(x, by = "\\\\*|:")
 \arguments{
 \item{x}{(\code{character}) string representing the interaction
 usually in the form \code{x:y} or \code{x*y}.}
+
+\item{by}{(\code{character}) regex with which to split the interaction
+term by.}
 }
 \description{
 Split interaction terms into their component variables

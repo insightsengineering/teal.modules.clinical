@@ -212,239 +212,6 @@ template_rsp <- function(dataname,
   y
 }
 
-#' @noRd
-#'
-ui_t_rsp <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
-    a$paramcd, a$arm_var, a$avalc_var, a$strata_var
-  )
-
-  ns <- NS(id)
-  standard_layout(
-    output = white_small_well(
-      uiOutput(outputId = ns("html"))
-    ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("paramcd")]),
-      data_extract_input(
-        id = ns("paramcd"),
-        label = "Parameter",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      selectInput(
-        ns("responders"),
-        "Responders",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
-      data_extract_input(
-        id = ns("arm_var"),
-        label = "Arm Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      div(
-        class = "arm-comp-box",
-        tags$label("Compare Arms"),
-        shinyWidgets::switchInput(
-          inputId = ns("compare_arms"),
-          value = !is.null(a$arm_ref_comp),
-          size = "mini"
-        ),
-        conditionalPanel(
-          condition = paste0("input['", ns("compare_arms"), "']"),
-          div(
-            selectInput(
-              ns("ref_arm"),
-              "Reference Group",
-              choices = NULL,
-              selected = NULL,
-              multiple = TRUE
-            ),
-            helpText("Multiple reference groups are automatically combined into a single group."),
-            selectInput(
-              ns("comp_arm"),
-              "Comparison Group",
-              choices = NULL,
-              selected = NULL,
-              multiple = TRUE
-            ),
-            checkboxInput(
-              ns("combine_comp_arms"),
-              "Combine all comparison groups?",
-              value = FALSE
-            )
-          )
-        )
-      ),
-      data_extract_input(
-        id = ns("strata_var"),
-        label = "Stratification Factors",
-        data_extract_spec = a$strata_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
-        id = ns("avalc"),
-        label = "Analysis Variable",
-        data_extract_spec = a$avalc_var,
-        is_single_dataset = is_single_dataset_value
-      )
-    ),
-    forms = get_rcode_ui(ns("rcode")),
-    pre_output = a$pre_output,
-    post_output = a$post_output
-  )
-}
-
-#' @noRd
-#'
-srv_t_rsp <- function(input,
-                      output,
-                      session,
-                      datasets,
-                      dataname,
-                      parent_name,
-                      paramcd,
-                      avalc,
-                      arm,
-                      arm_ref_comp,
-                      strata,
-                      label) {
-  init_chunks()
-
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel
-  arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", # from UI
-    id_comp = "comp_arm", # from UI
-    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"), # from UI
-    datasets = datasets,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte",
-    on_off = reactive(input$compare_arms)
-  )
-
-  anl_merged <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm, paramcd, strata, avalc),
-    input_id = c("arm_var", "paramcd", "strata_var", "avalc"),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm, strata),
-    input_id = c("arm_var", "strata_var"),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Because the AVALC values depends on the selected PARAMCD.
-  observe({
-    avalc_var <- anl_merged()$columns_source$avalc
-    responder_choices <- unique(anl_merged()$data()[[avalc_var]])
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = intersect(c("CR", "PR"), responder_choices)
-    )
-  })
-
-  validate_check <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
-
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_avalc_var),
-      arm_var = input_arm_var
-    )
-
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
-      if (input$compare_arms) {
-        validate_args <- c(validate_args, list(ref_arm = input$ref_arm))
-      }
-    } else if (input$compare_arms) {
-      validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    }
-
-    do.call(what = "validate_standard_inputs", validate_args)
-
-    NULL
-  })
-
-  call_preparation <- reactive({
-    validate_check()
-    chunks_reset()
-
-    anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
-
-    anl <- chunks_get_var("ANL") # nolint
-    validate_has_data(anl, 10)
-
-    my_calls <- template_rsp(
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm),
-      ref_arm = input$ref_arm,
-      show_rsp_cat = TRUE,
-      compare_arm = input$compare_arms,
-      combine_arm = input$combine_comp_arms,
-      responder_val = input$responders,
-      control = list(
-        global = list(
-          method = "clopper-pearson",
-          conf_level = 0.95
-        ),
-        unstrat = list(
-          method_ci = "wald",
-          method_test = "chisq",
-          odds = TRUE
-        ),
-        strat = list(
-          method_ci = "wald",
-          method_test = "cmh",
-          strat = NULL
-        )
-      )
-    )
-    mapply(expression = my_calls, chunks_push)
-  })
-
-  output$html <- renderPrint({
-    call_preparation()
-    chunks_safe_eval()
-    as_html(chunks_get_var("result"))
-  })
-
-  callModule(
-    get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = get_extract_datanames(list(arm, paramcd, strata)),
-    modal_title = label
-  )
-}
-
-
-
 #' Response Table Teal Module
 #'
 #' This module produces a response summary table that matches the
@@ -597,5 +364,236 @@ tm_t_rsp <- function(label,
       )
     ),
     filters = get_extract_datanames(data_extract_list)
+  )
+}
+
+#' @noRd
+#'
+ui_t_rsp <- function(id, ...) {
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    a$paramcd, a$arm_var, a$avalc_var, a$strata_var
+  )
+
+  ns <- NS(id)
+  standard_layout(
+    output = white_small_well(
+      uiOutput(outputId = ns("html"))
+    ),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(a[c("paramcd")]),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Parameter",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        ns("responders"),
+        "Responders",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      div(
+        class = "arm-comp-box",
+        tags$label("Compare Arms"),
+        shinyWidgets::switchInput(
+          inputId = ns("compare_arms"),
+          value = !is.null(a$arm_ref_comp),
+          size = "mini"
+        ),
+        conditionalPanel(
+          condition = paste0("input['", ns("compare_arms"), "']"),
+          div(
+            selectInput(
+              ns("ref_arm"),
+              "Reference Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            helpText("Multiple reference groups are automatically combined into a single group."),
+            selectInput(
+              ns("comp_arm"),
+              "Comparison Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
+            ),
+            checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
+            )
+          )
+        )
+      ),
+      data_extract_input(
+        id = ns("strata_var"),
+        label = "Stratification Factors",
+        data_extract_spec = a$strata_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("avalc"),
+        label = "Analysis Variable",
+        data_extract_spec = a$avalc_var,
+        is_single_dataset = is_single_dataset_value
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
+  )
+}
+
+#' @noRd
+#'
+srv_t_rsp <- function(input,
+                      output,
+                      session,
+                      datasets,
+                      dataname,
+                      parent_name,
+                      paramcd,
+                      avalc,
+                      arm,
+                      arm_ref_comp,
+                      strata,
+                      label) {
+  init_chunks()
+
+  # Setup arm variable selection, default reference arms, and default
+  # comparison arms for encoding panel
+  arm_ref_comp_observer(
+    session, input,
+    id_ref = "ref_arm", # from UI
+    id_comp = "comp_arm", # from UI
+    id_arm_var = extract_input("arm_var", parent_name),
+    datasets = datasets,
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_t_tte",
+    on_off = reactive(input$compare_arms)
+  )
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm, paramcd, strata, avalc),
+    input_id = c("arm_var", "paramcd", "strata_var", "avalc"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm, strata),
+    input_id = c("arm_var", "strata_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  # Because the AVALC values depends on the selected PARAMCD.
+  observe({
+    avalc_var <- anl_merged()$columns_source$avalc
+    responder_choices <- unique(anl_merged()$data()[[avalc_var]])
+    updateSelectInput(
+      session, "responders",
+      choices = responder_choices,
+      selected = intersect(c("CR", "PR"), responder_choices)
+    )
+  })
+
+  validate_check <- reactive({
+    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
+
+    validate_args <- list(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_avalc_var),
+      arm_var = input_arm_var
+    )
+
+    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+      validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
+      if (input$compare_arms) {
+        validate_args <- c(validate_args, list(ref_arm = input$ref_arm))
+      }
+    } else if (input$compare_arms) {
+      validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+    }
+
+    do.call(what = "validate_standard_inputs", validate_args)
+
+    NULL
+  })
+
+  call_preparation <- reactive({
+    validate_check()
+    chunks_reset()
+
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    anl <- chunks_get_var("ANL") # nolint
+    validate_has_data(anl, 10)
+
+    my_calls <- template_rsp(
+      dataname = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm),
+      ref_arm = input$ref_arm,
+      show_rsp_cat = TRUE,
+      compare_arm = input$compare_arms,
+      combine_arm = input$combine_comp_arms,
+      responder_val = input$responders,
+      control = list(
+        global = list(
+          method = "clopper-pearson",
+          conf_level = 0.95
+        ),
+        unstrat = list(
+          method_ci = "wald",
+          method_test = "chisq",
+          odds = TRUE
+        ),
+        strat = list(
+          method_ci = "wald",
+          method_test = "cmh",
+          strat = NULL
+        )
+      )
+    )
+    mapply(expression = my_calls, chunks_push)
+  })
+
+  output$html <- renderPrint({
+    call_preparation()
+    chunks_safe_eval()
+    as_html(chunks_get_var("result"))
+  })
+
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(arm, paramcd, strata)),
+    modal_title = label
   )
 }

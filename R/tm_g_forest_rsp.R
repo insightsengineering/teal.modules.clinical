@@ -473,7 +473,7 @@ srv_g_forest_rsp <- function(input,
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = paste0("arm_var-dataset_", parent_name, "_singleextract-select"),
+    id_arm_var = extract_input("arm_var", parent_name),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte"

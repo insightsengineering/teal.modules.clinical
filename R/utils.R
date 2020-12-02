@@ -476,6 +476,8 @@ extract_input <- function(varname, dataname) {
 #'
 #' @param x (`character`) string representing the interaction
 #'  usually in the form `x:y` or `x*y`.
+#' @param by (`character`) regex with which to split the interaction
+#'  term by.
 #'
 split_interactions <- function(x, by = "\\*|:") {
   if (length(x >= 1)) {

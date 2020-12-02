@@ -60,8 +60,6 @@ a \code{\link[teal:module]{teal::module()}} object
 Binary Outcome Table Teal Module
 }
 \examples{
-
-
 library(dplyr)
 library(random.cdisc.data)
 ADSL <- radsl(cached = TRUE)
