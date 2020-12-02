@@ -52,7 +52,6 @@ adrs <- radrs(cached = TRUE)
 # Generate an expression for the analysis of responders.
 a <- template_rsp(
   dataname = "adrs",
-  param = "INVET",
   arm_var = "ARMCD",
   ref_arm = "ARM A",
   compare_arm = TRUE,

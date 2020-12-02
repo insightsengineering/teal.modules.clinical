@@ -20,7 +20,6 @@
 #' # Generate an expression for the analysis of responders.
 #' a <- template_rsp(
 #'   dataname = "adrs",
-#'   param = "INVET",
 #'   arm_var = "ARMCD",
 #'   ref_arm = "ARM A",
 #'   compare_arm = TRUE,
@@ -171,7 +170,7 @@ template_rsp <- function(dataname,
             test_proportion_diff(
               vars = "is_rsp",
               method = method_test,
-              variables = list(strata = "SEX")
+              variables = list(strata = strata)
             ),
           env = list(
             conf_level = control$global$conf_level,
@@ -555,6 +554,8 @@ srv_t_rsp <- function(input,
     anl <- chunks_get_var("ANL") # nolint
     validate_has_data(anl, 10)
 
+    strata_var <- as.vector(anl_m$columns_source$strata_var)
+
     my_calls <- template_rsp(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm),
@@ -576,7 +577,7 @@ srv_t_rsp <- function(input,
         strat = list(
           method_ci = "wald",
           method_test = "cmh",
-          strat = NULL
+          strat = if (length(strata_var) != 0) strata_var else NULL
         )
       )
     )

@@ -397,12 +397,15 @@ srv_t_binary_outcome <- function(input,
 
     anl <- chunks_get_var("ANL") # nolint
     validate_has_data(anl, 10)
+    strata_var <- as.vector(anl_m$columns_source$strata_var)
+
     my_calls <- template_rsp(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm),
       compare_arm = input$compare_arms,
       combine_arm = input$combine_comp_arms,
       ref_arm = input$ref_arm,
+      responder_val = input$responders,
       show_rsp_cat = input$show_rsp_cat,
       control = list(
         global = list(
@@ -416,7 +419,7 @@ srv_t_binary_outcome <- function(input,
         ),
         strat = list(
           method_test = input$s_diff_test,
-          strat = input$strata_var
+          strat = if (length(strata_var) != 0) strata_var else NULL
         )
       )
     )
