@@ -8,11 +8,15 @@
 \usage{
 template_events_summary(
   anl_name,
-  parent_name,
+  parentname,
   arm_var,
-  add_total = TRUE,
+  dthfl_var = "DTHFL",
+  dcsreas_var = "DCSREAS",
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
+  aeseq_var = "AESEQ",
+  llt = "AEDECOD",
+  add_total = TRUE,
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE
@@ -21,10 +25,20 @@ template_events_summary(
 tm_t_events_summary(
   label,
   dataname,
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
+  flag_var_anl,
+  flag_var_aesi,
+  dthfl_var = choices_selected(variable_choices(parentname, "DTHFL"), "DTHFL", fixed =
+    TRUE),
+  dcsreas_var = choices_selected(variable_choices(parentname, "DCSREAS"), "DCSREAS",
+    fixed = TRUE),
+  llt = choices_selected(variable_choices(dataname, "AEDECOD"), "AEDECOD", fixed =
+    TRUE),
+  aeseq_var = choices_selected(variable_choices(dataname, "AESEQ"), "AESEQ", fixed =
+    TRUE),
   add_total = TRUE,
-  flag_var_anl = NULL,
-  flag_var_aesi = NULL,
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE
@@ -33,30 +47,44 @@ tm_t_events_summary(
 \arguments{
 \item{anl_name}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
+\item{dthfl_var}{(\code{choices_selected})\cr variable for subject death flag from
+\code{parentname}. Records with `"Y"`` are summarized in the table row for
+"Total number of deaths".}
+
+\item{dcsreas_var}{(\code{choices_selected})\cr variable
+for study discontinuation reason from \code{parentname}. Records with \code{"ADVERSE EVENTS"} are
+summarized in the table row for "Total number of patients withdrawn from study due to an AE".}
+
+\item{flag_var_anl}{(\code{choices_selected})\cr vector with names of flag variables
+from \code{dataset} used to count adverse event sub-groups (e.g. Serious events, Related events, etc.).
+Variable labels are used as table row names if they exist.}
+
+\item{flag_var_aesi}{(\code{choices_selected})\cr vector with names of flag variables
+from \code{dataset} used to count adverse event special interest groups.
+All flag variables must be of type \code{logical}. Variable labels are used as table
+row names if they exist.}
+
+\item{aeseq_var}{(\code{choices_selected})\cr variable for adverse events sequence number
+from \code{dataset}. Used for counting total number of events.}
+
+\item{llt}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable with low level term for events.}
+
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
-
-\item{flag_var_anl}{(\code{character})\cr vector with names of flag variables from
-\code{dataset} used to count adverse event sub-groups (e.g. Serious events, Related events, etc.).
-All flag variables must be of type \code{logical}. If vector is named,
-then names will be used as a table row names.}
-
-\item{flag_var_aesi}{(\code{character})\cr vector with names of flag variables from
-\code{dataset} used to count adverse event special interest groups. All flag variables
-must be of type \code{logical}. If vector is named, then names will be used as a table row names.}
 
 \item{count_subj}{(\code{flag})\cr whether to show count of unique subjects
 based on \code{USUBJID}. Only applies if event flag variables are provided.}
 
 \item{count_pt}{(\code{flag})\cr whether to show count of unique preferred terms based on
-\code{AEDECOD}. Only applies if event flag variables are provided.}
+\code{llt}. Only applies if event flag variables are provided.}
 
-\item{count_events}{(\code{flag})\cr whether to show count of events.
+\item{count_events}{(\code{flag})\cr whether to show count of events based on \code{aeseq_var}.
 Only applies if event flag variables are provided.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
@@ -69,9 +97,7 @@ Teal Module: Adverse Events Summary
 \section{Functions}{
 \itemize{
 \item \code{template_events_summary}: creates the expression corresponding
-to the analysis. Requires that the variables DTHDT and DCSREAS
-exist in \code{parent_name} dataset. Similarly, requires that variables
-STUDYID, USUBJID, AESEQ and AEDECOD exist in \code{anl_name} dataset.
+to the analysis.
 
 \item \code{tm_t_events_summary}: teal module for adverse events summary.
 }}
@@ -91,6 +117,10 @@ adsl <- radsl(cached = TRUE) \%>\%
       is.na(DCSREAS) ~ "",
       TRUE ~ DCSREAS
     )
+  ) \%>\%
+  rtables::var_relabel(
+    DTHFL = "Subject Death Flag",
+    DCSREAS = "Reason for Discontinuation from Study"
   )
 
 adae <- radae(cached = TRUE)
@@ -132,8 +162,8 @@ add_event_flags <- function(dat) {
 # Generating user-defined event flags.
 adae <- adae \%>\% add_event_flags()
 
-ae_anl_vars <- var_labels(adae, fill = TRUE)[startsWith(names(adae), "TMPFL_")] #nolint
-aesi_vars <- var_labels(adae, fill = TRUE)[startsWith(names(adae), "TMP_")] #nolint
+ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
+aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
 
 app <- init(
   data = cdisc_data(
@@ -144,10 +174,23 @@ app <- init(
     tm_t_events_summary(
       label = "Adverse Events Summary",
       dataname = "ADAE",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      add_total = TRUE,
-      flag_var_anl = ae_anl_vars,
-      flag_var_aesi = aesi_vars
+      arm_var = choices_selected(
+        choices = variable_choices("ADSL", c("ARM", "ARMCD")),
+        selected = "ARM"
+      ),
+      flag_var_anl = choices_selected(
+        choices = variable_choices("ADAE", ae_anl_vars),
+        selected = ae_anl_vars[1],
+        keep_order = TRUE,
+        fixed = FALSE
+      ),
+      flag_var_aesi = choices_selected(
+        choices = variable_choices("ADAE", aesi_vars),
+        selected = aesi_vars[1],
+        keep_order = TRUE,
+        fixed = FALSE
+      ),
+      add_total = TRUE
       )
     )
   )

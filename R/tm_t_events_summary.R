@@ -7,40 +7,54 @@
 NULL
 
 #' @describeIn adverse_events_summary creates the expression corresponding
-#'   to the analysis. Requires that the variables DTHDT and DCSREAS
-#'   exist in `parent_name` dataset. Similarly, requires that variables
-#'   STUDYID, USUBJID, AESEQ and AEDECOD exist in `anl_name` dataset.
-#' @param flag_var_anl (`character`)\cr vector with names of flag variables from
-#'   `dataset` used to count adverse event sub-groups (e.g. Serious events, Related events, etc.).
-#'   All flag variables must be of type `logical`. If vector is named,
-#'   then names will be used as a table row names.
-#' @param flag_var_aesi (`character`)\cr vector with names of flag variables from
-#'   `dataset` used to count adverse event special interest groups. All flag variables
-#'   must be of type `logical`. If vector is named, then names will be used as a table row names.
+#'   to the analysis.
+#' @param dthfl_var (`choices_selected`)\cr variable for subject death flag from
+#'   `parentname`. Records with `"Y"`` are summarized in the table row for
+#'   "Total number of deaths".
+#' @param dcsreas_var (`choices_selected`)\cr variable
+#'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
+#'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl (`choices_selected`)\cr vector with names of flag variables
+#'   from `dataset` used to count adverse event sub-groups (e.g. Serious events, Related events, etc.).
+#'   Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi (`choices_selected`)\cr vector with names of flag variables
+#'   from `dataset` used to count adverse event special interest groups.
+#'   All flag variables must be of type `logical`. Variable labels are used as table
+#'   row names if they exist.
+#' @param aeseq_var (`choices_selected`)\cr variable for adverse events sequence number
+#'   from `dataset`. Used for counting total number of events.
 #' @param count_subj (`flag`)\cr whether to show count of unique subjects
 #'   based on `USUBJID`. Only applies if event flag variables are provided.
 #' @param count_pt (`flag`)\cr whether to show count of unique preferred terms based on
-#'   `AEDECOD`. Only applies if event flag variables are provided.
-#' @param count_events (`flag`)\cr whether to show count of events.
+#'   `llt`. Only applies if event flag variables are provided.
+#' @param count_events (`flag`)\cr whether to show count of events based on `aeseq_var`.
 #'   Only applies if event flag variables are provided.
 #'
 template_events_summary <- function(anl_name,
-                                    parent_name,
+                                    parentname,
                                     arm_var,
-                                    add_total = TRUE,
+                                    dthfl_var = "DTHFL",
+                                    dcsreas_var = "DCSREAS",
                                     flag_var_anl = NULL,
                                     flag_var_aesi = NULL,
+                                    aeseq_var = "AESEQ",
+                                    llt = "AEDECOD",
+                                    add_total = TRUE,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
 
   assert_that(
     is.string(anl_name),
-    is.string(parent_name),
+    is.string(parentname),
     is.string(arm_var),
+    is.string(dthfl_var),
+    is.string(dcsreas_var),
     is.flag(add_total),
     is.character(flag_var_anl) || is.null(NULL),
     is.character(flag_var_aesi) || is.null(NULL),
+    is.string(aeseq_var),
+    is.string(llt),
     is.flag(count_subj),
     is.flag(count_pt),
     is.flag(count_events)
@@ -60,9 +74,9 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = col_counts <- table(parent_name$arm_var),
+      expr = col_counts <- table(parentname$arm_var),
       env = list(
-        parent_name = as.name(parent_name),
+        parentname = as.name(parentname),
         arm_var = as.name(arm_var)
       )
     )
@@ -84,16 +98,18 @@ template_events_summary <- function(anl_name,
 
   data_list <- add_expr(
     data_list,
-    quote(anl <- anl %>% dplyr::mutate(
-      AEDECOD = as.character(AEDECOD),
-      USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
-      )
+    substitute_names(
+      expr = anl <- anl %>% dplyr::mutate(
+        a = as.character(a),
+        USUBJID_AESEQ = paste(USUBJID, aeseq_var, sep = "@@")
+      ),
+      names = list(a = as.name(llt), aeseq_var = as.name(aeseq_var))
     )
   )
 
   y$data <- bracket_expr(data_list)
 
-  # Layout to be used with `parent_name` dataset
+  # Layout to be used with `parentname` dataset
   # because not all subjects may exist in `anl_name` dataset.
   layout_parent_list <- list()
   layout_parent_list <- add_expr(
@@ -115,17 +131,18 @@ template_events_summary <- function(anl_name,
   }
   layout_parent_list <- add_expr(
     layout_parent_list,
-    quote(
-      count_values(
-        "DTHFL",
+    substitute(
+      expr = count_values(
+        dthfl_var,
         values = "Y",
         .labels = c(count_fraction = "Total number of deaths")
       ) %>%
       count_values(
-        "DCSREAS",
+        dcsreas_var,
         values = "ADVERSE EVENT",
         .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE")
-      )
+      ),
+      env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
     )
   )
 
@@ -141,7 +158,7 @@ template_events_summary <- function(anl_name,
     table_parent_list,
     substitute(
       expr = result_parent <- build_table(lyt = lyt_parent, df = df_parent, col_counts = col_counts),
-      env = list(df_parent = as.name(parent_name))
+      env = list(df_parent = as.name(parentname))
     )
   )
   y$table_parent <- pipe_expr(table_parent_list)
@@ -233,14 +250,14 @@ template_events_summary <- function(anl_name,
       layout_anl_list,
       substitute(
         expr = count_patients_with_flags(
-          var = "AEDECOD",
+          var = llt,
           flag_variables = flag_var_anl,
           table_names = paste0("count_pt_", flag_var_anl),
           .stats = "count",
           .formats = c(count = "xx"),
           .indent_mods = 1L
         ),
-        env = list(flag_var_anl = flag_var_anl)
+        env = list(flag_var_anl = flag_var_anl, llt = llt)
       )
     )
 
@@ -331,14 +348,14 @@ template_events_summary <- function(anl_name,
       layout_anl_list,
       substitute(
         expr = count_patients_with_flags(
-          var = "AEDECOD",
+          var = llt,
           flag_variables = flag_var_aesi,
           table_names = paste0("count_pt_", flag_var_aesi),
           .stats = "count",
           .formats = c(count = "xx"),
           .indent_mods = 1L
         ),
-        env = list(flag_var_aesi = flag_var_aesi)
+        env = list(flag_var_aesi = flag_var_aesi, llt = llt)
       )
     )
     table_anl_list <- add_expr(
@@ -456,12 +473,9 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  table_list <- add_expr(
-    table_list,
-    quote(print(result))
-  )
+  print_expr <- list(quote(result))
 
-  y$table <- bracket_expr(table_list)
+  y$table <- bracket_expr(c(table_list, print_expr))
 
   y
 }
@@ -484,6 +498,10 @@ template_events_summary <- function(anl_name,
 #'       is.na(DCSREAS) ~ "",
 #'       TRUE ~ DCSREAS
 #'     )
+#'   ) %>%
+#'   rtables::var_relabel(
+#'     DTHFL = "Subject Death Flag",
+#'     DCSREAS = "Reason for Discontinuation from Study"
 #'   )
 #'
 #' adae <- radae(cached = TRUE)
@@ -525,8 +543,8 @@ template_events_summary <- function(anl_name,
 #' # Generating user-defined event flags.
 #' adae <- adae %>% add_event_flags()
 #'
-#' ae_anl_vars <- var_labels(adae, fill = TRUE)[startsWith(names(adae), "TMPFL_")] #nolint
-#' aesi_vars <- var_labels(adae, fill = TRUE)[startsWith(names(adae), "TMP_")] #nolint
+#' ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
+#' aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -537,10 +555,23 @@ template_events_summary <- function(anl_name,
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       add_total = TRUE,
-#'       flag_var_anl = ae_anl_vars,
-#'       flag_var_aesi = aesi_vars
+#'       arm_var = choices_selected(
+#'         choices = variable_choices("ADSL", c("ARM", "ARMCD")),
+#'         selected = "ARM"
+#'       ),
+#'       flag_var_anl = choices_selected(
+#'         choices = variable_choices("ADAE", ae_anl_vars),
+#'         selected = ae_anl_vars[1],
+#'         keep_order = TRUE,
+#'         fixed = FALSE
+#'       ),
+#'       flag_var_aesi = choices_selected(
+#'         choices = variable_choices("ADAE", aesi_vars),
+#'         selected = aesi_vars[1],
+#'         keep_order = TRUE,
+#'         fixed = FALSE
+#'       ),
+#'       add_total = TRUE
 #'       )
 #'     )
 #'   )
@@ -552,71 +583,166 @@ template_events_summary <- function(anl_name,
 #'
 tm_t_events_summary <- function(label,
                                 dataname,
+                                parentname = ifelse(
+                                  is(arm_var, "data_extract_spec"),
+                                  datanames_input(arm_var),
+                                  "ADSL"
+                                ),
                                 arm_var,
+                                flag_var_anl,
+                                flag_var_aesi,
+                                dthfl_var = choices_selected(
+                                  variable_choices(parentname, "DTHFL"), "DTHFL", fixed = TRUE
+                                ),
+                                dcsreas_var = choices_selected(
+                                  variable_choices(parentname, "DCSREAS"), "DCSREAS", fixed = TRUE
+                                ),
+                                llt = choices_selected(
+                                  variable_choices(dataname, "AEDECOD"), "AEDECOD", fixed = TRUE
+                                ),
+                                aeseq_var = choices_selected(
+                                  variable_choices(dataname, "AESEQ"), "AESEQ", fixed = TRUE
+                                ),
                                 add_total = TRUE,
-                                flag_var_anl = NULL,
-                                flag_var_aesi = NULL,
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE) {
 
-  args <- as.list(environment())
+  stop_if_not(
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parentname),
+    is_logical_single(add_total),
+    is_logical_single(count_subj),
+    is_logical_single(count_pt),
+    is_logical_single(count_events),
+    is.cs_or_des(arm_var),
+    is.cs_or_des(dthfl_var),
+    is.cs_or_des(dcsreas_var),
+    is.cs_or_des(flag_var_anl),
+    is.cs_or_des(flag_var_aesi),
+    is.cs_or_des(aeseq_var),
+    is.cs_or_des(llt)
+  )
+
+  args <- c(as.list(environment()))
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
+    dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
+    flag_var_anl = cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE),
+    flag_var_aesi = cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE),
+    aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
+    llt = cs_to_des_select(llt, dataname = dataname)
+  )
+
   module(
     label = label,
-    server = srv_t_events_summary,
     ui = ui_t_events_summary,
-    ui_args = args,
-    server_args = list(
-      dataname = dataname,
-      flag_var_anl = flag_var_anl,
-      flag_var_aesi = flag_var_aesi
+    ui_args = c(data_extract_list, args),
+    server = srv_t_events_summary,
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parentname = parentname,
+        label = label
+      )
     ),
-    filters = dataname
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
 
 
 #' @noRd
-ui_t_events_summary <- function(id, ...){
+ui_t_events_summary <- function(id, ...) {
 
   ns <- NS(id)
-  args <- list(...)
+  a <- list(...)
+
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$dthfl_var,
+    a$dcsreas_var,
+    a$flag_var_anl,
+    a$flag_var_aesi,
+    a$aeseq_var,
+    a$llt
+  )
+
   standard_layout(
-    output = white_small_well(uiOutput(ns("as_html"))),
+    output = white_small_well(uiOutput(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(args$dataname)),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        args$arm_var$choices,
-        args$arm_var$selected,
-        multiple = FALSE,
-        fixed = args$arm_var$fixed),
+      datanames_input(a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("flag_var_anl"),
+        label = "Event Flag Variables",
+        data_extract_spec = a$flag_var_anl,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("flag_var_aesi"),
+        label = "AE Basket Flag Variables",
+        data_extract_spec = a$flag_var_aesi,
+        is_single_dataset = is_single_dataset_value
+      ),
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = args$add_total),
+        value = a$add_total),
       tags$label("Table Settings"),
       checkboxInput(
         ns("count_subj"),
         "Count patients",
-        value = args$count_subj),
+        value = a$count_subj),
       checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
-        value = args$count_pt),
+        value = a$count_pt),
       checkboxInput(
         ns("count_events"),
         "Count events",
-        value = args$count_events)
+        value = a$count_events),
+      panel_group(
+        panel_item(
+          "Additional Variables Info",
+          data_extract_input(
+            id = ns("dthfl_var"),
+            label = "Death Flag Variable",
+            data_extract_spec = a$dthfl_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("dcsreas_var"),
+            label = "Study Discontinuation Reason Variable",
+            data_extract_spec = a$dcsreas_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("aeseq_var"),
+            label = "AE Sequence Variable",
+            data_extract_spec = a$aeseq_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("llt"),
+            label = "AE Term Variable",
+            data_extract_spec = a$llt,
+            is_single_dataset = is_single_dataset_value
+          )
+        )
+      )
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    )
+    forms = get_rcode_ui(ns("rcode"))
  )
 }
 
@@ -626,116 +752,115 @@ srv_t_events_summary <- function(input,
                                  session,
                                  datasets,
                                  dataname,
-                                 label,
-                                 flag_var_anl = NULL,
-                                 flag_var_aesi = NULL) {
+                                 parentname,
+                                 arm_var,
+                                 dthfl_var,
+                                 dcsreas_var,
+                                 flag_var_anl,
+                                 flag_var_aesi,
+                                 aeseq_var,
+                                 llt,
+                                 label) {
   init_chunks()
-  prepared_env <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, dthfl_var, dcsreas_var, flag_var_anl, flag_var_aesi, aeseq_var, llt),
+    input_id = c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, dthfl_var, dcsreas_var),
+    input_id = c("arm_var", "dthfl_var", "dcsreas_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    # validate/validate functions
-    if (!is.null(flag_var_anl)){
-      assert_that(
-        all(names(flag_var_anl) %in% colnames(anl_filtered)),
-        msg = "flag variable (flag_var_anl) names must be in ADAE dataset colnames" #nolint
-      )
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
+    input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
+    input_flag_var_anl <- as.vector(anl_m$columns_source$flag_var_anl)
+    input_flag_var_aesi <- as.vector(anl_m$columns_source$flag_var_aesi)
+    input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
+    input_llt <- as.vector(anl_m$columns_source$llt)
 
-      assert_that(
-        all(nchar((gsub(" ", "", flag_var_anl))) > 0),
-        msg = paste(
-          "Empyt labels in ae_anl_vars: \n",
-          paste(
-            "Missing label in:",
-            names(
-              flag_var_anl[which(nchar((gsub(" ", "", flag_var_anl))) == 0)]
-              ),
-            "\n"
-            ),
-          paste("`", names(flag_var_anl), "`", sep = "", collapse = "\t"),
-          "\n",
-          paste("`", flag_var_anl, "`", sep = "", collapse = "\t")
-          )
-      )
-
-    }
-    if (!is.null(flag_var_aesi)){
-      assert_that(
-        all(names(flag_var_aesi) %in% colnames(anl_filtered)),
-        msg = "flag variable (flag_var_aesi) names must be in ADAE dataset colnames" #nolint
-      )
-      assert_that(
-        all(nchar((gsub(" ", "", flag_var_aesi))) > 0),
-        msg = paste("Empyt labels in ae_anl_vars: \n",
-          paste(
-            "Missing label in:",
-            names(
-              flag_var_aesi[which(nchar((gsub(" ", "", flag_var_aesi))) == 0)]
-              ),
-            "\n"),
-
-          paste("`", names(flag_var_aesi), "`", sep = "", collapse = "\t"),
-          "\n",
-          paste("`", flag_var_aesi, "`", sep = "", collapse = "\t"))
-      )
-
-
-    }
-    if (is.null(flag_var_anl) && is.null(flag_var_aesi)){
-      showNotification("No user specified reporting criteria detected.
-                       Only default summary is produced.
-                       Table setting options won't customize the output.
-                       ", type = "message", duration = NULL)
-    }
-
+    validate(need(input_arm_var, "Please select an ARM variable"))
     validate(
-      need(
-        is.factor(adsl_filtered[[input$arm_var]]),
-        "Arm variable is not a factor."
-        )
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
     )
 
-
-    # Send data where the analysis lives.
-    e <- new.env()
-    e[[paste0(dataname, "_FILTERED")]] <- anl_filtered
-    e$ADSL_FILTERED <- adsl_filtered #nolint
-    e
+    # validate inputs
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
+      arm_var = input_arm_var,
+      max_n_levels_armvar = NULL,
+      min_nrow = 1
+    )
   })
 
-
-
-
+  # The R-code corresponding to the analysis.
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    input_flag_var_anl <- as.vector(anl_m$columns_source$flag_var_anl)
+    input_flag_var_aesi <- as.vector(anl_m$columns_source$flag_var_aesi)
+
+    input_flag_var_anl <- datasets$get_variable_labels(dataname, input_flag_var_anl)
+    input_flag_var_aesi <- datasets$get_variable_labels(dataname, input_flag_var_aesi)
+
     my_calls <- template_events_summary(
-      anl_name = paste0(dataname, "_FILTERED"),
-      parent_name = "ADSL_FILTERED",
-      arm_var = input$arm_var,
+      anl_name = "ANL",
+      parentname = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      dthfl_var = as.vector(anl_m$columns_source$dthfl_var),
+      dcsreas_var = as.vector(anl_m$columns_source$dcsreas_var),
+      flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
+      flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
+      aeseq_var = as.vector(anl_m$columns_source$aeseq_var),
+      llt = as.vector(anl_m$columns_source$llt),
       add_total = input$add_total,
       count_subj = input$count_subj,
       count_pt = input$count_pt,
-      count_events = input$count_events,
-      flag_var_anl = flag_var_anl,
-      flag_var_aesi = flag_var_aesi
+      count_events = input$count_events
     )
+
     mapply(expression = my_calls, chunks_push)
   })
 
   # Outputs to render.
-  output$as_html <- renderUI({
+  output$table <- renderUI({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
 
   # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "AE Summary",
-      rcode = get_rcode(datasets = datasets, title = input$label)
-    )
-  })
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = dataname,
+    modal_title = "Adverse Event Summary Table",
+    code_header = label
+  )
 
 }
 
