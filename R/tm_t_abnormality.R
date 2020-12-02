@@ -8,8 +8,6 @@ NULL
 
 #' @describeIn abnormality create the expressions corresponding to the analysis.
 #' @param by_vars (`character`)\cr variable names of the row by variables.
-#' @param treatment_flag_var (`string`)\cr variable name of the treatment flag variable.
-#' @param treatment_flag (`string`)\cr value indicating on treatment.
 #' @param exclude_base_abn (`flag`)\cr whether to exclude patients who had abnormal values at baseline.
 #'
 template_abnormality <- function(parentname,
@@ -18,8 +16,6 @@ template_abnormality <- function(parentname,
                                  by_vars,
                                  abnormal,
                                  grade = "ANRIND",
-                                 treatment_flag_var = "ONTRTFL",
-                                 treatment_flag = "Y",
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE) {
   y <- list()
@@ -30,12 +26,10 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        filter(treatment_flag_var == treatment_flag & !is.na(grade)),
+        filter(!is.na(grade)),
       env = list(
         df = as.name(dataname),
-        grade = as.name(grade),
-        treatment_flag_var = as.name(treatment_flag_var),
-        treatment_flag = treatment_flag
+        grade = as.name(grade)
       )
     )
   )
@@ -125,10 +119,11 @@ template_abnormality <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote(
+  y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
       prune_table()
-  )
+    result
+  })
 
   y
 }
@@ -195,16 +190,6 @@ template_abnormality <- function(parentname,
 #'         fixed = TRUE
 #'       ),
 #'       abnormal = c("LOW", "HIGH"),
-#'       treatment_flag_var = choices_selected(
-#'         choices = variable_choices(adlb, subset = "ONTRTFL"),
-#'         selected = "ONTRTFL",
-#'         fixed = TRUE
-#'       ),
-#'       treatment_flag = choices_selected(
-#'         choices = "Y",
-#'         selected = "Y",
-#'         fixed = TRUE
-#'       ),
 #'       exclude_base_abn = FALSE
 #'     )
 #'   )
@@ -215,25 +200,29 @@ template_abnormality <- function(parentname,
 #'
 tm_t_abnormality <- function(label,
                              dataname,
+                             parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                              arm_var,
                              id_var,
                              by_vars,
                              grade,
+                             visit_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
                              abnormal,
-                             treatment_flag_var,
-                             treatment_flag,
                              exclude_base_abn = FALSE,
                              pre_output = NULL,
                              post_output = NULL) {
-  stopifnot(is.string(dataname))
-  stopifnot(is.choices_selected(arm_var))
-  stopifnot(is.choices_selected(id_var))
-  stopifnot(is.choices_selected(by_vars))
-  stopifnot(is.choices_selected(grade))
-  stopifnot(is_character_vector(abnormal))
-  stopifnot(is.choices_selected(treatment_flag_var))
-  stopifnot(is.choices_selected(treatment_flag))
-  stopifnot(is_logical_single(exclude_base_abn))
+  stopifnot(
+    is.string(dataname),
+    is_character_vector(abnormal),
+    is_logical_single(exclude_base_abn)
+    )
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    id_var = cs_to_des_select(id_var, dataname = dataname),
+    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
+    grade = cs_to_des_select(grade, dataname = dataname),
+    visit_var = cs_to_des_select(visit_var, dataname = dataname)
+  )
 
   args <- as.list(environment())
 
@@ -241,57 +230,69 @@ tm_t_abnormality <- function(label,
     label = label,
     ui = ui_t_abnormality,
     server = srv_t_abnormality,
-    ui_args = args,
-    server_args = list(
-      dataname = dataname,
-      abnormal = abnormal
-    ),
-    filters = dataname
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parentname = parentname,
+        abnormal = abnormal,
+        label = label
+        )
+      ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_t_abnormality <- function(id, ...) {
+
   ns <- NS(id)
   a <- list(...) # module args
+
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$id_var,
+    a$by_vars,
+    a$grade,
+    a$visit_var
+    )
 
   standard_layout(
     output = white_small_well(uiOutput(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(a$dataname)),
-      optionalSelectInput(
-        ns("arm_var"),
-        "Arm Variable",
-        a$arm_var$choices,
-        a$arm_var$selected,
-        multiple = FALSE,
-        fixed = a$arm_var$fixed
+      datanames_input(a[c("arm_var", "id_var", "by_vars", "grade", "visit_var")]),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
-      optionalSelectInput(
-        ns("id_var"),
-        "Subject Identifier",
-        a$id_var$choices,
-        a$id_var$selected,
-        multiple = FALSE,
-        fixed = a$id_var$fixed
+      data_extract_input(
+        id = ns("id_var"),
+        label = "Subject Identifier",
+        data_extract_spec = a$id_var,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("by_vars"),
-        "Row By Variable",
-        a$by_vars$choices,
-        a$by_vars$selected,
-        multiple = TRUE,
-        fixed = a$by_vars$fixed
+      data_extract_input(
+        id = ns("visit_var"),
+        label = "Analysis Visit Variable",
+        data_extract_spec = a$visit_var,
+        is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
-        ns("grade"),
-        "Grade Variable",
-        a$grade$choices,
-        a$grade$selected,
-        multiple = FALSE,
-        fixed = a$grade$fixed
+      data_extract_input(
+        id = ns("by_vars"),
+        label = "Row By Variable",
+        data_extract_spec = a$by_vars,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("grade"),
+        label = "Grade Variable",
+        data_extract_spec = a$grade,
+        is_single_dataset = is_single_dataset_value
       ),
       selectInput(
         ns("abnormal_values"),
@@ -299,22 +300,6 @@ ui_t_abnormality <- function(id, ...) {
         choices = c("LOW", "HIGH"),
         selected = c("LOW", "HIGH"),
         multiple = TRUE
-      ),
-      optionalSelectInput(
-        ns("treatment_flag_var"),
-        "Treatment Flag Variable",
-        a$treatment_flag_var$choices,
-        a$treatment_flag_var$selected,
-        multiple = FALSE,
-        fixed = a$treatment_flag_var$fixed
-      ),
-      optionalSelectInput(
-        ns("treatment_flag"),
-        "Value indicating On Treatment",
-        a$treatment_flag$choices,
-        a$treatment_flag$selected,
-        multiple = FALSE,
-        fixed = a$treatment_flag$fixed
       ),
       checkboxInput(
         ns("exclude_base_abn"),
@@ -334,14 +319,21 @@ srv_t_abnormality <- function(input,
                               session,
                               datasets,
                               dataname,
-                              abnormal) {
+                              parentname,
+                              abnormal,
+                              arm_var,
+                              id_var,
+                              by_vars,
+                              grade,
+                              visit_var,
+                              label) {
   init_chunks()
 
   # Update UI choices depending on selection of previous options
   observe({
     anl <- datasets$get_data(dataname, filtered = FALSE)
 
-    validate_has_elements(input$grade, "please select 'Grade Variable'")
+    validate_has_elements(input$grade, "Please select a grade variable")
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
 
     updateSelectInput(
@@ -354,59 +346,72 @@ srv_t_abnormality <- function(input,
       } else {
         intersect(abnormal, choices)
       }
-
     )
   })
 
-  prepared_env <- reactive({
-    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, id_var, by_vars, grade, visit_var),
+    input_id = c("arm_var", "id_var", "by_vars", "grade", "visit_var"),
+    merge_function = "dplyr::inner_join"
+  )
 
-    arm_var <- input$arm_var
-    id_var <- input$id_var
-    by_vars <- input$by_vars
-    grade <- input$grade
-    add_total <- input$add_total
-    exclude_base_abn <- input$exclude_base_abn
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     validate_has_data(adsl_filtered, 1)
     validate_has_data(anl_filtered, 1)
-    validate(need(is_logical_single(add_total), "add_total is not logical"))
-    validate(need(is_logical_single(exclude_base_abn), "exclude_base_abn is not logical"))
-    validate(need(arm_var, "please select 'Arm variable'"))
-    validate(need(id_var, "please select 'Subject Identifier'"))
-    validate(need(grade, "please select 'Grade Variable'"))
 
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_id_var <- as.vector(anl_m$columns_source$id_var)
+    input_by_vars <- as.vector(anl_m$columns_source$by_vars)
+    input_grade <- as.vector(anl_m$columns_source$grade)
+
+    validate(
+      need(input_arm_var, "Please select an arm variable"),
+      need(input_id_var, "Please select a subject identifier"),
+      need(input_grade, "Please select a grade variable"),
+      need(input$abnormal_values, "Please select an abnormality indicator")
+    )
+    # validate inputs
     validate_standard_inputs(
       adsl = adsl_filtered,
-      adslvars = unique(c("USUBJID", "STUDYID", arm_var, id_var)),
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = unique(c("USUBJID", "STUDYID", by_vars, grade)),
-      arm_var = arm_var,
-      min_n_levels_armvar = 1,
-      min_nrow = 1
+      anlvars = c("USUBJID", "STUDYID", input_id_var, input_by_vars, input_grade),
+      arm_var = input_arm_var,
+      min_nrow = 10
     )
-
-    anl_name <- paste0(dataname, "_FILTERED")
-
-    # Send data where the analysis lives.
-    e <- new.env()
-    e[[anl_name]] <- anl_filtered
-    e$ADSL_FILTERED <- adsl_filtered # nolint
-    e
   })
 
   call_preparation <- reactive({
-    chunks_reset(envir = prepared_env())
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
     my_calls <- template_abnormality(
-      parentname = "ADSL_FILTERED",
-      dataname = paste0(dataname, "_FILTERED"),
-      arm_var = input$arm_var,
-      by_vars = input$by_vars,
+      parentname = "ANL_ADSL",
+      dataname = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      by_vars = as.vector(anl_m$columns_source$by_vars),
       abnormal = input$abnormal_values,
-      grade = input$grade,
-      treatment_flag_var = input$treatment_flag_var,
-      treatment_flag = input$treatment_flag,
+      grade = as.vector(anl_m$columns_source$grade),
       add_total = input$add_total,
       exclude_base_abn = input$exclude_base_abn
     )
@@ -427,6 +432,6 @@ srv_t_abnormality <- function(input,
     datasets = datasets,
     datanames = dataname,
     modal_title = "R Code for Abnormality Table",
-    code_header = input$label
+    code_header = label
   )
 }

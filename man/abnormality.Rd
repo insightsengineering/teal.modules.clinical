@@ -13,8 +13,6 @@ template_abnormality(
   by_vars,
   abnormal,
   grade = "ANRIND",
-  treatment_flag_var = "ONTRTFL",
-  treatment_flag = "Y",
   add_total = FALSE,
   exclude_base_abn = FALSE
 )
@@ -22,13 +20,15 @@ template_abnormality(
 tm_t_abnormality(
   label,
   dataname,
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
   arm_var,
   id_var,
   by_vars,
   grade,
+  visit_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed =
+    TRUE),
   abnormal,
-  treatment_flag_var,
-  treatment_flag,
   exclude_base_abn = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -51,10 +51,6 @@ variable names designating the study arm.}
 choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
 
-\item{treatment_flag_var}{(\code{string})\cr variable name of the treatment flag variable.}
-
-\item{treatment_flag}{(\code{string})\cr value indicating on treatment.}
-
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
 \item{exclude_base_abn}{(\code{flag})\cr whether to exclude patients who had abnormal values at baseline.}
@@ -63,6 +59,9 @@ specify the abnormality grade. Variable must be factor.}
 
 \item{id_var}{(\code{choices_selected} with teal module)\cr object specifying the
 variable name for subject id.}
+
+\item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
+for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -136,16 +135,6 @@ app <- init(
         fixed = TRUE
       ),
       abnormal = c("LOW", "HIGH"),
-      treatment_flag_var = choices_selected(
-        choices = variable_choices(adlb, subset = "ONTRTFL"),
-        selected = "ONTRTFL",
-        fixed = TRUE
-      ),
-      treatment_flag = choices_selected(
-        choices = "Y",
-        selected = "Y",
-        fixed = TRUE
-      ),
       exclude_base_abn = FALSE
     )
   )
