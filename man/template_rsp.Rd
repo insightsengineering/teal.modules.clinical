@@ -6,8 +6,10 @@
 \usage{
 template_rsp(
   dataname,
+  parentname,
   arm_var,
   ref_arm,
+  comp_arm,
   compare_arm = TRUE,
   combine_arm = FALSE,
   show_rsp_cat = TRUE,
@@ -20,10 +22,16 @@ template_rsp(
 \arguments{
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
+
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
+arm comparison.}
+
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
@@ -42,18 +50,22 @@ Creates a valid expression for responder analysis.
 }
 \examples{
 
+\dontrun{
 # Preparation of the test case.
 library(dplyr)
 library(random.cdisc.data)
 library(tern)
 adsl <- radsl(cached = TRUE)
-adrs <- radrs(cached = TRUE)
+adrs <- radrs(cached = TRUE) \%>\%
+  filter(PARAMCD == "BESRSPI")
 
 # Generate an expression for the analysis of responders.
 a <- template_rsp(
   dataname = "adrs",
+  parentname = "adsl",
   arm_var = "ARMCD",
   ref_arm = "ARM A",
+  comp_arm = c("ARM B"),
   compare_arm = TRUE,
   show_rsp_cat = TRUE
 )
@@ -66,5 +78,6 @@ b <- mapply(expr = a, FUN = eval)
 b$data
 b$layout
 b$table
+}
 
 }

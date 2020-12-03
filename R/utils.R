@@ -486,3 +486,94 @@ split_interactions <- function(x, by = "\\*|:") {
     NULL
   }
 }
+
+
+#' Expression: Arm Preparation
+#'
+#' The function generate the standard expression for pre-processing of dataset
+#' in teal module applications. This is especially of interest when the same
+#' preprocessing steps needs to be applied similarly to several datasets
+#' (e.g. ADSL and ADRS).
+#'
+#' @details
+#' In `teal.modules.clinical`, the user interface includes manipulation of
+#' the study arms. Classically: the arm variable itself (e.g. `ARM`, `ACTARM`),
+#' the reference arm (1 or more), the comparison arm (1 or more) and the
+#' possibility to combine comparison arms.
+#'
+#' The pre-processing includes three steps:
+#' 1. Filtering of the dataset to retain only the arms of interest (reference
+#' and comparison).
+#' 2. Optional, if more than one arm is designated as _reference_ they are
+#' combined into a single level.
+#' 3. The reference is explicitly reassigned and the non-represented levels of
+#' arm are dropped.
+#'
+#' @inheritParams argument_convention
+#' @param ref_arm_val (`string`)\cr replacement name for the reference level.
+#' @examples
+#'
+#' \dontrun{
+#' teal.modules.clinical::prepare_arm(
+#'   dataname = "adrs",
+#'   arm_var = "ARMCD",
+#'   ref_arm = "ARM A",
+#'   comp_arm = c("ARM B", "ARM C")
+#' )
+#'
+#' teal.modules.clinical::prepare_arm(
+#'   dataname = "adsl",
+#'   arm_var = "ARMCD",
+#'   ref_arm = c("ARM B", "ARM C"),
+#'   comp_arm = "ARM A"
+#' )
+#' }
+#'
+prepare_arm <- function(dataname,
+                        arm_var,
+                        ref_arm,
+                        comp_arm,
+                        ref_arm_val = paste(ref_arm, collapse = "/")) {
+
+  data_list <- list()
+  # Data are filtered to keep only arms of interest.
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname %>%
+        filter(arm_var %in% arm_val),
+      env = list(
+        dataname = as.name(dataname),
+        arm_var = as.name(arm_var),
+        arm_val = c(ref_arm, comp_arm)
+      )
+    )
+  )
+
+  # Several reference levels are combined.
+  if (length(ref_arm) > 1) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
+      )
+    )
+  }
+
+  # Reference level is explicit and unused levels are dropped.
+  data_list <- add_expr(
+    data_list,
+    substitute_names(
+      expr = {
+        mutate(arm_var = relevel(arm_var, ref = ref_arm_val)) %>%
+          mutate(arm_var = droplevels(arm_var))
+      },
+      names = list(arm_var = as.name(arm_var)),
+      others = list(ref_arm_val = ref_arm_val)
+    )
+  )
+
+  pipe_expr(data_list)
+}

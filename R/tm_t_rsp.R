@@ -10,18 +10,22 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' # Preparation of the test case.
 #' library(dplyr)
 #' library(random.cdisc.data)
 #' library(tern)
 #' adsl <- radsl(cached = TRUE)
-#' adrs <- radrs(cached = TRUE)
+#' adrs <- radrs(cached = TRUE) %>%
+#'   filter(PARAMCD == "BESRSPI")
 #'
 #' # Generate an expression for the analysis of responders.
 #' a <- template_rsp(
 #'   dataname = "adrs",
+#'   parentname = "adsl",
 #'   arm_var = "ARMCD",
 #'   ref_arm = "ARM A",
+#'   comp_arm = c("ARM B"),
 #'   compare_arm = TRUE,
 #'   show_rsp_cat = TRUE
 #' )
@@ -34,10 +38,13 @@
 #' b$data
 #' b$layout
 #' b$table
+#' }
 #'
 template_rsp <- function(dataname,
+                         parentname,
                          arm_var,
                          ref_arm,
+                         comp_arm,
                          compare_arm = TRUE,
                          combine_arm = FALSE,
                          show_rsp_cat = TRUE,
@@ -61,50 +68,75 @@ template_rsp <- function(dataname,
 ) {
   y <- list()
 
+  ref_arm_val <- paste(ref_arm, collapse = "/")
+
   data_list <- list()
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = df %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(
-          is_rsp = AVALC %in% responder_val
-        ),
-      env = list(df = as.name(dataname), responder_val = responder_val)
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
+
   data_list <- add_expr(
     data_list,
-    substitute_names(
-      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm)),
-      names = list(arm_var = as.name(arm_var)),
-      others = list(ref_arm = ref_arm)
+    substitute(
+      expr = mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
+        mutate(is_rsp = AVALC %in% responder_val),
+      env = list(responder_val = responder_val)
     )
   )
 
   y$data <- substitute(
-    expr = anl <- data_pipe,
-    env = list(data_pipe = pipe_expr(data_list))
+    expr = {
+      anl <- data_pipe
+      parentname <- arm_preparation
+    },
+    env = list(
+      data_pipe = pipe_expr(data_list),
+      parentname = as.name(parentname),
+      arm_preparation = prepare_arm(
+        dataname = parentname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val
+      )
+    )
   )
 
   if (combine_arm) {
     y$combine_arm <- substitute(
       expr = groups <- combine_groups(fct = anl[[group]], ref = ref_arm),
-      env = list(group = arm_var, ref_arm = ref_arm)
+      env = list(group = arm_var, ref_arm = ref_arm_val)
+    )
+  }
+
+  y$col_counts <- if (combine_arm) {
+    substitute(
+      expr = col_counts <- combine_counts(fct = parentname[[group]], groups_list = groups),
+      env = list(group = arm_var, parentname = as.name(parentname))
+    )
+  } else {
+    substitute(
+      expr = col_counts <- combine_counts(fct = parentname[[group]]),
+      env = list(group = arm_var, parentname = as.name(parentname))
     )
   }
 
   layout_list <- list()
-
   layout_list <- add_expr(layout_list, substitute(basic_table()))
-
   layout_list <- add_expr(
     layout_list,
     split_col_expr(
       compare = compare_arm,
       combine = combine_arm,
       group = arm_var,
-      ref = ref_arm
+      ref = ref_arm_val
     )
   )
 
@@ -205,9 +237,10 @@ template_rsp <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl)
-  )
+  y$table <- quote({
+    result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+    result
+  })
   y
 }
 
@@ -303,7 +336,7 @@ template_rsp <- function(dataname,
 #'
 tm_t_rsp <- function(label,
                      dataname,
-                     parent_name = ifelse(
+                     parentname = ifelse(
                        test = is(arm_var, "data_extract_spec"),
                        yes = datanames_input(arm_var),
                        no = "ADSL"
@@ -319,7 +352,7 @@ tm_t_rsp <- function(label,
 
   stopifnot(
     length(dataname) == 1,
-    length(parent_name) == 1,
+    length(parentname) == 1,
     is.cs_or_des(arm_var),
     is.cs_or_des(paramcd),
     is.cs_or_des(avalc_var),
@@ -328,7 +361,7 @@ tm_t_rsp <- function(label,
 
   # Convert choices-selected to data_extract_spec
   if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
+    arm_var <- cs_to_des_select(arm_var, dataname = parentname, multiple = FALSE)
   }
   if (is.choices_selected(paramcd)) {
     paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
@@ -337,7 +370,7 @@ tm_t_rsp <- function(label,
     avalc_var <- cs_to_des_select(avalc_var, dataname = dataname, multiple = FALSE)
   }
   if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+    strata_var <- cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   }
   args <- as.list(environment())
 
@@ -357,7 +390,7 @@ tm_t_rsp <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label
       )
@@ -461,7 +494,7 @@ srv_t_rsp <- function(input,
                       session,
                       datasets,
                       dataname,
-                      parent_name,
+                      parentname,
                       paramcd,
                       avalc,
                       arm,
@@ -476,7 +509,7 @@ srv_t_rsp <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
@@ -509,7 +542,7 @@ srv_t_rsp <- function(input,
   })
 
   validate_check <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -558,8 +591,10 @@ srv_t_rsp <- function(input,
 
     my_calls <- template_rsp(
       dataname = "ANL",
+      parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm),
       ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm,
       show_rsp_cat = TRUE,
       compare_arm = input$compare_arms,
       combine_arm = input$combine_comp_arms,

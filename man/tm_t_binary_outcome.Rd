@@ -7,7 +7,7 @@
 tm_t_binary_outcome(
   label,
   dataname,
-  parent_name = ifelse(test = is(arm_var, "data_extract_spec"), yes =
+  parentname = ifelse(test = is(arm_var, "data_extract_spec"), yes =
     datanames_input(arm_var), no = "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
@@ -24,7 +24,7 @@ tm_t_binary_outcome(
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr

@@ -52,7 +52,7 @@
 #'
 tm_t_binary_outcome <- function(label,
                                 dataname,
-                                parent_name = ifelse(
+                                parentname = ifelse(
                                   test = is(arm_var, "data_extract_spec"),
                                   yes = datanames_input(arm_var),
                                   no = "ADSL"
@@ -64,14 +64,14 @@ tm_t_binary_outcome <- function(label,
                                 avalc_var = choices_selected(
                                   variable_choices(dataname, "AVALC"),
                                   "AVALC", fixed = TRUE
-                                  ),
+                                ),
                                 pre_output = NULL,
                                 post_output = NULL
 ) {
 
   stopifnot(
     length(dataname) == 1,
-    length(parent_name) == 1,
+    length(parentname) == 1,
     is.cs_or_des(arm_var),
     is.cs_or_des(paramcd),
     is.cs_or_des(avalc_var),
@@ -80,7 +80,7 @@ tm_t_binary_outcome <- function(label,
 
   # Convert choices-selected to data_extract_spec
   if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
+    arm_var <- cs_to_des_select(arm_var, dataname = parentname, multiple = FALSE)
   }
   if (is.choices_selected(paramcd)) {
     paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
@@ -89,7 +89,7 @@ tm_t_binary_outcome <- function(label,
     avalc_var <- cs_to_des_select(avalc_var, dataname = dataname, multiple = FALSE)
   }
   if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+    strata_var <- cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   }
   args <- as.list(environment())
 
@@ -109,7 +109,7 @@ tm_t_binary_outcome <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label
       )
@@ -305,7 +305,7 @@ srv_t_binary_outcome <- function(input,
                                  session,
                                  datasets,
                                  dataname,
-                                 parent_name,
+                                 parentname,
                                  paramcd,
                                  avalc,
                                  arm,
@@ -320,7 +320,7 @@ srv_t_binary_outcome <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
@@ -353,7 +353,7 @@ srv_t_binary_outcome <- function(input,
   })
 
   validate_check <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -401,10 +401,12 @@ srv_t_binary_outcome <- function(input,
 
     my_calls <- template_rsp(
       dataname = "ANL",
+      parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm),
       compare_arm = input$compare_arms,
       combine_arm = input$combine_comp_arms,
       ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm,
       responder_val = input$responders,
       show_rsp_cat = input$show_rsp_cat,
       control = list(
