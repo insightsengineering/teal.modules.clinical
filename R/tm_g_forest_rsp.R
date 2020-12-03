@@ -293,57 +293,38 @@ tm_g_forest_rsp <- function(label,
                             pre_output = NULL,
                             post_output = NULL) {
 
-  stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
-  stopifnot(length(dataname) == 1)
-  stopifnot(is.cs_or_des(arm_var))
-  stopifnot(is.cs_or_des(paramcd))
-  stopifnot(is.cs_or_des(aval_var))
-  stopifnot(is.cs_or_des(subgroup_var))
-  stopifnot(is.cs_or_des(strata_var))
-  stopifnot(is_logical_single(fixed_symbol_size))
+  stop_if_not(
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parent_name),
+    is_logical_single(fixed_symbol_size),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    ),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    )
+  )
+
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
-  stop_if_not(list(
-    is.null(pre_output) || is(pre_output, "shiny.tag"),
-    "pre_output should be either null or shiny.tag type of object"
-  ))
-  stop_if_not(list(
-    is.null(pre_output) || is(pre_output, "shiny.tag"),
-    "pre_output should be either null or shiny.tag type of object"
-  ))
-
-
-  # Convert choices-selected to data_extract_spec
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(aval_var)) {
-    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(subgroup_var)) {
-    subgroup_var <- cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
-  }
 
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm = arm_var,
-    paramcd = paramcd,
-    aval_var = aval_var,
-    subgroup_var = subgroup_var,
-    strata_var = strata_var
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
   )
 
   module(
     label = label,
     ui = ui_g_forest_rsp,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server = srv_g_forest_rsp,
     server_args = c(
       data_extract_list,
@@ -517,13 +498,14 @@ srv_g_forest_rsp <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
       arm_var = input_arm_var
     )
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
@@ -589,7 +571,9 @@ srv_g_forest_rsp <- function(input,
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, paramcd, aval_var, subgroup_var, strata_var)),
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, subgroup_var, strata_var)
+      ),
     modal_title = label
   )
 }

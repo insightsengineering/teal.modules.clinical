@@ -13,7 +13,9 @@ template_ancova(
   combine_comp_arms = FALSE,
   aval_var,
   cov_var,
-  paramcd,
+  paramcd_levels = 1,
+  paramcd = "PARAMCD",
+  visit_var = "AVISIT",
   conf_level = 0.95
 )
 }

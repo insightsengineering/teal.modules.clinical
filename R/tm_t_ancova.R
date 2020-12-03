@@ -19,7 +19,9 @@ template_ancova <- function(anl_name = "ANL",
                             combine_comp_arms = FALSE,
                             aval_var,
                             cov_var,
-                            paramcd,
+                            paramcd_levels = 1,
+                            paramcd = "PARAMCD",
+                            visit_var = "AVISIT",
                             conf_level = 0.95
 ) {
 
@@ -196,19 +198,20 @@ template_ancova <- function(anl_name = "ANL",
     layout_list,
     substitute(
       expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        split_rows_by("AVISIT", split_fun = drop_split_levels),
+        split_rows_by(visit_var, split_fun = drop_split_levels),
       env = list(
         arm_var = arm_var,
-        ref_group = paste(ref_arm, collapse = "/")
+        ref_group = paste(ref_arm, collapse = "/"),
+        visit_var = visit_var
       )
     )
   )
 
-  if (length(unique(paramcd)) > 1) {
+  if (paramcd_levels > 1) {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        split_rows_by(paramcd, split_fun = drop_split_levels) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -217,6 +220,7 @@ template_ancova <- function(anl_name = "ANL",
             show_labels = "hidden"
           ),
         env = list(
+          paramcd = paramcd,
           aval_var = aval_var,
           arm_var = arm_var,
           cov_var = cov_var,
@@ -328,7 +332,7 @@ template_ancova <- function(anl_name = "ANL",
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",
-#'       avisit = choices_selected(
+#'       visit_var = choices_selected(
 #'         choices = value_choices(adqs, "AVISIT"),
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
@@ -364,50 +368,31 @@ tm_t_ancova <- function(label,
                         arm_ref_comp = NULL,
                         aval_var,
                         cov_var,
-                        avisit,
+                        visit_var,
                         paramcd,
                         pre_output = NULL,
                         post_output = NULL
 ) {
 
-  stopifnot(length(dataname) == 1)
-  stopifnot(is.cs_or_des(arm_var))
-  stopifnot(is.cs_or_des(aval_var))
-  stopifnot(is.cs_or_des(cov_var))
-  stopifnot(is.cs_or_des(avisit))
-  stopifnot(is.cs_or_des(paramcd))
-
-  # Convert choices-selected to data_extract_spec.
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
-  }
-  if (is.choices_selected(aval_var)) {
-    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(cov_var)) {
-    cov_var <- cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
-  }
-  if (is.choices_selected(avisit)) {
-    avisit <- cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
-  }
+  stopifnot(
+    is_character_single(dataname),
+    is_character_single(parent_name)
+    )
 
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = arm_var,
-    aval_var = aval_var,
-    cov_var = cov_var,
-    avisit = avisit,
-    paramcd = paramcd
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+    visit_var = cs_to_des_filter(visit_var, dataname = dataname, multiple = TRUE),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
   )
 
   module(
     label = label,
     ui = ui_ancova,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server = srv_ancova,
     server_args = c(
       data_extract_list,
@@ -426,9 +411,9 @@ tm_t_ancova <- function(label,
 #'
 ui_ancova <- function(id, ...) {
 
-  args <- list(...)
+  a <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    args$arm_var, args$aval_var, args$cov_var, args$avisit, args$paramcd
+    a$arm_var, a$aval_var, a$cov_var, a$visit_var, a$paramcd
   )
 
   ns <- NS(id)
@@ -437,29 +422,29 @@ ui_ancova <- function(id, ...) {
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(args[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      datanames_input(a[c("arm_var", "aval_var", "cov_var", "visit_var", "paramcd")]),
       data_extract_input(
-        id = ns("avisit"),
+        id = ns("visit_var"),
         label = "Analysis Visit",
-        data_extract_spec = args$avisit,
+        data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
-        data_extract_spec = args$paramcd,
+        data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("aval_var"),
         label = "Analysis Variable",
-        data_extract_spec = args$aval_var,
+        data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("arm_var"),
         label = "Arm Variable",
-        data_extract_spec = args$arm_var,
+        data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       selectInput(
@@ -485,7 +470,7 @@ ui_ancova <- function(id, ...) {
       data_extract_input(
         id = ns("cov_var"),
         label = "Covariates",
-        data_extract_spec = args$cov_var,
+        data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
       numericInput(
@@ -499,8 +484,8 @@ ui_ancova <- function(id, ...) {
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
-    pre_output = args$pre_output,
-    post_output = args$post_output
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
@@ -518,7 +503,7 @@ srv_ancova <- function(input,
                        aval_var,
                        cov_var,
                        paramcd,
-                       avisit,
+                       visit_var,
                        label) {
 
   init_chunks()
@@ -537,8 +522,8 @@ srv_ancova <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, aval_var, cov_var, avisit, paramcd),
-    input_id = c("arm_var", "aval_var", "cov_var", "avisit", "paramcd"),
+    data_extract = list(arm_var, aval_var, cov_var, visit_var, paramcd),
+    input_id = c("arm_var", "aval_var", "cov_var", "visit_var", "paramcd"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -559,26 +544,15 @@ srv_ancova <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-
-    # Validate PARAMCD and AVISIT input values.
-    input_names <- names(input)
-    input_avisit <- input_names[grepl("avisit", input_names) & grepl("filter", input_names)]
-    input_paramcd <- input_names[grepl("paramcd", input_names) & grepl("filter", input_names)]
-    validate(need(
-      all(input[[input_avisit]] %in% unique(anl_filtered[["AVISIT"]])),
-      "Analysis visit value does not exists in AVISIT variable in analysis data."
-    ))
-    validate(need(
-      all(input[[input_paramcd]] %in% unique(anl_filtered[["PARAMCD"]])),
-      "Endpoint value does not exists in PARAMCD variable in analysis data."
-    ))
+    input_visit_var <- unlist(visit_var$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # Validate inputs.
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "AVISIT", "PARAMCD", input_aval_var, input_cov_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_visit_var, input_aval_var, input_cov_var),
       arm_var = input_arm_var
     )
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
@@ -608,9 +582,10 @@ srv_ancova <- function(input,
     anl_adsl <- adsl_merged()
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
-
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
+
+    paramcd_levels <- length(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
 
     my_calls <- template_ancova(
       parent_name = "ANL_ADSL",
@@ -621,7 +596,9 @@ srv_ancova <- function(input,
       combine_comp_arms = input$combine_comp_arms,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cov_var = as.vector(anl_m$columns_source$cov_var),
-      paramcd = unique(ANL[["PARAMCD"]]),
+      paramcd_levels = paramcd_levels,
+      paramcd = unlist(paramcd$filter)["vars"],
+      visit_var = unlist(visit_var$filter)["vars"],
       conf_level = as.numeric(input$conf_level)
     )
     mapply(expression = my_calls, chunks_push)
@@ -640,7 +617,7 @@ srv_ancova <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, aval_var, cov_var, avisit, paramcd)
+      list(arm_var, aval_var, cov_var, visit_var, paramcd)
     ),
     modal_title = label
   )

@@ -13,7 +13,7 @@ tm_t_rsp(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
+  aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
     TRUE),
   pre_output = NULL,
   post_output = NULL
@@ -42,7 +42,7 @@ and preselected option for variable names that can be used as \code{PARAMCD} var
 \item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
 choices and preselected option for variable names that can be used for stratification}
 
-\item{avalc_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for analysis variable}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the

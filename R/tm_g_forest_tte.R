@@ -175,22 +175,30 @@ template_forest_tte <- function(anl_name = "ANL",
   )
 
   y$plot <- substitute(
-    plot <- g_forest(
-      tbl = result,
-      col_x = 6,
-      col_ci = 7,
-      vline = NULL,
-      forest_header = NULL,
-      xlim = NULL,
-      logx = FALSE,
-      x_at = NULL,
-      width_row_names = NULL,
-      width_columns = NULL,
-      width_forest = unit(1, "null"),
-      col_symbol_size = col_symbol_size,
-      draw = TRUE,
-      newpage = TRUE
-      ),
+    expr = {
+      p <- g_forest(
+        tbl = result,
+        col_x = 6,
+        col_ci = 7,
+        vline = NULL,
+        forest_header = NULL,
+        xlim = NULL,
+        logx = FALSE,
+        x_at = NULL,
+        width_row_names = NULL,
+        width_columns = NULL,
+        width_forest = unit(1, "null"),
+        col_symbol_size = col_symbol_size,
+        draw = TRUE,
+        newpage = TRUE
+        )
+      if (!is.null(footnotes(p))) {
+        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
+                           gp_footnotes = gpar(fontsize = 12))
+      }
+      grid::grid.newpage()
+      grid::grid.draw(p)
+    },
     env = list(col_symbol_size = col_symbol_size)
   )
 
@@ -269,52 +277,31 @@ tm_g_forest_tte <- function(label,
                             post_output = NULL) {
 
   stopifnot(
-    is.cs_or_des(arm_var),
-    is.cs_or_des(paramcd),
-    is.cs_or_des(subgroup_var),
-    is.cs_or_des(strata_var),
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parent_name),
     is.choices_selected(conf_level),
     is_logical_single(fixed_symbol_size)
     )
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 
-  # Convert choices-selected to data_extract_spec
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(subgroup_var)) {
-    subgroup_var <- cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(aval_var)) {
-    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(cnsr_var)) {
-    cnsr_var <- cs_to_des_select(cnsr_var, dataname = dataname, multiple = FALSE)
-  }
-
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm = arm_var,
-    paramcd = paramcd,
-    subgroup = subgroup_var,
-    strata = strata_var,
-    aval = aval_var,
-    cnsr = cnsr_var
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
   )
 
   module(
     label = label,
     server = srv_g_forest_tte,
     ui = ui_g_forest_tte,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
       list(
@@ -331,15 +318,22 @@ tm_g_forest_tte <- function(label,
 
 ui_g_forest_tte <- function(id, ...) {
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm, a$paramcd, a$subgroup, a$strata, a$aval, a$cnsr)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$subgroup_var,
+    a$strata_var,
+    a$aval_var,
+    a$cnsr_var
+    )
 
   ns <- NS(id)
-## UI ----
+
   standard_layout(
     output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "subgroup", "strata", "aval", "cnsr")]),
+      datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
       helpText("Analysis data:", code(a$dataname)),
       data_extract_input(
         id = ns("paramcd"),
@@ -350,19 +344,19 @@ ui_g_forest_tte <- function(id, ...) {
       data_extract_input(
         id = ns("aval_var"),
         label = "Analysis Variable",
-        data_extract_spec = a$aval,
+        data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("cnsr_var"),
         label = "Censor Variable",
-        data_extract_spec = a$cnsr,
+        data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("arm_var"),
         label = "Arm Variable",
-        data_extract_spec = a$arm,
+        data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       selectInput(
@@ -390,13 +384,13 @@ ui_g_forest_tte <- function(id, ...) {
       data_extract_input(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
-        data_extract_spec = a$subgroup,
+        data_extract_spec = a$subgroup_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("strata_var"),
         label = "Stratify by",
-        data_extract_spec = a$strata,
+        data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
       panel_group(
@@ -426,12 +420,12 @@ srv_g_forest_tte <- function(input,
                              datasets,
                              dataname,
                              parent_name,
-                             arm,
+                             arm_var,
                              paramcd,
-                             subgroup,
-                             strata,
-                             aval,
-                             cnsr,
+                             subgroup_var,
+                             strata_var,
+                             aval_var,
+                             cnsr_var,
                              plot_height,
                              plot_width) {
 
@@ -452,14 +446,14 @@ srv_g_forest_tte <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, paramcd, subgroup, strata, aval, cnsr),
+    data_extract = list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var),
     input_id = c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, subgroup, strata),
+    data_extract = list(arm_var, subgroup_var, strata_var),
     input_id = c("arm_var", "subgroup_var", "strata_var"),
     anl_name = "ANL_ADSL"
   )
@@ -474,13 +468,14 @@ srv_g_forest_tte <- function(input,
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
       arm_var = input_arm_var
     )
 
@@ -537,7 +532,7 @@ srv_g_forest_tte <- function(input,
   get_plot <- reactive({
     call_preparation()
     chunks_safe_eval()
-    chunks_get_var("plot")
+    chunks_get_var("p")
   })
 
   callModule(
@@ -552,7 +547,9 @@ srv_g_forest_tte <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var)
+      ),
     modal_title = "R Code for the Current Time-to-Event Forest Plot",
     code_header = "Time-to-Event Forest Plot"
   )

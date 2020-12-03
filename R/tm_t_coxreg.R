@@ -196,7 +196,10 @@ template_coxreg <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote(result <- build_table(lyt = lyt, df = df))
+  y$table <- quote({
+    result <- build_table(lyt = lyt, df = df)
+    result
+    })
 
   y
 }
@@ -676,13 +679,14 @@ srv_t_coxreg <- function(input,
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
       arm_var = input_arm_var
     )
 
@@ -768,7 +772,9 @@ srv_t_coxreg <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
+      ),
     modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
     code_header = label
   )

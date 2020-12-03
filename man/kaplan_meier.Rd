@@ -32,11 +32,11 @@ template_g_km(
   comp_arm = NULL,
   compare_arm = FALSE,
   combine_comp_arms = FALSE,
-  aval = "AVAL",
-  cnsr = "CNSR",
+  aval_var = "AVAL",
+  cnsr_var = "CNSR",
   strata_var = NULL,
   time_points = NULL,
-  facet = "SEX",
+  facet_var = "SEX",
   font_size = 8,
   conf_level = 0.95,
   ties = "efron",
@@ -109,7 +109,14 @@ for variable names that can be used \code{REFACTOR}}
 
 \item{font_size}{(\code{number}) \cr font size to be used.}
 
+\item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS),
+\code{efron} and \code{breslow}, see \code{\link[survival:coxph]{survival::coxph()}}.
+Note: there is no equivalent of SAS \code{EXACT} method in R.}
+
 \item{xlab}{(\code{string})\cr label of x-axis.}
+
+\item{pval_method}{(\code{string})\cr the method used for estimation of p.values;
+\code{wald} (default) or \code{likelihood}.}
 
 \item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table
 on the top right corner of the Kaplan-Meier curve estimating the

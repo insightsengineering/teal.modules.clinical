@@ -44,9 +44,10 @@ test_that("template_coxreg generates correct univariate cox regression expressio
         split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = df)
-    )
+      result
+    })
   )
   expect_equal(result, expected)
 })
@@ -90,9 +91,10 @@ test_that("template_coxreg generates correct multivariate cox regression express
         split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = df)
-    )
+      result
+    })
   )
   expect_equal(result, expected)
 })

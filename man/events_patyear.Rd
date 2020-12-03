@@ -10,6 +10,8 @@ template_events_patyear(
   dataname,
   parentname,
   arm_var,
+  aval_var = "AVAL",
+  cnsr_var = "CNSR",
   control = control_incidence_rate(),
   event_indicator = 0,
   add_total = TRUE
@@ -35,6 +37,12 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
 
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis.}
+
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for censor variable}
+
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
 \item{event_indicator}{(\code{numeric})\cr code for event as opposed to censoring.}
@@ -48,12 +56,6 @@ usually this refers to \code{"ADSL"}.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
-
-\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis.}
-
-\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for censor variable}
 }
 \description{
 Teal module: Event rates adjusted for patient-years

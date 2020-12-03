@@ -956,7 +956,6 @@ srv_mmrm <- function(input,
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -965,6 +964,7 @@ srv_mmrm <- function(input,
     input_visit_var <- as.vector(anl_m$columns_source$visit_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
     input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
@@ -981,7 +981,7 @@ srv_mmrm <- function(input,
     )
 
     adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
-    anlvars <- unique(c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_visit_var, all_x_vars_in_anl))
+    anlvars <- unique(c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_visit_var, all_x_vars_in_anl))
 
     validate_standard_inputs(
       adsl = adsl_filtered,
@@ -1241,7 +1241,7 @@ srv_mmrm <- function(input,
       module = get_rcode_srv,
       id = "rcode",
       datasets = datasets,
-      datanames = dataname,
+      datanames = get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
       modal_title = "R Code for the Current MMRM Analysis",
       code_header = label
     )

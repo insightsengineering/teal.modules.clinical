@@ -304,11 +304,25 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #'
 #' @return (\code{data_extract_spec})
 cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
-  stopifnot(
-    is.cs_or_des(cs),
+  cs_sub <- substitute(cs)
+  cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
+
+  stop_if_not(
+    list(
+      is.cs_or_des(cs),
+      paste(cs_name, "must be a choices selected object or a data extract spec")
+      ),
     is_character_single(dataname),
     is_logical_single(multiple)
     )
+  if (!multiple) {
+    stop_if_not(
+      list(
+        length(cs$selected) == 1 || is.null(cs$selected),
+        paste(cs_name, "must only have 1 selected value")
+      )
+    )
+  }
 
   if (is.choices_selected(cs)) {
     data_extract_spec(
@@ -326,11 +340,25 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #'
 #' @return (\code{data_extract_spec})
 cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
-  stopifnot(
-    is.cs_or_des(cs),
+  cs_sub <- substitute(cs)
+  cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
+
+  stop_if_not(
+    list(
+      is.cs_or_des(cs),
+      paste(cs_name, "must be a choices selected object or a data extract spec")
+    ),
     is_character_single(dataname),
     is_logical_single(multiple)
+  )
+  if (!multiple) {
+    stop_if_not(
+      list(
+        length(cs$selected) == 1 || is.null(cs$selected),
+        paste(cs_name, "must only have 1 selected value")
+      )
     )
+  }
 
   if (is.choices_selected(cs)) {
     data_extract_spec(

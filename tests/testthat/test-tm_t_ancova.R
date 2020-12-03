@@ -8,7 +8,9 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     combine_comp_arms = FALSE,
     aval_var = "CHG",
     cov_var = c("BASE", "STRATA1"),
-    paramcd = c("BFIALL", "FATIGI")
+    paramcd_levels = 2,
+    paramcd = "PARAMCD",
+    visit_var = "AVISIT"
   )
 
   expected <- list(
@@ -51,7 +53,9 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     combine_comp_arms = TRUE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd = c("BFIALL", "FATIGI")
+    paramcd_levels = 2,
+    paramcd = "PARAMCD",
+    visit_var = "AVISIT"
   )
 
   expected <- list(
@@ -96,7 +100,9 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd = c("BFIALL", "FATIGI")
+    paramcd_levels = 2,
+    paramcd = "PARAMCD",
+    visit_var = "AVISIT"
   )
 
   expected <- list(
@@ -140,7 +146,9 @@ test_that("template_ancova generates expressions with single endpoint", {
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd = "FKSI-FWB"
+    paramcd_levels = 1,
+    paramcd = "PARAMCD",
+    visit_var = "AVISIT"
   )
 
   expected <- list(

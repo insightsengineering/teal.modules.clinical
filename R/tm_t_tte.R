@@ -154,8 +154,8 @@ template_tte <- function(anl_name = "ANL",
 
   if (combine_comp_arms) {
     y$combine_arm <- substitute(
-      expr = groups <- combine_groups(fct = ANL[[group]], ref = ref_arm),
-      env = list(group = arm_var, ref_arm = arm_ref_comp)
+      expr = groups <- combine_groups(fct = anl[[group]], ref = ref_arm),
+      env = list(anl = as.name(anl_name), group = arm_var, ref_arm = arm_ref_comp)
     )
   }
 
@@ -450,52 +450,31 @@ tm_t_tte <- function(label,
                      time_unit = "months",
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      pre_output = NULL,
-                     post_output = NULL
-) {
+                     post_output = NULL) {
 
-  stopifnot(length(dataname) == 1)
-  stopifnot(is.cs_or_des(arm_var))
-  stopifnot(is.cs_or_des(paramcd))
-  stopifnot(is.cs_or_des(strata_var))
-  stopifnot(is.cs_or_des(event_desc_var))
-  stopifnot(is.choices_selected(time_points))
-
-  # Convert choices-selected to data_extract_spec
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(aval_var)) {
-    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(cnsr_var)) {
-    cnsr_var <- cs_to_des_select(cnsr_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(event_desc_var)) {
-    event_desc_var <- cs_to_des_select(event_desc_var, dataname = dataname, multiple = FALSE)
-  }
+  stopifnot(
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parent_name),
+    is.choices_selected(time_points)
+    )
 
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm = arm_var,
-    paramcd = paramcd,
-    aval = aval_var,
-    cnsr = cnsr_var,
-    strata = strata_var,
-    event_desc = event_desc_var
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
+    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE),
+    event_desc_var = cs_to_des_select(event_desc_var, dataname = dataname)
   )
 
   module(
     label = label,
     server = srv_t_tte,
     ui = ui_t_tte,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
       list(
@@ -503,7 +482,6 @@ tm_t_tte <- function(label,
         parent_name = parent_name,
         arm_ref_comp = arm_ref_comp,
         time_unit = time_unit,
-        event_desc_var = event_desc_var,
         label = label
       )
     ),
@@ -515,7 +493,14 @@ tm_t_tte <- function(label,
 ui_t_tte <- function(id, ...) {
 
   a <- list(...) # module args
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval, a$cnsr, a$strata, a$event_desc_var)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$aval_var,
+    a$cnsr_var,
+    a$strata_var,
+    a$event_desc_var
+    )
 
   ns <- NS(id)
 
@@ -523,7 +508,7 @@ ui_t_tte <- function(id, ...) {
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "aval", "cnsr", "strata", "event_desc_var")]),
+      datanames_input(a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -531,15 +516,15 @@ ui_t_tte <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("aval"),
+        id = ns("aval_var"),
         label = "Analysis Variable",
-        data_extract_spec = a$aval,
+        data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("cnsr"),
+        id = ns("cnsr_var"),
         label = "Censor Variable",
-        data_extract_spec = a$cnsr,
+        data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
@@ -582,7 +567,7 @@ ui_t_tte <- function(id, ...) {
             data_extract_input(
               id = ns("strata_var"),
               label = "Stratify by",
-              data_extract_spec = a$strata,
+              data_extract_spec = a$strata_var,
               is_single_dataset = is_single_dataset_value
             )
           )
@@ -596,7 +581,7 @@ ui_t_tte <- function(id, ...) {
                           fixed = a$time_points$fixed
       ),
       data_extract_input(
-        id = ns("event_desc"),
+        id = ns("event_desc_var"),
         label = "Event Description Variable",
         data_extract_spec = a$event_desc_var,
         is_single_dataset = is_single_dataset_value
@@ -694,17 +679,16 @@ srv_t_tte <- function(input,
                       output,
                       session,
                       datasets,
-                      arm,
+                      arm_var,
                       paramcd,
-                      aval,
-                      cnsr,
-                      strata,
-                      event_desc,
+                      aval_var,
+                      cnsr_var,
+                      strata_var,
+                      event_desc_var,
                       dataname,
                       parent_name,
                       arm_ref_comp,
                       time_unit,
-                      event_desc_var,
                       label) {
 
   init_chunks()
@@ -725,14 +709,14 @@ srv_t_tte <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, paramcd, aval, cnsr, strata, event_desc),
-    input_id = c("arm_var", "paramcd", "aval", "cnsr", "strata_var", "event_desc"),
+    data_extract = list(arm_var, paramcd, aval_var, cnsr_var, strata_var, event_desc_var),
+    input_id = c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, strata),
+    data_extract = list(arm_var, strata_var),
     input_id = c("arm_var", "strata_var"),
     anl_name = "ANL_ADSL"
   )
@@ -747,16 +731,17 @@ srv_t_tte <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
-    input_event_desc <- as.vector(anl_m$columns_source$event_desc)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+    input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var, input_event_desc),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_event_desc),
       arm_var = input_arm_var
     )
 
@@ -802,12 +787,12 @@ srv_t_tte <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval = as.vector(anl_m$columns_source$aval),
-      cnsr = as.vector(anl_m$columns_source$cnsr),
+      aval = as.vector(anl_m$columns_source$aval_var),
+      cnsr = as.vector(anl_m$columns_source$cnsr_var),
       strata_var = as.vector(anl_m$columns_source$strata_var),
       time_points = as.numeric(input$time_points),
       time_unit = time_unit,
-      event_desc_var = as.vector(anl_m$columns_source$event_desc),
+      event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
       control = control_tte(
         coxph = control_coxph(
           pval_method = input$pval_method_coxph,
@@ -838,7 +823,9 @@ srv_t_tte <- function(input,
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm, paramcd, strata, event_desc)),
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, strata_var, event_desc_var)
+      ),
     modal_title = label
   )
 

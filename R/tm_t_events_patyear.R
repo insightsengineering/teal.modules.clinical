@@ -14,6 +14,8 @@ NULL
 template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
+                                    aval_var = "AVAL",
+                                    cnsr_var = "CNSR",
                                     control = control_incidence_rate(),
                                     event_indicator = 0,
                                     add_total = TRUE
@@ -25,9 +27,10 @@ template_events_patyear <- function(dataname,
   # data
   y$data <- substitute(
     expr = anl <- df %>%
-      mutate(is_event = CNSR == event_indicator),
+      mutate(is_event = cnsr_var == event_indicator),
     env = list(
       df = as.name(dataname),
+      cnsr_var = as.name(cnsr_var),
       event_indicator = event_indicator
     )
   )
@@ -55,7 +58,7 @@ template_events_patyear <- function(dataname,
     layout_list,
     substitute(
       expr = estimate_incidence_rate(
-        vars = "AVAL",
+        vars = aval_var,
         is_event = "is_event",
         control = control_incidence_rate(
           conf_level = conf_level,
@@ -64,6 +67,7 @@ template_events_patyear <- function(dataname,
         )
       ),
       env = list(
+        aval_var = aval_var,
         conf_level = control$conf_level,
         conf_type = control$conf_type,
         time_unit = control$time_unit
@@ -290,13 +294,14 @@ srv_events_patyear <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_cnsr_var),
       arm_var = input_arm_var
     )
   })
@@ -318,6 +323,8 @@ srv_events_patyear <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       control = control_incidence_rate(
         conf_level = as.numeric(input$conf_level), # nolint
         conf_type = if (input$conf_method == "Normal approximation") {
@@ -349,7 +356,9 @@ srv_events_patyear <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, aval_var, cnsr_var)
+    ),
     modal_title = "Event Rate adjusted for patient-year at risk",
     code_header = label
   )

@@ -13,7 +13,7 @@ tm_t_ancova(
   arm_ref_comp = NULL,
   aval_var,
   cov_var,
-  avisit,
+  visit_var,
   paramcd,
   pre_output = NULL,
   post_output = NULL
@@ -43,8 +43,8 @@ name of the variable for the analysis.}
 \item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for covariates.}
 
-\item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
-value of analysis visit \code{AVISIT} of interest.}
+\item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
+for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
@@ -109,7 +109,7 @@ app <- init(
     tm_t_ancova(
       label = "ANCOVA table",
       dataname = "ADQS",
-      avisit = choices_selected(
+      visit_var = choices_selected(
         choices = value_choices(adqs, "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),

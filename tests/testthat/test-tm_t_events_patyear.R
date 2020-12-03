@@ -3,6 +3,8 @@ test_that("template_events_patyear generates standard expressions", {
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
+    cnsr_var = "CNSR",
+    aval_var = "AVAL",
     control = control_incidence_rate(),
     event_indicator = 0,
     add_total = TRUE
@@ -45,6 +47,8 @@ test_that("template_events_patyear generates right expressions with non-default"
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARM",
+    cnsr_var = "CNSR",
+    aval_var = "AVAL",
     control = control_incidence_rate(),
     event_indicator = 0,
     add_total = FALSE
@@ -86,6 +90,8 @@ test_that("template_events_patyear generates right expressions with non-default 
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
+    cnsr_var = "CNSR",
+    aval_var = "AVAL",
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",

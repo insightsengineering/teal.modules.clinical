@@ -456,6 +456,7 @@ srv_summary_by <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_by_vars <- as.vector(anl_m$columns_source$by_vars)
     input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     validate(
       need(input_arm_var, "Please select an arm variable"),
@@ -467,7 +468,7 @@ srv_summary_by <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_by_vars, input_summarize_vars),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars),
       arm_var = input_arm_var,
       min_nrow = 1
     )
@@ -523,7 +524,9 @@ srv_summary_by <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, by_vars, summarize_vars)
+      ),
     modal_title = "Summary by Row Groups Table",
     code_header = label
   )

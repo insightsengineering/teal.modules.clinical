@@ -8,6 +8,7 @@ template_rsp(
   dataname,
   parentname,
   arm_var,
+  aval_var = "AVALC",
   ref_arm,
   comp_arm,
   compare_arm = TRUE,
@@ -27,6 +28,9 @@ usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
+
+\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+name of the variable for the analysis.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}

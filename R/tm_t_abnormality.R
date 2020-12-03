@@ -430,7 +430,9 @@ srv_t_abnormality <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(
+      list(arm_var, id_var, by_vars, grade, visit_var)
+      ),
     modal_title = "R Code for Abnormality Table",
     code_header = label
   )

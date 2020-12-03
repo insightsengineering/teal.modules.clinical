@@ -8,7 +8,7 @@
 #' @inheritParams argument_convention
 #' @inheritParams tern::g_km
 #' @inheritParams tm_t_tte
-#' @inheritParams shared_params
+#' @inheritParams tern::control_coxreg
 #' @param facet_var ([choices_selected()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
@@ -27,11 +27,11 @@ template_g_km <- function(anl_name = "ANL",
                           comp_arm = NULL,
                           compare_arm = FALSE,
                           combine_comp_arms = FALSE,
-                          aval = "AVAL",
-                          cnsr = "CNSR",
+                          aval_var = "AVAL",
+                          cnsr_var = "CNSR",
                           strata_var = NULL,
                           time_points = NULL,
-                          facet = "SEX",
+                          facet_var = "SEX",
                           font_size = 8,
                           conf_level = 0.95,
                           ties = "efron",
@@ -48,11 +48,11 @@ template_g_km <- function(anl_name = "ANL",
     substitute(
       expr = anl %>%
         mutate(
-          is_event = cnsr == 0
+          is_event = cnsr_var == 0
         ),
       env = list(
         anl = as.name(anl_name),
-        cnsr = as.name(cnsr)
+        cnsr_var = as.name(cnsr_var)
       )
     )
   )
@@ -96,17 +96,17 @@ template_g_km <- function(anl_name = "ANL",
   y$variables <- if (!is.null(strata_var) && length(strata_var) != 0) {
     substitute(
       expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
-      env = list(tte = aval, arm = arm_var, strata_var = strata_var)
+      env = list(tte = aval_var, arm = arm_var, strata_var = strata_var)
     )
   } else {
     substitute(
       expr = variables <- list(tte = tte, is_event = "is_event", arm = arm),
-      env = list(tte = aval, arm = arm_var)
+      env = list(tte = aval_var, arm = arm_var)
     )
   }
   graph_list <- list()
 
-  if (!is.null(facet) && length(facet) != 0) {
+  if (!is.null(facet_var) && length(facet_var) != 0) {
     graph_list <- add_expr(
       graph_list,
       quote(grid::grid.newpage())
@@ -114,12 +114,12 @@ template_g_km <- function(anl_name = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = lyt <- grid::grid.layout(nrow = nlevels(df$facet), ncol = 1) %>%
+        expr = lyt <- grid::grid.layout(nrow = nlevels(df$facet_var), ncol = 1) %>%
           grid::viewport(layout = .) %>%
           grid::pushViewport(),
         env = list(
           df = as.name(anl_name),
-          facet = as.name(facet)
+          facet_var = as.name(facet_var)
         )
       )
     )
@@ -128,7 +128,7 @@ template_g_km <- function(anl_name = "ANL",
       graph_list,
       substitute(
         expr = result <- mapply(
-          df = split(df, f = df$facet), nrow = seq_along(levels(df$facet)),
+          df = split(df, f = df$facet_var), nrow = seq_along(levels(df$facet_var)),
           FUN = function(df_i, nrow_i) {
             g_km(
               df = df_i,
@@ -148,7 +148,7 @@ template_g_km <- function(anl_name = "ANL",
         env = list(
           df = as.name(anl_name),
           font_size = font_size,
-          facet = as.name(facet),
+          facet_var = as.name(facet_var),
           xlab = xlab,
           conf_level = conf_level,
           pval_method = pval_method,
@@ -265,52 +265,30 @@ tm_g_km <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
-
   stopifnot(
-    is.cs_or_des(arm_var),
-    is.cs_or_des(paramcd),
-    is.cs_or_des(facet_var),
-    is.cs_or_des(strata_var)
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parent_name)
   )
 
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 
-  # Convert choices-selected to data_extract_spec
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parent_name, multiple = FALSE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(facet_var)) {
-    facet_var <- cs_to_des_select(facet_var, dataname = parent_name, multiple = TRUE)
-  }
-  if (is.choices_selected(aval_var)) {
-    aval_var <- cs_to_des_select(aval_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(cnsr_var)) {
-    cnsr_var <- cs_to_des_select(cnsr_var, dataname = dataname, multiple = FALSE)
-  }
-
   args <- as.list(environment())
   data_extract_list <- list(
-    arm = arm_var,
-    paramcd = paramcd,
-    strata = strata_var,
-    facet = facet_var,
-    aval = aval_var,
-    cnsr = cnsr_var
+    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE),
+    facet_var = cs_to_des_select(facet_var, dataname = parent_name, multiple = TRUE),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
   )
 
   module(
     label = label,
     server = srv_g_km,
     ui = ui_g_km,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
       list(
@@ -334,8 +312,12 @@ ui_g_km <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    a$arm_var, a$param_cd, a$strata_var, a$facet_var,
-    a$aval_var, a$cnsr_var
+    a$arm_var,
+    a$paramcd,
+    a$strata_var,
+    a$facet_var,
+    a$aval_var,
+    a$cnsr_var
   )
 
   ns <- NS(id)
@@ -349,14 +331,7 @@ ui_g_km <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(
-        a[
-          c(
-            "arm_var", "paramcd", "strata_var", "facet_var",
-            "aval_var", "cnsr_var"
-          )
-          ]
-      ),
+      datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -364,19 +339,19 @@ ui_g_km <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("aval"),
+        id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("cnsr"),
+        id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("facet"),
+        id = ns("facet_var"),
         label = "Facet Plots by",
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
@@ -508,12 +483,12 @@ srv_g_km <- function(input,
                      dataname,
                      parent_name,
                      paramcd,
-                     arm,
+                     arm_var,
                      arm_ref_comp,
-                     strata,
-                     facet,
-                     aval,
-                     cnsr,
+                     strata_var,
+                     facet_var,
+                     aval_var,
+                     cnsr_var,
                      label,
                      plot_height,
                      plot_width) {
@@ -535,8 +510,8 @@ srv_g_km <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(aval, cnsr, arm, paramcd, strata, facet),
-    input_id = c("aval", "cnsr", "arm_var", "paramcd", "strata_var", "facet"),
+    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var),
+    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -551,13 +526,14 @@ srv_g_km <- function(input,
     input_facet_var <- as.vector(anl_m$columns_source$facet)
     input_aval_var <- as.vector(anl_m$columns_source$aval)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_aval_var, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
       arm_var = input_arm_var
     )
 
@@ -580,11 +556,15 @@ srv_g_km <- function(input,
 
   call_preparation <- reactive({
     validate_checks()
+
     chunks_reset()
     anl_m <- anl_merged()
     chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
+
     my_calls <- template_g_km(
       anl_name = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
@@ -592,11 +572,11 @@ srv_g_km <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval = as.vector(anl_m$columns_source$aval),
-      cnsr = as.vector(anl_m$columns_source$cnsr),
+      aval_var = as.vector(anl_m$columns_source$aval),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr),
       strata_var = as.vector(anl_m$columns_source$strata),
       time_points = NULL,
-      facet = as.vector(anl_m$columns_source$facet),
+      facet_var = as.vector(anl_m$columns_source$facet),
       annot_surv_med = input$show_km_table,
       annot_coxph = input$compare_arms,
       font_size = input$font_size,
@@ -626,8 +606,9 @@ srv_g_km <- function(input,
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm, paramcd, strata)),
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var)
+      ),
     modal_title = label
   )
-
 }

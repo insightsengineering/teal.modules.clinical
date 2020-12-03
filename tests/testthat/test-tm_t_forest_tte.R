@@ -56,8 +56,8 @@ test_that("template_forest_tte generates correct expressions", {
     table = quote(
       result <- cbind_rtables(tbl_hr[, 1], tbl_survtime, tbl_hr[, 2:3])
     ),
-    plot = quote(
-      plot <- g_forest(
+    plot = quote({
+      p <- g_forest(
         tbl = result,
         col_x = 6,
         col_ci = 7,
@@ -73,7 +73,13 @@ test_that("template_forest_tte generates correct expressions", {
         draw = TRUE,
         newpage = TRUE
         )
-      )
+      if (!is.null(footnotes(p))) {
+        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
+                           gp_footnotes = gpar(fontsize = 12))
+      }
+      grid::grid.newpage()
+      grid::grid.draw(p)
+      })
     )
   expect_equal(result, expected)
 })

@@ -61,59 +61,32 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                avalc_var = choices_selected(
+                                aval_var = choices_selected(
                                   variable_choices(dataname, "AVALC"),
                                   "AVALC", fixed = TRUE
                                 ),
                                 pre_output = NULL,
-                                post_output = NULL
-) {
+                                post_output = NULL) {
 
   stopifnot(
-    length(dataname) == 1,
-    length(parentname) == 1,
-    is.cs_or_des(arm_var),
-    is.cs_or_des(paramcd),
-    is.cs_or_des(avalc_var),
-    is.cs_or_des(strata_var)
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parentname)
   )
-
-  # Convert choices-selected to data_extract_spec
-  if (is.choices_selected(arm_var)) {
-    arm_var <- cs_to_des_select(arm_var, dataname = parentname, multiple = FALSE)
-  }
-  if (is.choices_selected(paramcd)) {
-    paramcd <- cs_to_des_filter(paramcd, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(avalc_var)) {
-    avalc_var <- cs_to_des_select(avalc_var, dataname = dataname, multiple = FALSE)
-  }
-  if (is.choices_selected(strata_var)) {
-    strata_var <- cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
-  }
-  stop_if_not(
-    list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-  ))
 
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm = arm_var,
-    paramcd = paramcd,
-    avalc = avalc_var,
-    strata = strata_var
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
   module(
     label = label,
     ui = ui_t_binary_outcome,
-    ui_args = args,
+    ui_args = c(data_extract_list, args),
     server = srv_t_binary_outcome,
     server_args = c(
       data_extract_list,
@@ -129,16 +102,21 @@ tm_t_binary_outcome <- function(label,
 }
 
 ui_t_binary_outcome <- function(id, ...) {
+
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    a$paramcd, a$arm_var, a$avalc_var, a$strata_var
+    a$paramcd,
+    a$arm_var,
+    a$avalc_var,
+    a$strata_var
   )
+
   ns <- NS(id)
   standard_layout(
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("paramcd")]),
+      datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
       data_extract_input(
         id = ns("paramcd"),
         label = "Parameter",
@@ -290,9 +268,9 @@ ui_t_binary_outcome <- function(id, ...) {
         )
       ),
       data_extract_input(
-        id = ns("avalc"),
+        id = ns("aval_var"),
         label = "Analysis Variable",
-        data_extract_spec = a$avalc_var,
+        data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       )
     ),
@@ -310,10 +288,10 @@ srv_t_binary_outcome <- function(input,
                                  dataname,
                                  parentname,
                                  paramcd,
-                                 avalc,
-                                 arm,
+                                 aval_var,
+                                 arm_var,
                                  arm_ref_comp,
-                                 strata,
+                                 strata_var,
                                  label) {
   init_chunks()
 
@@ -321,8 +299,8 @@ srv_t_binary_outcome <- function(input,
   # comparison arms for encoding panel
   arm_ref_comp_observer(
     session, input,
-    id_ref = "ref_arm", # from UI
-    id_comp = "comp_arm", # from UI
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
@@ -332,22 +310,22 @@ srv_t_binary_outcome <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, paramcd, strata, avalc),
-    input_id = c("arm_var", "paramcd", "strata_var", "avalc"),
+    data_extract = list(arm_var, paramcd, strata_var, aval_var),
+    input_id = c("arm_var", "paramcd", "strata_var", "aval_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm, strata),
+    data_extract = list(arm_var, strata_var),
     input_id = c("arm_var", "strata_var"),
     anl_name = "ANL_ADSL"
   )
 
   # Because the AVALC values depends on the selected PARAMCD.
   observe({
-    avalc_var <- anl_merged()$columns_source$avalc
-    responder_choices <- unique(anl_merged()$data()[[avalc_var]])
+    aval_var <- anl_merged()$columns_source$aval_var
+    responder_choices <- unique(anl_merged()$data()[[aval_var]])
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
@@ -362,13 +340,14 @@ srv_t_binary_outcome <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
 
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", "PARAMCD", input_avalc_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
       arm_var = input_arm_var
     )
 
@@ -406,6 +385,7 @@ srv_t_binary_outcome <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
       compare_arm = input$compare_arms,
       combine_arm = input$combine_comp_arms,
       ref_arm = input$ref_arm,
@@ -436,11 +416,16 @@ srv_t_binary_outcome <- function(input,
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  # Render R code.
   callModule(
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm, paramcd, avalc, strata)),
-    modal_title = label
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, aval_var, strata_var)
+      ),
+    modal_title = "Binary Outcome",
+    code_header = label
   )
 }
