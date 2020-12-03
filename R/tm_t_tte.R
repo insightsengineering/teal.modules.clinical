@@ -61,6 +61,17 @@ template_tte <- function(anl_name = "ANL",
                          time_unit = "Days",
                          event_desc_var = "EVNTDESC",
                          control = control_tte()) {
+  assert_that(
+    is.string(anl_name),
+    is.string(parent_name),
+    is.string(arm_var),
+    is.string(aval),
+    is.string(cnsr),
+    is.string(time_unit),
+    is.string(event_desc_var),
+    is.flag(compare_arm),
+    is.flag(combine_comp_arms)
+  )
 
   y <- list()
 
@@ -188,7 +199,7 @@ template_tte <- function(anl_name = "ANL",
     substitute(
       expr = surv_time(
         vars = aval,
-        var_labels = "Time to Event (Months)",
+        var_labels = paste0("Time to Event (", time_unit, ")"),
         is_event = "is_event",
         control = list(
           conf_level = conf_level,
@@ -198,7 +209,8 @@ template_tte <- function(anl_name = "ANL",
       ),
       env = c(
         aval = aval,
-        control$surv_time
+        control$surv_time,
+        time_unit = time_unit
       )
     )
   )
@@ -232,7 +244,7 @@ template_tte <- function(anl_name = "ANL",
         expr = coxph_pairwise(
           vars = aval,
           is_event = "is_event",
-          var_labels = c("Stratified Analysis"),
+          var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),
           strat = strata_var,
           control = control_coxph(
             pval_method = pval_method,
@@ -253,6 +265,14 @@ template_tte <- function(anl_name = "ANL",
 
   if (!is.null(time_points)) {
     method <- ifelse(compare_arm, "both", "surv")
+    indents <- if (compare_arm) {
+      c(
+        "pt_at_risk" = 0L, "event_free_rate" = 0L, "rate_ci" = 0L,
+        "rate_diff" = 1L, "rate_diff_ci" = 1L, "ztest_pval" = 1L
+      )
+    } else {
+      NULL
+    }
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -265,12 +285,14 @@ template_tte <- function(anl_name = "ANL",
           control = control_surv_timepoint(
             conf_level = conf_level,
             conf_type = conf_type
-          )
+          ),
+          .indent_mods = indents
         ),
         env = list(
           aval = aval,
           time_points = time_points,
           method = method,
+          indents = indents,
           time_unit = time_unit,
           conf_level = control$surv_timepoint$conf_level,
           conf_type = control$surv_timepoint$conf_type
@@ -784,7 +806,7 @@ srv_t_tte <- function(input,
       cnsr = as.vector(anl_m$columns_source$cnsr),
       strata_var = as.vector(anl_m$columns_source$strata_var),
       time_points = as.numeric(input$time_points),
-      time_unit = "Days",
+      time_unit = time_unit,
       event_desc_var = as.vector(anl_m$columns_source$event_desc),
       control = control_tte(
         coxph = control_coxph(
