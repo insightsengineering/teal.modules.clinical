@@ -480,7 +480,7 @@ extract_input <- function(varname, dataname) {
 #'  term by.
 #'
 split_interactions <- function(x, by = "\\*|:") {
-  if (length(x >= 1)) {
+  if (length(x) >= 1) {
     unique(unlist(strsplit(x, split = by)))
   } else {
     NULL
