@@ -18,7 +18,7 @@ tm_g_forest_rsp(
   strata_var,
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
-  plot_width = c(980L, 500L, 2000L),
+  plot_width = NULL,
   pre_output = NULL,
   post_output = NULL
 )

@@ -15,8 +15,6 @@ template_g_ci(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
-
 \item{x_var}{(\code{string})\cr treatment variable corresponding to the x axis.}
 
 \item{y_var}{(\code{string})\cr response variable corresponding to the y axis.}
@@ -25,9 +23,6 @@ template_g_ci(
 point shape and line type.}
 
 \item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
-
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
 
 \item{unit_var}{(\code{string})\cr variable name in \code{dataname} where the unit is
 read.}

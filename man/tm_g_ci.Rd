@@ -2,9 +2,19 @@
 % Please edit documentation in R/tm_g_ci.R
 \name{tm_g_ci}
 \alias{tm_g_ci}
-\title{Teal Module: Confidence Interval Plot (\code{CIG01})}
+\title{Confidence Interval Plot teal module}
 \usage{
-tm_g_ci(label, x_var, y_var, color, stat = c("mean", "median"))
+tm_g_ci(
+  label,
+  x_var,
+  y_var,
+  color,
+  stat = c("mean", "median"),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL
+)
 }
 \arguments{
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
@@ -18,7 +28,16 @@ tm_g_ci(label, x_var, y_var, color, stat = c("mean", "median"))
 \item{color}{(\code{data_extract_spec})\cr the group variable (color, line type
 and point shape).}
 
-\item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
+\item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+
+\item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 The module generates the R code and returns the corresponding output.

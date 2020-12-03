@@ -91,6 +91,16 @@ tm_t_binary_outcome <- function(label,
   if (is.choices_selected(strata_var)) {
     strata_var <- cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   }
+  stop_if_not(
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    ),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+  ))
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -125,10 +135,7 @@ ui_t_binary_outcome <- function(id, ...) {
   )
   ns <- NS(id)
   standard_layout(
-    output = white_small_well(
-      verbatimTextOutput(ns("text")),
-      uiOutput(ns("as_html"))
-    ),
+    output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("paramcd")]),
@@ -289,11 +296,7 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = actionButton(
-      ns("show_rcode"),
-      "Show R Code",
-      width = "100%"
-    ),
+    forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -433,11 +436,11 @@ srv_t_binary_outcome <- function(input,
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
-  # Render R code.
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "Response",
-      rcode = get_rcode(datasets = datasets, title = label)
-    )
-  })
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(arm, paramcd, avalc, strata)),
+    modal_title = label
+  )
 }

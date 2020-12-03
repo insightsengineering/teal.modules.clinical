@@ -1,14 +1,16 @@
-library(teal.devel)
-library(dplyr)
-library(ggplot2)
-
+#' Confidence Interval Plot teal module
+#'
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
+#' @name tm_g_ci
+#'
+NULL
 
 #' Template: Confidence Interval Plot
 #'
 #' Writes the expressions to filter data and draw confidence interval
 #' estimation.
 #'
-#' @inheritParams argument_convention
 #' @param x_var (`string`)\cr treatment variable corresponding to the x axis.
 #' @param y_var (`string`)\cr response variable corresponding to the y axis.
 #' @param grp_var (`string`)\cr group variable corresponding to the colors
@@ -159,7 +161,7 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
   args <- list(...)
 
   standard_layout(
-    output = plotOutput(ns("plot")),
+    output = plot_with_settings_ui(id = ns("myplot"), height = args$plot_height, width = args$plot_width),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x_var", "y_var", "color")]),
@@ -194,7 +196,9 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
         selected = args$stat
       )
     ),
-    forms = actionButton(ns("show_rcode"), "Show R Code", width = "100%")
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = args$pre_output,
+    post_output = args$post_output
   )
 }
 
@@ -204,7 +208,10 @@ srv_g_ci <- function(input, # nousage # nolint
                      datasets,
                      x_var,
                      y_var,
-                     color) {
+                     color,
+                     label,
+                     plot_height,
+                     plot_width) {
   init_chunks()
 
   merged_data <- data_merge_module(
@@ -252,30 +259,33 @@ srv_g_ci <- function(input, # nousage # nolint
     chunks_push(list_calls())
   })
 
-  output$plot <- renderPlot({
+  plot_r <- reactive({
     eval_call()
     chunks_safe_eval()
     chunks_get_var("gg")
   })
 
-  # Show the R code when user clicks show_rcode
-  observeEvent(input$show_rcode, {
-    show_rcode_modal(
-      title = "R code for custom plot",
-      rcode = get_rcode(
-        datasets = datasets,
-        title = "R code for custom plot"
-      )
-    )
-  })
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(x_var, y_var, color)),
+    modal_title = label
+  )
+
+  callModule(
+    plot_with_settings_srv,
+    id = "myplot",
+    plot_r = plot_r,
+    height = plot_height,
+    width = plot_width
+  )
 }
 
 #' Teal Module: Confidence Interval Plot (`CIG01`)
 #'
 #' The module generates the R code and returns the corresponding output.
 #'
-#' @inheritParams template_g_ci
-#' @inheritParams argument_convention
 #' @param x_var (`data_extract_spec`)\cr the candidate treatment variable
 #'   (x axis).
 #' @param y_var (`data_extract_spec`)\cr the candidate analyzed variable
@@ -363,13 +373,29 @@ tm_g_ci <- function(label,
                     x_var,
                     y_var,
                     color,
-                    stat = c("mean", "median")) {
+                    stat = c("mean", "median"),
+                    plot_height = c(700L, 200L, 2000L),
+                    plot_width = NULL,
+                    pre_output = NULL,
+                    post_output = NULL) {
 
   stat <- match.arg(stat)
   stopifnot(
     is.character(label),
     is_class_list("data_extract_spec")(list(y_var, x_var, color))
   )
+  stop_if_not(
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    ),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+  ))
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
+
   args <- as.list(environment())
 
   module(
@@ -378,7 +404,10 @@ tm_g_ci <- function(label,
     server_args = list(
       x_var = x_var,
       y_var = y_var,
-      color = color
+      color = color,
+      label = label,
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     ui = ui_g_ci,
     ui_args = args,
