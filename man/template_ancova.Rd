@@ -5,8 +5,8 @@
 \title{Template for ANCOVA summary}
 \usage{
 template_ancova(
-  anl_name = "ANL",
-  parent_name = "ADSL_FILTERED",
+  dataname = "ANL",
+  parentname = "ADSL_FILTERED",
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
@@ -14,7 +14,7 @@ template_ancova(
   aval_var,
   cov_var,
   paramcd_levels = 1,
-  paramcd = "PARAMCD",
+  paramcd_var = "PARAMCD",
   visit_var = "AVISIT",
   conf_level = 0.95
 )

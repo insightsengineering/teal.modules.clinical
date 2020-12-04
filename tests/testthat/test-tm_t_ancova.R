@@ -1,7 +1,7 @@
 test_that("template_ancova generates expressions with multiple endpoints", {
   result <- template_ancova(
-    anl_name = "adqs",
-    parent_name = "adsl",
+    dataname = "adqs",
+    parentname = "adsl",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
@@ -9,20 +9,19 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     aval_var = "CHG",
     cov_var = c("BASE", "STRATA1"),
     paramcd_levels = 2,
-    paramcd = "PARAMCD",
+    paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
-
   expected <- list(
     data = quote({
       adqs <- adqs %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels()
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels()
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -35,9 +34,10 @@ test_that("template_ancova generates expressions with multiple endpoints", {
           conf_level = 0.95, var_labels = "Adjusted mean", show_labels = "hidden"
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-    )
+      result
+    })
   )
 
   expect_equal(result, expected)
@@ -45,8 +45,8 @@ test_that("template_ancova generates expressions with multiple endpoints", {
 
 test_that("template_ancova generates expressions with multiple endpoints with combined comparison arms", {
   result <- template_ancova(
-    parent_name = "adsl",
-    anl_name = "adqs",
+    parentname = "adsl",
+    dataname = "adqs",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
@@ -54,21 +54,20 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
     paramcd_levels = 2,
-    paramcd = "PARAMCD",
+    paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
-
   expected <- list(
     data = quote({
       adqs <- adqs %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels() %>%
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels() %>%
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
     }),
     layout = quote(
@@ -82,9 +81,10 @@ test_that("template_ancova generates expressions with multiple endpoints with co
           conf_level = 0.95, var_labels = "Adjusted mean", show_labels = "hidden"
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-    )
+      result
+    })
   )
 
   expect_equal(result, expected)
@@ -92,8 +92,8 @@ test_that("template_ancova generates expressions with multiple endpoints with co
 
 test_that("template_ancova generates expressions with multiple endpoints with combined reference arms", {
   result <- template_ancova(
-    parent_name = "adsl",
-    anl_name = "adqs",
+    parentname = "adsl",
+    dataname = "adqs",
     arm_var = "ARMCD",
     ref_arm = c("ARM B", "ARM C"),
     comp_arm = "ARM A",
@@ -101,7 +101,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
     paramcd_levels = 2,
-    paramcd = "PARAMCD",
+    paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
 
@@ -109,12 +109,14 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     data = quote({
       adqs <- adqs %>%
         filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
-        droplevels() %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C"))
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
+        droplevels()
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
-        droplevels() %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C"))
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
+        droplevels()
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -127,19 +129,19 @@ test_that("template_ancova generates expressions with multiple endpoints with co
           conf_level = 0.95, var_labels = "Adjusted mean", show_labels = "hidden"
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-    )
+      result
+    })
   )
 
   expect_equal(result, expected)
 })
 
-
 test_that("template_ancova generates expressions with single endpoint", {
   result <- template_ancova(
-    parent_name = "adsl",
-    anl_name = "adqs",
+    parentname = "adsl",
+    dataname = "adqs",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
@@ -147,7 +149,7 @@ test_that("template_ancova generates expressions with single endpoint", {
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
     paramcd_levels = 1,
-    paramcd = "PARAMCD",
+    paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
 
@@ -155,12 +157,12 @@ test_that("template_ancova generates expressions with single endpoint", {
     data = quote({
       adqs <- adqs %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels()
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        droplevels() %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A"))
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        droplevels()
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -181,9 +183,10 @@ test_that("template_ancova generates expressions with single endpoint", {
           )
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-    )
+      result
+    })
   )
 
   expect_equal(result, expected)

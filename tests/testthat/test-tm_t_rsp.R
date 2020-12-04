@@ -56,7 +56,7 @@ test_that("template_rsp generates standard expressions", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -106,7 +106,7 @@ test_that("template_rsp generates right expressions with non-default", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -149,7 +149,7 @@ test_that("template_rsp generates expression without arm comparison", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -217,7 +217,7 @@ test_that("template_rsp generates expression with non-default controls.", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -276,7 +276,7 @@ test_that("template_rsp can combine arms", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -356,7 +356,7 @@ test_that("template_rsp generates standard expressions", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -405,7 +405,7 @@ test_that("template_rsp generates right expressions with non-default", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -447,7 +447,7 @@ test_that("template_rsp generates expression without arm comparison", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -514,7 +514,7 @@ test_that("template_rsp generates expression with non-default controls.", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 
@@ -569,7 +569,7 @@ test_that("template_rsp can combine refs", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     })
   )
 

@@ -11,8 +11,8 @@ NULL
 #'
 #' Creates a valid expression for analysis of variance summary table.
 #'
-template_ancova <- function(anl_name = "ANL",
-                            parent_name = "ADSL_FILTERED",
+template_ancova <- function(dataname = "ANL",
+                            parentname = "ADSL_FILTERED",
                             arm_var,
                             ref_arm = NULL,
                             comp_arm = NULL,
@@ -20,14 +20,14 @@ template_ancova <- function(anl_name = "ANL",
                             aval_var,
                             cov_var,
                             paramcd_levels = 1,
-                            paramcd = "PARAMCD",
+                            paramcd_var = "PARAMCD",
                             visit_var = "AVISIT",
                             conf_level = 0.95
 ) {
 
   assert_that(
-    is.string(anl_name),
-    is.string(parent_name),
+    is.string(dataname),
+    is.string(parentname),
     is.string(arm_var),
     is.flag(combine_comp_arms),
     is.string(aval_var),
@@ -44,123 +44,45 @@ template_ancova <- function(anl_name = "ANL",
 
   anl_list <- add_expr(
     anl_list,
-    substitute(
-      expr = anl %>%
-        filter(arm_var %in% arm_vals) %>%
-        droplevels(),
-      env = list(
-        anl = as.name(anl_name),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm)
-      )
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val,
+      drop = FALSE
     )
   )
+  anl_list <- add_expr(anl_list, quote(droplevels()))
 
   parent_list <- add_expr(
     parent_list,
-    substitute(
-      parent %>%
-        filter(arm_var %in% arm_vals) %>%
-        droplevels(),
-      env = list(
-        parent = as.name(parent_name),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm)
-      )
+    prepare_arm(
+      dataname = parentname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val,
+      drop = FALSE
     )
   )
-
-  if (length(ref_arm) > 1) {
-    anl_list <- add_expr(
-      anl_list,
-      substitute_names(
-        expr = mutate(
-          arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          ref_arm = ref_arm,
-          ref_arm_val = ref_arm_val
-        )
-      )
-    )
-    parent_list <- add_expr(
-      parent_list,
-      substitute_names(
-        expr = mutate(
-          arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          ref_arm = ref_arm,
-          ref_arm_val = ref_arm_val
-        )
-      )
-    )
-  } else {
-    anl_list <- add_expr(
-      anl_list,
-      substitute_names(
-        expr = mutate(
-          arm_var = relevel(arm_var, ref = ref_arm)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          ref_arm = ref_arm,
-          comp_arm = comp_arm
-        )
-      )
-    )
-    parent_list <- add_expr(
-      parent_list,
-      substitute_names(
-        expr = mutate(
-          arm_var = relevel(arm_var, ref = ref_arm)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          ref_arm = ref_arm,
-          comp_arm = comp_arm
-        )
-      )
-    )
-  }
+  parent_list <- add_expr(parent_list, quote(droplevels()))
 
   if (combine_comp_arms) {
     anl_list <- add_expr(
       anl_list,
       substitute_names(
-        expr = mutate(
-          arm_var = combine_levels(arm_var, levels = comp_arm)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          comp_arm = comp_arm
-        )
+        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
       )
     )
     parent_list <- add_expr(
       parent_list,
       substitute_names(
-        expr = mutate(
-          arm_var = combine_levels(arm_var, levels = comp_arm)
-        ),
-        names = list(
-          arm_var = as.name(arm_var)
-        ),
-        others = list(
-          comp_arm = comp_arm
-        )
+        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
       )
     )
   }
@@ -170,7 +92,7 @@ template_ancova <- function(anl_name = "ANL",
     substitute(
       anl <- anl_list,
       env = list(
-        anl = as.name(anl_name),
+        anl = as.name(dataname),
         anl_list = pipe_expr(anl_list)
       )
     )
@@ -181,7 +103,7 @@ template_ancova <- function(anl_name = "ANL",
     substitute(
       parent <- parent_list,
       env = list(
-        parent = as.name(parent_name),
+        parent = as.name(parentname),
         parent_list = pipe_expr(parent_list)
       )
     )
@@ -211,7 +133,7 @@ template_ancova <- function(anl_name = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(paramcd, split_fun = drop_split_levels) %>%
+        split_rows_by(paramcd_var, split_fun = drop_split_levels) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -220,7 +142,7 @@ template_ancova <- function(anl_name = "ANL",
             show_labels = "hidden"
           ),
         env = list(
-          paramcd = paramcd,
+          paramcd_var = paramcd_var,
           aval_var = aval_var,
           arm_var = arm_var,
           cov_var = cov_var,
@@ -265,13 +187,16 @@ template_ancova <- function(anl_name = "ANL",
   # Build table.
   col_counts <- substitute(
     expr = table(parent$arm_var),
-    env = list(parent = as.name(parent_name), arm_var = arm_var)
+    env = list(parent = as.name(parentname), arm_var = arm_var)
   )
 
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result
+    },
     env = list(
-      anl = as.name(anl_name),
+      anl = as.name(dataname),
       col_counts = col_counts
     )
   )
@@ -332,7 +257,7 @@ template_ancova <- function(anl_name = "ANL",
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",
-#'       visit_var = choices_selected(
+#'       avisit = choices_selected(
 #'         choices = value_choices(adqs, "AVISIT"),
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
@@ -363,12 +288,12 @@ template_ancova <- function(anl_name = "ANL",
 #'
 tm_t_ancova <- function(label,
                         dataname,
-                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         arm_ref_comp = NULL,
                         aval_var,
                         cov_var,
-                        visit_var,
+                        avisit,
                         paramcd,
                         pre_output = NULL,
                         post_output = NULL
@@ -376,16 +301,16 @@ tm_t_ancova <- function(label,
 
   stopifnot(
     is_character_single(dataname),
-    is_character_single(parent_name)
-    )
+    is_character_single(parentname)
+  )
 
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    visit_var = cs_to_des_filter(visit_var, dataname = dataname, multiple = TRUE),
+    avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
   )
 
@@ -398,7 +323,7 @@ tm_t_ancova <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label
       )
@@ -413,7 +338,7 @@ ui_ancova <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    a$arm_var, a$aval_var, a$cov_var, a$visit_var, a$paramcd
+    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
   )
 
   ns <- NS(id)
@@ -422,11 +347,11 @@ ui_ancova <- function(id, ...) {
     output = white_small_well(uiOutput(ns("as_html"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "aval_var", "cov_var", "visit_var", "paramcd")]),
+      datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
       data_extract_input(
-        id = ns("visit_var"),
+        id = ns("avisit"),
         label = "Analysis Visit",
-        data_extract_spec = a$visit_var,
+        data_extract_spec = a$avisit,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
@@ -497,13 +422,13 @@ srv_ancova <- function(input,
                        session,
                        datasets,
                        dataname,
-                       parent_name,
+                       parentname,
                        arm_var,
                        arm_ref_comp,
                        aval_var,
                        cov_var,
                        paramcd,
-                       visit_var,
+                       avisit,
                        label) {
 
   init_chunks()
@@ -514,7 +439,7 @@ srv_ancova <- function(input,
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_ancova"
@@ -522,8 +447,8 @@ srv_ancova <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, aval_var, cov_var, visit_var, paramcd),
-    input_id = c("arm_var", "aval_var", "cov_var", "visit_var", "paramcd"),
+    data_extract = list(arm_var, aval_var, cov_var, avisit, paramcd),
+    input_id = c("arm_var", "aval_var", "cov_var", "avisit", "paramcd"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -537,14 +462,14 @@ srv_ancova <- function(input,
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
 
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    input_visit_var <- unlist(visit_var$filter)["vars"]
+    input_avisit <- unlist(avisit$filter)["vars"]
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # Validate inputs.
@@ -552,7 +477,7 @@ srv_ancova <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_visit_var, input_aval_var, input_cov_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var),
       arm_var = input_arm_var
     )
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
@@ -588,8 +513,8 @@ srv_ancova <- function(input,
     paramcd_levels <- length(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
 
     my_calls <- template_ancova(
-      parent_name = "ANL_ADSL",
-      anl_name = "ANL",
+      parentname = "ANL_ADSL",
+      dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
@@ -597,8 +522,8 @@ srv_ancova <- function(input,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
-      paramcd = unlist(paramcd$filter)["vars"],
-      visit_var = unlist(visit_var$filter)["vars"],
+      paramcd_var = unlist(paramcd$filter)["vars"],
+      visit_var = unlist(avisit$filter)["vars"],
       conf_level = as.numeric(input$conf_level)
     )
     mapply(expression = my_calls, chunks_push)
@@ -617,7 +542,7 @@ srv_ancova <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, aval_var, cov_var, visit_var, paramcd)
+      list(arm_var, aval_var, cov_var, avisit, paramcd)
     ),
     modal_title = label
   )

@@ -9,7 +9,8 @@ prepare_arm(
   arm_var,
   ref_arm,
   comp_arm,
-  ref_arm_val = paste(ref_arm, collapse = "/")
+  ref_arm_val = paste(ref_arm, collapse = "/"),
+  drop = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ arm comparison.}
 arm comparison.}
 
 \item{ref_arm_val}{(\code{string})\cr replacement name for the reference level.}
+
+\item{drop}{(\code{flag})\cr drop the unused variable levels.}
 }
 \description{
 The function generate the standard expression for pre-processing of dataset

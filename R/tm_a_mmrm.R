@@ -233,7 +233,7 @@ template_mmrm_tables <- function(fit_name,
       y$lsmeans_table <- substitute(
         expr = {
           lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts)
-          lsmeans_table
+          print(lsmeans_table)
         },
         env = list(
           col_counts = as.name(colcounts_name),
@@ -245,7 +245,7 @@ template_mmrm_tables <- function(fit_name,
       y$cov_matrix <- substitute(
         expr = {
           cov_matrix <- as.rtable(fit_mmrm, type = "cov")
-          cov_matrix
+          print(cov_matrix)
         },
         env = list(
           fit_mmrm = as.name(fit_name)
@@ -256,7 +256,7 @@ template_mmrm_tables <- function(fit_name,
       y$fixed_effects <- substitute(
         expr = {
           fixed_effects <- as.rtable(fit_mmrm, type = "fixed")
-          fixed_effects
+          print(fixed_effects)
         },
         env = list(
           fit_mmrm = as.name(fit_name)
@@ -267,7 +267,7 @@ template_mmrm_tables <- function(fit_name,
       y$diagnostic_table <- substitute(
         expr = {
           diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic")
-          diagnostic_table
+          print(diagnostic_table)
         },
         env = list(
           fit_mmrm = as.name(fit_name)

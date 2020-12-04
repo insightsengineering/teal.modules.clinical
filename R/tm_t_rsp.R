@@ -240,7 +240,7 @@ template_rsp <- function(dataname,
 
   y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    result
+    print(result)
   })
   y
 }
@@ -250,6 +250,7 @@ template_rsp <- function(dataname,
 #' This module produces a response summary table that matches the
 #' STREAM template `rspt01`.
 #'
+#' @inheritParams argument_convention
 #' @inheritParams tm_t_tte
 #' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 #'   and preselected option for analysis variable

@@ -7,13 +7,13 @@
 tm_t_ancova(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   aval_var,
   cov_var,
-  visit_var,
+  avisit,
   paramcd,
   pre_output = NULL,
   post_output = NULL
@@ -24,7 +24,7 @@ tm_t_ancova(
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
@@ -43,8 +43,8 @@ name of the variable for the analysis.}
 \item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for covariates.}
 
-\item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
-for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
+value of analysis visit \code{AVISIT} of interest.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
@@ -109,7 +109,7 @@ app <- init(
     tm_t_ancova(
       label = "ANCOVA table",
       dataname = "ADQS",
-      visit_var = choices_selected(
+      avisit = choices_selected(
         choices = value_choices(adqs, "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),

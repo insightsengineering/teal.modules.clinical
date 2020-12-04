@@ -311,10 +311,10 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
-      ),
+    ),
     is_character_single(dataname),
     is_logical_single(multiple)
-    )
+  )
   if (!multiple) {
     stop_if_not(
       list(
@@ -501,6 +501,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #'
 #' @inheritParams argument_convention
 #' @param ref_arm_val (`string`)\cr replacement name for the reference level.
+#' @param drop (`flag`)\cr drop the unused variable levels.
 #' @examples
 #'
 #' \dontrun{
@@ -523,7 +524,8 @@ prepare_arm <- function(dataname,
                         arm_var,
                         ref_arm,
                         comp_arm,
-                        ref_arm_val = paste(ref_arm, collapse = "/")) {
+                        ref_arm_val = paste(ref_arm, collapse = "/"),
+                        drop = TRUE) {
 
   data_list <- list()
   # Data are filtered to keep only arms of interest.
@@ -552,18 +554,26 @@ prepare_arm <- function(dataname,
     )
   }
 
-  # Reference level is explicit and unused levels are dropped.
+  # Reference level is explicit.
   data_list <- add_expr(
     data_list,
     substitute_names(
-      expr = {
-        mutate(arm_var = relevel(arm_var, ref = ref_arm_val)) %>%
-          mutate(arm_var = droplevels(arm_var))
-      },
+      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
       names = list(arm_var = as.name(arm_var)),
       others = list(ref_arm_val = ref_arm_val)
     )
   )
+
+  # Unused levels are dropped.
+  if (drop) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(arm_var = droplevels(arm_var)),
+        names = list(arm_var = as.name(arm_var))
+      )
+    )
+  }
 
   pipe_expr(data_list)
 }

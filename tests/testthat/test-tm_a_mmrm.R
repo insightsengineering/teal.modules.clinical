@@ -111,7 +111,7 @@ test_that("template_mmrm_tables works as expected", {
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")
-      cov_matrix
+      print(cov_matrix)
     })
   )
   expect_equal_expr_list(result, expected)

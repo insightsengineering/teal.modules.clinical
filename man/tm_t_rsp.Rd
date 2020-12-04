@@ -20,29 +20,28 @@ tm_t_rsp(
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-Note that the data is expected to be in vertical form with the
-\code{PARAMCD} variable filtering to one observation per patient.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}}
+\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable names designating the study arm.}
 
-\item{arm_ref_comp}{(\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
-list with each element corresponding to an arm variable in \code{ADSL} and the element must
-be another list with the elements named \code{ref} and \code{comp} that the
-defined the default reference and comparison arms when the arm variable is
-changed.}
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
-\item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
-choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+names of the variables for stratified analysis.}
 
 \item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for analysis variable}
