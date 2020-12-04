@@ -491,8 +491,8 @@ srv_g_forest_tte <- function(input,
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
@@ -516,8 +516,8 @@ srv_g_forest_tte <- function(input,
     # validate arm levels
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
+    validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
 
     validate(need(length(input_subgroup_var) > 0, "Please select at least one subgroup variable."))
     validate(
@@ -538,6 +538,9 @@ srv_g_forest_tte <- function(input,
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     NULL
   })
@@ -565,8 +568,8 @@ srv_g_forest_tte <- function(input,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
-      aval_var = as.vector(anl_m$columns_source$aval),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       subgroup_var = as.vector(anl_m$columns_source$subgroup_var),
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),

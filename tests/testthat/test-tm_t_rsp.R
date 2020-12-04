@@ -307,6 +307,7 @@ test_that("template_rsp generates standard expressions", {
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
+    aval_var = "AVALC",
     compare_arm = TRUE,
     show_rsp_cat = TRUE
   )
@@ -372,6 +373,7 @@ test_that("template_rsp generates right expressions with non-default", {
     arm_var = "ARM",
     ref_arm = "ARM B",
     comp_arm = c("ARM A", "ARM C"),
+    aval_var = "AVALC",
     compare_arm = TRUE,
     show_rsp_cat = FALSE
   )
@@ -420,6 +422,7 @@ test_that("template_rsp generates expression without arm comparison", {
     arm_var = "ARM",
     ref_arm = "ARM B",
     comp_arm = c("ARM A", "ARM C"),
+    aval_var = "AVALC",
     compare_arm = FALSE,
     show_rsp_cat = FALSE
   )
@@ -463,6 +466,7 @@ test_that("template_rsp generates expression with non-default controls.", {
     arm_var = "ARM",
     ref_arm = "ARM B",
     comp_arm = c("ARM A", "ARM C"),
+    aval_var = "AVALC",
     compare_arm = TRUE,
     show_rsp_cat = TRUE,
     control = list(
@@ -529,6 +533,7 @@ test_that("template_rsp can combine refs", {
     parentname = "adsl",
     arm_var = "ARMCD",
     ref_arm = c("ARM A", "ARM B"),
+    aval_var = "AVALC",
     comp_arm = "ARM C",
     compare_arm = TRUE,
     combine_arm = FALSE,

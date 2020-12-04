@@ -520,10 +520,10 @@ srv_g_km <- function(input,
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata)
-    input_facet_var <- as.vector(anl_m$columns_source$facet)
-    input_aval_var <- as.vector(anl_m$columns_source$aval)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_facet_var <- as.vector(anl_m$columns_source$facet_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -538,13 +538,9 @@ srv_g_km <- function(input,
     # validate arm levels
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-      if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = input$ref_arm))
-      }
-    } else {
-      if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-      }
+    }
+    if (input$compare_arms) {
+      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
@@ -553,6 +549,9 @@ srv_g_km <- function(input,
       input$conf_level > 0 && input$conf_level < 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     NULL
   })
@@ -575,11 +574,11 @@ srv_g_km <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr),
-      strata_var = as.vector(anl_m$columns_source$strata),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+      strata_var = as.vector(anl_m$columns_source$strata_var),
       time_points = NULL,
-      facet_var = as.vector(anl_m$columns_source$facet),
+      facet_var = as.vector(anl_m$columns_source$facet_var),
       annot_surv_med = input$show_km_table,
       annot_coxph = input$compare_arms,
       font_size = input$font_size,

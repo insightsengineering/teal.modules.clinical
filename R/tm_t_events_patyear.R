@@ -330,7 +330,7 @@ srv_events_patyear <- function(input,
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr)
+    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -346,6 +346,10 @@ srv_events_patyear <- function(input,
       input$conf_level > 0 && input$conf_level < 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+
+    NULL
   })
 
   # The R-code corresponding to the analysis.

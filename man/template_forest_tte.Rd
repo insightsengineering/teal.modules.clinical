@@ -33,11 +33,11 @@ arm comparison.}
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}
 
-\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for for the analysis variable.}
 
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for censor variable}
+and preselected option for censor variable.}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}

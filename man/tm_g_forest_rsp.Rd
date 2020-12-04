@@ -45,8 +45,8 @@ variable is changed.}
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
 
-\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for for the analysis variable.}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}

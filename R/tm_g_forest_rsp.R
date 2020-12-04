@@ -477,15 +477,16 @@ srv_g_forest_rsp <- function(input,
 
   # Update UI choices depending on selection of previous options
   observe({
-    anl_m <- anl_merged()
-    anl <- anl_m$data()
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    rsp_choices <- unique(anl[[input_aval_var]])
-
+    aval_var <- anl_merged()$columns_source$aval_var
+    responder_choices <- if (is_empty(aval_var)) {
+      character(0)
+    } else {
+      unique(anl_merged()$data()[[aval_var]])
+    }
     updateSelectInput(
       session, "responders",
-      choices = rsp_choices,
-      selected = intersect(rsp_choices, c("CR", "PR"))
+      choices = responder_choices,
+      selected = intersect(responder_choices, c("CR", "PR"))
     )
   })
 
@@ -529,6 +530,8 @@ srv_g_forest_rsp <- function(input,
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
 
     NULL
   })

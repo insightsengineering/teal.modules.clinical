@@ -44,8 +44,8 @@ variable value designating the studied parameter.}
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for for the analysis variable.}
 
 \item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
 for confidence level, each within range of (0, 1).}

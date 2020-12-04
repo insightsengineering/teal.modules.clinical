@@ -731,13 +731,9 @@ srv_t_tte <- function(input,
     # validate arm levels
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-      if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = input$ref_arm))
-      }
-    } else {
-      if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-      }
+    }
+    if (input$compare_arms) {
+      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
@@ -751,6 +747,10 @@ srv_t_tte <- function(input,
       input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(is_character_single(input_event_desc), "Event description variable should be a single column."))
 
     NULL
   })

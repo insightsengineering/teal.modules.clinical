@@ -109,7 +109,7 @@ ui_t_binary_outcome <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(
     a$paramcd,
     a$arm_var,
-    a$avalc_var,
+    a$aval_var,
     a$strata_var
   )
 
@@ -326,7 +326,11 @@ srv_t_binary_outcome <- function(input,
   # Because the AVALC values depends on the selected PARAMCD.
   observe({
     aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- unique(anl_merged()$data()[[aval_var]])
+    responder_choices <- if (is_empty(aval_var)) {
+      character(0)
+    } else {
+      unique(anl_merged()$data()[[aval_var]])
+    }
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
@@ -354,10 +358,8 @@ srv_t_binary_outcome <- function(input,
 
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
-      if (input$compare_arms) {
-        validate_args <- c(validate_args, list(ref_arm = input$ref_arm))
-      }
-    } else if (input$compare_arms) {
+    }
+    if (input$compare_arms) {
       validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
@@ -367,6 +369,8 @@ srv_t_binary_outcome <- function(input,
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
 
     NULL
   })
@@ -390,7 +394,7 @@ srv_t_binary_outcome <- function(input,
     my_calls <- template_rsp(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm),
+      arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$aval_var),
       compare_arm = input$compare_arms,
       combine_arm = input$combine_comp_arms,

@@ -22,17 +22,17 @@ template_coxreg(
 \arguments{
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-names of the variables for covariates.}
+\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for for the variables for covariates.}
 
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for censor variable}
+and preselected option for censor variable.}
 
-\item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-name of the variable for the analysis.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for for the analysis variable.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
