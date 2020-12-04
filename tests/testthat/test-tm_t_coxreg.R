@@ -17,12 +17,14 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     )
   )
 
+  lapply(result, styled_expr)
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        mutate(event = 1 - CNSR) %>%
-        filter(ARMCD %in% c("ARM A", c("ARM B", "ARM C"))) %>%
-        mutate(ARMCD = droplevels(relevel(ARMCD, "ARM A")))
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(event = 1 - CNSR)
       variables <- list(time = "AVAL", event = "event", arm = "ARMCD", covariates = NULL)
       variables$strata <- "STRATA1"
       model <- fit_coxreg_univar(
@@ -46,7 +48,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = df)
-      result
+      print(result)
     })
   )
   expect_equal(result, expected)
@@ -69,10 +71,11 @@ test_that("template_coxreg generates correct multivariate cox regression express
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        mutate(event = 1 - CNSR) %>%
-        filter(ARM %in% c("A: Drug X", c("B: Placebo", "C: Combination"))) %>%
-        mutate(ARM = droplevels(relevel(ARM, "A: Drug X")))
-      anl$ARM <- combine_levels(x = anl$ARM, levels = c("B: Placebo", "C: Combination")) # nolint
+        filter(ARM %in% c("A: Drug X", "B: Placebo", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "A: Drug X")) %>%
+        mutate(ARM = droplevels(ARM)) %>%
+        mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", "C: Combination"))) %>%
+        mutate(event = 1 - CNSR)
       variables <- list(time = "AVAL", event = "event", arm = "ARM", covariates = c("AGE", "SEX"))
       model <- fit_coxreg_multivar(
         variables = variables,
@@ -93,7 +96,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = df)
-      result
+      print(result)
     })
   )
   expect_equal(result, expected)

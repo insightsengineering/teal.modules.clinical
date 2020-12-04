@@ -27,44 +27,38 @@ template_coxreg <- function(dataname,
                             control = control_coxreg()) {
 
   y <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
 
   data_pipe <- list()
   data_list <- list()
 
   data_pipe <- add_expr(
     data_pipe,
-    substitute(
-      expr = df  %>%
-        mutate(event = 1 - cnsr_var),
-      env = list(
-        df = as.name(dataname),
-        cnsr_var = as.name(cnsr_var)
-      )
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
+
+  if (combine_comp_arms) {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute_names(
+        expr = mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
+      )
+    )
+  }
 
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      filter(arm_var %in% c(ref_arm, comp_arm)),
-      env = list(
-        arm_var = as.name(arm_var),
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
-    )
-  )
-
-  data_pipe <- add_expr(
-    data_pipe,
-    substitute_names(
-      expr = mutate(arm_var = droplevels(relevel(arm_var, ref_arm))),
-      names = list(
-        arm_var = as.name(arm_var)
-      ),
-      others = list(
-        ref_arm = ref_arm
-      )
+      expr = mutate(event = 1 - cnsr_var),
+      env = list(cnsr_var = as.name(cnsr_var))
     )
   )
 
@@ -76,21 +70,6 @@ template_coxreg <- function(dataname,
     )
   )
 
-  if (combine_comp_arms) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = anl$arm_var <- combine_levels(
-          x = anl$arm_var,
-          levels = comp_arm
-        ),
-        env = list(
-          arm_var = as.name(arm_var),
-          comp_arm = comp_arm
-        )
-      )
-    )
-  }
 
   data_list <- add_expr(
     data_list,
@@ -129,9 +108,9 @@ template_coxreg <- function(dataname,
         ),
         env = list(
           control = control
-          )
         )
       )
+    )
   } else {
     add_expr(
       data_list,
@@ -142,9 +121,9 @@ template_coxreg <- function(dataname,
           control = control,
           at = at
         ),
-      env = list(
-        at = at,
-        control = control
+        env = list(
+          at = at,
+          control = control
         )
       )
     )
@@ -153,7 +132,7 @@ template_coxreg <- function(dataname,
   data_list <- add_expr(
     data_list,
     quote(df <- broom::tidy(model))
-    )
+  )
 
   y$data <- bracket_expr(data_list)
 
@@ -198,8 +177,8 @@ template_coxreg <- function(dataname,
 
   y$table <- quote({
     result <- build_table(lyt = lyt, df = df)
-    result
-    })
+    print(result)
+  })
 
   y
 }
@@ -415,13 +394,13 @@ tm_t_coxreg <- function(label,
                         conf_level = choices_selected(
                           c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
                           0.95, keep_order = TRUE
-                          ),
+                        ),
                         pre_output = NULL,
                         post_output = NULL) {
   stopifnot(
     length(dataname) == 1,
     is.cs_or_des(conf_level)
-    )
+  )
 
   args <- as.list(environment())
 
@@ -464,7 +443,7 @@ ui_t_coxreg <- function(id, ...) {
     a$aval_var,
     a$cnsr_var,
     a$cov_var
-    )
+  )
 
   ns <- NS(id)
 
@@ -565,7 +544,7 @@ ui_t_coxreg <- function(id, ...) {
               span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
-              ),
+            ),
             choices = c("exact", "breslow", "efron"),
             selected = "exact"
           ),
@@ -576,7 +555,7 @@ ui_t_coxreg <- function(id, ...) {
               span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
-              ),
+            ),
             value = 0.95,
             min = 0.01,
             max = 0.99,
@@ -775,7 +754,7 @@ srv_t_coxreg <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
-      ),
+    ),
     modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
     code_header = label
   )
