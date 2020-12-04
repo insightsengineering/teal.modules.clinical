@@ -48,101 +48,63 @@ template_fit_mmrm <- function(parentname,
 ) {
   # Data
   y <- list()
-
   data_list <- list()
+  parent_list <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
 
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = anl <- df,
-      env = list(
-        df = as.name(dataname)
-      )
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = df <- filter(df, arm_var %in% c(ref_arm, comp_arm)),
-      env = list(
-        df = as.name(parentname),
-        arm_var = as.name(arm_var),
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- filter(anl, arm_var %in% c(ref_arm, comp_arm)),
-      env = list(
-        arm_var = as.name(arm_var),
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = df$arm_var <- droplevels(relevel(df$arm_var, ref_arm)),
-      env = list(
-        df = as.name(parentname),
-        arm_var = arm_var,
-        ref_arm = ref_arm
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl$arm_var <- droplevels(relevel(anl$arm_var, ref_arm)),
-      env = list(
-        arm_var = arm_var,
-        ref_arm = ref_arm
-      )
+  parent_list <- add_expr(
+    parent_list,
+    prepare_arm(
+      dataname = parentname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
   if (combine_comp_arms) {
     data_list <- add_expr(
       data_list,
-      substitute(
-        expr = df$arm_var <- combine_levels(
-          x = df$arm_var,
-          levels = comp_arm
-        ),
-        env = list(
-          df = as.name(parentname),
-          arm_var = arm_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm
-        )
+      substitute_names(
+        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
       )
     )
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = anl$arm_var <- combine_levels(
-          x = anl$arm_var,
-          levels = comp_arm
-        ),
-        env = list(
-          arm_var = arm_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm
-        )
+    parent_list <- add_expr(
+      parent_list,
+      substitute_names(
+        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
       )
     )
-
   }
 
-  y$data <- bracket_expr(data_list)
+
+  y$data <- substitute(
+    expr = {
+      anl <- data_pipe
+      parentname <- parent_pipe
+    },
+    env = list(
+      data_pipe = pipe_expr(data_list),
+      parentname = as.name(parentname),
+      parent_pipe = pipe_expr(parent_list)
+    )
+  )
 
   y$col_counts <- substitute(
     expr = col_counts <- table(parentname$arm_var),
@@ -208,9 +170,10 @@ template_mmrm_tables <- function(fit_name,
                                  table_type = "t_mmrm_cov") {
 
   y <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
+
   # Build layout.
   layout_list <- list()
-
   layout_list <- layout_list %>%
     add_expr(quote(basic_table()))
 
@@ -220,7 +183,7 @@ template_mmrm_tables <- function(fit_name,
       expr = split_cols_by(var = arm_var, ref_group = ref_arm),
       env = list(
         arm_var = arm_var,
-        ref_arm = ref_arm
+        ref_arm = ref_arm_val
       )
     )
   )
@@ -441,6 +404,7 @@ template_mmrm_plots <- function(fit_name,
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
+#'
 tm_a_mmrm <- function(label,
                       dataname,
                       parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
@@ -457,44 +421,44 @@ tm_a_mmrm <- function(label,
                       pre_output = NULL,
                       post_output = NULL) {
 
-    cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
-    stopifnot(
-      is_character_single(dataname),
-      is.choices_selected(conf_level)
+  cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
+  stopifnot(
+    is_character_single(dataname),
+    is.choices_selected(conf_level)
+  )
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
+
+  args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    id_var = cs_to_des_select(id_var, dataname = dataname),
+    visit_var = cs_to_des_select(visit_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+    split_covariates = cs_to_des_select(split_choices(cov_var), dataname = dataname, multiple = TRUE),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname)
+  )
+
+  module(
+    label = label,
+    server = srv_mmrm,
+    ui = ui_mmrm,
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parentname = parentname,
+        arm_ref_comp = arm_ref_comp,
+        label = label,
+        plot_height = plot_height,
+        plot_width = plot_width
       )
-    check_slider_input(plot_height, allow_null = FALSE)
-    check_slider_input(plot_width)
-
-    args <- as.list(environment())
-
-    data_extract_list <- list(
-      arm_var = cs_to_des_select(arm_var, dataname = parentname),
-      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-      id_var = cs_to_des_select(id_var, dataname = dataname),
-      visit_var = cs_to_des_select(visit_var, dataname = dataname),
-      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-      split_covariates = cs_to_des_select(split_choices(cov_var), dataname = dataname, multiple = TRUE),
-      aval_var = cs_to_des_select(aval_var, dataname = dataname)
-    )
-
-    module(
-      label = label,
-      server = srv_mmrm,
-      ui = ui_mmrm,
-      ui_args = c(data_extract_list, args),
-      server_args = c(
-        data_extract_list,
-        list(
-          dataname = dataname,
-          parentname = parentname,
-          arm_ref_comp = arm_ref_comp,
-          label = label,
-          plot_height = plot_height,
-          plot_width = plot_width
-          )
-        ),
-      filters = get_extract_datanames(data_extract_list)
-    )
+    ),
+    filters = get_extract_datanames(data_extract_list)
+  )
 }
 
 #' @noRd
@@ -509,7 +473,7 @@ ui_mmrm <- function(id, ...) {
     a$visit_var,
     a$cov_var,
     a$aval_var
-    )
+  )
 
   standard_layout(
     output = white_small_well(
@@ -799,7 +763,7 @@ srv_mmrm <- function(input,
     "cor_struct",
     "conf_level",
     "optimizer"
-    )
+  )
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
@@ -1000,19 +964,19 @@ srv_mmrm <- function(input,
       function(visit_df, visit_name) {
         dup <- any(duplicated(visit_df[[input_id_var]]))
         validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
-        },
+      },
       split(anl_data, anl_data[[input_visit_var]]),
       levels(anl_data[[input_visit_var]])
-      )
+    )
 
     validate(
       need(
         all(complete.cases(anl_data)),
         paste(
           c("Missing values found in formula vars", anl_data[!complete.cases(anl_data), ])
-          )
         )
       )
+    )
   })
 
   # Connector:
@@ -1064,185 +1028,185 @@ srv_mmrm <- function(input,
     fit_stack
   })
 
-    output$mmrm_title <- renderText({
+  output$mmrm_title <- renderText({
 
-      # Input on output type.
-      output_function <- input$output_function
-      g_mmrm_diagnostic_type <- input$g_mmrm_diagnostic_type
-      g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
+    # Input on output type.
+    output_function <- input$output_function
+    g_mmrm_diagnostic_type <- input$g_mmrm_diagnostic_type
+    g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
 
-      output_title <- switch(
-        output_function,
-        "t_mmrm_cov" = "Residual covariance matrix estimate",
-        "t_mmrm_diagnostic" = "Model fit statistics",
-        "t_mmrm_fixed" = "Fixed effects estimates",
-        "t_mmrm_lsmeans" = "LS means and contrasts estimates",
-        "g_mmrm_diagnostic" = switch(
-          g_mmrm_diagnostic_type,
-          "fit-residual" = "Marginal fitted values vs. residuals",
-          "q-q-residual" = "Q-Q normal plot for standardized residuals"
-        ),
-        "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
-          "LS means estimates and contrasts"
-        } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
-          "LS means estimates"
-        } else {
-          "LS means contrasts"
-        }
-      )
-      output_title
-    })
-
-    output$mmrm_table <- renderUI({
-      if (state$applicable) {
-        validate(
-          need(
-            !state_has_changed(),
-            "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
-          )
-        )
-      }
-      # Input on output type.
-      output_function <- input$output_function
-
-      # If the output is not a table, stop here.
-      if (!isTRUE(grepl("^t_", output_function))) return(NULL)
-      # Reset global chunks. Needs to be done here so nothing yet in environment.
-      chunks_reset()
-      # Get the fit stack while evaluating the fit code at the same time.
-      fit_stack <- mmrm_fit()
-      fit <- chunks_get_var("fit", chunks = fit_stack)
-      col_counts <- chunks_get_var("col_counts", chunks = fit_stack) # nolint
-      # Start new private stack for the table code.
-      table_stack <- chunks$new()
-
-      table_stack_push <- function(...) {
-        chunks_push(..., chunks = table_stack)
-      }
-
-      anl_m <- anl_merged()
-
-      mmrm_table <- function(table_type) {
-        res <- template_mmrm_tables(
-          fit_name = "fit",
-          colcounts_name = "col_counts",
-          arm_var = as.vector(anl_m$columns_source$arm_var),
-          ref_arm = input$ref_arm,
-          visit_var = as.vector(anl_m$columns_source$visit_var),
-          show_relative = input$t_mmrm_lsmeans_show_relative,
-          table_type = table_type
-          )
-
-        mapply(expression = res, table_stack_push)
-        chunks_push_chunks(table_stack)
-        chunks_safe_eval()
-      }
-      chunks_push_chunks(fit_stack)
-      mmrm_table(output_function)
-
-      # Depending on the table function type, produce different code
-      switch(
-        output_function,
-        t_mmrm_lsmeans = as_html(chunks_get_var("lsmeans_table")),
-        t_mmrm_diagnostic = as_html(chunks_get_var("diagnostic_table")),
-        t_mmrm_fixed = as_html(chunks_get_var("fixed_effects")),
-        t_mmrm_cov = as_html(chunks_get_var("cov_matrix"))
-      )
-    })
-
-    # Endpoint:
-    # Plot outputs.
-    mmrm_plot_reactive <- reactive({
-
-      # Input on output type.
-      output_function <- input$output_function
-
-      # Stop here if the output is not a plot.
-      if (!isTRUE(grepl("^g_", output_function))) return(NULL)
-      chunks_reset()
-      fit_stack <- mmrm_fit()
-      fit <- chunks_get_var("fit", fit_stack)
-
-      # Start new private stack for the plot code.
-      plot_stack <- chunks$new()
-      plot_stack_push <- function(...) {
-        chunks_push(..., chunks = plot_stack)
-      }
-
-      lsmeans_args <- list(
-        select = input$g_mmrm_lsmeans_select,
-        width = input$g_mmrm_lsmeans_width,
-        show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
-        )
-      diagnostic_args <- list(
-        type = input$g_mmrm_diagnostic_type,
-        z_threshold = input$g_mmrm_diagnostic_z_threshold
-        )
-
-      mmrm_plot <- function(lsmeans_plot = lsmeans_args,
-                            diagnostic_plot = diagnostic_args) {
-
-        res <- template_mmrm_plots(
-          "fit",
-          lsmeans_plot = lsmeans_plot,
-          diagnostic_plot = diagnostic_plot
-          )
-        mapply(expression = res, plot_stack_push)
-        chunks_push_chunks(plot_stack)
-        chunks_safe_eval()
-      }
-      chunks_push_chunks(fit_stack)
-      # Depending on the plot function type, produce different code.
-      switch(
-        output_function,
-        g_mmrm_lsmeans = {
-          mmrm_plot(diagnostic_plot = NULL)
-          chunks_get_var("lsmeans_plot")
-        },
-        g_mmrm_diagnostic = {
-          mmrm_plot(lsmeans_plot = NULL)
-          chunks_get_var("diagnostic_plot")
-        }
-      )
-    })
-
-    callModule(
-      plot_with_settings_srv,
-      id = "mmrm_plot",
-      plot_r = mmrm_plot_reactive,
-      height = plot_height,
-      width = plot_width,
-      show_hide_signal = reactive(show_plot_rv())
-    )
-
-
-    # Endpoint:
-    # Optimizer that was selected.
-    output$optimizer_selected <- renderText({
-      # First reassign reactive sources:
-
-      fit_stack <- mmrm_fit()
-      fit <- chunks_get_var("fit", chunks = fit_stack)
-
-      # Inputs.
-      optimizer <- input$optimizer
-
-      result <- if (!inherits(fit, "try-error") && optimizer == "automatic") {
-        selected <- attr(fit$fit, "optimizer")
-        paste("Optimizer used:", selected)
+    output_title <- switch(
+      output_function,
+      "t_mmrm_cov" = "Residual covariance matrix estimate",
+      "t_mmrm_diagnostic" = "Model fit statistics",
+      "t_mmrm_fixed" = "Fixed effects estimates",
+      "t_mmrm_lsmeans" = "LS means and contrasts estimates",
+      "g_mmrm_diagnostic" = switch(
+        g_mmrm_diagnostic_type,
+        "fit-residual" = "Marginal fitted values vs. residuals",
+        "q-q-residual" = "Q-Q normal plot for standardized residuals"
+      ),
+      "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
+        "LS means estimates and contrasts"
+      } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
+        "LS means estimates"
       } else {
-        NULL
+        "LS means contrasts"
       }
-      return(result)
-    })
-
-    # Show R code once button is pressed.
-    callModule(
-      module = get_rcode_srv,
-      id = "rcode",
-      datasets = datasets,
-      datanames = get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
-      modal_title = "R Code for the Current MMRM Analysis",
-      code_header = label
     )
+    output_title
+  })
+
+  output$mmrm_table <- renderUI({
+    if (state$applicable) {
+      validate(
+        need(
+          !state_has_changed(),
+          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+        )
+      )
+    }
+    # Input on output type.
+    output_function <- input$output_function
+
+    # If the output is not a table, stop here.
+    if (!isTRUE(grepl("^t_", output_function))) return(NULL)
+    # Reset global chunks. Needs to be done here so nothing yet in environment.
+    chunks_reset()
+    # Get the fit stack while evaluating the fit code at the same time.
+    fit_stack <- mmrm_fit()
+    fit <- chunks_get_var("fit", chunks = fit_stack)
+    col_counts <- chunks_get_var("col_counts", chunks = fit_stack) # nolint
+    # Start new private stack for the table code.
+    table_stack <- chunks$new()
+
+    table_stack_push <- function(...) {
+      chunks_push(..., chunks = table_stack)
+    }
+
+    anl_m <- anl_merged()
+
+    mmrm_table <- function(table_type) {
+      res <- template_mmrm_tables(
+        fit_name = "fit",
+        colcounts_name = "col_counts",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        ref_arm = input$ref_arm,
+        visit_var = as.vector(anl_m$columns_source$visit_var),
+        show_relative = input$t_mmrm_lsmeans_show_relative,
+        table_type = table_type
+      )
+
+      mapply(expression = res, table_stack_push)
+      chunks_push_chunks(table_stack)
+      chunks_safe_eval()
+    }
+    chunks_push_chunks(fit_stack)
+    mmrm_table(output_function)
+
+    # Depending on the table function type, produce different code
+    switch(
+      output_function,
+      t_mmrm_lsmeans = as_html(chunks_get_var("lsmeans_table")),
+      t_mmrm_diagnostic = as_html(chunks_get_var("diagnostic_table")),
+      t_mmrm_fixed = as_html(chunks_get_var("fixed_effects")),
+      t_mmrm_cov = as_html(chunks_get_var("cov_matrix"))
+    )
+  })
+
+  # Endpoint:
+  # Plot outputs.
+  mmrm_plot_reactive <- reactive({
+
+    # Input on output type.
+    output_function <- input$output_function
+
+    # Stop here if the output is not a plot.
+    if (!isTRUE(grepl("^g_", output_function))) return(NULL)
+    chunks_reset()
+    fit_stack <- mmrm_fit()
+    fit <- chunks_get_var("fit", fit_stack)
+
+    # Start new private stack for the plot code.
+    plot_stack <- chunks$new()
+    plot_stack_push <- function(...) {
+      chunks_push(..., chunks = plot_stack)
+    }
+
+    lsmeans_args <- list(
+      select = input$g_mmrm_lsmeans_select,
+      width = input$g_mmrm_lsmeans_width,
+      show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
+    )
+    diagnostic_args <- list(
+      type = input$g_mmrm_diagnostic_type,
+      z_threshold = input$g_mmrm_diagnostic_z_threshold
+    )
+
+    mmrm_plot <- function(lsmeans_plot = lsmeans_args,
+                          diagnostic_plot = diagnostic_args) {
+
+      res <- template_mmrm_plots(
+        "fit",
+        lsmeans_plot = lsmeans_plot,
+        diagnostic_plot = diagnostic_plot
+      )
+      mapply(expression = res, plot_stack_push)
+      chunks_push_chunks(plot_stack)
+      chunks_safe_eval()
+    }
+    chunks_push_chunks(fit_stack)
+    # Depending on the plot function type, produce different code.
+    switch(
+      output_function,
+      g_mmrm_lsmeans = {
+        mmrm_plot(diagnostic_plot = NULL)
+        chunks_get_var("lsmeans_plot")
+      },
+      g_mmrm_diagnostic = {
+        mmrm_plot(lsmeans_plot = NULL)
+        chunks_get_var("diagnostic_plot")
+      }
+    )
+  })
+
+  callModule(
+    plot_with_settings_srv,
+    id = "mmrm_plot",
+    plot_r = mmrm_plot_reactive,
+    height = plot_height,
+    width = plot_width,
+    show_hide_signal = reactive(show_plot_rv())
+  )
+
+
+  # Endpoint:
+  # Optimizer that was selected.
+  output$optimizer_selected <- renderText({
+    # First reassign reactive sources:
+
+    fit_stack <- mmrm_fit()
+    fit <- chunks_get_var("fit", chunks = fit_stack)
+
+    # Inputs.
+    optimizer <- input$optimizer
+
+    result <- if (!inherits(fit, "try-error") && optimizer == "automatic") {
+      selected <- attr(fit$fit, "optimizer")
+      paste("Optimizer used:", selected)
+    } else {
+      NULL
+    }
+    return(result)
+  })
+
+  # Show R code once button is pressed.
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
+    modal_title = "R Code for the Current MMRM Analysis",
+    code_header = label
+  )
 }

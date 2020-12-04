@@ -13,11 +13,14 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
   )
   expected <- list(
     data = quote({
-      anl <- adqs
-      adsl <- filter(adsl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
-      anl <- filter(anl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
-      adsl$ARMCD <- droplevels(relevel(adsl$ARMCD, "ARM A")) # nolint
-      anl$ARMCD <- droplevels(relevel(anl$ARMCD, "ARM A")) # nolint
+      anl <- adqs %>%
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD))
+      adsl <- adsl %>%
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD))
     }),
     col_counts = quote(
       col_counts <- table(adsl$ARMCD)
@@ -55,13 +58,16 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
   )
   expected <- list(
     data = quote({
-      anl <- adqs
-      adsl <- filter(adsl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
-      anl <- filter(anl, ARMCD %in% c("ARM A", c("ARM B", "ARM C")))
-      adsl$ARMCD <- droplevels(relevel(adsl$ARMCD, "ARM A")) # nolint
-      anl$ARMCD <- droplevels(relevel(anl$ARMCD, "ARM A")) # nolint
-      adsl$ARMCD <- combine_levels(x = adsl$ARMCD, levels = c("ARM B", "ARM C")) # nolint
-      anl$ARMCD <- combine_levels(x = anl$ARMCD, levels = c("ARM B", "ARM C")) # nolint
+      anl <- adqs %>%
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
+      adsl <- adsl %>%
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
     }),
     col_counts = quote(
       col_counts <- table(adsl$ARMCD) # nolint
