@@ -7,7 +7,7 @@
 tm_g_forest_tte(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
@@ -16,8 +16,7 @@ tm_g_forest_tte(
   strata_var,
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
-    = TRUE),
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
@@ -30,10 +29,11 @@ tm_g_forest_tte(
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
 returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
@@ -57,8 +57,8 @@ and preselected option for analysis variable}
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for censor variable}
 
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}

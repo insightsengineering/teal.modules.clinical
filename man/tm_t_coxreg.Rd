@@ -7,7 +7,7 @@
 tm_t_coxreg(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
@@ -17,8 +17,7 @@ tm_t_coxreg(
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   multivariate = TRUE,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
-    = TRUE),
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -31,11 +30,11 @@ available in the list passed to the \code{data} argument of
 \code{\link[teal]{init}}. Note that the data is expected to be in vertical
 form with the \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{\code{\link[teal]{choices_selected}} object with all available
-choices and preselected option for variable names that can be used as
-\code{arm_var}}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}}
 
 \item{arm_ref_comp}{(\code{\link[teal]{choices_selected}}) optional, if
 specified it must be a named list with each element corresponding to an arm
@@ -65,9 +64,8 @@ and preselected option for censor variable}
 (equivalent to \code{COXT01} standard) instead of the multivariate model
 (equivalent to \code{COXT02} standard).}
 
-\item{conf_level}{\code{\link[teal]{choices_selected}} object with all
-available choices and preselected option for variable names that can be
-used for confidence level for computation of the confidence intervals.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

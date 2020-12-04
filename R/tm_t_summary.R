@@ -169,7 +169,7 @@ template_summary <- function(dataname,
 #'
 tm_t_summary <- function(label,
                          dataname,
-                         parent_name = ifelse(
+                         parentname = ifelse(
                            is(arm_var, "data_extract_spec"),
                            datanames_input(arm_var),
                            "ADSL"
@@ -182,7 +182,7 @@ tm_t_summary <- function(label,
                          post_output = NULL) {
   stopifnot(
     is_character_single(dataname),
-    is_character_single(parent_name)
+    is_character_single(parentname)
   )
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
@@ -190,7 +190,7 @@ tm_t_summary <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
   )
 
@@ -203,7 +203,7 @@ tm_t_summary <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         label = label
         )
       ),
@@ -268,7 +268,7 @@ srv_summary <- function(input,
                         session,
                         datasets,
                         dataname,
-                        parent_name,
+                        parentname,
                         arm_var,
                         summarize_vars,
                         label) {
@@ -290,7 +290,7 @@ srv_summary <- function(input,
 
   # validate inputs
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()

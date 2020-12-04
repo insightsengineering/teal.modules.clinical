@@ -23,7 +23,7 @@ template_summary_by(
 tm_t_summary_by(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   by_vars,
@@ -43,8 +43,8 @@ usually this refers to \code{"ADSL"}.}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
@@ -69,9 +69,6 @@ the denominator. With option \code{n}, the number of non-missing records in this
 intersection is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
-
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
 
 \item{summarize_vars}{(\code{choices_selected})\cr names of the variables
 that should be summarized.}

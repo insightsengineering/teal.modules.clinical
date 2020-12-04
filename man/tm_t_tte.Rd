@@ -15,6 +15,8 @@ tm_t_tte(
   strata_var,
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
+  conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   time_points,
   time_unit = "months",
   event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
@@ -52,6 +54,12 @@ and preselected option for analysis variable}
 
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for censor variable}
+
+\item{conf_level_coxph}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
+
+\item{conf_level_survfit}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
 for variable names that can be used \code{REFACTOR}}

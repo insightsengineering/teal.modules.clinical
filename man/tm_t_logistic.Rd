@@ -12,31 +12,28 @@ tm_t_logistic(
   paramcd,
   covariate_var,
   interaction_var,
-  conf_level = choices_selected(c(0.8, 0.85, 0.9, 0.95, 0.99, 0.995), 0.95, keep_order
-    = TRUE),
+  conf_level = choices_selected(c(0.9, 0.9, 0.85), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
 }
 \arguments{
-\item{label}{(\code{character}) menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-Note that the data is expected to be in vertical form with the
-\code{PARAMCD} variable filtering to one observation per patient.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}}
+and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{arm_ref_comp}{(\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
-list with each element corresponding to an arm variable in \code{ADSL} and the element must
-be another list with the elements named \code{ref} and \code{comp} that the
-defined the default reference and comparison arms when the arm variable is
-changed.}
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
 \item{covariate_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for covariates selection}
@@ -44,8 +41,8 @@ for variable names that can be used for covariates selection}
 \item{interaction_var}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
 for variable names that can be used for interaction variable selection}
 
-\item{conf_level}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
-for variable names that can be used for confidence level for computation of the confidence intervals.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

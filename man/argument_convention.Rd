@@ -4,8 +4,8 @@
 \alias{argument_convention}
 \title{Standard Arguments}
 \arguments{
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
 returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
@@ -26,9 +26,6 @@ variable name for subject id.}
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
-
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
@@ -75,8 +72,8 @@ name of the variable for the analysis.}
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for censor variable}
 
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 

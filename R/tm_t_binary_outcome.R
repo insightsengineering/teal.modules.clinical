@@ -64,14 +64,16 @@ tm_t_binary_outcome <- function(label,
                                 aval_var = choices_selected(
                                   variable_choices(dataname, "AVALC"),
                                   "AVALC", fixed = TRUE
-                                ),
+                                  ),
+                                conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 pre_output = NULL,
                                 post_output = NULL) {
 
   stopifnot(
     is_character_single(label),
     is_character_single(dataname),
-    is_character_single(parentname)
+    is_character_single(parentname),
+    is.choices_selected(conf_level)
   )
 
   args <- as.list(environment())
@@ -251,14 +253,13 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = FALSE
         ),
-        numericInput(
+        optionalSelectInput(
           inputId = ns("conf_level"),
           label = "Confidence Level",
-          value = 0.95,
-          min = 0.01,
-          max = 0.99,
-          step = 0.01,
-          width = "100%"
+          a$conf_level$choices,
+          a$conf_level$selected,
+          multiple = FALSE,
+          fixed = a$conf_level$fixed
         ),
         tags$label("Show All Reponse Categories"),
         shinyWidgets::switchInput(
@@ -361,6 +362,11 @@ srv_t_binary_outcome <- function(input,
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     NULL
   })

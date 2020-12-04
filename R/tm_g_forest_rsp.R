@@ -19,7 +19,7 @@ NULL
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #'
 template_forest_rsp <- function(anl_name = "ANL",
-                                parent_name = "ADSL_FILTERED",
+                                parentname = "ADSL_FILTERED",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
@@ -32,7 +32,7 @@ template_forest_rsp <- function(anl_name = "ANL",
 
   assert_that(
     is.string(anl_name),
-    is.string(parent_name),
+    is.string(parentname),
     is.string(arm_var),
     is.string(aval_var),
     is.null(subgroup_var) || is.character(subgroup_var),
@@ -97,7 +97,7 @@ template_forest_rsp <- function(anl_name = "ANL",
     substitute(
       parent %>% filter(arm_var %in% arm_vals),
       env = list(
-        parent = as.name(parent_name),
+        parent = as.name(parentname),
         arm_var = as.name(arm_var),
         arm_vals = c(ref_arm, comp_arm)
       )
@@ -280,7 +280,7 @@ template_forest_rsp <- function(anl_name = "ANL",
 #'
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,
@@ -288,6 +288,7 @@ tm_g_forest_rsp <- function(label,
                             subgroup_var,
                             strata_var,
                             fixed_symbol_size = TRUE,
+                            conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,
                             pre_output = NULL,
@@ -296,8 +297,9 @@ tm_g_forest_rsp <- function(label,
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
-    is_character_single(parent_name),
+    is_character_single(parentname),
     is_logical_single(fixed_symbol_size),
+    is.choices_selected(conf_level),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -314,11 +316,11 @@ tm_g_forest_rsp <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE),
-    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
   module(
@@ -330,7 +332,7 @@ tm_g_forest_rsp <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
         plot_height = plot_height,
@@ -411,14 +413,13 @@ ui_g_forest_rsp <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
-          numericInput(
+          optionalSelectInput(
             inputId = ns("conf_level"),
             label = "Confidence Level",
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
+            a$conf_level$choices,
+            a$conf_level$selected,
+            multiple = FALSE,
+            fixed = a$conf_level$fixed
           ),
           checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
         )
@@ -435,7 +436,7 @@ srv_g_forest_rsp <- function(input,
                              session,
                              datasets,
                              dataname,
-                             parent_name,
+                             parentname,
                              arm_var,
                              arm_ref_comp,
                              paramcd,
@@ -454,7 +455,7 @@ srv_g_forest_rsp <- function(input,
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte"
@@ -490,7 +491,7 @@ srv_g_forest_rsp <- function(input,
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -524,6 +525,11 @@ srv_g_forest_rsp <- function(input,
       )
     }
 
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
     NULL
   })
 
@@ -546,7 +552,7 @@ srv_g_forest_rsp <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_forest_rsp(
       anl_name = "ANL",
-      parent_name = "ANL_ADSL",
+      parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,

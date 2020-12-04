@@ -8,7 +8,7 @@
 #' @inheritParams shared_params
 #'
 template_forest_tte <- function(anl_name = "ANL",
-                                parent_name = "ANL_ADSL",
+                                parentname = "ANL_ADSL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
@@ -80,7 +80,7 @@ template_forest_tte <- function(anl_name = "ANL",
     substitute(
       data %>% filter(arm_var %in% arm_vals),
       env = list(
-        data = as.name(parent_name),
+        data = as.name(parentname),
         arm_var = as.name(arm_var),
         arm_vals = c(ref_arm, comp_arm)
       )
@@ -218,7 +218,6 @@ template_forest_tte <- function(anl_name = "ANL",
 #'
 #' @inheritParams argument_convention
 #' @inheritParams tm_g_forest_rsp
-#' @param parent_name (\code{character}) name of \code{ADSL} dataset used in the analysis.
 #' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 #'   and preselected option for analysis variable
 #' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
@@ -287,7 +286,7 @@ template_forest_tte <- function(anl_name = "ANL",
 #'
 tm_g_forest_tte <- function(label,
                             dataname,
-                            parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                             arm_var,
                             arm_ref_comp = NULL,
                             subgroup_var,
@@ -295,11 +294,7 @@ tm_g_forest_tte <- function(label,
                             strata_var,
                             aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                             cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                            conf_level = choices_selected(
-                              c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
-                              0.95,
-                              keep_order = TRUE
-                              ),
+                            conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(980L, 500L, 2000L),
@@ -309,7 +304,7 @@ tm_g_forest_tte <- function(label,
   stopifnot(
     is_character_single(label),
     is_character_single(dataname),
-    is_character_single(parent_name),
+    is_character_single(parentname),
     is.choices_selected(conf_level),
     is_logical_single(fixed_symbol_size)
     )
@@ -319,12 +314,12 @@ tm_g_forest_tte <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parent_name, multiple = TRUE),
-    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE)
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
   module(
@@ -336,8 +331,8 @@ tm_g_forest_tte <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
         arm_ref_comp = arm_ref_comp,
+        parentname = parentname,
         plot_height = plot_height,
         plot_width = plot_width
         )
@@ -450,7 +445,7 @@ srv_g_forest_tte <- function(input,
                              session,
                              datasets,
                              dataname,
-                             parent_name,
+                             parentname,
                              arm_var,
                              arm_ref_comp,
                              paramcd,
@@ -470,7 +465,7 @@ srv_g_forest_tte <- function(input,
     input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_forest_tte"
@@ -491,7 +486,7 @@ srv_g_forest_tte <- function(input,
   )
 
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -538,6 +533,12 @@ srv_g_forest_tte <- function(input,
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
     NULL
   })
 
@@ -560,7 +561,7 @@ srv_g_forest_tte <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_forest_tte(
       anl_name = "ANL",
-      parent_name = "ANL_ADSL",
+      parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,

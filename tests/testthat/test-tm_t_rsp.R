@@ -196,7 +196,8 @@ test_that("template_rsp generates expression with non-default controls.", {
         add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp", conf_level = 0.8, method = "jeffreys"
-        ) %>% estimate_proportion_diff(
+        ) %>%
+        estimate_proportion_diff(
           vars = "is_rsp", show_labels = "visible",
           var_labels = "Unstratified Analysis",
           conf_level = 0.8, method = "ha"
@@ -493,7 +494,8 @@ test_that("template_rsp generates expression with non-default controls.", {
         add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp", conf_level = 0.8, method = "jeffreys"
-        ) %>% estimate_proportion_diff(
+        ) %>%
+        estimate_proportion_diff(
           vars = "is_rsp", show_labels = "visible",
           var_labels = "Unstratified Analysis",
           conf_level = 0.8, method = "ha"

@@ -55,7 +55,7 @@ tm_a_mmrm(
   cov_var,
   arm_ref_comp = NULL,
   paramcd,
-  conf_level,
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -71,8 +71,8 @@ usually this refers to \code{"ADSL"}.}
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable for the analysis.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
@@ -90,8 +90,8 @@ for variable names that can be used as \code{visit} variable. Must be a factor i
 \item{cov_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for covariates.}
 
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{cor_struct}{a string specifying the correlation structure, defaults to
 \code{"unstructured"}. See the details.}
@@ -214,8 +214,7 @@ app <- init(
         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
-      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95)
+      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
     )
   )
 )

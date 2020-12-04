@@ -436,7 +436,7 @@ template_events <- function(dataname,
 #' }
 tm_t_events <- function(label,
                         dataname,
-                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         hlt,
                         llt,
@@ -460,7 +460,7 @@ tm_t_events <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     hlt = cs_to_des_select(hlt, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
@@ -474,7 +474,7 @@ tm_t_events <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         event_type = event_type,
         label = label
         )
@@ -559,7 +559,7 @@ srv_t_events_byterm <- function(input,
                                 session,
                                 datasets,
                                 dataname,
-                                parent_name,
+                                parentname,
                                 event_type,
                                 arm_var,
                                 hlt,
@@ -582,7 +582,7 @@ srv_t_events_byterm <- function(input,
   )
 
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()

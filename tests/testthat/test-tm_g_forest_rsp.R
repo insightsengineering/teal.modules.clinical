@@ -2,7 +2,7 @@ test_that("template_forest_rsp generates correct expressions", {
 
   result <- template_forest_rsp(
     anl_name = "adrs",
-    parent_name = "adsl",
+    parentname = "adsl",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),

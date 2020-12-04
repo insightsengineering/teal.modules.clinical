@@ -395,8 +395,7 @@ template_mmrm_plots <- function(fit_name,
 #'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-#'       conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95)
+#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
 #'     )
 #'   )
 #' )
@@ -415,7 +414,7 @@ tm_a_mmrm <- function(label,
                       cov_var,
                       arm_ref_comp = NULL,
                       paramcd,
-                      conf_level,
+                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
@@ -968,6 +967,11 @@ srv_mmrm <- function(input,
       split(anl_data, anl_data[[input_visit_var]]),
       levels(anl_data[[input_visit_var]])
     )
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     validate(
       need(

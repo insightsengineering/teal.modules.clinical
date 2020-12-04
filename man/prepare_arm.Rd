@@ -16,8 +16,8 @@ prepare_arm(
 \arguments{
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}

@@ -6,7 +6,7 @@
 \usage{
 template_forest_tte(
   anl_name = "ANL",
-  parent_name = "ANL_ADSL",
+  parentname = "ANL_ADSL",
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
@@ -21,11 +21,11 @@ template_forest_tte(
 \arguments{
 \item{anl_name}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
@@ -45,8 +45,8 @@ preselected option for variable names that can be used as the default subgroups.
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{conf_level}{(\code{proportion})\cr confidence level of the interval.
-Default is 0.95.}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 }
 \description{
 Creates a valid expression for survival forest plot.

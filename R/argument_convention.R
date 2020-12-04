@@ -9,8 +9,8 @@
 #' single reference point to import the `roxygen` argument description with:
 #' `@inheritParams argument_convention`
 #'
-#' @param arm_var (`string` or `choices_selected` with teal module)\cr
-#'   variable names designating the study arm.
+#' @param arm_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for variable names that can be used as \code{arm_var}.
 #' @param arm_ref_comp (`choices_selected`, optional)\cr
 #'   returned by [teal::choices_selected]. If specified it must be a named list
 #'   with each element corresponding to an arm variable in `ADSL` and the
@@ -24,8 +24,6 @@
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
 #' @param combine_comp_arms (`flag`)\cr triggers the combination of comparison arms.
 #' @param parentname (`string`)\cr parent analysis data used in teal module,
-#'   usually this refers to `"ADSL"`.
-#' @param parent_name (`string`)\cr parent analysis data used in teal module,
 #'   usually this refers to `"ADSL"`.
 #' @param dataname (`string`)\cr analysis data used in teal module.
 #' @param anl_name (`string`)\cr analysis data used in teal module.
@@ -55,8 +53,8 @@
 #'   name of the variable for the analysis.
 #' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 #'   and preselected option for censor variable
-#' @param conf_level (`proportion`)\cr confidence level of the interval.
-#'   Default is 0.95.
+#' @param conf_level ([choices_selected()])\cr object with all available choices and pre-selected option
+#'   for confidence level, each within range of (0, 1).
 #' @param add_total (`flag`)\cr whether to include column with total number of patients.
 #' @param hlt (`string` or `choices_selected` with teal module)\cr
 #'   name of the variable with high level term for events.

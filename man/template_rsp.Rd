@@ -26,8 +26,8 @@ template_rsp(
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{aval_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable for the analysis.}

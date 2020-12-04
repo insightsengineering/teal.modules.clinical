@@ -10,6 +10,7 @@ tm_g_ci(
   y_var,
   color,
   stat = c("mean", "median"),
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -27,6 +28,9 @@ tm_g_ci(
 
 \item{color}{(\code{data_extract_spec})\cr the group variable (color, line type
 and point shape).}
+
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

@@ -268,7 +268,7 @@ template_events_by_grade <- function(dataname,
 #'
 tm_t_events_by_grade <- function(label,
                                  dataname,
-                                 parent_name = ifelse(
+                                 parentname = ifelse(
                                    is(arm_var, "data_extract_spec"),
                                    datanames_input(arm_var),
                                    "ADSL"
@@ -282,14 +282,14 @@ tm_t_events_by_grade <- function(label,
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
-    is_character_single(parent_name),
+    is_character_single(parentname),
     is_logical_single(add_total)
   )
 
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     hlt = cs_to_des_select(hlt, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname),
     grade = cs_to_des_select(grade, dataname = dataname)
@@ -304,7 +304,7 @@ tm_t_events_by_grade <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         label = label
       )
     ),
@@ -364,7 +364,7 @@ srv_t_events_by_grade <- function(input,
                                   session,
                                   datasets,
                                   dataname,
-                                  parent_name,
+                                  parentname,
                                   label,
                                   arm_var,
                                   hlt,
@@ -388,7 +388,7 @@ srv_t_events_by_grade <- function(input,
   )
 
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()

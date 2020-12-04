@@ -304,7 +304,7 @@ template_summary_by <- function(parentname,
 #' }
 tm_t_summary_by <- function(label,
                             dataname,
-                            parent_name = ifelse(
+                            parentname = ifelse(
                               is(arm_var, "data_extract_spec"),
                               datanames_input(arm_var),
                               "ADSL"
@@ -330,7 +330,7 @@ tm_t_summary_by <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
@@ -345,7 +345,7 @@ tm_t_summary_by <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         label = label
         )
       ),
@@ -429,7 +429,7 @@ srv_summary_by <- function(input,
                            session,
                            datasets,
                            dataname,
-                           parent_name,
+                           parentname,
                            arm_var,
                            paramcd,
                            by_vars,
@@ -453,7 +453,7 @@ srv_summary_by <- function(input,
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()

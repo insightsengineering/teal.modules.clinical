@@ -15,6 +15,7 @@ tm_t_ancova(
   cov_var,
   avisit,
   paramcd,
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -27,8 +28,8 @@ tm_t_ancova(
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
 returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
@@ -48,6 +49,9 @@ value of analysis visit \code{AVISIT} of interest.}
 
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
+
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
+for confidence level, each within range of (0, 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

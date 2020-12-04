@@ -133,7 +133,7 @@ template_events_patyear <- function(dataname,
 #'
 tm_t_events_patyear <- function(label,
                                 dataname,
-                                parent_name = ifelse(
+                                parentname = ifelse(
                                   is(arm_var, "data_extract_spec"),
                                   datanames_input(arm_var),
                                   "ADSL"
@@ -148,17 +148,20 @@ tm_t_events_patyear <- function(label,
                                 ),
                                 cnsr_var = choices_selected(
                                   variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE
-                                )
+                                ),
+                                conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE)
+
 ) {
   stopifnot(
     is_character_single(dataname),
-    is_character_single(parent_name)
+    is_character_single(parentname),
+    is.choices_selected(conf_level)
   )
 
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
@@ -174,7 +177,7 @@ tm_t_events_patyear <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         label = label
       )
     ),
@@ -245,14 +248,13 @@ ui_events_patyear <- function(id, ...) {
         multiple = FALSE,
         fixed = FALSE
       ),
-      numericInput(
+      optionalSelectInput(
         inputId = ns("conf_level"),
         label = "Confidence Level",
-        value = 0.95,
-        min = 0.01,
-        max = 0.99,
-        step = 0.01,
-        width = "100%"
+        a$conf_level$choices,
+        a$conf_level$selected,
+        multiple = FALSE,
+        fixed = a$conf_level$fixed
       ),
       optionalSelectInput(
         ns("conf_method"),
@@ -275,7 +277,7 @@ srv_events_patyear <- function(input,
                                session,
                                datasets,
                                dataname,
-                               parent_name,
+                               parentname,
                                arm_var,
                                paramcd,
                                aval_var,
@@ -323,7 +325,7 @@ srv_events_patyear <- function(input,
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -339,6 +341,11 @@ srv_events_patyear <- function(input,
       anlvars = c("USUBJID", "STUDYID", input_paramcd, input_cnsr_var),
       arm_var = input_arm_var
     )
+
+    validate(need(
+      input$conf_level > 0 && input$conf_level < 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
   })
 
   # The R-code corresponding to the analysis.

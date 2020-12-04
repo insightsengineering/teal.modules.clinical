@@ -295,13 +295,15 @@ tm_t_ancova <- function(label,
                         cov_var,
                         avisit,
                         paramcd,
+                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL
 ) {
 
   stopifnot(
     is_character_single(dataname),
-    is_character_single(parentname)
+    is_character_single(parentname),
+    is.choices_selected(conf_level)
   )
 
   args <- c(as.list(environment()))
@@ -398,14 +400,13 @@ ui_ancova <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      numericInput(
+      optionalSelectInput(
         inputId = ns("conf_level"),
         label = HTML(paste("Confidence Level")),
-        value = 0.95,
-        min = 0.01,
-        max = 0.99,
-        step = 0.01,
-        width = "100%"
+        a$conf_level$choices,
+        a$conf_level$selected,
+        multiple = FALSE,
+        fixed = a$conf_level$fixed
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -491,6 +492,11 @@ srv_ancova <- function(input,
     validate(need(
       length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
       "ANCOVA table needs at least 2 arm groups to make comparisons."
+    ))
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
     ))
 
   })

@@ -12,9 +12,6 @@
 #' @param facet_var ([choices_selected()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
-#' @param conf_level ([choices_selected()])\cr
-#'   object with all available choices and preselected option
-#'   for confidence level, each within range of (0, 1).
 #'
 NULL
 
@@ -252,7 +249,7 @@ template_g_km <- function(anl_name = "ANL",
 #'
 tm_g_km <- function(label,
                     dataname,
-                    parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                    parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                     arm_var,
                     arm_ref_comp = NULL,
                     paramcd,
@@ -260,7 +257,7 @@ tm_g_km <- function(label,
                     facet_var,
                     aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                     cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                    conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95),
+                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(1200L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
@@ -268,7 +265,8 @@ tm_g_km <- function(label,
   stopifnot(
     is_character_single(label),
     is_character_single(dataname),
-    is_character_single(parent_name)
+    is_character_single(parentname),
+    is.choices_selected(conf_level)
   )
 
   check_slider_input(plot_height, allow_null = FALSE)
@@ -276,10 +274,10 @@ tm_g_km <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE),
-    facet_var = cs_to_des_select(facet_var, dataname = parent_name, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
+    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
   )
@@ -294,7 +292,7 @@ tm_g_km <- function(label,
       list(
         dataname = dataname,
         label = label,
-        parent_name = parent_name,
+        parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
         plot_width = plot_width
@@ -481,7 +479,7 @@ srv_g_km <- function(input,
                      session,
                      datasets,
                      dataname,
-                     parent_name,
+                     parentname,
                      paramcd,
                      arm_var,
                      arm_ref_comp,
@@ -501,7 +499,7 @@ srv_g_km <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
@@ -517,7 +515,7 @@ srv_g_km <- function(input,
 
   validate_checks <- reactive({
 
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -550,6 +548,11 @@ srv_g_km <- function(input,
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    validate(need(
+      input$conf_level > 0 && input$conf_level < 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     NULL
   })

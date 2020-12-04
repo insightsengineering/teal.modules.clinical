@@ -3,13 +3,12 @@
 #' @description This module produces a multi-variable logistic regression table that matches the
 #'   STREAM template \code{lgrt02}
 #'
+#' @inheritParams argument_convention
 #' @inheritParams tm_t_tte
 #' @param covariate_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for covariates selection
 #' @param interaction_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
 #' for variable names that can be used for interaction variable selection
-#' @param conf_level \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for confidence level for computation of the confidence intervals.
 #'
 #' @export
 #' @examples
@@ -55,7 +54,7 @@ tm_t_logistic <- function(label,
                           paramcd,
                           covariate_var,
                           interaction_var,
-                          conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
+                          conf_level = choices_selected(c(0.9, 0.9, 0.85), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL) {
   module(
@@ -82,7 +81,6 @@ tm_t_logistic <- function(label,
 #                           paramcd,
 #                           covariate_var,
 #                           interaction_var,
-#                           conf_level = choices_selected(c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995), 0.95, keep_order = TRUE),
 #                           pre_output = NULL,
 #                           post_output = NULL) {
 #
@@ -91,6 +89,7 @@ tm_t_logistic <- function(label,
 #   stopifnot(is.choices_selected(arm_var))
 #   stopifnot(is.choices_selected(paramcd))
 #   stopifnot(is.choices_selected(covariate_var))
+#   stopifnot(is.choices_selected(conf_level))
 #
 #   args <- as.list(environment())
 #
@@ -318,6 +317,11 @@ tm_t_logistic <- function(label,
 #         increments <- NULL
 #       }
 #     }
+#
+#     validate(need(
+#       input$conf_level >= 0 && input$conf_level <= 1,
+#       "Please choose a confidence level between 0 and 1"
+#     ))
 #     conf_level <- as.numeric(input$conf_level) # nolint
 #     # Validate your input
 #     validate_standard_inputs(

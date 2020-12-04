@@ -18,6 +18,7 @@
 * New utility function `pipe_expr` to concatenate expressions.
 * New utility function `add_expr` to add expressions to a list of expressions.
 * New utility function `bracket_expr` to concatenate expressions in a single expression.
+* Update all modules to use `OptionalSelectInput` for `conf_level`.
 
 # teal.modules.clinical 0.8.5
 

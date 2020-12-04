@@ -190,14 +190,13 @@ template_coxreg <- function(dataname,
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams shared_params
+#' @inheritParams argument_convention
 #' @param dataname `character` analysis data used in teal module, needs to be
 #'   available in the list passed to the `data` argument of
 #'   \code{\link[teal]{init}}. Note that the data is expected to be in vertical
 #'   form with the `PARAMCD` variable filtering to one observation per patient.
-#' @param parent_name (\code{character}) name of \code{ADSL} dataset used in the analysis.
-#' @param arm_var \code{\link[teal]{choices_selected}} object with all available
-#'   choices and preselected option for variable names that can be used as
-#'   `arm_var`
+#' @param arm_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+#'   and preselected option for variable names that can be used as \code{arm_var}
 #' @param arm_ref_comp (\code{\link[teal]{choices_selected}}) optional, if
 #'   specified it must be a named list with each element corresponding to an arm
 #'   variable in `ADSL` and the element must be another list with the elements
@@ -219,9 +218,6 @@ template_coxreg <- function(dataname,
 #' @param multivariate If `FALSE`, the univariate approach is be computed
 #'   (equivalent to `COXT01` standard) instead of the multivariate model
 #'   (equivalent to `COXT02` standard).
-#' @param conf_level \code{\link[teal]{choices_selected}} object with all
-#'   available choices and preselected option for variable names that can be
-#'   used for confidence level for computation of the confidence intervals.
 #'
 #' @details
 #' The Cox Proportional Hazards (PH) model is the most commonly used method to
@@ -382,7 +378,7 @@ template_coxreg <- function(dataname,
 #'
 tm_t_coxreg <- function(label,
                         dataname,
-                        parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         arm_ref_comp = NULL,
                         paramcd,
@@ -391,23 +387,20 @@ tm_t_coxreg <- function(label,
                         aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                         cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                         multivariate = TRUE,
-                        conf_level = choices_selected(
-                          c(0.8, 0.85, 0.90, 0.95, 0.99, 0.995),
-                          0.95, keep_order = TRUE
-                        ),
+                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL) {
   stopifnot(
     length(dataname) == 1,
-    is.cs_or_des(conf_level)
-  )
+    is.choices_selected(conf_level)
+    )
 
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parent_name),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parent_name, multiple = TRUE),
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
@@ -423,7 +416,7 @@ tm_t_coxreg <- function(label,
       list(
         arm_ref_comp = arm_ref_comp,
         dataname = dataname,
-        parent_name = parent_name,
+        parentname = parentname,
         label = label
       )
     ),
@@ -548,23 +541,22 @@ ui_t_coxreg <- function(id, ...) {
             choices = c("exact", "breslow", "efron"),
             selected = "exact"
           ),
-          numericInput(
+          optionalSelectInput(
             inputId = ns("conf_level"),
             label = p(
               "Confidence level for ",
               span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
-            ),
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
+              ),
+            a$conf_level$choices,
+            a$conf_level$selected,
+            multiple = FALSE,
+            fixed = a$conf_level$fixed
+            )
           )
         )
-      )
-    ),
+      ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
@@ -579,7 +571,7 @@ srv_t_coxreg <- function(input,
                          session,
                          datasets,
                          dataname,
-                         parent_name,
+                         parentname,
                          arm_var,
                          paramcd,
                          strata_var,
@@ -597,7 +589,7 @@ srv_t_coxreg <- function(input,
     input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parent_name),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_coxreg"
@@ -649,7 +641,7 @@ srv_t_coxreg <- function(input,
 
   ## Prepare the call evaluation environment ----
   validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parent_name, filtered = TRUE)
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
@@ -672,6 +664,11 @@ srv_t_coxreg <- function(input,
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     do.call(what = "validate_standard_inputs", validate_args)
 
@@ -716,7 +713,7 @@ srv_t_coxreg <- function(input,
       control = control_coxreg(
         pval_method = input$pval_method,
         ties = input$ties,
-        conf_level = input$conf_level,
+        conf_level = as.numeric(input$conf_level),
         interaction = if_null(input$interactions, FALSE)
       )
     )

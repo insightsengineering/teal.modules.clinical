@@ -22,7 +22,7 @@ template_events(
 tm_t_events(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   hlt,
@@ -40,8 +40,8 @@ tm_t_events(
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
-\item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable names designating the study arm.}
+\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{hlt}{(\code{string} or \code{choices_selected} with teal module)\cr
 name of the variable with high level term for events.}
@@ -64,9 +64,6 @@ alphabetically.}
 rates between any two columns.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
-
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
 }
 \description{
 Teal Module: Events by Term

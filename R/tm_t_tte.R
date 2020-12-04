@@ -318,6 +318,7 @@ template_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams shared_params
+#' @inheritParams argument_convention
 #' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
 #'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 #'   Note that the data is expected to be in vertical form with the
@@ -338,6 +339,10 @@ template_tte <- function(dataname = "ANL",
 #'   and preselected option for analysis variable
 #' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 #'   and preselected option for censor variable
+#' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
+#'   for confidence level, each within range of (0, 1).
+#' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
+#'   for confidence level, each within range of (0, 1).
 #' @param time_points (\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
 #'   for variable names that can be used \code{REFACTOR}
 #' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
@@ -426,19 +431,21 @@ tm_t_tte <- function(label,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                      cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
+                     conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      time_points,
                      time_unit = "months",
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      pre_output = NULL,
                      post_output = NULL) {
-
   stopifnot(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
-    is.choices_selected(time_points)
+    is.choices_selected(time_points),
+    is.choices_selected(conf_level_coxph),
+    is.choices_selected(conf_level_survfit)
   )
-
 
   args <- as.list(environment())
 
@@ -597,7 +604,7 @@ ui_t_tte <- function(id, ...) {
             choices = c("exact", "breslow", "efron"),
             selected = "exact"
           ),
-          numericInput(
+          optionalSelectInput(
             inputId = ns("conf_level_coxph"),
             label = HTML(
               paste(
@@ -606,17 +613,16 @@ ui_t_tte <- function(id, ...) {
                 " (Hazard Ratio)", sep = ""
               )
             ),
-            value = 0.95,
-            min = 0.01,
-            max = 0.99,
-            step = 0.01,
-            width = "100%"
+            a$conf_level_coxph$choices,
+            a$conf_level_coxph$selected,
+            multiple = FALSE,
+            fixed = a$conf_level_coxph$fixed
           )
         )
       ),
       panel_item(
         "Additional table settings",
-        numericInput(
+        optionalSelectInput(
           inputId = ns("conf_level_survfit"),
           label = HTML(
             paste(
@@ -626,11 +632,10 @@ ui_t_tte <- function(id, ...) {
               sep = ""
             )
           ),
-          value = 0.95,
-          min = 0.01,
-          max = 0.99,
-          step = 0.01,
-          width = "100%"
+          a$conf_level_survfit$choices,
+          a$conf_level_survfit$selected,
+          multiple = FALSE,
+          fixed = a$conf_level_survfit$fixed
         ),
         radioButtons(
           ns("conf_type_survfit"),
@@ -737,6 +742,16 @@ srv_t_tte <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
+    validate(need(
+      input$conf_level_coxph >= 0 && input$conf_level_coxph <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
+    validate(need(
+      input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
     NULL
   })
 
@@ -775,15 +790,15 @@ srv_t_tte <- function(input,
         coxph = control_coxph(
           pval_method = input$pval_method_coxph,
           ties = input$ties_coxph,
-          conf_level = input$conf_level_coxph
+          conf_level = as.numeric(input$conf_level_coxph)
         ),
         surv_time = control_surv_time(
-          conf_level = input$conf_level_survfit,
+          conf_level = as.numeric(input$conf_level_survfit),
           conf_type = input$conf_type_survfit,
           quantiles = input$probs_survfit
         ),
         surv_timepoint = control_surv_timepoint(
-          conf_level = input$conf_level_survfit,
+          conf_level = as.numeric(input$conf_level_survfit),
           conf_type = input$conf_type_survfit
         )
       )

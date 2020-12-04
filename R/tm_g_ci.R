@@ -180,14 +180,13 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
         label = "Groups (color)",
         data_extract_spec = args$color
       ),
-      numericInput(
+      optionalSelectInput(
         inputId = ns("conf_level"),
         label = "Confidence Level",
-        value = 0.95,
-        min = 0.01,
-        max = 0.99,
-        step = 0.01,
-        width = "100%"
+        choices = args$conf_level$choices,
+        selected = args$conf_level$selected,
+        multiple = FALSE,
+        fixed = args$conf_level$fixed
       ),
       radioButtons(
         inputId = ns("stat"),
@@ -235,6 +234,10 @@ srv_g_ci <- function(input, # nousage # nolint
     )
     validate_has_data(merged_data()$data(), min_nrow = 15)
 
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
   })
 
   list_calls <- reactive(
@@ -248,7 +251,7 @@ srv_g_ci <- function(input, # nousage # nolint
         merged_data()$columns_source$color
       },
       stat = input$stat,
-      conf_level = input$conf_level
+      conf_level = as.numeric(input$conf_level)
     )
   )
 
@@ -292,7 +295,6 @@ srv_g_ci <- function(input, # nousage # nolint
 #'   (y axis).
 #' @param color (`data_extract_spec`)\cr the group variable (color, line type
 #'   and point shape).
-#'
 #' @seealso [teal::data_extract_spec()]
 #'
 #' @export
@@ -374,6 +376,7 @@ tm_g_ci <- function(label,
                     y_var,
                     color,
                     stat = c("mean", "median"),
+                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
                     pre_output = NULL,
@@ -382,7 +385,8 @@ tm_g_ci <- function(label,
   stat <- match.arg(stat)
   stopifnot(
     is.character(label),
-    is_class_list("data_extract_spec")(list(y_var, x_var, color))
+    is_class_list("data_extract_spec")(list(y_var, x_var, color)),
+    is.choices_selected(conf_level)
   )
   stop_if_not(
     list(
