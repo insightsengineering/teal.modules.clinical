@@ -86,16 +86,40 @@ template_summary_by <- function(parentname,
     quote(add_colcounts())
   )
 
-  env_vars <- list(
+  if (denominator == "omit"){
+    env_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
     na.rm = na.rm,
     denom = ifelse(denominator == "n", "n", "N_col"),
-    stats = c(
-      c("n", "mean_sd", "median", "range"),
-      ifelse(denominator == "omit", "count", "count_fraction")
+    stats = c("n", "mean_sd", "median", "range", "count"),
+    formats = c(
+      n = "xx",
+      mean_sd = "xx.xx (xx.xx)",
+      median = "xx.xx",
+      range = "xx.xx - xx.xx",
+      count = "xx"
+      )
     )
-  )
+  }
+  else{
+    env_vars <- list(
+      sum_vars = sum_vars,
+      sum_var_labels = var_labels[sum_vars],
+      na.rm = na.rm,
+      denom = ifelse(denominator == "n", "n", "N_col"),
+      stats = c("n", "mean_sd", "median", "range", "count_fraction"),
+      formats = c(
+        n = "xx",
+        mean_sd = "xx.xx (xx.xx)",
+        median = "xx.xx",
+        range = "xx.xx - xx.xx",
+        count_fraction = "xx (xx.%)"
+        )
+      )
+  }
+
+
 
   for (by_var in by_vars) {
 
@@ -190,7 +214,8 @@ template_summary_by <- function(parentname,
               var_labels = sum_var_labels,
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              .formats = formats
             ),
             env = env_vars
           )
@@ -201,7 +226,8 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              .formats = formats
             ),
             env = env_vars
           )

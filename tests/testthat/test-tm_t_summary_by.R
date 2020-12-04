@@ -25,7 +25,14 @@ test_that("template_summary_by generates correct expressions", {
           vars = "AVAL",
           na.rm = FALSE,
           denom = "N_col",
-          .stats = c("n", "mean_sd", "median", "range", "count_fraction")
+          .stats = c("n", "mean_sd", "median", "range", "count_fraction"),
+          .formats = list(
+            c(n = "xx",
+              mean_sd = "xx.xx (xx.xx)",
+              median = "xx.xx",
+              range = "xx.xx - xx.xx",
+              count_fraction = "xx (xx.%)")
+          )[[1]]
         )
     ),
     table = quote({
