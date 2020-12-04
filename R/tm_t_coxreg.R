@@ -714,6 +714,7 @@ srv_t_coxreg <- function(input,
   })
 
   call_template <- function(comp_arm, anl) {
+    strata_var <- as.vector(anl$columns_source$strata_var)
     template_coxreg(
       dataname = "ANL",
       cov_var = as.vector(anl$columns_source$cov_var),
@@ -723,7 +724,7 @@ srv_t_coxreg <- function(input,
       aval_var = as.vector(anl$columns_source$aval_var),
       ref_arm = input$ref_arm,
       comp_arm = comp_arm,
-      strata = as.vector(anl$columns_source$strata_var),
+      strata = if (length(strata_var) != 0) strata_var else NULL,
       combine_comp_arms = input$combine_comp_arms,
       multivariate = input$type == "Multivariate",
       control = control_coxreg(
