@@ -7,7 +7,7 @@
 tm_t_tte(
   label,
   dataname,
-  parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
@@ -30,7 +30,7 @@ the list passed to the \code{data} argument of \code{\link[teal]{init}}.
 Note that the data is expected to be in vertical form with the
 \code{PARAMCD} variable filtering to one observation per patient.}
 
-\item{parent_name}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{parentname}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
 
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}}

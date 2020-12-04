@@ -1,8 +1,8 @@
 test_that("template_tte healthy standard output", {
 
   result <- template_tte(
-    anl_name = "ANL",
-    parent_name = "ANL_ADSL",
+    dataname = "ANL",
+    parentname = "ANL_ADSL",
     arm_var = "ARM",
     arm_ref_comp = "B: Placebo",
     comp_arm = c("A: Drug X", "C: Combination"),
@@ -22,31 +22,28 @@ test_that("template_tte healthy standard output", {
   )
 
   expected <- list(
-    data = bracket_expr(
-      list(
-        quote(
-          ANL <- ANL %>% # nolint
-            mutate(
-              is_event = CNSR == 0,
-              is_not_event = CNSR ==  1,
-              EVNT1 = factor(case_when(
-                is_event == TRUE ~ "Patients with event (%)",
-                is_event == FALSE ~ "Patients without event (%)"
-              )),
-              EVNTDESC = factor(EVNTDESC)
-            ) %>%
-            filter(ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination"))) %>%
-            mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-            mutate(ARM = droplevels(ARM))
-        ),
-        quote(
-          ANL_ADSL <- ANL_ADSL %>% # nolint
-            filter(ARM %in% c("B: Placebo", c("A: Drug X", "C: Combination"))) %>%
-            mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-            mutate(ARM = droplevels(ARM))
+    data = quote({
+      anl <- ANL %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        mutate(ARM = droplevels(ARM)) %>%
+        mutate(
+          is_event = CNSR == 0,
+          is_not_event = CNSR == 1,
+          EVNT1 = factor(
+            case_when(
+              is_event == TRUE ~ "Patients with event (%)",
+              is_event == FALSE ~ "Patients without event (%)"
+            )
+          ),
+          EVNTDESC = factor(EVNTDESC)
         )
-      )
-    ),
+      ANL_ADSL <- ANL_ADSL %>%# nolint
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        mutate(ARM = droplevels(ARM))
+    }),
+    col_counts = quote(col_counts <- combine_counts(fct = ANL_ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
@@ -79,9 +76,10 @@ test_that("template_tte healthy standard output", {
           method = "surv"
         )
     ),
-    table = quote(
-      result <- build_table(lyt = lyt, df = ANL, col_counts = table(ANL_ADSL$ARM))
-    )
+    table = quote({
+      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result
+    })
   )
 
   expect_equal_expr_list(result, expected)

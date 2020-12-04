@@ -5,8 +5,8 @@
 \title{Template for Time-to-Event}
 \usage{
 template_tte(
-  anl_name = "ANL",
-  parent_name = "ADSL_FILTERED",
+  dataname = "ANL",
+  parentname = "ADSL_FILTERED",
   arm_var = "ARM",
   arm_ref_comp = NULL,
   comp_arm = NULL,
@@ -22,9 +22,9 @@ template_tte(
 )
 }
 \arguments{
-\item{anl_name}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parent_name}{(\code{string})\cr parent analysis data used in teal module,
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr

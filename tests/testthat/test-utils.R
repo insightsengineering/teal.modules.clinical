@@ -135,8 +135,60 @@ test_that("bracket_expr returns a single evaluable expression", {
 })
 
 
-test_that("col_count_combine_grp works with standard inputs", {
-  result <- col_count_combine_grp(combine = TRUE, parent_name = "ADSL", group = "ARM")
-  expected <- quote(vapply(X = groups, FUN = function(x) sum(table(ADSL$ARM)[x]), FUN.VALUE = 1))
+# prepare_arm ----
+test_that("prepare_arm with standard inputs", {
+  result <- prepare_arm(
+    dataname = "adrs",
+    arm_var = "ARMCD",
+    ref_arm = "ARM A",
+    comp_arm = c("ARM B", "ARM C")
+  )
+
+  expected <- quote(
+    adrs %>%
+      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+      mutate(ARMCD = droplevels(ARMCD))
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("prepare_arm combine ref arms", {
+  result <- prepare_arm(
+    dataname = "adrs",
+    arm_var = "ARMCD",
+    ref_arm = c("ARM A", "ARM B"),
+    comp_arm = c("ARM C")
+  )
+
+  expected <- quote(
+    adrs %>%
+      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+      mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      mutate(ARMCD = droplevels(ARMCD))
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("prepare_arm combine ref arms and use new level", {
+  result <- prepare_arm(
+    dataname = "adrs",
+    arm_var = "ARMCD",
+    ref_arm = c("ARM A", "ARM B"),
+    comp_arm = c("ARM C"),
+    ref_arm_val = "Control"
+  )
+
+  expected <- quote(
+    adrs %>%
+      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "Control")) %>%
+      mutate(ARMCD = relevel(ARMCD, ref = "Control")) %>%
+      mutate(ARMCD = droplevels(ARMCD))
+  )
+
   expect_equal(result, expected)
 })

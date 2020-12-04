@@ -432,44 +432,6 @@ split_col_expr <- function(compare, combine, ref, group) {
   }
 }
 
-#' Column Count and Group Combination
-#'
-#' The function generates an expression for the column counts as found in the `rtables` framework.
-#'
-#' @inheritParams tm_t_tte
-#' @inheritParams split_col_expr
-#'
-#' @examples
-#' \dontrun{
-#' teal.modules.clinical:::col_count_combine_grp(combine = TRUE, parent_name = "ADSL", group = "ARM")
-#' }
-#'
-col_count_combine_grp <- function(combine,
-                                  parent_name,
-                                  group) {
-  if (combine) {
-    substitute(
-      expr = vapply(
-        X = groups,
-        FUN = function(x) sum(table(parent_data$group)[x]),
-        FUN.VALUE = 1
-      ),
-      env = list(
-        parent_data = as.name(parent_name),
-        group = group
-      )
-    )
-  } else {
-    substitute(
-      expr = table(parent_data$group),
-      env = list(
-        parent_data = as.name(parent_name),
-        group = group
-      )
-    )
-  }
-}
-
 #' Split `choices_selected` objects with interactions into
 #' their component variables
 #' @md
