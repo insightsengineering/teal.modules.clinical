@@ -26,7 +26,8 @@ test_that("template_events_patyear generates standard expressions", {
           control = control_incidence_rate(
             conf_level = 0.95,
             conf_type = "normal",
-            time_unit = 1
+            time_unit_input = "year",
+            time_unit_output = 1
           )
         )
     ),
@@ -69,7 +70,8 @@ test_that("template_events_patyear generates right expressions with non-default"
           control = control_incidence_rate(
             conf_level = 0.95,
             conf_type = "normal",
-            time_unit = 1
+            time_unit_input = "year",
+            time_unit_output = 1
           )
         )
     ),
@@ -95,7 +97,8 @@ test_that("template_events_patyear generates right expressions with non-default 
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",
-      time_unit = 100
+      time_unit_input = "month",
+      time_unit_output = 100
     ),
     event_indicator = 0,
     add_total = TRUE
@@ -117,7 +120,8 @@ test_that("template_events_patyear generates right expressions with non-default 
           control = control_incidence_rate(
             conf_level = 0.9,
             conf_type = "exact",
-            time_unit = 100
+            time_unit_input = "month",
+            time_unit_output = 100
           )
         )
     ),

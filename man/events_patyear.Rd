@@ -25,6 +25,8 @@ tm_t_events_patyear(
   arm_var,
   paramcd,
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+  avalu_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed =
+    TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE)
 )
 }

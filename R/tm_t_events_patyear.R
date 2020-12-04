@@ -63,14 +63,16 @@ template_events_patyear <- function(dataname,
         control = control_incidence_rate(
           conf_level = conf_level,
           conf_type = conf_type,
-          time_unit = time_unit
+          time_unit_input = time_unit_input,
+          time_unit_output = time_unit_output
         )
       ),
       env = list(
         aval_var = aval_var,
         conf_level = control$conf_level,
         conf_type = control$conf_type,
-        time_unit = control$time_unit
+        time_unit_input = control$time_unit_input,
+        time_unit_output = control$time_unit_output
       )
     )
   )
@@ -138,8 +140,16 @@ tm_t_events_patyear <- function(label,
                                   ),
                                 arm_var,
                                 paramcd,
-                                aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                                cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE)) {
+                                aval_var = choices_selected(
+                                  variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE
+                                ),
+                                avalu_var = choices_selected(
+                                  variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                                ),
+                                cnsr_var = choices_selected(
+                                  variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE
+                                )
+) {
   stopifnot(
     is_character_single(dataname),
     is_character_single(parent_name)
@@ -151,6 +161,7 @@ tm_t_events_patyear <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parent_name),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
   )
 
@@ -175,16 +186,16 @@ tm_t_events_patyear <- function(label,
 ui_events_patyear <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$cnsr_var)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$cnsr_var)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("patyear_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "aval_var", "cnsr_var")]),
+      datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "cnsr_var")]),
       data_extract_input(
         id = ns("paramcd"),
-        label = "Select Endpoint",
+        label = "Select an Event Type Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
@@ -208,14 +219,27 @@ ui_events_patyear <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
+        id = ns("avalu_var"),
+        label = "Analysis Unit Variable",
+        data_extract_spec = a$avalu_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        ns("time_unit_input"),
+        "Analysis Unit",
+        choices = NULL,
+        selected = NULL,
+        multiple = FALSE
+      ),
+      data_extract_input(
         id = ns("arm_var"),
         label = "Arm Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       optionalSelectInput(
-        ns("time_unit"),
-        "Time Unit for AE Rate",
+        ns("time_unit_output"),
+        "Time Unit for AE Rate (in Patient-Years)",
         choices = c(0.1, 1, 10, 100, 1000),
         selected = 100,
         multiple = FALSE,
@@ -233,8 +257,8 @@ ui_events_patyear <- function(id, ...) {
       optionalSelectInput(
         ns("conf_method"),
         "CI Method",
-        choices = c("Normal approximation", "Normal approximation for log rate", "Exact", "Bayr's method"),
-        selected = "Normal approximation",
+        choices = c("Normal (rate)", "Normal (log rate)", "Exact", "Bayr's method"),
+        selected = "Normal (rate)",
         multiple = FALSE,
         fixed = FALSE
       ),
@@ -255,6 +279,7 @@ srv_events_patyear <- function(input,
                                arm_var,
                                paramcd,
                                aval_var,
+                               avalu_var,
                                cnsr_var,
                                label) {
   init_chunks()
@@ -270,12 +295,22 @@ srv_events_patyear <- function(input,
       choices = event_choices,
       selected = event_choices[1]
     )
+    avalu_choices <- anl %>%
+      select(as.name(avalu_var$select$selected)) %>%
+      unique() %>%
+      arrange() %>%
+      pull()
+    updateSelectInput(
+      session, "time_unit_input",
+      choices = avalu_choices,
+      selected = avalu_choices[1]
+    )
   })
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, aval_var, cnsr_var),
-    input_id = c("arm_var", "paramcd", "aval_var", "cnsr_var"),
+    data_extract = list(arm_var, paramcd, aval_var, avalu_var, cnsr_var),
+    input_id = c("arm_var", "paramcd", "aval_var", "avalu_var", "cnsr_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -327,16 +362,23 @@ srv_events_patyear <- function(input,
       cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       control = control_incidence_rate(
         conf_level = as.numeric(input$conf_level), # nolint
-        conf_type = if (input$conf_method == "Normal approximation") {
+        conf_type = if (input$conf_method == "Normal (rate)") {
           "normal"
-        } else if (input$conf_method == "Normal approximation for log rate") {
+        } else if (input$conf_method == "Normal (log rate)") {
           "normal_log"
         } else if (input$conf_method == "Exact") {
           "exact"
         } else {
           "byar"
         },
-        time_unit = as.numeric(input$time_unit)
+        time_unit_input = if (as.character(input$time_unit_input) == "DAYS") {
+          "day"
+        } else if (as.character(input$time_unit_input) == "MONTHS") {
+          "month"
+        } else{
+          "year"
+        },
+        time_unit_output = as.numeric(input$time_unit_output)
       ),
       event_indicator = input$event_indicator,
       add_total = input$add_total
