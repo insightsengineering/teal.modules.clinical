@@ -111,34 +111,14 @@ adsl <- radsl(cached = TRUE) \%>\%
     DTHFL = case_when(  # nolint
       !is.na(DTHDT) ~ "Y",
       TRUE ~ ""
-    ),
-    DCSREAS = as.character(DCSREAS),
-    DCSREAS = case_when(  # nolint
-      is.na(DCSREAS) ~ "",
-      TRUE ~ DCSREAS
     )
   ) \%>\%
   rtables::var_relabel(
-    DTHFL = "Subject Death Flag",
-    DCSREAS = "Reason for Discontinuation from Study"
+    DTHFL = "Subject Death Flag"
   )
 
 adae <- radae(cached = TRUE)
 
-# Helper function for generating user-defined event flags.
-extract_aesi_label <- function(flag, scope = NULL) {
-  init_lbl <- obj_label(flag)
-  flag <- unique(flag)[!is.na(unique(flag))]
-  lbl <- if (length(flag) == 1 & !is.null(scope)) {
-    scope <- unique(scope)[!is.na(unique(scope))]
-    paste0(flag, " (", scope, ")")
-  } else if (length(flag) == 1 & is.null(scope)) {
-    flag
-  } else {
-    init_lbl
-  }
-  lbl
-}
 add_event_flags <- function(dat) {
   dat \%>\%
     dplyr::mutate(
@@ -153,9 +133,9 @@ add_event_flags <- function(dat) {
       TMPFL_SER = "Serious AE",
       TMPFL_REL = "Related AE",
       TMPFL_GR5 = "Grade 5 AE",
-      TMP_SMQ01 = extract_aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
-      TMP_SMQ02 = extract_aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-      TMP_CQ01 = extract_aesi_label(adae$CQ01NAM)
+      TMP_SMQ01 = aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
+      TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+      TMP_CQ01 = aesi_label(adae$CQ01NAM)
     )
 }
 

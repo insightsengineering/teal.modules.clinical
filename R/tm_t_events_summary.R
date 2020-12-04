@@ -135,12 +135,14 @@ template_events_summary <- function(anl_name,
       expr = count_values(
         dthfl_var,
         values = "Y",
-        .labels = c(count_fraction = "Total number of deaths")
+        .labels = c(count_fraction = "Total number of deaths"),
+        denom = "N_col"
       ) %>%
       count_values(
         dcsreas_var,
         values = "ADVERSE EVENT",
-        .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE")
+        .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+        denom = "N_col"
       ),
       env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
     )
@@ -200,8 +202,8 @@ template_events_summary <- function(anl_name,
       ) %>% count_values(
         "STUDYID",
         values = study_id,
-        .stats = "count_fraction",
-        .labels = c(count_fraction = "Total AEs"),
+        .stats = "count",
+        .labels = c(count = "Total AEs"),
         table_names = "total_aes"
       )
     )
@@ -492,34 +494,14 @@ template_events_summary <- function(anl_name,
 #'     DTHFL = case_when(  # nolint
 #'       !is.na(DTHDT) ~ "Y",
 #'       TRUE ~ ""
-#'     ),
-#'     DCSREAS = as.character(DCSREAS),
-#'     DCSREAS = case_when(  # nolint
-#'       is.na(DCSREAS) ~ "",
-#'       TRUE ~ DCSREAS
 #'     )
 #'   ) %>%
 #'   rtables::var_relabel(
-#'     DTHFL = "Subject Death Flag",
-#'     DCSREAS = "Reason for Discontinuation from Study"
+#'     DTHFL = "Subject Death Flag"
 #'   )
 #'
 #' adae <- radae(cached = TRUE)
 #'
-#' # Helper function for generating user-defined event flags.
-#' extract_aesi_label <- function(flag, scope = NULL) {
-#'   init_lbl <- obj_label(flag)
-#'   flag <- unique(flag)[!is.na(unique(flag))]
-#'   lbl <- if (length(flag) == 1 & !is.null(scope)) {
-#'     scope <- unique(scope)[!is.na(unique(scope))]
-#'     paste0(flag, " (", scope, ")")
-#'   } else if (length(flag) == 1 & is.null(scope)) {
-#'     flag
-#'   } else {
-#'     init_lbl
-#'   }
-#'   lbl
-#' }
 #' add_event_flags <- function(dat) {
 #'   dat %>%
 #'     dplyr::mutate(
@@ -534,9 +516,9 @@ template_events_summary <- function(anl_name,
 #'       TMPFL_SER = "Serious AE",
 #'       TMPFL_REL = "Related AE",
 #'       TMPFL_GR5 = "Grade 5 AE",
-#'       TMP_SMQ01 = extract_aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
-#'       TMP_SMQ02 = extract_aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'       TMP_CQ01 = extract_aesi_label(adae$CQ01NAM)
+#'       TMP_SMQ01 = aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
+#'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+#'       TMP_CQ01 = aesi_label(adae$CQ01NAM)
 #'     )
 #' }
 #'

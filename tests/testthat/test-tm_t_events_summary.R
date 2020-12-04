@@ -25,12 +25,14 @@ test_that("template_events_summary generates minimal table", {
         count_values(
           "DTHFL",
           values = "Y",
-          .labels = c(count_fraction = "Total number of deaths")
+          .labels = c(count_fraction = "Total number of deaths"),
+          denom = "N_col"
         ) %>%
         count_values(
           "DCSREAS",
           values = "ADVERSE EVENT",
-          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE")
+          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          denom = "N_col"
         )
       ),
     table_parent = quote(
@@ -50,8 +52,8 @@ test_that("template_events_summary generates minimal table", {
         count_values(
           "STUDYID",
           values = study_id,
-          .stats = "count_fraction",
-          .labels = c(count_fraction = "Total AEs"),
+          .stats = "count",
+          .labels = c(count = "Total AEs"),
           table_names = "total_aes"
         )
     ),
@@ -100,12 +102,14 @@ test_that("template_events_summary generates table with multiple flags", {
         count_values(
           "DTHFL",
           values = "Y",
-          .labels = c(count_fraction = "Total number of deaths")
+          .labels = c(count_fraction = "Total number of deaths"),
+          denom = "N_col"
         ) %>%
         count_values(
           "DCSREAS",
           values = "ADVERSE EVENT",
-          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE")
+          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          denom = "N_col"
         )
     ),
     table_parent = quote(
@@ -125,8 +129,8 @@ test_that("template_events_summary generates table with multiple flags", {
         count_values(
           "STUDYID",
           values = study_id,
-          .stats = "count_fraction",
-          .labels = c(count_fraction = "Total AEs"),
+          .stats = "count",
+          .labels = c(count = "Total AEs"),
           table_names = "total_aes"
         ) %>%
         count_patients_with_flags(
