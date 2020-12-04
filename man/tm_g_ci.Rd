@@ -29,8 +29,11 @@ tm_g_ci(
 \item{color}{(\code{data_extract_spec})\cr the group variable (color, line type
 and point shape).}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
+
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

@@ -64,8 +64,9 @@ and preselected option for censor variable}
 (equivalent to \code{COXT01} standard) instead of the multivariate model
 (equivalent to \code{COXT02} standard).}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

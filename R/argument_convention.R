@@ -47,14 +47,17 @@
 #' @param var_labels (named `character`)\cr optional variable labels for relabeling the analysis variables.
 #' @param avisit (`string` or `choices_selected` with teal module)\cr
 #'   value of analysis visit `AVISIT` of interest.
-#' @param cov_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for for the variables for covariates.
-#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for for the analysis variable.
-#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for censor variable.
-#' @param conf_level ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
+#' @param cov_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'   object with all available choices and preselected option for the covariates variables.
+#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'   object with all available choices and preselected option for the analysis variable.
+#' @param avalu_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'   object with all available choices and preselected option for the analysis unit variable.
+#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'   object with all available choices and preselected option for the censoring variable.
+#' @param conf_level ([choices_selected()])\cr
+#'   object with all available choices and pre-selected option for the confidence level,
+#'   each within range of (0, 1).
 #' @param add_total (`flag`)\cr whether to include column with total number of patients.
 #' @param hlt (`string` or `choices_selected` with teal module)\cr
 #'   name of the variable with high level term for events.

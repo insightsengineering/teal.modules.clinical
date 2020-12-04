@@ -38,11 +38,11 @@ element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for for the analysis variable.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis variable.}
 
-\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for for the variables for covariates.}
+\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the covariates variables.}
 
 \item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
 value of analysis visit \code{AVISIT} of interest.}
@@ -50,8 +50,9 @@ value of analysis visit \code{AVISIT} of interest.}
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}

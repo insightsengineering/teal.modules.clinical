@@ -45,8 +45,8 @@ variable is changed.}
 \item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable value designating the studied parameter.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for for the analysis variable.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis variable.}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}
@@ -57,8 +57,9 @@ names of the variables for stratified analysis.}
 \item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

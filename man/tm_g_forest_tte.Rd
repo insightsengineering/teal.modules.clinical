@@ -57,8 +57,9 @@ and preselected option for analysis variable}
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for censor variable}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}

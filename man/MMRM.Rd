@@ -68,8 +68,8 @@ usually this refers to \code{"ADSL"}.}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for for the analysis variable.}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis variable.}
 
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
@@ -87,11 +87,12 @@ variable name for subject id.}
 \item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
 for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
-\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for for the variables for covariates.}
+\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the covariates variables.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
+object with all available choices and pre-selected option for the confidence level,
+each within range of (0, 1).}
 
 \item{cor_struct}{a string specifying the correlation structure, defaults to
 \code{"unstructured"}. See the details.}

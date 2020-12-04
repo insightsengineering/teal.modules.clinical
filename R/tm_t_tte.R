@@ -1,4 +1,3 @@
-
 #' Control Function for Time-to-Event Teal Module
 #'
 #' Controls the arguments for Cox regressions and Survival analysis results.

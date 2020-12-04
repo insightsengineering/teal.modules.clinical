@@ -289,6 +289,7 @@ srv_g_ci <- function(input, # nousage # nolint
 #'
 #' The module generates the R code and returns the corresponding output.
 #'
+#' @inheritParams template_g_ci
 #' @param x_var (`data_extract_spec`)\cr the candidate treatment variable
 #'   (x axis).
 #' @param y_var (`data_extract_spec`)\cr the candidate analyzed variable
