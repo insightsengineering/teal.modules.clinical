@@ -288,8 +288,14 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
   stopifnot(is_logical_single(multiple))
 
+  vars <- if (inherits(cs, "delayed_choices_selected")) {
+    cs$choices$var_choices
+  } else {
+    attr(cs$choices, "var_choices")
+  }
+
   filter_spec(
-    vars = attr(cs$choices, "var_choices"),
+    vars = vars,
     choices = cs$choices,
     selected = cs$selected,
     multiple = multiple,
