@@ -25,9 +25,10 @@ test_that("template_summary generates correct expressions", {
           .stats = c("n", "mean_sd", "median", "range", "count_fraction")
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    )
+      print(result)
+    })
   )
   expect_equal_expr_list(result, expected)
 })
@@ -61,9 +62,10 @@ test_that("template_summary can generate customized table", {
           .stats = c("n", "mean_sd", "median", "range", "count")
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    )
+      print(result)
+    })
   )
   expect_equal_expr_list(result, expected)
 })

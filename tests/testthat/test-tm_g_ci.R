@@ -13,7 +13,7 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
     stat = "mean"
   )
 
-  expected <- quote(
+  expected <- quote({
     gg <- ggplot(
       data = ANL,
       mapping = aes(
@@ -37,12 +37,12 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
       )
-  )
+    print(gg)
+  })
 
-  expect_identical(result, expected)
+  expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
-
 })
 
 test_that("3. Confidence Interval Plot (using different stratification variable)", {
@@ -55,7 +55,7 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
     stat = "mean"
   )
 
-  expected <- quote(
+  expected <- quote({
     gg <- ggplot(
       data = ANL,
       mapping = aes(
@@ -79,9 +79,10 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
       )
-  )
+    print(gg)
+  })
 
-  expect_identical(result, expected)
+  expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })
@@ -95,7 +96,7 @@ test_that("4. Median and 95% CIs for median", {
     stat = "median"
   )
 
-  expected <- quote(
+  expected <- quote({
     gg <- ggplot(
       data = ANL,
       mapping = aes(
@@ -119,9 +120,10 @@ test_that("4. Median and 95% CIs for median", {
         caption = "Median and 95% CIs for median are displayed.",
         x = "Treatment Group"
       )
-  )
+    print(gg)
+  })
 
-  expect_identical(result, expected)
+  expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })
@@ -136,7 +138,7 @@ test_that("5. Using different alpha level", {
     conf_level = 0.90
   )
 
-  expected <- quote(
+  expected <- quote({
     gg <- ggplot(
       data = ANL,
       mapping = aes(
@@ -160,7 +162,8 @@ test_that("5. Using different alpha level", {
         caption = "Mean and 90% CIs for mean are displayed.",
         x = "Treatment Group"
       )
-  )
+    print(gg)
+  })
 
   expect_equal(result, expected)
   # Check the output.

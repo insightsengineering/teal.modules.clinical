@@ -54,6 +54,7 @@ test_that("template_events generates correct expressions", {
           path =  c("AEBODSYS", "*", "AEDECOD"),
           scorefun =  score_occurrences_cols(col_indices = length(col_n))
         )
+      print(pruned_and_sorted_result)
     })
   )
   expect_equal_expr_list(result, expected)
@@ -100,6 +101,7 @@ test_that("template_events can generate customized table", {
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(path =  c("CMDECOD"), scorefun = score_occurrences)
+      print(pruned_and_sorted_result)
     })
   )
   expect_equal_expr_list(result, expected)
@@ -157,6 +159,7 @@ test_that("template_events can generate customized table with alphabetical sorti
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result
+      print(pruned_and_sorted_result)
     })
   )
   expect_equal_expr_list(result, expected)
@@ -229,7 +232,7 @@ test_that("template_events can generate customized table with pruning", {
         is(tr, "ContentRow")
       }
       pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
-
+      print(pruned_and_sorted_result)
     })
   )
   expect_equal_expr_list(result, expected)

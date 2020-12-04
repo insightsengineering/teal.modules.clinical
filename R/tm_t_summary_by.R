@@ -251,7 +251,7 @@ template_summary_by <- function(parentname,
   y$table <- substitute(
     expr = {
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
       },
     env = list(col_counts = col_counts)
   )

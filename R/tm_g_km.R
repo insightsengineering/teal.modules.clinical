@@ -159,18 +159,21 @@ template_g_km <- function(anl_name = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = result <- g_km(
-          df = df,
-          variables = variables,
-          font_size = font_size,
-          xlab = xlab,
-          newpage = TRUE,
-          ggtheme = theme_minimal(),
-          control_surv = control_surv_timepoint(conf_level = conf_level),
-          control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-          annot_surv_med = annot_surv_med,
-          annot_coxph = annot_coxph
-        ),
+        expr = {
+          result <- g_km(
+            df = df,
+            variables = variables,
+            font_size = font_size,
+            xlab = xlab,
+            newpage = TRUE,
+            ggtheme = theme_minimal(),
+            control_surv = control_surv_timepoint(conf_level = conf_level),
+            control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+            annot_surv_med = annot_surv_med,
+            annot_coxph = annot_coxph
+          )
+        print(result)
+        },
         env = list(
           df = as.name(anl_name),
           font_size = font_size,

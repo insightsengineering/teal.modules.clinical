@@ -31,13 +31,14 @@ test_that("template_events_patyear generates standard expressions", {
           )
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(
         lyt = lyt,
         df = anl,
         col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
       )
-    )
+      print(result)
+    })
   )
 
   expect_equal_expr_list(result, expected)
@@ -75,13 +76,14 @@ test_that("template_events_patyear generates right expressions with non-default"
           )
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(
         lyt = lyt,
         df = anl,
         col_counts = table(adsl$ARM)
       )
-    )
+      print(result)
+    })
   )
 
   expect_equal_expr_list(result, expected)
@@ -125,13 +127,14 @@ test_that("template_events_patyear generates right expressions with non-default 
           )
         )
     ),
-    table = quote(
+    table = quote({
       result <- build_table(
         lyt = lyt,
         df = anl,
         col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
       )
-    )
+      print(result)
+    })
   )
 
   expect_equal_expr_list(result, expected)

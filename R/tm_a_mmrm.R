@@ -306,7 +306,7 @@ template_mmrm_plots <- function(fit_name,
           width = width,
           show_pval = show_pval
         )
-        lsmeans_plot
+        print(lsmeans_plot)
       },
       env = list(
         fit_mmrm = as.name(fit_name),
@@ -325,7 +325,7 @@ template_mmrm_plots <- function(fit_name,
           type = type,
           z_threshold = z_threshold
         )
-        diagnostic_plot
+        print(diagnostic_plot)
       },
       env = list(
         fit_mmrm = as.name(fit_name),

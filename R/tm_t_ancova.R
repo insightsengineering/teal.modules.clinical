@@ -193,7 +193,7 @@ template_ancova <- function(dataname = "ANL",
   y$table <- substitute(
     expr = {
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      result
+      print(result)
     },
     env = list(
       anl = as.name(dataname),

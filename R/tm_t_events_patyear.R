@@ -92,7 +92,10 @@ template_events_patyear <- function(dataname,
     )
   }
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts),
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      print(result)
+    },
     env = list(col_counts = col_counts)
   )
 
@@ -137,7 +140,7 @@ tm_t_events_patyear <- function(label,
                                   is(arm_var, "data_extract_spec"),
                                   datanames_input(arm_var),
                                   "ADSL"
-                                  ),
+                                ),
                                 arm_var,
                                 paramcd,
                                 aval_var = choices_selected(

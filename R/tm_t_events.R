@@ -270,9 +270,10 @@ template_events <- function(dataname,
       # So the order in y$table table is already alphabetically sorted.
       sort_list <- add_expr(
         sort_list,
-        quote(
+        quote({
           pruned_and_sorted_result <- pruned_result
-        )
+          print(pruned_and_sorted_result)
+        })
       )
 
     } else {
@@ -292,7 +293,6 @@ template_events <- function(dataname,
           pruned_and_sorted_result <- trim_rows(pruned_result, criteria = criteria_fun)
         )
       )
-
     }
 
   } else {
@@ -316,8 +316,11 @@ template_events <- function(dataname,
       sort_list <- add_expr(
         sort_list,
         substitute(
-          expr = pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path =  c(term_var), scorefun = scorefun_llt),
+          expr = {
+            pruned_and_sorted_result <- pruned_result %>%
+              sort_at_path(path =  c(term_var), scorefun = scorefun_llt)
+            print(pruned_and_sorted_result)
+          },
           env = list(
             term_var = term_var,
             scorefun_llt = scorefun_llt
@@ -329,9 +332,12 @@ template_events <- function(dataname,
       sort_list <- add_expr(
         sort_list,
         substitute(
-          expr = pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
-            sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt),
+          expr = {
+            pruned_and_sorted_result <- pruned_result %>%
+              sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
+              sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt)
+            print(pruned_and_sorted_result)
+          },
           env = list(
             llt = llt,
             hlt = hlt,
@@ -358,7 +364,6 @@ template_events <- function(dataname,
             pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
           )
         )
-
       }
 
     }
@@ -453,7 +458,7 @@ tm_t_events <- function(label,
     is_character_single(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff)
-    )
+  )
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -477,8 +482,8 @@ tm_t_events <- function(label,
         parentname = parentname,
         event_type = event_type,
         label = label
-        )
-      ),
+      )
+    ),
     filters = get_extract_datanames(data_extract_list)
   )
 }

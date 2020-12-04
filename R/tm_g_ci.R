@@ -149,7 +149,10 @@ template_g_ci <- function(dataname, # nousage # nolint
   )
 
   substitute(
-    expr = gg <- graph_expr,
+    expr = {
+      gg <- graph_expr
+      print(gg)
+      },
     env = list(graph_expr = pipe_expr(graph_list, pipe_str = "+"))
   )
 

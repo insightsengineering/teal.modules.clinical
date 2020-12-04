@@ -118,7 +118,10 @@ template_summary <- function(dataname,
   )
 
   y$table <- quote(
-    expr = result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      print(result)
+    }
   )
 
   y
