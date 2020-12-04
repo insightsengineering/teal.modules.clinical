@@ -640,7 +640,6 @@ srv_t_coxreg <- function(input,
 
       cov_is_numeric <- vapply(anl[input$cov_var], is.numeric, logical(1))
       interaction_var <- input$cov_var[cov_is_numeric]
-      print(interaction_var)
 
       if (length(interaction_var) != 0) {
         lapply(interaction_var, open_textinput, anl = anl)
@@ -675,6 +674,14 @@ srv_t_coxreg <- function(input,
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    # validate p-value method
+    if (!is.null(input_strata_var)) {
+      validate(need(
+        input$pval_method == "wald",
+        "Only Wald tests are supported for models with strata."
+      ))
+    }
 
     NULL
   })
