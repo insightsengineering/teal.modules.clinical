@@ -4,7 +4,7 @@
 \alias{extract_input}
 \title{Get input id for a data extract input}
 \usage{
-extract_input(varname, dataname)
+extract_input(varname, dataname, filter = FALSE)
 }
 \arguments{
 \item{varname}{(\code{character}) name of the variable corresponding to the

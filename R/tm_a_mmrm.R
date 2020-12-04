@@ -750,7 +750,7 @@ srv_mmrm <- function(input,
   # input$parallel does not get us out of sync (it just takes longer to get to same result)
   sync_inputs <- c(
     extract_input("aval_var", dataname),
-    extract_input("paramcd", dataname),
+    extract_input("paramcd", dataname, filter = TRUE),
     extract_input("arm_var", parentname),
     "ref_arm",
     "comp_arm",
@@ -905,6 +905,15 @@ srv_mmrm <- function(input,
   # These trigger when we are out of sync and then enable the start button and
   # disable the show R code button and show warning message
   observeEvent(mmrm_inputs_reactive(), {
+    anl_m <- anl_merged()
+    input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_id_var <- as.vector(anl_m$columns_source$id_var)
+    validate(
+      need(length(input_aval_var) == 1, "need outcome variable"),
+      need(length(input_visit_var) == 1, "need visit variable"),
+      need(length(input_id_var) == 1, "need id variable")
+    )
     shinyjs::enable("button_start")
     shinyjs::disable("rcode-show_rcode")
     if (state$applicable) {
@@ -928,7 +937,11 @@ srv_mmrm <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
-
+    validate(
+      need(length(input_aval_var) == 1, "need outcome variable"),
+      need(length(input_visit_var) == 1, "need visit variable"),
+      need(length(input_id_var) == 1, "need id variable")
+    )
     # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
     input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
     covariate_parts <- split_interactions(input_cov_var)
@@ -1063,6 +1076,15 @@ srv_mmrm <- function(input,
 
   output$mmrm_table <- renderUI({
     if (state$applicable) {
+      anl_m <- anl_merged()
+      input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      validate(
+        need(length(input_aval_var) == 1, "need outcome variable"),
+        need(length(input_visit_var) == 1, "need visit variable"),
+        need(length(input_id_var) == 1, "need id variable")
+      )
       validate(
         need(
           !state_has_changed(),

@@ -464,8 +464,12 @@ split_choices <- function(x) {
 #'   data extract input.
 #' @param dataname (`character`) name of the dataset corresponding to the
 #'   data extract input.
-extract_input <- function(varname, dataname) {
-  paste0(varname, "-dataset_", dataname, "_singleextract-select")
+extract_input <- function(varname, dataname, filter = FALSE) {
+  if (filter) {
+    paste0(varname, "-dataset_", dataname, "_singleextract-filter1")
+  } else {
+    paste0(varname, "-dataset_", dataname, "_singleextract-select")
+  }
 }
 
 #' Split interaction terms into their component variables
