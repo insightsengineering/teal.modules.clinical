@@ -36,7 +36,8 @@ test_that("template_forest_tte generates correct expressions", {
           tte = "AVAL",
           is_event = "is_event",
           arm = "ARMCD",
-          subgroups = c("SEX", "BMRKR2")
+          subgroups = c("SEX", "BMRKR2"),
+          strat = "STRATA2"
           ),
         data = anl
         )
@@ -61,11 +62,11 @@ test_that("template_forest_tte generates correct expressions", {
         tbl = result,
         col_x = 6,
         col_ci = 7,
-        vline = NULL,
-        forest_header = NULL,
-        xlim = NULL,
-        logx = FALSE,
-        x_at = NULL,
+        vline = 1,
+        forest_header = paste0(rev(levels(anl[["ARMCD"]])), "\nbetter"),
+        xlim = c(0.1, 10),
+        logx = TRUE,
+        x_at = c(0.1, 1, 10),
         width_row_names = NULL,
         width_columns = NULL,
         width_forest = unit(1, "null"),

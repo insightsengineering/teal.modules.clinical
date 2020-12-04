@@ -10,6 +10,7 @@ tm_g_forest_tte(
   parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
+  arm_ref_comp = NULL,
   subgroup_var,
   paramcd,
   strata_var,
@@ -33,6 +34,13 @@ tm_g_forest_tte(
 
 \item{arm_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 variable names designating the study arm.}
+
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
 
 \item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}
@@ -78,6 +86,17 @@ ADTTE <- radtte(cached = TRUE)
 
 ADSL$RACE <- droplevels(ADSL$RACE)
 
+arm_ref_comp = list(
+  ARM = list(
+    ref = "B: Placebo",
+    comp = c("A: Drug X", "C: Combination")
+  ),
+  ARMCD = list(
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
+  )
+)
+
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
@@ -90,10 +109,23 @@ app <- init(
     tm_g_forest_tte(
        label = "Forest Survival",
        dataname = "ADTTE",
-       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-       subgroup_var = choices_selected(names(ADSL), c("SEX", "BMRKR2")),
-       paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-       strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
+       arm_var = choices_selected(
+         variable_choices(ADSL, c("ARM", "ARMCD")),
+         "ARMCD"
+       ),
+       arm_ref_comp = arm_ref_comp,
+       paramcd = choices_selected(
+         value_choices(ADTTE, "PARAMCD", "PARAM"),
+         "OS"
+       ),
+       subgroup_var = choices_selected(
+         variable_choices(ADSL, names(ADSL)),
+         c("BMRKR2", "SEX")
+       ),
+       strata_var = choices_selected(
+         variable_choices(ADSL, c("STRATA1", "STRATA2")),
+         "STRATA2"
+       ),
        plot_height = c(600, 200, 2000)
     )
   )

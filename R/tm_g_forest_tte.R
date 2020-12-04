@@ -129,14 +129,16 @@ template_forest_tte <- function(anl_name = "ANL",
           tte = aval_var,
           is_event = "is_event",
           arm = arm_var,
-          subgroups = subgroup_var
+          subgroups = subgroup_var,
+          strat = strata_var
           ),
         data = anl
       ),
       env = list(
         aval_var = aval_var,
         arm_var = arm_var,
-        subgroup_var = subgroup_var
+        subgroup_var = subgroup_var,
+        strata_var = strata_var
       )
     )
   )
@@ -180,11 +182,11 @@ template_forest_tte <- function(anl_name = "ANL",
         tbl = result,
         col_x = 6,
         col_ci = 7,
-        vline = NULL,
-        forest_header = NULL,
-        xlim = NULL,
-        logx = FALSE,
-        x_at = NULL,
+        vline = 1,
+        forest_header = paste0(rev(levels(anl[[arm_var]])), "\nbetter"),
+        xlim = c(0.1, 10),
+        logx = TRUE,
+        x_at = c(0.1, 1, 10),
         width_row_names = NULL,
         width_columns = NULL,
         width_forest = unit(1, "null"),
@@ -199,7 +201,10 @@ template_forest_tte <- function(anl_name = "ANL",
       grid::grid.newpage()
       grid::grid.draw(p)
     },
-    env = list(col_symbol_size = col_symbol_size)
+    env = list(
+      col_symbol_size = col_symbol_size,
+      arm_var = arm_var
+    )
   )
 
   y
@@ -231,6 +236,17 @@ template_forest_tte <- function(anl_name = "ANL",
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
+#' arm_ref_comp = list(
+#'   ARM = list(
+#'     ref = "B: Placebo",
+#'     comp = c("A: Drug X", "C: Combination")
+#'   ),
+#'   ARMCD = list(
+#'     ref = "ARM B",
+#'     comp = c("ARM A", "ARM C")
+#'   )
+#' )
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
@@ -243,10 +259,23 @@ template_forest_tte <- function(anl_name = "ANL",
 #'     tm_g_forest_tte(
 #'        label = "Forest Survival",
 #'        dataname = "ADTTE",
-#'        arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'        subgroup_var = choices_selected(names(ADSL), c("SEX", "BMRKR2")),
-#'        paramcd = choices_selected(value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"),
-#'        strata_var = choices_selected(c("STRATA1", "STRATA2"), "STRATA2"),
+#'        arm_var = choices_selected(
+#'          variable_choices(ADSL, c("ARM", "ARMCD")),
+#'          "ARMCD"
+#'        ),
+#'        arm_ref_comp = arm_ref_comp,
+#'        paramcd = choices_selected(
+#'          value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'          "OS"
+#'        ),
+#'        subgroup_var = choices_selected(
+#'          variable_choices(ADSL, names(ADSL)),
+#'          c("BMRKR2", "SEX")
+#'        ),
+#'        strata_var = choices_selected(
+#'          variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'          "STRATA2"
+#'        ),
 #'        plot_height = c(600, 200, 2000)
 #'     )
 #'   )
@@ -260,6 +289,7 @@ tm_g_forest_tte <- function(label,
                             dataname,
                             parent_name = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                             arm_var,
+                            arm_ref_comp = NULL,
                             subgroup_var,
                             paramcd,
                             strata_var,
@@ -307,6 +337,7 @@ tm_g_forest_tte <- function(label,
       list(
         dataname = dataname,
         parent_name = parent_name,
+        arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
         plot_width = plot_width
         )
@@ -421,6 +452,7 @@ srv_g_forest_tte <- function(input,
                              dataname,
                              parent_name,
                              arm_var,
+                             arm_ref_comp,
                              paramcd,
                              subgroup_var,
                              strata_var,
@@ -440,7 +472,7 @@ srv_g_forest_tte <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parent_name),
     datasets = datasets,
-    arm_ref_comp = NULL,
+    arm_ref_comp = arm_ref_comp,
     module = "tm_g_forest_tte"
   )
 
@@ -492,6 +524,19 @@ srv_g_forest_tte <- function(input,
       validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
+    validate(need(length(input_subgroup_var) > 0, "Please select at least one subgroup variable."))
+    validate(
+      need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+           "Not all subgroup variables are factors.")
+    )
+
+    if (length(input_strata_var) > 0) {
+      validate(
+        need(all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+             "Not all stratification variables are factors.")
+      )
+    }
+
     do.call(what = "validate_standard_inputs", validate_args)
     NULL
   })
@@ -512,6 +557,7 @@ srv_g_forest_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
 
+    strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_forest_tte(
       anl_name = "ANL",
       parent_name = "ANL_ADSL",
@@ -521,7 +567,7 @@ srv_g_forest_tte <- function(input,
       aval_var = as.vector(anl_m$columns_source$aval),
       cnsr_var = as.vector(anl_m$columns_source$cnsr),
       subgroup_var = as.vector(anl_m$columns_source$subgroup_var),
-      strata_var = as.vector(anl_m$columns_source$strata_var),
+      strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (!input$fixed_symbol_size) 1
       )

@@ -142,7 +142,7 @@ template_forest_rsp <- function(anl_name = "ANL",
     substitute(
       expr = df <- extract_rsp_subgroups(
         variables = list(
-          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strata_var = strata_var),
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var),
         data = anl,
         conf_level = conf_level
       ),
@@ -512,9 +512,16 @@ srv_g_forest_rsp <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    if (!is.null(input_subgroup_var)) {
+    validate(need(length(input_subgroup_var) > 0, "Please select at least one subgroup variable."))
+    validate(
       need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
            "Not all subgroup variables are factors.")
+    )
+    if (length(input_strata_var) > 0) {
+      validate(
+        need(all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+             "Not all stratification variables are factors.")
+      )
     }
 
     NULL
@@ -536,6 +543,7 @@ srv_g_forest_rsp <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
 
+    strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_forest_rsp(
       anl_name = "ANL",
       parent_name = "ANL_ADSL",
@@ -545,7 +553,7 @@ srv_g_forest_rsp <- function(input,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
       subgroup_var = as.vector(anl_m$columns_source$subgroup_var),
-      strata_var = as.vector(anl_m$columns_source$strata_var),
+      strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (input$fixed_symbol_size) {
         NULL
