@@ -32,7 +32,7 @@ tm_t_summary_by(
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
-  denominator = c("n", "N", "omit"),
+  denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -129,7 +129,6 @@ app <- init(
         choices = variable_choices(adlb, c("AVAL", "CHG")),
         selected = c("AVAL")
       ),
-      denominator = "N",
       useNA = "ifany",
       paramcd = choices_selected(
         choices = value_choices(adlb, "PARAMCD", "PARAM"),

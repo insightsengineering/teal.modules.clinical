@@ -290,7 +290,6 @@ template_summary_by <- function(parentname,
 #'         choices = variable_choices(adlb, c("AVAL", "CHG")),
 #'         selected = c("AVAL")
 #'       ),
-#'       denominator = "N",
 #'       useNA = "ifany",
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
@@ -317,12 +316,16 @@ tm_t_summary_by <- function(label,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
-                            denominator = c("n", "N", "omit"),
+                            denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             pre_output = NULL,
                             post_output = NULL) {
 
   useNA <- match.arg(useNA) # nolint
-  denominator <- match.arg(denominator)
+  stopifnot(
+    is.choices_selected(denominator),
+    denominator$choices %in% c("n", "N", "omit")
+  )
+
 
   args <- c(as.list(environment()))
 
@@ -403,11 +406,12 @@ ui_summary_by <- function(id, ...) {
             choices = c("ifany", "no"),
             selected = a$useNA
           ),
-          radioButtons(
-            ns("denominator"),
+          optionalSelectInput(
+            inputId = ns("denominator"),
             label = "Denominator choice",
-            choices = c("N", "n", "omit"),
-            selected = a$denominator
+            choices = a$denominator$choices,
+            selected = a$denominator$selected,
+            fixed = a$denominator$fixed
           )
         )
       )
