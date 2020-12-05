@@ -482,13 +482,18 @@ add_plot_call <- function(chunk,
                           plot_options = NULL) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
+  validate(
+    need(
+      !any(duplicated(plot_vars)),
+      paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
+    )
+  )
   stopifnot(
     is_character_single(y_name),
     is.null(x_name) || is_character_single(x_name),
     is.null(fill_name) || is_character_single(fill_name),
     is.null(x_facet_name) || is_character_single(x_facet_name),
     is.null(y_facet_name) || is_character_single(y_facet_name),
-    !any(duplicated(plot_vars)),
     length(plot_vars) > 0,
     is_logical_single(label_bars),
     barlayout %in% c("side_by_side", "stacked"),
