@@ -151,7 +151,8 @@ template_rsp <- function(dataname,
         estimate_proportion(
           vars = "is_rsp",
           conf_level = conf_level,
-          method = method
+          method = method,
+          table_names = "prop_est"
         ),
       env = list(
         conf_level = control$global$conf_level,
@@ -168,11 +169,13 @@ template_rsp <- function(dataname,
           vars = "is_rsp", show_labels = "visible",
           var_labels = "Unstratified Analysis",
           conf_level = conf_level,
-          method = method_ci
+          method = method_ci,
+          table_names = "u_prop_diff"
         ) %>%
           test_proportion_diff(
             vars = "is_rsp",
-            method = method_test
+            method = method_test,
+            table_names = "u_test_diff"
           ),
         env = list(
           conf_level = control$global$conf_level,
@@ -186,7 +189,11 @@ template_rsp <- function(dataname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = estimate_odds_ratio(vars = "is_rsp", conf_level = conf_level),
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            conf_level = conf_level,
+            table_names = "u_est_or"
+          ),
           env = list(conf_level = control$global$conf_level)
         )
       )
@@ -201,18 +208,27 @@ template_rsp <- function(dataname,
             var_labels = "Stratified Analysis",
             variables = list(strata = strata),
             conf_level = conf_level,
-            method = method_ci
+            method = method_ci,
+            table_names = "s_prop_diff"
           ) %>%
             test_proportion_diff(
               vars = "is_rsp",
               method = method_test,
-              variables = list(strata = strata)
+              variables = list(strata = strata),
+              table_names = "s_test_diff"
+            ) %>%
+            estimate_odds_ratio(
+              vars = "is_rsp",
+              variables = list(arm = arm_var, strata = strata),
+              conf_level = conf_level,
+              table_names = "s_est_or"
             ),
           env = list(
             conf_level = control$global$conf_level,
             method_ci = control$strat$method_ci,
             strata = control$strat$strat,
-            method_test = control$strat$method_test
+            method_test = control$strat$method_test,
+            arm_var = arm_var
           )
         )
       )
@@ -401,7 +417,7 @@ ui_t_rsp <- function(id, ...) {
   ns <- NS(id)
   standard_layout(
     output = white_small_well(
-      uiOutput(outputId = ns("html"))
+      uiOutput(outputId = ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -582,6 +598,7 @@ srv_t_rsp <- function(input,
 
     anl <- chunks_get_var("ANL")
     validate_has_data(anl, 10)
+    validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID"))
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
 
@@ -616,7 +633,7 @@ srv_t_rsp <- function(input,
     mapply(expression = my_calls, chunks_push)
   })
 
-  output$html <- renderPrint({
+  output$table <- renderUI({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))

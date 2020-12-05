@@ -31,22 +31,26 @@ test_that("template_rsp generates standard expressions", {
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
-          method = "waldcc"
+          method = "waldcc",
+          table_names = "prop_est"
         ) %>%
         estimate_proportion_diff(
           vars = "is_rsp",
           show_labels = "visible",
           var_labels = "Unstratified Analysis",
           conf_level = 0.95,
-          method = "waldcc"
+          method = "waldcc",
+          table_names = "u_prop_diff"
         ) %>%
         test_proportion_diff(
           vars = "is_rsp",
-          method = "schouten"
+          method = "schouten",
+          table_names = "u_test_diff"
         ) %>%
         estimate_odds_ratio(
           vars = "is_rsp",
-          conf_level = 0.95
+          conf_level = 0.95,
+          table_names = "u_est_or"
         ) %>%
         estimate_multinomial_response(
           var = "rsp_lab",
@@ -63,15 +67,14 @@ test_that("template_rsp generates standard expressions", {
   expect_equal_expr_list(result, expected)
 })
 
-
 test_that("template_rsp generates right expressions with non-default", {
   result <- template_rsp(
     dataname = "ADRS",
     parentname = "ADSL",
     arm_var = "ARM",
     aval_var = "AVALC",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
+    ref_arm = "B: Placebo",
+    comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = TRUE,
     show_rsp_cat = FALSE
   )
@@ -79,30 +82,45 @@ test_that("template_rsp generates right expressions with non-default", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
     col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
-        split_cols_by(var = "ARM", ref_group = "ARM B") %>%
+        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
+          vars = "is_rsp",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "prop_est"
         ) %>%
         estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis", conf_level = 0.95,
-          method = "waldcc") %>%
-        test_proportion_diff(vars = "is_rsp", method = "schouten") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.95)
+          vars = "is_rsp",
+          show_labels = "visible",
+          var_labels = "Unstratified Analysis",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "u_prop_diff"
+          ) %>%
+        test_proportion_diff(
+          vars = "is_rsp",
+          method = "schouten",
+          table_names = "u_test_diff"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          conf_level = 0.95,
+          table_names = "u_est_or"
+        )
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
@@ -119,8 +137,8 @@ test_that("template_rsp generates expression without arm comparison", {
     parentname = "ADSL",
     arm_var = "ARM",
     aval_var = "AVALC",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
+    ref_arm = "B: Placebo",
+    comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = FALSE,
     show_rsp_cat = FALSE
   )
@@ -128,14 +146,14 @@ test_that("template_rsp generates expression without arm comparison", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>%  # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
     col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
@@ -144,7 +162,10 @@ test_that("template_rsp generates expression without arm comparison", {
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
+          vars = "is_rsp",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "prop_est"
         )
     ),
     table = quote({
@@ -156,21 +177,20 @@ test_that("template_rsp generates expression without arm comparison", {
   expect_equal_expr_list(result, expected)
 })
 
-
-test_that("template_rsp generates expression with non-default controls.", {
+test_that("template_rsp generates expression with non-default controls and strata.", {
   result <- template_rsp(
     dataname = "ADRS",
     parentname = "ADSL",
     arm_var = "ARM",
     aval_var = "AVALC",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
+    ref_arm = "B: Placebo",
+    comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = TRUE,
     show_rsp_cat = TRUE,
     control = list(
       global = list(method = "jeffreys", conf_level = 0.80),
       unstrat = list(
-        method_ci = "ha", method_test = "prop_chisq", odds = TRUE
+        method_ci = "ha", method_test = "chisq", odds = TRUE
       ),
       strat = list(method_ci = "cmh", method_test = "cmh", strat = "SEX")
     )
@@ -179,38 +199,62 @@ test_that("template_rsp generates expression with non-default controls.", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>% #nolint
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
+        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
+        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
     col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
-        split_cols_by(var = "ARM", ref_group = "ARM B") %>%
+        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.8, method = "jeffreys"
+          vars = "is_rsp",
+          conf_level = 0.8,
+          method = "jeffreys",
+          table_names = "prop_est"
         ) %>%
         estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
+          vars = "is_rsp",
+          show_labels = "visible",
           var_labels = "Unstratified Analysis",
-          conf_level = 0.8, method = "ha"
+          conf_level = 0.8,
+          method = "ha",
+          table_names = "u_prop_diff"
         ) %>%
-        test_proportion_diff(vars = "is_rsp", method = "prop_chisq") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.8) %>%
+        test_proportion_diff(
+          vars = "is_rsp",
+          method = "chisq",
+          table_names = "u_test_diff"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          conf_level = 0.8,
+          table_names = "u_est_or"
+        ) %>%
         estimate_proportion_diff(
           vars = "is_rsp", show_labels = "visible",
           var_labels = "Stratified Analysis", variables = list(strata = "SEX"),
-          conf_level = 0.8, method = "cmh"
+          conf_level = 0.8, method = "cmh",
+          table_names = "s_prop_diff"
         ) %>%
         test_proportion_diff(
-          vars = "is_rsp", method = "cmh", variables = list(strata = "SEX")
+          vars = "is_rsp",
+          method = "cmh",
+          variables = list(strata = "SEX"),
+          table_names = "s_test_diff"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          variables = list(arm = "ARM", strata = "SEX"),
+          conf_level = 0.8,
+          table_names = "s_est_or"
         ) %>%
         estimate_multinomial_response(
           var = "rsp_lab", conf_level = 0.8, method = "jeffreys"
@@ -262,15 +306,29 @@ test_that("template_rsp can combine arms", {
         ) %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
+          vars = "is_rsp",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "prop_est"
         ) %>%
         estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis", conf_level = 0.95,
-          method = "waldcc"
+          vars = "is_rsp",
+          show_labels = "visible",
+          var_labels = "Unstratified Analysis",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "u_prop_diff"
         ) %>%
-        test_proportion_diff(vars = "is_rsp", method = "schouten") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.95) %>%
+        test_proportion_diff(
+          vars = "is_rsp",
+          method = "schouten",
+          table_names = "u_test_diff"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          conf_level = 0.95,
+          table_names = "u_est_or"
+        ) %>%
         estimate_multinomial_response(
           var = "rsp_lab", conf_level = 0.95, method = "waldcc"
         )
@@ -300,240 +358,12 @@ test_that("split_col_expr prepare the right four possible expressions", {
   expect_equal_expr_list(result, expected)
 })
 
-test_that("template_rsp generates standard expressions", {
-  result <- template_rsp(
-    dataname = "adrs",
-    parentname = "ADSL",
-    arm_var = "ARMCD",
-    ref_arm = "ARM A",
-    comp_arm = c("ARM B", "ARM C"),
-    aval_var = "AVALC",
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE
-  )
-
-  expected <- list(
-    data = quote({
-      anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
-      ADSL <- ADSL %>% # nolint
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD))
-    }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARMCD"]])),
-    layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp",
-          conf_level = 0.95,
-          method = "waldcc"
-        ) %>%
-        estimate_proportion_diff(
-          vars = "is_rsp",
-          show_labels = "visible",
-          var_labels = "Unstratified Analysis",
-          conf_level = 0.95,
-          method = "waldcc"
-        ) %>%
-        test_proportion_diff(
-          vars = "is_rsp",
-          method = "schouten"
-        ) %>%
-        estimate_odds_ratio(
-          vars = "is_rsp",
-          conf_level = 0.95
-        ) %>%
-        estimate_multinomial_response(
-          var = "rsp_lab",
-          conf_level = 0.95,
-          method = "waldcc"
-        )
-    ),
-    table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
-    })
-  )
-
-  expect_equal_expr_list(result, expected)
-})
-
-
-test_that("template_rsp generates right expressions with non-default", {
-  result <- template_rsp(
-    dataname = "ADRS",
-    parentname = "ADSL",
-    arm_var = "ARM",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
-    aval_var = "AVALC",
-    compare_arm = TRUE,
-    show_rsp_cat = FALSE
-  )
-
-  expected <- list(
-    data = quote({
-      anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
-      ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM))
-    }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
-    layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARM", ref_group = "ARM B") %>%
-        add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
-        ) %>%
-        estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis", conf_level = 0.95,
-          method = "waldcc") %>%
-        test_proportion_diff(vars = "is_rsp", method = "schouten") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.95)
-    ),
-    table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
-    })
-  )
-
-  expect_equal_expr_list(result, expected)
-})
-
-test_that("template_rsp generates expression without arm comparison", {
-  result <- template_rsp(
-    dataname = "ADRS",
-    parentname = "ADSL",
-    arm_var = "ARM",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
-    aval_var = "AVALC",
-    compare_arm = FALSE,
-    show_rsp_cat = FALSE
-  )
-
-  expected <- list(
-    data = quote({
-      anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
-      ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM))
-    }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
-    layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
-        )
-    ),
-    table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
-    })
-  )
-
-  expect_equal_expr_list(result, expected)
-})
-
-
-test_that("template_rsp generates expression with non-default controls.", {
-  result <- template_rsp(
-    dataname = "ADRS",
-    parentname = "ADSL",
-    arm_var = "ARM",
-    ref_arm = "ARM B",
-    comp_arm = c("ARM A", "ARM C"),
-    aval_var = "AVALC",
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE,
-    control = list(
-      global = list(method = "jeffreys", conf_level = 0.80),
-      unstrat = list(
-        method_ci = "ha", method_test = "prop_chisq", odds = TRUE
-      ),
-      strat = list(method_ci = "cmh", method_test = "cmh", strat = "SEX")
-    )
-  )
-
-  expected <- list(
-    data = quote({
-      anl <- ADRS %>%
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
-      ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("ARM B", "ARM A", "ARM C")) %>%
-        mutate(ARM = relevel(ARM, ref = "ARM B")) %>%
-        mutate(ARM = droplevels(ARM))
-    }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
-    layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARM", ref_group = "ARM B") %>%
-        add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp", conf_level = 0.8, method = "jeffreys"
-        ) %>%
-        estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis",
-          conf_level = 0.8, method = "ha"
-        ) %>%
-        test_proportion_diff(vars = "is_rsp", method = "prop_chisq") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.8) %>%
-        estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Stratified Analysis", variables = list(strata = "SEX"),
-          conf_level = 0.8, method = "cmh"
-        ) %>%
-        test_proportion_diff(
-          vars = "is_rsp", method = "cmh", variables = list(strata = "SEX")
-        ) %>%
-        estimate_multinomial_response(
-          var = "rsp_lab", conf_level = 0.8, method = "jeffreys"
-        )
-    ),
-    table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
-    })
-  )
-
-  expect_equal_expr_list(result, expected)
-})
-
 test_that("template_rsp can combine refs", {
   result <- template_rsp(
     dataname = "adrs",
     parentname = "adsl",
     arm_var = "ARMCD",
     ref_arm = c("ARM A", "ARM B"),
-    aval_var = "AVALC",
     comp_arm = "ARM C",
     compare_arm = TRUE,
     combine_arm = FALSE,
@@ -561,15 +391,29 @@ test_that("template_rsp can combine refs", {
         split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         add_colcounts() %>%
         estimate_proportion(
-          vars = "is_rsp", conf_level = 0.95, method = "waldcc"
+          vars = "is_rsp",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "prop_est"
         ) %>%
         estimate_proportion_diff(
-          vars = "is_rsp", show_labels = "visible",
-          var_labels = "Unstratified Analysis", conf_level = 0.95,
-          method = "waldcc"
+          vars = "is_rsp",
+          show_labels = "visible",
+          var_labels = "Unstratified Analysis",
+          conf_level = 0.95,
+          method = "waldcc",
+          table_names = "u_prop_diff"
         ) %>%
-        test_proportion_diff(vars = "is_rsp", method = "schouten") %>%
-        estimate_odds_ratio(vars = "is_rsp", conf_level = 0.95) %>%
+        test_proportion_diff(
+          vars = "is_rsp",
+          method = "schouten",
+          table_names = "u_test_diff"
+        ) %>%
+        estimate_odds_ratio(
+          vars = "is_rsp",
+          conf_level = 0.95,
+          table_names = "u_est_or"
+        ) %>%
         estimate_multinomial_response(
           var = "rsp_lab", conf_level = 0.95, method = "waldcc"
         )
