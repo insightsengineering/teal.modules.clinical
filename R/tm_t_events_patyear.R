@@ -334,6 +334,7 @@ srv_events_patyear <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -350,7 +351,12 @@ srv_events_patyear <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(
+      need(is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
+      need(is_character_single(input_cnsr_var), "Censor variable should be a single column."),
+      need(input$conf_method, "`CI Method` field is not selected"),
+      need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty")
+    )
 
     NULL
   })
