@@ -12,6 +12,9 @@ data extract input.}
 
 \item{dataname}{(\code{character}) name of the dataset corresponding to the
 data extract input.}
+
+\item{filter}{(\code{logical}) optional; string output will end with "-select" suffix if FALSE
+and "-filter1" if TRUE}
 }
 \description{
 Get input id for a data extract input

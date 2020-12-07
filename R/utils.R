@@ -464,6 +464,8 @@ split_choices <- function(x) {
 #'   data extract input.
 #' @param dataname (`character`) name of the dataset corresponding to the
 #'   data extract input.
+#' @param filter (`logical`) optional; string output will end with "-select" suffix if FALSE
+#'   and "-filter1" if TRUE
 extract_input <- function(varname, dataname, filter = FALSE) {
   if (filter) {
     paste0(varname, "-dataset_", dataname, "_singleextract-filter1")
