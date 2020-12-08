@@ -27,33 +27,32 @@ tm_t_tte(
 \arguments{
 \item{label}{(\code{character}) menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character}) analysis data used in teal module, needs to be available in
-the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-Note that the data is expected to be in vertical form with the
-\code{PARAMCD} variable filtering to one observation per patient.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character}) name of \code{ADSL} dataset used in the analysis.}
+\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
+usually this refers to \code{"ADSL"}.}
 
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}}
+and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{arm_ref_comp}{(\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
-list with each element corresponding to an arm variable in \code{ADSL} and the element must
-be another list with the elements named \code{ref} and \code{comp} that the
-defined the default reference and comparison arms when the arm variable is
-changed.}
+\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
+returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
+with each element corresponding to an arm variable in \code{ADSL} and the
+element must be another list with the elements named \code{ref} and \code{comp}
+that the defined the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{PARAMCD} variable}
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
-\item{strata_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
-choices and preselected option for variable names that can be used for stratification}
+\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for analysis variable}
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for censor variable}
+\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the censoring variable.}
 
 \item{conf_level_coxph}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
 for confidence level, each within range of (0, 1).}
@@ -61,14 +60,14 @@ for confidence level, each within range of (0, 1).}
 \item{conf_level_survfit}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
 for confidence level, each within range of (0, 1).}
 
-\item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
-for variable names that can be used \code{REFACTOR}}
+\item{time_points}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and preselected option
+for time points that can be used in \code{\link[=surv_timepoint]{surv_timepoint()}}.}
 
-\item{time_unit}{(\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
-of months}
+\item{time_unit}{(\code{string})\cr unit in \code{aval_var} (use singular, e.g. \emph{month} instead
+of _months).}
 
-\item{event_desc_var}{(\code{character} or \code{data_extract_spec}) variable name with the event description
-information, optional}
+\item{event_desc_var}{(\code{string} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
+information, optional.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -83,8 +82,8 @@ Time To Event Table Teal Module
 \details{
 This module produces a response summary table that is similar to
 STREAM template \code{ttet01}. The core functionality is based on
-\code{REFACTOR} from the \code{tern} package.\cr
-This modules expects that the analysis data has the following variables
+\code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}} and \code{\link[=surv_time]{surv_time()}} from package \code{tern}.\cr
+The following variables are used in the module:
 
 \tabular{ll}{
 \code{AVAL} \tab time to event\cr
@@ -93,10 +92,10 @@ This modules expects that the analysis data has the following variables
 filtering for \code{paramcd} one observation per patient is expected
 }
 
-The arm variables, stratification variables and taken from the \code{ADSL}
-data.
+The arm and stratification variables and taken from the \code{parentname} data.
 }
 \examples{
+
 library(random.cdisc.data)
 
 ADSL <- radsl(cached = TRUE)

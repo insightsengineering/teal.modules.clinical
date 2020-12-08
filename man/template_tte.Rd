@@ -43,14 +43,14 @@ arm comparison.}
 \item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
 names of the variables for stratified analysis.}
 
-\item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
-for variable names that can be used \code{REFACTOR}}
+\item{time_points}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and preselected option
+for time points that can be used in \code{\link[=surv_timepoint]{surv_timepoint()}}.}
 
-\item{time_unit}{(\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
-of months}
+\item{time_unit}{(\code{string})\cr unit in \code{aval_var} (use singular, e.g. \emph{month} instead
+of _months).}
 
-\item{event_desc_var}{(\code{character} or \code{data_extract_spec}) variable name with the event description
-information, optional}
+\item{event_desc_var}{(\code{string} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
+information, optional.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}

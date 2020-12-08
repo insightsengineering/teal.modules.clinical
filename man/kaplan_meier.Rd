@@ -105,8 +105,8 @@ arm comparison.}
 
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 
-\item{time_points}{(\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
-for variable names that can be used \code{REFACTOR}}
+\item{time_points}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and preselected option
+for time points that can be used in \code{\link[=surv_timepoint]{surv_timepoint()}}.}
 
 \item{font_size}{(\code{number}) \cr font size to be used.}
 

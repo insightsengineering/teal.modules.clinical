@@ -311,56 +311,36 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams shared_params
 #' @inheritParams argument_convention
-#' @param dataname (\code{character}) analysis data used in teal module, needs to be available in
-#'   the list passed to the \code{data} argument of \code{\link[teal]{init}}.
-#'   Note that the data is expected to be in vertical form with the
-#'   \code{PARAMCD} variable filtering to one observation per patient.
-#' @param parentname (\code{character}) name of \code{ADSL} dataset used in the analysis.
-#' @param arm_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for variable names that can be used as \code{arm_var}
-#' @param arm_ref_comp (\code{named list of \link[teal]{choices_selected}}) optional, if specified it must be a named
-#'   list with each element corresponding to an arm variable in \code{ADSL} and the element must
-#'   be another list with the elements named \code{ref} and \code{comp} that the
-#'   defined the default reference and comparison arms when the arm variable is
-#'   changed.
-#' @param paramcd (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for variable names that can be used as \code{PARAMCD} variable
-#' @param strata_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available
-#'   choices and preselected option for variable names that can be used for stratification
-#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for analysis variable
-#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for censor variable
 #' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
-#' @param time_points (\code{\link[teal]{choices_selected}}) object with all available choices and preselected option
-#'   for variable names that can be used \code{REFACTOR}
-#' @param time_unit (\code{character}) with unit of \code{dataname$AVAL}, please use singular e.g. month instead
-#'   of months
-#' @param event_desc_var (\code{character} or \code{data_extract_spec}) variable name with the event description
-#'   information, optional
+#' @param time_points ([choices_selected()])\cr object with all available choices and preselected option
+#'   for time points that can be used in [surv_timepoint()].
+#' @param time_unit (`string`)\cr unit in `aval_var` (use singular, e.g. _month_ instead
+#'   of _months).
+#' @param event_desc_var (`string` or [data_extract_spec()])\cr variable name with the event description
+#'   information, optional.
 #'
 #' @details This module produces a response summary table that is similar to
 #'   STREAM template \code{ttet01}. The core functionality is based on
-#'   \code{REFACTOR} from the \code{tern} package.\cr
-#' This modules expects that the analysis data has the following variables
+#'   [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
+#'   The following variables are used in the module:
 #'
 #' \tabular{ll}{
-#'  \code{AVAL} \tab time to event\cr
-#'  \code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
-#'  \code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
-#'  filtering for \code{paramcd} one observation per patient is expected
+#'  `AVAL` \tab time to event\cr
+#'  `CNSR` \tab boolean or 0,1 is element in `AVAL` censored\cr
+#'  `PARAMCD` \tab variable used to filter for endpoint (e.g. OS), after
+#'  filtering for `paramcd` one observation per patient is expected
 #' }
 #'
-#' The arm variables, stratification variables and taken from the \code{ADSL}
-#' data.
+#' The arm and stratification variables and taken from the `parentname` data.
 #'
 #' @export
 #' @import magrittr
 #'
 #' @examples
+#'
 #' library(random.cdisc.data)
 #'
 #' ADSL <- radsl(cached = TRUE)
