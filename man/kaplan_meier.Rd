@@ -26,9 +26,9 @@ tm_g_km(
 )
 
 template_g_km(
-  anl_name = "ANL",
+  dataname = "ANL",
   arm_var = "ARM",
-  arm_ref_comp = NULL,
+  ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
   combine_comp_arms = FALSE,
@@ -95,7 +95,8 @@ output to put the output into context. For example a title.}
 output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 
-\item{anl_name}{(\code{string})\cr analysis data used in teal module.}
+\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
+arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}

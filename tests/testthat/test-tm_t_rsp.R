@@ -3,10 +3,11 @@ test_that("template_rsp generates standard expressions", {
     dataname = "adrs",
     parentname = "adsl",
     arm_var = "ARMCD",
-    aval_var = "AVALC",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
     compare_arm = TRUE,
+    combine_comp_arms = FALSE,
+    aval_var = "AVALC",
     show_rsp_cat = TRUE
   )
 
@@ -64,7 +65,7 @@ test_that("template_rsp generates standard expressions", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_rsp generates right expressions with non-default", {
@@ -76,6 +77,7 @@ test_that("template_rsp generates right expressions with non-default", {
     ref_arm = "B: Placebo",
     comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = TRUE,
+    combine_comp_arms = FALSE,
     show_rsp_cat = FALSE
   )
 
@@ -128,7 +130,7 @@ test_that("template_rsp generates right expressions with non-default", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_rsp generates expression without arm comparison", {
@@ -146,14 +148,10 @@ test_that("template_rsp generates expression without arm comparison", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
         mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>%  # nolint
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
     col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
@@ -174,7 +172,7 @@ test_that("template_rsp generates expression without arm comparison", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_rsp generates expression with non-default controls and strata.", {
@@ -266,19 +264,19 @@ test_that("template_rsp generates expression with non-default controls and strat
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
-test_that("template_rsp can combine arms", {
+test_that("template_rsp can combine comparison arms", {
   result <- template_rsp(
     dataname = "adrs",
     parentname = "ADSL",
     arm_var = "ARMCD",
-    aval_var = "AVALC",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
     compare_arm = TRUE,
-    combine_arm = TRUE,
+    combine_comp_arms = TRUE,
+    aval_var = "AVALC",
     show_rsp_cat = TRUE
   )
 
@@ -295,8 +293,8 @@ test_that("template_rsp can combine arms", {
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD))
     }),
-    combine_arm = quote(
-      groups <- combine_groups(fct = anl[["ARMCD"]], ref = "ARM A")
+    combine_comp_arms = quote(
+      groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
     ),
     col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARMCD"]], groups_list = groups)),
     layout = quote(
@@ -339,20 +337,20 @@ test_that("template_rsp can combine arms", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("split_col_expr prepare the right four possible expressions", {
   result <- list(
-    split_col_expr(compare = TRUE, combine = TRUE, group = "ARMCD", ref = "ARM C"),
-    split_col_expr(compare = TRUE, combine = FALSE, group = "ARMCD", ref = "ARM C"),
-    split_col_expr(compare = FALSE, combine = TRUE, group = "ARMCD", ref = "ARM C"),
-    split_col_expr(compare = FALSE, combine = FALSE, group = "ARMCD", ref = "ARM C")
+    split_col_expr(compare = TRUE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = TRUE, combine = FALSE, arm_var = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = FALSE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
+    split_col_expr(compare = FALSE, combine = FALSE, arm_var = "ARMCD", ref = "ARM C")
   )
   expected <- list(
     quote(split_cols_by_groups(var = "ARMCD", groups_list = groups, ref_group = names(groups)[1])),
     quote(split_cols_by(var = "ARMCD", ref_group = "ARM C")),
-    quote(split_cols_by_groups(var = "ARMCD", groups_list = groups)),
+    quote(split_cols_by(var = "ARMCD")),
     quote(split_cols_by(var = "ARMCD"))
   )
   expect_equal_expr_list(result, expected)
@@ -366,7 +364,7 @@ test_that("template_rsp can combine refs", {
     ref_arm = c("ARM A", "ARM B"),
     comp_arm = "ARM C",
     compare_arm = TRUE,
-    combine_arm = FALSE,
+    combine_comp_arms = FALSE,
     show_rsp_cat = TRUE
   )
 
@@ -424,5 +422,5 @@ test_that("template_rsp can combine refs", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

@@ -8,7 +8,7 @@ template_tte(
   dataname = "ANL",
   parentname = "ADSL_FILTERED",
   arm_var = "ARM",
-  arm_ref_comp = NULL,
+  ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
   combine_comp_arms = FALSE,
@@ -30,12 +30,8 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
-returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
-with each element corresponding to an arm variable in \code{ADSL} and the
-element must be another list with the elements named \code{ref} and \code{comp}
-that the defined the default reference and comparison arms when the arm
-variable is changed.}
+\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
+arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}

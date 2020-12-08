@@ -189,7 +189,7 @@ add_expr <- function(expr_ls, new_expr) {
 
   assert_that(
     is.list(expr_ls),
-    is.call(new_expr)
+    is.call(new_expr) || is.name(new_expr)
   )
 
   # support nested expressions such as expr({a <- 1; b <- 2})
@@ -394,46 +394,36 @@ is.cs_or_des <- function(x) { # nolint
 #' @param compare (`flag`)\cr if `TRUE` the reference level is included.
 #' @param combine (`flag`)\cr if `TRUE` the group combination is included.
 #' @param ref (`string`)\cr the reference level (not used for `combine = TRUE`).
-#' @param group (`string`)\cr the grouping variable name.
+#' @param arm_var (`string`)\cr the arm or grouping variable name.
 #'
-split_col_expr <- function(compare, combine, ref, group) {
+split_col_expr <- function(compare, combine, ref, arm_var) {
 
   if  (compare & combine) {
     substitute(
       expr = split_cols_by_groups(
-        var = group,
+        var = arm_var,
         groups_list = groups,
         ref_group = names(groups)[1]
       ),
       env = list(
-        group = group
+        arm_var = arm_var
       )
     )
   } else if (compare & !combine) {
     substitute(
       expr = split_cols_by(
-        var = group,
+        var = arm_var,
         ref_group = ref
       ),
       env = list(
-        group = group,
+        arm_var = arm_var,
         ref = ref
       )
     )
-  } else if (!compare & combine) {
+  } else if (!compare) {
     substitute(
-      expr = split_cols_by_groups(
-        var = group,
-        groups_list = groups
-      ),
-      env = list(
-        group = group
-      )
-    )
-  } else if (!compare & !combine) {
-    substitute(
-      expr = split_cols_by(var = group),
-      env = list(group = group)
+      expr = split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var)
     )
   }
 }
@@ -500,10 +490,13 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @details
 #' In `teal.modules.clinical`, the user interface includes manipulation of
 #' the study arms. Classically: the arm variable itself (e.g. `ARM`, `ACTARM`),
-#' the reference arm (1 or more), the comparison arm (1 or more) and the
+#' the reference arm (0 or more), the comparison arm (1 or more) and the
 #' possibility to combine comparison arms.
 #'
-#' The pre-processing includes three steps:
+#' Note that when no arms should be compared with each other, then the produced
+#' expression is reduced to optionally dropping non-represented levels of the arm.
+#'
+#' When comparing arms, the pre-processing includes three steps:
 #' 1. Filtering of the dataset to retain only the arms of interest (reference
 #' and comparison).
 #' 2. Optional, if more than one arm is designated as _reference_ they are
@@ -536,47 +529,68 @@ prepare_arm <- function(dataname,
                         arm_var,
                         ref_arm,
                         comp_arm,
+                        compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-
-  data_list <- list()
-  # Data are filtered to keep only arms of interest.
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = dataname %>%
-        filter(arm_var %in% arm_val),
-      env = list(
-        dataname = as.name(dataname),
-        arm_var = as.name(arm_var),
-        arm_val = c(ref_arm, comp_arm)
-      )
-    )
+  assert_that(
+    is.string(dataname),
+    is.string(arm_var),
+    is.null(ref_arm) || is.character(ref_arm),
+    is.character(comp_arm),
+    is.flag(compare_arm),
+    is.string(ref_arm_val),
+    is.flag(drop)
   )
 
-  # Several reference levels are combined.
-  if (length(ref_arm) > 1) {
+  data_list <- list()
+
+  if (compare_arm) {
+    # Data are filtered to keep only arms of interest.
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = dataname %>%
+          filter(arm_var %in% arm_val),
+        env = list(
+          dataname = as.name(dataname),
+          arm_var = as.name(arm_var),
+          arm_val = if (compare_arm) c(ref_arm, comp_arm) else comp_arm
+        )
+      )
+    )
+
+    # Several reference levels are combined.
+    if (length(ref_arm) > 1) {
+      data_list <- add_expr(
+        data_list,
+        substitute_names(
+          expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
+        )
+      )
+    }
+
+    # Reference level is explicit.
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+        expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
         names = list(arm_var = as.name(arm_var)),
-        others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
+        others = list(ref_arm_val = ref_arm_val)
+      )
+    )
+  }  else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = dataname,
+        env = list(dataname = as.name(dataname))
       )
     )
   }
 
-  # Reference level is explicit.
-  data_list <- add_expr(
-    data_list,
-    substitute_names(
-      expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
-      names = list(arm_var = as.name(arm_var)),
-      others = list(ref_arm_val = ref_arm_val)
-    )
-  )
-
-  # Unused levels are dropped.
+  # Unused levels are optionally dropped.
   if (drop) {
     data_list <- add_expr(
       data_list,

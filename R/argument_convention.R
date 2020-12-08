@@ -19,7 +19,6 @@
 #'   variable is changed.
 #' @param id_var (`choices_selected` with teal module)\cr object specifying the
 #'   variable name for subject id.
-#' @param combine_arm (`flag`)\cr re-arrange arms in two groups, i.e. reference and treatment.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
 #' @param compare_arm (`flag`)\cr triggers the comparison between study arms.
 #' @param combine_comp_arms (`flag`)\cr triggers the combination of comparison arms.

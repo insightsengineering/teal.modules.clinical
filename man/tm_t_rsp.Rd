@@ -62,7 +62,7 @@ STREAM template \code{rspt01}.
 }
 \details{
 Additional standard UI inputs include \code{responders},
-\code{ref_arm}, \code{comp_arm} and \code{combine_arm} (default FALSE)
+\code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms} (default FALSE)
 
 Default values of the inputs \code{var_arm}, \code{ref_arm} and
 \code{comp_arm} are set to NULL, and updated accordingly based on selection

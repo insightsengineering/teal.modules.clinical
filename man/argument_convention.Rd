@@ -17,8 +17,6 @@ variable is changed.}
 \item{id_var}{(\code{choices_selected} with teal module)\cr object specifying the
 variable name for subject id.}
 
-\item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
-
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}

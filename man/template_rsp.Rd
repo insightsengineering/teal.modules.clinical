@@ -8,11 +8,11 @@ template_rsp(
   dataname,
   parentname,
   arm_var,
+  ref_arm = NULL,
+  comp_arm = NULL,
+  compare_arm = FALSE,
+  combine_comp_arms = FALSE,
   aval_var = "AVALC",
-  ref_arm,
-  comp_arm,
-  compare_arm = TRUE,
-  combine_arm = FALSE,
   show_rsp_cat = TRUE,
   responder_val = c("CR", "PR"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
@@ -29,9 +29,6 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
-
 \item{ref_arm}{(\code{string})\cr the level of reference arm in case of
 arm comparison.}
 
@@ -40,7 +37,10 @@ arm comparison.}
 
 \item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
 
-\item{combine_arm}{(\code{flag})\cr re-arrange arms in two groups, i.e. reference and treatment.}
+\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
+
+\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis variable.}
 
 \item{show_rsp_cat}{(\code{flag})\cr display the multinomial response estimations.}
 

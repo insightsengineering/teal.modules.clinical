@@ -18,9 +18,9 @@ NULL
 #' @describeIn kaplan_meier create the expression corresponding to the analysis.
 #' @order 2
 #'
-template_g_km <- function(anl_name = "ANL",
+template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
-                          arm_ref_comp = NULL,
+                          ref_arm = NULL,
                           comp_arm = NULL,
                           compare_arm = FALSE,
                           combine_comp_arms = FALSE,
@@ -36,58 +36,63 @@ template_g_km <- function(anl_name = "ANL",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE) {
+  assert_that(
+    is.string(dataname),
+    is.string(arm_var),
+    is.string(aval_var),
+    is.string(cnsr_var),
+    is.flag(compare_arm),
+    is.flag(combine_comp_arms)
+  )
 
+  ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
 
   data_list <- list()
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = anl %>%
-        mutate(
-          is_event = cnsr_var == 0
-        ),
-      env = list(
-        anl = as.name(anl_name),
-        cnsr_var = as.name(cnsr_var)
-      )
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      compare_arm = compare_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = filter(arm_var %in% c(arm_ref_comp, comp_arm)),
-      env = list(arm_var = as.name(arm_var), arm_ref_comp = arm_ref_comp, comp_arm = comp_arm)
+      expr = mutate(
+        is_event = cnsr_var == 0
+      ),
+      env = list(
+        anl = as.name(dataname),
+        cnsr_var = as.name(cnsr_var)
+      )
     )
   )
-  if (combine_comp_arms) {
+
+  if (compare_arm && combine_comp_arms) {
+    comp_arm_val <- paste(comp_arm, collapse = "/")
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(
-          arm = factor(
-            x = case_when(
-              arm %in% arm_ref_comp ~ new_arm_ref_comp,
-              TRUE ~ new_comp_arm
-            ),
-            levels = c(new_arm_ref_comp, new_comp_arm)
-          )
-        ),
-        names = list(arm = as.name(arm_var)),
-        others = list(
-          arm_ref_comp = arm_ref_comp,
-          new_arm_ref_comp = paste(arm_ref_comp, collapse = "/"),
-          comp_arm = comp_arm,
-          new_comp_arm = paste(comp_arm, collapse = "/")
-        )
+        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
       )
     )
   }
 
   y$data <- substitute(
-    expr = anl <- data_pipe, # nolint
-    env = list(anl = as.name(anl_name), data_pipe = pipe_expr(data_list))
+    expr = {
+      anl <- data_pipe
+    },
+    env = list(
+      data_pipe = pipe_expr(data_list)
+    )
   )
 
   y$variables <- if (!is.null(strata_var) && length(strata_var) != 0) {
@@ -115,7 +120,7 @@ template_g_km <- function(anl_name = "ANL",
           grid::viewport(layout = .) %>%
           grid::pushViewport(),
         env = list(
-          df = as.name(anl_name),
+          df = as.name(dataname),
           facet_var = as.name(facet_var)
         )
       )
@@ -125,7 +130,7 @@ template_g_km <- function(anl_name = "ANL",
       graph_list,
       substitute(
         expr = result <- mapply(
-          df = split(df, f = df$facet_var), nrow = seq_along(levels(df$facet_var)),
+          df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
           FUN = function(df_i, nrow_i) {
             g_km(
               df = df_i,
@@ -143,7 +148,6 @@ template_g_km <- function(anl_name = "ANL",
           }
         ),
         env = list(
-          df = as.name(anl_name),
           font_size = font_size,
           facet_var = as.name(facet_var),
           xlab = xlab,
@@ -161,7 +165,7 @@ template_g_km <- function(anl_name = "ANL",
       substitute(
         expr = {
           result <- g_km(
-            df = df,
+            df = anl,
             variables = variables,
             font_size = font_size,
             xlab = xlab,
@@ -175,7 +179,6 @@ template_g_km <- function(anl_name = "ANL",
         print(result)
         },
         env = list(
-          df = as.name(anl_name),
           font_size = font_size,
           xlab = xlab,
           conf_level = conf_level,
@@ -571,9 +574,9 @@ srv_g_km <- function(input,
     validate_has_data(ANL, 10)
 
     my_calls <- template_g_km(
-      anl_name = "ANL",
+      dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      arm_ref_comp = input$ref_arm,
+      ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,

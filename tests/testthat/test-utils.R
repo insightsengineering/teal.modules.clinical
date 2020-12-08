@@ -192,3 +192,29 @@ test_that("prepare_arm combine ref arms and use new level", {
 
   expect_equal(result, expected)
 })
+
+test_that("prepare_arm does not do anything when we don't want to compare or drop arms", {
+  result <- prepare_arm(
+    dataname = "adrs",
+    arm_var = "ARMCD",
+    ref_arm = NULL,
+    comp_arm = c("ARM C"),
+    drop = FALSE
+  )
+
+  expected <- quote(
+    adrs
+  )
+
+  expect_equal(result, expected)
+
+  result2 <- prepare_arm(
+    dataname = "adrs",
+    arm_var = "ARMCD",
+    ref_arm = "BLA",
+    compare_arm = FALSE,
+    comp_arm = c("ARM C"),
+    drop = FALSE
+  )
+  expect_identical(result, result2)
+})

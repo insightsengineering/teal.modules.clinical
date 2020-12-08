@@ -49,7 +49,7 @@ control_tte <- function(
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
                          arm_var = "ARM",
-                         arm_ref_comp = NULL,
+                         ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
                          combine_comp_arms = FALSE,
@@ -72,7 +72,7 @@ template_tte <- function(dataname = "ANL",
     is.flag(combine_comp_arms)
   )
 
-  ref_arm_val <- paste(arm_ref_comp, collapse = "/")
+  ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
 
   data_list <- list()
@@ -81,8 +81,9 @@ template_tte <- function(dataname = "ANL",
     prepare_arm(
       dataname = dataname,
       arm_var = arm_var,
-      ref_arm = arm_ref_comp,
+      ref_arm = ref_arm,
       comp_arm = comp_arm,
+      compare_arm = compare_arm,
       ref_arm_val = ref_arm_val
     )
   )
@@ -102,7 +103,6 @@ template_tte <- function(dataname = "ANL",
         EVNTDESC = factor(event_desc_var)
       ),
       env = list(
-        anl = as.name(dataname),
         cnsr = as.name(cnsr),
         event_desc_var = as.name(event_desc_var)
       )
@@ -120,20 +120,25 @@ template_tte <- function(dataname = "ANL",
       arm_preparation = prepare_arm(
         dataname = parentname,
         arm_var = arm_var,
-        ref_arm = arm_ref_comp,
+        ref_arm = ref_arm,
         comp_arm = comp_arm,
+        compare_arm = compare_arm,
         ref_arm_val = ref_arm_val
       )
     )
   )
 
-  if (combine_comp_arms) {
-    y$combine_arm <- substitute(
-      expr = groups <- combine_groups(fct = anl[[group]], ref = ref_arm),
-      env = list(anl = as.name(dataname), group = arm_var, ref_arm = arm_ref_comp)
+  if (compare_arm && combine_comp_arms) {
+    y$combine_comp_arms <- substitute(
+      expr = groups <- combine_groups(fct = df[[group]], ref = ref_arm_val),
+      env = list(
+        df = as.name(parentname),
+        group = arm_var,
+        ref_arm_val = ref_arm_val
+      )
     )
   }
-  y$col_counts <- if (combine_comp_arms) {
+  y$col_counts <- if (compare_arm && combine_comp_arms) {
     substitute(
       expr = col_counts <- combine_counts(fct = parentname[[group]], groups_list = groups),
       env = list(group = arm_var, parentname = as.name(parentname))
@@ -152,7 +157,7 @@ template_tte <- function(dataname = "ANL",
     split_col_expr(
       compare = compare_arm,
       combine = combine_comp_arms,
-      group = arm_var,
+      arm_var = arm_var,
       ref = ref_arm_val
     )
   )
@@ -292,21 +297,9 @@ template_tte <- function(dataname = "ANL",
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  col_counts <- if (combine_comp_arms) {
-    substitute(
-      expr = sapply(groups, function(x) sum(table(adsl$arm_var)[x])),
-      env = list(adsl = as.name(parentname), arm_var = arm_var)
-    )
-  } else {
-    substitute(
-      expr = table(adsl$arm_var),
-      env = list(adsl = as.name(parentname), arm_var = arm_var)
-    )
-  }
-
   y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    result
+    print(result)
   })
 
   y
@@ -363,9 +356,6 @@ template_tte <- function(dataname = "ANL",
 #'
 #' The arm variables, stratification variables and taken from the \code{ADSL}
 #' data.
-#'
-#'
-#' @template author_waddella
 #'
 #' @export
 #' @import magrittr
@@ -775,7 +765,7 @@ srv_t_tte <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      arm_ref_comp = input$ref_arm,
+      ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,

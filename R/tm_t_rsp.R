@@ -43,11 +43,11 @@
 template_rsp <- function(dataname,
                          parentname,
                          arm_var,
+                         ref_arm = NULL,
+                         comp_arm = NULL,
+                         compare_arm = FALSE,
+                         combine_comp_arms = FALSE,
                          aval_var = "AVALC",
-                         ref_arm,
-                         comp_arm,
-                         compare_arm = TRUE,
-                         combine_arm = FALSE,
                          show_rsp_cat = TRUE,
                          responder_val = c("CR", "PR"),
                          control = list(
@@ -67,11 +67,21 @@ template_rsp <- function(dataname,
                            )
                          )
 ) {
-  y <- list()
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.string(aval_var),
+    is.flag(compare_arm),
+    is.flag(combine_comp_arms),
+    is.flag(show_rsp_cat)
+  )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
+  y <- list()
 
   data_list <- list()
+
   data_list <- add_expr(
     data_list,
     prepare_arm(
@@ -79,7 +89,8 @@ template_rsp <- function(dataname,
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm,
-      ref_arm_val = ref_arm_val
+      ref_arm_val = ref_arm_val,
+      compare_arm = compare_arm
     )
   )
 
@@ -108,19 +119,24 @@ template_rsp <- function(dataname,
         arm_var = arm_var,
         ref_arm = ref_arm,
         comp_arm = comp_arm,
-        ref_arm_val = ref_arm_val
+        ref_arm_val = ref_arm_val,
+        compare_arm = compare_arm
       )
     )
   )
 
-  if (combine_arm) {
-    y$combine_arm <- substitute(
-      expr = groups <- combine_groups(fct = anl[[group]], ref = ref_arm),
-      env = list(group = arm_var, ref_arm = ref_arm_val)
+  if (compare_arm && combine_comp_arms) {
+    y$combine_comp_arms <- substitute(
+      expr = groups <- combine_groups(fct = df[[group]], ref = ref_arm_val),
+      env = list(
+        df = as.name(parentname),
+        group = arm_var,
+        ref_arm_val = ref_arm_val
+      )
     )
   }
 
-  y$col_counts <- if (combine_arm) {
+  y$col_counts <- if (compare_arm && combine_comp_arms) {
     substitute(
       expr = col_counts <- combine_counts(fct = parentname[[group]], groups_list = groups),
       env = list(group = arm_var, parentname = as.name(parentname))
@@ -138,8 +154,8 @@ template_rsp <- function(dataname,
     layout_list,
     split_col_expr(
       compare = compare_arm,
-      combine = combine_arm,
-      group = arm_var,
+      combine = combine_comp_arms,
+      arm_var = arm_var,
       ref = ref_arm_val
     )
   )
@@ -275,7 +291,7 @@ template_rsp <- function(dataname,
 #'   and preselected option for analysis variable
 #'
 #' @details Additional standard UI inputs include `responders`,
-#'   `ref_arm`, `comp_arm` and `combine_arm` (default FALSE)
+#'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
 #'
 #'   Default values of the inputs `var_arm`, `ref_arm` and
 #'   `comp_arm` are set to NULL, and updated accordingly based on selection
@@ -604,14 +620,14 @@ srv_t_rsp <- function(input,
 
     my_calls <- template_rsp(
       dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      aval_var = as.vector(anl_m$columns_source$aval_var),
       parentname = "ANL_ADSL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
-      show_rsp_cat = TRUE,
       compare_arm = input$compare_arms,
-      combine_arm = input$combine_comp_arms,
+      combine_comp_arms = input$combine_comp_arms,
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      show_rsp_cat = TRUE,
       responder_val = input$responders,
       control = list(
         global = list(
@@ -645,7 +661,7 @@ srv_t_rsp <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, paramcd, aval_var, strata_var)
-      ),
+    ),
     modal_title = "Response",
     code_header = label
   )

@@ -9,6 +9,7 @@ prepare_arm(
   arm_var,
   ref_arm,
   comp_arm,
+  compare_arm = !is.null(ref_arm),
   ref_arm_val = paste(ref_arm, collapse = "/"),
   drop = TRUE
 )
@@ -25,6 +26,8 @@ arm comparison.}
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}
 
+\item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+
 \item{ref_arm_val}{(\code{string})\cr replacement name for the reference level.}
 
 \item{drop}{(\code{flag})\cr drop the unused variable levels.}
@@ -38,10 +41,13 @@ preprocessing steps needs to be applied similarly to several datasets
 \details{
 In \code{teal.modules.clinical}, the user interface includes manipulation of
 the study arms. Classically: the arm variable itself (e.g. \code{ARM}, \code{ACTARM}),
-the reference arm (1 or more), the comparison arm (1 or more) and the
+the reference arm (0 or more), the comparison arm (1 or more) and the
 possibility to combine comparison arms.
 
-The pre-processing includes three steps:
+Note that when no arms should be compared with each other, then the produced
+expression is reduced to optionally dropping non-represented levels of the arm.
+
+When comparing arms, the pre-processing includes three steps:
 \enumerate{
 \item Filtering of the dataset to retain only the arms of interest (reference
 and comparison).

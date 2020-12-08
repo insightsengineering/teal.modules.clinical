@@ -4,7 +4,7 @@
 \alias{split_col_expr}
 \title{Split-Column Expression}
 \usage{
-split_col_expr(compare, combine, ref, group)
+split_col_expr(compare, combine, ref, arm_var)
 }
 \arguments{
 \item{compare}{(\code{flag})\cr if \code{TRUE} the reference level is included.}
@@ -13,7 +13,7 @@ split_col_expr(compare, combine, ref, group)
 
 \item{ref}{(\code{string})\cr the reference level (not used for \code{combine = TRUE}).}
 
-\item{group}{(\code{string})\cr the grouping variable name.}
+\item{arm_var}{(\code{string})\cr the arm or grouping variable name.}
 }
 \description{
 Renders the expression for column split in \code{rtables} depending on:

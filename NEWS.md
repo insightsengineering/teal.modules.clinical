@@ -1,7 +1,7 @@
 # teal.modules.clinical 0.8.6
 
 * Integrated `is_single_dataset` argument for `data_extract_input` function calls.
-* Change `show_rcode_modal` to `get_rcode_srv` in all modules.
+* Change `show_rcode_modal` to `get_rcode_srv` in all of the modules.
 * Vignette about the topic `substitute`.
 * Add dynamic assertions.
 * New teal module `tm_g_ci` for confidence interval plots.
