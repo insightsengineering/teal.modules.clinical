@@ -272,7 +272,7 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- pruned_result
-          print(pruned_and_sorted_result)
+          pruned_and_sorted_result
         })
       )
 
@@ -319,7 +319,7 @@ template_events <- function(dataname,
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
               sort_at_path(path =  c(term_var), scorefun = scorefun_llt)
-            print(pruned_and_sorted_result)
+            pruned_and_sorted_result
           },
           env = list(
             term_var = term_var,
@@ -336,7 +336,7 @@ template_events <- function(dataname,
             pruned_and_sorted_result <- pruned_result %>%
               sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
               sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt)
-            print(pruned_and_sorted_result)
+            pruned_and_sorted_result
           },
           env = list(
             llt = llt,

@@ -233,7 +233,7 @@ template_mmrm_tables <- function(fit_name,
       y$lsmeans_table <- substitute(
         expr = {
           lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts)
-          print(lsmeans_table)
+          lsmeans_table
         },
         env = list(
           col_counts = as.name(colcounts_name),
@@ -245,7 +245,7 @@ template_mmrm_tables <- function(fit_name,
       y$cov_matrix <- substitute(
         expr = {
           cov_matrix <- as.rtable(fit_mmrm, type = "cov")
-          print(cov_matrix)
+          cov_matrix
         },
         env = list(
           fit_mmrm = as.name(fit_name)
@@ -256,7 +256,7 @@ template_mmrm_tables <- function(fit_name,
       y$fixed_effects <- substitute(
         expr = {
           fixed_effects <- as.rtable(fit_mmrm, type = "fixed")
-          print(fixed_effects)
+          fixed_effects
         },
         env = list(
           fit_mmrm = as.name(fit_name)
@@ -267,7 +267,7 @@ template_mmrm_tables <- function(fit_name,
       y$diagnostic_table <- substitute(
         expr = {
           diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic")
-          print(diagnostic_table)
+          diagnostic_table
         },
         env = list(
           fit_mmrm = as.name(fit_name)
@@ -306,7 +306,7 @@ template_mmrm_plots <- function(fit_name,
           width = width,
           show_pval = show_pval
         )
-        print(lsmeans_plot)
+        lsmeans_plot
       },
       env = list(
         fit_mmrm = as.name(fit_name),
@@ -325,7 +325,7 @@ template_mmrm_plots <- function(fit_name,
           type = type,
           z_threshold = z_threshold
         )
-        print(diagnostic_plot)
+        diagnostic_plot
       },
       env = list(
         fit_mmrm = as.name(fit_name),

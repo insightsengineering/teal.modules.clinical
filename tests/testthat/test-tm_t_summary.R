@@ -27,7 +27,7 @@ test_that("template_summary generates correct expressions", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
+      result
     })
   )
   expect_equal_expr_list(result, expected)
@@ -64,7 +64,7 @@ test_that("template_summary can generate customized table", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
+      result
     })
   )
   expect_equal_expr_list(result, expected)

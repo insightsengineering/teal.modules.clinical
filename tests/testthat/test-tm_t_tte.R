@@ -88,7 +88,7 @@ test_that("template_tte produces healthy standard output", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
+      result
     })
   )
 

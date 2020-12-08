@@ -48,7 +48,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = df)
-      print(result)
+      result
     })
   )
   expect_equal(result, expected)
@@ -96,7 +96,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = df)
-      print(result)
+      result
     })
   )
   expect_equal(result, expected)

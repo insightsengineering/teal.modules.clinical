@@ -36,7 +36,7 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-      print(result)
+      result
     })
   )
 
@@ -83,7 +83,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-      print(result)
+      result
     })
   )
 
@@ -131,7 +131,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-      print(result)
+      result
     })
   )
 
@@ -185,7 +185,7 @@ test_that("template_ancova generates expressions with single endpoint", {
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
-      print(result)
+      result
     })
   )
 

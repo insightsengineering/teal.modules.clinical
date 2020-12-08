@@ -94,7 +94,7 @@ template_events_patyear <- function(dataname,
   y$table <- substitute(
     expr = {
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
+      result
     },
     env = list(col_counts = col_counts)
   )

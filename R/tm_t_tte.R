@@ -299,7 +299,7 @@ template_tte <- function(dataname = "ANL",
 
   y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    print(result)
+    result
   })
 
   y

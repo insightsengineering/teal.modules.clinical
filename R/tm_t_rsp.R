@@ -275,7 +275,7 @@ template_rsp <- function(dataname,
 
   y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    print(result)
+    result
   })
   y
 }

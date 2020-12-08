@@ -37,7 +37,7 @@ test_that("template_events_patyear generates standard expressions", {
         df = anl,
         col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
       )
-      print(result)
+      result
     })
   )
 
@@ -82,7 +82,7 @@ test_that("template_events_patyear generates right expressions with non-default"
         df = anl,
         col_counts = table(adsl$ARM)
       )
-      print(result)
+      result
     })
   )
 
@@ -133,7 +133,7 @@ test_that("template_events_patyear generates right expressions with non-default 
         df = anl,
         col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
       )
-      print(result)
+      result
     })
   )
 

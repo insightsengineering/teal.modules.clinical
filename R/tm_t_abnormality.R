@@ -122,7 +122,7 @@ template_abnormality <- function(parentname,
   y$table <- quote({
     result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
       prune_table()
-    print(result)
+    result
   })
 
   y

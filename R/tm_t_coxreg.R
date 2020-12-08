@@ -177,7 +177,7 @@ template_coxreg <- function(dataname,
 
   y$table <- quote({
     result <- build_table(lyt = lyt, df = df)
-    print(result)
+    result
   })
 
   y

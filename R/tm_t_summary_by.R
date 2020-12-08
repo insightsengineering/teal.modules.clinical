@@ -277,7 +277,7 @@ template_summary_by <- function(parentname,
   y$table <- substitute(
     expr = {
       result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-      print(result)
+      result
       },
     env = list(col_counts = col_counts)
   )
@@ -534,10 +534,10 @@ srv_summary_by <- function(input,
       by_vars = as.vector(anl_m$columns_source$by_vars),
       var_labels = datasets$get_variable_labels(dataname, sum_vars),
       add_total = input$add_total,
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),  #nolint
+      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       denominator = input$denominator,
       parallel_vars = input$parallel_vars,
-      row_groups <- input$row_groups
+      row_groups = input$row_groups
     )
     mapply(expression = my_calls, chunks_push)
   })
