@@ -353,7 +353,7 @@ test_that("split_col_expr prepare the right four possible expressions", {
     quote(split_cols_by(var = "ARMCD")),
     quote(split_cols_by(var = "ARMCD"))
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_rsp can combine refs", {

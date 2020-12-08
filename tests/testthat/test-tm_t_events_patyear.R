@@ -41,7 +41,7 @@ test_that("template_events_patyear generates standard expressions", {
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events_patyear generates right expressions with non-default", {
@@ -86,7 +86,7 @@ test_that("template_events_patyear generates right expressions with non-default"
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events_patyear generates right expressions with non-default controls", {
@@ -137,5 +137,5 @@ test_that("template_events_patyear generates right expressions with non-default 
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

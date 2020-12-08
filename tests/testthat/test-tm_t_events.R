@@ -57,7 +57,7 @@ test_that("template_events generates correct expressions", {
       pruned_and_sorted_result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events can generate customized table", {
@@ -104,7 +104,7 @@ test_that("template_events can generate customized table", {
       pruned_and_sorted_result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events can generate customized table with alphabetical sorting", {
@@ -162,7 +162,7 @@ test_that("template_events can generate customized table with alphabetical sorti
       pruned_and_sorted_result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events can generate customized table with pruning", {
@@ -235,5 +235,5 @@ test_that("template_events can generate customized table with pruning", {
       pruned_and_sorted_result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

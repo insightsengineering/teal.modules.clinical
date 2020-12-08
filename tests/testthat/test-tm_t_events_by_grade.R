@@ -64,7 +64,7 @@ test_that("template_events_by_grade generates standard expressions", {
     )
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_events_by_grade without adding total column option works as expected", {
@@ -134,7 +134,7 @@ test_that("template_events_by_grade without adding total column option works as 
     )
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 
@@ -193,5 +193,5 @@ test_that("template_events_by_grade with hlt only works", {
     )
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

@@ -23,7 +23,8 @@ test_that("template_forest_rsp generates correct expressions", {
           ARMCD = relevel(ARMCD, ref = "ARM A") %>%
             droplevels() %>%
             combine_levels(levels = c("ARM B", "ARM C"))
-        )
+        ) %>%
+        droplevels()
       parent <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(
@@ -35,8 +36,8 @@ test_that("template_forest_rsp generates correct expressions", {
     }),
     summary = quote({
       df <- extract_rsp_subgroups(
-        variables = list(rsp = "is_rsp", arm = "ARMCD", subgroups = c("SEX", "STRATA2"), strata_var = NULL),
-        data = adrs
+        variables = list(rsp = "is_rsp", arm = "ARMCD", subgroups = c("SEX", "STRATA2"), strat = NULL),
+        data = adrs, conf_level = 0.95
       )
       rsp_tab <- basic_table() %>%
         tabulate_rsp_subgroups(vars = c("n", "prop")) %>%
@@ -61,10 +62,10 @@ test_that("template_forest_rsp generates correct expressions", {
           gp_footnotes = gpar(fontsize = 12)
         )
       }
-      grid.newpage()
-      grid.draw(p)
+      grid::grid.newpage()
+      grid::grid.draw(p)
     })
   )
 
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

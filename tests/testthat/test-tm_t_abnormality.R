@@ -39,7 +39,7 @@ test_that("template_abnormality generates correct expressions with default argum
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_abnormality generates correct expressions with custom arguments", {
@@ -82,5 +82,5 @@ test_that("template_abnormality generates correct expressions with custom argume
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

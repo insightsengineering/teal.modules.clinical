@@ -19,6 +19,7 @@ test_that("template_summary_by generates correct expressions", {
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
+          split_fun = drop_split_levels,
           visible_label = TRUE
         ) %>%
         summarize_vars(
@@ -26,13 +27,13 @@ test_that("template_summary_by generates correct expressions", {
           na.rm = FALSE,
           denom = "N_col",
           .stats = c("n", "mean_sd", "median", "range", "count_fraction"),
-          .formats = list(
-            c(n = "xx",
-              mean_sd = "xx.xx (xx.xx)",
-              median = "xx.xx",
-              range = "xx.xx - xx.xx",
-              count_fraction = "xx (xx.%)")
-          )[[1]]
+          .formats = c(
+            n = "xx",
+            mean_sd = "xx.xx (xx.xx)",
+            median = "xx.xx",
+            range = "xx.xx - xx.xx",
+            count_fraction = "xx (xx.%)"
+          )
         )
     ),
     table = quote({
@@ -40,7 +41,7 @@ test_that("template_summary_by generates correct expressions", {
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
@@ -62,7 +63,10 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
       lyt <- basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_label = var_labels(adlb)[["AVISIT"]], visible_label = TRUE) %>%
+        split_rows_by(
+          "AVISIT", split_label = var_labels(adlb)[["AVISIT"]], split_fun = drop_split_levels,
+          visible_label = TRUE
+        ) %>%
         split_cols_by_multivar(vars = c("AVAL", "CHG")) %>%
         summarize_colvars(
           vars = c("AVAL", "CHG"),
@@ -83,7 +87,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_summary_by generates correct expressions when `row_groups` is true", {
@@ -126,6 +130,5 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       result
     })
   )
-  expect_equal_expr_list(result, expected)
-}
-)
+  expect_equal(result, expected)
+})

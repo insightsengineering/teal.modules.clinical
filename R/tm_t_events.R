@@ -335,9 +335,8 @@ template_events <- function(dataname,
         substitute(
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path =  c(hlt), scorefun = scorefun_hlt) %>%
-              sort_at_path(path =  c(hlt, "*", llt), scorefun = scorefun_llt)
-            pruned_and_sorted_result
+              sort_at_path(path = c(hlt), scorefun = scorefun_hlt) %>%
+              sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_llt)
           },
           env = list(
             llt = llt,
@@ -367,6 +366,10 @@ template_events <- function(dataname,
         )
       }
 
+      sort_list <- add_expr(
+        sort_list,
+        quote(pruned_and_sorted_result)
+      )
     }
 
   }

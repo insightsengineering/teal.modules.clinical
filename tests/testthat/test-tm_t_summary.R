@@ -30,7 +30,7 @@ test_that("template_summary generates correct expressions", {
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_summary can generate customized table", {
@@ -67,5 +67,5 @@ test_that("template_summary can generate customized table", {
       result
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })

@@ -39,7 +39,7 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
         parallel = FALSE)
     )
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_fit_mmrm works as expected when combining combination arms", {
@@ -72,24 +72,28 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
     col_counts = quote(
       col_counts <- table(adsl$ARMCD) # nolint
     ),
-    fit = quote(
-      fit <- fit_mmrm(
+    fit = substitute(
+      expr = fit <- fit_mmrm(
+        vars = vars,
+        data = anl,
+        conf_level = 0.95,
+        cor_struct = "unstructured",
+        weights_emmeans = "proportional",
+        optimizer = "automatic",
+        parallel = TRUE
+      ),
+      env = list(
         vars = list(
           response = "AVAL",
           covariates = c("SEX", "BASE", "AVISIT"),
           id = "USUBJID",
           arm = "ARMCD",
           visit = "AVISIT"
-        ),
-        data = anl,
-        conf_level = 0.95,
-        cor_struct = "unstructured",
-        weights_emmeans = "proportional",
-        optimizer = "automatic",
-        parallel = TRUE)
+        )
+      )
     )
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 test_that("template_mmrm_tables works as expected", {
@@ -114,7 +118,7 @@ test_that("template_mmrm_tables works as expected", {
       cov_matrix
     })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
 
 
@@ -132,20 +136,19 @@ test_that("template_mmrm_plots works as expected", {
     )
   )
   expected <- list(
-    lsmeans_plot = quote({
-      lsmeans_plot <- g_mmrm_lsmeans(
-        fit_mmrm,
-        select = c("estimates", "contrasts"),
-        width = 0.6,
-        show_pval = FALSE
-        )
-      lsmeans_plot
-    }),
+    lsmeans_plot = substitute(
+      expr = {
+        lsmeans_plot <- g_mmrm_lsmeans(fit_mmrm, select = select, width = 0.6, show_pval = FALSE)
+        lsmeans_plot
+      },
+      env = list(
+        select = c("estimates", "contrasts")
+      )
+    ),
     diagnostic_plot = quote({
       diagnostic_plot <- g_mmrm_diagnostic(fit_mmrm, type = "fit-residual", z_threshold = NULL)
       diagnostic_plot
-    }
-    )
+    })
   )
-  expect_equal_expr_list(result, expected)
+  expect_equal(result, expected)
 })
