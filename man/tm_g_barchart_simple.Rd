@@ -45,7 +45,6 @@ library(random.cdisc.data)
 
 ADSL <- radsl(cached = TRUE)
 ADAE <- radae(cached = TRUE)
-ADLB <- radlb(cached = TRUE)
 
 adae_labels <- var_labels(ADAE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
@@ -64,7 +63,6 @@ app <- init(
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
               ADAE <- do.call(rtables::var_relabel,
                 append(list(x = ADAE), as.list(adae_labels)))"),
-    cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE
   ),
   modules = root_modules(

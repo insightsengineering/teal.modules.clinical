@@ -22,7 +22,6 @@
 #'
 #' ADSL <- radsl(cached = TRUE)
 #' ADAE <- radae(cached = TRUE)
-#' ADLB <- radlb(cached = TRUE)
 #'
 #' adae_labels <- var_labels(ADAE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
@@ -41,7 +40,6 @@
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
 #'               ADAE <- do.call(rtables::var_relabel,
 #'                 append(list(x = ADAE), as.list(adae_labels)))"),
-#'     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -335,15 +333,6 @@ srv_g_barchart_simple <- function(input,
       if (!is.null(groupby_vars_l$fill_name)) add_count_str_to_column(chunk, column = groupby_vars_l$fill_name)
       if (!is.null(groupby_vars_l$x_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$x_facet_name)
       if (!is.null(groupby_vars_l$y_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$y_facet_name)
-
-      #nolint start
-      # add "(n = ...)" to right column
-      # x is more complicated when x facetting, count should be per x-facet if it is selected
-      # if (!is.null(groupby_vars_l$x_name) && !is.null(groupby_vars_l$fill_name)) {
-      #   count_by_group(c(groupby_vars_l$x_name, groupby_vars_l$fill_name))
-      #   add_count_str_to_column(chunk, column = groupby_vars_l$x_name, n_column = get_n_name(c(groupby_vars_l$x_name, groupby_vars_l$fill_name)))
-      # }
-      #nolint end
     }
 
     # add label and slice(1) as all patients in the same subgroup have same n_'s
