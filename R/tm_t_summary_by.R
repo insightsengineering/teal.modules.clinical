@@ -338,7 +338,7 @@ tm_t_summary_by <- function(label,
                             arm_var,
                             by_vars,
                             summarize_vars,
-                            paramcd = choices_selected("", fixed = TRUE),
+                            paramcd = NULL,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
@@ -348,6 +348,12 @@ tm_t_summary_by <- function(label,
 
   useNA <- match.arg(useNA) # nolint
   stopifnot(
+    is_character_single(label),
+    is_character_single(dataname),
+    is_character_single(parentname),
+    is_logical_single(parallel_vars),
+    is_logical_single(row_groups),
+    useNA %in% c("ifany", "no"), # nolint
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit")
   )
@@ -357,7 +363,10 @@ tm_t_summary_by <- function(label,
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
+    paramcd = if_not_null(
+      paramcd,
+      cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
+      ),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
   )
@@ -402,11 +411,14 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      if_not_null(
+        a$paramcd,
+        data_extract_input(
+          id = ns("paramcd"),
+          label = "Select Endpoint",
+          data_extract_spec = a$paramcd,
+          is_single_dataset = is_single_dataset_value
+        )
       ),
       data_extract_input(
         id = ns("by_vars"),
@@ -465,8 +477,16 @@ srv_summary_by <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, by_vars, summarize_vars),
-    input_id = c("arm_var", "paramcd", "by_vars", "summarize_vars"),
+    data_extract = if (is.null(paramcd)) {
+      list(arm_var, by_vars, summarize_vars)
+    } else {
+      list(arm_var, paramcd, by_vars, summarize_vars)
+    },
+    input_id = if (is.null(paramcd)) {
+      list("arm_var", "by_vars", "summarize_vars")
+    } else {
+      list("arm_var", "paramcd", "by_vars", "summarize_vars")
+    },
     merge_function = "dplyr::inner_join"
   )
 
@@ -486,7 +506,7 @@ srv_summary_by <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_by_vars <- as.vector(anl_m$columns_source$by_vars)
     input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars"])
 
     validate(
       need(input_arm_var, "Please select an arm variable"),

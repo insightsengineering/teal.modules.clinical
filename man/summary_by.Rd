@@ -28,7 +28,7 @@ tm_t_summary_by(
   arm_var,
   by_vars,
   summarize_vars,
-  paramcd = choices_selected("", fixed = TRUE),
+  paramcd = NULL,
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
