@@ -86,7 +86,7 @@ template_summary_by <- function(parentname,
     quote(add_colcounts())
   )
 
-  if (denominator == "omit"){
+  if (denominator == "omit") {
     env_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],

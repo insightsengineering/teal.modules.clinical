@@ -12,7 +12,8 @@ test_that("template_g_km works as expected with default arguments", {
     graph = quote({
       grid::grid.newpage()
       lyt <- grid::grid.layout(nrow = nlevels(ANL$SEX), ncol = 1) %>%
-        grid::viewport(layout = .) %>% grid::pushViewport()
+        grid::viewport(layout = .) %>%
+        grid::pushViewport()
       result <- mapply(
         df = split(anl, f = anl$SEX),
         nrow = seq_along(levels(anl$SEX)),

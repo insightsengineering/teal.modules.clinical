@@ -8,21 +8,21 @@ NULL
 
 #' @describeIn adverse_events_summary creates the expression corresponding
 #'   to the analysis.
-#' @param dthfl_var (`choices_selected`)\cr variable for subject death flag from
-#'   `parentname`. Records with `"Y"`` are summarized in the table row for
-#'   "Total number of deaths".
-#' @param dcsreas_var (`choices_selected`)\cr variable
+#' @param dthfl_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
+#'  the table row for "Total number of deaths".
+#' @param dcsreas_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr variable
 #'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
 #'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl (`choices_selected`)\cr vector with names of flag variables
-#'   from `dataset` used to count adverse event sub-groups (e.g. Serious events, Related events, etc.).
-#'   Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi (`choices_selected`)\cr vector with names of flag variables
-#'   from `dataset` used to count adverse event special interest groups.
+#' @param flag_var_anl (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr vector
+#' with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious
+#' events, Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr vector
+#' with names of flag variables from `dataset` used to count adverse event special interest groups.
 #'   All flag variables must be of type `logical`. Variable labels are used as table
 #'   row names if they exist.
-#' @param aeseq_var (`choices_selected`)\cr variable for adverse events sequence number
-#'   from `dataset`. Used for counting total number of events.
+#' @param aeseq_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr variable
+#' for adverse events sequence number from `dataset`. Used for counting total number of events.
 #' @param count_subj (`flag`)\cr whether to show count of unique subjects
 #'   based on `USUBJID`. Only applies if event flag variables are provided.
 #' @param count_pt (`flag`)\cr whether to show count of unique preferred terms based on
