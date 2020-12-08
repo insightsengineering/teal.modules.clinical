@@ -372,8 +372,8 @@ ui_g_forest_rsp <- function(id, ...) {
       selectInput(
         ns("responders"),
         "Responders",
-        choices = NULL,
-        selected = NULL,
+        choices = c("CR", "PR"),
+        selected = c("CR", "PR"),
         multiple = TRUE
       ),
       data_extract_input(
@@ -486,7 +486,7 @@ srv_g_forest_rsp <- function(input,
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(responder_choices, c("CR", "PR"))
+      selected = intersect(responder_choices, isolate(input$responders))
     )
   })
 
@@ -531,7 +531,9 @@ srv_g_forest_rsp <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(
+      need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(input$responders, "`Responders` field is empty"))
 
     NULL
   })

@@ -447,8 +447,8 @@ ui_t_rsp <- function(id, ...) {
       selectInput(
         ns("responders"),
         "Responders",
-        choices = NULL,
-        selected = NULL,
+        choices = c("CR", "PR"),
+        selected = c("CR", "PR"),
         multiple = TRUE
       ),
       data_extract_input(
@@ -564,7 +564,7 @@ srv_t_rsp <- function(input,
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(c("CR", "PR"), responder_choices)
+      selected = intersect(responder_choices, isolate(input$responders))
     )
   })
 
@@ -595,7 +595,9 @@ srv_t_rsp <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(
+      need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(input$responders, "`Responders` field is empty"))
 
     NULL
   })
