@@ -514,6 +514,8 @@ srv_g_forest_rsp <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
+    validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+
     validate(need(length(input_subgroup_var) > 0, "Please select at least one subgroup variable."))
     validate(
       need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),

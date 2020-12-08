@@ -586,6 +586,8 @@ srv_t_rsp <- function(input,
       arm_var = input_arm_var
     )
 
+    validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
     }

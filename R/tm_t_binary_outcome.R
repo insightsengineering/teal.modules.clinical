@@ -365,6 +365,8 @@ srv_t_binary_outcome <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
+    validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
