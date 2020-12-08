@@ -215,7 +215,7 @@ template_coxreg <- function(dataname,
 #'   and preselected option for analysis variable
 #' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 #'   and preselected option for censor variable
-#' @param multivariate If `FALSE`, the univariate approach is be computed
+#' @param multivariate If `FALSE`, the univariate approach is used
 #'   (equivalent to `COXT01` standard) instead of the multivariate model
 #'   (equivalent to `COXT02` standard).
 #'
@@ -657,7 +657,9 @@ srv_t_coxreg <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
-      arm_var = input_arm_var
+      arm_var = input_arm_var,
+      ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm
     )
 
     # validate arm levels

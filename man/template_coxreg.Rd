@@ -42,7 +42,7 @@ arm comparison.}
 
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 
-\item{multivariate}{If \code{FALSE}, the univariate approach is be computed
+\item{multivariate}{If \code{FALSE}, the univariate approach is used
 (equivalent to \code{COXT01} standard) instead of the multivariate model
 (equivalent to \code{COXT02} standard).}
 

@@ -60,7 +60,7 @@ and preselected option for analysis variable}
 \item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for censor variable}
 
-\item{multivariate}{If \code{FALSE}, the univariate approach is be computed
+\item{multivariate}{If \code{FALSE}, the univariate approach is used
 (equivalent to \code{COXT01} standard) instead of the multivariate model
 (equivalent to \code{COXT02} standard).}
 
