@@ -1,5 +1,3 @@
-# Refactoring of tm_g_barplot.R
-
 #' Simple barchart plot that shows counts per category.
 #'
 #' Categories can be defined up to four levels deep and are defined through
@@ -8,11 +6,11 @@
 #'
 #' @md
 #' @inheritParams shared_params
-#' @param x `data_extract_spec` variable on x-axis
-#' @param fill `data_extract_spec` variable on x-axis
-#' @param x_facet `data_extract_spec` variable on x-axis
-#' @param y_facet `data_extract_spec` variable on x-axis
-#' @param plot_options `list` list of plot options
+#' @param x (`data_extract_spec`)\cr variable on the x-axis.
+#' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
+#' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.
+#' @param y_facet (`data_extract_spec`)\cr faceting groups on the col dimension.
+#' @param plot_options (`list`)\cr list of plot options.
 #'
 #' @export
 #'

@@ -16,17 +16,17 @@ tm_g_barchart_simple(
 )
 }
 \arguments{
-\item{x}{\code{data_extract_spec} variable on x-axis}
+\item{x}{(\code{data_extract_spec})\cr variable on the x-axis.}
 
-\item{fill}{\code{data_extract_spec} variable on x-axis}
+\item{fill}{(\code{data_extract_spec})\cr grouping variable assigned to the bar colors.}
 
-\item{x_facet}{\code{data_extract_spec} variable on x-axis}
+\item{x_facet}{(\code{data_extract_spec})\cr faceting groups on the row dimension.}
 
-\item{y_facet}{\code{data_extract_spec} variable on x-axis}
+\item{y_facet}{(\code{data_extract_spec})\cr faceting groups on the col dimension.}
 
 \item{label}{(\code{character}) menu item label of the module in the teal app}
 
-\item{plot_options}{\code{list} list of plot options}
+\item{plot_options}{(\code{list})\cr list of plot options.}
 
 \item{plot_height}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
 the height of the main plot.}
