@@ -13,6 +13,9 @@ template_abnormality(
   by_vars,
   abnormal,
   grade = "ANRIND",
+  baseline_var = "BNRIND",
+  treatment_flag_var = "ONTRTFL",
+  treatment_flag = "Y",
   add_total = FALSE,
   exclude_base_abn = FALSE
 )
@@ -23,12 +26,17 @@ tm_t_abnormality(
   parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
-  id_var,
   by_vars,
   grade,
-  visit_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed =
-    TRUE),
   abnormal,
+  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
+    "USUBJID", fixed = TRUE),
+  baseline_var = choices_selected(variable_choices(dataname, subset = "BNRIND"),
+    selected = "BNRIND", fixed = TRUE),
+  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
+    selected = "ONTRTFL", fixed = TRUE),
+  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
+    fixed = TRUE),
   exclude_base_abn = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -43,13 +51,21 @@ usually this refers to \code{"ADSL"}.}
 \item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{by_vars}{(\code{character})\cr variable names of the row by variables.}
+\item{by_vars}{\code{\link[teal]{choices_selected}} object with all available choices and preselected option
+for variable names used to split the summary by rows.}
 
 \item{abnormal}{(\code{choices_selected})\cr indicating abnormality grade.}
 
 \item{grade}{(\code{choices_selected})\cr object with all available
 choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
+
+\item{baseline_var}{(\code{choices_selected})\cr variable for baseline abnormality grade.}
+
+\item{treatment_flag_var}{(\code{choices_selected})\cr on treatment flag variable.}
+
+\item{treatment_flag}{(\code{choices_selected})\cr value indicating on treatment
+records in \code{treatment_flag_var}.}
 
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
@@ -59,9 +75,6 @@ specify the abnormality grade. Variable must be factor.}
 
 \item{id_var}{(\code{choices_selected} with teal module)\cr object specifying the
 variable name for subject id.}
-
-\item{visit_var}{\link[teal:choices_selected]{teal::choices_selected} object with all available choices and preselected option
-for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
 \item{pre_output}{optional, \code{shiny.tag} with text placed before the
 output to put the output into context. For example a title.}
@@ -81,8 +94,8 @@ Teal Module: Abnormality Summary Table
 }}
 
 \note{
-Patients with the same abnormality at baseline as on the treatment visit are automatically
-excluded in accordance with GDSR specifications.
+Patients with the same abnormality at baseline as on the treatment visit can be
+excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
 library(random.cdisc.data)
@@ -90,11 +103,14 @@ library(dplyr)
 
 adsl <- radsl(cached = TRUE)
 adlb <- radlb(cached = TRUE) \%>\%
+  mutate(
+    ONTRTFL = case_when(
+      AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
+      TRUE ~ "Y"
+    )
+  ) \%>\%
   var_relabel(
-    PARAM = "Parameters",
-    BNRIND = "Baseline Reference Range Indicator",
-    ANRIND = "Analysis Reference Range Indicator",
-    AVISIT = "Analysis Visit"
+    ONTRTFL = "On Treatment Record Flag"
   )
 
 app <- init(
@@ -102,12 +118,15 @@ app <- init(
     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADLB", adlb,
       code = 'ADLB <- radlb(cached = TRUE) \%>\%
-              var_relabel(
-                PARAM = "Parameters",
-                BNRIND = "Baseline Reference Range Indicator",
-                ANRIND = "Analysis Reference Range Indicator",
-                AVISIT = "Analysis Visit"
-              )'
+                mutate(
+                  ONTRTFL = case_when(
+                    AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
+                    TRUE ~ "Y"
+                  )
+                ) \%>\%
+                var_relabel(
+                  ONTRTFL = "On Treatment Record Flag"
+                )'
     ),
     check = TRUE
   ),
@@ -119,14 +138,9 @@ app <- init(
         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
-      id_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("USUBJID", "SUBJID")),
-        selected = "USUBJID",
-        fixed = TRUE
-      ),
       by_vars = choices_selected(
         choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
-        selected = c("PARAM", "AVISIT"),
+        selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
       grade = choices_selected(

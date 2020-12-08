@@ -12,7 +12,7 @@ test_that("template_abnormality generates correct expressions with default argum
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% filter(!is.na(ANRIND))
+      anl <- adlb %>% filter(ONTRTFL == "Y" & !is.na(ANRIND))
       n_col_counts <- table(adsl$ARM)
     }),
     layout = quote(
@@ -26,7 +26,12 @@ test_that("template_abnormality generates correct expressions with default argum
           split_label = var_labels(adlb)[["PARAM"]],
           visible_label = TRUE
         ) %>%
-        count_abnormal("ANRIND", abnormal = c(low = "LOW"))
+        count_abnormal(
+          var = "ANRIND",
+          abnormal = c(low = "LOW"),
+          variables = list(id = "USUBJID", baseline = "BNRIND"),
+          exclude_base_abn = FALSE
+        )
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
@@ -45,13 +50,16 @@ test_that("template_abnormality generates correct expressions with custom argume
     by_vars = c("AVISIT", "PARAMCD"),
     abnormal = c(Low = "LOW", Medium = "MEDIUM"),
     grade = "MYANRIND",
+    baseline_var = "MYBASELINE",
+    treatment_flag_var = "MYTRTFL",
+    treatment_flag = "YES",
     add_total = TRUE,
     exclude_base_abn = TRUE
   )
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% filter(!is.na(MYANRIND))
+      anl <- adlb %>% filter(MYTRTFL == "YES" & !is.na(MYANRIND))
       n_col_counts <- table(adsl$ARM)
       n_col_counts <- c(n_col_counts, Total = sum(n_col_counts))
     }),
@@ -61,7 +69,12 @@ test_that("template_abnormality generates correct expressions with custom argume
         add_colcounts() %>%
         split_rows_by("AVISIT", split_label = var_labels(adlb)[["AVISIT"]], visible_label = TRUE) %>%
         split_rows_by("PARAMCD", split_label = var_labels(adlb)[["PARAMCD"]], visible_label = TRUE) %>%
-        count_abnormal("MYANRIND", abnormal = c(low = "LOW", medium = "MEDIUM"), exclude_base_abn = TRUE)
+        count_abnormal(
+          var = "MYANRIND",
+          abnormal = c(low = "LOW", medium = "MEDIUM"),
+          variables = list(id = "USUBJID", baseline = "MYBASELINE"),
+          exclude_base_abn = TRUE
+      )
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
