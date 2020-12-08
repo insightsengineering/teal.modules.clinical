@@ -39,6 +39,7 @@ template_events <- function(dataname,
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff)
   )
+
   sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
@@ -496,7 +497,9 @@ ui_t_events_byterm <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("table"))),
+    output = white_small_well(
+      uiOutput(ns("table"))
+    ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "hlt", "llt")]),
@@ -611,6 +614,10 @@ srv_t_events_byterm <- function(input,
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
     )
+    validate(
+      need(input$prune_freq >= 0, "Please, provided a positive Incidence Rate (%)."),
+      need(input$prune_diff >= 0, "Please, provided a positive Difference Rate (%).")
+    )
 
     # validate inputs
     validate_standard_inputs(
@@ -649,8 +656,8 @@ srv_t_events_byterm <- function(input,
       add_total = input$add_total,
       event_type = event_type,
       sort_criteria = input$sort_criteria,
-      prune_freq <- input$prune_freq / 100,
-      prune_diff <- input$prune_diff / 100
+      prune_freq = input$prune_freq / 100,
+      prune_diff = input$prune_diff / 100
     )
     mapply(expression = my_calls, chunks_push)
   })
