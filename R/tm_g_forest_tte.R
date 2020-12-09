@@ -132,13 +132,15 @@ template_forest_tte <- function(anl_name = "ANL",
           subgroups = subgroup_var,
           strat = strata_var
           ),
+        control = control_coxph(conf_level = conf_level),
         data = anl
       ),
       env = list(
         aval_var = aval_var,
         arm_var = arm_var,
         subgroup_var = subgroup_var,
-        strata_var = strata_var
+        strata_var = strata_var,
+        conf_level = conf_level
       )
     )
   )

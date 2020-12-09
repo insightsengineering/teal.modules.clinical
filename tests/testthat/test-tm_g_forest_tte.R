@@ -39,6 +39,7 @@ test_that("template_forest_tte generates correct expressions", {
           subgroups = c("SEX", "BMRKR2"),
           strat = "STRATA2"
           ),
+        control = control_coxph(conf_level = 0.9),
         data = anl
         )
       tbl_survtime <- basic_table() %>%
