@@ -1,6 +1,6 @@
 #' Forest Response Plot teal module
 #'
-#' This is teal module produces a grid style Forest plot for response data with ADaM structure
+#' This teal module produces a grid style Forest plot for response data with ADaM structure.
 #'
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams argument_convention
@@ -35,7 +35,6 @@ template_forest_rsp <- function(anl_name = "ANL",
     is.string(parentname),
     is.string(arm_var),
     is.string(aval_var),
-    is.null(subgroup_var) || is.character(subgroup_var),
     is.null(subgroup_var) || is.character(subgroup_var)
   )
 

@@ -73,7 +73,7 @@ output to put the output into context. For example the
 \code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
-This is teal module produces a grid style Forest plot for response data with ADaM structure
+This teal module produces a grid style Forest plot for response data with ADaM structure.
 }
 \section{Functions}{
 \itemize{
