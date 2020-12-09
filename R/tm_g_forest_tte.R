@@ -506,13 +506,6 @@ srv_g_forest_tte <- function(input,
       arm_var = input_arm_var
     )
 
-    validate(
-      need(
-        c(input$ref_arm, input$comp_arm) %in% levels(adsl_filtered[[input_arm_var]]),
-        "Arm variable is updating"
-      )
-    )
-
     # validate arm levels
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
