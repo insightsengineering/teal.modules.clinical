@@ -24,6 +24,7 @@ test_that("template_g_km works as expected with default arguments", {
             font_size = 8,
             xlab = "Survival time in Days",
             newpage = FALSE,
+            title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
             ggtheme = theme_minimal(),
             annot_surv_med = TRUE,
             annot_coxph = TRUE,
