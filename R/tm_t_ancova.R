@@ -159,7 +159,8 @@ template_ancova <- function(dataname = "ANL",
           variables = list(arm = arm_var, covariates = NULL),
           conf_level = conf_level,
           var_labels = "Unadjusted comparison",
-          .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means")
+          .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+          table_names = "unadjusted_comparison"
         ) %>%
           summarize_ancova(
             vars = aval_var,
@@ -167,7 +168,8 @@ template_ancova <- function(dataname = "ANL",
             conf_level = conf_level,
             var_labels = paste0(
               "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-            )
+            ),
+            table_names = "adjusted_comparison"
           ),
         env = list(
           aval_var = aval_var,

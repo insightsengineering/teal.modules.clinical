@@ -71,7 +71,8 @@ test_that("template_tte produces healthy standard output", {
               0.25,
               0.75
             )
-          )
+          ),
+          table_names = "time_to_event"
         ) %>%
         surv_timepoint(
           vars = "AVAL",
@@ -83,7 +84,8 @@ test_that("template_tte produces healthy standard output", {
             conf_level = 0.95,
             conf_type = "plain"
           ),
-          .indent_mods = NULL
+          .indent_mods = NULL,
+          table_names = "time_points"
         )
     ),
     table = quote({

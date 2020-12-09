@@ -196,7 +196,8 @@ template_tte <- function(dataname = "ANL",
           conf_level = conf_level,
           conf_type = conf_type,
           quantiles = quantiles
-        )
+        ),
+        table_names = "time_to_event"
       ),
       env = c(
         aval = aval,
@@ -218,7 +219,8 @@ template_tte <- function(dataname = "ANL",
             pval_method = pval_method,
             ties = ties,
             conf_level = conf_level
-          )
+          ),
+          table_names = "unstratified"
         ),
         env = c(
           aval = aval,
@@ -241,7 +243,8 @@ template_tte <- function(dataname = "ANL",
             pval_method = pval_method,
             ties = ties,
             conf_level = conf_level
-          )
+          ),
+          table_names = "stratified"
         ),
         env = list(
           aval = aval,
@@ -277,7 +280,8 @@ template_tte <- function(dataname = "ANL",
             conf_level = conf_level,
             conf_type = conf_type
           ),
-          .indent_mods = indents
+          .indent_mods = indents,
+          table_names = "time_points"
         ),
         env = list(
           aval = aval,

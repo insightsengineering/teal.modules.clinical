@@ -172,7 +172,8 @@ test_that("template_ancova generates expressions with single endpoint", {
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = NULL),
           conf_level = 0.95, var_labels = "Unadjusted comparison",
-          .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means")
+          .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+          table_names = "unadjusted_comparison"
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -180,7 +181,8 @@ test_that("template_ancova generates expressions with single endpoint", {
           conf_level = 0.95,
           var_labels = paste0(
             "Adjusted comparison (", paste(c("BASE", "STRATA1"), collapse = " + "), ")"
-          )
+          ),
+          table_names = "adjusted_comparison"
         )
     ),
     table = quote({
