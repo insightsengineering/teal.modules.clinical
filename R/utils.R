@@ -536,7 +536,7 @@ prepare_arm <- function(dataname,
     is.string(dataname),
     is.string(arm_var),
     is.null(ref_arm) || is.character(ref_arm),
-    is.character(comp_arm),
+    is.character(comp_arm) || is.null(comp_arm),
     is.flag(compare_arm),
     is.string(ref_arm_val),
     is.flag(drop)
