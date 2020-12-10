@@ -203,14 +203,14 @@ template_events <- function(dataname,
       prune_list <- add_expr(
         prune_list,
         quote(
-          expr = col_indices <- seq_along(1:(length(col_n) - 1))
+          expr = col_indices <- seq_along(col_n)[-length(col_n)]
         )
       )
     } else {
       prune_list <- add_expr(
         prune_list,
         quote(
-          expr = col_indices <- seq_along(1:length(col_n))
+          expr = col_indices <- seq_along(col_n)
         )
       )
     }
@@ -628,8 +628,10 @@ srv_t_events_byterm <- function(input,
       need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
     )
     validate(
-      need(input$prune_freq >= 0, "Please, provided a positive Incidence Rate (%)."),
-      need(input$prune_diff >= 0, "Please, provided a positive Difference Rate (%).")
+      need(input$prune_freq >= 0 && input$prune_freq <= 100,
+        "Please provide an Incidence Rate between 0 and 100 (%)."),
+      need(input$prune_diff >= 0 && input$prune_diff <= 100,
+        "Please provide a Difference Rate between 0 and 100 (%).")
     )
 
     # validate inputs

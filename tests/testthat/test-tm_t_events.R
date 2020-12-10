@@ -213,7 +213,7 @@ test_that("template_events can generate customized table with pruning", {
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
-      col_indices <- seq_along(1:(length(col_n) - 1))
+      col_indices <- seq_along(col_n)[-length(col_n)]
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
       pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
