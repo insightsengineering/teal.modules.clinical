@@ -310,11 +310,7 @@ srv_summary <- function(input,
 
     validate(
       need(input_arm_var, "Please select an arm variable"),
-      need(input_summarize_vars, "Please select a summarize variable"),
-      need(
-        !(input$useNA == "ifany" && input$denominator == "n"),
-        "If NA values are removed, denominator cannot be n"
-      )
+      need(input_summarize_vars, "Please select a summarize variable")
     )
 
     validate_standard_inputs(
