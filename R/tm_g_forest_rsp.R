@@ -18,6 +18,7 @@ NULL
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #'
+#' @importFrom grid grid.newpage grid.draw
 template_forest_rsp <- function(anl_name = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,

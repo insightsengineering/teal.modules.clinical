@@ -18,6 +18,7 @@ NULL
 #' @param topleft (`string`)\cr the top-left annotation in the table.
 #' @param at (`NULL` or `numeric`)\cr optional values for the interaction variable. Otherwise the median is used.
 #'
+#' @importFrom broom tidy
 template_logistic <- function(dataname,
                               arm_var,
                               avalc_var,

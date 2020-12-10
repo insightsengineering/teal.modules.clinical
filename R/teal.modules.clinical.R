@@ -3,9 +3,16 @@
 #' Provides teal modules for the standard clinical trials outputs.
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
-#' @import shiny teal tern teal.devel utils.nest dplyr ggplot2 magrittr
 #' @import assertthat
+#' @import dplyr
+#' @import ggplot2
+#' @import magrittr
+#' @import shiny
 #' @import rtables
+#' @import teal
+#' @import teal.devel
+#' @import tern
+#' @import utils.nest
 #' @importFrom methods is
 #'
 #' @docType package

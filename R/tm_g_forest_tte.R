@@ -7,6 +7,7 @@
 #' @inheritParams tm_t_tte
 #' @inheritParams shared_params
 #'
+#' @importFrom grid grid.newpage grid.draw
 template_forest_tte <- function(anl_name = "ANL",
                                 parentname = "ANL_ADSL",
                                 arm_var,

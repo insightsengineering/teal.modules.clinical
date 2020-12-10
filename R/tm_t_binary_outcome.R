@@ -111,6 +111,7 @@ tm_t_binary_outcome <- function(label,
   )
 }
 
+#' @importFrom shinyWidgets switchInput
 ui_t_binary_outcome <- function(id, ...) {
 
   a <- list(...)

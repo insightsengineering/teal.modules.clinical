@@ -458,6 +458,7 @@ tm_t_rsp <- function(label,
 
 #' @noRd
 #'
+#' @importFrom shinyWidgets switchInput
 ui_t_rsp <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(

@@ -18,6 +18,7 @@ NULL
 #' @describeIn kaplan_meier create the expression corresponding to the analysis.
 #' @order 2
 #'
+#' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
                           ref_arm = NULL,
@@ -320,6 +321,7 @@ tm_g_km <- function(label,
 #' User Interface for KM Module
 #' @noRd
 #'
+#' @importFrom shinyWidgets switchInput
 ui_g_km <- function(id, ...) {
 
   a <- list(...)

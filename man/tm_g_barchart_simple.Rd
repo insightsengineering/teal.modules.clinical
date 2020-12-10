@@ -35,6 +35,13 @@ the height of the main plot.}
 
 \item{plot_width}{optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
 the width of the main plot and renders a slider on the plot to interactively adjust the plot width.}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 Categories can be defined up to four levels deep and are defined through
@@ -150,5 +157,4 @@ app <- init(
 \dontrun{
 shinyApp(app$ui, app$server)
 }
-
 }

@@ -3,10 +3,6 @@
 #' @inheritParams teal.devel::standard_layout
 #' @inheritParams argument_convention
 #'
-#' @importFrom shinyjs show
-#' @importFrom shinyjs hidden
-#' @importFrom stats complete.cases
-#' @importFrom broom tidy
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
 #' different convergence behavior. This is a known observation with the used package
@@ -161,6 +157,7 @@ template_fit_mmrm <- function(parentname,
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`) type of table to output.
 #'
+#' @importFrom broom tidy
 template_mmrm_tables <- function(dataname,
                                  fit_name,
                                  colcounts_name,
@@ -475,6 +472,7 @@ tm_a_mmrm <- function(label,
 }
 
 #' @noRd
+#' @importFrom shinyjs hidden
 ui_mmrm <- function(id, ...) {
 
   a <- list(...) # module args
@@ -534,7 +532,7 @@ ui_mmrm <- function(id, ...) {
             data_extract_spec = a$cov_var,
             is_single_dataset = is_single_dataset_value
           ),
-          hidden(
+          shinyjs::hidden(
             data_extract_input(
               id = ns("split_covariates"),
               label = "Split Covariates",
@@ -707,6 +705,8 @@ ui_mmrm <- function(id, ...) {
 }
 
 #' @noRd
+#' @importFrom shinyjs hide show onclick disable enable
+#' @importFrom stats complete.cases
 srv_mmrm <- function(input,
                      output,
                      session,

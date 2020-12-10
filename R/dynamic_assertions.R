@@ -10,8 +10,9 @@ NULL
 #'
 #' @param data (`dataframe`).
 #' @param min_nrow (`number`)\cr minimum number of rows for a valid analysis.
-#' @import assertthat
+#'
 #' @export
+#'
 #' @examples
 #'
 #' library(assertthat)
@@ -39,8 +40,9 @@ validate_enough_rows <- function(data, min_nrow) {
 #' @describeIn dyn_assertion the element exist.
 #' @param str (`name`)\cr the name of the object which must _exist_.
 #' @param ... (`string`)\cr the label to be displayed.
-#' @import assertthat
+#'
 #' @export
+#'
 #' @examples
 #'
 #' armcd <- NULL

@@ -6,11 +6,14 @@
 #'
 #' @md
 #' @inheritParams shared_params
+#' @inheritParams teal.devel::standard_layout
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
 #' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
 #' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.
 #' @param y_facet (`data_extract_spec`)\cr faceting groups on the col dimension.
 #' @param plot_options (`list`)\cr list of plot options.
+#'
+#' @importFrom utils modifyList
 #'
 #' @export
 #'
@@ -123,8 +126,6 @@
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-#'
-#' @importFrom utils modifyList
 tm_g_barchart_simple <- function(x = NULL,
                                  fill = NULL,
                                  x_facet = NULL,
