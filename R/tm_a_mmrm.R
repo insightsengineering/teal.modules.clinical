@@ -1087,11 +1087,20 @@ srv_mmrm <- function(input,
       input_visit_var <- as.vector(anl_m$columns_source$visit_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      ref_arm <- input$ref_arm
+      comp_arm <- input$comp_arm
+      conf_level <- input$conf_level
       validate(
-        need(length(input_aval_var) == 1, "need outcome variable"),
-        need(length(input_visit_var) == 1, "need visit variable"),
-        need(length(input_id_var) == 1, "need id variable")
+        need(input_aval_var, "No Analysis Variable is selected"),
+        need(input_visit_var, "No Visit Variable is selected"),
+        need(input_id_var, "No Subject Identifier is selected"),
+        need(input_arm_var, "No Arm Variable is selected"),
+        need(ref_arm, "No Reference Group(s) is/are selected"),
+        need(comp_arm, "No Comparison Group(s) is/are selected"),
+        need(conf_level, "No Confidence level is selected")
       )
+      validate_no_intersection(comp_arm, ref_arm, "Reference and comparison Arms cannot overlap.")
       validate(
         need(
           !state_has_changed(),

@@ -269,7 +269,7 @@ tm_t_logistic <- function(label,
 #' User Interface for `tm_t_logistic`
 #' @noRd
 #'
-ui_t_logistic <- function(id, ...){
+ui_t_logistic <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
