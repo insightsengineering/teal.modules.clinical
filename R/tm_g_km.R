@@ -177,7 +177,6 @@ template_g_km <- function(dataname = "ANL",
             annot_surv_med = annot_surv_med,
             annot_coxph = annot_coxph
           )
-        print(result)
         },
         env = list(
           font_size = font_size,
@@ -292,7 +291,7 @@ tm_g_km <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = TRUE),
+    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
   )
