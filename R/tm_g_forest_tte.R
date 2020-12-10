@@ -22,7 +22,7 @@ template_forest_tte <- function(anl_name = "ANL",
   assert_that(
     is.string(anl_name),
     is.string(arm_var),
-    is.character(subgroup_var)
+    is.character(subgroup_var) || is.null(subgroup_var)
   )
 
   y <- list()
@@ -145,45 +145,20 @@ template_forest_tte <- function(anl_name = "ANL",
     )
   )
 
-  summary_list <- add_expr(
-    summary_list,
-    substitute(
-      tbl_survtime <- basic_table() %>%
-        tabulate_survival_subgroups(
-          vars = c("n", "median"),
-          control = control_coxph(conf_level = conf_level)
-          ) %>%
-        build_table(df$survtime),
-      env = list(conf_level = conf_level)
-    )
-  )
-
-  summary_list <- add_expr(
-    summary_list,
-    substitute(
-      tbl_hr <- basic_table() %>%
-        tabulate_survival_subgroups(
-          vars = c("n_tot", "hr", "ci"),
-          control = control_coxph(conf_level = conf_level)
-          ) %>%
-        build_table(df$hr),
-      env = list(conf_level = conf_level)
-    )
-  )
-
   y$summary <- bracket_expr(summary_list)
 
   # Table output.
-  y$table <- substitute(
-    result <- cbind_rtables(tbl_hr[, 1], tbl_survtime, tbl_hr[, 2:3])
+  y$table <- quote(
+    result <- basic_table() %>%
+      tabulate_survival_subgroups(df, vars = c("n_tot", "n", "n_events", "median", "hr", "ci"))
   )
 
   y$plot <- substitute(
     expr = {
       p <- g_forest(
         tbl = result,
-        col_x = 6,
-        col_ci = 7,
+        col_x = 8,
+        col_ci = 9,
         vline = 1,
         forest_header = paste0(rev(levels(anl[[arm_var]])), "\nbetter"),
         xlim = c(0.1, 10),
@@ -522,11 +497,12 @@ srv_g_forest_tte <- function(input,
     }
     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
 
-    validate(need(length(input_subgroup_var) > 0, "Please select at least one subgroup variable."))
-    validate(
-      need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
-           "Not all subgroup variables are factors.")
-    )
+    if (length(input_subgroup_var) > 0) {
+      validate(
+        need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+             "Not all subgroup variables are factors.")
+      )
+    }
 
     if (length(input_strata_var) > 0) {
       validate(
@@ -565,6 +541,7 @@ srv_g_forest_tte <- function(input,
     validate_has_data(ANL, 10)
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
+    subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
     my_calls <- template_forest_tte(
       anl_name = "ANL",
       parentname = "ANL_ADSL",
@@ -573,7 +550,7 @@ srv_g_forest_tte <- function(input,
       comp_arm = input$comp_arm,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-      subgroup_var = as.vector(anl_m$columns_source$subgroup_var),
+      subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (!input$fixed_symbol_size) 1

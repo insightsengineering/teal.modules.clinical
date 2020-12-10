@@ -39,19 +39,14 @@ test_that("template_forest_rsp generates correct expressions", {
         variables = list(rsp = "is_rsp", arm = "ARMCD", subgroups = c("SEX", "STRATA2"), strat = NULL),
         data = adrs, conf_level = 0.95
       )
-      rsp_tab <- basic_table() %>%
-        tabulate_rsp_subgroups(vars = c("n", "prop")) %>%
-        build_table(df$prop)
-      or_tab <- basic_table() %>%
-        tabulate_rsp_subgroups(vars = c("n_tot", "or", "ci"), conf_level = 0.95) %>%
-        build_table(df$or)
     }),
     table = quote(
-      result <- cbind_rtables(or_tab[, 1], rsp_tab, or_tab[, -1])
+      result <- basic_table() %>%
+        tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
     ),
     plot = quote({
       p <- g_forest(
-        tbl = result, col_x = 6, col_ci = 7, vline = 1,
+        tbl = result, col_x = 8, col_ci = 9, vline = 1,
         forest_header = paste0(levels(adrs[["ARMCD"]]), "\nbetter"),
         xlim = c(0.1, 10), logx = TRUE, x_at = c(0.1, 1, 10),
         draw = FALSE, col_symbol_size = NULL

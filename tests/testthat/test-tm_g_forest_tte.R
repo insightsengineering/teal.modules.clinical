@@ -42,27 +42,16 @@ test_that("template_forest_tte generates correct expressions", {
         control = control_coxph(conf_level = 0.9),
         data = anl
         )
-      tbl_survtime <- basic_table() %>%
-        tabulate_survival_subgroups(
-          vars = c("n", "median"),
-          control = control_coxph(conf_level = 0.9)
-          ) %>%
-        build_table(df$survtime)
-      tbl_hr <- basic_table() %>%
-        tabulate_survival_subgroups(
-          vars = c("n_tot", "hr", "ci"),
-          control = control_coxph(conf_level = 0.9)
-          ) %>%
-        build_table(df$hr)
     }),
     table = quote(
-      result <- cbind_rtables(tbl_hr[, 1], tbl_survtime, tbl_hr[, 2:3])
+      result <- basic_table() %>%
+        tabulate_survival_subgroups(df, vars = c("n_tot", "n", "n_events", "median", "hr", "ci"))
     ),
     plot = quote({
       p <- g_forest(
         tbl = result,
-        col_x = 6,
-        col_ci = 7,
+        col_x = 8,
+        col_ci = 9,
         vline = 1,
         forest_header = paste0(rev(levels(anl[["ARMCD"]])), "\nbetter"),
         xlim = c(0.1, 10),
