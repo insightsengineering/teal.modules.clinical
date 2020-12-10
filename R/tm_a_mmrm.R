@@ -869,6 +869,7 @@ srv_mmrm <- function(input,
     shinyjs::show("mmrm_title")
     shinyjs::disable("button_start")
     shinyjs::enable("rcode-show_rcode")
+    shinyjs::enable("rcode-show_eval_details-evaluation_details")
   })
 
   # all the inputs and data that can be out of sync with the fitted model
@@ -924,13 +925,11 @@ srv_mmrm <- function(input,
     )
     shinyjs::enable("button_start")
     shinyjs::disable("rcode-show_rcode")
-    if (state$applicable) {
-      if (state_has_changed()) {
-        shinyjs::disable("rcode-show_rcode")
-      } else {
+    shinyjs::disable("rcode-show_eval_details-evaluation_details")
+    if (state$applicable && !state_has_changed()) {
         shinyjs::enable("rcode-show_rcode")
+        shinyjs::enable("rcode-show_eval_details-evaluation_details")
         shinyjs::disable("button_start")
-      }
     }
   })
 
