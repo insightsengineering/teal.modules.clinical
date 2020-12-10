@@ -1,0 +1,45 @@
+test_that("template_logistic generates correct expressions", {
+
+  result <- template_logistic(
+    dataname = "ANL",
+    arm_var = "ARMCD",
+    avalc_var = "AVALC",
+    cov_var = c("AGE", "SEX"),
+    interaction_var = "AGE",
+    ref_arm = c("ARM A", "ARM B"),
+    comp_arm = "ARM C",
+    conf_level = 0.95,
+    combine_comp_arms = FALSE,
+    responder_val = c("CR", "PR"),
+    topleft = "BESRSPI",
+    at = c(30, 40)
+  )
+
+  expected <- list(
+    arm_lab = quote(arm_var_lab <- var_labels(ANL["ARMCD"])),
+    data = quote(
+    anl <- ANL %>%
+      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+      mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      mutate(ARMCD = droplevels(ARMCD)) %>%
+      mutate(Response = AVALC %in% c("CR", "PR"))
+    ),
+    relabel = quote(rtables::var_labels(anl["ARMCD"]) <- arm_var_lab),
+    model = quote(
+    mod <- fit_logistic(
+      anl, variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")
+    ) %>%
+      broom::tidy(conf_level = 0.95, at = c(30, 40))
+    ),
+    table = quote({
+      result <- basic_table() %>%
+        summarize_logistic(conf_level = 0.95) %>%
+        append_topleft("BESRSPI") %>%
+        build_table(df = mod)
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})

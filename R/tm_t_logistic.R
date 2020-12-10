@@ -1,451 +1,559 @@
-#' teal module for multi-variable logistic regression
+#' Teal Module for Logistic Regression
 #'
 #' @description This module produces a multi-variable logistic regression table that matches the
-#'   STREAM template \code{lgrt02}
+#'   STREAM template `lgrt02`.
 #'
+#' @name logistic
+#'
+NULL
+
+#' Template For Logistic Regression
+#'
+#' Creates an expression for logistic regressions.
+#'
+#'
+#' @inheritParams teal.devel::standard_layout
 #' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
-#' @param covariate_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for covariates selection
-#' @param interaction_var \code{\link[teal]{choices_selected}} object with all available choices and preselected option
-#' for variable names that can be used for interaction variable selection
+#' @inheritParams logistic
+#' @param topleft (`string`)\cr the top-left annotation in the table.
+#' @param at (`NULL` or `numeric`)\cr optional values for the interaction variable. Otherwise the median is used.
 #'
+template_logistic <- function(dataname,
+                              arm_var,
+                              avalc_var,
+                              cov_var,
+                              interaction_var,
+                              ref_arm,
+                              comp_arm,
+                              topleft = "Logistic Regression",
+                              conf_level = 0.95,
+                              combine_comp_arms = FALSE,
+                              responder_val = c("CR", "PR"),
+                              at = NULL) {
+
+  assert_that(
+    is.string(dataname),
+    is.string(arm_var),
+    is.string(avalc_var),
+    is.string(topleft) || is.null(topleft),
+    is.character(cov_var) || is.null(cov_var),
+    is.string(interaction_var) || is.null(interaction_var),
+    is.flag(combine_comp_arms)
+  )
+
+  ref_arm_val <- paste(ref_arm, collapse = "/")
+  y <- list()
+  y$arm_lab <- substitute(
+    expr = arm_var_lab <- var_labels(anl[arm_var]),
+    env = list(anl = as.name(dataname), arm_var = arm_var)
+  )
+  data_list <- list()
+  data_list <- add_expr(
+    data_list,
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
+    )
+  )
+
+  if (combine_comp_arms) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
+      )
+    )
+  }
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = mutate(Response = avalc_var %in% responder_val),
+      env = list(avalc_var = as.name(avalc_var), responder_val = responder_val)
+    )
+  )
+
+  y$data <- substitute(
+    expr = anl <- data_pipe,
+    env = list(data_pipe = pipe_expr(data_list))
+  )
+
+  y$relabel <- substitute(
+    expr = rtables::var_labels(anl[arm_var]) <- arm_var_lab,
+    env = list(arm_var = arm_var)
+  )
+
+  model_list <- list()
+  model_list <- if (is.null(interaction_var)) {
+    add_expr(
+      model_list,
+      substitute(
+        expr = fit_logistic(
+          anl,
+          variables = list(response = "Response", arm = arm_var, covariates = cov_var)
+        ),
+        env = list(arm_var = arm_var, cov_var = cov_var)
+      )
+    )
+  } else {
+    add_expr(
+      model_list,
+      substitute(
+        expr = fit_logistic(
+          anl,
+          variables = list(
+            response = "Response", arm = arm_var, covariates = cov_var,
+            interaction = interaction_var
+          )
+        ),
+        env = list(arm_var = arm_var, cov_var = cov_var, interaction_var = interaction_var)
+      )
+    )
+  }
+
+  model_list <- if (is.null(interaction_var)) {
+    add_expr(
+      model_list,
+      substitute(
+        expr = broom::tidy(conf_level = conf_level),
+        env = list(conf_level = conf_level)
+      )
+    )
+  } else {
+    add_expr(
+      model_list,
+      substitute(
+        expr = broom::tidy(conf_level = conf_level, at = at),
+        env = list(conf_level = conf_level, at = at)
+      )
+    )
+  }
+
+  y$model <- substitute(
+    expr = mod <- model_pipe,
+    env = list(model_pipe = pipe_expr(model_list))
+  )
+
+  y$table <- substitute(
+    expr = {
+      result <- basic_table() %>%
+        summarize_logistic(conf_level = conf_level) %>%
+        append_topleft(topleft) %>%
+        build_table(df = mod)
+      result
+    },
+    env = list(conf_level = conf_level, topleft = topleft))
+
+  y
+}
+
+
+#' @describeIn logistic Teal module for logistic regression.
+#' @inheritParams teal.devel::standard_layout
+#' @inheritParams argument_convention
+#' @param cov_var [teal::choices_selected()] object with all available choices and preselected option
+#'   for variable names that can be used for covariates selection.
+#' @param interaction_var [teal::choices_selected()] object with all available choices and preselected option
+#'   for variable names that can be used for interaction variable selection.
+#' @param avalc_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#'  object with all available choices and preselected option for the analysis variable (categorical).
 #' @export
 #' @examples
+#'
 #' library(random.cdisc.data)
 #' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(cached = TRUE)
-#' varlabel_adrs <- var_labels(ADRS)
-#' ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
-#' ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
-#' var_labels(ADRS) <- varlabel_adrs
+#' ADRS <- radrs(cached = TRUE) %>%
+#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#'
+#' arm_ref_comp = list(
+#'   ACTARMCD = list(
+#'     ref = "ARM B",
+#'     comp = c("ARM A", "ARM C")
+#'   ),
+#'   ARM = list(
+#'     ref = "B: Placebo",
+#'     comp = c("A: Drug X", "C: Combination")
+#'   )
+#' )
+#'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code ='ADSL <- radsl(cached = TRUE)'),
-#'     cdisc_dataset("ADRS", ADRS,
-#'       code = 'ADRS <- radrs(cached = TRUE)
-#'               varlabel_adrs <- var_labels(ADRS)
-#'               ADRS <- subset(ADRS, PARAMCD %in% c("BESRSPI", "INVET"))
-#'               ADRS$PARAMCD <- droplevels(ADRS$PARAMCD)
-#'               var_labels(ADRS) <- varlabel_adrs'),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
+#'     cdisc_dataset(
+#'       "ADRS", ADRS,
+#'       code = 'ADRS <- radrs(cached = TRUE) %>% filter(PARAMCD %in% c("BESRSPI", "INVET"))'
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       arm_ref_comp = NULL,
-#'       paramcd = choices_selected(levels(ADRS$PARAMCD), "BESRSPI"),
-#'       covariate_var = choices_selected(c("SEX", "AGE", "BMRKR1", "BMRKR2"), "SEX"),
-#'       interaction_var = choices_selected(c("SEX", "AGE", "BMRKR1", "BMRKR2"), NULL)
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADRS, c("ARM", "ARMCD")),
+#'         selected = "ARM"
+#'       ),
+#'       arm_ref_comp = arm_ref_comp,
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+#'         selected = "BESRSPI"
+#'       ),
+#'       cov_var = choices_selected(
+#'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
+#'         selected = "SEX"
+#'       ),
+#'       interaction_var = choices_selected(
+#'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
+#'         selected = NULL
+#'       )
 #'     )
 #'   )
 #' )
+#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_t_logistic <- function(label,
                           dataname,
+                          parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                           arm_var,
                           arm_ref_comp = NULL,
                           paramcd,
-                          covariate_var,
-                          interaction_var,
-                          conf_level = choices_selected(c(0.9, 0.9, 0.85), 0.95, keep_order = TRUE),
+                          cov_var = NULL,
+                          interaction_var = NULL,
+                          avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
+                          conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL) {
+
+  stopifnot(
+    length(dataname) == 1,
+    is.choices_selected(conf_level)
+  )
+
+  args <- as.list(environment())
+
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+    interaction_var = cs_to_des_select(interaction_var, dataname = dataname)
+  )
+
   module(
     label = label,
-    ui = function(id, datasets) {
-      ns <- NS(id)
-      htmlOutput(ns("tbd"))
-    },
-    server = function(input, output, session, datasets) {
-      output$tbd <- renderUI({
-        p("Module is currently refactored")
-      })
-    },
-    filters = "ADSL"
+    server = srv_t_logistic,
+    ui = ui_t_logistic,
+    ui_args = c(data_extract_list, args),
+    server_args = c(
+      data_extract_list,
+      list(
+        arm_ref_comp = arm_ref_comp,
+        label = label,
+        dataname = dataname,
+        parentname = parentname
+      )
+    ),
+    filters = get_extract_datanames(data_extract_list)
   )
 }
 
-# REFACTOR
-# nolint start
-# tm_t_logistic <- function(label,
-#                           dataname,
-#                           arm_var,
-#                           arm_ref_comp = NULL,
-#                           paramcd,
-#                           covariate_var,
-#                           interaction_var,
-#                           pre_output = NULL,
-#                           post_output = NULL) {
-#
-#   stop_if_not(list(is_character_single(label), "Label should be single (i.e. not vector) character type of object"))
-#   stop_if_not(list(is_character_vector(dataname), "Dataname should vector of characters"))
-#   stopifnot(is.choices_selected(arm_var))
-#   stopifnot(is.choices_selected(paramcd))
-#   stopifnot(is.choices_selected(covariate_var))
-#   stopifnot(is.choices_selected(conf_level))
-#
-#   args <- as.list(environment())
-#
-#   module(
-#     label = label,
-#     server = srv_t_logistic,
-#     ui = ui_t_logistic,
-#     ui_args = args,
-#     server_args = list(
-#       dataname = dataname,
-#       arm_ref_comp = arm_ref_comp
-#     ),
-#     filters = dataname
-#   )
-# }
-#
-# #' UI part for tm_t_logistic
-# #'
-# #' @inheritParams tm_t_logistic
-# #' @param id namespace id
-# #'
-# #' @details Additional standard UI inputs include \code{events},
-# #' \code{incl_missing} (default TRUE), \code{ref_arm}, \code{comp_arm} and
-# #' \code{combin_arm} (default FALSE)
-# #'
-# #' Default values of the inputs \code{var_arm}, \code{ref_arm} and
-# #' \code{comp_arm} are set to NULL, and updated accordingly based on selection of
-# #' \code{paramcd} and \code{arm.var}
-# #'
-# #' @noRd
-# #'
-# ui_t_logistic <- function(id, ...){
-#   ns <- NS(id)
-#
-#   a <- list(...)
-#
-#   standard_layout(
-#     output = white_small_well(uiOutput(ns("logistic_table"))),
-#     encoding = div(
-#       tags$label("Encodings", class = "text-primary"),
-#       helpText("Analysis data:", tags$code(a$dataname)),
-#       #Response related parameters
-#       optionalSelectInput(
-#         ns("paramcd"),
-#         "PARAMCD",
-#         choices = a$paramcd$choices,
-#         selected = a$paramcd$selected,
-#         multiple = FALSE,
-#         fixed = a$paramcd$fixed,
-#         label_help = helpText("Select one type of response to analyze.")
-#       ),
-#       selectInput(
-#         ns("events"),
-#         "Events",
-#         choices = NULL,
-#         selected = NULL,
-#         multiple = TRUE
-#       ),
-#       #Arm related parameters
-#       optionalSelectInput(
-#         ns("arm_var"),
-#         "Treatment Variable",
-#         choices = a$arm_var$choices,
-#         selected = a$arm_var$selected,
-#         multiple = FALSE,
-#         fixed = a$arm_var$fixed
-#       ),
-#       selectInput(
-#         ns("ref_arm"),
-#         "Reference Group",
-#         choices = NULL,
-#         selected = NULL,
-#         multiple = TRUE
-#       ),
-#       helpText("Multiple reference groups are automatically combined into a single group."),
-#       selectInput(
-#         ns("comp_arm"),
-#         "Comparison Group",
-#         choices = NULL,
-#         selected = NULL,
-#         multiple = TRUE
-#       ),
-#       checkboxInput(
-#         ns("combine_comp_arms"),
-#         "Combine all comparison groups?",
-#         value = FALSE
-#       ),
-#       optionalSelectInput(
-#         ns("covariate_var"),
-#         "Covariates",
-#         choices = a$covariate_var$choices,
-#         selected = a$covariate_var$selected,
-#         multiple = TRUE,
-#         label_help = helpText("taken from:", tags$code("ADSL")),
-#         fixed = a$covariate_var$fixed
-#       ),
-#       optionalSelectInput(
-#         ns("interaction_var"),
-#         "Interact with Treatment",
-#         choices = a$interaction_var$choices,
-#         selected = a$interaction_var$selected,
-#         multiple = FALSE,
-#         label_help = helpText("taken from:", tags$code("ADSL")),
-#         fixed = a$interaction_var$fixed
-#       ),
-#       uiOutput(ns("interaction_input")),
-#       optionalSelectInput(ns("conf_level"),
-#                           "Level of Confidence",
-#                           a$conf_level$choices,
-#                           a$conf_level$selected,
-#                           multiple = FALSE,
-#                           fixed = a$conf_level$fixed
-#       ),
-#     ),
-#     forms = get_rcode_ui(ns("rcode")),
-#     pre_output = a$pre_output,
-#     post_output = a$post_output
-#   )
-# }
-#
-# #' server part of tm_t_logistic
-# #'
-# #' @importFrom stats median
-# #'
-# #' @noRd
-# srv_t_logistic <- function(input,
-#                            output,
-#                            session,
-#                            datasets,
-#                            dataname,
-#                            arm_ref_comp) {
-#   init_chunks()
-#
-#   # Setup arm variable selection, default reference arms, and default
-#   # comparison arms for encoding panel
-#   arm_ref_comp_observer(
-#     session,
-#     input,
-#     id_ref = "ref_arm",
-#     id_comp = "comp_arm",
-#     id_arm_var = "arm_var",
-#     datasets = datasets,
-#     arm_ref_comp = arm_ref_comp,
-#     module = "tm_t_logistic"
-#   )
-#   # Update UI choices depending on selection of previous options
-#   observe({
-#     anl <- datasets$get_data(dataname, filtered = FALSE)
-#     paramcd <- input$paramcd
-#
-#     responder_choices <- unique(anl$AVALC[anl$PARAMCD == paramcd])
-#
-#     updateSelectInput(
-#       session, "events",
-#       choices = responder_choices,
-#       selected = intersect(c("CR", "PR"), responder_choices)
-#     )
-#   })
-#
-#   output$interaction_input <- renderUI({
-#     adsl <- datasets$get_data("ADSL", filtered = FALSE)
-#     interaction_var <- input$interaction_var
-#
-#     if (length(interaction_var) != 0) {
-#       validate(need(interaction_var %in% colnames(adsl), paste0(interaction_var, " is not in ADSL")))
-#       if (is.numeric(adsl[[interaction_var]])) {
-#         def_val <- ceiling(stats::median(adsl[[interaction_var]], na.rm = TRUE))
-#         return(
-#           tagList(
-#             textInput(
-#               session$ns("interaction_values"),
-#               label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
-#               value = as.character(def_val)
-#             )
-#           )
-#         )
-#       } else {
-#         return(NULL)
-#       }
-#     }
-#   })
-#
-#   output$logistic_table <- renderUI({
-#     adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
-#     var_labels(adsl_filtered) <- var_labels(
-#       datasets$get_data("ADSL", filtered = FALSE)
-#     )
-#     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-#     var_labels(anl_filtered) <- var_labels(
-#       datasets$get_data(dataname, filtered = FALSE)
-#     )
-#     paramcd <- input$paramcd
-#     events <- input$events
-#     arm_var <- input$arm_var
-#     ref_arm <- input$ref_arm
-#     comp_arm <- input$comp_arm
-#     combine_comp_arms <- input$combine_comp_arms
-#     covariate_var <- input$covariate_var
-#     if (length(covariate_var) == 0) {
-#       covariate_var <- NULL
-#     }
-#     interaction_var <- input$interaction_var
-#     if (length(interaction_var) == 0) {
-#       interaction_var <- NULL
-#       increments <- NULL
-#     } else {
-#       validate(need(interaction_var %in% colnames(adsl_filtered), paste0(interaction_var, " is not in ADSL")))
-#       if (is.numeric(adsl_filtered[[interaction_var]])) {
-#         increments <- gsub(";", ",", trimws(input$interaction_values)) %>%
-#           strsplit(",") %>%
-#           unlist() %>%
-#           as.numeric()
-#         if (length(increments) == 0) {
-#           increments <- NULL
-#         } else {
-#           validate(need(all(!is.na(increments)), "Not all values entered were numeric"))
-#           increments <- list(increments)
-#           names(increments) <- interaction_var
-#         }
-#       } else {
-#         validate(
-#           need(all(table(adsl_filtered[[interaction_var]], adsl_filtered[[arm_var]]) > 0),
-#                paste0("0 count for some cells of ", arm_var, "*", interaction_var))
-#         )
-#         increments <- NULL
-#       }
-#     }
-#
-#     validate(need(
-#       input$conf_level >= 0 && input$conf_level <= 1,
-#       "Please choose a confidence level between 0 and 1"
-#     ))
-#     conf_level <- as.numeric(input$conf_level) # nolint
-#     # Validate your input
-#     validate_standard_inputs(
-#       adsl = adsl_filtered,
-#       adslvars = c("USUBJID", "STUDYID", arm_var, covariate_var, interaction_var),
-#       anl = anl_filtered,
-#       anlvars = c("USUBJID", "STUDYID", "PARAMCD", "AVAL", "AVALC"),
-#       arm_var = arm_var,
-#       ref_arm = ref_arm,
-#       comp_arm = comp_arm
-#     )
-#
-#     anl_name <- paste0(dataname, "_FILTERED")
-#     assign(anl_name, anl_filtered)
-#     adsl_name <- "ADSL_FILTERED"
-#     assign(adsl_name, adsl_filtered)
-#     adsl_vars <- unique(c("USUBJID", "STUDYID", arm_var, covariate_var, interaction_var)) # nolint
-#     anl_vars <- c("USUBJID", "STUDYID", "AVAL", "AVALC", "PARAMCD") # nolint
-#
-#     validate_in(events, anl_filtered$AVALC, "event values do not exist")
-#     validate(need(is.logical(combine_comp_arms), "need combine arm information"))
-#
-#
-#     chunks_reset(envir = environment())
-#
-#     chunks_push(bquote({
-#       adsl_p <- subset(
-#         .(as.name(adsl_name)),
-#         .(as.name(arm_var)) %in% c(.(ref_arm), .(comp_arm))
-#       )
-#     }))
-#
-#     chunks_push(bquote({
-#       anl_endpoint <- subset(
-#         .(as.name(anl_name)),
-#         PARAMCD == .(paramcd)
-#       )
-#     }))
-#
-#     chunks_push(bquote({
-#       anl <- merge(
-#         x = adsl_p[, .(adsl_vars), drop = FALSE],
-#         y = anl_endpoint[, .(anl_vars), drop = FALSE],
-#         all.x = FALSE,
-#         all.y = FALSE,
-#         by = c("USUBJID", "STUDYID")
-#       )
-#     }))
-#
-#     chunk_call_arm <- bquote({
-#       arm <- relevel(as.factor(anl[[.(arm_var)]]), .(ref_arm)[1])
-#       arm <- combine_levels(arm, .(ref_arm))
-#     })
-#     if (combine_comp_arms) {
-#       chunk_call_arm <- bquote({
-#         .(chunk_call_arm)
-#         arm <- combine_levels(arm, .(comp_arm))
-#       })
-#     }
-#     chunks_push(chunk_call_arm)
-#
-#     chunks_push(bquote(
-#       anl[[.(arm_var)]] <- droplevels(arm)
-#     ))
-#
-#     chunks_push(bquote(events <- .(events)))
-#
-#
-#     chunks_push(bquote({
-#       anl <- mutate(anl, EVENT = case_when(AVALC %in% events ~ 1, TRUE ~ 0))
-#       var_labels(anl) <- .(
-#         c(
-#           var_labels(adsl_filtered[adsl_vars]),
-#           var_labels(anl_filtered[c("AVAL", "AVALC", "PARAMCD")]),
-#           "Responders"
-#         )
-#       )
-#     }))
-#
-#     if (!is.null(interaction_var)) {
-#       if (!is.null(covariate_var)) {
-#         if (interaction_var %in% covariate_var) {
-#           covariate_var <- covariate_var[which(covariate_var != interaction_var)]
-#           if (length(covariate_var) == 0) covariate_var <- NULL
-#         }
-#       }
-#     }
-#     chunks_push(bquote({
-#
-#       formula_glm <- as.formula(
-#         .(paste0(
-#           "EVENT ~ ", arm_var,
-#           ifelse(is.null(covariate_var), "", paste0(" + ", paste(covariate_var, collapse = " + "))),
-#           ifelse(is.null(interaction_var), "", paste0(" + ", interaction_var, " + ", arm_var, "*", interaction_var))
-#         ))
-#       )
-#     }))
-#
-#     chunks_push(bquote(increments <- .(increments)))
-#
-#     chunks_push(bquote({
-#       tbl <- t_logistic(
-#         formula = formula_glm,
-#         data = anl,
-#         increments = increments,
-#         conf_level = .(conf_level)
-#
-#       )
-#       tbl
-#     }))
-#
-#     chunks_safe_eval()
-#     tbl <- chunks_get_var("tbl")
-#     as_html(tbl)
-#
-#   })
-#
-#   callModule(
-#     module = get_rcode_srv,
-#     id = "rcode",
-#     datasets = datasets,
-#     datanames = dataname,
-#     modal_title = "R Code for the Current Logistic Regression Table",
-#     code_header = "Logistic Regression Table"
-#   )
-# }
-# nolint end
+#' User Interface for `tm_t_logistic`
+#' @noRd
+#'
+ui_t_logistic <- function(id, ...){
+
+  a <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    a$arm_var,
+    a$paramcd,
+    a$avalc_var,
+    a$cov_var,
+    a$interaction_var
+  )
+
+  ns <- NS(id)
+  standard_layout(
+    output = white_small_well(
+      verbatimTextOutput((ns("text"))),
+      uiOutput(ns("table"))
+    ),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis data:", tags$code(a$dataname)),
+      datanames_input(a[c("arm_var", "paramcd", "avalc_var", "interaction_var", "cov_var")]),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("avalc_var"),
+        label = "Analysis Variable",
+        data_extract_spec = a$avalc_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        ns("responders"),
+        "Responders",
+        choices = c("CR", "PR"),
+        selected = c("CR", "PR"),
+        multiple = TRUE
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Arm Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        ns("ref_arm"),
+        "Reference Group",
+        choices = NULL,
+        multiple = TRUE
+      ),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        multiple = TRUE
+      ),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE
+      ),
+      data_extract_input(
+        id = ns("cov_var"),
+        label = "Covariates",
+        data_extract_spec = a$cov_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("interaction_var"),
+        label = "Interaction",
+        data_extract_spec = a$interaction_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      uiOutput(ns("interaction_input")),
+      optionalSelectInput(
+        inputId = ns("conf_level"),
+        label = p(
+          "Confidence level for ",
+          span(style = "color:darkblue", "Coxph"),
+          " (Hazard Ratio)",
+          sep = ""
+        ),
+        a$conf_level$choices,
+        a$conf_level$selected,
+        multiple = FALSE,
+        fixed = a$conf_level$fixed
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
+  )
+}
+
+
+#' Server Function for `tm_t_logistic`
+#' @noRd
+#' @importFrom stats median
+#'
+srv_t_logistic <- function(input,
+                           output,
+                           session,
+                           datasets,
+                           dataname,
+                           parentname,
+                           arm_var,
+                           arm_ref_comp,
+                           paramcd,
+                           avalc_var,
+                           cov_var,
+                           interaction_var,
+                           label) {
+
+  init_chunks()
+
+  # Observer to update reference and comparison arm input options.
+  arm_ref_comp_observer(
+    session,
+    input,
+    id_ref = "ref_arm",
+    id_comp = "comp_arm",
+    id_arm_var = extract_input("arm_var", parentname),
+    datasets = datasets,
+    arm_ref_comp = arm_ref_comp,
+    module = "tm_t_logistic"
+  )
+
+  anl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var, paramcd, avalc_var, cov_var, interaction_var),
+    input_id = c("arm_var", "paramcd", "avalc_var", "cov_var", "interaction_var"),
+    merge_function = "dplyr::inner_join"
+  )
+
+  adsl_merged <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
+    anl_name = "ANL_ADSL"
+  )
+
+  # Because the AVALC values depends on the selected PARAMCD.
+  observe({
+    avalc_var <- anl_merged()$columns_source$avalc_var
+    responder_choices <- if (is_empty(avalc_var)) {
+      character(0)
+    } else {
+      unique(anl_merged()$data()[[avalc_var]])
+    }
+    updateSelectInput(
+      session, "responders",
+      choices = responder_choices,
+      selected = intersect(responder_choices, isolate(input$responders))
+    )
+  })
+
+  output$interaction_input <- renderUI({
+    anl_m <- anl_merged()
+    interaction_var <- as.vector(anl_m$columns_source$interaction_var)
+    if (length(interaction_var) > 0) {
+      if (is.numeric(anl_m$data()[[interaction_var]])) {
+        tagList(
+          textInput(
+            session$ns("interaction_values"),
+            label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
+            value = as.character(median(anl_m$data()[[interaction_var]]))
+          )
+        )
+      }
+    } else {
+      NULL
+    }
+  })
+
+  validate_checks <- reactive({
+    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    anl_m <- anl_merged()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
+    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+    input_interaction_var <- as.vector(anl_m$columns_source$interaction_var)
+    input_paramcd <- unlist(paramcd$filter)["vars"]
+
+    # validate inputs
+    validate_args <- list(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var, input_interaction_var),
+      arm_var = input_arm_var,
+      ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm
+    )
+
+    # validate arm levels
+    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+    }
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
+    do.call(what = "validate_standard_inputs", validate_args)
+
+    validate(
+      need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
+      need(input$responders, "`Responders` field is empty"),
+      need(
+        all(input_interaction_var %in% input_cov_var),
+        paste0(
+          "The interaction variable was not found among selected covariates.\n",
+          "Select the corresponding covariate or deselect the interaction."
+        )
+      )
+
+    )
+    NULL
+  })
+
+  call_preparation <- reactive({
+    validate_checks()
+
+    chunks_reset()
+    anl_m <- anl_merged()
+    chunks_push_data_merge(anl_m)
+    chunks_push_new_line()
+
+    anl_adsl <- adsl_merged()
+    chunks_push_data_merge(anl_adsl)
+    chunks_push_new_line()
+
+    ANL <- chunks_get_var("ANL") # nolint
+    validate_has_data(ANL, 10)
+
+    interaction_var <- as.vector(anl_m$columns_source$interaction_var)
+    interaction_var <- interaction_var[interaction_var %in% as.vector(anl_m$columns_source$cov_var)]
+    interaction_flag <- length(interaction_var) != 0
+
+    at_values <- if (is.null(input$interaction_values)) {
+      NA
+    } else {
+      unlist(utils.nest::as_num(input$interaction_values))
+    }
+    at_flag <- interaction_flag && is.numeric(anl_m$data()[[interaction_var]])
+
+    cov_var <- as.vector(anl_m$columns_source$cov_var)
+
+    calls <- template_logistic(
+      dataname = "ANL",
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      avalc_var = as.vector(anl_m$columns_source$avalc_var),
+      cov_var = if (length(cov_var) > 0) cov_var else NULL,
+      interaction_var = if (interaction_flag) interaction_var else NULL,
+      ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm,
+      combine_comp_arms = input$combine_comp_arms,
+      topleft = paramcd$filter[[1]]$selected[[1]],
+      conf_level = as.numeric(input$conf_level),
+      at = if (at_flag) at_values else NULL,
+      responder_val = input$responders
+    )
+
+    mapply(expression = calls, chunks_push)
+  })
+
+  output$table <- renderUI({
+    call_preparation()
+    chunks_safe_eval()
+    as_html(chunks_get_var("result"))
+  })
+
+  callModule(
+    module = get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(
+      list(arm_var, paramcd, interaction_var, avalc_var, cov_var)
+    ),
+    modal_title = "R Code for the Current Logistic Regression",
+    code_header = label
+  )
+}
