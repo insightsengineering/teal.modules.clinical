@@ -1,24 +1,12 @@
 # teal.modules.clinical 0.8.6
 
-* Integrated `is_single_dataset` argument for `data_extract_input` function calls.
-* Change `show_rcode_modal` to `get_rcode_srv` in all of the modules.
-* Vignette about the topic `substitute`.
-* Add dynamic assertions.
+* Refactored all modules using the redesigned `rtables` and `tern` packages.
 * New teal module `tm_g_ci` for confidence interval plots.
-* Refactored `tm_t_rsp` and `tm_t_binary_outcome` based on the new function `template_rsp`.
-* Refactored `tm_t_tte` with new function `template_tte`.
-* Refactored `tm_t_summary` with new function `template_summary`.
-* Refactored `tm_t_events` with new function `template_events`.
-* Refactored `tm_t_events_summary` with new function `template_events_summary`.
-* Refactored `tm_t_coxreg` with new function `template_coxreg`.
-* Refactored `tm_t_abnormality` with new function `template_abnormality`. Note that now patients with the same abnormality at baseline as on the treatment visit are automatically excluded in accordance with GDSR specifications.
-* Refactored `tm_t_events_by_grade` with new function `template_events_by_grade`.
-* New module `tm_t_ancova` with new function `template_ancova`.
-* New utility function: `styled_expr`.
-* New utility function `pipe_expr` to concatenate expressions.
-* New utility function `add_expr` to add expressions to a list of expressions.
-* New utility function `bracket_expr` to concatenate expressions in a single expression.
-* Update all modules to use `OptionalSelectInput` for `conf_level`.
+* New module `tm_t_ancova` for analysis of variance summaries similar to STREAM template `aovt01` when multiple endpoints are selected
+* Modules now take advantage of `data_extract_spec` and `data_merge_module` functionality from `teal`.
+* Added vignette about the topic `substitute` which can be helpful when developing your own analysis template functions for teal modules.
+* Reduce clutter from repeated datasets in the encodings panels.
+* Updated all modules to use `OptionalSelectInput` for `conf_level`.
 
 # teal.modules.clinical 0.8.5
 

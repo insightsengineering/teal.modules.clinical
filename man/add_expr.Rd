@@ -26,11 +26,11 @@ for instance with \code{pipe_expr}.
 \examples{
 
 lyt <- list()
-lyt <- add_expr(lyt, substitute(basic_table()))
-lyt <- add_expr(
+lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
+lyt <- teal.modules.clinical:::add_expr(
   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 )
-lyt <- add_expr(
+lyt <- teal.modules.clinical:::add_expr(
   lyt,
   substitute(
     test_proportion_diff(
@@ -38,7 +38,7 @@ lyt <- add_expr(
     )
   )
 )
-lyt <- add_expr(lyt, quote(build_table(df = dta)))
-pipe_expr(lyt)
+lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
+teal.modules.clinical:::pipe_expr(lyt)
 
 }

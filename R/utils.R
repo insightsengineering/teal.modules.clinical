@@ -77,7 +77,6 @@ add_plot_title <- function(chunk, groupby_vars) {
 #'
 #' @param expr (`call`)\cr or an object which can be used as so.
 #'
-#' @export
 #' @return a `string`.
 #' @examples
 #' expr <- quote(
@@ -89,7 +88,7 @@ add_plot_title <- function(chunk, groupby_vars) {
 #'   build_table(df = dta)
 #' )
 #'
-#' h_concat_expr(expr)
+#' teal.modules.clinical:::h_concat_expr(expr)
 #'
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
@@ -105,10 +104,9 @@ h_concat_expr <- function(expr) {
 #'   pipeline (`%>%`).
 #' @param pipe_str (`string`)\cr the character which separates the expressions.
 #'
-#' @export
 #' @examples
 #'
-#' result <- pipe_expr(
+#' result <- teal.modules.clinical:::pipe_expr(
 #'   list(
 #'     expr1 = substitute(df),
 #'     expr2 = substitute(head)
@@ -132,8 +130,9 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'
 #' @note The package `prettycode` must be installed to turn on colored output,
 #'   hence the warning.
+#'
 #' @importFrom styler style_text
-#' @export
+#'
 #' @examples
 #' expr <- quote(
 #'   basic_table() %>%
@@ -144,9 +143,9 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'     build_table(df = dta)
 #' )
 #'
-#' styled_expr(expr)
+#' teal.modules.clinical:::styled_expr(expr)
 #'
-styled_expr <- function(expr) {
+styled_expr <- function(expr) { # nolint nousage
   styler::style_text(text = deparse(expr), style = teal.devel::nest_style)
 }
 
@@ -166,15 +165,15 @@ styled_expr <- function(expr) {
 #'   for instance with `pipe_expr`.
 #'
 #' @import assertthat
-#' @export
+#'
 #' @examples
 #'
 #' lyt <- list()
-#' lyt <- add_expr(lyt, substitute(basic_table()))
-#' lyt <- add_expr(
+#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
+#' lyt <- teal.modules.clinical:::add_expr(
 #'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 #' )
-#' lyt <- add_expr(
+#' lyt <- teal.modules.clinical:::add_expr(
 #'   lyt,
 #'   substitute(
 #'     test_proportion_diff(
@@ -182,8 +181,8 @@ styled_expr <- function(expr) {
 #'     )
 #'   )
 #' )
-#' lyt <- add_expr(lyt, quote(build_table(df = dta)))
-#' pipe_expr(lyt)
+#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
+#' teal.modules.clinical:::pipe_expr(lyt)
 #'
 add_expr <- function(expr_ls, new_expr) {
 
@@ -215,7 +214,6 @@ add_expr <- function(expr_ls, new_expr) {
 #' @param exprs (`list` of `call`)\cr expressions to concatenate into
 #'   a single _bracketed_ expression.
 #'
-#' @export
 #' @examples
 #' library(dplyr)
 #' library(random.cdisc.data)
@@ -235,7 +233,7 @@ add_expr <- function(expr_ls, new_expr) {
 #'   }
 #' )
 #'
-#' res <- bracket_expr(list(expr1, expr2, expr3))
+#' res <- teal.modules.clinical:::bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
 #'

@@ -30,10 +30,6 @@
 #'   show_rsp_cat = TRUE
 #' )
 #'
-#' styled_expr(a$data)
-#' styled_expr(a$layout)
-#' styled_expr(a$table)
-#'
 #' b <- mapply(expr = a, FUN = eval)
 #' b$data
 #' b$layout

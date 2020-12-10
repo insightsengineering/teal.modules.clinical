@@ -324,8 +324,7 @@ tm_g_forest_rsp <- function(label,
   )
 }
 
-#' @import teal.devel
-#'
+#' @noRd
 ui_g_forest_rsp <- function(id, ...) {
 
   a <- list(...) # module args

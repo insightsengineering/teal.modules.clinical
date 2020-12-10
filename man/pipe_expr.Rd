@@ -17,7 +17,7 @@ Concatenate expressions in a single pipeline-flavor expression.
 }
 \examples{
 
-result <- pipe_expr(
+result <- teal.modules.clinical:::pipe_expr(
   list(
     expr1 = substitute(df),
     expr2 = substitute(head)

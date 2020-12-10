@@ -341,7 +341,6 @@ template_tte <- function(dataname = "ANL",
 #' The arm and stratification variables and taken from the `parentname` data.
 #'
 #' @export
-#' @import magrittr
 #'
 #' @examples
 #'
@@ -458,7 +457,7 @@ tm_t_tte <- function(label,
   )
 }
 
-#' @import teal.devel
+#' @noRd
 ui_t_tte <- function(id, ...) {
 
   a <- list(...) # module args
@@ -640,8 +639,7 @@ ui_t_tte <- function(id, ...) {
   )
 }
 
-#' @import teal.devel
-#' @importFrom rtables as_html
+#' @noRd
 srv_t_tte <- function(input,
                       output,
                       session,

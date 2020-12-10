@@ -247,7 +247,6 @@ template_coxreg <- function(dataname,
 #' - Multivariate is the default choice for backward compatibility.
 #'
 #' @export
-#' @import magrittr
 #' @importFrom stats setNames
 #'
 #' @md
@@ -432,8 +431,7 @@ tm_t_coxreg <- function(label,
   )
 }
 
-#' @import teal.devel
-#'
+#' @noRd
 ui_t_coxreg <- function(id, ...) {
 
   a <- list(...) # module args
@@ -571,9 +569,7 @@ ui_t_coxreg <- function(id, ...) {
   )
 }
 
-#' @import teal.devel
-#' @importFrom rtables as_html
-#'
+#' @noRd
 srv_t_coxreg <- function(input,
                          output,
                          session,

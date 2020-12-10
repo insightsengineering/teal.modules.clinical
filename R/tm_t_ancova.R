@@ -226,7 +226,6 @@ template_ancova <- function(dataname = "ANL",
 #' }
 #'
 #' @export
-#' @import magrittr
 #'
 #' @examples
 #'
@@ -344,8 +343,7 @@ tm_t_ancova <- function(label,
   )
 }
 
-#' @import teal.devel
-#'
+#' @noRd
 ui_ancova <- function(id, ...) {
 
   a <- list(...)
@@ -425,9 +423,7 @@ ui_ancova <- function(id, ...) {
   )
 }
 
-#' @import teal.devel
-#' @importFrom rtables as_html
-#'
+#' @noRd
 srv_ancova <- function(input,
                        output,
                        session,

@@ -25,6 +25,6 @@ expr <- quote(
   build_table(df = dta)
 )
 
-h_concat_expr(expr)
+teal.modules.clinical:::h_concat_expr(expr)
 
 }

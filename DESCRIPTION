@@ -13,7 +13,7 @@ Authors@R: c(
   person("Roche", role = c("cph", "fnd"))
   )
 Description: Provides teal modules for the standard clinical trials outputs.
-  The teal modules add an encoding panel to interactively change the encoding within teal.
+  The teal modules add an encoding panel to interactively change the encodings within teal.
 Depends:
   R (>= 3.3),
   dplyr,

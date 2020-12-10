@@ -26,6 +26,6 @@ expr <- quote(
     build_table(df = dta)
 )
 
-styled_expr(expr)
+teal.modules.clinical:::styled_expr(expr)
 
 }
