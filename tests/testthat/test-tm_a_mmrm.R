@@ -98,11 +98,13 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
 
 test_that("template_mmrm_tables works as expected", {
   result <- template_mmrm_tables(
-    "fit_mmrm",
-    "col_counts",
+    dataname = "ANL",
+    fit_name = "fit_mmrm",
+    colcounts_name = "col_counts",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     visit_var = "AVISIT",
+    paramcd = "ALBUMIN",
     show_relative = "increase"
   )
   expected <- list(
@@ -111,7 +113,9 @@ test_that("template_mmrm_tables works as expected", {
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         split_rows_by("AVISIT") %>%
-        summarize_lsmeans(show_relative = "increase")
+        append_varlabels(ANL, "AVISIT") %>%
+        summarize_lsmeans(show_relative = "increase") %>%
+        append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")

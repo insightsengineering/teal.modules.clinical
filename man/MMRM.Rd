@@ -27,11 +27,13 @@ template_fit_mmrm(
 )
 
 template_mmrm_tables(
+  dataname,
   fit_name,
   colcounts_name,
   arm_var,
   ref_arm,
   visit_var,
+  paramcd,
   show_relative = c("increase", "reduction", "none"),
   table_type = "t_mmrm_cov"
 )
@@ -110,6 +112,9 @@ machine (not default).}
 
 \item{colcounts_name}{name of column counts for MMRM LS means table}
 
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
+
 \item{show_relative}{should the "reduction" (\code{control - treatment}, default) or the "increase"
 (\code{treatment - control}) be shown for the relative change from baseline}
 
@@ -127,9 +132,6 @@ with each element corresponding to an arm variable in \code{ADSL} and the
 element must be another list with the elements named \code{ref} and \code{comp}
 that the defined the default reference and comparison arms when the arm
 variable is changed.}
-
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
-variable value designating the studied parameter.}
 
 \item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
 

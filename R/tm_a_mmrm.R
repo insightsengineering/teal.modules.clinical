@@ -161,11 +161,13 @@ template_fit_mmrm <- function(parentname,
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`) type of table to output.
 #'
-template_mmrm_tables <- function(fit_name,
+template_mmrm_tables <- function(dataname,
+                                 fit_name,
                                  colcounts_name,
                                  arm_var,
                                  ref_arm,
                                  visit_var,
+                                 paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov") {
 
@@ -213,9 +215,13 @@ template_mmrm_tables <- function(fit_name,
       substitute(
         expr = add_colcounts() %>%
           split_rows_by(visit_var) %>%
-          summarize_lsmeans(show_relative = show_relative),
+          append_varlabels(dataname, visit_var) %>%
+          summarize_lsmeans(show_relative = show_relative) %>%
+          append_topleft(paste0("  ", paramcd)),
         env = list(
+          dataname = as.name(dataname),
           visit_var = visit_var,
+          paramcd = paramcd,
           show_relative = show_relative
         )
       )
@@ -1128,13 +1134,18 @@ srv_mmrm <- function(input,
 
     anl_m <- anl_merged()
 
+    ANL <- chunks_get_var("ANL", chunks = fit_stack) # nolint
+    paramcd <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
+
     mmrm_table <- function(table_type) {
       res <- template_mmrm_tables(
+        dataname = "ANL",
         fit_name = "fit",
         colcounts_name = "col_counts",
         arm_var = as.vector(anl_m$columns_source$arm_var),
         ref_arm = input$ref_arm,
         visit_var = as.vector(anl_m$columns_source$visit_var),
+        paramcd = paramcd,
         show_relative = input$t_mmrm_lsmeans_show_relative,
         table_type = table_type
       )

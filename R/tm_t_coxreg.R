@@ -20,6 +20,7 @@ template_coxreg <- function(dataname,
                             aval_var,
                             ref_arm,
                             comp_arm,
+                            paramcd,
                             at = list(),
                             strata = NULL,
                             combine_comp_arms = FALSE,
@@ -149,7 +150,11 @@ template_coxreg <- function(dataname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(split_rows_by("term", child_labels = "hidden"))
+    substitute(
+      expr = append_topleft(paramcd) %>%
+        split_rows_by("term", child_labels = "hidden"),
+      env = list(paramcd = paramcd)
+    )
   )
 
   vars <- c("n", "hr", "ci", "pval")
@@ -705,7 +710,7 @@ srv_t_coxreg <- function(input,
     setNames(res, input$cov_var)
   })
 
-  call_template <- function(comp_arm, anl) {
+  call_template <- function(comp_arm, anl, paramcd) {
     strata_var <- as.vector(anl$columns_source$strata_var)
     template_coxreg(
       dataname = "ANL",
@@ -716,6 +721,7 @@ srv_t_coxreg <- function(input,
       aval_var = as.vector(anl$columns_source$aval_var),
       ref_arm = input$ref_arm,
       comp_arm = comp_arm,
+      paramcd = paramcd,
       strata = if (length(strata_var) != 0) strata_var else NULL,
       combine_comp_arms = input$combine_comp_arms,
       multivariate = input$type == "Multivariate",
@@ -743,11 +749,12 @@ srv_t_coxreg <- function(input,
 
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
+    paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
 
     calls <- if (input$type != "Multivariate") {
-      lapply(input$comp_arm, call_template, anl_m)
+      lapply(input$comp_arm, call_template, anl_m, paramcd)
     } else {
-      list(call_template(input$comp_arm, anl_m))
+      list(call_template(input$comp_arm, anl_m, paramcd))
     }
 
     res <- lapply(

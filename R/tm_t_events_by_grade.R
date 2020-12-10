@@ -119,11 +119,13 @@ template_events_by_grade <- function(dataname,
             .stats = "unique",
             .labels = c("- Any Intensity -")
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L),
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
+          append_varlabels(dataname, c(term_var, grade)),
         env = list(
           arm_var = arm_var,
           term_var = term_var,
-          grade = grade
+          grade = grade,
+          dataname = as.name(dataname)
         )
       )
     )
@@ -142,6 +144,7 @@ template_events_by_grade <- function(dataname,
             nested = TRUE,
             indent_mod = -1L
           ) %>%
+          append_varlabels(dataname, hlt) %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
@@ -152,6 +155,7 @@ template_events_by_grade <- function(dataname,
             nested = TRUE,
             indent_mod = -1L
           ) %>%
+          append_varlabels(dataname, c(llt, grade), indent = TRUE) %>%
           summarize_num_patients(
             var = "USUBJID",
             .stats = "unique",
@@ -162,7 +166,8 @@ template_events_by_grade <- function(dataname,
           arm_var = arm_var,
           hlt = hlt,
           llt = llt,
-          grade = grade
+          grade = grade,
+          dataname = as.name(dataname)
         )
       )
     )

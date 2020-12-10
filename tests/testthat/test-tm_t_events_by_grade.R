@@ -29,6 +29,7 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L) %>%
+        append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
@@ -37,6 +38,7 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L) %>%
+        append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
@@ -96,6 +98,7 @@ test_that("template_events_by_grade without adding total column option works as 
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE, indent_mod = -1L) %>%
+        append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups
@@ -105,6 +108,7 @@ test_that("template_events_by_grade without adding total column option works as 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L) %>%
+        append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
@@ -173,7 +177,8 @@ test_that("template_events_by_grade with hlt only works", {
           var = "USUBJID",
           .stats = "unique",
           .labels = c("- Any Intensity -")) %>%
-        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L)
+        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
+        append_varlabels(adae, c("AEBODSYS", "AESEV"))
     ),
     table = quote(
       result <- build_table(

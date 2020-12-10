@@ -31,7 +31,8 @@ test_that("template_abnormality generates correct expressions with default argum
           abnormal = c(low = "LOW"),
           variables = list(id = "USUBJID", baseline = "BNRIND"),
           exclude_base_abn = FALSE
-        )
+        ) %>%
+        append_varlabels(adlb, "ANRIND")
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
@@ -74,7 +75,8 @@ test_that("template_abnormality generates correct expressions with custom argume
           abnormal = c(low = "LOW", medium = "MEDIUM"),
           variables = list(id = "USUBJID", baseline = "MYBASELINE"),
           exclude_base_abn = TRUE
-      )
+      ) %>%
+        append_varlabels(adlb, "MYANRIND")
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%

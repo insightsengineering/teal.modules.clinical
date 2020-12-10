@@ -34,7 +34,8 @@ test_that("template_summary_by generates correct expressions", {
             range = "xx.xx - xx.xx",
             count_fraction = "xx (xx.%)"
           )
-        )
+        ) %>%
+        append_varlabels(adlb, "AVAL")
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, col_counts = c(table(adsl$ARM), sum(table(adsl$ARM))))

@@ -119,8 +119,6 @@ template_summary_by <- function(parentname,
       )
   }
 
-
-
   for (by_var in by_vars) {
 
     split_label <- substitute(
@@ -151,8 +149,7 @@ template_summary_by <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = summarize_row_groups(
-          ),
+          expr = summarize_row_groups(),
           env = env_vars
         )
       )
@@ -177,11 +174,9 @@ template_summary_by <- function(parentname,
     )
   }
 
-
   if (row_groups) {
     layout_list <- layout_list
-    }
-  else {
+  } else {
     layout_list <- add_expr(
       layout_list,
       if (parallel_vars) {
@@ -233,6 +228,16 @@ template_summary_by <- function(parentname,
           )
         }
       }
+    )
+  }
+
+  if (!row_groups && !parallel_vars && (length(sum_vars) == 1)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(dataname, sum_vars),
+        env = list(dataname = as.name(dataname), sum_vars = sum_vars)
+      )
     )
   }
 

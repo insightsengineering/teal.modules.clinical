@@ -7,6 +7,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     aval_var = "AVAL",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
+    paramcd = "OS",
     at = list(AGE = c(35, 45)),
     strata = "STRATA1",
     combine_comp_arms = FALSE,
@@ -43,6 +44,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     layout = quote(
       lyt <- basic_table() %>%
         split_rows_by("effect") %>%
+        append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
@@ -63,6 +65,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
     aval_var = "AVAL",
     ref_arm = "A: Drug X",
     comp_arm = c("B: Placebo", "C: Combination"),
+    paramcd = "OS",
     combine_comp_arms = TRUE,
     multivariate = TRUE,
     control = control_coxreg()
@@ -91,6 +94,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
     }),
     layout = quote(
       lyt <- basic_table() %>%
+        append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),

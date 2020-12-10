@@ -152,8 +152,12 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = count_occurrences(vars = term_var, .indent_mods = -1L),
-        env = list(term_var = term_var)
+        expr = count_occurrences(vars = term_var, .indent_mods = -1L) %>%
+          append_varlabels(dataname, term_var),
+        env = list(
+          term_var = term_var,
+          dataname = as.name(dataname)
+        )
       )
     )
   } else {
@@ -162,8 +166,8 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(hlt, child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
-
+        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+          append_varlabels(dataname, hlt) %>%
           summarize_num_patients(
             var = "USUBJID",
             .stats = c("unique", "nonunique"),
@@ -171,8 +175,15 @@ template_events <- function(dataname,
               unique = unique_label,
               nonunique = nonunique_label
             )) %>%
-          count_occurrences(vars = llt, .indent_mods = -1L),
-        env = list(hlt = hlt, llt = llt, unique_label = unique_label, nonunique_label = nonunique_label)
+          count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          append_varlabels(dataname, llt, indent = TRUE),
+        env = list(
+          dataname = as.name(dataname),
+          hlt = hlt,
+          llt = llt,
+          unique_label = unique_label,
+          nonunique_label = nonunique_label
+        )
       )
     )
   }

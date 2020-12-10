@@ -8,7 +8,7 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     combine_comp_arms = FALSE,
     aval_var = "CHG",
     cov_var = c("BASE", "STRATA1"),
-    paramcd_levels = 2,
+    paramcd_levels = c("FKSI-ALL", "BKWBXYZ"),
     paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
@@ -27,7 +27,9 @@ test_that("template_ancova generates expressions with multiple endpoints", {
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -53,7 +55,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     combine_comp_arms = TRUE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd_levels = 2,
+    paramcd_levels = c("A", "B"),
     paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
@@ -74,7 +76,9 @@ test_that("template_ancova generates expressions with multiple endpoints with co
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -100,7 +104,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd_levels = 2,
+    paramcd_levels = c("A", "B"),
     paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
@@ -122,7 +126,9 @@ test_that("template_ancova generates expressions with multiple endpoints with co
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
         split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -148,7 +154,7 @@ test_that("template_ancova generates expressions with single endpoint", {
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
-    paramcd_levels = 1,
+    paramcd_levels = c("MYFAVORITE"),
     paramcd_var = "PARAMCD",
     visit_var = "AVISIT"
   )
@@ -168,6 +174,8 @@ test_that("template_ancova generates expressions with single endpoint", {
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        append_varlabels(adqs, "AVISIT") %>%
+        append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = NULL),

@@ -114,13 +114,15 @@ template_abnormality <- function(parentname,
         abnormal = abnormal,
         variables = list(id = usubjid, baseline = baseline_var),
         exclude_base_abn = exclude_base_abn
-      ),
+      ) %>%
+        append_varlabels(dataname, grade),
       env = list(
         grade = grade,
         abnormal = setNames(abnormal, tolower(abnormal)),
         usubjid = "USUBJID",
         baseline_var = baseline_var,
-        exclude_base_abn = exclude_base_abn
+        exclude_base_abn = exclude_base_abn,
+        dataname = as.name(dataname)
       )
     )
   )

@@ -12,6 +12,7 @@ template_coxreg(
   aval_var,
   ref_arm,
   comp_arm,
+  paramcd,
   at = list(),
   strata = NULL,
   combine_comp_arms = FALSE,
@@ -39,6 +40,9 @@ arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
 arm comparison.}
+
+\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+variable value designating the studied parameter.}
 
 \item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
 

@@ -19,7 +19,7 @@ template_ancova <- function(dataname = "ANL",
                             combine_comp_arms = FALSE,
                             aval_var,
                             cov_var,
-                            paramcd_levels = 1,
+                            paramcd_levels = "EXAMPLE",
                             paramcd_var = "PARAMCD",
                             visit_var = "AVISIT",
                             conf_level = 0.95
@@ -120,20 +120,23 @@ template_ancova <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        split_rows_by(visit_var, split_fun = drop_split_levels),
+        split_rows_by(visit_var, split_fun = drop_split_levels) %>%
+        append_varlabels(dataname, visit_var),
       env = list(
         arm_var = arm_var,
         ref_group = paste(ref_arm, collapse = "/"),
-        visit_var = visit_var
+        visit_var = visit_var,
+        dataname = as.name(dataname)
       )
     )
   )
 
-  if (paramcd_levels > 1) {
+  if (length(paramcd_levels) > 1) {
     layout_list <- add_expr(
       layout_list,
       substitute(
         split_rows_by(paramcd_var, split_fun = drop_split_levels) %>%
+          append_varlabels(dataname, paramcd_var, indent = TRUE) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -146,14 +149,17 @@ template_ancova <- function(dataname = "ANL",
           aval_var = aval_var,
           arm_var = arm_var,
           cov_var = cov_var,
-          conf_level = conf_level
+          conf_level = conf_level,
+          dataname = as.name(dataname)
         )
       )
     )
   } else {
+    # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
       substitute(
+        append_topleft(paste0("  ", paramcd_levels)) %>%
         summarize_ancova(
           vars = aval_var,
           variables = list(arm = arm_var, covariates = NULL),
@@ -172,10 +178,12 @@ template_ancova <- function(dataname = "ANL",
             table_names = "adjusted_comparison"
           ),
         env = list(
+          paramcd_levels = paramcd_levels,
           aval_var = aval_var,
           arm_var = arm_var,
           cov_var = cov_var,
-          conf_level = conf_level
+          conf_level = conf_level,
+          dataname = as.name(dataname)
         )
       )
     )
@@ -522,7 +530,7 @@ srv_ancova <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
 
-    paramcd_levels <- length(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
+    paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
 
     my_calls <- template_ancova(
       parentname = "ANL_ADSL",
