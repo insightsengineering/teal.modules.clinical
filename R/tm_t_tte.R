@@ -744,7 +744,7 @@ srv_t_tte <- function(input,
 
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
-
+    strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
@@ -755,7 +755,7 @@ srv_t_tte <- function(input,
       combine_comp_arms = input$combine_comp_arms,
       aval = as.vector(anl_m$columns_source$aval_var),
       cnsr = as.vector(anl_m$columns_source$cnsr_var),
-      strata_var = as.vector(anl_m$columns_source$strata_var),
+      strata_var = if (length(strata_var) != 0) strata_var else NULL,
       time_points = as.numeric(input$time_points),
       time_unit = time_unit,
       event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
