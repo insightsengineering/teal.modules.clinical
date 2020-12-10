@@ -228,18 +228,51 @@ template_rsp <- function(dataname,
               method = method_test,
               variables = list(strata = strata),
               table_names = "s_test_diff"
-            ) %>%
-            estimate_odds_ratio(
-              vars = "is_rsp",
-              variables = list(arm = arm_var, strata = strata),
-              conf_level = conf_level,
-              table_names = "s_est_or"
             ),
           env = list(
             conf_level = control$global$conf_level,
             method_ci = control$strat$method_ci,
             strata = control$strat$strat,
             method_test = control$strat$method_test,
+            arm_var = arm_var
+          )
+        )
+      )
+    }
+  }
+
+  if (compare_arm && !is.null(control$strat$strat)) {
+    layout_list <- if (combine_comp_arms) {
+      add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            variables = list(arm = arm_var, strata = strata),
+            conf_level = conf_level,
+            table_names = "s_est_or",
+            groups_list = groups
+          ),
+          env = list(
+            conf_level = control$global$conf_level,
+            strata = control$strat$strat,
+            arm_var = arm_var
+          )
+        )
+      )
+    } else {
+      add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            variables = list(arm = arm_var, strata = strata),
+            conf_level = conf_level,
+            table_names = "s_est_or"
+          ),
+          env = list(
+            conf_level = control$global$conf_level,
+            strata = control$strat$strat,
             arm_var = arm_var
           )
         )
@@ -389,12 +422,12 @@ tm_t_rsp <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   args <- as.list(environment())
 
