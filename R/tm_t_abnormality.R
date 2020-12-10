@@ -236,7 +236,7 @@ tm_t_abnormality <- function(label,
                              exclude_base_abn = FALSE,
                              pre_output = NULL,
                              post_output = NULL) {
-  stopifnot(
+  stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
     is.choices_selected(by_vars),
@@ -246,7 +246,15 @@ tm_t_abnormality <- function(label,
     is.choices_selected(baseline_var),
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
-    is_logical_single(exclude_base_abn)
+    is_logical_single(exclude_base_abn),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
     )
 
   data_extract_list <- list(

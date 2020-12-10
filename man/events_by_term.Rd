@@ -31,7 +31,9 @@ tm_t_events(
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   prune_freq = 0,
-  prune_diff = 0
+  prune_diff = 0,
+  pre_output = NULL,
+  post_output = NULL
 )
 }
 \arguments{
@@ -64,6 +66,13 @@ alphabetically.}
 rates between any two columns.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 Teal Module: Events by Term

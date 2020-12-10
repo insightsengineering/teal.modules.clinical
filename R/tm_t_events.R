@@ -453,7 +453,9 @@ tm_t_events <- function(label,
                         event_type = "event",
                         sort_criteria = c("freq_desc", "alpha"),
                         prune_freq = 0,
-                        prune_diff = 0) {
+                        prune_diff = 0,
+                        pre_output = NULL,
+                        post_output = NULL) {
 
   stop_if_not(
     is_character_single(label),
@@ -461,8 +463,16 @@ tm_t_events <- function(label,
     is_logical_single(add_total),
     is_character_single(event_type),
     is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff)
-  )
+    is_numeric_single(prune_diff),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
 
   sort_criteria <- match.arg(sort_criteria)
 

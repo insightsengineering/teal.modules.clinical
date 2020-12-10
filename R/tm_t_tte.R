@@ -411,14 +411,22 @@ tm_t_tte <- function(label,
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      pre_output = NULL,
                      post_output = NULL) {
-  stopifnot(
+  stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(time_points),
     is.choices_selected(conf_level_coxph),
-    is.choices_selected(conf_level_survfit)
-  )
+    is.choices_selected(conf_level_survfit),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
 
   args <- as.list(environment())
 

@@ -421,10 +421,18 @@ tm_a_mmrm <- function(label,
                       post_output = NULL) {
 
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
-  stopifnot(
+  stop_if_not(
     is_character_single(dataname),
-    is.choices_selected(conf_level)
-  )
+    is.choices_selected(conf_level),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 

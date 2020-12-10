@@ -28,7 +28,9 @@ tm_t_events_patyear(
   avalu_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed =
     TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE)
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  pre_output = NULL,
+  post_output = NULL
 )
 }
 \arguments{
@@ -63,6 +65,13 @@ object with all available choices and preselected option for the analysis unit v
 \item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
 object with all available choices and pre-selected option for the confidence level,
 each within range of (0, 1).}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 Teal module: Event rates adjusted for patient-years

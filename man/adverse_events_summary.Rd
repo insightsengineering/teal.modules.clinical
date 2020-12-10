@@ -41,7 +41,9 @@ tm_t_events_summary(
   add_total = TRUE,
   count_subj = TRUE,
   count_pt = TRUE,
-  count_events = TRUE
+  count_events = TRUE,
+  pre_output = NULL,
+  post_output = NULL
 )
 }
 \arguments{
@@ -90,6 +92,13 @@ Only applies if event flag variables are provided.}
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
 
 \item{dataname}{(\code{string})\cr analysis data used in teal module.}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 Teal Module: Adverse Events Summary

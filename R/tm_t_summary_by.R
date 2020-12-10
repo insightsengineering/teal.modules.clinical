@@ -347,7 +347,7 @@ tm_t_summary_by <- function(label,
                             post_output = NULL) {
 
   useNA <- match.arg(useNA) # nolint
-  stopifnot(
+  stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
@@ -355,8 +355,16 @@ tm_t_summary_by <- function(label,
     is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
     is.choices_selected(denominator),
-    denominator$choices %in% c("n", "N", "omit")
-  )
+    denominator$choices %in% c("n", "N", "omit"),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
 
 
   args <- c(as.list(environment()))

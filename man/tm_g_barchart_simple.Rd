@@ -12,7 +12,9 @@ tm_g_barchart_simple(
   label = "Count Barchart",
   plot_options = NULL,
   plot_height = c(600L, 200L, 2000L),
-  plot_width = NULL
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL
 )
 }
 \arguments{

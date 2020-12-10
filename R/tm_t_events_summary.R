@@ -592,7 +592,9 @@ tm_t_events_summary <- function(label,
                                 add_total = TRUE,
                                 count_subj = TRUE,
                                 count_pt = TRUE,
-                                count_events = TRUE) {
+                                count_events = TRUE,
+                                pre_output = NULL,
+                                post_output = NULL) {
 
   stop_if_not(
     is_character_single(label),
@@ -608,8 +610,16 @@ tm_t_events_summary <- function(label,
     is.cs_or_des(flag_var_anl),
     is.cs_or_des(flag_var_aesi),
     is.cs_or_des(aeseq_var),
-    is.cs_or_des(llt)
-  )
+    is.cs_or_des(llt),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
 
   args <- c(as.list(environment()))
 
@@ -728,7 +738,9 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode"))
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
  )
 }
 

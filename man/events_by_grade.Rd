@@ -25,7 +25,9 @@ tm_t_events_by_grade(
   hlt,
   llt,
   grade,
-  add_total = TRUE
+  add_total = TRUE,
+  pre_output = NULL,
+  post_output = NULL
 )
 }
 \arguments{
@@ -48,6 +50,13 @@ name of the variable with low level term for events.}
 \item{add_total}{(\code{flag})\cr whether to include column with total number of patients.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app}
+
+\item{pre_output}{optional, \code{shiny.tag} with text placed before the
+output to put the output into context. For example a title.}
+
+\item{post_output}{optional, \code{shiny.tag} with text placed after the
+output to put the output into context. For example the
+\code{\link[shiny]{helpText}} elements are useful.}
 }
 \description{
 Teal Module: Events by Grade

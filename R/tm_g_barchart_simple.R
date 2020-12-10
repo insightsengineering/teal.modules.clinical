@@ -132,12 +132,23 @@ tm_g_barchart_simple <- function(x = NULL,
                                  label = "Count Barchart",
                                  plot_options = NULL,
                                  plot_height = c(600L, 200L, 2000L),
-                                 plot_width = NULL) {
-  stopifnot(
+                                 plot_width = NULL,
+                                 pre_output = NULL,
+                                 post_output = NULL) {
+  stop_if_not(
     is_character_single(label),
-    is.null(plot_options) || is.list(plot_options)
-  )
-  stopifnot(!all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1)))) # at least one must be specified
+    is.null(plot_options) || is.list(plot_options),
+    !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
+
   x <- list_extract_spec(x, allow_null = TRUE)
   fill <- list_extract_spec(fill, allow_null = TRUE)
   x_facet <- list_extract_spec(x_facet, allow_null = TRUE)

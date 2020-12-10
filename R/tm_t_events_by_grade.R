@@ -277,14 +277,24 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
-                                 add_total = TRUE) {
+                                 add_total = TRUE,
+                                 pre_output = NULL,
+                                 post_output = NULL) {
 
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
-    is_logical_single(add_total)
-  )
+    is_logical_single(add_total),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+      ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
+    )
 
   args <- as.list(environment())
 
@@ -354,7 +364,9 @@ ui_t_events_by_grade <- function(id, ...) {
         "Add All Patients column",
         value = a$add_total)
     ),
-    forms = get_rcode_ui(ns("rcode"))
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 

@@ -302,12 +302,12 @@ tm_g_forest_rsp <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-    ),
+      ),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+      )
     )
-  )
 
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
