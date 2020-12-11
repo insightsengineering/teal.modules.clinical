@@ -133,20 +133,29 @@ template_g_km <- function(dataname = "ANL",
         expr = result <- mapply(
           df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
           FUN = function(df_i, nrow_i) {
-            g_km(
-              df = df_i,
-              variables = variables,
-              font_size = font_size,
-              xlab = xlab,
-              newpage = FALSE,
-              title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
-              ggtheme = theme_minimal(),
-              annot_surv_med = annot_surv_med,
-              annot_coxph = annot_coxph,
-              control_surv = control_surv_timepoint(conf_level = conf_level),
-              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-              vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
-            )
+            if (nrow(df_i) == 0) {
+              grid::grid.text(
+                "No data found for a given facet value.",
+                x = 0.5,
+                y = 0.5,
+                vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
+              )
+            } else {
+              g_km(
+                df = df_i,
+                variables = variables,
+                font_size = font_size,
+                xlab = xlab,
+                newpage = FALSE,
+                title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
+                ggtheme = theme_minimal(),
+                annot_surv_med = annot_surv_med,
+                annot_coxph = annot_coxph,
+                control_surv = control_surv_timepoint(conf_level = conf_level),
+                control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+                vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
+              )
+            }
           }
         ),
         env = list(
