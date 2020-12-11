@@ -19,7 +19,8 @@ NULL
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #'
 #' @importFrom grid grid.newpage grid.draw
-template_forest_rsp <- function(anl_name = "ANL",
+#'
+template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,
                                 ref_arm = NULL,
@@ -32,7 +33,7 @@ template_forest_rsp <- function(anl_name = "ANL",
                                 col_symbol_size = NULL) {
 
   assert_that(
-    is.string(anl_name),
+    is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
     is.string(aval_var),
@@ -40,6 +41,7 @@ template_forest_rsp <- function(anl_name = "ANL",
   )
 
   y <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
 
   # Data processing.
   data_list <- list()
@@ -48,14 +50,20 @@ template_forest_rsp <- function(anl_name = "ANL",
 
   anl_list <- add_expr(
     anl_list,
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
+    )
+  )
+
+  anl_list <- add_expr(
+    anl_list,
     substitute(
-      expr = anl %>%
-        mutate(is_rsp = aval_var %in% responders) %>%
-        filter(arm_var %in% arm_vals),
+      expr = mutate(is_rsp = aval_var %in% responders),
       env = list(
-        anl = as.name(anl_name),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm),
         aval_var = as.name(aval_var),
         responders = responders
       )
@@ -65,19 +73,9 @@ template_forest_rsp <- function(anl_name = "ANL",
   anl_list <- add_expr(
     anl_list,
     substitute_names(
-      expr = mutate(
-        arm_var = relevel(arm_var, ref = ref_arm) %>%
-          droplevels() %>%
-          combine_levels(levels = comp_arm)
-      ) %>%
-        droplevels(),
-      names = list(
-        arm_var = as.name(arm_var)
-      ),
-      others = list(
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
+      expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(comp_arm = comp_arm)
     )
   )
 
@@ -86,39 +84,31 @@ template_forest_rsp <- function(anl_name = "ANL",
     substitute(
       anl <- anl_list,
       env = list(
-        anl = as.name(anl_name),
+        anl = as.name(dataname),
         anl_list = pipe_expr(anl_list)
       )
     )
   )
 
+
+
   parent_list <- add_expr(
     parent_list,
-    substitute(
-      parent %>% filter(arm_var %in% arm_vals),
-      env = list(
-        parent = as.name(parentname),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm)
-      )
+    prepare_arm(
+      dataname = parentname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = mutate(
-        arm_var = relevel(arm_var, ref = ref_arm) %>%
-          droplevels() %>%
-          combine_levels(levels = comp_arm)
-      ),
-      names = list(
-        arm_var = as.name(arm_var)
-      ),
-      others = list(
-        ref_arm = ref_arm,
-        comp_arm = comp_arm
-      )
+      expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(comp_arm = comp_arm)
     )
   )
 
@@ -147,7 +137,7 @@ template_forest_rsp <- function(anl_name = "ANL",
         conf_level = conf_level
       ),
       env = list(
-        anl = as.name(anl_name),
+        anl = as.name(dataname),
         arm_var = arm_var,
         subgroup_var = subgroup_var,
         strata_var = strata_var,
@@ -188,7 +178,7 @@ template_forest_rsp <- function(anl_name = "ANL",
       grid::grid.draw(p)
     },
     env = list(
-      anl = as.name(anl_name),
+      anl = as.name(dataname),
       arm_var = arm_var,
       col_symbol_size = col_symbol_size
     )
@@ -272,7 +262,7 @@ tm_g_forest_rsp <- function(label,
                             fixed_symbol_size = TRUE,
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             plot_height = c(700L, 200L, 2000L),
-                            plot_width = NULL,
+                            plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
                             post_output = NULL) {
 
@@ -459,15 +449,17 @@ srv_g_forest_rsp <- function(input,
   # Update UI choices depending on selection of previous options
   observe({
     aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- if (is_empty(aval_var)) {
-      character(0)
+    if (nrow(anl_merged()$data()) == 0) {
+      responder_choices <- c("CR", "PR")
+      responder_sel <- c("CR", "PR")
     } else {
-      unique(anl_merged()$data()[[aval_var]])
+      responder_choices <- unique(anl_merged()$data()[[aval_var]])
+      responder_sel <- intersect(responder_choices, isolate(input$responders))
     }
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(responder_choices, isolate(input$responders))
+      selected = responder_sel
     )
   })
 
@@ -541,7 +533,7 @@ srv_g_forest_rsp <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
     my_calls <- template_forest_rsp(
-      anl_name = "ANL",
+      dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
@@ -577,7 +569,7 @@ srv_g_forest_rsp <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, paramcd, subgroup_var, strata_var)
-      ),
+    ),
     modal_title = label
   )
 }

@@ -5,7 +5,7 @@
 \title{Template for Response Forest Plot}
 \usage{
 template_forest_rsp(
-  anl_name = "ANL",
+  dataname = "ANL",
   parentname = "ADSL_FILTERED",
   arm_var,
   ref_arm = NULL,

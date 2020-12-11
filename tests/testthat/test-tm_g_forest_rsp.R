@@ -1,7 +1,7 @@
 test_that("template_forest_rsp generates correct expressions", {
 
   result <- template_forest_rsp(
-    anl_name = "adrs",
+    dataname = "adrs",
     parentname = "adsl",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
@@ -13,26 +13,22 @@ test_that("template_forest_rsp generates correct expressions", {
     conf_level = 0.95
   )
 
+  lapply(result, styled_expr)
   expected <- list(
     data = quote({
-      # nolint start
       adrs <- adrs %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(
-          ARMCD = relevel(ARMCD, ref = "ARM A") %>%
-            droplevels() %>%
-            combine_levels(levels = c("ARM B", "ARM C"))
-        ) %>%
-        droplevels()
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
+        )
       parent <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(
-          ARMCD = relevel(ARMCD, ref = "ARM A") %>%
-            droplevels() %>%
-            combine_levels(levels = c("ARM B", "ARM C"))
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
         )
-      # nolint end
     }),
     summary = quote({
       df <- extract_rsp_subgroups(
