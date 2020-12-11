@@ -8,7 +8,7 @@
 #' @inheritParams shared_params
 #'
 #' @importFrom grid grid.newpage grid.draw
-template_forest_tte <- function(anl_name = "ANL",
+template_forest_tte <- function(dataname = "ANL",
                                 parentname = "ANL_ADSL",
                                 arm_var,
                                 ref_arm = NULL,
@@ -21,12 +21,13 @@ template_forest_tte <- function(anl_name = "ANL",
                                 col_symbol_size = NULL) {
 
   assert_that(
-    is.string(anl_name),
+    is.string(dataname),
     is.string(arm_var),
     is.character(subgroup_var) || is.null(subgroup_var)
   )
 
   y <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
 
   # Data processing.
   data_list <- list()
@@ -35,31 +36,24 @@ template_forest_tte <- function(anl_name = "ANL",
 
   anl_list <- add_expr(
     anl_list,
-    substitute(
-      data %>% filter(arm_var %in% arm_vals),
-      env = list(
-        data = as.name(anl_name),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm)
-      )
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
   anl_list <- add_expr(
     anl_list,
     substitute_names(
-      mutate(
-        arm_var = arm_var %>%
-          relevel(ref_arm) %>%
-          droplevels() %>%
-          combine_levels(comp_arm)
-        ) %>%
-        mutate(is_event = cnsr_var == 0),
-      names = list(
-        arm_var = as.name(arm_var)
-      ),
+      expr = {
+        mutate(arm_var = combine_levels(arm_var, comp_arm)) %>%
+          mutate(is_event = cnsr_var == 0)
+      },
+      names = list(arm_var = as.name(arm_var)),
       others = list(
-        ref_arm = ref_arm,
         comp_arm = comp_arm,
         cnsr_var = as.name(cnsr_var)
       )
@@ -78,28 +72,20 @@ template_forest_tte <- function(anl_name = "ANL",
 
   parent_list <- add_expr(
     parent_list,
-    substitute(
-      data %>% filter(arm_var %in% arm_vals),
-      env = list(
-        data = as.name(parentname),
-        arm_var = as.name(arm_var),
-        arm_vals = c(ref_arm, comp_arm)
-      )
+    prepare_arm(
+      dataname = parentname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
     )
   )
 
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      mutate(
-        arm_var = arm_var %>%
-          relevel(ref_arm) %>%
-          droplevels() %>%
-          combine_levels(comp_arm)
-      ),
-      names = list(
-        arm_var = as.name(arm_var)
-      ),
+      expr = mutate(arm_var = combine_levels(arm_var, comp_arm)),
+      names = list(arm_var = as.name(arm_var)),
       others = list(
         ref_arm = ref_arm,
         comp_arm = comp_arm
@@ -171,7 +157,7 @@ template_forest_tte <- function(anl_name = "ANL",
         col_symbol_size = col_symbol_size,
         draw = TRUE,
         newpage = TRUE
-        )
+      )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
                            gp_footnotes = gpar(fontsize = 12))
@@ -321,7 +307,7 @@ tm_g_forest_tte <- function(label,
         parentname = parentname,
         plot_height = plot_height,
         plot_width = plot_width
-        )
+      )
     ),
     filters = get_extract_datanames(data_extract_list)
   )
@@ -337,7 +323,7 @@ ui_g_forest_tte <- function(id, ...) {
     a$strata_var,
     a$aval_var,
     a$cnsr_var
-    )
+  )
 
   ns <- NS(id)
 
@@ -381,7 +367,7 @@ ui_g_forest_tte <- function(id, ...) {
         choices = NULL,
         selected = NULL,
         multiple = TRUE
-        ),
+      ),
       selectInput(
         ns("comp_arm"),
         div(
@@ -544,7 +530,7 @@ srv_g_forest_tte <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
     my_calls <- template_forest_tte(
-      anl_name = "ANL",
+      dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
@@ -555,7 +541,7 @@ srv_g_forest_tte <- function(input,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (!input$fixed_symbol_size) 1
-      )
+    )
     mapply(expression = my_calls, chunks_push)
   })
 
@@ -580,7 +566,7 @@ srv_g_forest_tte <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var)
-      ),
+    ),
     modal_title = "R Code for the Current Time-to-Event Forest Plot",
     code_header = "Time-to-Event Forest Plot"
   )

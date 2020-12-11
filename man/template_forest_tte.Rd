@@ -5,7 +5,7 @@
 \title{Template for Survival Forest Plot}
 \usage{
 template_forest_tte(
-  anl_name = "ANL",
+  dataname = "ANL",
   parentname = "ANL_ADSL",
   arm_var,
   ref_arm = NULL,
@@ -19,7 +19,7 @@ template_forest_tte(
 )
 }
 \arguments{
-\item{anl_name}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{string})\cr analysis data used in teal module.}
 
 \item{parentname}{(\code{string})\cr parent analysis data used in teal module,
 usually this refers to \code{"ADSL"}.}

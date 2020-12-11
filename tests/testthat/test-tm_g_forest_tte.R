@@ -1,6 +1,6 @@
 test_that("template_forest_tte generates correct expressions", {
   result <- template_forest_tte(
-    anl_name = "adtte",
+    dataname = "adtte",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
@@ -14,22 +14,22 @@ test_that("template_forest_tte generates correct expressions", {
     data = quote({
       anl <- adtte %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(
-          ARMCD = ARMCD %>%
-            relevel("ARM A") %>%
-            droplevels() %>%
-            combine_levels(c("ARM B", "ARM C"))
-          ) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(ARMCD = combine_levels(ARMCD, c("ARM B", "ARM C"))) %>%
         mutate(is_event = CNSR == 0)
       parent <- ANL_ADSL %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(
-          ARMCD = ARMCD %>%
-            relevel("ARM A") %>%
-            droplevels() %>%
-            combine_levels(c("ARM B", "ARM C"))
-          )
-      }),
+        filter(ARMCD %in% c(
+          "ARM A", "ARM B",
+          "ARM C"
+        )) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(ARMCD = combine_levels(
+          ARMCD,
+          c("ARM B", "ARM C")
+        ))
+    }),
     summary = quote({
       df <- extract_survival_subgroups(
         variables = list(
@@ -63,14 +63,14 @@ test_that("template_forest_tte generates correct expressions", {
         col_symbol_size = 1,
         draw = TRUE,
         newpage = TRUE
-        )
+      )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
                            gp_footnotes = gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)
-      })
-    )
+    })
+  )
   expect_equal(result, expected)
 })
