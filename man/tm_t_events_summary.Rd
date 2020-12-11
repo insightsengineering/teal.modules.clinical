@@ -10,8 +10,8 @@ tm_t_events_summary(
   parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
-  flag_var_anl,
-  flag_var_aesi,
+  flag_var_anl = NULL,
+  flag_var_aesi = NULL,
   dthfl_var = choices_selected(variable_choices(parentname, "DTHFL"), "DTHFL", fixed =
     TRUE),
   dcsreas_var = choices_selected(variable_choices(parentname, "DCSREAS"), "DCSREAS",
@@ -42,14 +42,15 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{flag_var_anl}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr vector
-with names of flag variables from \code{dataset} used to count adverse event sub-groups (e.g. Serious
-events, Related events, etc.). Variable labels are used as table row names if they exist.}
+\item{flag_var_anl}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+vector with names of flag variables from \code{dataset} used to count adverse event
+sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
+as table row names if they exist.}
 
-\item{flag_var_aesi}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr vector
-with names of flag variables from \code{dataset} used to count adverse event special interest groups.
-All flag variables must be of type \code{logical}. Variable labels are used as table
-row names if they exist.}
+\item{flag_var_aesi}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+vector with names of flag variables from \code{dataset} used to count adverse event
+special interest groups. All flag variables must be of type \code{logical}. Variable
+labels are used as table row names if they exist.}
 
 \item{dthfl_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable for subject death flag from \code{parentname}. Records with `"Y"`` are summarized in
@@ -68,14 +69,17 @@ for adverse events sequence number from \code{dataset}. Used for counting total 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
-\item{count_subj}{(\code{logical})\cr whether to show count of unique subjects
-based on \code{USUBJID}. Only applies if event flag variables are provided.}
+\item{count_subj}{(\code{logical})\cr w
+whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag
+variables are provided.}
 
-\item{count_pt}{(\code{logical})\cr whether to show count of unique preferred terms based on
-\code{llt}. Only applies if event flag variables are provided.}
+\item{count_pt}{(\code{logical})\cr
+whether to show count of unique preferred terms based on \code{llt}. Only applies if event
+flag variables are provided.}
 
-\item{count_events}{(\code{logical})\cr whether to show count of events based on \code{aeseq_var}.
-Only applies if event flag variables are provided.}
+\item{count_events}{(\code{logical})\cr
+whether to show count of events based on \code{aeseq_var}. Only applies if event flag variables
+are provided.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

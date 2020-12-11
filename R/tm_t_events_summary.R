@@ -1,27 +1,31 @@
 #' Template: Adverse Events Summary
 #'
 #' @inheritParams template_arguments
-#' @param dthfl_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param dthfl_var (`character`)\cr
 #'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
 #'  the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
-#'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
-#'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal::choices_selected()] or [teal::data_extract_spec()])\cr vector
-#' with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious
-#' events, Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal::choices_selected()] or [teal::data_extract_spec()])\cr vector
-#' with names of flag variables from `dataset` used to count adverse event special interest groups.
+#' @param dcsreas_var (`character`)\cr
+#'   variable for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"`
+#'   are summarized in the table row for "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl (`character`)\cr
+#'   flag variable from `dataset` used to count adverse event sub-groups (e.g. Serious
+#'   events, Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi (`character`)\cr
+#'   flag variable from `dataset` used to count adverse event special interest groups.
 #'   All flag variables must be of type `logical`. Variable labels are used as table
 #'   row names if they exist.
-#' @param aeseq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
-#' for adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param count_subj (`logical`)\cr whether to show count of unique subjects
-#'   based on `USUBJID`. Only applies if event flag variables are provided.
-#' @param count_pt (`logical`)\cr whether to show count of unique preferred terms based on
-#'   `llt`. Only applies if event flag variables are provided.
-#' @param count_events (`logical`)\cr whether to show count of events based on `aeseq_var`.
-#'   Only applies if event flag variables are provided.
+#' @param aeseq_var (`character`)\cr
+#'   variable for adverse events sequence number from `dataset`. Used for counting total
+#'   number of events.
+#' @param count_subj (`logical`)\cr w
+#'   whether to show count of unique subjects based on `USUBJID`. Only applies if event flag
+#'   variables are provided.
+#' @param count_pt (`logical`)\cr
+#'   whether to show count of unique preferred terms based on `llt`. Only applies if event
+#'   flag variables are provided.
+#' @param count_events (`logical`)\cr
+#'   whether to show count of events based on `aeseq_var`. Only applies if event flag variables
+#'   are provided.
 #'
 #' @seealso [tm_t_events_summary()]
 #'
@@ -485,6 +489,22 @@ template_events_summary <- function(anl_name,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_summary
+#' @param dthfl_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
+#'  the table row for "Total number of deaths".
+#' @param dcsreas_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
+#'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
+#'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event
+#'   sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
+#'   as table row names if they exist.
+#' @param flag_var_aesi ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event
+#'   special interest groups. All flag variables must be of type `logical`. Variable
+#'   labels are used as table row names if they exist.
+#' @param aeseq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
+#' for adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
 #' @export
 #' @examples
@@ -573,8 +593,8 @@ tm_t_events_summary <- function(label,
                                   "ADSL"
                                 ),
                                 arm_var,
-                                flag_var_anl,
-                                flag_var_aesi,
+                                flag_var_anl = NULL,
+                                flag_var_aesi = NULL,
                                 dthfl_var = choices_selected(
                                   variable_choices(parentname, "DTHFL"), "DTHFL", fixed = TRUE
                                 ),
@@ -602,13 +622,6 @@ tm_t_events_summary <- function(label,
     is_logical_single(count_subj),
     is_logical_single(count_pt),
     is_logical_single(count_events),
-    is.cs_or_des(arm_var),
-    is.cs_or_des(dthfl_var),
-    is.cs_or_des(dcsreas_var),
-    is.cs_or_des(flag_var_anl),
-    is.cs_or_des(flag_var_aesi),
-    is.cs_or_des(aeseq_var),
-    is.cs_or_des(llt),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -625,8 +638,14 @@ tm_t_events_summary <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE),
-    flag_var_aesi = cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE),
+    flag_var_anl = if_not_null(
+      flag_var_anl,
+      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
+      ),
+    flag_var_aesi = if_not_null(
+      flag_var_aesi,
+      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
+      ),
     aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
@@ -677,17 +696,23 @@ ui_t_events_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("flag_var_anl"),
-        label = "Event Flag Variables",
-        data_extract_spec = a$flag_var_anl,
-        is_single_dataset = is_single_dataset_value
+      if_not_null(
+        a$flag_var_anl,
+        data_extract_input(
+          id = ns("flag_var_anl"),
+          label = "Event Flag Variables",
+          data_extract_spec = a$flag_var_anl,
+          is_single_dataset = is_single_dataset_value
+        )
       ),
-      data_extract_input(
-        id = ns("flag_var_aesi"),
-        label = "AE Basket Flag Variables",
-        data_extract_spec = a$flag_var_aesi,
-        is_single_dataset = is_single_dataset_value
+      if_not_null(
+        a$flag_var_aesi,
+        data_extract_input(
+          id = ns("flag_var_aesi"),
+          label = "AE Basket Flag Variables",
+          data_extract_spec = a$flag_var_aesi,
+          is_single_dataset = is_single_dataset_value
+        )
       ),
       checkboxInput(
         ns("add_total"),
@@ -759,10 +784,23 @@ srv_t_events_summary <- function(input,
                                  label) {
   init_chunks()
 
+  data_extract_vars <- list(arm_var, dthfl_var, dcsreas_var, aeseq_var, llt)
+  data_extract_inputs <- c("arm_var", "dthfl_var", "dcsreas_var", "aeseq_var", "llt")
+
+  if (!is.null(flag_var_anl)) {
+    data_extract_vars <- c(data_extract_vars, list(flag_var_anl))
+    data_extract_inputs <- c(data_extract_inputs, "flag_var_anl")
+  }
+
+  if (!is.null(flag_var_aesi)) {
+    data_extract_vars <- c(data_extract_vars, list(flag_var_aesi))
+    data_extract_inputs <- c(data_extract_inputs, "flag_var_aesi")
+  }
+
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, dthfl_var, dcsreas_var, flag_var_anl, flag_var_aesi, aeseq_var, llt),
-    input_id = c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt"),
+    data_extract = data_extract_vars,
+    input_id = data_extract_inputs,
     merge_function = "dplyr::inner_join"
   )
 
@@ -781,8 +819,8 @@ srv_t_events_summary <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
     input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-    input_flag_var_anl <- as.vector(anl_m$columns_source$flag_var_anl)
-    input_flag_var_aesi <- as.vector(anl_m$columns_source$flag_var_aesi)
+    input_flag_var_anl <- if_not_null(flag_var_anl, as.vector(anl_m$columns_source$flag_var_anl))
+    input_flag_var_aesi <- if_not_null(flag_var_aesi, as.vector(anl_m$columns_source$flag_var_aesi))
     input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
@@ -818,9 +856,6 @@ srv_t_events_summary <- function(input,
 
     input_flag_var_anl <- as.vector(anl_m$columns_source$flag_var_anl)
     input_flag_var_aesi <- as.vector(anl_m$columns_source$flag_var_aesi)
-
-    input_flag_var_anl <- datasets$get_variable_labels(dataname, input_flag_var_anl)
-    input_flag_var_aesi <- datasets$get_variable_labels(dataname, input_flag_var_aesi)
 
     my_calls <- template_events_summary(
       anl_name = "ANL",
