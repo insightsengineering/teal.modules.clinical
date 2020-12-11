@@ -15,16 +15,19 @@ test_that("template_abnormality generates correct expressions with default argum
       anl <- adlb %>% filter(ONTRTFL == "Y" & !is.na(ANRIND))
       n_col_counts <- table(adsl$ARM)
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>% split_cols_by(var = "ARM") %>% add_colcounts() %>% # nolint
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          visible_label = TRUE
+          visible_label = TRUE,
+          split_fun = split_fun
         ) %>%
         split_rows_by("PARAM",
           split_label = var_labels(adlb)[["PARAM"]],
-          visible_label = TRUE
+          visible_label = TRUE,
+          split_fun = split_fun
         ) %>%
         count_abnormal(
           var = "ANRIND",
@@ -64,12 +67,23 @@ test_that("template_abnormality generates correct expressions with custom argume
       n_col_counts <- table(adsl$ARM)
       n_col_counts <- c(n_col_counts, Total = sum(n_col_counts))
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_label = var_labels(adlb)[["AVISIT"]], visible_label = TRUE) %>%
-        split_rows_by("PARAMCD", split_label = var_labels(adlb)[["PARAMCD"]], visible_label = TRUE) %>%
+        split_rows_by(
+          "AVISIT",
+          split_label = var_labels(adlb)[["AVISIT"]],
+          visible_label = TRUE,
+          split_fun = split_fun
+        ) %>%
+        split_rows_by(
+          "PARAMCD",
+          split_label = var_labels(adlb)[["PARAMCD"]],
+          visible_label = TRUE,
+          split_fun = split_fun
+        ) %>%
         count_abnormal(
           var = "MYANRIND",
           abnormal = c(low = "LOW", medium = "MEDIUM"),

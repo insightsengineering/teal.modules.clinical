@@ -58,6 +58,7 @@ template_abnormality <- function(parentname,
 
   y$data <- bracket_expr(data_list)
 
+  y$layout_prep <- quote(split_fun <- drop_split_levels)
   layout_list <- list()
 
   layout_list <- add_expr(
@@ -96,7 +97,8 @@ template_abnormality <- function(parentname,
         split_rows_by(
           by_var,
           split_label = split_label,
-          visible_label = TRUE
+          visible_label = TRUE,
+          split_fun = split_fun
         ),
         env = list(
           by_var = by_var,

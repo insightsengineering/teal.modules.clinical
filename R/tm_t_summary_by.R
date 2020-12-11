@@ -55,6 +55,8 @@ template_summary_by <- function(parentname,
   )
 
   # Build layout
+  y$layout_prep <- quote(split_fun <- drop_split_levels)
+
   layout_list <- list()
 
   layout_list <- add_expr(
@@ -135,7 +137,7 @@ template_summary_by <- function(parentname,
         split_rows_by(
           by_var,
           split_label = split_label,
-          split_fun = drop_split_levels,
+          split_fun = split_fun,
           visible_label = TRUE
         ),
         env = list(

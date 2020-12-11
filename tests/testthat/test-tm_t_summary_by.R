@@ -12,6 +12,7 @@ test_that("template_summary_by generates correct expressions", {
 
   expected <- list(
     data = quote(anl <- adlb),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
@@ -19,7 +20,7 @@ test_that("template_summary_by generates correct expressions", {
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          split_fun = drop_split_levels,
+          split_fun = split_fun,
           visible_label = TRUE
         ) %>%
         summarize_vars(
@@ -60,12 +61,15 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
 
   expected <- list(
     data = quote(anl <- adlb),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(
-          "AVISIT", split_label = var_labels(adlb)[["AVISIT"]], split_fun = drop_split_levels,
+          "AVISIT",
+          split_label = var_labels(adlb)[["AVISIT"]],
+          split_fun = split_fun,
           visible_label = TRUE
         ) %>%
         split_cols_by_multivar(vars = c("AVAL", "CHG")) %>%
@@ -107,6 +111,7 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
 
   expected <- list(
     data = quote(anl <- adsl),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM") %>%
@@ -114,16 +119,16 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
         split_rows_by(
           "SEX",
           split_label = var_labels(adsl)[["SEX"]],
-          split_fun = drop_split_levels,
+          split_fun = split_fun,
           visible_label = TRUE
-          ) %>%
+        ) %>%
         summarize_row_groups() %>%
         split_rows_by(
           "COUNTRY",
           split_label = var_labels(adsl)[["COUNTRY"]],
-          split_fun = drop_split_levels,
+          split_fun = split_fun,
           visible_label = TRUE
-          ) %>%
+        ) %>%
         summarize_row_groups()
     ),
     table = quote({

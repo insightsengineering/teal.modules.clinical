@@ -70,6 +70,8 @@ template_events_by_grade <- function(dataname,
   }
   y$data <- bracket_expr(data_list)
 
+  y$layout_prep <- quote(split_fun <- drop_split_levels)
+
   layout_list <- list()
 
   layout_list <- add_expr(
@@ -112,7 +114,8 @@ template_events_by_grade <- function(dataname,
             term_var,
             child_labels = "visible",
             nested = TRUE,
-            indent_mod = -1L
+            indent_mod = -1L,
+            split_fun = split_fun
           ) %>%
           summarize_num_patients(
             var = "USUBJID",
@@ -142,7 +145,8 @@ template_events_by_grade <- function(dataname,
             hlt,
             child_labels = "visible",
             nested = TRUE,
-            indent_mod = -1L
+            indent_mod = -1L,
+            split_fun = split_fun
           ) %>%
           append_varlabels(dataname, hlt) %>%
           summarize_occurrences_by_grade(
@@ -153,7 +157,8 @@ template_events_by_grade <- function(dataname,
             llt,
             child_labels = "visible",
             nested = TRUE,
-            indent_mod = -1L
+            indent_mod = -1L,
+            split_fun = split_fun
           ) %>%
           append_varlabels(dataname, c(llt, grade), indent = TRUE) %>%
           summarize_num_patients(

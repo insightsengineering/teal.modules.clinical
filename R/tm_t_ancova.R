@@ -112,6 +112,8 @@ template_ancova <- function(dataname = "ANL",
   y$data <- bracket_expr(data_list)
 
   # Build layout.
+  y$layout_prep <- quote(split_fun <- drop_split_levels)
+
   layout_list <- list()
 
   layout_list <- add_expr(layout_list, quote(basic_table()))
@@ -120,7 +122,7 @@ template_ancova <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        split_rows_by(visit_var, split_fun = drop_split_levels) %>%
+        split_rows_by(visit_var, split_fun = split_fun) %>%
         append_varlabels(dataname, visit_var),
       env = list(
         arm_var = arm_var,
@@ -135,7 +137,7 @@ template_ancova <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(paramcd_var, split_fun = drop_split_levels) %>%
+        split_rows_by(paramcd_var, split_fun = split_fun) %>%
           append_varlabels(dataname, paramcd_var, indent = TRUE) %>%
           summarize_ancova(
             vars = aval_var,

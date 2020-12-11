@@ -18,6 +18,7 @@ test_that("template_events generates correct expressions", {
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
@@ -29,7 +30,13 @@ test_that("template_events generates correct expressions", {
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by("AEBODSYS", child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+        split_rows_by(
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -134,6 +141,7 @@ test_that("template_events can generate customized table with alphabetical sorti
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
@@ -145,7 +153,13 @@ test_that("template_events can generate customized table with alphabetical sorti
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by("AEBODSYS", child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+        split_rows_by(
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -193,6 +207,7 @@ test_that("template_events can generate customized table with pruning", {
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
@@ -204,7 +219,13 @@ test_that("template_events can generate customized table with pruning", {
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by("AEBODSYS", child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+        split_rows_by(
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",

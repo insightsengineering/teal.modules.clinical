@@ -163,10 +163,19 @@ template_events <- function(dataname,
   } else {
     # Case when both hlt and llt are used.
 
+    y$layout_prep <- quote(split_fun <- drop_split_levels)
+
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE, indent_mod = -1L) %>%
+        expr =
+          split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun
+          ) %>%
           append_varlabels(dataname, hlt) %>%
           summarize_num_patients(
             var = "USUBJID",
@@ -478,12 +487,12 @@ tm_t_events <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -639,10 +648,14 @@ srv_t_events_byterm <- function(input,
       need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
     )
     validate(
-      need(input$prune_freq >= 0 && input$prune_freq <= 100,
-        "Please provide an Incidence Rate between 0 and 100 (%)."),
-      need(input$prune_diff >= 0 && input$prune_diff <= 100,
-        "Please provide a Difference Rate between 0 and 100 (%).")
+      need(
+        input$prune_freq >= 0 && input$prune_freq <= 100,
+        "Please provide an Incidence Rate between 0 and 100 (%)."
+      ),
+      need(
+        input$prune_diff >= 0 && input$prune_diff <= 100,
+        "Please provide a Difference Rate between 0 and 100 (%)."
+      )
     )
 
     # validate inputs

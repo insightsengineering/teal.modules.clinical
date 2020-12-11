@@ -23,12 +23,13 @@ test_that("template_ancova generates expressions with multiple endpoints", {
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels()
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        split_rows_by("PARAMCD", split_fun = split_fun) %>%
         append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
@@ -72,12 +73,13 @@ test_that("template_ancova generates expressions with multiple endpoints with co
         droplevels() %>%
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        split_rows_by("PARAMCD", split_fun = split_fun) %>%
         append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
@@ -122,12 +124,13 @@ test_that("template_ancova generates expressions with multiple endpoints with co
         mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
         droplevels()
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
-        split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = drop_split_levels) %>%
+        split_rows_by("PARAMCD", split_fun = split_fun) %>%
         append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
         summarize_ancova(
           vars = "CHG",
@@ -170,10 +173,11 @@ test_that("template_ancova generates expressions with single endpoint", {
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels()
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        split_rows_by("AVISIT", split_fun = drop_split_levels) %>%
+        split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
         append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(

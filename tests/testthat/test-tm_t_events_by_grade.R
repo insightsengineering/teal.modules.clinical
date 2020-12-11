@@ -16,6 +16,7 @@ test_that("template_events_by_grade generates standard expressions", {
       col_counts <- table(adsl$ACTARM)
       col_counts <- c(col_counts, `All Patients` = sum(col_counts))
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -28,7 +29,9 @@ test_that("template_events_by_grade generates standard expressions", {
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
-          indent_mod = -1L) %>%
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
@@ -37,7 +40,9 @@ test_that("template_events_by_grade generates standard expressions", {
           "AEDECOD",
           child_labels = "visible",
           nested = TRUE,
-          indent_mod = -1L) %>%
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -86,6 +91,7 @@ test_that("template_events_by_grade without adding total column option works as 
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
       col_counts <- table(adsl$ACTARM)
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -97,7 +103,10 @@ test_that("template_events_by_grade without adding total column option works as 
         split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
-          nested = TRUE, indent_mod = -1L) %>%
+          nested = TRUE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
@@ -107,7 +116,9 @@ test_that("template_events_by_grade without adding total column option works as 
           "AEDECOD",
           child_labels = "visible",
           nested = TRUE,
-          indent_mod = -1L) %>%
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -160,6 +171,7 @@ test_that("template_events_by_grade with hlt only works", {
       col_counts <- table(adsl$ACTARM)
       col_counts <- c(col_counts, `All Patients` = sum(col_counts))
     }),
+    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -172,7 +184,9 @@ test_that("template_events_by_grade with hlt only works", {
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
-          indent_mod = -1L) %>%
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
