@@ -758,7 +758,7 @@ srv_mmrm <- function(input,
   # applicable is set to TRUE only after a `Fit Button` press leads to a successful computation from the inputs
   # it will store the current/last state of inputs and data that generatd a model-fit
   # its purpose is so that any input change can be checked whether it resulted in an out of sync state
-  state <- reactiveValues(applicable = FALSE)
+  state <- reactiveValues(applicable = FALSE, button_start = 0, optimizer = NULL)
 
   # Note:
   # input$parallel does not get us out of sync (it just takes longer to get to same result)
@@ -811,10 +811,8 @@ srv_mmrm <- function(input,
     optimizer <- input$optimizer
     if (isTRUE(optimizer == "automatic")) {
       shinyjs::show("parallel")
-      shinyjs::show("optimizer_selected")
     } else {
       shinyjs::hide("parallel")
-      shinyjs::hide("optimizer_selected")
     }
   })
 
@@ -1018,9 +1016,6 @@ srv_mmrm <- function(input,
     fit_stack <- chunks$new()
     fit_stack_push <- function(...) {
       chunks_push(..., chunks = fit_stack)
-    }
-    fit_stack_get_var <- function(...) {
-      chunks_get_var(..., chunks = fit_stack)
     }
 
     validate_checks()
@@ -1237,20 +1232,23 @@ srv_mmrm <- function(input,
   # Optimizer that was selected.
   output$optimizer_selected <- renderText({
     # First reassign reactive sources:
-
-    fit_stack <- mmrm_fit()
-    fit <- chunks_get_var("fit", chunks = fit_stack)
-
-    # Inputs.
-    optimizer <- input$optimizer
-
-    result <- if (!inherits(fit, "try-error") && optimizer == "automatic") {
-      selected <- attr(fit$fit, "optimizer")
-      paste("Optimizer used:", selected)
-    } else {
-      NULL
+    fit_stack <- try(mmrm_fit())
+    result <- if (!inherits(fit_stack, "try-error")) {
+      fit <- chunks_get_var("fit", chunks = fit_stack)
+      if (input$optimizer == "automatic") {
+        selected <- attr(fit$fit, "optimizer")
+        paste("Optimizer used:", selected)
+      }
     }
-    return(result)
+    currnt_state <- state$applicable && !state_has_changed()
+    what_to_return <- if (input$button_start > isolate(state$button_start)) {
+      state$button_start <- input$button_start
+      state$optimizer <- result
+      result
+    } else if (currnt_state) {
+        isolate(state$optimizer)
+    } else NULL
+    return(what_to_return)
   })
 
   # Show R code once button is pressed.
