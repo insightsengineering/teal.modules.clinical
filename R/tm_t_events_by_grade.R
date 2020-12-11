@@ -1,14 +1,9 @@
-#' Teal Module: Events by Grade
+#' Template: Events by Grade
 #'
-#' @name events_by_grade
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#'
-NULL
-
-#' @describeIn events_by_grade creates the expression corresponding to the
-#'   analysis.
+#' @inheritParams template_arguments
 #' @param grade (`character`) \cr name of the severity level variable.
+#'
+#' @seealso [tm_t_events_by_grade()]
 #'
 template_events_by_grade <- function(dataname,
                                      parentname,
@@ -232,7 +227,10 @@ template_events_by_grade <- function(dataname,
 }
 
 
-#' @describeIn events_by_grade teal module for event by grade table.
+#' Teal Module: Events by Grade
+#'
+#' @inheritParams module_arguments
+#' @inheritParams template_events_by_grade
 #'
 #' @export
 #' @examples

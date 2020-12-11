@@ -22,35 +22,29 @@ template_tte(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr
+triggers the comparison between study arms.}
 
-\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr
+triggers the combination of comparison arms.}
 
-\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
-names of the variables for stratified analysis.}
-
-\item{time_points}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and preselected option
-for time points that can be used in \code{\link[=surv_timepoint]{surv_timepoint()}}.}
-
-\item{time_unit}{(\code{string})\cr unit in \code{aval_var} (use singular, e.g. \emph{month} instead
-of _months).}
-
-\item{event_desc_var}{(\code{string} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
-information, optional.}
+\item{time_points}{(\code{character})\cr
+time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}

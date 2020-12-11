@@ -37,13 +37,12 @@ control_tte <- function(
 #'
 #' Creates a valid expression for time-to-event analysis.
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
+#' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
 #'
 #' @seealso [tm_t_tte()]
+#'
 #' @examples
 #'
 template_tte <- function(dataname = "ANL",
@@ -312,22 +311,18 @@ template_tte <- function(dataname = "ANL",
 
 #' Time To Event Table Teal Module
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams shared_params
-#' @inheritParams argument_convention
+#' @inheritParams module_arguments
 #' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
-#' @param time_points ([choices_selected()])\cr object with all available choices and preselected option
-#'   for time points that can be used in [surv_timepoint()].
-#' @param time_unit (`string`)\cr unit in `aval_var` (use singular, e.g. _month_ instead
+#' @param time_unit (`character`)\cr unit in `aval_var` (use singular, e.g. _month_ instead
 #'   of _months).
-#' @param event_desc_var (`string` or [data_extract_spec()])\cr variable name with the event description
+#' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
 #' @details This module produces a response summary table that is similar to
-#'   STREAM template \code{ttet01}. The core functionality is based on
+#'   STREAM template `ttet01`. The core functionality is based on
 #'   [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
 #'   The following variables are used in the module:
 #'

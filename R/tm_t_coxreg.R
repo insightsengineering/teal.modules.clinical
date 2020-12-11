@@ -2,9 +2,7 @@
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_coxreg
+#' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_coxreg()].
 #'
@@ -193,34 +191,9 @@ template_coxreg <- function(dataname,
 #' Teal module to fit Cox univariate or multivariate models consistent with
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams shared_params
-#' @inheritParams argument_convention
-#' @param dataname `character` analysis data used in teal module, needs to be
-#'   available in the list passed to the `data` argument of
-#'   \code{\link[teal]{init}}. Note that the data is expected to be in vertical
-#'   form with the `PARAMCD` variable filtering to one observation per patient.
-#' @param arm_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for variable names that can be used as \code{arm_var}
-#' @param arm_ref_comp (\code{\link[teal]{choices_selected}}) optional, if
-#'   specified it must be a named list with each element corresponding to an arm
-#'   variable in `ADSL` and the element must be another list with the elements
-#'   named `ref` and `comp` that the defined the default reference and
-#'   comparison arms when the arm variable is changed.
-#' @param paramcd \code{\link[teal]{choices_selected}} object with all available
-#'   choices and preselected option for variable names that can be used as
-#'   `PARAMCD` variable.
-#' @param cov_var \code{\link[teal]{choices_selected}} object with all available
-#'   choices and preselected option for variable names that can be used as
-#'   covariates in the model.
-#' @param strata_var \code{\link[teal]{choices_selected}} object with all
-#'   available choices and preselected option for variable names that can be
-#'   used for stratification
-#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for analysis variable
-#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for censor variable
-#' @param multivariate If `FALSE`, the univariate approach is used
+#' @inheritParams module_arguments
+#' @param multivariate (`logical`)\cr
+#'   If `FALSE`, the univariate approach is used
 #'   (equivalent to `COXT01` standard) instead of the multivariate model
 #'   (equivalent to `COXT02` standard).
 #'
@@ -253,8 +226,6 @@ template_coxreg <- function(dataname,
 #'
 #' @export
 #' @importFrom stats setNames
-#'
-#' @md
 #'
 #' @examples
 #' ## First example

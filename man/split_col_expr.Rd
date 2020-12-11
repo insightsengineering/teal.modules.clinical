@@ -7,13 +7,13 @@
 split_col_expr(compare, combine, ref, arm_var)
 }
 \arguments{
-\item{compare}{(\code{flag})\cr if \code{TRUE} the reference level is included.}
+\item{compare}{(\code{logical})\cr if \code{TRUE} the reference level is included.}
 
-\item{combine}{(\code{flag})\cr if \code{TRUE} the group combination is included.}
+\item{combine}{(\code{logical})\cr if \code{TRUE} the group combination is included.}
 
-\item{ref}{(\code{string})\cr the reference level (not used for \code{combine = TRUE}).}
+\item{ref}{(\code{character})\cr the reference level (not used for \code{combine = TRUE}).}
 
-\item{arm_var}{(\code{string})\cr the arm or grouping variable name.}
+\item{arm_var}{(\code{character})\cr the arm or grouping variable name.}
 }
 \description{
 Renders the expression for column split in \code{rtables} depending on:

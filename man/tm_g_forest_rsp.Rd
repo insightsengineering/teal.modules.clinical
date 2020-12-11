@@ -25,61 +25,67 @@ tm_g_forest_rsp(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr
+menu item label of the module in the teal app}
 
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
-returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
-with each element corresponding to an arm variable in \code{ADSL} and the
-element must be another list with the elements named \code{ref} and \code{comp}
-that the defined the default reference and comparison arms when the arm
-variable is changed.}
+\item{arm_ref_comp}{optional, (\code{list})\cr
+If specified it must be a named list with each element corresponding to
+an arm variable in \code{ADSL} and the element must be another list (possibly
+with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with the elements named \code{ref} and \code{comp} that the defined the default
+reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
-preselected option for variable names that can be used as the default subgroups.}
+\item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and}
 
-\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 names of the variables for stratified analysis.}
 
-\item{fixed_symbol_size}{(\code{flag})\cr When (\code{TRUE}), the same symbol size is used for plotting each
+\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
-object with all available choices and pre-selected option for the confidence level,
-each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+object with all available choices and preselected option for the confidence
+level, each within range of (0, 1).}
 
-\item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+\item{plot_height}{optional, (\code{numeric})\cr
+a vector of length three with \code{c(value, min, max)}. Specifies the height of
+the main plot and renders a slider on the plot to interactively adjust the plot
+height.}
 
-\item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+\item{plot_width}{optional, (\code{numeric})\cr
+a vector of length three with \code{c(value, min, max)}. Specifies the width of
+the main plot and renders a slider on the plot to interactively adjust the plot
+width.}
 
-\item{pre_output}{optional, \code{shiny.tag} with text placed before the
-output to put the output into context. For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr
+with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, \code{shiny.tag} with text placed after the
-output to put the output into context. For example the
-\code{\link[shiny]{helpText}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr
+with text placed after the output to put the output into context. For example
+the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
 This teal module produces a grid style Forest plot for response data with ADaM structure.
 }
-\section{Functions}{
-\itemize{
-\item \code{tm_g_forest_rsp}: Teal module for response forest plot.
-}}
-
 \examples{
 
 library(random.cdisc.data)

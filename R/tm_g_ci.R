@@ -1,23 +1,18 @@
-#' Confidence Interval Plot teal module
-#'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @name tm_g_ci
-#'
-NULL
-
 #' Template: Confidence Interval Plot
 #'
 #' Writes the expressions to filter data and draw confidence interval
 #' estimation.
 #'
-#' @param x_var (`string`)\cr treatment variable corresponding to the x axis.
-#' @param y_var (`string`)\cr response variable corresponding to the y axis.
-#' @param grp_var (`string`)\cr group variable corresponding to the colors
+#' @inheritParams template_arguments
+#' @param x_var (`character`)\cr treatment variable corresponding to the x axis.
+#' @param y_var (`character`)\cr response variable corresponding to the y axis.
+#' @param grp_var (`character`)\cr group variable corresponding to the colors
 #'  point shape and line type.
-#' @param stat (`string`)\cr either `mean` or `median`.
-#' @param unit_var (`string`)\cr variable name in `dataname` where the unit is
+#' @param stat (`character`)\cr either `mean` or `median`.
+#' @param unit_var (`character`)\cr variable name in `dataname` where the unit is
 #'  read.
+#'
+#' @seealso [tm_g_ci()]
 #'
 template_g_ci <- function(dataname, # nousage # nolint
                           x_var,
@@ -292,14 +287,10 @@ srv_g_ci <- function(input, # nousage # nolint
 #'
 #' The module generates the R code and returns the corresponding output.
 #'
+#' @inheritParams module_arguments
 #' @inheritParams template_g_ci
-#' @param x_var (`data_extract_spec`)\cr the candidate treatment variable
-#'   (x axis).
-#' @param y_var (`data_extract_spec`)\cr the candidate analyzed variable
-#'   (y axis).
 #' @param color (`data_extract_spec`)\cr the group variable (color, line type
 #'   and point shape).
-#' @seealso [teal::data_extract_spec()]
 #'
 #' @export
 #' @examples

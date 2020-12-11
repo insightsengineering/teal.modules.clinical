@@ -7,10 +7,12 @@
 split_interactions(x, by = "\\\\*|:")
 }
 \arguments{
-\item{x}{(\code{character}) string representing the interaction
+\item{x}{(\code{character})\cr
+string representing the interaction
 usually in the form \code{x:y} or \code{x*y}.}
 
-\item{by}{(\code{character}) regex with which to split the interaction
+\item{by}{(\code{character})\cr
+regex with which to split the interaction
 term by.}
 }
 \description{

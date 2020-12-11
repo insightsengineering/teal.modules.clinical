@@ -17,7 +17,7 @@ teal_has_element(str, ...)
 
 \item{str}{(\code{name})\cr the name of the object which must \emph{exist}.}
 
-\item{...}{(\code{string})\cr the label to be displayed.}
+\item{...}{(\code{character})\cr the label to be displayed.}
 }
 \description{
 Verifies assertions for dynamic outputs.

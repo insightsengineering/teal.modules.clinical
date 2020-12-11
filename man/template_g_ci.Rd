@@ -15,19 +15,28 @@ template_g_ci(
 )
 }
 \arguments{
-\item{x_var}{(\code{string})\cr treatment variable corresponding to the x axis.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{y_var}{(\code{string})\cr response variable corresponding to the y axis.}
+\item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
 
-\item{grp_var}{(\code{string})\cr group variable corresponding to the colors
+\item{y_var}{(\code{character})\cr response variable corresponding to the y axis.}
+
+\item{grp_var}{(\code{character})\cr group variable corresponding to the colors
 point shape and line type.}
 
-\item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
+\item{stat}{(\code{character})\cr either \code{mean} or \code{median}.}
 
-\item{unit_var}{(\code{string})\cr variable name in \code{dataname} where the unit is
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
+
+\item{unit_var}{(\code{character})\cr variable name in \code{dataname} where the unit is
 read.}
 }
 \description{
 Writes the expressions to filter data and draw confidence interval
 estimation.
+}
+\seealso{
+\code{\link[=tm_g_ci]{tm_g_ci()}}
 }

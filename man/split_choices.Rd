@@ -8,7 +8,8 @@ their component variables}
 split_choices(x)
 }
 \arguments{
-\item{x}{(\code{choices_selected}) object with interaction terms}
+\item{x}{(\code{choices_selected})\cr
+object with interaction terms}
 }
 \description{
 Split \code{choices_selected} objects with interactions into

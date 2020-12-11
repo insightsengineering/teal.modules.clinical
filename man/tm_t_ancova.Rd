@@ -21,45 +21,51 @@ tm_t_ancova(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr
+menu item label of the module in the teal app}
 
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
+\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
-\item{arm_ref_comp}{(\code{choices_selected}, optional)\cr
-returned by \link[teal:choices_selected]{teal::choices_selected}. If specified it must be a named list
-with each element corresponding to an arm variable in \code{ADSL} and the
-element must be another list with the elements named \code{ref} and \code{comp}
-that the defined the default reference and comparison arms when the arm
-variable is changed.}
+\item{arm_ref_comp}{optional, (\code{list})\cr
+If specified it must be a named list with each element corresponding to
+an arm variable in \code{ADSL} and the element must be another list (possibly
+with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with the elements named \code{ref} and \code{comp} that the defined the default
+reference and comparison arms when the arm variable is changed.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
-\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the covariates
+variables.}
 
-\item{avisit}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{avisit}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 value of analysis visit \code{AVISIT} of interest.}
 
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
-object with all available choices and pre-selected option for the confidence level,
-each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+object with all available choices and preselected option for the confidence
+level, each within range of (0, 1).}
 
-\item{pre_output}{optional, \code{shiny.tag} with text placed before the
-output to put the output into context. For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr
+with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, \code{shiny.tag} with text placed after the
-output to put the output into context. For example the
-\code{\link[shiny]{helpText}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr
+with text placed after the output to put the output into context. For example
+the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
 ANCOVA Teal Module
@@ -78,11 +84,6 @@ following variables:
 to be meaningful.
 }
 }
-\section{Functions}{
-\itemize{
-\item \code{tm_t_ancova}: Teal module for analysis of variance
-}}
-
 \examples{
 
 # Preparation of the test case.

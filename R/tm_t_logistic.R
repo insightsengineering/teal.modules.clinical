@@ -1,22 +1,12 @@
-#' Teal Module for Logistic Regression
-#'
-#' @description This module produces a multi-variable logistic regression table that matches the
-#'   STREAM template `lgrt02`.
-#'
-#' @name logistic
-#'
-NULL
-
 #' Template For Logistic Regression
 #'
 #' Creates an expression for logistic regressions.
 #'
+#' @inheritParams template_arguments
+#' @param topleft (`character`)\cr the top-left annotation in the table.
+#' @param at optional, (`NULL` or `numeric`)\cr values for the interaction variable. Otherwise the median is used.
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams logistic
-#' @param topleft (`string`)\cr the top-left annotation in the table.
-#' @param at (`NULL` or `numeric`)\cr optional values for the interaction variable. Otherwise the median is used.
+#' @seealso [tm_t_logistic()]
 #'
 #' @importFrom broom tidy
 template_logistic <- function(dataname,
@@ -154,15 +144,17 @@ template_logistic <- function(dataname,
 }
 
 
-#' @describeIn logistic Teal module for logistic regression.
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @param cov_var [teal::choices_selected()] object with all available choices and preselected option
-#'   for variable names that can be used for covariates selection.
+#' Teal Module for Logistic Regression
+#'
+#' @description This module produces a multi-variable logistic regression table that matches the
+#'   STREAM template `lgrt02`.
+#'
+#' @inheritParams module_arguments
 #' @param interaction_var [teal::choices_selected()] object with all available choices and preselected option
 #'   for variable names that can be used for interaction variable selection.
-#' @param avalc_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
+#'
 #' @export
 #' @examples
 #'

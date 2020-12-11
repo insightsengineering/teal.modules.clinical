@@ -1,13 +1,9 @@
-#' Teal Module: Abnormality Summary Table
+#' Template: Abnormality Summary Table
 #'
-#' @name abnormality
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
+#' @inheritParams template_arguments
+#' @param exclude_base_abn (`logical`)\cr whether to exclude patients who had abnormal values at baseline.
 #'
-NULL
-
-#' @describeIn abnormality create the expressions corresponding to the analysis.
-#' @param exclude_base_abn (`flag`)\cr whether to exclude patients who had abnormal values at baseline.
+#' @seealso [tm_t_abnormality()]
 #'
 template_abnormality <- function(parentname,
                                  dataname,
@@ -144,14 +140,18 @@ template_abnormality <- function(parentname,
 }
 
 
-#' @describeIn abnormality teal module for abnormality table.
-#' @param grade (`choices_selected`)\cr object with all available
+#' Teal Module: Abnormality Summary Table
+#'
+#' @inheritParams module_arguments
+#' @inheritParams template_abnormality
+#' @param grade ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
 #'   choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal (`choices_selected`)\cr indicating abnormality grade.
-#' @param baseline_var (`choices_selected`)\cr variable for baseline abnormality grade.
-#' @param treatment_flag_var (`choices_selected`)\cr on treatment flag variable.
-#' @param treatment_flag (`choices_selected`)\cr value indicating on treatment
+#' @param abnormal ([teal::choices_selected()] or [teal::data_extract_spec])\cr indicating abnormality grade.
+#' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#'   variable for baseline abnormality grade.
+#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
+#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
 #'   records in `treatment_flag_var`.
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be

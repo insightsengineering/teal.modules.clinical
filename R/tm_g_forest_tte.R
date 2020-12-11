@@ -2,10 +2,10 @@
 #'
 #' Creates a valid expression for survival forest plot.
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
-#' @inheritParams shared_params
+#' @inheritParams template_arguments
+#' @inheritParams template_forest_rsp
+#'
+#' @seealso [tm_g_forest_tte()]
 #'
 #' @importFrom grid grid.newpage grid.draw
 template_forest_tte <- function(dataname = "ANL",
@@ -174,22 +174,15 @@ template_forest_tte <- function(dataname = "ANL",
   y
 }
 
-## Example----
 #' Forest Survival Plot teal Module
 #'
 #' This teal module produces a grid style Forest plot for time-to-event data
 #' with ADaM structure
 #'
-#' @inheritParams argument_convention
+#' @inheritParams module_arguments
 #' @inheritParams tm_g_forest_rsp
-#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for analysis variable
-#' @param cnsr_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for censor variable
 #'
 #' @export
-#'
-#' @template author_song24
 #'
 #' @examples
 #' library(random.cdisc.data)

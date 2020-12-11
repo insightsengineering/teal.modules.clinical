@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_ci.R
 \name{tm_g_ci}
 \alias{tm_g_ci}
-\title{Confidence Interval Plot teal module}
+\title{Teal Module: Confidence Interval Plot (\code{CIG01})}
 \usage{
 tm_g_ci(
   label,
@@ -18,33 +18,39 @@ tm_g_ci(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr menu item label of the module in the teal app}
+\item{label}{(\code{character})\cr
+menu item label of the module in the teal app}
 
-\item{x_var}{(\code{data_extract_spec})\cr the candidate treatment variable
-(x axis).}
+\item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
 
-\item{y_var}{(\code{data_extract_spec})\cr the candidate analyzed variable
-(y axis).}
+\item{y_var}{(\code{character})\cr response variable corresponding to the y axis.}
 
 \item{color}{(\code{data_extract_spec})\cr the group variable (color, line type
 and point shape).}
 
-\item{stat}{(\code{string})\cr either \code{mean} or \code{median}.}
+\item{stat}{(\code{character})\cr either \code{mean} or \code{median}.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
-object with all available choices and pre-selected option for the confidence level,
-each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+object with all available choices and preselected option for the confidence
+level, each within range of (0, 1).}
 
-\item{plot_height}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+\item{plot_height}{optional, (\code{numeric})\cr
+a vector of length three with \code{c(value, min, max)}. Specifies the height of
+the main plot and renders a slider on the plot to interactively adjust the plot
+height.}
 
-\item{plot_width}{\code{numeric} vector to indicate default value, minimum and maximum values.}
+\item{plot_width}{optional, (\code{numeric})\cr
+a vector of length three with \code{c(value, min, max)}. Specifies the width of
+the main plot and renders a slider on the plot to interactively adjust the plot
+width.}
 
-\item{pre_output}{optional, \code{shiny.tag} with text placed before the
-output to put the output into context. For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr
+with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, \code{shiny.tag} with text placed after the
-output to put the output into context. For example the
-\code{\link[shiny]{helpText}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr
+with text placed after the output to put the output into context. For example
+the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
 The module generates the R code and returns the corresponding output.
@@ -122,7 +128,4 @@ app <- init(
 shinyApp(app$ui, app$server)
 }
 
-}
-\seealso{
-\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
 }

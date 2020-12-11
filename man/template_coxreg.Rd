@@ -21,34 +21,32 @@ template_coxreg(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the covariates variables.}
+\item{cov_var}{(\code{character})\cr
+names of the covariates variables.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the censoring variable.}
+\item{cnsr_var}{(\code{character})\cr
+name of the censoring variable.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{paramcd}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
-\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
-
-\item{multivariate}{If \code{FALSE}, the univariate approach is used
-(equivalent to \code{COXT01} standard) instead of the multivariate model
-(equivalent to \code{COXT02} standard).}
+\item{combine_comp_arms}{(\code{logical})\cr
+triggers the combination of comparison arms.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_coxreg]{control_coxreg()}}.}

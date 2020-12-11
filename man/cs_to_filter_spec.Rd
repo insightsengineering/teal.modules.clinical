@@ -7,12 +7,12 @@
 cs_to_filter_spec(cs, multiple = FALSE)
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed}
+\item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
 
 \item{multiple}{(\code{logical}) whether allow multiple selection in the select input}
 }
 \value{
-(\code{filter_spec})
+(\code{\link[teal:filter_spec]{teal::filter_spec()}})
 }
 \description{
 Convert choices_selected to filter_spec

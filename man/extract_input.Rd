@@ -7,13 +7,16 @@
 extract_input(varname, dataname, filter = FALSE)
 }
 \arguments{
-\item{varname}{(\code{character}) name of the variable corresponding to the
+\item{varname}{(\code{character})\cr
+name of the variable corresponding to the
 data extract input.}
 
-\item{dataname}{(\code{character}) name of the dataset corresponding to the
+\item{dataname}{(\code{character})\cr
+name of the dataset corresponding to the
 data extract input.}
 
-\item{filter}{(\code{logical}) optional; string output will end with "-select" suffix if FALSE
+\item{filter}{optional, (\code{logical})\cr
+string output will end with "-select" suffix if FALSE
 and "-filter1" if TRUE}
 }
 \description{

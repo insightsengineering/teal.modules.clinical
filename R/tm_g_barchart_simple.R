@@ -4,9 +4,7 @@
 #' `x`, `fill`, `x_facet` and `y_facet`. If any of them is `NULL`,
 #' it is ignored.
 #'
-#' @md
-#' @inheritParams shared_params
-#' @inheritParams teal.devel::standard_layout
+#' @inheritParams module_arguments
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
 #' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
 #' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.

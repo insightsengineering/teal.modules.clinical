@@ -1,12 +1,8 @@
-#' Teal Module: Summary of Variables
+#' Template: Summary of Variables
 #'
-#' @name summary
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
+#' @inheritParams template_arguments
 #'
-NULL
-
-#' @describeIn summary create the expressions corresponding to the analysis.
+#' @seealso [tm_t_summary()]
 #'
 template_summary <- function(dataname,
                              parentname,
@@ -127,9 +123,9 @@ template_summary <- function(dataname,
   y
 }
 
-#' @describeIn summary teal module for summary of variables.
-#' @param summarize_vars (`choices_selected`)\cr names of the variables
-#'   that should be summarized.
+#' Teal Module: Summary of Variables
+#'
+#' @inheritParams module_arguments
 #'
 #' @export
 #' @examples

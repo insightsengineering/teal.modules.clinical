@@ -19,36 +19,44 @@ template_forest_tte(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
 
-\item{cnsr_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the censoring variable.}
+\item{cnsr_var}{(\code{character})\cr
+name of the censoring variable.}
 
-\item{subgroup_var}{\code{\link[teal]{choices_selected}} object with all available choices and
+\item{subgroup_var}{(\code{character})\cr
+object with all available choices and
 preselected option for variable names that can be used as the default subgroups.}
 
-\item{strata_var}{(\code{string} or \code{choices_selected} with teal module)\cr
+\item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
-object with all available choices and pre-selected option for the confidence level,
-each within range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
+
+\item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
+estimator plot symbol. Typically, the symbol size is proportional to the sample size used
+to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
 }
 \description{
 Creates a valid expression for survival forest plot.
+}
+\seealso{
+\code{\link[=tm_g_forest_tte]{tm_g_forest_tte()}}
 }

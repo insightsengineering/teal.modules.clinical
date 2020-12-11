@@ -20,36 +20,34 @@ template_logistic(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{avalc_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable (categorical).}
+\item{cov_var}{(\code{character})\cr
+names of the covariates variables.}
 
-\item{cov_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the covariates variables.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{interaction_var}{\code{\link[teal:choices_selected]{teal::choices_selected()}} object with all available choices and preselected option
-for variable names that can be used for interaction variable selection.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{topleft}{(\code{character})\cr the top-left annotation in the table.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
 
-\item{topleft}{(\code{string})\cr the top-left annotation in the table.}
+\item{combine_comp_arms}{(\code{logical})\cr
+triggers the combination of comparison arms.}
 
-\item{conf_level}{(\code{\link[=choices_selected]{choices_selected()}})\cr
-object with all available choices and pre-selected option for the confidence level,
-each within range of (0, 1).}
-
-\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
-
-\item{at}{(\code{NULL} or \code{numeric})\cr optional values for the interaction variable. Otherwise the median is used.}
+\item{at}{optional, (\code{NULL} or \code{numeric})\cr values for the interaction variable. Otherwise the median is used.}
 }
 \description{
 Creates an expression for logistic regressions.
+}
+\seealso{
+\code{\link[=tm_t_logistic]{tm_t_logistic()}}
 }

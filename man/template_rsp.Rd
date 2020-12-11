@@ -21,28 +21,31 @@ template_rsp(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{parentname}{(\code{string})\cr parent analysis data used in teal module,
-usually this refers to \code{"ADSL"}.}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr
+triggers the comparison between study arms.}
 
-\item{combine_comp_arms}{(\code{flag})\cr triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr
+triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
 
-\item{show_rsp_cat}{(\code{flag})\cr display the multinomial response estimations.}
+\item{show_rsp_cat}{(\code{logical})\cr display the multinomial response estimations.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
 translate \code{AVALC} into responder / non-responder.}
@@ -80,4 +83,7 @@ b$layout
 b$table
 }
 
+}
+\seealso{
+\code{\link[=tm_t_rsp]{tm_t_rsp()}}
 }

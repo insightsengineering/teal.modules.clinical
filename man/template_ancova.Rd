@@ -19,6 +19,40 @@ template_ancova(
   conf_level = 0.95
 )
 }
+\arguments{
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
+
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
+
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
+
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
+
+\item{combine_comp_arms}{(\code{logical})\cr
+triggers the combination of comparison arms.}
+
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
+
+\item{cov_var}{(\code{character})\cr
+names of the covariates variables.}
+
+\item{visit_var}{(\code{character})\cr
+variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
+}
 \description{
 Creates a valid expression for analysis of variance summary table.
+}
+\seealso{
+\code{\link[=tm_t_ancova]{tm_t_ancova()}}
 }

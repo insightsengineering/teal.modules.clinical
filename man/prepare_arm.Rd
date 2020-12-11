@@ -15,22 +15,24 @@ prepare_arm(
 )
 }
 \arguments{
-\item{dataname}{(\code{string})\cr analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
 
-\item{arm_var}{(\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{string})\cr the level of reference arm in case of
-arm comparison.}
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of
-arm comparison.}
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{flag})\cr triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr
+triggers the comparison between study arms.}
 
-\item{ref_arm_val}{(\code{string})\cr replacement name for the reference level.}
+\item{ref_arm_val}{(\code{character})\cr replacement name for the reference level.}
 
-\item{drop}{(\code{flag})\cr drop the unused variable levels.}
+\item{drop}{(\code{logical})\cr drop the unused variable levels.}
 }
 \description{
 The function generate the standard expression for pre-processing of dataset

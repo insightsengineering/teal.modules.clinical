@@ -2,11 +2,13 @@
 #'
 #' Creates a valid expression for responder analysis.
 #'
-#' @inheritParams argument_convention
+#' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
-#' @param show_rsp_cat (`flag`)\cr display the multinomial response estimations.
+#' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
+#'
+#' @seealso [tm_t_rsp()]
 #'
 #' @examples
 #'
@@ -314,10 +316,7 @@ template_rsp <- function(dataname,
 #' This module produces a response summary table that matches the
 #' STREAM template `rspt01`.
 #'
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
-#' @param aval_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec}) object with all available choices
-#'   and preselected option for analysis variable
+#' @inheritParams module_arguments
 #'
 #' @details Additional standard UI inputs include `responders`,
 #'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)

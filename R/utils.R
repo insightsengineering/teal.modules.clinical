@@ -1,20 +1,6 @@
-#' Shared Parameters
-#'
-#' @description Contains arguments that are shared between multiple functions
-#'   in the package to avoid repetition using \code{inheritParams}.
-#'
-#' @param plot_height optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
-#'   the height of the main plot.
-#' @param plot_width optional, (\code{numeric}) a vector of length three with \code{c(value, min, max)}. Specifies
-#'   the width of the main plot and renders a slider on the plot to interactively adjust the plot width.
-#' @param label (\code{character}) menu item label of the module in the teal app
-#'
-#' @name shared_params
-NULL
-
 #' Concatenate expressions via a binary operator
 #'
-#' e.g. combine with \code{+} for ggplot without introducing parentheses due to associativity
+#' e.g. combine with `+` for ggplot without introducing parentheses due to associativity
 #'
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
@@ -102,7 +88,7 @@ h_concat_expr <- function(expr) {
 #'
 #' @param exprs (`list` of `call`)\cr expressions to concatenate in a
 #'   pipeline (`%>%`).
-#' @param pipe_str (`string`)\cr the character which separates the expressions.
+#' @param pipe_str (`character`)\cr the character which separates the expressions.
 #'
 #' @examples
 #'
@@ -261,10 +247,10 @@ bracket_expr <- function(exprs) {
 
 #' Convert choices_selected to select_spec
 #'
-#' @param cs (\code{choices_selected}) object to be transformed
-#' @param multiple (\code{logical}) whether allow multiple selection in the select input
+#' @param cs ([teal::choices_selected()]) object to be transformed
+#' @param multiple (`logical`) whether allow multiple selection in the select input
 #'
-#' @return (\code{selecte_spec})
+#' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
   stopifnot(is_logical_single(multiple))
@@ -281,7 +267,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #'
 #' @inheritParams cs_to_select_spec
 #'
-#' @return (\code{filter_spec})
+#' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
   stopifnot(is_logical_single(multiple))
@@ -304,9 +290,9 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #' Convert choices_selected to data_extract_spec with only select_spec
 #'
 #' @inheritParams cs_to_select_spec
-#' @param dataname (\code{character}) name of the data
+#' @param dataname (`character`) name of the data
 #'
-#' @return (\code{data_extract_spec})
+#' @return ([teal::data_extract_spec()])
 cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
@@ -342,7 +328,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #'
 #' @inheritParams cs_to_des_select
 #'
-#' @return (\code{data_extract_spec})
+#' @return ([teal::data_extract_spec()])
 cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
@@ -374,11 +360,11 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
   }
 }
 
-#' Whether object is of class \code{choices_selected} or \code{data_extract_spec}
+#' Whether object is of class [teal::choices_selected()] or [teal::data_extract_spec()]
 #'
 #' @param x object to be checked
 #'
-#' @return (\code{logical})
+#' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
   is.choices_selected(x) || is(x, "data_extract_spec")
 }
@@ -389,10 +375,10 @@ is.cs_or_des <- function(x) { # nolint
 #' - the expected or not arm comparison
 #' - the expected or not arm combination
 #'
-#' @param compare (`flag`)\cr if `TRUE` the reference level is included.
-#' @param combine (`flag`)\cr if `TRUE` the group combination is included.
-#' @param ref (`string`)\cr the reference level (not used for `combine = TRUE`).
-#' @param arm_var (`string`)\cr the arm or grouping variable name.
+#' @param compare (`logical`)\cr if `TRUE` the reference level is included.
+#' @param combine (`logical`)\cr if `TRUE` the group combination is included.
+#' @param ref (`character`)\cr the reference level (not used for `combine = TRUE`).
+#' @param arm_var (`character`)\cr the arm or grouping variable name.
 #'
 split_col_expr <- function(compare, combine, ref, arm_var) {
 
@@ -428,9 +414,9 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 
 #' Split `choices_selected` objects with interactions into
 #' their component variables
-#' @md
 #'
-#' @param x (`choices_selected`) object with interaction terms
+#' @param x (`choices_selected`)\cr
+#'   object with interaction terms
 #'
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
@@ -448,11 +434,14 @@ split_choices <- function(x) {
 
 #' Get input id for a data extract input
 #'
-#' @param varname (`character`) name of the variable corresponding to the
+#' @param varname (`character`)\cr
+#'   name of the variable corresponding to the
 #'   data extract input.
-#' @param dataname (`character`) name of the dataset corresponding to the
+#' @param dataname (`character`)\cr
+#'   name of the dataset corresponding to the
 #'   data extract input.
-#' @param filter (`logical`) optional; string output will end with "-select" suffix if FALSE
+#' @param filter optional, (`logical`)\cr
+#'   string output will end with "-select" suffix if FALSE
 #'   and "-filter1" if TRUE
 extract_input <- function(varname, dataname, filter = FALSE) {
   if (filter) {
@@ -464,9 +453,11 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 
 #' Split interaction terms into their component variables
 #'
-#' @param x (`character`) string representing the interaction
+#' @param x (`character`)\cr
+#'  string representing the interaction
 #'  usually in the form `x:y` or `x*y`.
-#' @param by (`character`) regex with which to split the interaction
+#' @param by (`character`)\cr
+#'  regex with which to split the interaction
 #'  term by.
 #'
 split_interactions <- function(x, by = "\\*|:") {
@@ -502,9 +493,9 @@ split_interactions <- function(x, by = "\\*|:") {
 #' 3. The reference is explicitly reassigned and the non-represented levels of
 #' arm are dropped.
 #'
-#' @inheritParams argument_convention
-#' @param ref_arm_val (`string`)\cr replacement name for the reference level.
-#' @param drop (`flag`)\cr drop the unused variable levels.
+#' @inheritParams template_arguments
+#' @param ref_arm_val (`character`)\cr replacement name for the reference level.
+#' @param drop (`logical`)\cr drop the unused variable levels.
 #' @examples
 #'
 #' \dontrun{

@@ -1,23 +1,13 @@
-#' Teal Module: Summarize Variables by Row Groups Module
+#' Template: Summarize Variables by Row Groups Module
 #'
-#' @name summary_by
+#' @inheritParams template_arguments
+#' @param parallel_vars (`logical`) used to display `summarize_vars` as parallel columns
+#'  (`FALSE` on default). Can be used only if all chosen analysis variables are numeric.
+#' @param row_groups (`logical`) used to display `summarize_vars` as row groups
+#'  (`FALSE` on default).
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @param parallel_vars (\code{logical}) used to display \code{summarize_vars} as parallel columns
-#'  (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.
-#' @param row_groups (\code{logical}) used to display \code{summarize_vars} as row groups
-#'  (\code{FALSE} on default).
-#' @md
+#' @seealso [tm_t_summary_by()]
 #'
-#' @return a \code{\link[teal]{module}} object
-#'
-NULL
-
-#' @describeIn summary_by create the expressions corresponding to the analysis
-#'   that should be summarized.
-#'
-
 template_summary_by <- function(parentname,
                                 dataname,
                                 arm_var,
@@ -291,10 +281,10 @@ template_summary_by <- function(parentname,
   y
 }
 
-#' @describeIn summary_by teal module function to generate the required summary by row
-#'   groups module.
-#' @param summarize_vars (`choices_selected`)\cr names of the variables
-#'   that should be summarized.
+#' Teal Module: Summarize Variables by Row Groups Module
+#'
+#' @inheritParams module_arguments
+#' @inheritParams template_summary_by
 #'
 #' @export
 #' @examples

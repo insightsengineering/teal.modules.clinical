@@ -1,21 +1,16 @@
-#' Teal Module: Events by Term
+#' Template: Events by Term
 #'
-#' @name events_by_term
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#'
-NULL
-
-#' @describeIn events_by_term create the expression corresponding to the analysis.
-#'
-#' @param event_type (`string`)\cr type of event that is summarized (e.g. adverse event, treatment).
+#' @inheritParams template_arguments
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
-#' @param sort_criteria (`string`)\cr how to sort the final table. Default option `freq_desc` sorts
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
 #'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
 #'   alphabetically.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
+#'
+#' @seealso [tm_t_events()]
 #'
 template_events <- function(dataname,
                             parentname,
@@ -399,7 +394,10 @@ template_events <- function(dataname,
 
 }
 
-#' @describeIn events_by_term teal module for events by term.
+#' Teal Module: Events by Term
+#'
+#' @inheritParams module_arguments
+#' @inheritParams template_events
 #'
 #' @export
 #'

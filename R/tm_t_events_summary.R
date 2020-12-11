@@ -1,34 +1,29 @@
-#' Teal Module: Adverse Events Summary
+#' Template: Adverse Events Summary
 #'
-#' @name adverse_events_summary
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#'
-NULL
-
-#' @describeIn adverse_events_summary creates the expression corresponding
-#'   to the analysis.
-#' @param dthfl_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr
+#' @inheritParams template_arguments
+#' @param dthfl_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
 #'  the table row for "Total number of deaths".
-#' @param dcsreas_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr variable
+#' @param dcsreas_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
 #'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
 #'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr vector
+#' @param flag_var_anl ([teal::choices_selected()] or [teal::data_extract_spec()])\cr vector
 #' with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious
 #' events, Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr vector
+#' @param flag_var_aesi ([teal::choices_selected()] or [teal::data_extract_spec()])\cr vector
 #' with names of flag variables from `dataset` used to count adverse event special interest groups.
 #'   All flag variables must be of type `logical`. Variable labels are used as table
 #'   row names if they exist.
-#' @param aeseq_var (\code{\link[teal]{choices_selected}} or \code{data_extract_spec})\cr variable
+#' @param aeseq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
 #' for adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param count_subj (`flag`)\cr whether to show count of unique subjects
+#' @param count_subj (`logical`)\cr whether to show count of unique subjects
 #'   based on `USUBJID`. Only applies if event flag variables are provided.
-#' @param count_pt (`flag`)\cr whether to show count of unique preferred terms based on
+#' @param count_pt (`logical`)\cr whether to show count of unique preferred terms based on
 #'   `llt`. Only applies if event flag variables are provided.
-#' @param count_events (`flag`)\cr whether to show count of events based on `aeseq_var`.
+#' @param count_events (`logical`)\cr whether to show count of events based on `aeseq_var`.
 #'   Only applies if event flag variables are provided.
+#'
+#' @seealso [tm_t_events_summary()]
 #'
 template_events_summary <- function(anl_name,
                                     parentname,
@@ -486,7 +481,10 @@ template_events_summary <- function(anl_name,
   y
 }
 
-#' @describeIn adverse_events_summary teal module for adverse events summary.
+#' Teal Module: Adverse Events Summary
+#'
+#' @inheritParams module_arguments
+#' @inheritParams template_events_summary
 #'
 #' @export
 #' @examples

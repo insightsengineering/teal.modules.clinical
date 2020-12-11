@@ -1,22 +1,19 @@
-#' Forest Response Plot teal module
-#'
-#' This teal module produces a grid style Forest plot for response data with ADaM structure.
-#'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
-#' @name tm_g_forest_rsp
-#'
-NULL
-
 #' Template for Response Forest Plot
 #'
 #' Creates a valid expression for response forest plot.
 #'
+#' @inheritParams template_arguments
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
+#' @param subgroup_var (`character`)\cr
+#'   object with all available choices and
+#'   preselected option for variable names that can be used as the default subgroups.
+#' @param strata_var (`character`)\cr
+#'   names of the variables for stratified analysis.
+#'
+#' @seealso [tm_g_forest_rsp()]
 #'
 #' @importFrom grid grid.newpage grid.draw
 #'
@@ -187,9 +184,15 @@ template_forest_rsp <- function(dataname = "ANL",
   y
 }
 
-#' @describeIn tm_g_forest_rsp Teal module for response forest plot.
-#' @param fixed_symbol_size (`flag`)\cr When (`TRUE`), the same symbol size is used for plotting each
+#' Forest Response Plot teal module
+#'
+#' This teal module produces a grid style Forest plot for response data with ADaM structure.
+#'
+#' @inheritParams module_arguments
+#' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param subgroup_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and
 #'
 #' @export
 #'

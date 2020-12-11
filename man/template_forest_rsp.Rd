@@ -19,7 +19,35 @@ template_forest_rsp(
 )
 }
 \arguments{
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
+
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
+
+\item{ref_arm}{(\code{character})\cr
+the level of reference arm in case of arm comparison.}
+
+\item{comp_arm}{(\code{character})\cr
+the level of comparison arm in case of arm comparison.}
+
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
+
 \item{responders}{(\code{character})\cr values of \code{aval_var} that are considered to be responders.}
+
+\item{subgroup_var}{(\code{character})\cr
+object with all available choices and
+preselected option for variable names that can be used as the default subgroups.}
+
+\item{strata_var}{(\code{character})\cr
+names of the variables for stratified analysis.}
+
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
 
 \item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
@@ -27,4 +55,7 @@ to calculate the estimator. If \code{NULL}, the same symbol size is used for all
 }
 \description{
 Creates a valid expression for response forest plot.
+}
+\seealso{
+\code{\link[=tm_g_forest_rsp]{tm_g_forest_rsp()}}
 }

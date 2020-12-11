@@ -7,12 +7,12 @@
 cs_to_select_spec(cs, multiple = FALSE)
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed}
+\item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
 
 \item{multiple}{(\code{logical}) whether allow multiple selection in the select input}
 }
 \value{
-(\code{selecte_spec})
+(\code{\link[teal:select_spec]{teal::select_spec()}})
 }
 \description{
 Convert choices_selected to select_spec

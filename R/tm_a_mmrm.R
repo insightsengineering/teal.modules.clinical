@@ -1,29 +1,16 @@
-#' Teal module for Mixed Model Repeated Measurements (MMRM) analysis.
+#' Template for Mixed Model Repeated Measurements (MMRM) analysis
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#'
-#' @note
-#' The ordering of the input data sets can lead to slightly different numerical results or
-#' different convergence behavior. This is a known observation with the used package
-#' \code{lme4}. However, once convergence is achieved, the results are reliable up to
-#' numerical precision.
-#'
-#' @name MMRM
-#'
-NULL
-
-#' @describeIn MMRM Creates a fit object for MMRM analysis.
-#' @inheritParams argument_convention
-#' @param comp_arm comparison arms
+#' @inheritParams template_arguments
 #' @param cor_struct a string specifying the correlation structure, defaults to
-#'   \code{"unstructured"}. See the details.
-#' @param weights_emmeans argument from \code{\link[emmeans]{emmeans}}, "proportional" by default.
+#'   `"unstructured"`. See the details.
+#' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
 #' @param optimizer a string specifying the optimization algorithm which should be used. By default, "automatic"
 #'   will (if necessary) try all possible optimization algorithms and choose the best result. If another algorithm
 #'   is chosen and does not give a valid result, an error will occur.
 #' @param parallel flag that controls whether "automatic" optimizer search can use available free cores on the
 #'   machine (not default).
+#'
+#' @seealso [tm_a_mmrm()]
 #'
 template_fit_mmrm <- function(parentname,
                               dataname,
@@ -148,14 +135,15 @@ template_fit_mmrm <- function(parentname,
 
 }
 
-#' @describeIn MMRM Create MMRM tables from a fitted MMRM object
+#' @describeIn template_fit_mmrm
 #'
-#' @inheritParams argument_convention
+#' @inheritParams template_arguments
 #' @param fit_name name of fitted MMRM object
 #' @param colcounts_name name of column counts for MMRM LS means table
 #' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
 #'   (`treatment - control`) be shown for the relative change from baseline
-#' @param table_type (`character`) type of table to output.
+#' @param table_type (`character`)\cr
+#'   type of table to output.
 #'
 #' @importFrom broom tidy
 template_mmrm_tables <- function(dataname,
@@ -283,10 +271,11 @@ template_mmrm_tables <- function(dataname,
 }
 
 
-#' @describeIn MMRM Create MMRM plots from a fitted MMRM object
-#' @inheritParams template_mmrm_tables
-#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern::g_mmrm_lsmeans]
-#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern::g_mmrm_diagnostic]
+#' @describeIn template_fit_mmrm
+#'
+#' @inheritParams template_arguments
+#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern::g_mmrm_lsmeans()]
+#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern::g_mmrm_diagnostic()]
 #'
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
@@ -341,9 +330,21 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' @describeIn MMRM teal module for MMRM.
+#' Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
+#' @inheritParams module_arguments
+#'
+#' @importFrom shinyjs show
+#' @importFrom shinyjs hidden
+#' @importFrom stats complete.cases
+#' @importFrom broom tidy
 #' @export
+#'
+#' @note
+#' The ordering of the input data sets can lead to slightly different numerical results or
+#' different convergence behavior. This is a known observation with the used package
+#' `lme4`. However, once convergence is achieved, the results are reliable up to
+#' numerical precision.
 #'
 #' @examples
 #'

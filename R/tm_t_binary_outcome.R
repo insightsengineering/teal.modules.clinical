@@ -1,10 +1,7 @@
 #' @title Binary Outcome Table Teal Module
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
+#' @inheritParams module_arguments
 #' @inheritParams tm_t_rsp
-#' @return a [teal::module()] object
 #'
 #' @export
 #'

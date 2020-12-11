@@ -1,15 +1,10 @@
-#' Teal module: Event rates adjusted for patient-years
+#' Template: Event rates adjusted for patient-years
 #'
-#' @name events_patyear
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#'
-NULL
-
-#' @describeIn events_patyear create the expression corresponding to the analysis.
-#'
+#' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param event_indicator (`numeric`)\cr code for event as opposed to censoring.
+#'
+#' @seealso [tm_t_events_patyear()]
 #'
 template_events_patyear <- function(dataname,
                                     parentname,
@@ -103,7 +98,11 @@ template_events_patyear <- function(dataname,
 
 }
 
-#' @describeIn events_patyear Teal module for incidence rate.
+#' Teal module: Event rates adjusted for patient-years
+#'
+#' @inheritParams module_arguments
+#' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and preselected option for the analysis unit variable.
 #'
 #' @export
 #' @examples

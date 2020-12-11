@@ -1,22 +1,13 @@
-#' Teal Module: Kaplan-Meier
+#' Template: Kaplan-Meier
 #'
-#' This teal module produces a grid style Kaplan-Meier plot for data with
-#' ADaM structure.
-#'
-#' @name kaplan_meier
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
+#' @inheritParams template_arguments
 #' @inheritParams tern::g_km
-#' @inheritParams tm_t_tte
 #' @inheritParams tern::control_coxreg
-#' @param facet_var ([choices_selected()])\cr
+#' @param facet_var (`character`)\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
 #'
-NULL
-
-#' @describeIn kaplan_meier create the expression corresponding to the analysis.
-#' @order 2
+#' @seealso [tm_g_km()]
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km <- function(dataname = "ANL",
@@ -207,9 +198,18 @@ template_g_km <- function(dataname = "ANL",
 }
 
 
-#' @describeIn kaplan_meier teal module for Kaplan-Meier curves.
+#' Teal Module: Kaplan-Meier
+#'
+#' This teal module produces a grid style Kaplan-Meier plot for data with
+#' ADaM structure.
+#'
+#' @inheritParams module_arguments
+#' @param facet_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and preselected option
+#'   for variable names that can be used for facet plotting.
+#'
 #' @export
-#' @order 1
+#'
 #' @examples
 #'
 #' library(random.cdisc.data)

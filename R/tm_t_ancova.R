@@ -1,15 +1,9 @@
-#' ANCOVA Teal Module
-#'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
-#' @name tm_t_ancova
-#'
-NULL
-
 #' Template for ANCOVA summary
 #'
 #' Creates a valid expression for analysis of variance summary table.
+#' @inheritParams template_arguments
+#'
+#' @seealso [tm_t_ancova()]
 #'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL_FILTERED",
@@ -216,11 +210,9 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' @describeIn tm_t_ancova Teal module for analysis of variance
+#' ANCOVA Teal Module
 #'
-#' @inheritParams teal.devel::standard_layout
-#' @inheritParams argument_convention
-#' @inheritParams tm_t_tte
+#' @inheritParams module_arguments
 #'
 #' @details This module produces an analysis of variance summary table that is
 #' similar to STREAM template `aovt01` when multiple endpoints are selected.
