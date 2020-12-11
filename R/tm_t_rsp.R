@@ -95,8 +95,7 @@ template_rsp <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(rsp_lab = d_onco_rsp_label(aval_var)) %>%
-        mutate(is_rsp = aval_var %in% responder_val),
+      expr = mutate(is_rsp = aval_var %in% responder_val),
       env = list(
         responder_val = responder_val,
         aval_var = as.name(aval_var)
@@ -287,13 +286,14 @@ template_rsp <- function(dataname,
       layout_list,
       substitute(
         estimate_multinomial_response(
-          var = "rsp_lab",
+          var = aval_var,
           conf_level = conf_level,
           method = method
         ),
         list(
           conf_level = control$global$conf_level,
-          method = control$global$method
+          method = control$global$method,
+          aval_var = aval_var
         )
       )
     )
@@ -348,7 +348,10 @@ template_rsp <- function(dataname,
 #' ADSL <- radsl(cached = TRUE) %>%
 #'   mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
 #' ADRS <- radrs(cached = TRUE) %>%
-#'   mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
+#'   mutate(
+#'     Dum_ARM = factor(rep("Single ARM", nrow(.))),
+#'     AVALC = d_onco_rsp_label(AVALC)
+#'   )
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -484,8 +487,8 @@ ui_t_rsp <- function(id, ...) {
       selectInput(
         ns("responders"),
         "Responders",
-        choices = c("CR", "PR"),
-        selected = c("CR", "PR"),
+        choices = NULL,
+        selected = NULL,
         multiple = TRUE
       ),
       data_extract_input(
@@ -598,10 +601,11 @@ srv_t_rsp <- function(input,
     } else {
       unique(anl_merged()$data()[[aval_var]])
     }
+    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(responder_choices, isolate(input$responders))
+      selected = intersect(responder_choices, common_rsp)
     )
   })
 
@@ -646,6 +650,9 @@ srv_t_rsp <- function(input,
     chunks_reset()
 
     anl_m <- anl_merged()
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    req(input$responders %in% anl_m$data()[[input_aval_var]])
+
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
@@ -657,7 +664,7 @@ srv_t_rsp <- function(input,
     validate_has_data(anl, 10)
     validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID"))
 
-    strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
 
     my_calls <- template_rsp(
       dataname = "ANL",
@@ -667,7 +674,7 @@ srv_t_rsp <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
+      aval_var = input_aval_var,
       show_rsp_cat = TRUE,
       responder_val = input$responders,
       control = list(
@@ -683,7 +690,7 @@ srv_t_rsp <- function(input,
         strat = list(
           method_ci = "wald",
           method_test = "cmh",
-          strat = if (length(strata_var) != 0) strata_var else NULL
+          strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
       )
     )

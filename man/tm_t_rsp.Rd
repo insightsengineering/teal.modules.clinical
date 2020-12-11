@@ -92,7 +92,10 @@ library(dplyr)
 ADSL <- radsl(cached = TRUE) \%>\%
   mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
 ADRS <- radrs(cached = TRUE) \%>\%
-  mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
+  mutate(
+    Dum_ARM = factor(rep("Single ARM", nrow(.))),
+    AVALC = d_onco_rsp_label(AVALC)
+  )
 
 arm_ref_comp = list(
   ACTARMCD = list(

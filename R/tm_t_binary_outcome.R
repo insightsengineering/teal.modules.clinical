@@ -134,8 +134,8 @@ ui_t_binary_outcome <- function(id, ...) {
       selectInput(
         ns("responders"),
         "Responders",
-        choices = c("CR", "PR"),
-        selected = c("CR", "PR"),
+        choices = NULL,
+        selected = NULL,
         multiple = TRUE
       ),
       data_extract_input(
@@ -337,10 +337,11 @@ srv_t_binary_outcome <- function(input,
     } else {
       unique(anl_merged()$data()[[aval_var]])
     }
+    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(responder_choices, isolate(input$responders))
+      selected = intersect(responder_choices, common_rsp)
     )
   })
 
@@ -390,6 +391,9 @@ srv_t_binary_outcome <- function(input,
     chunks_reset()
 
     anl_m <- anl_merged()
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    req(input$responders %in% anl_m$data()[[input_aval_var]])
+
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
@@ -399,7 +403,7 @@ srv_t_binary_outcome <- function(input,
 
     anl <- chunks_get_var("ANL") # nolint
     validate_has_data(anl, 10)
-    strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
 
     my_calls <- template_rsp(
       dataname = "ANL",
@@ -409,7 +413,7 @@ srv_t_binary_outcome <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
+      aval_var = input_aval_var,
       responder_val = input$responders,
       show_rsp_cat = input$show_rsp_cat,
       control = list(
@@ -424,7 +428,7 @@ srv_t_binary_outcome <- function(input,
         ),
         strat = list(
           method_test = input$s_diff_test,
-          strat = if (length(strata_var) != 0) strata_var else NULL
+          strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
       )
     )

@@ -17,7 +17,6 @@ test_that("template_rsp generates standard expressions", {
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -54,7 +53,7 @@ test_that("template_rsp generates standard expressions", {
           table_names = "u_est_or"
         ) %>%
         estimate_multinomial_response(
-          var = "rsp_lab",
+          var = "AVALC",
           conf_level = 0.95,
           method = "waldcc"
         )
@@ -87,7 +86,6 @@ test_that("template_rsp generates right expressions with non-default", {
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>% # nolint
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
@@ -149,7 +147,6 @@ test_that("template_rsp generates expression without arm comparison", {
     data = quote({
       anl <- ADRS %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>%  # nolint
         mutate(ARM = droplevels(ARM))
@@ -200,7 +197,6 @@ test_that("template_rsp generates expression with non-default controls and strat
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>% # nolint
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
@@ -255,7 +251,7 @@ test_that("template_rsp generates expression with non-default controls and strat
           table_names = "s_est_or"
         ) %>%
         estimate_multinomial_response(
-          var = "rsp_lab", conf_level = 0.8, method = "jeffreys"
+          var = "AVALC", conf_level = 0.8, method = "jeffreys"
         )
     ),
     table = quote({
@@ -286,7 +282,6 @@ test_that("template_rsp can combine comparison arms", {
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       ADSL <- ADSL %>% # nolint
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -328,7 +323,7 @@ test_that("template_rsp can combine comparison arms", {
           table_names = "u_est_or"
         ) %>%
         estimate_multinomial_response(
-          var = "rsp_lab", conf_level = 0.95, method = "waldcc"
+          var = "AVALC", conf_level = 0.95, method = "waldcc"
         )
     ),
     table = quote({
@@ -375,7 +370,6 @@ test_that("template_rsp can combine refs", {
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(rsp_lab = d_onco_rsp_label(AVALC)) %>%
         mutate(is_rsp = AVALC %in% c("CR", "PR"))
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -413,7 +407,7 @@ test_that("template_rsp can combine refs", {
           table_names = "u_est_or"
         ) %>%
         estimate_multinomial_response(
-          var = "rsp_lab", conf_level = 0.95, method = "waldcc"
+          var = "AVALC", conf_level = 0.95, method = "waldcc"
         )
     ),
     table = quote({
