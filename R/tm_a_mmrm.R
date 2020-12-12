@@ -489,16 +489,7 @@ ui_mmrm <- function(id, ...) {
 
   standard_layout(
     output = white_small_well(
-      p(
-        id = ns("initial_message"),
-        paste(
-          "Please first specify 'Model Settings' and press 'Fit Model'.",
-          "Afterwards choose 'Output Type' and optional 'Output Settings'.",
-          "If changes to the 'Model Settings' or dataset (by filtering) are made,",
-          "then the 'Fit Model' button must be pressed again to update the MMRM model.",
-          "Note that the 'Show R Code' button can only be clicked if the model fit is up to date."
-        )
-      ),
+      textOutput(ns("null_input_msg")),
       h3(textOutput(ns("mmrm_title"))),
       uiOutput(ns("mmrm_table")),
       plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
@@ -646,55 +637,62 @@ ui_mmrm <- function(id, ...) {
         ),
         selected = "t_mmrm_lsmeans"
       ),
-      panel_group(
-        panel_item(
-          "Output Settings",
-          # Additional option for LS means table.
-          selectInput(
-            ns("t_mmrm_lsmeans_show_relative"),
-            "Show Relative Change",
-            choices = c("reduction", "increase", "none"),
-            selected = "reduction",
-            multiple = FALSE
-          ),
-          checkboxGroupInput(
-            ns("g_mmrm_lsmeans_select"),
-            "LS means plots",
-            choices = c(
-              "Estimates" = "estimates",
-              "Contrasts" = "contrasts"
+      conditionalPanel(
+        condition = paste0(
+          "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
+          "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
+          "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
+        ),
+        panel_group(
+          panel_item(
+            "Output Settings",
+            # Additional option for LS means table.
+            selectInput(
+              ns("t_mmrm_lsmeans_show_relative"),
+              "Show Relative Change",
+              choices = c("reduction", "increase", "none"),
+              selected = "reduction",
+              multiple = FALSE
             ),
-            selected = c("estimates", "contrasts"),
-            inline = TRUE
-          ),
-          sliderInput(
-            ns("g_mmrm_lsmeans_width"),
-            "CI bar width",
-            min = 0.1,
-            max = 1,
-            value = 0.6
-          ),
-          checkboxInput(
-            ns("g_mmrm_lsmeans_contrasts_show_pval"),
-            "Show contrasts p-values",
-            value = FALSE
-          ),
-          # Additional options for diagnostic plots.
-          radioButtons(
-            ns("g_mmrm_diagnostic_type"),
-            "Diagnostic plot type",
-            choices = c(
-              "Fitted vs. Residuals" = "fit-residual",
-              "Normal Q-Q Plot of Residuals" = "q-q-residual"
+            checkboxGroupInput(
+              ns("g_mmrm_lsmeans_select"),
+              "LS means plots",
+              choices = c(
+                "Estimates" = "estimates",
+                "Contrasts" = "contrasts"
+              ),
+              selected = c("estimates", "contrasts"),
+              inline = TRUE
             ),
-            selected = NULL
-          ),
-          sliderInput(
-            ns("g_mmrm_diagnostic_z_threshold"),
-            "Label observations above this threshold",
-            min = 0.1,
-            max = 10,
-            value = 3
+            sliderInput(
+              ns("g_mmrm_lsmeans_width"),
+              "CI bar width",
+              min = 0.1,
+              max = 1,
+              value = 0.6
+            ),
+            checkboxInput(
+              ns("g_mmrm_lsmeans_contrasts_show_pval"),
+              "Show contrasts p-values",
+              value = FALSE
+            ),
+            # Additional options for diagnostic plots.
+            radioButtons(
+              ns("g_mmrm_diagnostic_type"),
+              "Diagnostic plot type",
+              choices = c(
+                "Fitted vs. Residuals" = "fit-residual",
+                "Normal Q-Q Plot of Residuals" = "q-q-residual"
+              ),
+              selected = NULL
+            ),
+            sliderInput(
+              ns("g_mmrm_diagnostic_z_threshold"),
+              "Label observations above this threshold",
+              min = 0.1,
+              max = 10,
+              value = 3
+            )
           )
         )
       )
@@ -870,21 +868,63 @@ srv_mmrm <- function(input,
   # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit and enable
   # show R code buttons.
   shinyjs::onclick("button_start", {
-    shinyjs::hide("initial_message")
-    shinyjs::show("mmrm_title")
+    shinyjs::hide("null_input_msg")
     shinyjs::disable("button_start")
-    shinyjs::enable("rcode-show_rcode")
-    shinyjs::enable("rcode-show_eval_details-evaluation_details")
+    success <- try(mmrm_fit(), silent = TRUE)
+    if (!inherits(success, "try-error")) {
+      shinyjs::show("mmrm_title")
+      shinyjs::enable("rcode-show_rcode")
+      shinyjs::enable("rcode-show_eval_details-evaluation_details")
+    } else {
+      shinyjs::hide("mmrm_title")
+      # "rcode-show_rcode" and "rcode-show_eval_details-evaluation_details" will have already been hidden
+    }
   })
 
   # all the inputs and data that can be out of sync with the fitted model
   mmrm_inputs_reactive <- reactive({
+    shinyjs::disable("button_start")
+    shinyjs::disable("rcode-show_rcode")
+    shinyjs::disable("rcode-show_eval_details-evaluation_details")
+
     encoding_inputs <- lapply(sync_inputs, function(x) input[[x]])
     names(encoding_inputs) <- sync_inputs
-    c(list(
-      adsl_filtered = datasets$get_data("ADSL", filtered = TRUE),
-      anl_filtered = datasets$get_data(dataname, filtered = TRUE)),
-      encoding_inputs)
+
+    adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+    validate(
+      need(encoding_inputs[[extract_input("aval_var", dataname)]], "`Analysis Variable` field is not selected"),
+      need(
+        encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
+        "`Select Endpoint` field is not selected"),
+      need(encoding_inputs[[extract_input("arm_var", parentname)]], "`Arm Variable` field is not selected"),
+      need(encoding_inputs[["ref_arm"]], "`Reference Group` field is empty"),
+      need(encoding_inputs[["comp_arm"]], "`Comparison Group` field is empty"),
+      need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
+      need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
+      need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
+      need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
+    )
+    validate_no_intersection(
+      encoding_inputs[["comp_arm"]],
+      encoding_inputs[["ref_arm"]],
+      "`Reference Group` and `Comparison Group` cannot have common values"
+    )
+    validate_checks()
+
+    c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
+  })
+
+  output$null_input_msg <- renderText({
+    mmrm_inputs_reactive()
+    paste(
+      "Please first specify 'Model Settings' and press 'Fit Model'.",
+      "Afterwards choose 'Output Type' and optional 'Output Settings'.",
+      "If changes to the 'Model Settings' or dataset (by filtering) are made,",
+      "then the 'Fit Model' button must be pressed again to update the MMRM model.",
+      "Note that the 'Show R Code' button can only be clicked if the model fit is up to date."
+    )
   })
 
   # compares the mmrm_inputs_reactive values with the values stored in 'state'
@@ -919,15 +959,6 @@ srv_mmrm <- function(input,
   # These trigger when we are out of sync and then enable the start button and
   # disable the show R code button and show warning message
   observeEvent(mmrm_inputs_reactive(), {
-    anl_m <- anl_merged()
-    input_visit_var <- as.vector(anl_m$columns_source$visit_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    validate(
-      need(length(input_aval_var) == 1, "need outcome variable"),
-      need(length(input_visit_var) == 1, "need visit variable"),
-      need(length(input_id_var) == 1, "need id variable")
-    )
     shinyjs::enable("button_start")
     shinyjs::disable("rcode-show_rcode")
     shinyjs::disable("rcode-show_eval_details-evaluation_details")
@@ -949,11 +980,7 @@ srv_mmrm <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
-    validate(
-      need(length(input_aval_var) == 1, "need outcome variable"),
-      need(length(input_visit_var) == 1, "need visit variable"),
-      need(length(input_id_var) == 1, "need id variable")
-    )
+
     # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
     input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
     covariate_parts <- split_interactions(input_cov_var)
@@ -1019,8 +1046,6 @@ srv_mmrm <- function(input,
       chunks_push(..., chunks = fit_stack)
     }
 
-    validate_checks()
-
     chunks_reset(chunks = fit_stack)
     anl_m <- anl_merged()
     chunks_push_data_merge(anl_m, chunks = fit_stack)
@@ -1055,6 +1080,11 @@ srv_mmrm <- function(input,
   })
 
   output$mmrm_title <- renderText({
+    if (state$applicable) {
+      new_inputs <- try(state_has_changed(), silent = TRUE)
+      # No message needed here because it will be displayed by either plots or tables output
+      validate(need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
+    }
 
     # Input on output type.
     output_function <- input$output_function
@@ -1085,24 +1115,6 @@ srv_mmrm <- function(input,
 
   output$mmrm_table <- renderUI({
     if (state$applicable) {
-      anl_m <- anl_merged()
-      input_visit_var <- as.vector(anl_m$columns_source$visit_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      ref_arm <- input$ref_arm
-      comp_arm <- input$comp_arm
-      conf_level <- input$conf_level
-      validate(
-        need(input_aval_var, "No Analysis Variable is selected"),
-        need(input_visit_var, "No Visit Variable is selected"),
-        need(input_id_var, "No Subject Identifier is selected"),
-        need(input_arm_var, "No Arm Variable is selected"),
-        need(ref_arm, "No Reference Group(s) is/are selected"),
-        need(comp_arm, "No Comparison Group(s) is/are selected"),
-        need(conf_level, "No Confidence level is selected")
-      )
-      validate_no_intersection(comp_arm, ref_arm, "Reference and comparison Arms cannot overlap.")
       validate(
         need(
           !state_has_changed(),
@@ -1166,7 +1178,14 @@ srv_mmrm <- function(input,
   # Endpoint:
   # Plot outputs.
   mmrm_plot_reactive <- reactive({
-
+    if (state$applicable) {
+      validate(
+        need(
+          !state_has_changed(),
+          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+        )
+      )
+    }
     # Input on output type.
     output_function <- input$output_function
 
@@ -1233,7 +1252,7 @@ srv_mmrm <- function(input,
   # Optimizer that was selected.
   output$optimizer_selected <- renderText({
     # First reassign reactive sources:
-    fit_stack <- try(mmrm_fit())
+    fit_stack <- try(mmrm_fit(), silent = TRUE)
     result <- if (!inherits(fit_stack, "try-error")) {
       fit <- chunks_get_var("fit", chunks = fit_stack)
       if (input$optimizer == "automatic") {
