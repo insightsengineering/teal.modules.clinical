@@ -15,7 +15,8 @@ template_forest_tte(
   subgroup_var,
   strata_var = NULL,
   conf_level = 0.95,
-  col_symbol_size = NULL
+  col_symbol_size = NULL,
+  time_unit_var = "AVALU"
 )
 }
 \arguments{
@@ -53,6 +54,9 @@ value for the confidence level within the range of (0, 1).}
 \item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
+
+\item{time_unit_var}{(\code{character})\cr
+name of the variable representing time units.}
 }
 \description{
 Creates a valid expression for survival forest plot.

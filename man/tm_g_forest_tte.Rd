@@ -17,6 +17,8 @@ tm_g_forest_tte(
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
+    = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
@@ -65,6 +67,10 @@ variable.}
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
+
+\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the time unit
+variable.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each
 estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}

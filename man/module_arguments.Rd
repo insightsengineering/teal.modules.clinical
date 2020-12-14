@@ -99,6 +99,10 @@ width.}
 object with all available choices and preselected option for time points that
 can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
+\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the time unit
+variable.}
+
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
 For example a title.}

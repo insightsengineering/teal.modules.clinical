@@ -56,7 +56,7 @@ template_tte <- function(dataname = "ANL",
                          cnsr = "CNSR",
                          strata_var = NULL,
                          time_points = NULL,
-                         time_unit = "Days",
+                         time_unit_var = "AVALU",
                          event_desc_var = "EVNTDESC",
                          control = control_tte()) {
   assert_that(
@@ -65,7 +65,7 @@ template_tte <- function(dataname = "ANL",
     is.string(arm_var),
     is.string(aval),
     is.string(cnsr),
-    is.string(time_unit),
+    is.string(time_unit_var),
     is.string(event_desc_var),
     is.flag(compare_arm),
     is.flag(combine_comp_arms)
@@ -189,7 +189,7 @@ template_tte <- function(dataname = "ANL",
     substitute(
       expr = surv_time(
         vars = aval,
-        var_labels = paste0("Time to Event (", time_unit, ")"),
+        var_labels = paste0("Time to Event (", as.character(anl$time_unit_var[1]), ")"),
         is_event = "is_event",
         control = list(
           conf_level = conf_level,
@@ -201,7 +201,7 @@ template_tte <- function(dataname = "ANL",
       env = c(
         aval = aval,
         control$surv_time,
-        time_unit = time_unit
+        time_unit_var = as.name(time_unit_var)
       )
     )
   )
@@ -271,7 +271,7 @@ template_tte <- function(dataname = "ANL",
       substitute(
         expr = surv_timepoint(
           vars = aval,
-          var_labels = time_unit,
+          var_labels = as.character(anl$time_unit_var[1]),
           is_event = "is_event",
           time_point = time_points,
           method = method,
@@ -287,7 +287,7 @@ template_tte <- function(dataname = "ANL",
           time_points = time_points,
           method = method,
           indents = indents,
-          time_unit = time_unit,
+          time_unit_var = as.name(time_unit_var),
           conf_level = control$surv_timepoint$conf_level,
           conf_type = control$surv_timepoint$conf_type
         )
@@ -316,8 +316,6 @@ template_tte <- function(dataname = "ANL",
 #'   for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
-#' @param time_unit (`character`)\cr unit in `aval_var` (use singular, e.g. _month_ instead
-#'   of _months).
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
@@ -376,7 +374,6 @@ template_tte <- function(dataname = "ANL",
 #'               variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'               "SEX"),
 #'             time_points = choices_selected(c(6, 8), 6),
-#'             time_unit = "month",
 #'             event_desc_var = choices_selected(
 #'               variable_choices(ADTTE, "EVNTDESC"),
 #'               "EVNTDESC",
@@ -401,7 +398,9 @@ tm_t_tte <- function(label,
                      conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      time_points,
-                     time_unit = "months",
+                     time_unit_var = choices_selected(
+                       variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                     ),
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      pre_output = NULL,
                      post_output = NULL) {
@@ -430,7 +429,8 @@ tm_t_tte <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    event_desc_var = cs_to_des_select(event_desc_var, dataname = dataname)
+    event_desc_var = cs_to_des_select(event_desc_var, dataname = dataname),
+    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
   module(
@@ -444,7 +444,6 @@ tm_t_tte <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        time_unit = time_unit,
         label = label
       )
     ),
@@ -462,7 +461,8 @@ ui_t_tte <- function(id, ...) {
     a$aval_var,
     a$cnsr_var,
     a$strata_var,
-    a$event_desc_var
+    a$event_desc_var,
+    a$time_unit_var
   )
 
   ns <- NS(id)
@@ -625,6 +625,12 @@ ui_t_tte <- function(id, ...) {
           max = 0.99,
           value = c(0.25, 0.75),
           width = "100%"
+        ),
+        data_extract_input(
+          id = ns("time_unit_var"),
+          label = "Time Unit Variable",
+          data_extract_spec = a$time_unit_var,
+          is_single_dataset = is_single_dataset_value
         )
       )
     ),
@@ -648,7 +654,7 @@ srv_t_tte <- function(input,
                       dataname,
                       parentname,
                       arm_ref_comp,
-                      time_unit,
+                      time_unit_var,
                       label) {
 
   init_chunks()
@@ -668,8 +674,8 @@ srv_t_tte <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, aval_var, cnsr_var, strata_var, event_desc_var),
-    input_id = c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var"),
+    data_extract = list(arm_var, paramcd, aval_var, cnsr_var, strata_var, event_desc_var, time_unit_var),
+    input_id = c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var", "time_unit_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -691,6 +697,7 @@ srv_t_tte <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
+    input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -698,7 +705,10 @@ srv_t_tte <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_event_desc),
+      anlvars = c(
+        "USUBJID", "STUDYID", input_paramcd, input_aval_var,
+        input_cnsr_var, input_event_desc, input_time_unit_var
+      ),
       arm_var = input_arm_var
     )
 
@@ -758,7 +768,7 @@ srv_t_tte <- function(input,
       cnsr = as.vector(anl_m$columns_source$cnsr_var),
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       time_points = as.numeric(input$time_points),
-      time_unit = time_unit,
+      time_unit = as.vector(anl_m$columns_source$time_unit_var),
       event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
       control = control_tte(
         coxph = control_coxph(

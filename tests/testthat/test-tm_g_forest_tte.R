@@ -43,10 +43,13 @@ test_that("template_forest_tte generates correct expressions", {
         data = anl
         )
     }),
-    table = quote(
+    table = quote({
       result <- basic_table() %>%
-        tabulate_survival_subgroups(df, vars = c("n_tot", "n", "n_events", "median", "hr", "ci"))
-    ),
+        tabulate_survival_subgroups(
+          df, vars = c("n_tot", "n", "n_events", "median", "hr", "ci"),
+          time_unit = as.character(anl$AVALU[1])
+        )
+    }),
     plot = quote({
       p <- g_forest(
         tbl = result,

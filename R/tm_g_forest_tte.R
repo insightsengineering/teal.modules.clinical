@@ -18,7 +18,8 @@ template_forest_tte <- function(dataname = "ANL",
                                 subgroup_var,
                                 strata_var = NULL,
                                 conf_level = 0.95,
-                                col_symbol_size = NULL) {
+                                col_symbol_size = NULL,
+                                time_unit_var = "AVALU") {
 
   assert_that(
     is.string(dataname),
@@ -135,9 +136,16 @@ template_forest_tte <- function(dataname = "ANL",
   y$summary <- bracket_expr(summary_list)
 
   # Table output.
-  y$table <- quote(
-    result <- basic_table() %>%
-      tabulate_survival_subgroups(df, vars = c("n_tot", "n", "n_events", "median", "hr", "ci"))
+  y$table <- substitute(
+    expr = {
+      result <- basic_table() %>%
+        tabulate_survival_subgroups(
+          df,
+          vars = c("n_tot", "n", "n_events", "median", "hr", "ci"),
+          time_unit = as.character(anl$time_unit_var[1])
+        )
+    },
+    env = list(time_unit_var = as.name(time_unit_var))
   )
 
   y$plot <- substitute(
@@ -252,6 +260,9 @@ tm_g_forest_tte <- function(label,
                             aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                             cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            time_unit_var = choices_selected(
+                              variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                            ),
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(980L, 500L, 2000L),
@@ -284,7 +295,8 @@ tm_g_forest_tte <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
     subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
+    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
+    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
   module(
@@ -315,7 +327,8 @@ ui_g_forest_tte <- function(id, ...) {
     a$subgroup_var,
     a$strata_var,
     a$aval_var,
-    a$cnsr_var
+    a$cnsr_var,
+    a$time_unit_var
   )
 
   ns <- NS(id)
@@ -395,7 +408,13 @@ ui_g_forest_tte <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          data_extract_input(
+            id = ns("time_unit_var"),
+            label = "Time Unit Variable",
+            data_extract_spec = a$time_unit_var,
+            is_single_dataset = is_single_dataset_value
+          )
         )
       )
     ),
@@ -418,6 +437,7 @@ srv_g_forest_tte <- function(input,
                              strata_var,
                              aval_var,
                              cnsr_var,
+                             time_unit_var,
                              plot_height,
                              plot_width) {
 
@@ -438,8 +458,8 @@ srv_g_forest_tte <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var),
-    input_id = c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var"),
+    data_extract = list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var, time_unit_var),
+    input_id = c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "time_unit_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -460,6 +480,7 @@ srv_g_forest_tte <- function(input,
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -467,7 +488,7 @@ srv_g_forest_tte <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
       arm_var = input_arm_var
     )
 
@@ -522,6 +543,7 @@ srv_g_forest_tte <- function(input,
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
+
     my_calls <- template_forest_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
@@ -533,7 +555,8 @@ srv_g_forest_tte <- function(input,
       subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
-      col_symbol_size = if (!input$fixed_symbol_size) 1
+      col_symbol_size = if (!input$fixed_symbol_size) 1,
+      time_unit = as.vector(anl_m$columns_source$time_unit_var)
     )
     mapply(expression = my_calls, chunks_push)
   })

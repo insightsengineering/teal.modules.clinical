@@ -85,6 +85,9 @@ variable names used to split the summary by rows.}
 
 \item{time_points}{(\code{character})\cr
 time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+
+\item{time_unit_var}{(\code{character})\cr
+name of the variable representing time units.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

@@ -16,7 +16,7 @@ template_tte(
   cnsr = "CNSR",
   strata_var = NULL,
   time_points = NULL,
-  time_unit = "Days",
+  time_unit_var = "AVALU",
   event_desc_var = "EVNTDESC",
   control = control_tte()
 )
@@ -45,6 +45,9 @@ triggers the combination of comparison arms.}
 
 \item{time_points}{(\code{character})\cr
 time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+
+\item{time_unit_var}{(\code{character})\cr
+name of the variable representing time units.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}

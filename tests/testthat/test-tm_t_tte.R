@@ -12,7 +12,7 @@ test_that("template_tte produces healthy standard output", {
     cnsr = "CNSR",
     strata_var = NULL,
     time_points = c(183, 365, 548),
-    time_unit = "Days",
+    time_unit = "AVALU",
     event_desc_var = "EVNTDESC",
     control = control_tte(
       coxph = control_coxph(),
@@ -62,7 +62,7 @@ test_that("template_tte produces healthy standard output", {
         ) %>%
         surv_time(
           vars = "AVAL",
-          var_labels = paste0("Time to Event (", "Days", ")"),
+          var_labels = paste0("Time to Event (", as.character(anl$AVALU[1]), ")"),
           is_event = "is_event",
           control = list(
             conf_level = 0.95,
@@ -76,7 +76,7 @@ test_that("template_tte produces healthy standard output", {
         ) %>%
         surv_timepoint(
           vars = "AVAL",
-          var_labels = "Days",
+          var_labels = as.character(anl$AVALU[1]),
           is_event = "is_event",
           time_point = c(183, 365, 548),
           method = "surv",
@@ -111,7 +111,7 @@ test_that("template_tte produces correct data expression when not comparing arms
     cnsr = "CNSR",
     strata_var = NULL,
     time_points = c(183, 365, 548),
-    time_unit = "Days",
+    time_unit = "AVALU",
     event_desc_var = "EVNTDESC",
     control = control_tte(
       coxph = control_coxph(),

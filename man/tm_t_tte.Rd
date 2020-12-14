@@ -18,7 +18,8 @@ tm_t_tte(
   conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   time_points,
-  time_unit = "months",
+  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
+    = TRUE),
   event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   pre_output = NULL,
   post_output = NULL
@@ -69,8 +70,9 @@ for confidence level, each within range of (0, 1).}
 object with all available choices and preselected option for time points that
 can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit}{(\code{character})\cr unit in \code{aval_var} (use singular, e.g. \emph{month} instead
-of _months).}
+\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the time unit
+variable.}
 
 \item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
 information, optional.}
@@ -140,7 +142,6 @@ app <- init(
               variable_choices(ADSL, c("SEX", "BMRKR2")),
               "SEX"),
             time_points = choices_selected(c(6, 8), 6),
-            time_unit = "month",
             event_desc_var = choices_selected(
               variable_choices(ADTTE, "EVNTDESC"),
               "EVNTDESC",

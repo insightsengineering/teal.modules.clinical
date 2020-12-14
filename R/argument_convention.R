@@ -65,6 +65,8 @@
 #'   variable names used to split the summary by rows.
 #' @param time_points (`character`)\cr
 #'   time points that can be used in [tern::surv_timepoint()].
+#' @param time_unit_var (`character`)\cr
+#'   name of the variable representing time units.
 #' @name template_arguments
 #'
 NULL
@@ -151,6 +153,9 @@ NULL
 #' @param time_points ([teal::choices_selected()])\cr
 #'   object with all available choices and preselected option for time points that
 #'   can be used in [tern::surv_timepoint()].
+#' @param time_unit_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and preselected option for the time unit
+#'   variable.
 #' @param pre_output optional, (`shiny.tag`)\cr
 #'   with text placed before the output to put the output into context.
 #'   For example a title.
