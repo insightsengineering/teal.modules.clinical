@@ -571,7 +571,7 @@ srv_summary_by <- function(input,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       sum_vars = sum_vars,
       by_vars = as.vector(anl_m$columns_source$by_vars),
-      var_labels = datasets$get_variable_labels(dataname, sum_vars),
+      var_labels = get_var_labels(datasets, dataname, sum_vars),
       add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       na_level = na_level,

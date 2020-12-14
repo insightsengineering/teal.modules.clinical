@@ -354,7 +354,7 @@ srv_summary <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       sum_vars = sum_vars,
-      var_labels = datasets$get_variable_labels(dataname, sum_vars),
+      var_labels = get_var_labels(datasets, dataname, sum_vars),
       add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,

@@ -56,6 +56,19 @@ add_plot_title <- function(chunk, groupby_vars) {
   }))
 }
 
+#' Get variable labels
+#'
+#' @param datasets ([`teal::FilteredData`]) Data built up by teal
+#' @param dataname (`character`) name of the dataset
+#' @param vars (`character`) Column names in the data
+#'
+#' @return  `character` variable labels.
+#'
+get_var_labels <- function(datasets, dataname, vars) {
+   labels <- datasets$get_variable_labels(dataname, vars)
+   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
+   return(labels)
+}
 
 #' Expression Deparsing
 #'
