@@ -768,7 +768,7 @@ srv_t_tte <- function(input,
       cnsr = as.vector(anl_m$columns_source$cnsr_var),
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       time_points = as.numeric(input$time_points),
-      time_unit = as.vector(anl_m$columns_source$time_unit_var),
+      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
       event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
       control = control_tte(
         coxph = control_coxph(

@@ -556,7 +556,7 @@ srv_g_forest_tte <- function(input,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (!input$fixed_symbol_size) 1,
-      time_unit = as.vector(anl_m$columns_source$time_unit_var)
+      time_unit_var = as.vector(anl_m$columns_source$time_unit_var)
     )
     mapply(expression = my_calls, chunks_push)
   })

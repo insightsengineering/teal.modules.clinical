@@ -12,7 +12,7 @@ test_that("template_tte produces healthy standard output", {
     cnsr = "CNSR",
     strata_var = NULL,
     time_points = c(183, 365, 548),
-    time_unit = "AVALU",
+    time_unit_var = "AVALU",
     event_desc_var = "EVNTDESC",
     control = control_tte(
       coxph = control_coxph(),
@@ -111,7 +111,7 @@ test_that("template_tte produces correct data expression when not comparing arms
     cnsr = "CNSR",
     strata_var = NULL,
     time_points = c(183, 365, 548),
-    time_unit = "AVALU",
+    time_unit_var = "AVALU",
     event_desc_var = "EVNTDESC",
     control = control_tte(
       coxph = control_coxph(),
