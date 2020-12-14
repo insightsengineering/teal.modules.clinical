@@ -1,12 +1,17 @@
 # teal.modules.clinical 0.8.6
 
+### New Features
+* New module `tm_g_ci` was added for confidence interval plots.
+* New module `tm_t_ancova` was added for analysis of variance summary tables.
+
+### Enhancements
 * Refactored all modules using the redesigned `rtables` and `tern` packages.
-* New teal module `tm_g_ci` for confidence interval plots.
-* New module `tm_t_ancova` for analysis of variance summaries similar to STREAM template `aovt01` when multiple endpoints are selected
-* Modules now take advantage of `data_extract_spec` and `data_merge_module` functionality from `teal`.
-* Added vignette about the topic `substitute` which can be helpful when developing your own analysis template functions for teal modules.
-* Reduce clutter from repeated datasets in the encodings panels.
+* Enhanced modules. They now take advantage of `data_extract_spec` and `data_merge_module` functionality from `teal`.
+* Reduced clutter from repeated datasets in the encodings panels.
 * Updated all modules to use `OptionalSelectInput` for `conf_level`.
+
+### Miscellaneous
+* Added vignette about `substitute` which can be helpful when developing analysis template functions for teal modules.
 
 # teal.modules.clinical 0.8.5
 
