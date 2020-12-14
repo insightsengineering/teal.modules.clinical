@@ -594,7 +594,7 @@ srv_t_rsp <- function(input,
   )
 
   # Because the AVALC values depends on the selected PARAMCD.
-  observe({
+  observeEvent(anl_merged(), {
     aval_var <- anl_merged()$columns_source$aval_var
     responder_choices <- if (is_empty(aval_var)) {
       character(0)
@@ -607,7 +607,7 @@ srv_t_rsp <- function(input,
       choices = responder_choices,
       selected = intersect(responder_choices, common_rsp)
     )
-  })
+  }, once = TRUE)
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
