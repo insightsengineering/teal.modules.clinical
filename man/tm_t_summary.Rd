@@ -12,6 +12,7 @@ tm_t_summary(
   arm_var,
   summarize_vars,
   useNA = c("ifany", "no"),
+  na_level = "<Missing>",
   denominator = c("N", "n", "omit"),
   pre_output = NULL,
   post_output = NULL
@@ -36,6 +37,9 @@ names of the variables that should be summarized.}
 
 \item{useNA}{(\code{character})\cr
 whether missing data (\code{NA}) should be displayed as a level.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference

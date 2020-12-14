@@ -12,7 +12,11 @@ test_that("template_summary generates correct expressions", {
   expected <- list(
     data = quote({
       col_counts <- table(adsl$ARM)
-      anl <- adrs
+      anl <- adrs %>%
+        df_explicit_na(
+          omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
+          na_level = "<Missing>"
+        )
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -21,6 +25,7 @@ test_that("template_summary generates correct expressions", {
         summarize_vars(
           vars = c("RACE", "COUNTRY", "AGE"),
           na.rm = FALSE,
+          na_level = "<Missing>",
           denom = "N_col",
           .stats = c("n", "mean_sd", "median", "range", "count_fraction")
         )
@@ -48,7 +53,11 @@ test_that("template_summary can generate customized table", {
     data = quote({
       col_counts <- table(adsl$ARMCD)
       col_counts <- c(col_counts, sum(col_counts))
-      anl <- adrs
+      anl <- adrs %>%
+        df_explicit_na(
+          omit_columns = setdiff(names(adrs), c("RACE")),
+          na_level = "<Missing>"
+        )
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -58,6 +67,7 @@ test_that("template_summary can generate customized table", {
           vars = "RACE",
           var_labels = c(RACE = "Race"),
           na.rm = TRUE,
+          na_level = "<Missing>",
           denom = "N_col",
           .stats = c("n", "mean_sd", "median", "range", "count")
         )

@@ -11,7 +11,13 @@ test_that("template_summary_by generates correct expressions", {
   )
 
   expected <- list(
-    data = quote(anl <- adlb),
+    data = quote(
+      anl <- adlb %>%
+        df_explicit_na(
+          omit_columns = setdiff(names(adlb), c("AVISIT", "AVAL")),
+          na_level = "<Missing>"
+        )
+    ),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
@@ -26,6 +32,7 @@ test_that("template_summary_by generates correct expressions", {
         summarize_vars(
           vars = "AVAL",
           na.rm = FALSE,
+          na_level = "<Missing>",
           denom = "N_col",
           .stats = c("n", "mean_sd", "median", "range", "count_fraction"),
           .formats = c(
@@ -60,7 +67,13 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
   )
 
   expected <- list(
-    data = quote(anl <- adlb),
+    data = quote(
+      anl <- adlb %>%
+        df_explicit_na(
+          omit_columns = setdiff(names(adlb), c("AVISIT", c("AVAL", "CHG"))),
+          na_level = "<Missing>"
+        )
+    ),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
@@ -110,7 +123,11 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
   )
 
   expected <- list(
-    data = quote(anl <- adsl),
+    data = quote(
+      anl <- adsl %>%
+        df_explicit_na(omit_columns = setdiff(names(adsl), c(c("SEX", "COUNTRY"), "AVAL")),
+                       na_level = "<Missing>")
+    ),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%

@@ -15,6 +15,7 @@ template_summary_by(
   row_groups = FALSE,
   add_total = FALSE,
   na.rm = FALSE,
+  na_level = "<Missing>",
   denominator = c("N", "n", "omit")
 )
 }
@@ -48,6 +49,9 @@ whether to include column with total number of patients.}
 
 \item{na.rm}{(\code{logical})\cr
 whether \code{NA} values should be removed prior to analysis.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference

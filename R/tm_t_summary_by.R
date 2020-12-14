@@ -18,6 +18,7 @@ template_summary_by <- function(parentname,
                                 row_groups = FALSE,
                                 add_total = FALSE,
                                 na.rm = FALSE, # nolint
+                                na_level = "<Missing>",
                                 denominator = c("N", "n", "omit")) {
   assert_that(
     is.string(parentname),
@@ -29,7 +30,8 @@ template_summary_by <- function(parentname,
     is.flag(parallel_vars),
     is.flag(row_groups),
     is.flag(add_total),
-    is.flag(na.rm)
+    is.flag(na.rm),
+    is.string(na_level)
   )
   denominator <- match.arg(denominator)
 
@@ -38,9 +40,13 @@ template_summary_by <- function(parentname,
 
   # Data processing
   y$data <- substitute(
-    expr =  anl <- df,
+    expr =  anl <- df %>%
+      df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
     env = list(
-      df = as.name(dataname)
+      df = as.name(dataname),
+      by_vars = by_vars,
+      sum_vars = sum_vars,
+      na_level = na_level
     )
   )
 
@@ -80,17 +86,18 @@ template_summary_by <- function(parentname,
 
   if (denominator == "omit") {
     env_vars <- list(
-    sum_vars = sum_vars,
-    sum_var_labels = var_labels[sum_vars],
-    na.rm = na.rm,
-    denom = ifelse(denominator == "n", "n", "N_col"),
-    stats = c("n", "mean_sd", "median", "range", "count"),
-    formats = c(
-      n = "xx",
-      mean_sd = "xx.xx (xx.xx)",
-      median = "xx.xx",
-      range = "xx.xx - xx.xx",
-      count = "xx"
+      sum_vars = sum_vars,
+      sum_var_labels = var_labels[sum_vars],
+      na.rm = na.rm,
+      na_level = na_level,
+      denom = ifelse(denominator == "n", "n", "N_col"),
+      stats = c("n", "mean_sd", "median", "range", "count"),
+      formats = c(
+        n = "xx",
+        mean_sd = "xx.xx (xx.xx)",
+        median = "xx.xx",
+        range = "xx.xx - xx.xx",
+        count = "xx"
       )
     )
   }
@@ -99,6 +106,7 @@ template_summary_by <- function(parentname,
       sum_vars = sum_vars,
       sum_var_labels = var_labels[sum_vars],
       na.rm = na.rm,
+      na_level = na_level,
       denom = ifelse(denominator == "n", "n", "N_col"),
       stats = c("n", "mean_sd", "median", "range", "count_fraction"),
       formats = c(
@@ -107,8 +115,8 @@ template_summary_by <- function(parentname,
         median = "xx.xx",
         range = "xx.xx - xx.xx",
         count_fraction = "xx (xx.%)"
-        )
       )
+    )
   }
 
   for (by_var in by_vars) {
@@ -200,6 +208,7 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
+              na_level = na_level,
               denom = denom,
               .stats = stats,
               .formats = formats
@@ -212,6 +221,7 @@ template_summary_by <- function(parentname,
             expr = summarize_vars(
               vars = sum_vars,
               na.rm = na.rm,
+              na_level = na_level,
               denom = denom,
               .stats = stats,
               .formats = formats
@@ -339,6 +349,7 @@ tm_t_summary_by <- function(label,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
+                            na_level = "<Missing>",
                             denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             pre_output = NULL,
                             post_output = NULL) {
@@ -351,6 +362,7 @@ tm_t_summary_by <- function(label,
     is_logical_single(parallel_vars),
     is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
+    is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
     list(
@@ -386,7 +398,8 @@ tm_t_summary_by <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        na_level = na_level
         )
       ),
     filters = get_extract_datanames(data_extract_list)
@@ -477,6 +490,7 @@ srv_summary_by <- function(input,
                            paramcd,
                            by_vars,
                            summarize_vars,
+                           na_level,
                            label) {
   init_chunks()
 
@@ -560,6 +574,7 @@ srv_summary_by <- function(input,
       var_labels = datasets$get_variable_labels(dataname, sum_vars),
       add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
+      na_level = na_level,
       denominator = input$denominator,
       parallel_vars = input$parallel_vars,
       row_groups = input$row_groups

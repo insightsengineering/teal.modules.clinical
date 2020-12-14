@@ -11,6 +11,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              add_total = FALSE,
                              na.rm = FALSE,  #nolint
+                             na_level = "<Missing>",
                              denominator = c("N", "n", "omit")) {
   assert_that(
     is.string(dataname),
@@ -19,7 +20,8 @@ template_summary <- function(dataname,
     is.character(sum_vars),
     is.character(var_labels),
     is.flag(add_total),
-    is.flag(na.rm)
+    is.flag(na.rm),
+    is.string(na_level)
   )
   denominator <- match.arg(denominator)
 
@@ -42,9 +44,12 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- df,
+      expr = anl <- df %>%
+        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
       env = list(
-        df = as.name(dataname)
+        df = as.name(dataname),
+        sum_vars = sum_vars,
+        na_level = na_level
       )
     )
   )
@@ -73,16 +78,19 @@ template_summary <- function(dataname,
     layout_list,
     quote(add_colcounts())
   )
+
   env_sum_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
     na.rm = na.rm,
+    na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
     stats = c(
       c("n", "mean_sd", "median", "range"),
       ifelse(denominator == "omit", "count", "count_fraction")
     )
   )
+
   layout_list <- add_expr(
     layout_list,
     if (length(var_labels) > 0) {
@@ -91,6 +99,7 @@ template_summary <- function(dataname,
           vars = sum_vars,
           var_labels = sum_var_labels,
           na.rm = na.rm,
+          na_level = na_level,
           denom = denom,
           .stats = stats
         ),
@@ -101,6 +110,7 @@ template_summary <- function(dataname,
         expr = summarize_vars(
           vars = sum_vars,
           na.rm = na.rm,
+          na_level = na_level,
           denom = denom,
           .stats = stats
         ),
@@ -108,6 +118,7 @@ template_summary <- function(dataname,
       )
     }
   )
+
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
     env = list(layout_pipe = pipe_expr(layout_list))
@@ -176,12 +187,15 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          useNA = c("ifany", "no"), # nolint
+                         na_level = "<Missing>",
                          denominator = c("N", "n", "omit"),
                          pre_output = NULL,
                          post_output = NULL) {
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),
+    useNA %in% c("ifany", "no"), # nolint,
+    is_character_single(na_level),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -211,7 +225,8 @@ tm_t_summary <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        na_level = na_level
         )
       ),
     filters = dataname
@@ -278,6 +293,7 @@ srv_summary <- function(input,
                         parentname,
                         arm_var,
                         summarize_vars,
+                        na_level,
                         label) {
   init_chunks()
 
@@ -341,6 +357,7 @@ srv_summary <- function(input,
       var_labels = datasets$get_variable_labels(dataname, sum_vars),
       add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+      na_level = na_level,
       denominator = input$denominator
     )
     mapply(expression = my_calls, chunks_push)

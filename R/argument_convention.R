@@ -35,6 +35,8 @@
 #'   whether `NA` values should be removed prior to analysis.
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
+#' @param na_level (`string`)\cr used to replace all `NA` or empty values
+#'   in character or factor variables in the data.
 #' @param denominator (`character`)\cr
 #'   chooses how percentages are calculated. With option `N`, the reference
 #'   population from the column total is used as the denominator. With option
@@ -104,6 +106,8 @@ NULL
 #'   variable value designating the studied parameter.
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
+#' @param na_level (`string`)\cr used to replace all `NA` or empty values
+#'   in character or factor variables in the data.
 #' @param denominator (`character`)\cr
 #'   chooses how percentages are calculated. With option `N`, the reference
 #'   population from the column total is used as the denominator. With option

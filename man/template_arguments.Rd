@@ -43,6 +43,9 @@ whether \code{NA} values should be removed prior to analysis.}
 \item{useNA}{(\code{character})\cr
 whether missing data (\code{NA}) should be displayed as a level.}
 
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data.}
+
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
