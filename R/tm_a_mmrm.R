@@ -751,13 +751,12 @@ srv_mmrm <- function(input,
   # Initially hide the output title because there is no output yet.
   shinyjs::hide("mmrm_title")
 
-  #reactiveVal used to send a signal to plot_with_settings module to hide the UI
+  # reactiveVal used to send a signal to plot_with_settings module to hide the UI
   show_plot_rv <- reactiveVal(FALSE)
 
-  # applicable is set to TRUE only after a `Fit Button` press leads to a successful computation from the inputs
-  # it will store the current/last state of inputs and data that generatd a model-fit
+  # this will store the current/last state of inputs and data that generatd a model-fit
   # its purpose is so that any input change can be checked whether it resulted in an out of sync state
-  state <- reactiveValues(applicable = FALSE, button_start = 0, optimizer = NULL)
+  state <- reactiveValues(input = NULL, button_start = 0, optimizer = NULL)
 
   # Note:
   # input$parallel does not get us out of sync (it just takes longer to get to same result)
@@ -868,6 +867,7 @@ srv_mmrm <- function(input,
   # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit and enable
   # show R code buttons.
   shinyjs::onclick("button_start", {
+    state$input <- mmrm_inputs_reactive()
     shinyjs::hide("null_input_msg")
     shinyjs::disable("button_start")
     success <- try(mmrm_fit(), silent = TRUE)
@@ -929,6 +929,7 @@ srv_mmrm <- function(input,
 
   # compares the mmrm_inputs_reactive values with the values stored in 'state'
   state_has_changed <- reactive({
+    req(state$input)
     displayed_state <- mmrm_inputs_reactive()
     equal_ADSL <- all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
     equal_dataname <- all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
@@ -962,10 +963,10 @@ srv_mmrm <- function(input,
     shinyjs::enable("button_start")
     shinyjs::disable("rcode-show_rcode")
     shinyjs::disable("rcode-show_eval_details-evaluation_details")
-    if (state$applicable && !state_has_changed()) {
-        shinyjs::enable("rcode-show_rcode")
-        shinyjs::enable("rcode-show_eval_details-evaluation_details")
-        shinyjs::disable("button_start")
+    if (!state_has_changed()) {
+      shinyjs::enable("rcode-show_rcode")
+      shinyjs::enable("rcode-show_eval_details-evaluation_details")
+      shinyjs::disable("button_start")
     }
   })
 
@@ -1038,8 +1039,6 @@ srv_mmrm <- function(input,
   # Connector:
   # Fit the MMRM, once the user clicks on the start button.
   mmrm_fit <- eventReactive(input$button_start, {
-    # set to FALSE because a button press does not always indicate a successful computation
-    state$applicable <- FALSE
     # Create a private stack for this function only.
     fit_stack <- chunks$new()
     fit_stack_push <- function(...) {
@@ -1072,19 +1071,15 @@ srv_mmrm <- function(input,
       optimizer = input$optimizer,
       parallel = input$parallel
     )
-    state$applicable <- TRUE
-    state$input <- mmrm_inputs_reactive()
     mapply(expression = my_calls, fit_stack_push)
     chunks_safe_eval(chunks = fit_stack)
     fit_stack
   })
 
   output$mmrm_title <- renderText({
-    if (state$applicable) {
-      new_inputs <- try(state_has_changed(), silent = TRUE)
-      # No message needed here because it will be displayed by either plots or tables output
-      validate(need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
-    }
+    new_inputs <- try(state_has_changed(), silent = TRUE)
+    # No message needed here because it will be displayed by either plots or tables output
+    validate(need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
 
     # Input on output type.
     output_function <- input$output_function
@@ -1114,14 +1109,12 @@ srv_mmrm <- function(input,
   })
 
   output$mmrm_table <- renderUI({
-    if (state$applicable) {
-      validate(
-        need(
-          !state_has_changed(),
-          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
-        )
+    validate(
+      need(
+        !state_has_changed(),
+        "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
       )
-    }
+    )
     # Input on output type.
     output_function <- input$output_function
 
@@ -1178,14 +1171,12 @@ srv_mmrm <- function(input,
   # Endpoint:
   # Plot outputs.
   mmrm_plot_reactive <- reactive({
-    if (state$applicable) {
-      validate(
-        need(
-          !state_has_changed(),
-          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
-        )
+    validate(
+      need(
+        !state_has_changed(),
+        "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
       )
-    }
+    )
     # Input on output type.
     output_function <- input$output_function
 
@@ -1260,7 +1251,7 @@ srv_mmrm <- function(input,
         paste("Optimizer used:", selected)
       }
     }
-    currnt_state <- state$applicable && !state_has_changed()
+    currnt_state <- !state_has_changed()
     what_to_return <- if (input$button_start > isolate(state$button_start)) {
       state$button_start <- input$button_start
       state$optimizer <- result
