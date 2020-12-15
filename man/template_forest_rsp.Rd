@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_rsp.R
 \name{template_forest_rsp}
 \alias{template_forest_rsp}
-\title{Template for Response Forest Plot}
+\title{Template: Response Forest Plot}
 \usage{
 template_forest_rsp(
   dataname = "ANL",

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_rsp.R
 \name{tm_g_forest_rsp}
 \alias{tm_g_forest_rsp}
-\title{Forest Response Plot teal module}
+\title{Teal Module: Forest Response Plot teal module}
 \usage{
 tm_g_forest_rsp(
   label,

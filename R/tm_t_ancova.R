@@ -1,4 +1,4 @@
-#' Template for ANCOVA summary
+#' Template: ANCOVA summary
 #'
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
@@ -210,7 +210,7 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' ANCOVA Teal Module
+#' Teal Module: ANCOVA Teal Module
 #'
 #' @inheritParams module_arguments
 #'

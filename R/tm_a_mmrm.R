@@ -1,4 +1,4 @@
-#' Template for Mixed Model Repeated Measurements (MMRM) analysis
+#' Template: Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams template_arguments
 #' @param cor_struct a string specifying the correlation structure, defaults to
@@ -330,7 +330,7 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' Teal module for Mixed Model Repeated Measurements (MMRM) analysis
+#' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams module_arguments
 #'

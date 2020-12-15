@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{tm_t_tte}
 \alias{tm_t_tte}
-\title{Time To Event Table Teal Module}
+\title{Teal Module: Time To Event Table Teal Module}
 \usage{
 tm_t_tte(
   label,
@@ -86,7 +86,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-Time To Event Table Teal Module
+Teal Module: Time To Event Table Teal Module
 }
 \details{
 This module produces a response summary table that is similar to

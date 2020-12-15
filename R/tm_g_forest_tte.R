@@ -1,4 +1,4 @@
-#' Template for Survival Forest Plot
+#' Template: Survival Forest Plot
 #'
 #' Creates a valid expression for survival forest plot.
 #'
@@ -182,7 +182,7 @@ template_forest_tte <- function(dataname = "ANL",
   y
 }
 
-#' Forest Survival Plot teal Module
+#' Teal Module: Forest Survival Plot teal Module
 #'
 #' This teal module produces a grid style Forest plot for time-to-event data
 #' with ADaM structure

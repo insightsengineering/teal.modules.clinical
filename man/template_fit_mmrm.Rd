@@ -4,7 +4,7 @@
 \alias{template_fit_mmrm}
 \alias{template_mmrm_tables}
 \alias{template_mmrm_plots}
-\title{Template for Mixed Model Repeated Measurements (MMRM) analysis}
+\title{Template: Mixed Model Repeated Measurements (MMRM) analysis}
 \usage{
 template_fit_mmrm(
   parentname,
@@ -107,7 +107,7 @@ type of table to output.}
 \item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern:g_mmrm_diagnostic]{tern::g_mmrm_diagnostic()}}}
 }
 \description{
-Template for Mixed Model Repeated Measurements (MMRM) analysis
+Template: Mixed Model Repeated Measurements (MMRM) analysis
 }
 \section{Functions}{
 \itemize{

@@ -1,4 +1,4 @@
-#' @title Binary Outcome Table Teal Module
+#' @title Teal Module: Binary Outcome Table
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_rsp

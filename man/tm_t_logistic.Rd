@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_logistic.R
 \name{tm_t_logistic}
 \alias{tm_t_logistic}
-\title{Teal Module for Logistic Regression}
+\title{Teal Module: Logistic Regression}
 \usage{
 tm_t_logistic(
   label,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_tte.R
 \name{tm_g_forest_tte}
 \alias{tm_g_forest_tte}
-\title{Forest Survival Plot teal Module}
+\title{Teal Module: Forest Survival Plot teal Module}
 \usage{
 tm_g_forest_tte(
   label,

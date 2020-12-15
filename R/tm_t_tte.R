@@ -33,7 +33,7 @@ control_tte <- function(
 }
 
 
-#' Template for Time-to-Event
+#' Template: Time-to-Event
 #'
 #' Creates a valid expression for time-to-event analysis.
 #'
@@ -309,7 +309,7 @@ template_tte <- function(dataname = "ANL",
 }
 
 
-#' Time To Event Table Teal Module
+#' Teal Module: Time To Event Table Teal Module
 #'
 #' @inheritParams module_arguments
 #' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option

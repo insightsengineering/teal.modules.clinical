@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{template_ancova}
 \alias{template_ancova}
-\title{Template for ANCOVA summary}
+\title{Template: ANCOVA summary}
 \usage{
 template_ancova(
   dataname = "ANL",

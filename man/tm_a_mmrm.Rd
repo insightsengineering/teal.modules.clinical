@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{Teal module for Mixed Model Repeated Measurements (MMRM) analysis}
+\title{Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis}
 \usage{
 tm_a_mmrm(
   label,
@@ -86,7 +86,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-Teal module for Mixed Model Repeated Measurements (MMRM) analysis
+Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 }
 \note{
 The ordering of the input data sets can lead to slightly different numerical results or

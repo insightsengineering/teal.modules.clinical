@@ -1,4 +1,4 @@
-#' Template for Response Forest Plot
+#' Template: Response Forest Plot
 #'
 #' Creates a valid expression for response forest plot.
 #'
@@ -184,7 +184,7 @@ template_forest_rsp <- function(dataname = "ANL",
   y
 }
 
-#' Forest Response Plot teal module
+#' Teal Module: Forest Response Plot teal module
 #'
 #' This teal module produces a grid style Forest plot for response data with ADaM structure.
 #'

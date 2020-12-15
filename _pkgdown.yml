@@ -12,7 +12,7 @@ navbar:
 reference:
   - title:
     contents:
-      - teal.modules.clinical-package
+      - teal.modules.clinical
   - title: Tables
     contents:
       -  starts_with("tm_t_")
@@ -22,3 +22,28 @@ reference:
   - title: General analyses
     contents:
       - starts_with("tm_a_")
+  - title: Templates
+    contents:
+      - starts_with("template_")
+  - title: Unexported functions
+    contents:
+      - add_expr
+      - bracket_expr
+      - call_concatenate
+      - control_tte
+      - cs_to_des_filter
+      - cs_to_des_select
+      - cs_to_filter_spec
+      - cs_to_select_spec
+      - dyn_assertion
+      - extract_input
+      - get_var_labels
+      - h_concat_expr
+      - is.cs_or_des
+      - module_arguments
+      - pipe_expr
+      - prepare_arm
+      - split_choices
+      - split_col_expr
+      - split_interactions
+      - styled_expr

@@ -1,4 +1,4 @@
-#' Template For Logistic Regression
+#' Template: Logistic Regression
 #'
 #' Creates an expression for logistic regressions.
 #'
@@ -144,7 +144,7 @@ template_logistic <- function(dataname,
 }
 
 
-#' Teal Module for Logistic Regression
+#' Teal Module: Logistic Regression
 #'
 #' @description This module produces a multi-variable logistic regression table that matches the
 #'   STREAM template `lgrt02`.

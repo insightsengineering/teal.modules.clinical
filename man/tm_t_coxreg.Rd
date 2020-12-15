@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{tm_t_coxreg}
 \alias{tm_t_coxreg}
-\title{Cox Regression Model}
+\title{Teal Module: Cox Regression Model}
 \usage{
 tm_t_coxreg(
   label,

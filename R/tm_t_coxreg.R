@@ -1,4 +1,4 @@
-#' Template for Cox Regression
+#' Template: Cox Regression
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
@@ -186,7 +186,7 @@ template_coxreg <- function(dataname,
   y
 }
 
-#' Cox Regression Model
+#' Teal Module: Cox Regression Model
 #'
 #' Teal module to fit Cox univariate or multivariate models consistent with
 #' `COXT01` and `COXT02` standard outputs, respectively.

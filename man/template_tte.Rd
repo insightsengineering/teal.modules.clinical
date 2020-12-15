@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{template_tte}
 \alias{template_tte}
-\title{Template for Time-to-Event}
+\title{Template: Time-to-Event}
 \usage{
 template_tte(
   dataname = "ANL",

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_rsp.R
 \name{tm_t_rsp}
 \alias{tm_t_rsp}
-\title{Response Table Teal Module}
+\title{Teal Module: Response Table Teal Module}
 \usage{
 tm_t_rsp(
   label,

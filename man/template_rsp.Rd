@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_rsp.R
 \name{template_rsp}
 \alias{template_rsp}
-\title{Template for Responders}
+\title{Template: Responders}
 \usage{
 template_rsp(
   dataname,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_tte.R
 \name{template_forest_tte}
 \alias{template_forest_tte}
-\title{Template for Survival Forest Plot}
+\title{Template: Survival Forest Plot}
 \usage{
 template_forest_tte(
   dataname = "ANL",

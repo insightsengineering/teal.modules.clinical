@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_logistic.R
 \name{template_logistic}
 \alias{template_logistic}
-\title{Template For Logistic Regression}
+\title{Template: Logistic Regression}
 \usage{
 template_logistic(
   dataname,

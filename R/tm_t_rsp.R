@@ -1,4 +1,4 @@
-#' Template for Responders
+#' Template: Responders
 #'
 #' Creates a valid expression for responder analysis.
 #'
@@ -311,7 +311,7 @@ template_rsp <- function(dataname,
   y
 }
 
-#' Response Table Teal Module
+#' Teal Module: Response Table Teal Module
 #'
 #' This module produces a response summary table that matches the
 #' STREAM template `rspt01`.

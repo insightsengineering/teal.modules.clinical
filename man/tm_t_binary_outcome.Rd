@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Binary Outcome Table Teal Module}
+\title{Teal Module: Binary Outcome Table}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -64,7 +64,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-Binary Outcome Table Teal Module
+Teal Module: Binary Outcome Table
 }
 \examples{
 library(dplyr)

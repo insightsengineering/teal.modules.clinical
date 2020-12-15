@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{ANCOVA Teal Module}
+\title{Teal Module: ANCOVA Teal Module}
 \usage{
 tm_t_ancova(
   label,
@@ -68,7 +68,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-ANCOVA Teal Module
+Teal Module: ANCOVA Teal Module
 }
 \details{
 This module produces an analysis of variance summary table that is
