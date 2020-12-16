@@ -276,7 +276,6 @@ ui_t_logistic <- function(id, ...) {
   ns <- NS(id)
   standard_layout(
     output = white_small_well(
-      verbatimTextOutput((ns("text"))),
       uiOutput(ns("table"))
     ),
     encoding = div(
@@ -501,6 +500,7 @@ srv_t_logistic <- function(input,
 
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
+    paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
 
     interaction_var <- as.vector(anl_m$columns_source$interaction_var)
     interaction_var <- interaction_var[interaction_var %in% as.vector(anl_m$columns_source$cov_var)]
@@ -524,7 +524,7 @@ srv_t_logistic <- function(input,
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       combine_comp_arms = input$combine_comp_arms,
-      topleft = paramcd$filter[[1]]$selected[[1]],
+      topleft = paramcd,
       conf_level = as.numeric(input$conf_level),
       at = if (at_flag) at_values else NULL,
       responder_val = input$responders
