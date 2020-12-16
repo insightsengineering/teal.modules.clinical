@@ -11,8 +11,6 @@ test_that("template_events generates correct expressions", {
 
   expected <- list(
     data = quote({
-      col_n <- table(adsl$ACTARM)
-      col_n <- c(col_n, "All Patients" = sum(col_n))
       anl <- adae
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
@@ -48,7 +46,7 @@ test_that("template_events generates correct expressions", {
         append_varlabels(adae, "AEDECOD", indent = TRUE)
       ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
@@ -57,11 +55,11 @@ test_that("template_events generates correct expressions", {
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = c("AEBODSYS"),
-          scorefun = cont_n_onecol(length(col_n))
+          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1)
         ) %>%
         sort_at_path(
           path =  c("AEBODSYS", "*", "AEDECOD"),
-          scorefun = score_occurrences_cols(col_indices = length(col_n))
+          scorefun = score_occurrences_cols(col_indices = length(levels(adsl$ACTARM)) + 1)
         )
       pruned_and_sorted_result
     })
@@ -83,7 +81,6 @@ test_that("template_events can generate customized table", {
 
   expected <- list(
     data = quote({
-      col_n <- table(adsl$ACTARM)
       anl <- adcm
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), "CMDECOD")
@@ -103,7 +100,7 @@ test_that("template_events can generate customized table", {
         append_varlabels(adcm, "CMDECOD")
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
@@ -132,8 +129,6 @@ test_that("template_events can generate customized table with alphabetical sorti
 
   expected <- list(
     data = quote({
-      col_n <- table(adsl$ACTARM)
-      col_n <- c(col_n, "All Patients" = sum(col_n))
       anl <- adae
       anl <- anl %>% dplyr::mutate(AEBODSYS = as.character(AEBODSYS))
       anl <- anl %>% dplyr::mutate(AEDECOD = as.character(AEDECOD))
@@ -171,7 +166,7 @@ test_that("template_events can generate customized table with alphabetical sorti
         append_varlabels(adae, "AEDECOD", indent = TRUE)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
@@ -200,8 +195,6 @@ test_that("template_events can generate customized table with pruning", {
 
   expected <- list(
     data = quote({
-      col_n <- table(adsl$ACTARM)
-      col_n <- c(col_n, "All Patients" = sum(col_n))
       anl <- adae
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
@@ -237,11 +230,11 @@ test_that("template_events can generate customized table with pruning", {
         append_varlabels(adae, "AEDECOD", indent = TRUE)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
-      col_indices <- seq_along(col_n)[-length(col_n)]
+      col_indices <- seq_along(table(adsl$ACTARM))
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
       pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
@@ -250,11 +243,11 @@ test_that("template_events can generate customized table with pruning", {
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path =  c("AEBODSYS"),
-          scorefun = cont_n_onecol(length(col_n))
+          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1)
         ) %>%
         sort_at_path(
           path =  c("AEBODSYS", "*", "AEDECOD"),
-          scorefun =  score_occurrences_cols(col_indices = length(col_n))
+          scorefun =  score_occurrences_cols(col_indices = length(levels(adsl$ACTARM)) + 1)
         )
       criteria_fun <- function(tr) {
         is(tr, "ContentRow")

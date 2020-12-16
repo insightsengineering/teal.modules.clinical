@@ -45,24 +45,7 @@ template_events_by_grade <- function(dataname,
       )
     )
   )
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = col_counts <- table(parentname$arm_var),
-      env = list(
-        parentname = as.name(parentname),
-        arm_var = as.name(arm_var)
-      )
-    )
-  )
-  if (add_total) {
-    data_list <- add_expr(
-      data_list,
-      quote(
-        col_counts <- c(col_counts, "All Patients" = sum(col_counts))
-      )
-    )
-  }
+
   y$data <- bracket_expr(data_list)
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)
@@ -178,12 +161,19 @@ template_events_by_grade <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote(
-    result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+  y$table <- substitute(
+    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    env = list(parent = as.name(parentname))
   )
 
   scorefun <- if (add_total) {
-    quote(cont_n_onecol(length(col_counts)))
+    substitute(
+      expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
+      env = list(
+        parent = as.name(parentname),
+        arm_var = as.name(arm_var)
+      )
+    )
   } else {
     quote(cont_n_allcols)
   }

@@ -72,26 +72,6 @@ template_events_summary <- function(anl_name,
 
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = col_counts <- table(parentname$arm_var),
-      env = list(
-        parentname = as.name(parentname),
-        arm_var = as.name(arm_var)
-      )
-    )
-  )
-
-  if (add_total) {
-    data_list <- add_expr(
-      data_list,
-      quote(
-        col_counts <- c(col_counts, "All Patients" = sum(col_counts))
-      )
-    )
-  }
-
-  data_list <- add_expr(
-    data_list,
     quote(study_id <- unique(anl[["STUDYID"]]))
   )
 
@@ -122,7 +102,7 @@ template_events_summary <- function(anl_name,
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
-      expr = split_cols_by(arm_var),
+      expr = split_cols_by(arm_var) %>% add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
@@ -162,7 +142,7 @@ template_events_summary <- function(anl_name,
   table_parent_list <- add_expr(
     table_parent_list,
     substitute(
-      expr = result_parent <- build_table(lyt = lyt_parent, df = df_parent, col_counts = col_counts),
+      expr = result_parent <- build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -177,7 +157,7 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- add_expr(
     layout_anl_list,
     substitute(
-      expr = split_cols_by(arm_var),
+      expr = split_cols_by(arm_var) %>% add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
@@ -215,7 +195,10 @@ template_events_summary <- function(anl_name,
   table_anl_list <- list()
   table_anl_list <- add_expr(
     table_anl_list,
-    quote(result_anl <- build_table(lyt = lyt_anl, df = anl, col_counts = col_counts))
+    substitute(
+      expr = result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
+      env = list(df_parent = as.name(parentname))
+    )
   )
 
   count_flags <- c(count_subj, count_pt, count_events)
@@ -511,7 +494,7 @@ template_events_summary <- function(anl_name,
 #' library(dplyr)
 #' library(random.cdisc.data)
 #'
-#' adsl <- radsl(cached = TRUE) %>%
+#' ADSL <- radsl(cached = TRUE) %>%
 #'   mutate(
 #'     DTHFL = case_when(  # nolint
 #'       !is.na(DTHDT) ~ "Y",
@@ -522,7 +505,7 @@ template_events_summary <- function(anl_name,
 #'     DTHFL = "Subject Death Flag"
 #'   )
 #'
-#' adae <- radae(cached = TRUE)
+#' ADAE <- radae(cached = TRUE)
 #'
 #' add_event_flags <- function(dat) {
 #'   dat %>%
@@ -538,22 +521,54 @@ template_events_summary <- function(anl_name,
 #'       TMPFL_SER = "Serious AE",
 #'       TMPFL_REL = "Related AE",
 #'       TMPFL_GR5 = "Grade 5 AE",
-#'       TMP_SMQ01 = aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
+#'       TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
 #'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'       TMP_CQ01 = aesi_label(adae$CQ01NAM)
+#'       TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
 #'     )
 #' }
 #'
 #' # Generating user-defined event flags.
-#' adae <- adae %>% add_event_flags()
+#' ADAE <- ADAE %>% add_event_flags()
 #'
-#' ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
-#' aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
+#' ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+#' aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
+#'     cdisc_dataset("ADSL", ADSL, code =
+#'           'ADSL <- radsl(cached = TRUE) %>%
+#'             mutate(
+#'               DTHFL = case_when(  # nolint
+#'                 !is.na(DTHDT) ~ "Y",
+#'                 TRUE ~ ""
+#'               )
+#'             ) %>%
+#'             rtables::var_relabel(
+#'               DTHFL = "Subject Death Flag"
+#'             )'),
+#'     cdisc_dataset("ADAE", ADAE, code =
+#'           'ADAE <- radae(cached = TRUE)
+#'           add_event_flags <- function(dat) {
+#'             dat %>%
+#'               dplyr::mutate(
+#'                 TMPFL_SER = AESER == "Y",
+#'                 TMPFL_REL = AEREL == "Y",
+#'                 TMPFL_GR5 = AETOXGR == "5",
+#'                 TMP_SMQ01 = !is.na(SMQ01NAM),
+#'                 TMP_SMQ02 = !is.na(SMQ02NAM),
+#'                 TMP_CQ01 = !is.na(CQ01NAM)
+#'               ) %>%
+#'               rtables::var_relabel(
+#'                 TMPFL_SER = "Serious AE",
+#'                 TMPFL_REL = "Related AE",
+#'                 TMPFL_GR5 = "Grade 5 AE",
+#'                 TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
+#'                 TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+#'                 TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
+#'               )
+#'           }
+#'           # Generating user-defined event flags.
+#'           ADAE <- ADAE %>% add_event_flags()')
 #'     ),
 #'   modules = root_modules(
 #'     tm_t_events_summary(

@@ -96,7 +96,7 @@ Teal Module: Adverse Events Summary
 library(dplyr)
 library(random.cdisc.data)
 
-adsl <- radsl(cached = TRUE) \%>\%
+ADSL <- radsl(cached = TRUE) \%>\%
   mutate(
     DTHFL = case_when(  # nolint
       !is.na(DTHDT) ~ "Y",
@@ -107,7 +107,7 @@ adsl <- radsl(cached = TRUE) \%>\%
     DTHFL = "Subject Death Flag"
   )
 
-adae <- radae(cached = TRUE)
+ADAE <- radae(cached = TRUE)
 
 add_event_flags <- function(dat) {
   dat \%>\%
@@ -123,22 +123,54 @@ add_event_flags <- function(dat) {
       TMPFL_SER = "Serious AE",
       TMPFL_REL = "Related AE",
       TMPFL_GR5 = "Grade 5 AE",
-      TMP_SMQ01 = aesi_label(adae$SMQ01NAM, adae$SMQ01SC),
+      TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-      TMP_CQ01 = aesi_label(adae$CQ01NAM)
+      TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
     )
 }
 
 # Generating user-defined event flags.
-adae <- adae \%>\% add_event_flags()
+ADAE <- ADAE \%>\% add_event_flags()
 
-ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
-aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
+ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
+    cdisc_dataset("ADSL", ADSL, code =
+          'ADSL <- radsl(cached = TRUE) \%>\%
+            mutate(
+              DTHFL = case_when(  # nolint
+                !is.na(DTHDT) ~ "Y",
+                TRUE ~ ""
+              )
+            ) \%>\%
+            rtables::var_relabel(
+              DTHFL = "Subject Death Flag"
+            )'),
+    cdisc_dataset("ADAE", ADAE, code =
+          'ADAE <- radae(cached = TRUE)
+          add_event_flags <- function(dat) {
+            dat \%>\%
+              dplyr::mutate(
+                TMPFL_SER = AESER == "Y",
+                TMPFL_REL = AEREL == "Y",
+                TMPFL_GR5 = AETOXGR == "5",
+                TMP_SMQ01 = !is.na(SMQ01NAM),
+                TMP_SMQ02 = !is.na(SMQ02NAM),
+                TMP_CQ01 = !is.na(CQ01NAM)
+              ) \%>\%
+              rtables::var_relabel(
+                TMPFL_SER = "Serious AE",
+                TMPFL_REL = "Related AE",
+                TMPFL_GR5 = "Grade 5 AE",
+                TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
+                TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+                TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
+              )
+          }
+          # Generating user-defined event flags.
+          ADAE <- ADAE \%>\% add_event_flags()')
     ),
   modules = root_modules(
     tm_t_events_summary(

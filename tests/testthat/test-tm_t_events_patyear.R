@@ -35,7 +35,7 @@ test_that("template_events_patyear generates standard expressions", {
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
+        alt_counts_df = adsl
       )
       result
     })
@@ -80,7 +80,7 @@ test_that("template_events_patyear generates right expressions with non-default"
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = table(adsl$ARM)
+        alt_counts_df = adsl
       )
       result
     })
@@ -131,7 +131,7 @@ test_that("template_events_patyear generates right expressions with non-default 
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = c(table(adsl$ARMCD), `All Patients` = sum(table(adsl$ARMCD)))
+        alt_counts_df = adsl
       )
       result
     })

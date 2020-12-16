@@ -34,24 +34,6 @@ template_abnormality <- function(parentname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = n_col_counts <- table(df$arm_var),
-      env = list(
-        df = as.name(parentname),
-        arm_var = arm_var
-      )
-    )
-  )
-
-  if (add_total) {
-    data_list <- add_expr(
-      data_list,
-      quote(n_col_counts <- c(n_col_counts, Total = sum(n_col_counts)))
-    )
-  }
-
   y$data <- bracket_expr(data_list)
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)
@@ -130,11 +112,14 @@ template_abnormality <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote({
-    result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
-      prune_table()
-    result
-  })
+  y$table <- substitute(
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
+        prune_table()
+      result
+    },
+    env = list(parent = as.name(parentname))
+  )
 
   y
 }

@@ -27,6 +27,7 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        add_colcounts() %>%
         split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = split_fun) %>%
@@ -38,7 +39,7 @@ test_that("template_ancova generates expressions with multiple endpoints", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
+      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -77,6 +78,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        add_colcounts() %>%
         split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = split_fun) %>%
@@ -88,7 +90,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
+      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -128,6 +130,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
+        add_colcounts() %>%
         split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
         split_rows_by("PARAMCD", split_fun = split_fun) %>%
@@ -139,7 +142,7 @@ test_that("template_ancova generates expressions with multiple endpoints with co
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
+      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -177,6 +180,7 @@ test_that("template_ancova generates expressions with single endpoint", {
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        add_colcounts() %>%
         split_rows_by("AVISIT", split_fun = split_fun) %>%
         append_varlabels(adqs, "AVISIT") %>%
         append_topleft(paste0("  ", "MYFAVORITE")) %>%
@@ -198,7 +202,7 @@ test_that("template_ancova generates expressions with single endpoint", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, col_counts = table(adsl$ARMCD))
+      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )

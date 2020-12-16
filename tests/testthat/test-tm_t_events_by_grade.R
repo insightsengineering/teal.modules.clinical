@@ -13,8 +13,6 @@ test_that("template_events_by_grade generates standard expressions", {
     data = quote({
       anl <- adae # nolintr
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
-      col_counts <- table(adsl$ACTARM)
-      col_counts <- c(col_counts, `All Patients` = sum(col_counts))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -54,7 +52,7 @@ test_that("template_events_by_grade generates standard expressions", {
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = col_counts
+        alt_counts_df = adsl
       )
     ),
     pruned_and_sorted_result = quote(
@@ -62,11 +60,11 @@ test_that("template_events_by_grade generates standard expressions", {
         trim_rows() %>%
         sort_at_path(
           path = "AEBODSYS",
-          scorefun = cont_n_onecol(length(col_counts)),
+          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE) %>%
         sort_at_path(
           path = c("AEBODSYS", "*", "AEDECOD"),
-          scorefun = cont_n_onecol(length(col_counts)),
+          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE)
     )
   )
@@ -89,7 +87,6 @@ test_that("template_events_by_grade without adding total column option works as 
     data = quote({
       anl <- adae # nolintr
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
-      col_counts <- table(adsl$ACTARM)
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -130,7 +127,7 @@ test_that("template_events_by_grade without adding total column option works as 
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = col_counts
+        alt_counts_df = adsl
       )
     ),
     pruned_and_sorted_result = quote(
@@ -168,8 +165,6 @@ test_that("template_events_by_grade with hlt only works", {
     data = quote({
       anl <- adae # nolintr
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
-      col_counts <- table(adsl$ACTARM)
-      col_counts <- c(col_counts, `All Patients` = sum(col_counts))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -198,7 +193,7 @@ test_that("template_events_by_grade with hlt only works", {
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = col_counts
+        alt_counts_df = adsl
       )
     ),
     pruned_and_sorted_result = quote(
@@ -206,7 +201,7 @@ test_that("template_events_by_grade with hlt only works", {
         trim_rows() %>%
         sort_at_path(
           path = "AEBODSYS",
-          scorefun = cont_n_onecol(length(col_counts)),
+          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
     )

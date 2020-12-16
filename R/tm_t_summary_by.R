@@ -248,45 +248,12 @@ template_summary_by <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  # Adjust column counts when `parallel_vars` is selected
-  if (add_total) {
-    if (parallel_vars) {
-      col_counts <- substitute(
-        expr = c(
-          rep(table(parentname$arm_var), each = length(sum_vars)),
-          rep(sum(table(parentname$arm_var)), each = length(sum_vars))
-        ),
-        env = list(parentname = as.name(parentname), arm_var = arm_var, sum_vars = sum_vars)
-      )
-    } else {
-      col_counts <- substitute(
-        expr = c(
-          table(parentname$arm_var),
-          sum(table(parentname$arm_var))
-        ),
-        env = list(parentname = as.name(parentname), arm_var = arm_var, sum_vars = sum_vars)
-      )
-    }
-  } else {
-    if (parallel_vars) {
-      col_counts <- substitute(
-        expr = rep(table(parentname$arm_var), each = length(sum_vars)),
-        env = list(parentname = as.name(parentname), arm_var = arm_var, sum_vars = sum_vars)
-      )
-    } else {
-      col_counts <- substitute(
-        expr = table(parentname$arm_var),
-        env = list(parentname = as.name(parentname), arm_var = arm_var)
-      )
-    }
-  }
-
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
       },
-    env = list(col_counts = col_counts)
+    env = list(parent = as.name(parentname))
   )
   y
 }

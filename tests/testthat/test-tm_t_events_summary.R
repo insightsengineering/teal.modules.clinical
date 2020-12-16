@@ -9,8 +9,6 @@ test_that("template_events_summary generates minimal table", {
   expected <- list(
     data = quote({
       anl <- adae
-      col_counts <- table(adsl$ARM)
-      col_counts <- c(col_counts, `All Patients` = sum(col_counts))
       study_id <- unique(anl[["STUDYID"]])
       anl <- anl %>%
         dplyr::mutate(
@@ -21,6 +19,7 @@ test_that("template_events_summary generates minimal table", {
     layout_parent = quote(
       lyt_parent <- basic_table() %>%
         split_cols_by("ARM") %>%
+        add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         count_values(
           "DTHFL",
@@ -36,11 +35,12 @@ test_that("template_events_summary generates minimal table", {
         )
       ),
     table_parent = quote(
-      result_parent <- build_table(lyt = lyt_parent, df = adsl, col_counts = col_counts)
+      result_parent <- build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
     ),
     layout_anl = quote(
       lyt_anl <- basic_table() %>%
         split_cols_by("ARM") %>%
+        add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
@@ -58,7 +58,7 @@ test_that("template_events_summary generates minimal table", {
         )
     ),
     table_anl = quote(
-      result_anl <- build_table(lyt = lyt_anl, df = anl, col_counts = col_counts)
+      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
     ),
     table = quote({
       col_info(result_parent) <- col_info(result_anl)
@@ -86,8 +86,6 @@ test_that("template_events_summary generates table with multiple flags", {
   expected <- list(
     data = quote({
       anl <- adae
-      col_counts <- table(adsl$ARM)
-      col_counts <- c(col_counts, `All Patients` = sum(col_counts))
       study_id <- unique(anl[["STUDYID"]])
       anl <- anl %>%
         dplyr::mutate(
@@ -98,6 +96,7 @@ test_that("template_events_summary generates table with multiple flags", {
     layout_parent = quote(
       lyt_parent <- basic_table() %>%
         split_cols_by("ARM") %>%
+        add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         count_values(
           "DTHFL",
@@ -113,11 +112,12 @@ test_that("template_events_summary generates table with multiple flags", {
         )
     ),
     table_parent = quote(
-      result_parent <- build_table(lyt = lyt_parent, df = adsl, col_counts = col_counts)
+      result_parent <- build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
     ),
     layout_anl = quote(
       lyt_anl <- basic_table() %>%
         split_cols_by("ARM") %>%
+        add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
@@ -179,7 +179,7 @@ test_that("template_events_summary generates table with multiple flags", {
         )
     ),
     table_anl = quote(
-      result_anl <- build_table(lyt = lyt_anl, df = anl, col_counts = col_counts) %>%
+      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl) %>%
         insert_rrow(rrow("Total number of patients with at least one", ""), at = 3) %>%
         insert_rrow(rrow("Total number of unique preferred terms which are", ""), at = 7) %>%
         insert_rrow(rrow("Total number of adverse events which are", ""), at = 11) %>%

@@ -116,6 +116,7 @@ template_ancova <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
+        add_colcounts() %>%
         split_rows_by(visit_var, split_fun = split_fun) %>%
         append_varlabels(dataname, visit_var),
       env = list(
@@ -191,19 +192,14 @@ template_ancova <- function(dataname = "ANL",
   )
 
   # Build table.
-  col_counts <- substitute(
-    expr = table(parent$arm_var),
-    env = list(parent = as.name(parentname), arm_var = arm_var)
-  )
-
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(
       anl = as.name(dataname),
-      col_counts = col_counts
+      parent = as.name(parentname)
     )
   )
 

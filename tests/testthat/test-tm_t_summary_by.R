@@ -46,7 +46,7 @@ test_that("template_summary_by generates correct expressions", {
         append_varlabels(adlb, "AVAL")
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = c(table(adsl$ARM), sum(table(adsl$ARM))))
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -97,10 +97,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
       result <- build_table(
         lyt = lyt,
         df = anl,
-        col_counts = c(
-          rep(table(adsl$ARM), each = length(c("AVAL", "CHG"))),
-          rep(sum(table(adsl$ARM)), each = length(c("AVAL", "CHG")))
-          )
+        alt_counts_df = adsl
         )
       result
     })
@@ -149,7 +146,7 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
         summarize_row_groups()
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = table(adsl$ARM))
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )

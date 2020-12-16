@@ -41,19 +41,6 @@ template_events <- function(dataname,
 
   # Start data steps.
   data_list <- list()
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = col_n <- table(parentname$arm_var),
-      env = list(parentname = as.name(parentname), arm_var = arm_var)
-    )
-  )
-  if (add_total) {
-    data_list <- add_expr(
-      data_list,
-      quote(col_n <- c(col_n, "All Patients" = sum(col_n)))
-    )
-  }
 
   data_list <- add_expr(
     data_list,
@@ -198,8 +185,9 @@ template_events <- function(dataname,
   )
 
   # Full table.
-  y$table <- quote(
-    result <- build_table(lyt = lyt, df = anl, col_counts = col_n)
+  y$table <- substitute(
+    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    env = list(parent = as.name(parentname))
   )
 
   # Start pruning table.
@@ -214,21 +202,16 @@ template_events <- function(dataname,
   if (prune_freq > 0 || prune_diff > 0) {
 
     # Do not use "All Patients" column for pruning conditions.
-    if (add_total) {
-      prune_list <- add_expr(
-        prune_list,
-        quote(
-          expr = col_indices <- seq_along(col_n)[-length(col_n)]
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = col_indices <- seq_along(table(parent$arm_var)),
+        env = list(
+          parent = as.name(parentname),
+          arm_var = as.name(arm_var)
         )
       )
-    } else {
-      prune_list <- add_expr(
-        prune_list,
-        quote(
-          expr = col_indices <- seq_along(col_n)
-        )
-      )
-    }
+    )
 
     if (prune_freq > 0 && prune_diff == 0) {
 
@@ -316,12 +299,24 @@ template_events <- function(dataname,
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
-      quote(cont_n_onecol(length(col_n)))
+      substitute(
+        expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
+        env = list(
+          parent = as.name(parentname),
+          arm_var = as.name(arm_var)
+        )
+      )
     } else {
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = length(col_n)))
+      substitute(
+        expr = score_occurrences_cols(col_indices = length(levels(parent$arm_var)) + 1),
+        env = list(
+          parent = as.name(parentname),
+          arm_var = as.name(arm_var)
+        )
+      )
     } else {
       quote(score_occurrences)
     }

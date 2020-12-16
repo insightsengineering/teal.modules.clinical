@@ -13,7 +13,6 @@ test_that("template_abnormality generates correct expressions with default argum
   expected <- list(
     data = quote({
       anl <- adlb %>% filter(ONTRTFL == "Y" & !is.na(ANRIND))
-      n_col_counts <- table(adsl$ARM)
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -38,7 +37,7 @@ test_that("template_abnormality generates correct expressions with default argum
         append_varlabels(adlb, "ANRIND")
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
         prune_table()
       result
     })
@@ -64,8 +63,6 @@ test_that("template_abnormality generates correct expressions with custom argume
   expected <- list(
     data = quote({
       anl <- adlb %>% filter(MYTRTFL == "YES" & !is.na(MYANRIND))
-      n_col_counts <- table(adsl$ARM)
-      n_col_counts <- c(n_col_counts, Total = sum(n_col_counts))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -93,7 +90,7 @@ test_that("template_abnormality generates correct expressions with custom argume
         append_varlabels(adlb, "MYANRIND")
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = n_col_counts) %>%
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
         prune_table()
       result
     })

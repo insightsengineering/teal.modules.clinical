@@ -11,7 +11,6 @@ test_that("template_summary generates correct expressions", {
   )
   expected <- list(
     data = quote({
-      col_counts <- table(adsl$ARM)
       anl <- adrs %>%
         df_explicit_na(
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
@@ -31,7 +30,7 @@ test_that("template_summary generates correct expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -51,8 +50,6 @@ test_that("template_summary can generate customized table", {
   )
   expected <- list(
     data = quote({
-      col_counts <- table(adsl$ARMCD)
-      col_counts <- c(col_counts, sum(col_counts))
       anl <- adrs %>%
         df_explicit_na(
           omit_columns = setdiff(names(adrs), c("RACE")),
@@ -73,7 +70,7 @@ test_that("template_summary can generate customized table", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )

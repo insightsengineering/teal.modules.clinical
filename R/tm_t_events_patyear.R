@@ -77,21 +77,12 @@ template_events_patyear <- function(dataname,
   )
 
   # table
-  col_counts <- substitute(
-    expr = table(parentname$arm_var),
-    env = list(parentname = as.name(parentname), arm_var = arm_var)
-  )
-  if (add_total) {
-    col_counts <- substitute(
-      expr = c(col_counts, "All Patients" = sum(col_counts))
-    )
-  }
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
-    env = list(col_counts = col_counts)
+    env = list(parent = as.name(parentname))
   )
 
   y

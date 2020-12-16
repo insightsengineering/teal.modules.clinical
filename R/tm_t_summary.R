@@ -31,19 +31,6 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = col_counts <- table(parentname$arm_var),
-      env = list(parentname = as.name(parentname), arm_var = arm_var)
-    )
-  )
-  if (add_total) {
-    data_list <- add_expr(
-      data_list,
-      quote(col_counts <- c(col_counts, sum(col_counts)))
-    )
-  }
-  data_list <- add_expr(
-    data_list,
-    substitute(
       expr = anl <- df %>%
         df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
       env = list(
@@ -124,11 +111,12 @@ template_summary <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote(
+  y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
-    }
+    },
+    env = list(parent = as.name(parentname))
   )
 
   y
