@@ -451,8 +451,8 @@ srv_t_events_by_grade <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_hlt <- anl_m$columns_source$hlt
-    input_llt <- anl_m$columns_source$llt
+    input_hlt <- as.vector(anl_m$columns_source$hlt)
+    input_llt <- as.vector(anl_m$columns_source$llt)
 
     my_calls <- template_events_by_grade(
       dataname = "ANL",
