@@ -39,7 +39,6 @@ test_that("template_tte produces healthy standard output", {
       ANL_ADSL <- ANL_ADSL %>%# nolint
         mutate(ARM = droplevels(ARM))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = ANL_ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
@@ -89,7 +88,7 @@ test_that("template_tte produces healthy standard output", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
       result
     })
   )

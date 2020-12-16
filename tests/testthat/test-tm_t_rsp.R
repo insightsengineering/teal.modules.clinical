@@ -23,7 +23,6 @@ test_that("template_rsp generates standard expressions", {
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = adsl[["ARMCD"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
@@ -59,7 +58,7 @@ test_that("template_rsp generates standard expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -92,7 +91,6 @@ test_that("template_rsp generates right expressions with non-default", {
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
@@ -123,7 +121,7 @@ test_that("template_rsp generates right expressions with non-default", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -151,7 +149,6 @@ test_that("template_rsp generates expression without arm comparison", {
       ADSL <- ADSL %>%  # nolint
         mutate(ARM = droplevels(ARM))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
@@ -164,7 +161,7 @@ test_that("template_rsp generates expression without arm comparison", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -203,7 +200,6 @@ test_that("template_rsp generates expression with non-default controls and strat
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARM"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
@@ -255,7 +251,7 @@ test_that("template_rsp generates expression with non-default controls and strat
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -291,7 +287,6 @@ test_that("template_rsp can combine comparison arms", {
     combine_comp_arms = quote(
       groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
     ),
-    col_counts = quote(col_counts <- combine_counts(fct = ADSL[["ARMCD"]], groups_list = groups)),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by_groups(
@@ -327,7 +322,7 @@ test_that("template_rsp can combine comparison arms", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -377,7 +372,6 @@ test_that("template_rsp can combine refs", {
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
         mutate(ARMCD = droplevels(ARMCD))
     }),
-    col_counts = quote(col_counts <- combine_counts(fct = adsl[["ARMCD"]])),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
@@ -411,7 +405,7 @@ test_that("template_rsp can combine refs", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )

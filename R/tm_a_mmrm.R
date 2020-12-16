@@ -89,11 +89,6 @@ template_fit_mmrm <- function(parentname,
     )
   )
 
-  y$col_counts <- substitute(
-    expr = col_counts <- table(parentname$arm_var),
-    env = list(parentname = as.name(parentname), arm_var = arm_var)
-  )
-
   vars <- substitute(
     expr = list(
       response = aval_var,
@@ -139,16 +134,15 @@ template_fit_mmrm <- function(parentname,
 #'
 #' @inheritParams template_arguments
 #' @param fit_name name of fitted MMRM object
-#' @param colcounts_name name of column counts for MMRM LS means table
 #' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`)\cr
 #'   type of table to output.
 #'
 #' @importFrom broom tidy
-template_mmrm_tables <- function(dataname,
+template_mmrm_tables <- function(parentname,
+                                 dataname,
                                  fit_name,
-                                 colcounts_name,
                                  arm_var,
                                  ref_arm,
                                  visit_var,
@@ -223,11 +217,11 @@ template_mmrm_tables <- function(dataname,
     t_mmrm_lsmeans = {
       y$lsmeans_table <- substitute(
         expr = {
-          lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), col_counts = col_counts)
+          lsmeans_table <- build_table(lyt = lyt, df = broom::tidy(fit_mmrm), alt_counts_df = parentname)
           lsmeans_table
         },
         env = list(
-          col_counts = as.name(colcounts_name),
+          parentname = as.name(parentname),
           fit_mmrm = as.name(fit_name)
         )
       )
@@ -1125,7 +1119,6 @@ srv_mmrm <- function(input,
     # Get the fit stack while evaluating the fit code at the same time.
     fit_stack <- mmrm_fit()
     fit <- chunks_get_var("fit", chunks = fit_stack)
-    col_counts <- chunks_get_var("col_counts", chunks = fit_stack) # nolint
     # Start new private stack for the table code.
     table_stack <- chunks$new()
 
@@ -1136,13 +1129,14 @@ srv_mmrm <- function(input,
     anl_m <- anl_merged()
 
     ANL <- chunks_get_var("ANL", chunks = fit_stack) # nolint
+    ANL_ADSL <- chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
     paramcd <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
 
     mmrm_table <- function(table_type) {
       res <- template_mmrm_tables(
+        parentname = "ANL_ADSL",
         dataname = "ANL",
         fit_name = "fit",
-        colcounts_name = "col_counts",
         arm_var = as.vector(anl_m$columns_source$arm_var),
         ref_arm = input$ref_arm,
         visit_var = as.vector(anl_m$columns_source$visit_var),

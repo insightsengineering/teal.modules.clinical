@@ -133,18 +133,6 @@ template_rsp <- function(dataname,
     )
   }
 
-  y$col_counts <- if (compare_arm && combine_comp_arms) {
-    substitute(
-      expr = col_counts <- combine_counts(fct = parentname[[group]], groups_list = groups),
-      env = list(group = arm_var, parentname = as.name(parentname))
-    )
-  } else {
-    substitute(
-      expr = col_counts <- combine_counts(fct = parentname[[group]]),
-      env = list(group = arm_var, parentname = as.name(parentname))
-    )
-  }
-
   layout_list <- list()
   layout_list <- add_expr(layout_list, substitute(basic_table()))
   layout_list <- add_expr(
@@ -304,10 +292,13 @@ template_rsp <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote({
-    result <- build_table(lyt = lyt, df = anl, col_counts = col_counts)
-    result
-  })
+  y$table <- substitute(
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
+      result
+    },
+    env = list(parentname = as.name(parentname))
+  )
   y
 }
 

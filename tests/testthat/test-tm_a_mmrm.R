@@ -22,9 +22,6 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD))
     }),
-    col_counts = quote(
-      col_counts <- table(adsl$ARMCD)
-    ),
     fit = quote(
       fit <- fit_mmrm(
         vars = list(
@@ -69,9 +66,6 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
         mutate(ARMCD = droplevels(ARMCD)) %>%
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
     }),
-    col_counts = quote(
-      col_counts <- table(adsl$ARMCD) # nolint
-    ),
     fit = substitute(
       expr = fit <- fit_mmrm(
         vars = vars,
@@ -98,9 +92,9 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
 
 test_that("template_mmrm_tables works as expected", {
   result <- template_mmrm_tables(
+    parentname = "ADSL",
     dataname = "ANL",
     fit_name = "fit_mmrm",
-    colcounts_name = "col_counts",
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     visit_var = "AVISIT",

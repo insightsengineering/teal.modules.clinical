@@ -25,9 +25,9 @@ template_fit_mmrm(
 )
 
 template_mmrm_tables(
+  parentname,
   dataname,
   fit_name,
-  colcounts_name,
   arm_var,
   ref_arm,
   visit_var,
@@ -90,8 +90,6 @@ is chosen and does not give a valid result, an error will occur.}
 machine (not default).}
 
 \item{fit_name}{name of fitted MMRM object}
-
-\item{colcounts_name}{name of column counts for MMRM LS means table}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
