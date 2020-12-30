@@ -9,3 +9,4 @@ temp/*
 ^docs/*
 test_full_example/*
 ^Jenkinsfile$
+^\.lintr$
