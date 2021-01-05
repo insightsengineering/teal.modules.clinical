@@ -719,6 +719,10 @@ srv_mmrm <- function(input,
                      plot_width) {
   init_chunks()
 
+  # Reactive responsible for sending a disable/enable signal
+  # to show R code and debug info buttons
+  disable_r_code <- reactiveVal(FALSE)
+
   observeEvent(input[[extract_input("cov_var", dataname)]], {
     # update covariates as actual variables
     updateOptionalSelectInput(
@@ -867,19 +871,17 @@ srv_mmrm <- function(input,
     success <- try(mmrm_fit(), silent = TRUE)
     if (!inherits(success, "try-error")) {
       shinyjs::show("mmrm_title")
-      shinyjs::enable("rcode-show_rcode")
-      shinyjs::enable("rcode-show_eval_details-evaluation_details")
+      disable_r_code(FALSE)
     } else {
       shinyjs::hide("mmrm_title")
-      # "rcode-show_rcode" and "rcode-show_eval_details-evaluation_details" will have already been hidden
+      # show R code and debug info buttons will have already been hidden by disable_r_code
     }
   })
 
   # all the inputs and data that can be out of sync with the fitted model
   mmrm_inputs_reactive <- reactive({
     shinyjs::disable("button_start")
-    shinyjs::disable("rcode-show_rcode")
-    shinyjs::disable("rcode-show_eval_details-evaluation_details")
+    disable_r_code(TRUE)
 
     encoding_inputs <- lapply(sync_inputs, function(x) input[[x]])
     names(encoding_inputs) <- sync_inputs
@@ -955,11 +957,9 @@ srv_mmrm <- function(input,
   # disable the show R code button and show warning message
   observeEvent(mmrm_inputs_reactive(), {
     shinyjs::enable("button_start")
-    shinyjs::disable("rcode-show_rcode")
-    shinyjs::disable("rcode-show_eval_details-evaluation_details")
+    disable_r_code(TRUE)
     if (!state_has_changed()) {
-      shinyjs::enable("rcode-show_rcode")
-      shinyjs::enable("rcode-show_eval_details-evaluation_details")
+      disable_r_code(FALSE)
       shinyjs::disable("button_start")
     }
   })
@@ -1263,6 +1263,7 @@ srv_mmrm <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
     modal_title = "R Code for the Current MMRM Analysis",
-    code_header = label
+    code_header = label,
+    disable_buttons = disable_r_code
   )
 }
