@@ -564,7 +564,7 @@ ui_t_events_byterm <- function(id, ...) {
         numericInput(
           inputId = ns("prune_freq"),
           label = "Incidence Rate (%)",
-          value = 0,
+          value = a$prune_freq,
           min = 0,
           max = 100,
           step = 1,
@@ -573,7 +573,7 @@ ui_t_events_byterm <- function(id, ...) {
         numericInput(
           inputId = ns("prune_diff"),
           label = "Difference Rate (%)",
-          value = 0,
+          value = a$prune_diff,
           min = 0,
           max = 100,
           step = 1,

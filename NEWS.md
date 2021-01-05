@@ -17,6 +17,9 @@
 ### Miscellaneous
 * Added vignette about `substitute` which can be helpful when developing analysis template functions for teal modules.
 
+### Bug fixes
+* Updated `tm_t_events` module to use user's choices for `prune_freq` and `prune_diff` when non-default is used
+
 # teal.modules.clinical 0.8.5
 
 * All graph modules now accept a `plot_width` argument which specifies the plot width and renders a slider to adjust the width interactively in the module.
