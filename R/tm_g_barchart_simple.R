@@ -188,7 +188,7 @@ ui_g_barchart_simple <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
   standard_layout(
     output = white_small_well(
-      plot_with_settings_ui(id = ns("myplot"), height = args$plot_height, width = args$plot_width),
+      plot_with_settings_ui(id = ns("myplot")),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(

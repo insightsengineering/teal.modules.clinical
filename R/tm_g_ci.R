@@ -159,7 +159,7 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
   args <- list(...)
 
   standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot"), height = args$plot_height, width = args$plot_width),
+    output = plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x_var", "y_var", "color")]),

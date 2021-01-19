@@ -486,7 +486,7 @@ ui_mmrm <- function(id, ...) {
       textOutput(ns("null_input_msg")),
       h3(textOutput(ns("mmrm_title"))),
       uiOutput(ns("mmrm_table")),
-      plot_with_settings_ui(id = ns("mmrm_plot"), height = a$plot_height, width = a$plot_width)
+      plot_with_settings_ui(id = ns("mmrm_plot"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),

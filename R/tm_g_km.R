@@ -349,7 +349,7 @@ ui_g_km <- function(id, ...) {
     output = white_small_well(
       verbatimTextOutput(outputId = ns("text")),
       plot_with_settings_ui(
-        id = ns("myplot"), height = a$plot_height, width = a$plot_width
+        id = ns("myplot")
       )
     ),
     encoding = div(

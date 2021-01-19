@@ -327,7 +327,7 @@ ui_g_forest_rsp <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot"), height = a$plot_height, width = a$plot_width),
+    output = plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
