@@ -2,32 +2,24 @@
 #'
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
-#' @param event_indicator (`numeric`)\cr code for event as opposed to censoring.
+#' @param events_var (`integer`)\cr number of observed events.
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
 template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
+                                    events_var,
                                     aval_var = "AVAL",
-                                    cnsr_var = "CNSR",
                                     control = control_incidence_rate(),
-                                    event_indicator = 0,
-                                    add_total = TRUE
-) {
-
+                                    add_total = TRUE) {
   # initialize
   y <- list()
 
   # data
   y$data <- substitute(
-    expr = anl <- df %>%
-      mutate(is_event = cnsr_var == event_indicator),
-    env = list(
-      df = as.name(dataname),
-      cnsr_var = as.name(cnsr_var),
-      event_indicator = event_indicator
-    )
+    expr = anl <- df,
+    env = list(df = as.name(dataname))
   )
 
   # layout
@@ -54,7 +46,7 @@ template_events_patyear <- function(dataname,
     substitute(
       expr = estimate_incidence_rate(
         vars = aval_var,
-        is_event = "is_event",
+        n_events = events_var,
         control = control_incidence_rate(
           conf_level = conf_level,
           conf_type = conf_type,
@@ -64,6 +56,7 @@ template_events_patyear <- function(dataname,
       ),
       env = list(
         aval_var = aval_var,
+        events_var = events_var,
         conf_level = control$conf_level,
         conf_type = control$conf_type,
         time_unit_input = control$time_unit_input,
@@ -94,6 +87,8 @@ template_events_patyear <- function(dataname,
 #' @inheritParams module_arguments
 #' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for the analysis unit variable.
+#' @param events_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all event counts.
 #'
 #' @export
 #' @examples
@@ -102,20 +97,34 @@ template_events_patyear <- function(dataname,
 #' library(random.cdisc.data)
 #' adsl <- radsl(cached = TRUE)
 #' adaette <- radaette(cached = TRUE)
+#' adaette <- adaette %>%
+#'   dplyr::mutate(is_event = CNSR == 0) %>%
+#'   dplyr::mutate(n_events = as.integer(is_event))
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
 #'     cdisc_dataset("ADAETTE", adaette),
 #'     code =
 #'       "ADSL <- radsl(cached = TRUE)
-#'     ADAETTE <- radaette(cached = TRUE)"
+#'       ADAETTE <- radaette(cached = TRUE)
+#'       ADAETTE <- ADAETTE %>%
+#'         dplyr::mutate(is_event = CNSR == 0) %>%
+#'         dplyr::mutate(n_events = as.integer(is_event))"
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events_patyear(
 #'       label = "AE rate adjusted for patient-years at risk Table",
 #'       dataname = "ADAETTE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
-#'       paramcd = choices_selected(value_choices(adaette, "PARAMCD", "PARAM"), "AETTE1")
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
+#'         selected = "ARMCD"),
+#'       events_var = choices_selected(
+#'         choices = variable_choices(adaette, "n_events"),
+#'        selected = "n_events",
+#'        fixed = TRUE),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(adaette, "PARAMCD", "PARAM"),
+#'         selected = "AETTE1")
 #'     )
 #'   )
 #' )
@@ -132,15 +141,13 @@ tm_t_events_patyear <- function(label,
                                   "ADSL"
                                 ),
                                 arm_var,
+                                events_var,
                                 paramcd,
                                 aval_var = choices_selected(
                                   variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE
                                 ),
                                 avalu_var = choices_selected(
                                   variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
-                                ),
-                                cnsr_var = choices_selected(
-                                  variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE
                                 ),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 pre_output = NULL,
@@ -167,7 +174,7 @@ tm_t_events_patyear <- function(label,
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
+    events_var = cs_to_des_select(events_var, dataname = dataname)
   )
 
   module(
@@ -191,31 +198,18 @@ tm_t_events_patyear <- function(label,
 ui_events_patyear <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$cnsr_var)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var)
 
   standard_layout(
     output = white_small_well(uiOutput(ns("patyear_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "cnsr_var")]),
+      datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      selectInput(
-        ns("event_indicator"),
-        "Select an Event Indicator",
-        choices = NULL,
-        selected = NULL,
-        multiple = FALSE
       ),
       data_extract_input(
         id = ns("aval_var"),
@@ -227,6 +221,12 @@ ui_events_patyear <- function(id, ...) {
         id = ns("avalu_var"),
         label = "Analysis Unit Variable",
         data_extract_spec = a$avalu_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("events_var"),
+        label = "Event Variable",
+        data_extract_spec = a$events_var,
         is_single_dataset = is_single_dataset_value
       ),
       selectInput(
@@ -286,21 +286,11 @@ srv_events_patyear <- function(input,
                                paramcd,
                                aval_var,
                                avalu_var,
-                               cnsr_var,
+                               events_var,
                                label) {
   init_chunks()
   observe({
     anl <- datasets$get_data(dataname, filtered = FALSE)
-    event_choices <- anl %>%
-      select(as.name(cnsr_var$select$selected)) %>%
-      unique() %>%
-      arrange() %>%
-      pull()
-    updateSelectInput(
-      session, "event_indicator",
-      choices = event_choices,
-      selected = event_choices[1]
-    )
     avalu_choices <- anl %>%
       select(as.name(avalu_var$select$selected)) %>%
       unique() %>%
@@ -315,8 +305,8 @@ srv_events_patyear <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, aval_var, avalu_var, cnsr_var),
-    input_id = c("arm_var", "paramcd", "aval_var", "avalu_var", "cnsr_var"),
+    data_extract = list(arm_var, paramcd, aval_var, avalu_var, events_var),
+    input_id = c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -334,8 +324,9 @@ srv_events_patyear <- function(input,
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+    input_events_var <- as.vector(anl_m$columns_source$events_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
 
     # validate inputs
@@ -343,7 +334,7 @@ srv_events_patyear <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
       arm_var = input_arm_var
     )
 
@@ -354,7 +345,7 @@ srv_events_patyear <- function(input,
 
     validate(
       need(is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(is_character_single(input_cnsr_var), "Censor variable should be a single column."),
+      need(is_character_single(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected"),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty")
     )
@@ -380,7 +371,7 @@ srv_events_patyear <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$aval_var),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+      events_var = as.vector(anl_m$columns_source$events_var),
       control = control_incidence_rate(
         conf_level = as.numeric(input$conf_level), # nolint
         conf_type = if (input$conf_method == "Normal (rate)") {
@@ -401,7 +392,6 @@ srv_events_patyear <- function(input,
         },
         time_unit_output = as.numeric(input$time_unit_output)
       ),
-      event_indicator = input$event_indicator,
       add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
@@ -420,7 +410,7 @@ srv_events_patyear <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, aval_var, cnsr_var)
+      list(arm_var, paramcd, aval_var, events_var)
     ),
     modal_title = "Event Rate adjusted for patient-year at risk",
     code_header = label

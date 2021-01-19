@@ -8,10 +8,9 @@ template_events_patyear(
   dataname,
   parentname,
   arm_var,
+  events_var,
   aval_var = "AVAL",
-  cnsr_var = "CNSR",
   control = control_incidence_rate(),
-  event_indicator = 0,
   add_total = TRUE
 )
 }
@@ -25,15 +24,12 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
+\item{events_var}{(\code{integer})\cr number of observed events.}
+
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
-\item{cnsr_var}{(\code{character})\cr
-name of the censoring variable.}
-
 \item{control}{(\code{list})\cr list of settings for the analysis.}
-
-\item{event_indicator}{(\code{numeric})\cr code for event as opposed to censoring.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

@@ -1,6 +1,6 @@
 # teal.modules.clinical 0.8.6.9000
 
-* Issues with no news:
+* The argument `cnsr_val` was removed from `tm_t_events_patyear` and a new argument `events_var` was added.
 
 # teal.modules.clinical 0.8.6
 

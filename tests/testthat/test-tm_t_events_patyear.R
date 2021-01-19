@@ -3,17 +3,15 @@ test_that("template_events_patyear generates standard expressions", {
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
-    cnsr_var = "CNSR",
+    events_var = "n_events",
     aval_var = "AVAL",
     control = control_incidence_rate(),
-    event_indicator = 0,
     add_total = TRUE
   )
 
   expected <- list(
     data = quote(
-      anl <- adaette %>%
-        mutate(is_event = CNSR == 0)
+      anl <- adaette
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -22,7 +20,7 @@ test_that("template_events_patyear generates standard expressions", {
         add_overall_col(label = "All Patients") %>%
         estimate_incidence_rate(
           vars = "AVAL",
-          is_event = "is_event",
+          n_events = "n_events",
           control = control_incidence_rate(
             conf_level = 0.95,
             conf_type = "normal",
@@ -49,17 +47,15 @@ test_that("template_events_patyear generates right expressions with non-default"
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARM",
-    cnsr_var = "CNSR",
+    events_var = "n_events",
     aval_var = "AVAL",
     control = control_incidence_rate(),
-    event_indicator = 0,
     add_total = FALSE
   )
 
   expected <- list(
     data = quote(
-      anl <- adaette %>%
-        mutate(is_event = CNSR == 0)
+      anl <- adaette
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -67,7 +63,7 @@ test_that("template_events_patyear generates right expressions with non-default"
         add_colcounts() %>%
         estimate_incidence_rate(
           vars = "AVAL",
-          is_event = "is_event",
+          n_events = "n_events",
           control = control_incidence_rate(
             conf_level = 0.95,
             conf_type = "normal",
@@ -94,7 +90,7 @@ test_that("template_events_patyear generates right expressions with non-default 
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
-    cnsr_var = "CNSR",
+    events_var = "n_events",
     aval_var = "AVAL",
     control = control_incidence_rate(
       conf_level = 0.9,
@@ -102,14 +98,12 @@ test_that("template_events_patyear generates right expressions with non-default 
       time_unit_input = "month",
       time_unit_output = 100
     ),
-    event_indicator = 0,
     add_total = TRUE
   )
 
   expected <- list(
     data = quote(
-      anl <- adaette %>%
-        mutate(is_event = CNSR == 0)
+      anl <- adaette
     ),
     layout = quote(
       lyt <- basic_table() %>%
@@ -118,7 +112,7 @@ test_that("template_events_patyear generates right expressions with non-default 
         add_overall_col(label = "All Patients") %>%
         estimate_incidence_rate(
           vars = "AVAL",
-          is_event = "is_event",
+          n_events = "n_events",
           control = control_incidence_rate(
             conf_level = 0.9,
             conf_type = "exact",

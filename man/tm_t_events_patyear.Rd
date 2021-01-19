@@ -10,11 +10,11 @@ tm_t_events_patyear(
   parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
+  events_var,
   paramcd,
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   avalu_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed =
     TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
@@ -34,6 +34,9 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.}
 
+\item{events_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all event counts.}
+
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
@@ -43,10 +46,6 @@ variable.}
 
 \item{avalu_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis unit variable.}
-
-\item{cnsr_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices and preselected option for the censoring
-variable.}
 
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
@@ -69,20 +68,34 @@ library(dplyr)
 library(random.cdisc.data)
 adsl <- radsl(cached = TRUE)
 adaette <- radaette(cached = TRUE)
+adaette <- adaette \%>\%
+  dplyr::mutate(is_event = CNSR == 0) \%>\%
+  dplyr::mutate(n_events = as.integer(is_event))
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
     cdisc_dataset("ADAETTE", adaette),
     code =
       "ADSL <- radsl(cached = TRUE)
-    ADAETTE <- radaette(cached = TRUE)"
+      ADAETTE <- radaette(cached = TRUE)
+      ADAETTE <- ADAETTE \%>\%
+        dplyr::mutate(is_event = CNSR == 0) \%>\%
+        dplyr::mutate(n_events = as.integer(is_event))"
   ),
   modules = root_modules(
     tm_t_events_patyear(
       label = "AE rate adjusted for patient-years at risk Table",
       dataname = "ADAETTE",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
-      paramcd = choices_selected(value_choices(adaette, "PARAMCD", "PARAM"), "AETTE1")
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, c("ARM", "ARMCD")),
+        selected = "ARMCD"),
+      events_var = choices_selected(
+        choices = variable_choices(adaette, "n_events"),
+       selected = "n_events",
+       fixed = TRUE),
+      paramcd = choices_selected(
+        choices = value_choices(adaette, "PARAMCD", "PARAM"),
+        selected = "AETTE1")
     )
   )
 )
