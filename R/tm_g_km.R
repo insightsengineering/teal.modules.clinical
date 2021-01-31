@@ -24,7 +24,8 @@ template_g_km <- function(dataname = "ANL",
                           font_size = 8,
                           conf_level = 0.95,
                           ties = "efron",
-                          xlab = "Survival time in Days",
+                          xlab = "Time",
+                          yval = "Survival",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE) {
@@ -137,6 +138,7 @@ template_g_km <- function(dataname = "ANL",
                 variables = variables,
                 font_size = font_size,
                 xlab = xlab,
+                yval = yval,
                 newpage = FALSE,
                 title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
                 ggtheme = theme_minimal(),
@@ -153,6 +155,7 @@ template_g_km <- function(dataname = "ANL",
           font_size = font_size,
           facet_var = as.name(facet_var),
           xlab = xlab,
+          yval = yval,
           conf_level = conf_level,
           pval_method = pval_method,
           annot_surv_med = annot_surv_med,
@@ -171,6 +174,7 @@ template_g_km <- function(dataname = "ANL",
             variables = variables,
             font_size = font_size,
             xlab = xlab,
+            yval = yval,
             newpage = TRUE,
             ggtheme = theme_minimal(),
             control_surv = control_surv_timepoint(conf_level = conf_level),
@@ -182,6 +186,7 @@ template_g_km <- function(dataname = "ANL",
         env = list(
           font_size = font_size,
           xlab = xlab,
+          yval = yval,
           conf_level = conf_level,
           pval_method = pval_method,
           annot_surv_med = annot_surv_med,
@@ -462,6 +467,12 @@ ui_g_km <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
+          radioButtons(
+            ns("yval"),
+            tags$label("Value on y-axis", class = "text-primary"),
+            choices = c("Survival probability", "Failure probability"),
+            selected = c("Survival probability"),
+          ),
           numericInput(
             inputId = ns("font_size"),
             label = "Font size",
@@ -485,7 +496,7 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          textInput(ns("xlab"), "X-axis label", "Overall survival in Days")
+          textInput(ns("xlab"), "X-axis label", "Time")
         )
       )
     ),
@@ -610,7 +621,8 @@ srv_g_km <- function(input,
       pval_method = input$pval_method_coxph,
       conf_level = as.numeric(input$conf_level),
       ties = input$ties_coxph,
-      xlab = input$xlab
+      xlab = input$xlab,
+      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure")
     )
     mapply(expression = my_calls, chunks_push)
   })

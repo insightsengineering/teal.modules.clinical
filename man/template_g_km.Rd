@@ -19,7 +19,8 @@ template_g_km(
   font_size = 8,
   conf_level = 0.95,
   ties = "efron",
-  xlab = "Survival time in Days",
+  xlab = "Time",
+  yval = "Survival",
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE
@@ -67,6 +68,9 @@ value for the confidence level within the range of (0, 1).}
 Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
 \item{xlab}{(\code{string})\cr label of x-axis.}
+
+\item{yval}{(\code{string})\cr value of y-axis. Should be either
+\code{Survival} (default) or \code{Failure} probability.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values;
 \code{wald} (default) or \code{likelihood}.}
