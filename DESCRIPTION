@@ -35,7 +35,9 @@ Imports:
   styler,
   teal.devel (>= 0.2.8),
   utils,
-  utils.nest (>= 0.2.7)
+  utils.nest (>= 0.2.7),
+  DT,
+  tidyr
 Suggests:
   knitr,
   rmarkdown,
