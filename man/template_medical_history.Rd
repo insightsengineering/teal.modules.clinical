@@ -4,11 +4,19 @@
 \alias{template_medical_history}
 \title{Template: Medical History}
 \usage{
-template_medical_history(dataname, patient_id, mhist_vars)
+template_medical_history(
+  dataname,
+  patient_id,
+  mhist_vars,
+  mhbodsys = "MHBODSYS"
+)
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
+
+\item{mhbodsys}{(\code{character})\cr
+Body system or organ class column.}
 }
 \description{
 Creates medical history template.

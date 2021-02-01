@@ -8,9 +8,11 @@ template_prior_medication(
   dataname,
   patient_id,
   pmed_vars,
-  vital_vars,
-  vitals_xaxis,
-  aval
+  vital_vars = "PARAMCD",
+  vitals_xaxis = "ADY",
+  aval = "AVAL",
+  time_relation = "ATIREL",
+  medname_decoding = "CMDECOD"
 )
 }
 \arguments{

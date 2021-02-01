@@ -11,7 +11,10 @@ tm_g_patient_profile(
   patient_id,
   binf_vars,
   mhist_vars,
+  mhbodsys,
   pmed_vars,
+  time_relation,
+  medname_decoding,
   vital_vars,
   vitals_xaxis,
   aval,
@@ -38,7 +41,13 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{mhist_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Medical history variables.}
 
+\item{mhbodsys}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHBODSYS} column of the ADMH dataset.}
+
 \item{pmed_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Prior medication variables.}
+
+\item{time_relation}{(\verb{choices selected} or \code{data_extract_input}) \code{ATIREL} column of the ADCM dataset.}
+
+\item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDECOD} column of the ADCM dataset.}
 
 \item{vital_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Vitals variables.}
 
@@ -131,6 +140,15 @@ app <- init(
           fixed = FALSE
         )
       ),
+      mhbodsys = data_extract_spec(
+        dataname = "ADMH",
+        select = select_spec(
+          choices = variable_choices(ADMH),
+          selected = c("MHBODSYS"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
       pmed_vars = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
@@ -163,6 +181,24 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADVS),
           selected = c("AVAL"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      time_relation = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("ATIREL"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      medname_decoding = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMDECOD"),
           multiple = FALSE,
           fixed = FALSE
         )

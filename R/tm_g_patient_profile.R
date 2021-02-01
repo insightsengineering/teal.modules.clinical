@@ -44,12 +44,16 @@ template_basic_info <- function(dataname,
 #' Creates medical history template.
 #'
 #' @inheritParams template_arguments
+#' @param mhbodsys (`character`)\cr
+#' Body system or organ class column.
 #'
 template_medical_history <- function(dataname,
                                      patient_id,
-                                     mhist_vars) {
+                                     mhist_vars,
+                                     mhbodsys = "MHBODSYS") {
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is.string(mhbodsys)
   )
 
   y <- list()
@@ -61,14 +65,15 @@ template_medical_history <- function(dataname,
       result <- # compared to the original app, MHDISTAT is not available in ADHM
         dataname %>%
         select(mhist_vars) %>%
-        arrange(MHBODSYS) %>%
+        arrange(mhbodsys) %>%
         mutate_if(is.character, as.factor) %>%
         mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         distinct() %>%
         `colnames<-`(get_labels(dataname)$column_labels[mhist_vars])
       }, env = list(
         dataname = as.name(dataname),
-        mhist_vars = mhist_vars
+        mhist_vars = mhist_vars,
+        mhbodsys = as.name(mhbodsys)
       )
     )
   )
@@ -87,11 +92,15 @@ template_medical_history <- function(dataname,
 template_prior_medication <- function(dataname,
                                       patient_id,
                                       pmed_vars,
-                                      vital_vars,
-                                      vitals_xaxis,
-                                      aval) {
+                                      vital_vars = "PARAMCD",
+                                      vitals_xaxis = "ADY",
+                                      aval = "AVAL",
+                                      time_relation = "ATIREL",
+                                      medname_decoding = "CMDECOD") {
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is.string(time_relation),
+    is.string(medname_decoding)
   )
 
   y <- list()
@@ -103,14 +112,16 @@ template_prior_medication <- function(dataname,
     substitute(expr = {
       result <- # compared to the original app, MHDISTAT is not available in ADSL
         dataname %>%
-        filter(ATIREL %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
+        filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
         select(pmed_vars) %>% # remove ATIREL
-        filter(!is.na(CMDECOD)) %>%
+        filter(!is.na(cmdecod)) %>%
         distinct() %>%
         `colnames<-`(get_labels(dataname)$column_labels[pmed_vars])
     }, env = list(
       dataname = as.name(dataname),
-      pmed_vars = pmed_vars
+      pmed_vars = pmed_vars,
+      atirel = as.name(time_relation),
+      cmdecod = as.name(medname_decoding)
     ))
   )
   # Note: l_html_concomitant_adcm is still not included since one column is available out of 9
@@ -128,9 +139,9 @@ template_prior_medication <- function(dataname,
 template_vitals <- function(dataname,
                             patient_id,
                             pmed_vars,
-                            vital_vars,
-                            vitals_xaxis,
-                            aval,
+                            vital_vars = "PARAMCD",
+                            vitals_xaxis = "ADY",
+                            aval = "AVAL",
                             max_day) {
   assert_that(
     is.string(dataname)
@@ -145,14 +156,14 @@ template_vitals <- function(dataname,
       vitals <-
         dataname %>%
         group_by(vital_vars, vitals_xaxis) %>%
-        filter(PARAMCD %in% c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP")) %>%
+        filter(vital_vars %in% c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP")) %>%
         summarise(
           AVAL = max(aval, na.rm = T)
         )
 
       result_plot <- ggplot(data = vitals, mapping = aes(x = vitals_xaxis)) + # replaced VSDY
         geom_ribbon(
-          data = vitals %>% tidyr::pivot_wider(names_from = "PARAMCD", values_from = "AVAL"),
+          data = vitals %>% tidyr::pivot_wider(names_from = vital_vars_char, values_from = "AVAL"),
           aes(ymin = DIABP, ymax = SYSBP), fill = "red", alpha = 0.1
         ) +
         ggplot2::geom_line(
@@ -259,6 +270,7 @@ template_vitals <- function(dataname,
     }, env = list(
       dataname = as.name(dataname),
       vital_vars = as.name(vital_vars),
+      vital_vars_char = vital_vars,
       vitals_xaxis = as.name(vitals_xaxis),
       vitals_xaxis_char = vitals_xaxis,
       aval = as.name(aval),
@@ -420,11 +432,16 @@ template_adverse_events <- function(patient_id,
 #' @param binf_vars variables to be shown in Basic Info tab.
 #' @param ae_vars (`choices selected` or `data_extract_input`)\cr Adverse events variables.
 #' @param mhist_vars (`choices selected` or `data_extract_input`)\cr Medical history variables.
+#' @param mhbodsys (`choices selected` or `data_extract_input`)\cr Body System or Organ Class column
+#' of prior medical history dataset.
 #' @param pmed_vars (`choices selected` or `data_extract_input`)\cr Prior medication variables.
+#' @param mhbodsys (`choices selected` or `data_extract_input`)\cr \code{MHBODSYS} column of the ADMH dataset.
 #' @param vital_vars (`choices selected` or `data_extract_input`)\cr Vitals variables.
 #' @param vitals_xaxis (`choices selected` or `data_extract_input`)\cr
 #' Time variable to be represented in the vitals plot x-axis.
 #' @param aval `AVAL` (`choices selected` or `data_extract_input`)\cr variable.
+#' @param time_relation (`choices selected` or `data_extract_input`) \code{ATIREL} column of the ADCM dataset.
+#' @param medname_decoding (`choices selected` or `data_extract_input`) \code{CMDECOD} column of the ADCM dataset.
 #'
 #' @export
 #'
@@ -489,6 +506,15 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
+#'       mhbodsys = data_extract_spec(
+#'         dataname = "ADMH",
+#'         select = select_spec(
+#'           choices = variable_choices(ADMH),
+#'           selected = c("MHBODSYS"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
 #'       pmed_vars = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
@@ -524,6 +550,24 @@ template_adverse_events <- function(patient_id,
 #'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
+#'       ),
+#'       time_relation = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("ATIREL"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       medname_decoding = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMDECOD"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
 #'       )
 #'     )
 #'   )
@@ -539,7 +583,10 @@ tm_g_patient_profile <- function(label,
                                  patient_id,
                                  binf_vars,
                                  mhist_vars,
+                                 mhbodsys,
                                  pmed_vars,
+                                 time_relation,
+                                 medname_decoding,
                                  vital_vars,
                                  vitals_xaxis,
                                  aval,
@@ -570,11 +617,14 @@ tm_g_patient_profile <- function(label,
     patient_id = cs_to_des_select(patient_id, dataname = parentname),
     binf_vars = cs_to_des_select(binf_vars, dataname = parentname),
     mhist_vars = cs_to_des_select(mhist_vars, dataname = parentname),
+    mhbodsys = cs_to_des_select(mhbodsys, dataname = parentname),
     pmed_vars = cs_to_des_select(pmed_vars, dataname = parentname),
     vital_vars = cs_to_des_select(vital_vars, dataname = parentname),
     vitals_xaxis = cs_to_des_select(vitals_xaxis, dataname = parentname),
     ae_vars = cs_to_des_select(ae_vars, dataname = parentname),
-    aval = cs_to_des_select(aval, dataname = parentname)
+    aval = cs_to_des_select(aval, dataname = parentname),
+    time_relation = cs_to_des_select(time_relation, dataname = parentname),
+    medname_decoding = cs_to_des_select(medname_decoding, dataname = parentname)
   )
 
   module(
@@ -673,11 +723,19 @@ ui_g_patient_profile <- function(id, ...) {
       conditionalPanel(
         condition =
           paste0("input['", ns("tabs"), "'] == 'Medical history'"),
-        data_extract_input(
-          id = ns("mhist_vars"),
-          label = "Select variable:",
-          data_extract_spec = ui_args$mhist_vars,
-          is_single_dataset = is_single_dataset_value
+        list(
+          data_extract_input(
+            id = ns("mhist_vars"),
+            label = "Select variable:",
+            data_extract_spec = ui_args$mhist_vars,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("mhbodsys"),
+            label = "Select MHBODSYS variable:",
+            data_extract_spec = ui_args$mhbodsys,
+            is_single_dataset = is_single_dataset_value
+          )
         )
       ),
       conditionalPanel(
@@ -688,6 +746,18 @@ ui_g_patient_profile <- function(id, ...) {
             id = ns("pmed_vars"),
             label = "Select variable:",
             data_extract_spec = ui_args$pmed_vars,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("time_relation"),
+            label = "Select ATIREL:",
+            data_extract_spec = ui_args$time_relation,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("medname_decoding"),
+            label = "Select the medication decoding column:",
+            data_extract_spec = ui_args$medname_decoding,
             is_single_dataset = is_single_dataset_value
           )
         )
@@ -742,10 +812,13 @@ srv_g_patient_profile <- function(input,
                                   patient_id,
                                   binf_vars,
                                   mhist_vars,
+                                  mhbodsys,
                                   pmed_vars,
                                   vital_vars,
                                   vitals_xaxis,
                                   aval,
+                                  time_relation,
+                                  medname_decoding,
                                   ae_vars,
                                   plot_height,
                                   plot_width,
@@ -802,8 +875,8 @@ srv_g_patient_profile <- function(input,
   # Medical history tab ----
   mhist_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(mhist_vars),
-    input_id = "mhist_vars",
+    data_extract = list(mhist_vars, mhbodsys),
+    input_id = c("mhist_vars", "mhbodsys"),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
@@ -827,7 +900,8 @@ srv_g_patient_profile <- function(input,
     my_calls <- template_medical_history(
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
-      mhist_vars = input$`mhist_vars-dataset_ADMH_singleextract-select`
+      mhist_vars = input$`mhist_vars-dataset_ADMH_singleextract-select`,
+      mhbodsys = input$`mhbodsys-dataset_ADMH_singleextract-select`
     )
 
     mapply(expression = my_calls, mhist_stack_push)
@@ -843,8 +917,8 @@ srv_g_patient_profile <- function(input,
   # Prior medication tab ----
   pmed_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(pmed_vars, vital_vars, vitals_xaxis, aval),
-    input_id = c("pmed_vars", "vital_vars", "vitals_xaxis", "aval"),
+    data_extract = list(pmed_vars, vital_vars, vitals_xaxis, aval, time_relation, medname_decoding),
+    input_id = c("pmed_vars", "vital_vars", "vitals_xaxis", "aval", "time_relation", "medname_decoding"),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
@@ -871,7 +945,9 @@ srv_g_patient_profile <- function(input,
       pmed_vars = input$`pmed_vars-dataset_ADCM_singleextract-select`,
       vital_vars = input$`vital_vars-dataset_ADVS_singleextract-select`,
       vitals_xaxis = input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
-      aval = input$`aval-dataset_ADVS_singleextract-select`
+      aval = input$`aval-dataset_ADVS_singleextract-select`,
+      time_relation = input$`time_relation-dataset_ADCM_singleextract-select`,
+      medname_decoding = input$`medname_decoding-dataset_ADCM_singleextract-select`
     )
 
     mapply(expression = my_calls, pmed_stack_push)
