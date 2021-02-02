@@ -7,7 +7,7 @@
 template_medical_history(
   dataname,
   patient_id,
-  mhist_vars,
+  mhterm = "MHTERM",
   mhbodsys = "MHBODSYS"
 )
 }

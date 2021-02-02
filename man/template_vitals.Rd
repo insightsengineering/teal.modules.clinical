@@ -7,8 +7,7 @@
 template_vitals(
   dataname,
   patient_id,
-  pmed_vars,
-  vital_vars = "PARAMCD",
+  paramcd = "PARAMCD",
   vitals_xaxis = "ADY",
   aval = "AVAL",
   max_day
@@ -17,6 +16,9 @@ template_vitals(
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
+
+\item{paramcd}{(\code{character})\cr
+variable value designating the studied parameter.}
 }
 \description{
 Creates a vitals template.

@@ -5,7 +5,7 @@
 #' @inheritParams template_arguments
 #' @param patient_id Patient ID to be used.
 #' @param binf_vars Variables to be shown in Basic Info tab.
-#' @param mhist_vars Medical history variables.
+#' @param mhterm Medical history variables.
 #'
 #'
 template_basic_info <- function(dataname,
@@ -20,14 +20,15 @@ template_basic_info <- function(dataname,
 
   table_list <- add_expr(
     list(),
-    substitute(expr =
-      result <- # compared to the original app, ETHNIC, DTHCAUS and DTHADY are not available in ADSL
-        dataname %>%
-        select(binf_vars) %>%
-        gather() %>%
-        mutate(key = get_labels(dataname)$column_labels[binf_vars]) %>%
-        rename(`   ` = key, ` ` = value),
-      env = list(
+    substitute(
+      expr = {
+        result <- # compared to the original app, ETHNIC, DTHCAUS and DTHADY are not available in ADSL
+          dataname %>%
+          select(binf_vars) %>%
+          gather() %>%
+          mutate(key = get_labels(dataname)$column_labels[binf_vars]) %>%
+          rename(`   ` = key, ` ` = value)
+      }, env = list(
         dataname = as.name(dataname),
         binf_vars = binf_vars
       )
@@ -49,7 +50,7 @@ template_basic_info <- function(dataname,
 #'
 template_medical_history <- function(dataname,
                                      patient_id,
-                                     mhist_vars,
+                                     mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS") {
   assert_that(
     is.string(dataname),
@@ -64,18 +65,19 @@ template_medical_history <- function(dataname,
     substitute(expr = {
       result <- # compared to the original app, MHDISTAT is not available in ADHM
         dataname %>%
-        select(mhist_vars) %>%
+        select(mhbodsys, mhterm) %>%
         arrange(mhbodsys) %>%
         mutate_if(is.character, as.factor) %>%
         mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         distinct() %>%
-        `colnames<-`(get_labels(dataname)$column_labels[mhist_vars])
-      }, env = list(
-        dataname = as.name(dataname),
-        mhist_vars = mhist_vars,
-        mhbodsys = as.name(mhbodsys)
-      )
-    )
+        `colnames<-`(get_labels(dataname)$column_labels[c(mhbodsys_char, mhterm_char)])
+    }, env = list(
+      dataname = as.name(dataname),
+      mhbodsys = as.name(mhbodsys),
+      mhterm = as.name(mhterm),
+      mhbodsys_char = mhbodsys,
+      mhterm_char = mhterm
+    ))
   )
 
   y$table <- bracket_expr(table_list)
@@ -91,15 +93,13 @@ template_medical_history <- function(dataname,
 #'
 template_prior_medication <- function(dataname,
                                       patient_id,
-                                      pmed_vars,
-                                      vital_vars = "PARAMCD",
-                                      vitals_xaxis = "ADY",
                                       aval = "AVAL",
-                                      time_relation = "ATIREL",
+                                      atirel = "ATIREL",
                                       medname_decoding = "CMDECOD") {
   assert_that(
     is.string(dataname),
-    is.string(time_relation),
+    is.string(aval),
+    is.string(atirel),
     is.string(medname_decoding)
   )
 
@@ -110,18 +110,19 @@ template_prior_medication <- function(dataname,
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      result <- # compared to the original app, MHDISTAT is not available in ADSL
+      result <-
         dataname %>%
         filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
-        select(pmed_vars) %>% # remove ATIREL
+        select(cmdecod) %>% # missing CMINDC, CMINDC, CMSTDY
         filter(!is.na(cmdecod)) %>%
         distinct() %>%
-        `colnames<-`(get_labels(dataname)$column_labels[pmed_vars])
+        `colnames<-`(get_labels(dataname)$column_labels[c(atirel_char, cmdecod_char)])
     }, env = list(
       dataname = as.name(dataname),
-      pmed_vars = pmed_vars,
-      atirel = as.name(time_relation),
-      cmdecod = as.name(medname_decoding)
+      atirel = as.name(atirel),
+      cmdecod = as.name(medname_decoding),
+      atirel_char = atirel,
+      cmdecod_char = medname_decoding
     ))
   )
   # Note: l_html_concomitant_adcm is still not included since one column is available out of 9
@@ -138,15 +139,17 @@ template_prior_medication <- function(dataname,
 #'
 template_vitals <- function(dataname,
                             patient_id,
-                            pmed_vars,
-                            vital_vars = "PARAMCD",
+                            paramcd = "PARAMCD",
                             vitals_xaxis = "ADY",
                             aval = "AVAL",
                             max_day) {
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is.string(paramcd),
+    is.string(vitals_xaxis),
+    is.string(aval)
   )
-
+  # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
   y$plot <- list()
 
@@ -155,20 +158,20 @@ template_vitals <- function(dataname,
     substitute(expr = {
       vitals <-
         dataname %>%
-        group_by(vital_vars, vitals_xaxis) %>%
-        filter(vital_vars %in% c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP")) %>%
+        group_by(paramcd, vitals_xaxis) %>%
+        filter(paramcd %in% c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP")) %>%
         summarise(
           AVAL = max(aval, na.rm = T)
         )
 
       result_plot <- ggplot(data = vitals, mapping = aes(x = vitals_xaxis)) + # replaced VSDY
         geom_ribbon(
-          data = vitals %>% tidyr::pivot_wider(names_from = vital_vars_char, values_from = "AVAL"),
+          data = vitals %>% tidyr::pivot_wider(names_from = paramcd_char, values_from = "AVAL"),
           aes(ymin = DIABP, ymax = SYSBP), fill = "red", alpha = 0.1
         ) +
         ggplot2::geom_line(
           data = vitals,
-          mapping = ggplot2::aes(y = aval, color = vital_vars),
+          mapping = ggplot2::aes(y = aval, color = paramcd),
           size = 1.5,
           alpha = 0.5
         ) +
@@ -239,7 +242,7 @@ template_vitals <- function(dataname,
         #   alpha = 1,
         #   nudge_y = 2.2
         # ) +
-      # nolint end
+        # nolint end
         scale_x_continuous(
           breaks = seq(1, max(vitals[[vitals_xaxis_char]], na.rm = T), 7), # changed VSDY with ADY
           labels = seq(1, max(vitals[[vitals_xaxis_char]], na.rm = T), 7), # changed VSDY with ADY
@@ -269,8 +272,8 @@ template_vitals <- function(dataname,
         xlim(1, max_day)
     }, env = list(
       dataname = as.name(dataname),
-      vital_vars = as.name(vital_vars),
-      vital_vars_char = vital_vars,
+      paramcd = as.name(paramcd),
+      paramcd_char = paramcd,
       vitals_xaxis = as.name(vitals_xaxis),
       vitals_xaxis_char = vitals_xaxis,
       aval = as.name(aval),
@@ -337,7 +340,7 @@ template_adverse_events <- function(patient_id,
       ae_table <- dataname %>%
         select(
           ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time
-          ) %>%
+        ) %>%
         arrange(desc(ae_tox_grade)) %>%
         `colnames<-`(get_labels(dataname)$column_labels[ae_vars]),
       env = list(
@@ -371,7 +374,8 @@ template_adverse_events <- function(patient_id,
             TRUE ~ ATOXGR
           )) %>%
           ggplot2::ggplot(ggplot2::aes(
-            fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time)) +
+            fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time
+          )) +
           ggplot2::geom_label(
             ggplot2::aes(label = ae_term),
             color = "black",
@@ -389,11 +393,13 @@ template_adverse_events <- function(patient_id,
             panel.grid.major = element_line(
               size = 0.5,
               linetype = "dotted",
-              colour = "grey"),
+              colour = "grey"
+            ),
             panel.grid.minor = element_line(
               size = 0.5,
               linetype = "dotted",
-              colour = "grey"),
+              colour = "grey"
+            ),
             legend.position = "top"
           ) +
           theme(legend.position = "none"),
@@ -430,17 +436,19 @@ template_adverse_events <- function(patient_id,
 #' @inheritParams module_arguments
 #' @param patient_id Patient ID column to be used.
 #' @param binf_vars variables to be shown in Basic Info tab.
-#' @param ae_vars (`choices selected` or `data_extract_input`)\cr Adverse events variables.
-#' @param mhist_vars (`choices selected` or `data_extract_input`)\cr Medical history variables.
-#' @param mhbodsys (`choices selected` or `data_extract_input`)\cr Body System or Organ Class column
-#' of prior medical history dataset.
-#' @param pmed_vars (`choices selected` or `data_extract_input`)\cr Prior medication variables.
+#' @param ae_term (`choices selected` or `data_extract_input`)\cr \code{AETERM} column of the ADAE dataset.
+#' @param ae_tox_grade (`choices selected` or `data_extract_input`)\cr \code{AETOXGR} column of the ADAE dataset.
+#' @param ae_causality (`choices selected` or `data_extract_input`)\cr \code{AEREL} column of the ADAE dataset.
+#' @param ae_outcome (`choices selected` or `data_extract_input`)\cr \code{AEOUT} column of the ADAE dataset.
+#' @param ae_action (`choices selected` or `data_extract_input`)\cr \code{AEACN} column of the ADAE dataset.
+#' @param ae_time (`choices selected` or `data_extract_input`)\cr \code{ASTDY} column of the ADAE dataset.
+#' @param mhterm (`choices selected` or `data_extract_input`)\cr \code{MHTERM} column of the ADMH dataset.
 #' @param mhbodsys (`choices selected` or `data_extract_input`)\cr \code{MHBODSYS} column of the ADMH dataset.
-#' @param vital_vars (`choices selected` or `data_extract_input`)\cr Vitals variables.
+#' @param paramcd (`choices selected` or `data_extract_input`)\cr \code{PARAMCD} column of the ADVS dataset.
 #' @param vitals_xaxis (`choices selected` or `data_extract_input`)\cr
 #' Time variable to be represented in the vitals plot x-axis.
 #' @param aval `AVAL` (`choices selected` or `data_extract_input`)\cr variable.
-#' @param time_relation (`choices selected` or `data_extract_input`) \code{ATIREL} column of the ADCM dataset.
+#' @param atirel (`choices selected` or `data_extract_input`) \code{ATIREL} column of the ADCM dataset.
 #' @param medname_decoding (`choices selected` or `data_extract_input`) \code{CMDECOD} column of the ADCM dataset.
 #'
 #' @export
@@ -479,15 +487,6 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
-#'       ae_vars = data_extract_spec(
-#'         dataname = "ADAE",
-#'         select = select_spec(
-#'           choices = variable_choices(ADAE),
-#'           selected = c("AETERM", "AETOXGR", "AEREL", "AEOUT", "AEACN", "ASTDY"),
-#'           multiple = TRUE,
-#'           fixed = FALSE
-#'         )
-#'       ),
 #'       binf_vars = data_extract_spec(
 #'         dataname = "ADSL",
 #'         select = select_spec(
@@ -497,12 +496,12 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
-#'       mhist_vars = data_extract_spec(
+#'       mhterm = data_extract_spec(
 #'         dataname = "ADMH",
 #'         select = select_spec(
 #'           choices = variable_choices(ADMH),
-#'           selected = c("MHBODSYS", "MHTERM"),
-#'           multiple = TRUE,
+#'           selected = c("MHTERM"),
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -515,16 +514,7 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
-#'       pmed_vars = data_extract_spec(
-#'         dataname = "ADCM",
-#'         select = select_spec(
-#'           choices = variable_choices(ADCM),
-#'           selected = c("CMDECOD","ATIREL"),
-#'           multiple = TRUE,
-#'           fixed = FALSE
-#'         )
-#'       ),
-#'       vital_vars = data_extract_spec(
+#'       paramcd = data_extract_spec(
 #'         dataname = "ADVS",
 #'         select = select_spec(
 #'           choices = variable_choices(ADVS),
@@ -551,7 +541,7 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
-#'       time_relation = data_extract_spec(
+#'       atirel = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
 #'           choices = variable_choices(ADCM),
@@ -568,29 +558,86 @@ template_adverse_events <- function(patient_id,
 #'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
+#'       ),
+#'       ae_term = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("AETERM"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_tox_grade = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("AETOXGR"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_causality = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("AEREL"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_outcome = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("AEOUT"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_action = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("AEACN"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_time = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE),
+#'           selected = c("ASTDY"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
 #'       )
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-
+#'
 tm_g_patient_profile <- function(label,
                                  dataname,
                                  parentname = "ADSL",
                                  patient_id,
                                  binf_vars,
-                                 mhist_vars,
+                                 mhterm,
                                  mhbodsys,
-                                 pmed_vars,
-                                 time_relation,
+                                 atirel,
                                  medname_decoding,
-                                 vital_vars,
+                                 paramcd,
                                  vitals_xaxis,
                                  aval,
-                                 ae_vars,
+                                 ae_term,
+                                 ae_tox_grade,
+                                 ae_causality,
+                                 ae_outcome,
+                                 ae_action,
+                                 ae_time,
                                  plot_height = c(700L, 200L, 2000L),
                                  plot_width = c(900L, 200L, 2000L),
                                  pre_output = NULL,
@@ -616,15 +663,19 @@ tm_g_patient_profile <- function(label,
   data_extract_list <- list(
     patient_id = cs_to_des_select(patient_id, dataname = parentname),
     binf_vars = cs_to_des_select(binf_vars, dataname = parentname),
-    mhist_vars = cs_to_des_select(mhist_vars, dataname = parentname),
+    mhterm = cs_to_des_select(mhterm, dataname = parentname),
     mhbodsys = cs_to_des_select(mhbodsys, dataname = parentname),
-    pmed_vars = cs_to_des_select(pmed_vars, dataname = parentname),
-    vital_vars = cs_to_des_select(vital_vars, dataname = parentname),
+    paramcd = cs_to_des_select(paramcd, dataname = parentname),
     vitals_xaxis = cs_to_des_select(vitals_xaxis, dataname = parentname),
-    ae_vars = cs_to_des_select(ae_vars, dataname = parentname),
     aval = cs_to_des_select(aval, dataname = parentname),
-    time_relation = cs_to_des_select(time_relation, dataname = parentname),
-    medname_decoding = cs_to_des_select(medname_decoding, dataname = parentname)
+    atirel = cs_to_des_select(atirel, dataname = parentname),
+    medname_decoding = cs_to_des_select(medname_decoding, dataname = parentname),
+    ae_term = cs_to_des_select(ae_term, dataname = parentname),
+    ae_tox_grade = cs_to_des_select(ae_tox_grade, dataname = parentname),
+    ae_causality = cs_to_des_select(ae_causality, dataname = parentname),
+    ae_outcome = cs_to_des_select(ae_outcome, dataname = parentname),
+    ae_action = cs_to_des_select(ae_action, dataname = parentname),
+    ae_time = cs_to_des_select(ae_time, dataname = parentname)
   )
 
   module(
@@ -725,9 +776,9 @@ ui_g_patient_profile <- function(id, ...) {
           paste0("input['", ns("tabs"), "'] == 'Medical history'"),
         list(
           data_extract_input(
-            id = ns("mhist_vars"),
-            label = "Select variable:",
-            data_extract_spec = ui_args$mhist_vars,
+            id = ns("mhterm"),
+            label = "Select MHTERM variable:",
+            data_extract_spec = ui_args$mhterm,
             is_single_dataset = is_single_dataset_value
           ),
           data_extract_input(
@@ -743,15 +794,9 @@ ui_g_patient_profile <- function(id, ...) {
           paste0("input['", ns("tabs"), "'] == 'Prior medication'"),
         list(
           data_extract_input(
-            id = ns("pmed_vars"),
-            label = "Select variable:",
-            data_extract_spec = ui_args$pmed_vars,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("time_relation"),
+            id = ns("atirel"),
             label = "Select ATIREL:",
-            data_extract_spec = ui_args$time_relation,
+            data_extract_spec = ui_args$atirel,
             is_single_dataset = is_single_dataset_value
           ),
           data_extract_input(
@@ -767,9 +812,9 @@ ui_g_patient_profile <- function(id, ...) {
           paste0("input['", ns("tabs"), "'] == 'Vitals'"),
         list(
           data_extract_input(
-            id = ns("vital_vars"),
-            label = "Select vital variable:",
-            data_extract_spec = ui_args$vital_vars,
+            id = ns("paramcd"),
+            label = "Select PARAMCD variable:",
+            data_extract_spec = ui_args$paramcd,
             is_single_dataset = is_single_dataset_value
           ),
           data_extract_input(
@@ -789,11 +834,43 @@ ui_g_patient_profile <- function(id, ...) {
       conditionalPanel(
         condition =
           paste0("input['", ns("tabs"), "'] == 'Adverse events'"),
-        data_extract_input(
-          id = ns("ae_vars"),
-          label = "Select variable:",
-          data_extract_spec = ui_args$ae_vars,
-          is_single_dataset = is_single_dataset_value
+        list(
+          data_extract_input(
+            id = ns("ae_term"),
+            label = "Select AETERM variable:",
+            data_extract_spec = ui_args$ae_term,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_tox_grade"),
+            label = "Select AETOXGR variable:",
+            data_extract_spec = ui_args$ae_tox_grade,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_causality"),
+            label = "Select AEREL variable:",
+            data_extract_spec = ui_args$ae_causality,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_outcome"),
+            label = "Select AEOUT variable:",
+            data_extract_spec = ui_args$ae_outcome,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_action"),
+            label = "Select AEACN variable:",
+            data_extract_spec = ui_args$ae_action,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_time"),
+            label = "Select ASTDY variable:",
+            data_extract_spec = ui_args$ae_time,
+            is_single_dataset = is_single_dataset_value
+          )
         )
       )
     ),
@@ -811,15 +888,19 @@ srv_g_patient_profile <- function(input,
                                   parentname,
                                   patient_id,
                                   binf_vars,
-                                  mhist_vars,
+                                  mhterm,
                                   mhbodsys,
-                                  pmed_vars,
-                                  vital_vars,
+                                  paramcd,
                                   vitals_xaxis,
                                   aval,
-                                  time_relation,
+                                  atirel,
                                   medname_decoding,
-                                  ae_vars,
+                                  ae_term,
+                                  ae_tox_grade,
+                                  ae_causality,
+                                  ae_outcome,
+                                  ae_action,
+                                  ae_time,
                                   plot_height,
                                   plot_width,
                                   label) {
@@ -827,7 +908,12 @@ srv_g_patient_profile <- function(input,
 
   # global checks
   validate_checks <- reactive({
-    # add checks here
+    validate(
+      need(
+        input$`patient_id-dataset_ADSL_singleextract-select`,
+        "Please select Patient ID."
+      )
+    )
   })
 
   # Basic Info tab ----
@@ -841,6 +927,13 @@ srv_g_patient_profile <- function(input,
 
   basic_info_call <- reactive({
     validate_checks()
+
+    validate(
+      need(
+        input$`binf_vars-dataset_ADSL_singleextract-select`,
+        "Please select basic info variables."
+      )
+    )
 
     call_stack <- chunks$new()
     call_stack_push <- function(...) {
@@ -875,14 +968,25 @@ srv_g_patient_profile <- function(input,
   # Medical history tab ----
   mhist_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(mhist_vars, mhbodsys),
-    input_id = c("mhist_vars", "mhbodsys"),
+    data_extract = list(mhterm, mhbodsys),
+    input_id = c("mhterm", "mhbodsys"),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
 
   mhist_call <- reactive({
     validate_checks()
+
+    validate(
+      need(
+        input$`mhterm-dataset_ADMH_singleextract-select`,
+        "Please select MHTERM variable."
+      ),
+      need(
+        input$`mhbodsys-dataset_ADMH_singleextract-select`,
+        "Please select MHBODSYS variable."
+      )
+    )
 
     mhist_stack <- chunks$new()
     mhist_stack_push <- function(...) {
@@ -900,7 +1004,7 @@ srv_g_patient_profile <- function(input,
     my_calls <- template_medical_history(
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
-      mhist_vars = input$`mhist_vars-dataset_ADMH_singleextract-select`,
+      mhterm = input$`mhterm-dataset_ADMH_singleextract-select`,
       mhbodsys = input$`mhbodsys-dataset_ADMH_singleextract-select`
     )
 
@@ -917,14 +1021,29 @@ srv_g_patient_profile <- function(input,
   # Prior medication tab ----
   pmed_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(pmed_vars, vital_vars, vitals_xaxis, aval, time_relation, medname_decoding),
-    input_id = c("pmed_vars", "vital_vars", "vitals_xaxis", "aval", "time_relation", "medname_decoding"),
+    data_extract = list(paramcd, vitals_xaxis, aval, atirel, medname_decoding),
+    input_id = c("paramcd", "vitals_xaxis", "aval", "atirel", "medname_decoding"),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
 
   pmed_call <- reactive({
     validate_checks()
+
+    validate(
+      need(
+        input$`aval-dataset_ADVS_singleextract-select`,
+        "Please select AVAL variable."
+      ),
+      need(
+        input$`atirel-dataset_ADCM_singleextract-select`,
+        "Please select MHBODSYS variable."
+      ),
+      need(
+        input$`medname_decoding-dataset_ADCM_singleextract-select`,
+        "Please select Medication decoding variable."
+      )
+    )
 
     pmed_stack <- chunks$new()
     pmed_stack_push <- function(...) {
@@ -942,11 +1061,8 @@ srv_g_patient_profile <- function(input,
     my_calls <- template_prior_medication(
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
-      pmed_vars = input$`pmed_vars-dataset_ADCM_singleextract-select`,
-      vital_vars = input$`vital_vars-dataset_ADVS_singleextract-select`,
-      vitals_xaxis = input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
       aval = input$`aval-dataset_ADVS_singleextract-select`,
-      time_relation = input$`time_relation-dataset_ADCM_singleextract-select`,
+      atirel = input$`atirel-dataset_ADCM_singleextract-select`,
       medname_decoding = input$`medname_decoding-dataset_ADCM_singleextract-select`
     )
 
@@ -963,14 +1079,30 @@ srv_g_patient_profile <- function(input,
   # Vitals tab ----
   vitals_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(vital_vars, vitals_xaxis, aval),
-    input_id = c("vital_vars", "vitals_xaxis", "aval"),
+    data_extract = list(paramcd, vitals_xaxis, aval),
+    input_id = c("paramcd", "vitals_xaxis", "aval"),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
 
   vitals_call <- reactive({
     validate_checks()
+
+
+    validate(
+      need(
+        input$`paramcd-dataset_ADVS_singleextract-select`,
+        "Please select PARAMCD variable."
+      ),
+      need(
+        input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
+        "Please select Vitals x-axis variable."
+      ),
+      need(
+        input$`aval-dataset_ADVS_singleextract-select`,
+        "Please select AVAL variable."
+      )
+    )
 
     vitals_stack <- chunks$new()
     vitals_stack_push <- function(...) {
@@ -990,7 +1122,7 @@ srv_g_patient_profile <- function(input,
     my_calls <- template_vitals(
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
-      vital_vars = input$`vital_vars-dataset_ADVS_singleextract-select`,
+      paramcd = input$`paramcd-dataset_ADVS_singleextract-select`,
       vitals_xaxis = input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
       aval = input$`aval-dataset_ADVS_singleextract-select`,
       max_day = "max_day"
@@ -1013,14 +1145,42 @@ srv_g_patient_profile <- function(input,
   # Adverse events tab ----
   ae_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(ae_vars),
-    input_id = "ae_vars",
+    data_extract = list(ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time),
+    input_id = c("ae_term", "ae_tox_grade", "ae_causality", "ae_outcome", "ae_action", "ae_time"),
     anl_name = "ANL"
   )
   ae_calls <- reactive({
     validate(
       need("ADAE" %in% datasets$datanames(), message = "ADAE dataset needed to show Adverse events info.")
     )
+
+    validate(
+      need(
+        input$`ae_term-dataset_ADAE_singleextract-select`,
+        "Please select AETERM variable."
+      ),
+      need(
+        input$`ae_tox_grade-dataset_ADAE_singleextract-select`,
+        "Please select AETOXGR variable."
+      ),
+      need(
+        input$`ae_causality-dataset_ADAE_singleextract-select`,
+        "Please select AEREL variable."
+      ),
+      need(
+        input$`ae_outcome-dataset_ADAE_singleextract-select`,
+        "Please select AEOUT variable."
+      ),
+      need(
+        input$`ae_action-dataset_ADAE_singleextract-select`,
+        "Please select AEACN variable."
+      ),
+      need(
+        input$`ae_time-dataset_ADAE_singleextract-select`,
+        "Please select ASTDY variable."
+      )
+    )
+
     ae_stack <- chunks$new()
     ae_stack$reset()
 
@@ -1029,7 +1189,14 @@ srv_g_patient_profile <- function(input,
       ADAE_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
     }))
 
-    ae_calls <- template_adverse_events("ADSL")
+    ae_calls <- template_adverse_events(
+      ae_term = input$`ae_term-dataset_ADAE_singleextract-select`,
+      ae_tox_grade = input$`ae_tox_grade-dataset_ADAE_singleextract-select`,
+      ae_causality = input$`ae_causality-dataset_ADAE_singleextract-select`,
+      ae_outcome = input$`ae_outcome-dataset_ADAE_singleextract-select`,
+      ae_action = input$`ae_action-dataset_ADAE_singleextract-select`,
+      ae_time = input$`ae_time-dataset_ADAE_singleextract-select`
+    )
     mapply(ae_calls, FUN = function(x) chunks_push(x, chunks = ae_stack))
     ae_stack
   })
@@ -1073,12 +1240,17 @@ srv_g_patient_profile <- function(input,
     datanames = get_extract_datanames(list(
       patient_id,
       binf_vars,
-      mhist_vars,
-      pmed_vars,
+      mhterm,
       aval,
-      vital_vars,
+      paramcd,
       vitals_xaxis,
-      ae_vars)),
+      ae_term,
+      ae_tox_grade,
+      ae_causality,
+      ae_outcome,
+      ae_action,
+      ae_time
+    )),
     modal_title = label
   )
 }

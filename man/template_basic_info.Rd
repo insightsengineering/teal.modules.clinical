@@ -14,7 +14,7 @@ analysis data used in teal module.}
 
 \item{binf_vars}{Variables to be shown in Basic Info tab.}
 
-\item{mhist_vars}{Medical history variables.}
+\item{mhterm}{Medical history variables.}
 }
 \description{
 Creates a basic info template.

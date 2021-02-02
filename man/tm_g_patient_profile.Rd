@@ -10,15 +10,19 @@ tm_g_patient_profile(
   parentname = "ADSL",
   patient_id,
   binf_vars,
-  mhist_vars,
+  mhterm,
   mhbodsys,
-  pmed_vars,
-  time_relation,
+  atirel,
   medname_decoding,
-  vital_vars,
+  paramcd,
   vitals_xaxis,
   aval,
-  ae_vars,
+  ae_term,
+  ae_tox_grade,
+  ae_causality,
+  ae_outcome,
+  ae_action,
+  ae_time,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -39,24 +43,32 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{binf_vars}{variables to be shown in Basic Info tab.}
 
-\item{mhist_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Medical history variables.}
+\item{mhterm}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHTERM} column of the ADMH dataset.}
 
 \item{mhbodsys}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHBODSYS} column of the ADMH dataset.}
 
-\item{pmed_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Prior medication variables.}
-
-\item{time_relation}{(\verb{choices selected} or \code{data_extract_input}) \code{ATIREL} column of the ADCM dataset.}
+\item{atirel}{(\verb{choices selected} or \code{data_extract_input}) \code{ATIREL} column of the ADCM dataset.}
 
 \item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDECOD} column of the ADCM dataset.}
 
-\item{vital_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Vitals variables.}
+\item{paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
 
 \item{vitals_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr
 Time variable to be represented in the vitals plot x-axis.}
 
 \item{aval}{\code{AVAL} (\verb{choices selected} or \code{data_extract_input})\cr variable.}
 
-\item{ae_vars}{(\verb{choices selected} or \code{data_extract_input})\cr Adverse events variables.}
+\item{ae_term}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AETERM} column of the ADAE dataset.}
+
+\item{ae_tox_grade}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AETOXGR} column of the ADAE dataset.}
+
+\item{ae_causality}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEREL} column of the ADAE dataset.}
+
+\item{ae_outcome}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEOUT} column of the ADAE dataset.}
+
+\item{ae_action}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEACN} column of the ADAE dataset.}
+
+\item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -113,15 +125,6 @@ app <- init(
           fixed = FALSE
         )
       ),
-      ae_vars = data_extract_spec(
-        dataname = "ADAE",
-        select = select_spec(
-          choices = variable_choices(ADAE),
-          selected = c("AETERM", "AETOXGR", "AEREL", "AEOUT", "AEACN", "ASTDY"),
-          multiple = TRUE,
-          fixed = FALSE
-        )
-      ),
       binf_vars = data_extract_spec(
         dataname = "ADSL",
         select = select_spec(
@@ -131,12 +134,12 @@ app <- init(
           fixed = FALSE
         )
       ),
-      mhist_vars = data_extract_spec(
+      mhterm = data_extract_spec(
         dataname = "ADMH",
         select = select_spec(
           choices = variable_choices(ADMH),
-          selected = c("MHBODSYS", "MHTERM"),
-          multiple = TRUE,
+          selected = c("MHTERM"),
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -149,16 +152,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      pmed_vars = data_extract_spec(
-        dataname = "ADCM",
-        select = select_spec(
-          choices = variable_choices(ADCM),
-          selected = c("CMDECOD","ATIREL"),
-          multiple = TRUE,
-          fixed = FALSE
-        )
-      ),
-      vital_vars = data_extract_spec(
+      paramcd = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS),
@@ -185,7 +179,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      time_relation = data_extract_spec(
+      atirel = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM),
@@ -202,12 +196,66 @@ app <- init(
           multiple = FALSE,
           fixed = FALSE
         )
+      ),
+      ae_term = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("AETERM"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      ae_tox_grade = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("AETOXGR"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      ae_causality = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("AEREL"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      ae_outcome = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("AEOUT"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      ae_action = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("AEACN"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      ae_time = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE),
+          selected = c("ASTDY"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
       )
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }
