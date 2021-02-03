@@ -7,7 +7,6 @@
 template_prior_medication(
   dataname,
   patient_id,
-  aval = "AVAL",
   atirel = "ATIREL",
   medname_decoding = "CMDECOD"
 )

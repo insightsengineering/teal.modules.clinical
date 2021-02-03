@@ -11,7 +11,8 @@
 template_basic_info <- function(dataname,
                                 binf_vars) {
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is_character_vector(binf_vars)
   )
 
   y <- list()
@@ -60,6 +61,7 @@ template_medical_history <- function(dataname,
                                      mhbodsys = "MHBODSYS") {
   assert_that(
     is.string(dataname),
+    is.string(mhterm),
     is.string(mhbodsys)
   )
 
@@ -99,12 +101,10 @@ template_medical_history <- function(dataname,
 #'
 template_prior_medication <- function(dataname,
                                       patient_id,
-                                      aval = "AVAL",
                                       atirel = "ATIREL",
                                       medname_decoding = "CMDECOD") {
   assert_that(
     is.string(dataname),
-    is.string(aval),
     is.string(atirel),
     is.string(medname_decoding)
   )
@@ -152,7 +152,7 @@ template_vitals <- function(dataname,
     is.string(dataname),
     is.string(paramcd),
     is.string(vitals_xaxis),
-    is.string(aval)
+    is.string(aval),
   )
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
@@ -630,37 +630,31 @@ tm_g_patient_profile <- function(label,
                                  dataname,
                                  parentname = "ADSL",
                                  patient_id,
-                                 binf_vars,
-                                 mhterm,
-                                 mhbodsys,
-                                 atirel,
-                                 medname_decoding,
-                                 paramcd,
-                                 vitals_xaxis,
-                                 aval,
-                                 ae_term,
-                                 ae_tox_grade,
-                                 ae_causality,
-                                 ae_outcome,
-                                 ae_action,
-                                 ae_time,
+                                 binf_vars = NULL,
+                                 mhterm = NULL,
+                                 mhbodsys = NULL,
+                                 atirel = NULL,
+                                 medname_decoding = NULL,
+                                 paramcd = NULL,
+                                 vitals_xaxis = NULL,
+                                 aval = NULL,
+                                 ae_term = NULL,
+                                 ae_tox_grade = NULL,
+                                 ae_causality = NULL,
+                                 ae_outcome = NULL,
+                                 ae_action = NULL,
+                                 ae_time = NULL,
                                  plot_height = c(700L, 200L, 2000L),
                                  plot_width = c(900L, 200L, 2000L),
                                  pre_output = NULL,
                                  post_output = NULL) {
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
+  assert_that(is_character_single(label))
+  assert_that(is_character_single(dataname))
+  assert_that(is_character_single(parentname))
+  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
+    msg = "pre_output should be either null or shiny.tag type of object")
+  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
+    msg = "post_output should be either null or shiny.tag type of object")
 
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
@@ -668,21 +662,36 @@ tm_g_patient_profile <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     patient_id = cs_to_des_select(patient_id, dataname = parentname),
-    binf_vars = cs_to_des_select(binf_vars, dataname = parentname),
-    mhterm = cs_to_des_select(mhterm, dataname = parentname),
-    mhbodsys = cs_to_des_select(mhbodsys, dataname = parentname),
-    paramcd = cs_to_des_select(paramcd, dataname = parentname),
-    vitals_xaxis = cs_to_des_select(vitals_xaxis, dataname = parentname),
-    aval = cs_to_des_select(aval, dataname = parentname),
-    atirel = cs_to_des_select(atirel, dataname = parentname),
-    medname_decoding = cs_to_des_select(medname_decoding, dataname = parentname),
-    ae_term = cs_to_des_select(ae_term, dataname = parentname),
-    ae_tox_grade = cs_to_des_select(ae_tox_grade, dataname = parentname),
-    ae_causality = cs_to_des_select(ae_causality, dataname = parentname),
-    ae_outcome = cs_to_des_select(ae_outcome, dataname = parentname),
-    ae_action = cs_to_des_select(ae_action, dataname = parentname),
-    ae_time = cs_to_des_select(ae_time, dataname = parentname)
+    binf_vars = if_not_null(binf_vars, cs_to_des_select(binf_vars, dataname = parentname)),
+    mhterm = if_not_null(mhterm, cs_to_des_select(mhterm, dataname = parentname)),
+    mhbodsys = if_not_null(mhbodsys, cs_to_des_select(mhbodsys, dataname = parentname)),
+    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = parentname)),
+    vitals_xaxis = if_not_null(vitals_xaxis, cs_to_des_select(vitals_xaxis, dataname = parentname)),
+    aval = if_not_null(aval, cs_to_des_select(aval, dataname = parentname)),
+    atirel = if_not_null(atirel, cs_to_des_select(atirel, dataname = parentname)),
+    medname_decoding = if_not_null(medname_decoding, cs_to_des_select(medname_decoding, dataname = parentname)),
+    ae_term = if_not_null(ae_term, cs_to_des_select(ae_term, dataname = parentname)),
+    ae_tox_grade = if_not_null(ae_tox_grade, cs_to_des_select(ae_tox_grade, dataname = parentname)),
+    ae_causality = if_not_null(ae_causality, cs_to_des_select(ae_causality, dataname = parentname)),
+    ae_outcome = if_not_null(ae_outcome, cs_to_des_select(ae_outcome, dataname = parentname)),
+    ae_action = if_not_null(ae_action, cs_to_des_select(ae_action, dataname = parentname)),
+    ae_time = if_not_null(ae_time, cs_to_des_select(ae_time, dataname = parentname))
   )
+  assert_that(is.cs_or_des(patient_id))
+  assert_that(is.null(binf_vars) || is.cs_or_des(binf_vars))
+  assert_that(is.null(mhterm) || is.cs_or_des(mhterm))
+  assert_that(is.null(mhbodsys) || is.cs_or_des(mhbodsys))
+  assert_that(is.null(paramcd) || is.cs_or_des(paramcd))
+  assert_that(is.null(vitals_xaxis) || is.cs_or_des(vitals_xaxis))
+  assert_that(is.null(aval) || is.cs_or_des(aval))
+  assert_that(is.null(atirel) || is.cs_or_des(atirel))
+  assert_that(is.null(medname_decoding) || is.cs_or_des(medname_decoding))
+  assert_that(is.null(ae_term) || is.cs_or_des(ae_term))
+  assert_that(is.null(ae_tox_grade) || is.cs_or_des(ae_tox_grade))
+  assert_that(is.null(ae_causality) || is.cs_or_des(ae_causality))
+  assert_that(is.null(ae_outcome) || is.cs_or_des(ae_outcome))
+  assert_that(is.null(ae_action) || is.cs_or_des(ae_action))
+  assert_that(is.null(ae_time) || is.cs_or_des(ae_time))
 
   module(
     label = label,
@@ -1037,10 +1046,6 @@ srv_g_patient_profile <- function(input,
 
     validate(
       need(
-        input$`aval-dataset_ADVS_singleextract-select`,
-        "Please select AVAL variable."
-      ),
-      need(
         input$`atirel-dataset_ADCM_singleextract-select`,
         "Please select MHBODSYS variable."
       ),
@@ -1066,7 +1071,6 @@ srv_g_patient_profile <- function(input,
     my_calls <- template_prior_medication(
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
-      aval = input$`aval-dataset_ADVS_singleextract-select`,
       atirel = input$`atirel-dataset_ADCM_singleextract-select`,
       medname_decoding = input$`medname_decoding-dataset_ADCM_singleextract-select`
     )
@@ -1092,7 +1096,6 @@ srv_g_patient_profile <- function(input,
 
   vitals_call <- reactive({
     validate_checks()
-
 
     validate(
       need(
@@ -1153,10 +1156,6 @@ srv_g_patient_profile <- function(input,
     anl_name = "ANL"
   )
   ae_calls <- reactive({
-    validate(
-      need("ADAE" %in% datasets$datanames(), message = "ADAE dataset needed to show Adverse events info.")
-    )
-
     validate(
       need(
         input$`ae_term-dataset_ADAE_singleextract-select`,
