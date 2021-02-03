@@ -141,8 +141,7 @@ template_vitals <- function(dataname,
                             patient_id,
                             paramcd = "PARAMCD",
                             vitals_xaxis = "ADY",
-                            aval = "AVAL",
-                            max_day) {
+                            aval = "AVAL") {
   assert_that(
     is.string(dataname),
     is.string(paramcd),
@@ -163,6 +162,10 @@ template_vitals <- function(dataname,
         summarise(
           AVAL = max(aval, na.rm = T)
         )
+
+      max_day <- max(vitals[[vitals_xaxis_char]], na.rm = T)
+      max_aval <- max(vitals[[aval_char]], na.rm = T)
+      max_aval_seq <- seq(0, max_aval, 10)
 
       result_plot <- ggplot(data = vitals, mapping = aes(x = vitals_xaxis)) + # replaced VSDY
         geom_ribbon(
@@ -231,27 +234,28 @@ template_vitals <- function(dataname,
           alpha = 1,
           nudge_y = 2.2
         ) +
-        # nolint start
-        # geom_text(
-        #   aes(
-        #     x = max_day,
-        #     y = seq(1, max(vitals$AVAL, na.rm = T), 10),
-        #     label = seq(1, max(vitals$AVAL, na.rm = T), 10)
-        #   ),
-        #   color = "black",
-        #   alpha = 1,
-        #   nudge_y = 2.2
-        # ) +
-        # nolint end
+        geom_text(
+          data = data.frame(
+            x = rep(max_day, length(max_aval_seq)),
+            y = max_aval_seq,
+            l = as.character(max_aval_seq)
+          ),
+          aes(
+            x = x,
+            y = y,
+            label = l
+          ),
+          color = "black",
+          alpha = 1,
+          nudge_y = 2.2
+        ) +
         scale_x_continuous(
-          breaks = seq(1, max(vitals[[vitals_xaxis_char]], na.rm = T), 7), # changed VSDY with ADY
-          labels = seq(1, max(vitals[[vitals_xaxis_char]], na.rm = T), 7), # changed VSDY with ADY
-          minor_breaks = seq(1, max(vitals[[vitals_xaxis_char]], na.rm = T), 1) # changed VSDY with ADY
+          limits = c(1, max_day)
         ) +
         scale_y_continuous(
           breaks = seq(0, max(vitals[[vitals_xaxis_char]], na.rm = T), 50),
           name = "Vitals",
-          minor_breaks = seq(1, max(vitals[[aval_char]], na.rm = T), 10)
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
         ) +
         theme_void() +
         theme(
@@ -268,8 +272,9 @@ template_vitals <- function(dataname,
             colour = "grey"
           ),
           legend.position = "top"
-        ) +
-        xlim(1, max_day)
+        )
+
+      print(result_plot)
     }, env = list(
       dataname = as.name(dataname),
       paramcd = as.name(paramcd),
@@ -277,8 +282,7 @@ template_vitals <- function(dataname,
       vitals_xaxis = as.name(vitals_xaxis),
       vitals_xaxis_char = vitals_xaxis,
       aval = as.name(aval),
-      aval_char = aval,
-      max_day = as.numeric(max_day)
+      aval_char = aval
     ))
   )
 
@@ -1116,7 +1120,6 @@ srv_g_patient_profile <- function(input,
 
     vitals_stack_push(bquote({
       ANL_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
-      max_day <- max(ANL_FILTERED[ANL_FILTERED$USUBJID == .(patient_id), ]$ADY, na.rm = T)
     }))
 
     my_calls <- template_vitals(
@@ -1124,8 +1127,7 @@ srv_g_patient_profile <- function(input,
       patient_id = patient_id,
       paramcd = input$`paramcd-dataset_ADVS_singleextract-select`,
       vitals_xaxis = input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
-      aval = input$`aval-dataset_ADVS_singleextract-select`,
-      max_day = "max_day"
+      aval = input$`aval-dataset_ADVS_singleextract-select`
     )
 
     mapply(expression = my_calls, vitals_stack_push)

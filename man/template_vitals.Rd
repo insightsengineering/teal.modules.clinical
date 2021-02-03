@@ -9,8 +9,7 @@ template_vitals(
   patient_id,
   paramcd = "PARAMCD",
   vitals_xaxis = "ADY",
-  aval = "AVAL",
-  max_day
+  aval = "AVAL"
 )
 }
 \arguments{
