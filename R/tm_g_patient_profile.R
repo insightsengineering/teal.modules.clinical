@@ -9,7 +9,6 @@
 #'
 #'
 template_basic_info <- function(dataname,
-                                patient_id,
                                 binf_vars) {
   assert_that(
     is.string(dataname)
@@ -22,12 +21,19 @@ template_basic_info <- function(dataname,
     list(),
     substitute(
       expr = {
-        result <- # compared to the original app, ETHNIC, DTHCAUS and DTHADY are not available in ADSL
-          dataname %>%
+        values <- dataname %>%
           select(binf_vars) %>%
-          gather() %>%
-          mutate(key = get_labels(dataname)$column_labels[binf_vars]) %>%
+          # we are sure that only one row
+          head(1) %>%
+          t()
+
+        key <- get_labels(dataname)$column_labels[rownames(values)]
+
+        result <- # compared to the original app, ETHNIC, DTHCAUS and DTHADY are not available in ADSL
+          data.frame(key = key, value = values) %>%
+          select(key, value) %>%
           rename(`   ` = key, ` ` = value)
+
       }, env = list(
         dataname = as.name(dataname),
         binf_vars = binf_vars
@@ -168,13 +174,9 @@ template_vitals <- function(dataname,
       max_aval_seq <- seq(0, max_aval, 10)
 
       result_plot <- ggplot(data = vitals, mapping = aes(x = vitals_xaxis)) + # replaced VSDY
-        geom_ribbon(
-          data = vitals %>% tidyr::pivot_wider(names_from = paramcd_char, values_from = "AVAL"),
-          aes(ymin = DIABP, ymax = SYSBP), fill = "red", alpha = 0.1
-        ) +
-        ggplot2::geom_line(
+        geom_line(
           data = vitals,
-          mapping = ggplot2::aes(y = aval, color = paramcd),
+          mapping = aes(y = aval, color = paramcd),
           size = 1.5,
           alpha = 0.5
         ) +
@@ -196,7 +198,7 @@ template_vitals <- function(dataname,
         ) +
         geom_hline(yintercept = 20, color = "cadetblue", linetype = 2, alpha = 0.8, size = 1) +
         geom_text(
-          ggplot2::aes(x = 1, y = 20),
+          aes(x = 1, y = 20),
           label = "20/min",
           color = "cadetblue",
           alpha = 1,
@@ -212,7 +214,7 @@ template_vitals <- function(dataname,
         ) +
         geom_hline(yintercept = 100, color = "forestgreen", linetype = 2, alpha = 0.5, size = 1) +
         geom_text(
-          ggplot2::aes(x = 1, y = 100),
+          aes(x = 1, y = 100),
           label = "100bpm",
           color = "forestgreen",
           alpha = 1,
@@ -220,7 +222,7 @@ template_vitals <- function(dataname,
         ) +
         geom_hline(yintercept = 90, color = "red", linetype = 2, alpha = 0.5, size = 1) +
         geom_text(
-          ggplot2::aes(x = 1, y = 90),
+          aes(x = 1, y = 90),
           label = "90mmHg",
           color = "red",
           alpha = 1,
@@ -363,7 +365,7 @@ template_adverse_events <- function(patient_id,
   if (is.null(ae_time)) {
     chart_list <- add_expr(
       list(),
-      quote(ae_chart <- ggplot2::ggplot())
+      quote(ae_chart <- ggplot())
     )
   } else {
     chart_list <- add_expr(
@@ -377,20 +379,20 @@ template_adverse_events <- function(patient_id,
             ATOXGR == "." ~ "UNKNOWN",
             TRUE ~ ATOXGR
           )) %>%
-          ggplot2::ggplot(ggplot2::aes(
+          ggplot(aes(
             fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time
           )) +
-          ggplot2::geom_label(
-            ggplot2::aes(label = ae_term),
+          geom_label(
+            aes(label = ae_term),
             color = "black",
             hjust = "left",
             vjust = "bottom",
             size = 3
           ) +
-          ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 1.2)) +
-          ggplot2::xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
-          ggplot2::geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-          ggplot2::ylab("Adverse Events") +
+          scale_y_discrete(expand = expansion(add = 1.2)) +
+          xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
+          geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+          ylab("Adverse Events") +
           theme(
             axis.text.y = element_blank(),
             axis.ticks.y = element_blank(),
@@ -521,7 +523,7 @@ template_adverse_events <- function(patient_id,
 #'       paramcd = data_extract_spec(
 #'         dataname = "ADVS",
 #'         select = select_spec(
-#'           choices = variable_choices(ADVS),
+#'           choices = variable_choices(ADVS, "PARAMCD"),
 #'           selected = c("PARAMCD"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -530,7 +532,7 @@ template_adverse_events <- function(patient_id,
 #'       vitals_xaxis = data_extract_spec(
 #'         dataname = "ADVS",
 #'         select = select_spec(
-#'           choices = variable_choices(ADVS),
+#'           choices = variable_choices(ADVS, "ADY"),
 #'           selected = c("ADY"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -955,7 +957,6 @@ srv_g_patient_profile <- function(input,
 
     my_calls <- template_basic_info(
       dataname = "ANL_FILTERED",
-      patient_id = patient_id,
       binf_vars = input$`binf_vars-dataset_ADSL_singleextract-select`
     )
 

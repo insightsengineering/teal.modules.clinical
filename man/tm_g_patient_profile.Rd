@@ -155,7 +155,7 @@ app <- init(
       paramcd = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
-          choices = variable_choices(ADVS),
+          choices = variable_choices(ADVS, "PARAMCD"),
           selected = c("PARAMCD"),
           multiple = FALSE,
           fixed = FALSE
@@ -164,7 +164,7 @@ app <- init(
       vitals_xaxis = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
-          choices = variable_choices(ADVS),
+          choices = variable_choices(ADVS, "ADY"),
           selected = c("ADY"),
           multiple = FALSE,
           fixed = FALSE

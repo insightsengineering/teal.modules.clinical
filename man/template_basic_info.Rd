@@ -4,15 +4,15 @@
 \alias{template_basic_info}
 \title{Template: Basic Info}
 \usage{
-template_basic_info(dataname, patient_id, binf_vars)
+template_basic_info(dataname, binf_vars)
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{patient_id}{Patient ID to be used.}
-
 \item{binf_vars}{Variables to be shown in Basic Info tab.}
+
+\item{patient_id}{Patient ID to be used.}
 
 \item{mhterm}{Medical history variables.}
 }
