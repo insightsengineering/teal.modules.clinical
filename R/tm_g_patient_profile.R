@@ -1235,6 +1235,17 @@ srv_g_patient_profile <- function(input,
     width = plot_width
   )
 
+  # Make sure that get_chunks_object() has the code for the currently viewed tab
+  observeEvent(input$tabs, handlerExpr = {
+    chunks_reset()
+    new_chunks <- switch(input$tabs,
+      "Basic info" = basic_info_call(),
+      "Medical history" = mhist_call(),
+      "Prior medication" = pmed_call(),
+      "Vitals" = vitals_call(),
+      "Adverse events" = ae_calls())
+    if (!is.null(new_chunks)) chunks_push_chunks(new_chunks)
+  }, priority = -1)
 
   callModule(
     get_rcode_srv,
