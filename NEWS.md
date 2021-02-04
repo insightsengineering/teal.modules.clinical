@@ -10,6 +10,7 @@
 ### New Features
 * New module `tm_g_ci` was added for confidence interval plots.
 * New module `tm_t_ancova` was added for analysis of variance summary tables.
+* New module `tm_t_mult_events` was added for multiple events by term.
 
 ### Enhancements
 * Refactored all modules using the redesigned `rtables` and `tern` packages.

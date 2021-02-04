@@ -1,0 +1,366 @@
+test_that("template_mult_events generates correct expressions 1 HLT parameter", {
+  result <- template_mult_events("adcm",
+    "adsl",
+    "ARM",
+    "ASEQ",
+    "ATC1",
+    "CMDECOD",
+    add_total = TRUE,
+    event_type = "treatment"
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adcm
+      anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
+      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout1 = quote(
+      lyt_1 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = c(unique = "Total number of patients with at least one treatment")
+        )
+    ),
+    layout2 = quote(
+      lyt_2 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID2",
+          .stats = "unique_count",
+          .labels = c(unique_count = "Total number of treatments")
+        ) %>%
+        split_rows_by(
+          "ATC1",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>% summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(
+            unique = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments"
+          )
+        ) %>% count_occurrences(
+          vars = "CMDECOD",
+          .indent_mods = -1L
+        ) %>% append_topleft(
+          paste(
+            vapply(
+              list(attr(adcm$ATC1,
+                which = "label"
+              )),
+              eval,
+              FUN.VALUE = character(1)
+            ),
+            collapse = "/"
+          )
+        ) %>%
+        append_varlabels(adcm, "CMDECOD", indent = TRUE)
+    ),
+    table1 = quote(
+      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    ),
+    table2 = quote(
+      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
+    ),
+    table2_sorted = quote({
+      sorted_result_2 <- result_2 %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
+    }),
+    final_table = quote({
+      col_info(result_1) <- col_info(sorted_result_2)
+      result <- rbind(result_1, sorted_result_2)
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+
+test_that("template_mult_events generates correct expressions 2 HLT parameters", {
+  result <- template_mult_events("adcm",
+    "adsl",
+    "ARM",
+    "ASEQ",
+    c("ATC1", "ATC2"),
+    "CMDECOD",
+    add_total = TRUE,
+    event_type = "treatment"
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adcm
+      anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "CMDECOD")))
+      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout1 = quote(
+      lyt_1 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = c(unique = "Total number of patients with at least one treatment")
+        )
+    ),
+    layout2 = quote(
+      lyt_2 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID2",
+          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
+        ) %>%
+        split_rows_by("ATC1",
+          child_labels = "visible", nested = FALSE,
+          indent_mod = -1L, split_fun = split_fun
+        ) %>% split_rows_by("ATC2",
+          child_labels = "visible", nested = TRUE, indent_mod = 0L,
+          split_fun = split_fun
+        ) %>% summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"), .labels = c(
+            unique = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments"
+          )
+        ) %>% count_occurrences(
+          vars = "CMDECOD",
+          .indent_mods = -1L
+        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+          which = "label"
+        ), attr(adcm$ATC2, which = "label")), eval,
+        FUN.VALUE = character(1)
+        ), collapse = "/")) %>% append_varlabels(adcm,
+          "CMDECOD",
+          indent = TRUE
+        )
+    ),
+    table1 = quote(
+      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    ),
+    table2 = quote(
+      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
+    ),
+    table2_sorted = quote({
+      sorted_result_2 <- result_2 %>%
+        sort_at_path(path = c("ATC1", "*", "ATC2", "*", "CMDECOD"), scorefun = score_occurrences)
+    }),
+    final_table = quote({
+      col_info(result_1) <- col_info(sorted_result_2)
+      result <- rbind(result_1, sorted_result_2)
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+
+test_that("template_mult_events generates correct expressions 3 HLT parameters", {
+  result <- template_mult_events("adcm",
+    "adsl",
+    "ARM",
+    "ASEQ",
+    c("ATC1", "ATC2", "ATC3"),
+    "CMDECOD",
+    add_total = TRUE,
+    event_type = "treatment"
+  )
+
+
+  expected <- list(
+    data = quote({
+      anl <- adcm
+      anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "CMDECOD")))
+      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout1 = quote(
+      lyt_1 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = c(unique = "Total number of patients with at least one treatment")
+        )
+    ),
+    layout2 = quote(
+      lyt_2 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID2",
+          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
+        ) %>%
+        split_rows_by("ATC1",
+          child_labels = "visible", nested = FALSE,
+          indent_mod = -1L, split_fun = split_fun
+        ) %>% split_rows_by("ATC2",
+          child_labels = "visible", nested = TRUE, indent_mod = 0L,
+          split_fun = split_fun
+        ) %>% split_rows_by("ATC3",
+          child_labels = "visible",
+          nested = TRUE, indent_mod = 0L, split_fun = split_fun
+        ) %>%
+        summarize_num_patients(var = "USUBJID", .stats = c(
+          "unique",
+          "nonunique"
+        ), .labels = c(
+          unique = "Total number of patients with at least one treatment",
+          nonunique = "Total number of treatments"
+        )) %>% count_occurrences(
+          vars = "CMDECOD",
+          .indent_mods = -1L
+        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+          which = "label"
+        ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
+          which = "label"
+        )), eval, FUN.VALUE = character(1)), collapse = "/")) %>%
+        append_varlabels(adcm, "CMDECOD", indent = TRUE)
+    ),
+    table1 = quote(
+      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    ),
+    table2 = quote(
+      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
+    ),
+    table2_sorted = quote({
+      sorted_result_2 <- result_2 %>%
+        sort_at_path(
+          path = c(
+            "ATC1",
+            "*",
+            "ATC2",
+            "*",
+            "ATC3",
+            "*",
+            "CMDECOD"
+          ),
+          scorefun = score_occurrences
+        )
+    }),
+    final_table = quote({
+      col_info(result_1) <- col_info(sorted_result_2)
+      result <- rbind(result_1, sorted_result_2)
+      result
+    })
+  )
+
+
+  expect_equal(result, expected)
+})
+
+
+test_that("template_mult_events generates correct expressions 4 HLT parameters", {
+  result <- template_mult_events("adcm",
+    "adsl",
+    "ARM",
+    "ASEQ",
+    c("ATC1", "ATC2", "ATC3", "ATC4"),
+    "CMDECOD",
+    add_total = TRUE,
+    event_type = "treatment"
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adcm
+      anl <- anl %>%
+        df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
+      anl <- anl %>%
+        mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout1 = quote(
+      lyt_1 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = c(unique = "Total number of patients with at least one treatment")
+        )
+    ),
+    layout2 = quote(
+      lyt_2 <- basic_table() %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID2",
+          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
+        ) %>%
+        split_rows_by("ATC1",
+          child_labels = "visible", nested = FALSE,
+          indent_mod = -1L, split_fun = split_fun
+        ) %>% split_rows_by("ATC2",
+          child_labels = "visible", nested = TRUE, indent_mod = 0L,
+          split_fun = split_fun
+        ) %>% split_rows_by("ATC3",
+          child_labels = "visible",
+          nested = TRUE, indent_mod = 0L, split_fun = split_fun
+        ) %>%
+        split_rows_by("ATC4",
+          child_labels = "visible", nested = TRUE,
+          indent_mod = 0L, split_fun = split_fun
+        ) %>% summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"), .labels = c(
+            unique = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments"
+          )
+        ) %>% count_occurrences(
+          vars = "CMDECOD",
+          .indent_mods = -1L
+        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+          which = "label"
+        ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
+          which = "label"
+        ), attr(adcm$ATC4, which = "label")), eval,
+        FUN.VALUE = character(1)
+        ), collapse = "/")) %>% append_varlabels(adcm,
+          "CMDECOD",
+          indent = TRUE
+        )
+    ),
+    table1 = quote(
+      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    ),
+    table2 = quote(
+      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
+    ),
+    table2_sorted = quote({
+      sorted_result_2 <- result_2 %>%
+        sort_at_path(
+          path = c("ATC1", "*", "ATC2", "*", "ATC3", "*", "ATC4", "*", "CMDECOD"),
+          scorefun = score_occurrences
+        )
+    }),
+    final_table = quote({
+      col_info(result_1) <- col_info(sorted_result_2)
+      result <- rbind(result_1, sorted_result_2)
+      result
+    })
+  )
+
+
+  expect_equal(result, expected)
+})
