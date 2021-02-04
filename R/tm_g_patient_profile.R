@@ -152,7 +152,7 @@ template_vitals <- function(dataname,
     is.string(dataname),
     is.string(paramcd),
     is.string(vitals_xaxis),
-    is.string(aval),
+    is.string(aval)
   )
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
