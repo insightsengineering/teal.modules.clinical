@@ -364,8 +364,8 @@ tm_t_mult_events <- function(label, # nolint
 
   module(
     label = label,
-    ui = ui_t_events_byterm,
-    server = srv_t_events_byterm,
+    ui = ui_t_mult_events_byterm,
+    server = srv_t_mult_events_byterm,
     ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
@@ -381,7 +381,7 @@ tm_t_mult_events <- function(label, # nolint
 }
 
 #' @noRd
-ui_t_events_byterm <- function(id, ...) {
+ui_t_mult_events_byterm <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
@@ -432,18 +432,18 @@ ui_t_events_byterm <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_byterm <- function(input,
-                                output,
-                                session,
-                                datasets,
-                                dataname,
-                                parentname,
-                                event_type,
-                                arm_var,
-                                seq_var,
-                                hlt,
-                                llt,
-                                label) {
+srv_t_mult_events_byterm <- function(input,
+                                     output,
+                                     session,
+                                     datasets,
+                                     dataname,
+                                     parentname,
+                                     event_type,
+                                     arm_var,
+                                     seq_var,
+                                     hlt,
+                                     llt,
+                                     label) {
   init_chunks()
 
   anl_merged <- data_merge_module(
