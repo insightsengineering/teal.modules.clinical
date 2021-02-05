@@ -478,7 +478,8 @@ template_adverse_events <- function(patient_id,
                                     ae_causality = "AEREL",
                                     ae_outcome = "AEOUT",
                                     ae_action = "AEACN",
-                                    ae_time = "ASTDY") {
+                                    ae_time = "ASTDY",
+                                    ae_decod = NULL) {
   assert_that(
     is.string(dataname),
     is.string(ae_term),
@@ -486,7 +487,8 @@ template_adverse_events <- function(patient_id,
     is.string(ae_causality),
     is.string(ae_outcome),
     is.string(ae_action),
-    is.string(ae_time) || is.null(ae_time)
+    is.string(ae_time) || is.null(ae_time),
+    is.string(ae_decod) || is.null(ae_decod)
   )
 
   y <- list()
@@ -499,7 +501,7 @@ template_adverse_events <- function(patient_id,
     substitute(
       ae_table <- dataname %>%
         select(
-          ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time
+          ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time, ae_decod
         ) %>%
         arrange(desc(ae_tox_grade)) %>%
         `colnames<-`(get_labels(dataname)$column_labels[ae_vars]),
@@ -511,7 +513,8 @@ template_adverse_events <- function(patient_id,
         ae_outcome = as.name(ae_outcome),
         ae_action = as.name(ae_action),
         ae_time = as.name(ae_time),
-        ae_vars = c(ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time)
+        ae_decod = if_not_null(ae_decod, as.name(ae_decod)),
+        ae_vars = c(ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time, ae_decod)
       )
     )
   )
@@ -602,6 +605,7 @@ template_adverse_events <- function(patient_id,
 #' @param ae_outcome (`choices selected` or `data_extract_input`)\cr \code{AEOUT} column of the ADAE dataset.
 #' @param ae_action (`choices selected` or `data_extract_input`)\cr \code{AEACN} column of the ADAE dataset.
 #' @param ae_time (`choices selected` or `data_extract_input`)\cr \code{ASTDY} column of the ADAE dataset.
+#' @param ae_decod (`choices selected` or `data_extract_input`)\cr \code{AEDECOD} column of the ADAE dataset.
 #' @param mhterm (`choices selected` or `data_extract_input`)\cr \code{MHTERM} column of the ADMH dataset.
 #' @param mhbodsys (`choices selected` or `data_extract_input`)\cr \code{MHBODSYS} column of the ADMH dataset.
 #' @param paramcd (`choices selected` or `data_extract_input`)\cr \code{PARAMCD} column of the ADVS dataset.
@@ -883,7 +887,8 @@ template_adverse_events <- function(patient_id,
 #'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
-#'       )
+#'       ),
+#'       ae_decod = NULL
 #'     )
 #'   )
 #' )
@@ -909,6 +914,7 @@ tm_g_patient_profile <- function(label,
                                  ae_outcome = NULL,
                                  ae_action = NULL,
                                  ae_time = NULL,
+                                 ae_decod = NULL,
                                  cmindc = NULL,
                                  cmdose = NULL,
                                  cmtrt = NULL,
@@ -949,6 +955,7 @@ tm_g_patient_profile <- function(label,
     ae_outcome = if_not_null(ae_outcome, cs_to_des_select(ae_outcome, dataname = parentname)),
     ae_action = if_not_null(ae_action, cs_to_des_select(ae_action, dataname = parentname)),
     ae_time = if_not_null(ae_time, cs_to_des_select(ae_time, dataname = parentname)),
+    ae_decod = if_not_null(ae_decod, cs_to_des_select(ae_decod, dataname = parentname)),
     cmindc = if_not_null(cmindc, cs_to_des_select(cmindc, dataname = parentname)),
     cmdose = if_not_null(cmdose, cs_to_des_select(cmdose, dataname = parentname)),
     cmtrt = if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = parentname)),
@@ -1242,6 +1249,14 @@ ui_g_patient_profile <- function(id, ...) {
             label = "Select ASTDY variable:",
             data_extract_spec = ui_args$ae_time,
             is_single_dataset = is_single_dataset_value
+          ),
+          if_not_null(ui_args$ae_decod,
+            data_extract_input(
+              id = ns("ae_decod"),
+              label = "Select DECOD variable:",
+              data_extract_spec = ui_args$ae_decod,
+              is_single_dataset = is_single_dataset_value
+            )
           )
         )
       )
@@ -1281,6 +1296,7 @@ srv_g_patient_profile <- function(input,
                                   ae_outcome,
                                   ae_action,
                                   ae_time,
+                                  ae_decod,
                                   plot_height,
                                   plot_width,
                                   label) {
@@ -1643,8 +1659,8 @@ srv_g_patient_profile <- function(input,
   # Adverse events tab ----
   ae_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time),
-    input_id = c("ae_term", "ae_tox_grade", "ae_causality", "ae_outcome", "ae_action", "ae_time"),
+    data_extract = list(ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time, ae_decod),
+    input_id = c("ae_term", "ae_tox_grade", "ae_causality", "ae_outcome", "ae_action", "ae_time", "ae_decod"),
     anl_name = "ANL"
   )
   ae_calls <- reactive({
@@ -1689,7 +1705,8 @@ srv_g_patient_profile <- function(input,
       ae_causality = input$`ae_causality-dataset_ADAE_singleextract-select`,
       ae_outcome = input$`ae_outcome-dataset_ADAE_singleextract-select`,
       ae_action = input$`ae_action-dataset_ADAE_singleextract-select`,
-      ae_time = input$`ae_time-dataset_ADAE_singleextract-select`
+      ae_time = input$`ae_time-dataset_ADAE_singleextract-select`,
+      ae_decod = input$`ae_decod-dataset_ADAE_singleextract-select`
     )
     mapply(ae_calls, FUN = function(x) chunks_push(x, chunks = ae_stack))
     ae_stack

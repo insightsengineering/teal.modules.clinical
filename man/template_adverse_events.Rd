@@ -12,7 +12,8 @@ template_adverse_events(
   ae_causality = "AEREL",
   ae_outcome = "AEOUT",
   ae_action = "AEACN",
-  ae_time = "ASTDY"
+  ae_time = "ASTDY",
+  ae_decod = NULL
 )
 }
 \arguments{

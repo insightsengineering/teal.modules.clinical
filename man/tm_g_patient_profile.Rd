@@ -23,6 +23,7 @@ tm_g_patient_profile(
   ae_outcome = NULL,
   ae_action = NULL,
   ae_time = NULL,
+  ae_decod = NULL,
   cmindc = NULL,
   cmdose = NULL,
   cmtrt = NULL,
@@ -77,6 +78,8 @@ Time variable to be represented in the vitals plot x-axis.}
 \item{ae_action}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEACN} column of the ADAE dataset.}
 
 \item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
+
+\item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 
 \item{cmindc}{(\verb{choices selected} or \code{data_extract_input}) \code{CMINDC} column of the ADCM dataset.}
 
@@ -377,7 +380,8 @@ app <- init(
           multiple = TRUE,
           fixed = FALSE
         )
-      )
+      ),
+      ae_decod = NULL
     )
   )
 )
