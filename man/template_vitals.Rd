@@ -8,6 +8,7 @@ template_vitals(
   dataname,
   patient_id,
   paramcd = "PARAMCD",
+  paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   vitals_xaxis = "ADY",
   aval = "AVAL"
 )
@@ -18,6 +19,9 @@ analysis data used in teal module.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
+
+\item{paramcd_levels}{(\code{character})\cr
+\code{paramcd} levels.}
 }
 \description{
 Creates a vitals template.

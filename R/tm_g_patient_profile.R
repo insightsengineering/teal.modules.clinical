@@ -142,10 +142,13 @@ template_prior_medication <- function(dataname,
 #' Creates a vitals template.
 #'
 #' @inheritParams template_arguments
+#' @param paramcd_levels (`character`)\cr
+#'   \code{paramcd} levels.
 #'
 template_vitals <- function(dataname,
                             patient_id,
                             paramcd = "PARAMCD",
+                            paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             vitals_xaxis = "ADY",
                             aval = "AVAL") {
   assert_that(
@@ -164,7 +167,7 @@ template_vitals <- function(dataname,
       vitals <-
         dataname %>%
         group_by(paramcd, vitals_xaxis) %>%
-        filter(paramcd %in% c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP")) %>%
+        filter(paramcd %in% paramcd_levels_chars) %>%
         summarise(
           AVAL = max(aval, na.rm = T)
         )
@@ -172,6 +175,29 @@ template_vitals <- function(dataname,
       max_day <- max(vitals[[vitals_xaxis_char]], na.rm = T)
       max_aval <- max(vitals[[aval_char]], na.rm = T)
       max_aval_seq <- seq(0, max_aval, 10)
+
+      provided_vita <- paramcd_levels_chars
+      len_paramcd_levels_chars <- length(provided_vita)
+      known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
+
+      paramcd_levels_e <- known_vita[na.omit(pmatch(provided_vita, known_vita))]
+      len_paramcd_levels_e <- length(paramcd_levels_e)
+
+      vars_colors <- color_palette(len_paramcd_levels_chars)
+      names(vars_colors) <- provided_vita
+
+      base_stats <- setNames(c(140, 90, 38, 20, 94, 100), known_vita)
+      paramcd_stats_e <- base_stats[paramcd_levels_e]
+
+      base_labels <- setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
+      paramcd_labels_e <- base_labels[paramcd_levels_e]
+
+      base_stats_df <- data.frame(
+        x = rep(1, len_paramcd_levels_e),
+        y = paramcd_stats_e,
+        label = paramcd_labels_e,
+        color = paramcd_levels_e
+      )
 
       result_plot <- ggplot(data = vitals, mapping = aes(x = vitals_xaxis)) + # replaced VSDY
         geom_line(
@@ -181,60 +207,23 @@ template_vitals <- function(dataname,
           alpha = 0.5
         ) +
         scale_color_manual(
-          values = c(
-            "SYSBP" = "darkred",
-            "DIABP" = "red",
-            "TEMP" = "purple",
-            "RESP" = "cadetblue"
-          ) # removed  "PUL", "OXYSAT", "WGHT"
+          values = vars_colors, # removed  "PUL", "OXYSAT", "WGHT"
         ) +
-        geom_hline(yintercept = 38, color = "purple", linetype = 2, alpha = 0.5, size = 1) +
         geom_text(
-          aes(x = 1, y = 38),
-          label = "38\u00B0 C",
-          color = "purple",
-          alpha = 1,
-          nudge_y = 2.2
+          data = base_stats_df,
+          aes(x = x, y = y, label = label, color = color), alpha = 1, nudge_y = 2.2
         ) +
-        geom_hline(yintercept = 20, color = "cadetblue", linetype = 2, alpha = 0.8, size = 1) +
-        geom_text(
-          aes(x = 1, y = 20),
-          label = "20/min",
-          color = "cadetblue",
-          alpha = 1,
-          nudge_y = 2.2
+        geom_hline(
+          data = base_stats_df,
+          aes(yintercept = y, color = color), linetype = 2, alpha = 0.5, size = 1
         ) +
-        geom_hline(yintercept = 94, color = "blue", linetype = 2, alpha = 0.5, size = 1) +
-        geom_text(
-          aes(x = 1, y = 94),
-          label = "94%",
-          color = "blue",
-          alpha = 1,
-          nudge_y = 2.2
+        scale_x_continuous(
+          limits = c(1, max_day)
         ) +
-        geom_hline(yintercept = 100, color = "forestgreen", linetype = 2, alpha = 0.5, size = 1) +
-        geom_text(
-          aes(x = 1, y = 100),
-          label = "100bpm",
-          color = "forestgreen",
-          alpha = 1,
-          nudge_y = 2.2
-        ) +
-        geom_hline(yintercept = 90, color = "red", linetype = 2, alpha = 0.5, size = 1) +
-        geom_text(
-          aes(x = 1, y = 90),
-          label = "90mmHg",
-          color = "red",
-          alpha = 1,
-          nudge_y = -2.2
-        ) +
-        geom_hline(yintercept = 140, color = "darkred", linetype = 2, alpha = 0.5, size = 1) +
-        geom_text(
-          aes(x = 1, y = 140),
-          label = "140mmHg",
-          color = "darkred",
-          alpha = 1,
-          nudge_y = 2.2
+        scale_y_continuous(
+          breaks = seq(0, max(vitals[[vitals_xaxis_char]], na.rm = T), 50),
+          name = "Vitals",
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
         ) +
         geom_text(
           data = data.frame(
@@ -245,20 +234,10 @@ template_vitals <- function(dataname,
           aes(
             x = x,
             y = y,
-            label = l
-          ),
+            label = l),
           color = "black",
           alpha = 1,
-          nudge_y = 2.2
-        ) +
-        scale_x_continuous(
-          limits = c(1, max_day)
-        ) +
-        scale_y_continuous(
-          breaks = seq(0, max(vitals[[vitals_xaxis_char]], na.rm = T), 50),
-          name = "Vitals",
-          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
-        ) +
+          nudge_y = 2.2) +
         theme_void() +
         theme(
           axis.text.y = element_blank(),
@@ -281,6 +260,7 @@ template_vitals <- function(dataname,
       dataname = as.name(dataname),
       paramcd = as.name(paramcd),
       paramcd_char = paramcd,
+      paramcd_levels_chars = paramcd_levels,
       vitals_xaxis = as.name(vitals_xaxis),
       vitals_xaxis_char = vitals_xaxis,
       aval = as.name(aval),
@@ -1142,6 +1122,7 @@ ui_g_patient_profile <- function(id, ...) {
             data_extract_spec = ui_args$paramcd,
             is_single_dataset = is_single_dataset_value
           ),
+          uiOutput(ns("paramcd_levels")),
           data_extract_input(
             id = ns("vitals_xaxis"),
             label = "Select vital plot x-axis:",
@@ -1478,6 +1459,27 @@ srv_g_patient_profile <- function(input,
     anl_name = "ANL"
   )
 
+  vitals_dat <- reactive({
+    vitals_merged_data()$data()
+  })
+
+  output$paramcd_levels <- renderUI({
+    paramcd_var <- input$`paramcd-dataset_ADVS_singleextract-select`
+    paramcd_col <- vitals_dat()[[paramcd_var]]
+    paramcd_col_levels <- if (is.factor(paramcd_col)) {
+      levels(paramcd_col)
+    }
+    else {
+      unique(paramcd_col)
+    }
+
+    tagList(selectInput(session$ns("paramcd_levels_vals"),
+      "Select PARAMCD variable levels:",
+      selected = paramcd_col_levels,
+      choices = paramcd_col_levels, multiple = TRUE
+    ))
+  })
+
   vitals_call <- reactive({
     validate_checks()
 
@@ -1485,6 +1487,10 @@ srv_g_patient_profile <- function(input,
       need(
         input$`paramcd-dataset_ADVS_singleextract-select`,
         "Please select PARAMCD variable."
+      ),
+      need(
+        input$`paramcd_levels_vals`,
+        "Please select PARAMCD variable levels."
       ),
       need(
         input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
@@ -1514,6 +1520,7 @@ srv_g_patient_profile <- function(input,
       dataname = "ANL_FILTERED",
       patient_id = patient_id,
       paramcd = input$`paramcd-dataset_ADVS_singleextract-select`,
+      paramcd_levels = input$`paramcd_levels_vals`,
       vitals_xaxis = input$`vitals_xaxis-dataset_ADVS_singleextract-select`,
       aval = input$`aval-dataset_ADVS_singleextract-select`
     )
@@ -1734,7 +1741,8 @@ srv_g_patient_profile <- function(input,
       "Medical history" = mhist_call(),
       "Prior medication" = pmed_call(),
       "Vitals" = vitals_call(),
-      "Adverse events" = ae_calls())
+      "Adverse events" = ae_calls()
+    )
     if (!is.null(new_chunks)) chunks_push_chunks(new_chunks)
   }, priority = -1)
 
