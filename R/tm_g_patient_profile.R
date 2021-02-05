@@ -299,13 +299,188 @@ template_vitals <- function(dataname,
 #' @inheritParams template_arguments
 #'
 template_therapy <- function(dataname,
-                             patient_id) {
+                             patient_id,
+                             atirel = "ATIREL",
+                             medname_decoding = "CMDECOD",
+                             cmindc = "CMINDC",
+                             cmdose = "CMDOSE",
+                             cmtrt = "CMTRT",
+                             cmdosu = "CMDOSU",
+                             cmroute = "CMROUTE",
+                             cmdosfrq = "CMDOSFRQ",
+                             cmstdy = "CMSTDY", # replaces CMSTDY
+                             cmendy = "CMENDY" # replaces CMENDY
+) {
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is.string(atirel),
+    is.string(medname_decoding),
+    is.string(cmindc),
+    is.string(cmdose),
+    is.string(cmtrt),
+    is.string(cmdosu),
+    is.string(cmroute),
+    is.string(cmdosfrq),
+    is.string(cmstdy),
+    is.string(cmendy)
   )
 
   y <- list()
-  y$table <- list()
+  y$table_list <- list()
+  y$plot_list <- list()
+
+  #
+  table_list <- add_expr(
+    list(),
+    substitute(expr = {
+      cols_to_inlude <- c(
+        cmindc_char,
+        cmdecod_char,
+        cmdose_char,
+        cmtrt_char,
+        cmdosu_char,
+        cmroute_char,
+        cmdosfrq_char,
+        cmstdy_char,
+        cmendy_char
+      )
+
+      for (col in cols_to_inlude) {
+        if (!(col %in% names(dataname))) {
+          dataname[[col]] <- NA
+        }
+      }
+
+      therapy_table <-
+        dataname %>%
+          filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
+          select(cols_to_inlude) %>%
+          filter(!is.na(cmdecod)) %>%
+          mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
+          select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
+          select(cmindc, cmdecod, Dosage, everything()) %>%
+          mutate(CMDECOD = case_when(
+            nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
+            TRUE ~ as.character(cmdecod)
+          )) %>%
+          select(-cmtrt) %>%
+          arrange(cmindc, cmdecod, cmstdy) %>%
+          distinct()
+        # `colnames<-`(get_labels(dataname)$column_labels[cmindc, cmdecod, cmstdy]) # nolintr
+
+    }, env = list(
+      dataname = as.name(dataname),
+      atirel = as.name(atirel),
+      cmdecod = as.name(medname_decoding),
+      cmindc = as.name(cmindc),
+      cmdose = as.name(cmdose),
+      cmtrt = as.name(cmtrt),
+      cmdosu = as.name(cmdosu),
+      cmroute = as.name(cmroute),
+      cmdosfrq = as.name(cmdosfrq),
+      cmstdy = as.name(cmstdy),
+      cmendy = as.name(cmendy),
+      cmdecod_char = medname_decoding,
+      cmindc_char = cmindc,
+      cmdose_char = cmdose,
+      cmtrt_char = cmtrt,
+      cmdosu_char = cmdosu,
+      cmroute_char = cmroute,
+      cmdosfrq_char = cmdosfrq,
+      cmstdy_char = cmstdy,
+      cmendy_char = cmendy
+    ))
+  )
+
+  plot_list <- add_expr(
+    list(),
+    substitute(expr = {
+      max_day <- max(dataname[[cmendy_char]], na.rm = T)
+      dataname %>%
+        filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
+        select_at(cols_to_inlude) %>%
+        filter(!is.na(cmdecod)) %>%
+        mutate(DOSE = paste(cmdose, cmdosu, cmdosfrq)) %>%
+        select(-cmdose, -cmdosu, -cmdosfrq) %>%
+        select(cmindc, cmdecod, DOSE, everything()) %>%
+        arrange(cmindc, cmdecod, cmstdy) %>%
+        distinct() %>%
+        mutate(CMSTDY = case_when(
+          is.na(cmstdy) ~ 1,
+          cmstdy < 1 ~ 1,
+          TRUE ~ cmstdy
+        )) %>%
+        mutate(CMENDY = case_when(
+          is.na(cmendy) ~ max_day,
+          TRUE ~ cmendy
+        )) %>%
+        arrange(CMSTDY, desc(CMSTDY)) %>%
+        mutate(CMDECOD = case_when(
+          nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
+          TRUE ~ as.character(cmdecod)
+        )) ->
+      data
+
+      therapy_plot <-
+        ggplot(data = data, aes(fill = cmindc, color = cmindc, y = CMDECOD, x = CMSTDY)) +
+        geom_segment(aes(xend = CMENDY, yend = CMDECOD), size = 2) +
+        geom_text(
+          data =
+            data %>%
+            select(CMDECOD, cmindc) %>%
+            distinct(),
+          aes(x = 1, label = CMDECOD), color = "black",
+          hjust = "left",
+          vjust = "bottom",
+          nudge_y = 0.1,
+          size = 3
+        ) +
+        xlim(1, max_day) +
+        scale_y_discrete(expand = expansion(add = 1.2)) +
+        geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        theme_minimal() +
+        theme(
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ),
+          panel.grid.minor = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ),
+          legend.position = "top"
+        ) +
+        ylab("Medication") +
+        theme(legend.position = "none")
+    }, env = list(
+      dataname = as.name(dataname),
+      atirel = as.name(atirel),
+      cmdecod = as.name(medname_decoding),
+      cmindc = as.name(cmindc),
+      cmdose = as.name(cmdose),
+      cmtrt = as.name(cmtrt),
+      cmdosu = as.name(cmdosu),
+      cmroute = as.name(cmroute),
+      cmdosfrq = as.name(cmdosfrq),
+      cmstdy = as.name(cmstdy),
+      cmendy = as.name(cmendy),
+      cmdecod_char = medname_decoding,
+      cmindc_char = cmindc,
+      cmdose_char = cmdose,
+      cmtrt_char = cmtrt,
+      cmdosu_char = cmdosu,
+      cmroute_char = cmroute,
+      cmdosfrq_char = cmdosfrq,
+      cmstdy_char = cmstdy,
+      cmendy_char = cmendy
+    ))
+  )
+  y$table_list <- bracket_expr(table_list)
+  y$plot_list <- bracket_expr(plot_list)
   y
 }
 
@@ -335,7 +510,6 @@ template_adverse_events <- function(patient_id,
   )
 
   y <- list()
-
 
   y$table <- list()
   y$chart <- list()
@@ -456,6 +630,14 @@ template_adverse_events <- function(patient_id,
 #' @param aval `AVAL` (`choices selected` or `data_extract_input`)\cr variable.
 #' @param atirel (`choices selected` or `data_extract_input`) \code{ATIREL} column of the ADCM dataset.
 #' @param medname_decoding (`choices selected` or `data_extract_input`) \code{CMDECOD} column of the ADCM dataset.
+#' @param cmindc (`choices selected` or `data_extract_input`) \code{CMINDC} column of the ADCM dataset.
+#' @param cmdose (`choices selected` or `data_extract_input`) \code{CMDOSE} column of the ADCM dataset.
+#' @param cmtrt (`choices selected` or `data_extract_input`) \code{CMTRT} column of the ADCM dataset.
+#' @param cmdosu (`choices selected` or `data_extract_input`) \code{CMDOSU} column of the ADCM dataset.
+#' @param cmroute (`choices selected` or `data_extract_input`) \code{CMROUTE} column of the ADCM dataset.
+#' @param cmdosfrq (`choices selected` or `data_extract_input`) \code{CMDOSFRQ} column of the ADCM dataset.
+#' @param cmstdy (`choices selected` or `data_extract_input`) \code{CMSTDY} column of the ADCM dataset.
+#' @param cmendy (`choices selected` or `data_extract_input`) \code{CMENDY} column of the ADCM dataset.
 #'
 #' @export
 #'
@@ -468,13 +650,44 @@ template_adverse_events <- function(patient_id,
 #' ADAE <- radae(cached = TRUE)
 #' ADCM <- radcm(cached = TRUE)
 #' ADVS <- radvs(cached = TRUE)
+#'
+#' # Modify ADCM
+#' ADCM$CMINDC <- ADCM$CMCAT
+#' ADCM$CMDECOD <- ADCM$CMCAT
+#' ADCM$CMDOSE <- 1
+#' ADCM$CMTRT <- ADCM$CMCAT
+#' ADCM$CMDOSU <- "U"
+#' ADCM$CMROUTE <- "CMROUTE"
+#' ADCM$CMDOSFRQ <- "CMDOSFRQ"
+#' ADCM$CMSTDY <- 1
+#' ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+#' ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+#' ADCM$CMENDY <- 500
+#' ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+#' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+#'
 #' ids <- unique(ADSL$USUBJID)
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
 #'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
 #'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-#'     cdisc_dataset("ADCM", ADCM, code = "ADCM <- radcm(cached = TRUE)"),
+#'     cdisc_dataset("ADCM", ADCM, code = "ADCM <- radcm(cached = TRUE)
+#'                   ADCM$CMINDC <- ADCM$CMCAT
+#'                   ADCM$CMDECOD <- ADCM$CMCAT
+#'                   ADCM$CMDOSE <- 1
+#'                   ADCM$CMTRT <- ADCM$CMCAT
+#'                   ADCM$CMDOSU <- 'U'
+#'                   ADCM$CMROUTE <- 'CMROUTE'
+#'                   ADCM$CMDOSFRQ <- 'CMDOSFRQ'
+#'                   ADCM$CMSTDY <- 1
+#'                   ADCM[ADCM$CMCAT == 'medcl B' ,]$CMSTDY <- 20
+#'                   ADCM[ADCM$CMCAT == 'medcl C' ,]$CMSTDY <- 150
+#'                   ADCM$CMENDY <- 500
+#'                   ADCM[ADCM$CMCAT == 'medcl B' ,]$CMENDY <- 700
+#'                   ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
+#'                   "),
 #'     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
 #'     check = TRUE
 #'   ),
@@ -507,7 +720,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADMH),
 #'           selected = c("MHTERM"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -565,12 +778,84 @@ template_adverse_events <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
+#'       cmindc = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMINDC"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmdose = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMDOSE"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmtrt = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMTRT"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmdosu = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMDOSU"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmroute = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMROUTE"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmdosfrq = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMDOSFRQ"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmstdy = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMSTDY"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       cmendy = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM),
+#'           selected = c("CMENDY"),
+#'           multiple = FALSE,
+#'           fixed = FALSE
+#'         )
+#'       ),
 #'       ae_term = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("AETERM"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -579,7 +864,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("AETOXGR"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -588,7 +873,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("AEREL"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -597,7 +882,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("AEOUT"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -606,7 +891,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("AEACN"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -615,7 +900,7 @@ template_adverse_events <- function(patient_id,
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE),
 #'           selected = c("ASTDY"),
-#'           multiple = FALSE,
+#'           multiple = TRUE,
 #'           fixed = FALSE
 #'         )
 #'       )
@@ -644,6 +929,14 @@ tm_g_patient_profile <- function(label,
                                  ae_outcome = NULL,
                                  ae_action = NULL,
                                  ae_time = NULL,
+                                 cmindc = NULL,
+                                 cmdose = NULL,
+                                 cmtrt = NULL,
+                                 cmdosu = NULL,
+                                 cmroute = NULL,
+                                 cmdosfrq = NULL,
+                                 cmstdy = NULL,
+                                 cmendy = NULL,
                                  plot_height = c(700L, 200L, 2000L),
                                  plot_width = c(900L, 200L, 2000L),
                                  pre_output = NULL,
@@ -675,7 +968,15 @@ tm_g_patient_profile <- function(label,
     ae_causality = if_not_null(ae_causality, cs_to_des_select(ae_causality, dataname = parentname)),
     ae_outcome = if_not_null(ae_outcome, cs_to_des_select(ae_outcome, dataname = parentname)),
     ae_action = if_not_null(ae_action, cs_to_des_select(ae_action, dataname = parentname)),
-    ae_time = if_not_null(ae_time, cs_to_des_select(ae_time, dataname = parentname))
+    ae_time = if_not_null(ae_time, cs_to_des_select(ae_time, dataname = parentname)),
+    cmindc = if_not_null(cmindc, cs_to_des_select(cmindc, dataname = parentname)),
+    cmdose = if_not_null(cmdose, cs_to_des_select(cmdose, dataname = parentname)),
+    cmtrt = if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = parentname)),
+    cmdosu = if_not_null(cmdosu, cs_to_des_select(cmdosu, dataname = parentname)),
+    cmdosfrq = if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = parentname)),
+    cmroute = if_not_null(cmroute, cs_to_des_select(cmroute, dataname = parentname)),
+    cmstdy = if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = parentname)),
+    cmendy = if_not_null(cmendy, cs_to_des_select(cmendy, dataname = parentname))
   )
   assert_that(is.cs_or_des(patient_id))
   assert_that(is.null(binf_vars) || is.cs_or_des(binf_vars))
@@ -692,6 +993,14 @@ tm_g_patient_profile <- function(label,
   assert_that(is.null(ae_outcome) || is.cs_or_des(ae_outcome))
   assert_that(is.null(ae_action) || is.cs_or_des(ae_action))
   assert_that(is.null(ae_time) || is.cs_or_des(ae_time))
+  assert_that(is.null(cmindc) || is.cs_or_des(cmindc))
+  assert_that(is.null(cmdose) || is.cs_or_des(cmdose))
+  assert_that(is.null(cmtrt) || is.cs_or_des(cmtrt))
+  assert_that(is.null(cmdosu) || is.cs_or_des(cmdosu))
+  assert_that(is.null(cmdosfrq) || is.cs_or_des(cmdosfrq))
+  assert_that(is.null(cmroute) || is.cs_or_des(cmroute))
+  assert_that(is.null(cmstdy) || is.cs_or_des(cmstdy))
+  assert_that(is.null(cmendy) || is.cs_or_des(cmendy))
 
   module(
     label = label,
@@ -749,7 +1058,8 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Therapy",
           div(
-            plot_with_settings_ui(id = ns("therapy"))
+            DT::DTOutput(outputId = ns("therapy_table")),
+            plot_with_settings_ui(id = ns("therapy_plot"))
           )
         ),
         tabPanel(
@@ -848,6 +1158,72 @@ ui_g_patient_profile <- function(id, ...) {
       ),
       conditionalPanel(
         condition =
+          paste0("input['", ns("tabs"), "'] == 'Therapy'"),
+        list(
+          data_extract_input(
+            id = ns("atirel"),
+            label = "Select ATIREL variable:",
+            data_extract_spec = ui_args$atirel,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("medname_decoding"),
+            label = "Select medication decoding column:",
+            data_extract_spec = ui_args$medname_decoding,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmindc"),
+            label = "Select CMINDC variable:",
+            data_extract_spec = ui_args$cmindc,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmdose"),
+            label = "Select CMDOSE variable:",
+            data_extract_spec = ui_args$cmdose,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmtrt"),
+            label = "Select CMTRT variable:",
+            data_extract_spec = ui_args$cmtrt,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmdosu"),
+            label = "Select CMDOSU variable:",
+            data_extract_spec = ui_args$cmdosu,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmroute"),
+            label = "Select CMROUTE variable:",
+            data_extract_spec = ui_args$cmroute,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmdosfrq"),
+            label = "Select CMDOSFRQ variable:",
+            data_extract_spec = ui_args$cmdosfrq,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmstdy"),
+            label = "Select CMSTDY variable:",
+            data_extract_spec = ui_args$cmstdy,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmendy"),
+            label = "Select CMENDY variable:",
+            data_extract_spec = ui_args$cmendy,
+            is_single_dataset = is_single_dataset_value
+          )
+        )
+      ),
+      conditionalPanel(
+        condition =
           paste0("input['", ns("tabs"), "'] == 'Adverse events'"),
         list(
           data_extract_input(
@@ -910,6 +1286,14 @@ srv_g_patient_profile <- function(input,
                                   aval,
                                   atirel,
                                   medname_decoding,
+                                  cmindc,
+                                  cmdose,
+                                  cmtrt,
+                                  cmdosu,
+                                  cmroute,
+                                  cmdosfrq,
+                                  cmstdy,
+                                  cmendy,
                                   ae_term,
                                   ae_tox_grade,
                                   ae_causality,
@@ -1146,7 +1530,108 @@ srv_g_patient_profile <- function(input,
   })
 
   # Therapy tab ----
-  template_therapy(dataname = dataname, patient_id = patient_id)
+  therapy_merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(atirel, medname_decoding, cmindc, cmdose, cmtrt, cmdosu, cmroute, cmdosfrq, cmstdy, cmendy),
+    input_id = c(
+      "atirel", "medname_decoding", "cmindc", "cmdose", "cmtrt", "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
+      ),
+    merge_function = "dplyr::left_join",
+    anl_name = "ANL"
+  )
+
+  therapy_call <- reactive({
+    validate_checks()
+
+    validate(
+      need(
+        input$`atirel-dataset_ADCM_singleextract-select`,
+        "Please select ATIREL variable."
+      ),
+      need(
+        input$`medname_decoding-dataset_ADCM_singleextract-select`,
+        "Please select Medication decoding variable."
+      ),
+      need(
+        input$`cmindc-dataset_ADCM_singleextract-select`,
+        "Please select CMINDC variable."
+      ),
+      need(
+        input$`cmdose-dataset_ADCM_singleextract-select`,
+        "Please select CMDOSE variable."
+      ),
+      need(
+        input$`cmtrt-dataset_ADCM_singleextract-select`,
+        "Please select CMTRT variable."
+      ),
+      need(
+        input$`cmdosu-dataset_ADCM_singleextract-select`,
+        "Please select CMDOSU variable."
+      ),
+      need(
+        input$`cmroute-dataset_ADCM_singleextract-select`,
+        "Please select CMROUTE variable."
+      ),
+      need(
+        input$`cmdosfrq-dataset_ADCM_singleextract-select`,
+        "Please select CMDOSFRQ variable."
+      ),
+      need(
+        input$`cmstdy-dataset_ADCM_singleextract-select`,
+        "Please select CMSTDY variable."
+      ),
+      need(
+        input$`cmendy-dataset_ADCM_singleextract-select`,
+        "Please select CMENDY variable."
+      )
+    )
+
+    therapy_stack <- chunks$new()
+    therapy_stack_push <- function(...) {
+      chunks_push(..., chunks = therapy_stack)
+    }
+    chunks_reset()
+    chunks_push_data_merge(therapy_merged_data())
+
+    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
+
+    therapy_stack_push(bquote({
+      ANL_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
+    }))
+
+    my_calls <- template_therapy(
+      dataname = "ANL_FILTERED",
+      patient_id = patient_id,
+      atirel = input$`atirel-dataset_ADCM_singleextract-select`,
+      medname_decoding = input$`medname_decoding-dataset_ADCM_singleextract-select`,
+      cmtrt = input$`cmtrt-dataset_ADCM_singleextract-select`,
+      cmdosu = input$`cmdosu-dataset_ADCM_singleextract-select`,
+      cmroute = input$`cmroute-dataset_ADCM_singleextract-select`,
+      cmdosfrq = input$`cmdosfrq-dataset_ADCM_singleextract-select`,
+      cmstdy = input$`cmstdy-dataset_ADCM_singleextract-select`,
+      cmendy = input$`cmendy-dataset_ADCM_singleextract-select`,
+      cmindc = input$`cmindc-dataset_ADCM_singleextract-select`,
+      cmdose = input$`cmdose-dataset_ADCM_singleextract-select`
+    )
+
+    mapply(expression = my_calls, therapy_stack_push)
+    therapy_stack
+  })
+
+  output$therapy_table <- DT::renderDataTable({
+    chunks_push_chunks(therapy_call())
+    chunks_safe_eval()
+    chunks_get_var("therapy_table")
+  })
+
+  therapy_plot <- reactive({
+    chunks_reset()
+    chunks_push_data_merge(therapy_merged_data())
+    chunks_push_chunks(therapy_call())
+    chunks_safe_eval()
+    chunks_get_var("therapy_plot")
+  })
+
 
   # Adverse events tab ----
   ae_merged_data <- data_merge_module(
@@ -1234,6 +1719,13 @@ srv_g_patient_profile <- function(input,
     width = plot_width
   )
 
+  callModule(
+    plot_with_settings_srv,
+    id = "therapy_plot",
+    plot_r = therapy_plot,
+    height = plot_height,
+    width = plot_width
+  )
   # Make sure that get_chunks_object() has the code for the currently viewed tab
   observeEvent(input$tabs, handlerExpr = {
     chunks_reset()
@@ -1257,6 +1749,16 @@ srv_g_patient_profile <- function(input,
       aval,
       paramcd,
       vitals_xaxis,
+      atirel,
+      medname_decoding,
+      cmindc,
+      cmdose,
+      cmtrt,
+      cmdosu,
+      cmroute,
+      cmdosfrq,
+      cmstdy,
+      cmendy,
       ae_term,
       ae_tox_grade,
       ae_causality,

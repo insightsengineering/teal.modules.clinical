@@ -4,7 +4,20 @@
 \alias{template_therapy}
 \title{Template: Therapy}
 \usage{
-template_therapy(dataname, patient_id)
+template_therapy(
+  dataname,
+  patient_id,
+  atirel = "ATIREL",
+  medname_decoding = "CMDECOD",
+  cmindc = "CMINDC",
+  cmdose = "CMDOSE",
+  cmtrt = "CMTRT",
+  cmdosu = "CMDOSU",
+  cmroute = "CMROUTE",
+  cmdosfrq = "CMDOSFRQ",
+  cmstdy = "CMSTDY",
+  cmendy = "CMENDY"
+)
 }
 \arguments{
 \item{dataname}{(\code{character})\cr

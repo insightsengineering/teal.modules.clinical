@@ -23,6 +23,14 @@ tm_g_patient_profile(
   ae_outcome = NULL,
   ae_action = NULL,
   ae_time = NULL,
+  cmindc = NULL,
+  cmdose = NULL,
+  cmtrt = NULL,
+  cmdosu = NULL,
+  cmroute = NULL,
+  cmdosfrq = NULL,
+  cmstdy = NULL,
+  cmendy = NULL,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -70,6 +78,22 @@ Time variable to be represented in the vitals plot x-axis.}
 
 \item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
 
+\item{cmindc}{(\verb{choices selected} or \code{data_extract_input}) \code{CMINDC} column of the ADCM dataset.}
+
+\item{cmdose}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSE} column of the ADCM dataset.}
+
+\item{cmtrt}{(\verb{choices selected} or \code{data_extract_input}) \code{CMTRT} column of the ADCM dataset.}
+
+\item{cmdosu}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSU} column of the ADCM dataset.}
+
+\item{cmroute}{(\verb{choices selected} or \code{data_extract_input}) \code{CMROUTE} column of the ADCM dataset.}
+
+\item{cmdosfrq}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSFRQ} column of the ADCM dataset.}
+
+\item{cmstdy}{(\verb{choices selected} or \code{data_extract_input}) \code{CMSTDY} column of the ADCM dataset.}
+
+\item{cmendy}{(\verb{choices selected} or \code{data_extract_input}) \code{CMENDY} column of the ADCM dataset.}
+
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
@@ -100,13 +124,44 @@ ADMH <- radmh(cached = TRUE)
 ADAE <- radae(cached = TRUE)
 ADCM <- radcm(cached = TRUE)
 ADVS <- radvs(cached = TRUE)
+
+# Modify ADCM
+ADCM$CMINDC <- ADCM$CMCAT
+ADCM$CMDECOD <- ADCM$CMCAT
+ADCM$CMDOSE <- 1
+ADCM$CMTRT <- ADCM$CMCAT
+ADCM$CMDOSU <- "U"
+ADCM$CMROUTE <- "CMROUTE"
+ADCM$CMDOSFRQ <- "CMDOSFRQ"
+ADCM$CMSTDY <- 1
+ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+ADCM$CMENDY <- 500
+ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+
 ids <- unique(ADSL$USUBJID)
+
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-    cdisc_dataset("ADCM", ADCM, code = "ADCM <- radcm(cached = TRUE)"),
+    cdisc_dataset("ADCM", ADCM, code = "ADCM <- radcm(cached = TRUE)
+                  ADCM$CMINDC <- ADCM$CMCAT
+                  ADCM$CMDECOD <- ADCM$CMCAT
+                  ADCM$CMDOSE <- 1
+                  ADCM$CMTRT <- ADCM$CMCAT
+                  ADCM$CMDOSU <- 'U'
+                  ADCM$CMROUTE <- 'CMROUTE'
+                  ADCM$CMDOSFRQ <- 'CMDOSFRQ'
+                  ADCM$CMSTDY <- 1
+                  ADCM[ADCM$CMCAT == 'medcl B' ,]$CMSTDY <- 20
+                  ADCM[ADCM$CMCAT == 'medcl C' ,]$CMSTDY <- 150
+                  ADCM$CMENDY <- 500
+                  ADCM[ADCM$CMCAT == 'medcl B' ,]$CMENDY <- 700
+                  ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
+                  "),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     check = TRUE
   ),
@@ -139,7 +194,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADMH),
           selected = c("MHTERM"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -197,12 +252,84 @@ app <- init(
           fixed = FALSE
         )
       ),
+      cmindc = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMINDC"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmdose = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMDOSE"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmtrt = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMTRT"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmdosu = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMDOSU"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmroute = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMROUTE"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmdosfrq = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMDOSFRQ"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmstdy = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMSTDY"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      cmendy = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM),
+          selected = c("CMENDY"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
       ae_term = data_extract_spec(
         dataname = "ADAE",
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("AETERM"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -211,7 +338,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("AETOXGR"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -220,7 +347,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("AEREL"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -229,7 +356,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("AEOUT"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -238,7 +365,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("AEACN"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       ),
@@ -247,7 +374,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE),
           selected = c("ASTDY"),
-          multiple = FALSE,
+          multiple = TRUE,
           fixed = FALSE
         )
       )
