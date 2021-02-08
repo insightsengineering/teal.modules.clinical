@@ -48,24 +48,24 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_id}{Patient ID column to be used.}
+\item{patient_id}{(\verb{choices selected} or \code{data_extract_input})\cr patient ID column to be used.}
 
-\item{binf_vars}{variables to be shown in Basic Info tab.}
+\item{binf_vars}{(\verb{choices selected} or \code{data_extract_input})\cr ADSL columns to be shown in Basic Info tab.}
 
 \item{mhterm}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHTERM} column of the ADMH dataset.}
 
 \item{mhbodsys}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHBODSYS} column of the ADMH dataset.}
 
-\item{atirel}{(\verb{choices selected} or \code{data_extract_input}) \code{ATIREL} column of the ADCM dataset.}
+\item{atirel}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ATIREL} column of the ADCM dataset.}
 
-\item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDECOD} column of the ADCM dataset.}
+\item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDECOD} column of the ADCM dataset.}
 
 \item{paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
 
 \item{vitals_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr
 Time variable to be represented in the vitals plot x-axis.}
 
-\item{aval}{\code{AVAL} (\verb{choices selected} or \code{data_extract_input})\cr variable.}
+\item{aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADVS dataset.}
 
 \item{ae_term}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AETERM} column of the ADAE dataset.}
 
@@ -81,21 +81,21 @@ Time variable to be represented in the vitals plot x-axis.}
 
 \item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 
-\item{cmindc}{(\verb{choices selected} or \code{data_extract_input}) \code{CMINDC} column of the ADCM dataset.}
+\item{cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
 
-\item{cmdose}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSE} column of the ADCM dataset.}
+\item{cmdose}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSE} column of the ADCM dataset.}
 
-\item{cmtrt}{(\verb{choices selected} or \code{data_extract_input}) \code{CMTRT} column of the ADCM dataset.}
+\item{cmtrt}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMTRT} column of the ADCM dataset.}
 
-\item{cmdosu}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSU} column of the ADCM dataset.}
+\item{cmdosu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSU} column of the ADCM dataset.}
 
-\item{cmroute}{(\verb{choices selected} or \code{data_extract_input}) \code{CMROUTE} column of the ADCM dataset.}
+\item{cmroute}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMROUTE} column of the ADCM dataset.}
 
-\item{cmdosfrq}{(\verb{choices selected} or \code{data_extract_input}) \code{CMDOSFRQ} column of the ADCM dataset.}
+\item{cmdosfrq}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSFRQ} column of the ADCM dataset.}
 
-\item{cmstdy}{(\verb{choices selected} or \code{data_extract_input}) \code{CMSTDY} column of the ADCM dataset.}
+\item{cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
 
-\item{cmendy}{(\verb{choices selected} or \code{data_extract_input}) \code{CMENDY} column of the ADCM dataset.}
+\item{cmendy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMENDY} column of the ADCM dataset.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of

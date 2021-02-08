@@ -17,8 +17,22 @@ template_adverse_events(
 )
 }
 \arguments{
+\item{patient_id}{(\code{character})\cr Patient ID.}
+
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
+
+\item{ae_term}{(\code{character})\cr name of the reported term for the adverse event variable.}
+
+\item{ae_tox_grade}{(\code{character})\cr name of the standard toxicity grade variable.}
+
+\item{ae_causality}{(\code{character})\cr name of the causality variable.}
+
+\item{ae_outcome}{(\code{character})\cr name of outcome of adverse event variable.}
+
+\item{ae_action}{(\code{character})\cr name of action taken with study treatment variable.}
+
+\item{ae_time}{(\code{character})\cr name of study day of start of adverse event variable.}
 }
 \description{
 Creates an adverse events template call.

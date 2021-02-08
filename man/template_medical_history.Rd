@@ -15,8 +15,11 @@ template_medical_history(
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{mhbodsys}{(\code{character})\cr
-Body system or organ class column.}
+\item{patient_id}{(\code{character})\cr Patient ID.}
+
+\item{mhterm}{(\code{character})\cr name of reported name for medical history variable.}
+
+\item{mhbodsys}{(\code{character})\cr name of body system or organ class variable.}
 }
 \description{
 Creates medical history template.

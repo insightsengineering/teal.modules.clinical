@@ -22,6 +22,28 @@ template_therapy(
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
+
+\item{patient_id}{(\code{character})\cr Patient ID.}
+
+\item{atirel}{(\code{character})\cr name of time relation of medication variable.}
+
+\item{medname_decoding}{(\code{character})\cr name of standardized medication name variable.}
+
+\item{cmindc}{(\code{character})\cr name of indication variable.}
+
+\item{cmdose}{(\code{character})\cr name of dose per administration variable.}
+
+\item{cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
+
+\item{cmdosu}{(\code{character})\cr name of dose units variable.}
+
+\item{cmroute}{(\code{character})\cr name of route of administration variable.}
+
+\item{cmdosfrq}{(\code{character})\cr name of dosing frequency per interval variable.}
+
+\item{cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
+
+\item{cmendy}{(\code{character})\cr name of study day of end of medication variable.}
 }
 \description{
 Creates a therapy template call.

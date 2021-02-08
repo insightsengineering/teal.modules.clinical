@@ -3,10 +3,9 @@
 #' Creates a basic info template.
 #'
 #' @inheritParams template_arguments
-#' @param patient_id Patient ID to be used.
-#' @param binf_vars Variables to be shown in Basic Info tab.
-#' @param mhterm Medical history variables.
-#'
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param binf_vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @param mhterm (`character`)\cr name of reported name for medical history variable.
 #'
 template_basic_info <- function(dataname,
                                 binf_vars) {
@@ -52,8 +51,9 @@ template_basic_info <- function(dataname,
 #' Creates medical history template.
 #'
 #' @inheritParams template_arguments
-#' @param mhbodsys (`character`)\cr
-#' Body system or organ class column.
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param mhterm (`character`)\cr name of reported name for medical history variable.
+#' @param mhbodsys (`character`)\cr name of body system or organ class variable.
 #'
 template_medical_history <- function(dataname,
                                      patient_id,
@@ -98,7 +98,10 @@ template_medical_history <- function(dataname,
 #' Creates a prior medication template.
 #'
 #' @inheritParams template_arguments
-#'
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param atirel (`character`)\cr name of time relation of medication variable.
+#' @param medname_decoding (`character`)\cr name of standardized medication name variable.
+
 template_prior_medication <- function(dataname,
                                       patient_id,
                                       atirel = "ATIREL",
@@ -140,10 +143,11 @@ template_prior_medication <- function(dataname,
 #' Template: Vitals
 #'
 #' Creates a vitals template.
-#'
 #' @inheritParams template_arguments
-#' @param paramcd_levels (`character`)\cr
-#'   \code{paramcd} levels.
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param vitals_xaxis (`character`)\cr name of time variable used for the x-axis.
+#' @param aval (`character`)\cr name of the analysis value variable.
+#' @param paramcd_levels (`character`)\cr \code{paramcd} levels.
 #'
 template_vitals <- function(dataname,
                             patient_id,
@@ -277,7 +281,18 @@ template_vitals <- function(dataname,
 #' Creates a therapy template call.
 #'
 #' @inheritParams template_arguments
-#'
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param atirel (`character`)\cr name of time relation of medication variable.
+#' @param medname_decoding (`character`)\cr name of standardized medication name variable.
+#' @param cmindc (`character`)\cr name of indication variable.
+#' @param cmdose (`character`)\cr name of dose per administration variable.
+#' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @param cmdosu (`character`)\cr name of dose units variable.
+#' @param cmroute (`character`)\cr name of route of administration variable.
+#' @param cmdosfrq (`character`)\cr name of dosing frequency per interval variable.
+#' @param cmstdy (`character`)\cr name of study day of start of medication variable.
+#' @param cmendy (`character`)\cr name of study day of end of medication variable.
+
 template_therapy <- function(dataname,
                              patient_id,
                              atirel = "ATIREL",
@@ -470,6 +485,13 @@ template_therapy <- function(dataname,
 #' Creates an adverse events template call.
 #'
 #' @inheritParams template_arguments
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param ae_term (`character`)\cr name of the reported term for the adverse event variable.
+#' @param ae_tox_grade (`character`)\cr name of the standard toxicity grade variable.
+#' @param ae_causality (`character`)\cr name of the causality variable.
+#' @param ae_outcome (`character`)\cr name of outcome of adverse event variable.
+#' @param ae_action (`character`)\cr name of action taken with study treatment variable.
+#' @param ae_time (`character`)\cr name of study day of start of adverse event variable.
 #'
 template_adverse_events <- function(patient_id,
                                     dataname = "ADAE_FILTERED",
@@ -597,8 +619,8 @@ template_adverse_events <- function(patient_id,
 #' This teal module produces a patient profile report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_id Patient ID column to be used.
-#' @param binf_vars variables to be shown in Basic Info tab.
+#' @param patient_id (`choices selected` or `data_extract_input`)\cr patient ID column to be used.
+#' @param binf_vars (`choices selected` or `data_extract_input`)\cr ADSL columns to be shown in Basic Info tab.
 #' @param ae_term (`choices selected` or `data_extract_input`)\cr \code{AETERM} column of the ADAE dataset.
 #' @param ae_tox_grade (`choices selected` or `data_extract_input`)\cr \code{AETOXGR} column of the ADAE dataset.
 #' @param ae_causality (`choices selected` or `data_extract_input`)\cr \code{AEREL} column of the ADAE dataset.
@@ -611,17 +633,17 @@ template_adverse_events <- function(patient_id,
 #' @param paramcd (`choices selected` or `data_extract_input`)\cr \code{PARAMCD} column of the ADVS dataset.
 #' @param vitals_xaxis (`choices selected` or `data_extract_input`)\cr
 #' Time variable to be represented in the vitals plot x-axis.
-#' @param aval `AVAL` (`choices selected` or `data_extract_input`)\cr variable.
-#' @param atirel (`choices selected` or `data_extract_input`) \code{ATIREL} column of the ADCM dataset.
-#' @param medname_decoding (`choices selected` or `data_extract_input`) \code{CMDECOD} column of the ADCM dataset.
-#' @param cmindc (`choices selected` or `data_extract_input`) \code{CMINDC} column of the ADCM dataset.
-#' @param cmdose (`choices selected` or `data_extract_input`) \code{CMDOSE} column of the ADCM dataset.
-#' @param cmtrt (`choices selected` or `data_extract_input`) \code{CMTRT} column of the ADCM dataset.
-#' @param cmdosu (`choices selected` or `data_extract_input`) \code{CMDOSU} column of the ADCM dataset.
-#' @param cmroute (`choices selected` or `data_extract_input`) \code{CMROUTE} column of the ADCM dataset.
-#' @param cmdosfrq (`choices selected` or `data_extract_input`) \code{CMDOSFRQ} column of the ADCM dataset.
-#' @param cmstdy (`choices selected` or `data_extract_input`) \code{CMSTDY} column of the ADCM dataset.
-#' @param cmendy (`choices selected` or `data_extract_input`) \code{CMENDY} column of the ADCM dataset.
+#' @param aval (`choices selected` or `data_extract_input`)\cr \code{AVAL} column of the ADVS dataset.
+#' @param atirel (`choices selected` or `data_extract_input`)\cr \code{ATIREL} column of the ADCM dataset.
+#' @param medname_decoding (`choices selected` or `data_extract_input`)\cr \code{CMDECOD} column of the ADCM dataset.
+#' @param cmindc (`choices selected` or `data_extract_input`)\cr \code{CMINDC} column of the ADCM dataset.
+#' @param cmdose (`choices selected` or `data_extract_input`)\cr \code{CMDOSE} column of the ADCM dataset.
+#' @param cmtrt (`choices selected` or `data_extract_input`)\cr \code{CMTRT} column of the ADCM dataset.
+#' @param cmdosu (`choices selected` or `data_extract_input`)\cr \code{CMDOSU} column of the ADCM dataset.
+#' @param cmroute (`choices selected` or `data_extract_input`)\cr \code{CMROUTE} column of the ADCM dataset.
+#' @param cmdosfrq (`choices selected` or `data_extract_input`)\cr \code{CMDOSFRQ} column of the ADCM dataset.
+#' @param cmstdy (`choices selected` or `data_extract_input`)\cr \code{CMSTDY} column of the ADCM dataset.
+#' @param cmendy (`choices selected` or `data_extract_input`)\cr \code{CMENDY} column of the ADCM dataset.
 #'
 #' @export
 #'

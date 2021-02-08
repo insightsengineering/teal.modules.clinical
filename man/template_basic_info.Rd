@@ -10,11 +10,11 @@ template_basic_info(dataname, binf_vars)
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{binf_vars}{Variables to be shown in Basic Info tab.}
+\item{binf_vars}{(\code{character})\cr variable names to be shown in Basic Info tab.}
 
-\item{patient_id}{Patient ID to be used.}
+\item{patient_id}{(\code{character})\cr Patient ID.}
 
-\item{mhterm}{Medical history variables.}
+\item{mhterm}{(\code{character})\cr name of reported name for medical history variable.}
 }
 \description{
 Creates a basic info template.

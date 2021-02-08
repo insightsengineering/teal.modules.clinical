@@ -17,11 +17,16 @@ template_vitals(
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
+\item{patient_id}{(\code{character})\cr Patient ID.}
+
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
-\item{paramcd_levels}{(\code{character})\cr
-\code{paramcd} levels.}
+\item{paramcd_levels}{(\code{character})\cr \code{paramcd} levels.}
+
+\item{vitals_xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
+
+\item{aval}{(\code{character})\cr name of the analysis value variable.}
 }
 \description{
 Creates a vitals template.

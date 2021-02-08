@@ -14,6 +14,12 @@ template_prior_medication(
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
+
+\item{patient_id}{(\code{character})\cr Patient ID.}
+
+\item{atirel}{(\code{character})\cr name of time relation of medication variable.}
+
+\item{medname_decoding}{(\code{character})\cr name of standardized medication name variable.}
 }
 \description{
 Creates a prior medication template.
