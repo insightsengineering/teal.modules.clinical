@@ -112,8 +112,8 @@ ADQS <- radqs(cached = TRUE) \%>\%
 
 arm_ref_comp <- list(
   ARMCD = list(
-    ref = "ARM A",
-    comp = c("ARM B", "ARM C")
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
   )
 )
 

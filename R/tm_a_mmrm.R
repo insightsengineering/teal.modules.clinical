@@ -330,7 +330,6 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @importFrom shinyjs show
 #' @importFrom shinyjs hidden
-#' @importFrom stats complete.cases
 #' @importFrom broom tidy
 #' @export
 #'
@@ -358,8 +357,8 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
-#'     ref = "ARM A",
-#'     comp = c("ARM B", "ARM C")
+#'     ref = "ARM B",
+#'     comp = c("ARM A", "ARM C")
 #'   )
 #' )
 #'
@@ -699,7 +698,6 @@ ui_mmrm <- function(id, ...) {
 
 #' @noRd
 #' @importFrom shinyjs hide show onclick disable enable
-#' @importFrom stats complete.cases
 srv_mmrm <- function(input,
                      output,
                      session,
@@ -1019,15 +1017,6 @@ srv_mmrm <- function(input,
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
-
-    validate(
-      need(
-        all(complete.cases(anl_data)),
-        paste(
-          c("Missing values found in formula vars", anl_data[!complete.cases(anl_data), ])
-        )
-      )
-    )
   })
 
   # Connector:
