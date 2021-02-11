@@ -724,7 +724,7 @@ template_adverse_events <- function(patient_id,
 #'       mhterm = data_extract_spec(
 #'         dataname = "ADMH",
 #'         select = select_spec(
-#'           choices = variable_choices(ADMH),
+#'           choices = variable_choices(ADMH, c("MHTERM")),
 #'           selected = c("MHTERM"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -733,7 +733,7 @@ template_adverse_events <- function(patient_id,
 #'       mhbodsys = data_extract_spec(
 #'         dataname = "ADMH",
 #'         select = select_spec(
-#'           choices = variable_choices(ADMH),
+#'           choices = variable_choices(ADMH, "MHBODSYS"),
 #'           selected = c("MHBODSYS"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -760,7 +760,7 @@ template_adverse_events <- function(patient_id,
 #'       aval = data_extract_spec(
 #'         dataname = "ADVS",
 #'         select = select_spec(
-#'           choices = variable_choices(ADVS),
+#'           choices = variable_choices(ADVS, "AVAL"),
 #'           selected = c("AVAL"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -769,7 +769,7 @@ template_adverse_events <- function(patient_id,
 #'       atirel = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "ATIREL"),
 #'           selected = c("ATIREL"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -778,7 +778,7 @@ template_adverse_events <- function(patient_id,
 #'       medname_decoding = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMDECOD"),
 #'           selected = c("CMDECOD"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -787,7 +787,7 @@ template_adverse_events <- function(patient_id,
 #'       cmindc = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMINDC"),
 #'           selected = c("CMINDC"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -796,7 +796,7 @@ template_adverse_events <- function(patient_id,
 #'       cmdose = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMDOSE"),
 #'           selected = c("CMDOSE"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -805,7 +805,7 @@ template_adverse_events <- function(patient_id,
 #'       cmtrt = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMTRT"),
 #'           selected = c("CMTRT"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -814,7 +814,7 @@ template_adverse_events <- function(patient_id,
 #'       cmdosu = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMDOSU"),
 #'           selected = c("CMDOSU"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -823,7 +823,7 @@ template_adverse_events <- function(patient_id,
 #'       cmroute = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMROUTE"),
 #'           selected = c("CMROUTE"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -832,7 +832,7 @@ template_adverse_events <- function(patient_id,
 #'       cmdosfrq = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMDOSFRQ"),
 #'           selected = c("CMDOSFRQ"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -841,7 +841,7 @@ template_adverse_events <- function(patient_id,
 #'       cmstdy = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMSTDY"),
 #'           selected = c("CMSTDY"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -850,7 +850,7 @@ template_adverse_events <- function(patient_id,
 #'       cmendy = data_extract_spec(
 #'         dataname = "ADCM",
 #'         select = select_spec(
-#'           choices = variable_choices(ADCM),
+#'           choices = variable_choices(ADCM, "CMENDY"),
 #'           selected = c("CMENDY"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
@@ -859,7 +859,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_term = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "AETERM"),
 #'           selected = c("AETERM"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -868,7 +868,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_tox_grade = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "AETOXGR"),
 #'           selected = c("AETOXGR"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -877,7 +877,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_causality = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "AEREL"),
 #'           selected = c("AEREL"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -886,7 +886,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_outcome = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "AEOUT"),
 #'           selected = c("AEOUT"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -895,7 +895,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_action = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "AEACN"),
 #'           selected = c("AEACN"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
@@ -904,7 +904,7 @@ template_adverse_events <- function(patient_id,
 #'       ae_time = data_extract_spec(
 #'         dataname = "ADAE",
 #'         select = select_spec(
-#'           choices = variable_choices(ADAE),
+#'           choices = variable_choices(ADAE, "ASTDY"),
 #'           selected = c("ASTDY"),
 #'           multiple = TRUE,
 #'           fixed = FALSE
