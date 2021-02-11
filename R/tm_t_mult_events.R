@@ -21,8 +21,7 @@ template_mult_events <- function(dataname,
     is.string(arm_var),
     is.string(seq_var),
     !is.null(llt),
-    !is.null(hlt),
-    is.character(hlt),
+    is.null(hlt) || is.character(hlt),
     is.string(llt),
     is.flag(add_total),
     is.string(event_type)
@@ -41,7 +40,11 @@ template_mult_events <- function(dataname,
     )
   )
 
-  term_vars <- c(hlt, llt)
+  if (is.null(hlt)) {
+    term_vars <- c(llt)
+  } else {
+    term_vars <- c(hlt, llt)
+  }
 
   data_list <- add_expr(
     data_list,
@@ -152,79 +155,92 @@ template_mult_events <- function(dataname,
     )
   )
 
-  lbl_lst <- list()
-
-  for (ii in 1:length(hlt)) {
-    hlt_new <- hlt[ii]
-
-    lbl_lst <- add_expr(
-      lbl_lst,
-      substitute( # nolint
+  if (is.null(hlt)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
         expr =
-          attr(dataname$hlt_new, which = "label"),
+          count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          append_varlabels(dataname, llt, indent = FALSE),
         env = list(
-          dataname = as.name(dataname),
-          hlt_new = hlt_new
+          dataname = as.name(dataname), llt = llt
         )
       )
     )
+  } else {
+    lbl_lst <- list()
 
-    nested <- ifelse(ii == 1, FALSE, TRUE)
-    indent_mod <- ifelse(ii == 1, -1L, 0L)
+    for (ii in 1:length(hlt)) {
+      hlt_new <- hlt[ii]
+
+      lbl_lst <- add_expr(
+        lbl_lst,
+        substitute( # nolint
+          expr =
+            attr(dataname$hlt_new, which = "label"),
+          env = list(
+            dataname = as.name(dataname),
+            hlt_new = hlt_new
+          )
+        )
+      )
+
+      nested <- ifelse(ii == 1, FALSE, TRUE)
+      indent_mod <- ifelse(ii == 1, -1L, 0L)
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr =
+            split_rows_by(
+              hlt,
+              child_labels = "visible",
+              nested = nested,
+              indent_mod = indent_mod,
+              split_fun = split_fun
+            ),
+          env = list(
+            hlt = hlt_new,
+            nested = nested,
+            indent_mod = indent_mod
+          )
+        )
+      )
+    }
+
+    top_left_lbl <- substitute(
+      expr =
+        paste(vapply(lbl_lst, eval, FUN.VALUE = character(1)), collapse = "/"),
+      env = list(
+        lbl_lst = lbl_lst
+      )
+    )
+
+    nonunique_label <- unique_count_label
 
     layout_list <- add_expr(
       layout_list,
       substitute(
         expr =
-          split_rows_by(
-            hlt,
-            child_labels = "visible",
-            nested = nested,
-            indent_mod = indent_mod,
-            split_fun = split_fun
-          ),
+          summarize_num_patients(
+            var = "USUBJID",
+            .stats = c("unique", "nonunique"),
+            .labels = c(
+              unique = unique_label,
+              nonunique = nonunique_label
+            )
+          ) %>%
+          count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          append_topleft(top_left_lbl) %>%
+          append_varlabels(dataname, llt, indent = TRUE),
         env = list(
-          hlt = hlt_new,
-          nested = nested,
-          indent_mod = indent_mod
+          dataname = as.name(dataname), llt = llt,
+          unique_label = unique_label, nonunique_label = nonunique_label,
+          top_left_lbl = top_left_lbl
         )
       )
     )
   }
-
-  top_left_lbl <- substitute(
-    expr =
-      paste(vapply(lbl_lst, eval, FUN.VALUE = character(1)), collapse = "/"),
-    env = list(
-      lbl_lst = lbl_lst
-    )
-  )
-
-  nonunique_label <- unique_count_label
-
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr =
-        summarize_num_patients(
-          var = "USUBJID",
-          .stats = c("unique", "nonunique"),
-          .labels = c(
-            unique = unique_label,
-            nonunique = nonunique_label
-          )
-        ) %>%
-        count_occurrences(vars = llt, .indent_mods = -1L) %>%
-        append_topleft(top_left_lbl) %>%
-        append_varlabels(dataname, llt, indent = TRUE),
-      env = list(
-        dataname = as.name(dataname), llt = llt,
-        unique_label = unique_label, nonunique_label = nonunique_label,
-        top_left_lbl = top_left_lbl
-      )
-    )
-  )
-
 
   lyt_2 <- substitute(
     expr = lyt_2 <- layout_pipe,
@@ -249,7 +265,11 @@ template_mult_events <- function(dataname,
   )
 
   # Start sorting table 2.
-  pth <- c(rbind(hlt, rep("*", length(hlt))), llt)
+  if (is.null(hlt)) {
+    pth <- c(llt)
+  } else {
+    pth <- c(rbind(hlt, rep("*", length(hlt))), llt)
+  }
 
   sort_list <- list()
 
@@ -472,7 +492,6 @@ srv_t_mult_events_byterm <- function(input,
     input_llt <- as.vector(anl_m$columns_source$llt)
 
     validate(need(input_arm_var, "Please select an ARM variable"))
-    validate(need(input_hlt, "Please select a \"HIGH LEVEL TERM\" variable(s)"))
     validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
 
     validate(
@@ -528,7 +547,7 @@ srv_t_mult_events_byterm <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       seq_var = as.vector(anl_m$columns_source$seq_var),
-      hlt = input_hlt,
+      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = input_llt,
       add_total = input$add_total,
       event_type = event_type
