@@ -242,7 +242,7 @@ template_vitals <- function(dataname,
           color = "black",
           alpha = 1,
           nudge_y = 2.2) +
-        theme_void() +
+        theme_minimal() +
         theme(
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
