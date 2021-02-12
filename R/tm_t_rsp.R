@@ -484,7 +484,7 @@ ui_t_rsp <- function(id, ...) {
       ),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),

@@ -416,7 +416,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
       helpText("Analysis data:", tags$code(a$dataname)),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -491,7 +491,7 @@ srv_t_mult_events_byterm <- function(input,
     input_hlt <- as.vector(anl_m$columns_source$hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
-    validate(need(input_arm_var, "Please select an ARM variable"))
+    validate(need(input_arm_var, "Please select a treatment variable"))
     validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
 
     validate(
@@ -508,7 +508,7 @@ srv_t_mult_events_byterm <- function(input,
     )
 
     validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     validate(
       need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")

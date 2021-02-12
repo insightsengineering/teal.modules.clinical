@@ -532,7 +532,7 @@ ui_t_events_byterm <- function(id, ...) {
       helpText("Analysis data:", tags$code(a$dataname)),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -626,7 +626,7 @@ srv_t_events_byterm <- function(input,
       as.vector(anl_m$columns_source$llt)
     )
 
-    validate(need(input_arm_var, "Please select an ARM variable"))
+    validate(need(input_arm_var, "Please select a treatment variable"))
     teal.devel::validate_has_elements(
       input_level_term,
       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
@@ -638,7 +638,7 @@ srv_t_events_byterm <- function(input,
       )
     )
     validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     validate(
       need(

@@ -392,7 +392,7 @@ ui_summary_by <- function(id, ...) {
       datanames_input(a[c("arm_var", "paramcd", "by_vars", "summarize_vars")]),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -495,7 +495,7 @@ srv_summary_by <- function(input,
     input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars"])
 
     validate(
-      need(input_arm_var, "Please select an arm variable"),
+      need(input_arm_var, "Please select a treatment variable"),
       need(input_summarize_vars, "Please select a summarize variable")
     )
 

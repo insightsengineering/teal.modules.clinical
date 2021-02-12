@@ -236,7 +236,7 @@ ui_summary <- function(id, ...) {
       datanames_input(a[c("arm_var", "summarize_vars")]),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -309,7 +309,7 @@ srv_summary <- function(input,
     input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
 
     validate(
-      need(input_arm_var, "Please select an arm variable"),
+      need(input_arm_var, "Please select a treatment variable"),
       need(input_summarize_vars, "Please select a summarize variable")
     )
 

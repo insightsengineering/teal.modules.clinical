@@ -527,7 +527,7 @@ ui_mmrm <- function(id, ...) {
           ),
           data_extract_input(
             id = ns("arm_var"),
-            label = "Arm Variable",
+            label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
@@ -892,7 +892,7 @@ srv_mmrm <- function(input,
       need(
         encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
         "`Select Endpoint` field is not selected"),
-      need(encoding_inputs[[extract_input("arm_var", parentname)]], "`Arm Variable` field is not selected"),
+      need(encoding_inputs[[extract_input("arm_var", parentname)]], "Please select a treatment variable"),
       need(encoding_inputs[["ref_arm"]], "`Reference Group` field is empty"),
       need(encoding_inputs[["comp_arm"]], "`Comparison Group` field is empty"),
       need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),

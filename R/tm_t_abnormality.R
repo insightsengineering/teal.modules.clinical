@@ -298,7 +298,7 @@ ui_t_abnormality <- function(id, ...) {
       datanames_input(a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -432,7 +432,7 @@ srv_t_abnormality <- function(input,
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
     validate(
-      need(input_arm_var, "Please select an arm variable."),
+      need(input_arm_var, "Please select a treatment variable."),
       need(input_grade, "Please select a grade variable."),
       need(input$abnormal_values, "Please select an abnormality indicator."),
       need(input_id_var, "Please select a subject identifier."),

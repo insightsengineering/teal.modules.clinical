@@ -707,7 +707,7 @@ ui_t_events_summary <- function(id, ...) {
       datanames_input(a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]),
       data_extract_input(
         id = ns("arm_var"),
-        label = "Arm Variable",
+        label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -839,9 +839,9 @@ srv_t_events_summary <- function(input,
     input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
-    validate(need(input_arm_var, "Please select an ARM variable"))
+    validate(need(input_arm_var, "Please select a treatment variable"))
     validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Arm variable is not a factor.")
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
 
     # validate inputs
