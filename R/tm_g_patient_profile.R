@@ -1357,8 +1357,7 @@ srv_g_patient_profile <- function(input,
     call_stack_push <- function(...) {
       chunks_push(..., chunks = call_stack)
     }
-    chunks_reset()
-    chunks_push_data_merge(binf_merged_data())
+    chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
 
@@ -1373,12 +1372,13 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, call_stack_push)
+    chunks_safe_eval(chunks = call_stack)
     call_stack
   })
 
   output$basic_info_table <- DT::renderDataTable({
+    chunks_reset()
     chunks_push_chunks(basic_info_call())
-    chunks_safe_eval()
     chunks_get_var("result")
   })
 
@@ -1409,8 +1409,7 @@ srv_g_patient_profile <- function(input,
     mhist_stack_push <- function(...) {
       chunks_push(..., chunks = mhist_stack)
     }
-    chunks_reset()
-    chunks_push_data_merge(mhist_merged_data())
+    chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
 
@@ -1426,12 +1425,13 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, mhist_stack_push)
+    chunks_safe_eval(chunks = mhist_stack)
     mhist_stack
   })
 
   output$medical_history_table <- DT::renderDataTable({
+    chunks_reset()
     chunks_push_chunks(mhist_call())
-    chunks_safe_eval()
     chunks_get_var("result")
   })
 
@@ -1462,8 +1462,7 @@ srv_g_patient_profile <- function(input,
     pmed_stack_push <- function(...) {
       chunks_push(..., chunks = pmed_stack)
     }
-    chunks_reset()
-    chunks_push_data_merge(pmed_merged_data())
+    chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
 
@@ -1479,12 +1478,13 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, pmed_stack_push)
+    chunks_safe_eval(pmed_stack)
     pmed_stack
   })
 
   output$prior_medication_table <- DT::renderDataTable({
+    chunks_reset()
     chunks_push_chunks(pmed_call())
-    chunks_safe_eval()
     chunks_get_var("result")
   })
 
@@ -1544,8 +1544,7 @@ srv_g_patient_profile <- function(input,
     vitals_stack_push <- function(...) {
       chunks_push(..., chunks = vitals_stack)
     }
-    chunks_reset()
-    chunks_push_data_merge(vitals_merged_data())
+    chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     vitals_xaxis <- input$`vitals_xaxis-dataset_ADVS_singleextract-select`
@@ -1564,13 +1563,13 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, vitals_stack_push)
+    chunks_safe_eval(chunks = vitals_stack)
     vitals_stack
   })
 
   vitals_plot <- reactive({
+    chunks_reset()
     chunks_push_chunks(vitals_call())
-
-    chunks_safe_eval()
     chunks_get_var("result_plot")
   })
 
@@ -1635,8 +1634,7 @@ srv_g_patient_profile <- function(input,
     therapy_stack_push <- function(...) {
       chunks_push(..., chunks = therapy_stack)
     }
-    chunks_reset()
-    chunks_push_data_merge(therapy_merged_data())
+    chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
 
@@ -1660,20 +1658,19 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, therapy_stack_push)
+    therapy_stack$eval()
     therapy_stack
   })
 
   output$therapy_table <- DT::renderDataTable({
+    chunks_reset()
     chunks_push_chunks(therapy_call())
-    chunks_safe_eval()
     chunks_get_var("therapy_table")
   })
 
   therapy_plot <- reactive({
     chunks_reset()
-    chunks_push_data_merge(therapy_merged_data())
     chunks_push_chunks(therapy_call())
-    chunks_safe_eval()
     chunks_get_var("therapy_plot")
   })
 
@@ -1685,6 +1682,7 @@ srv_g_patient_profile <- function(input,
     input_id = c("ae_term", "ae_tox_grade", "ae_causality", "ae_outcome", "ae_action", "ae_time", "ae_decod"),
     anl_name = "ANL"
   )
+
   ae_calls <- reactive({
     validate(
       need(
@@ -1716,6 +1714,8 @@ srv_g_patient_profile <- function(input,
     ae_stack <- chunks$new()
     ae_stack$reset()
 
+    chunks_push_data_merge(ae_merged_data(), chunks = ae_stack)
+
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     ae_stack$push(bquote({
       ADAE_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
@@ -1731,21 +1731,18 @@ srv_g_patient_profile <- function(input,
       ae_decod = input$`ae_decod-dataset_ADAE_singleextract-select`
     )
     mapply(ae_calls, FUN = function(x) chunks_push(x, chunks = ae_stack))
+    chunks_safe_eval(chunks = ae_stack)
     ae_stack
   })
   output$ae_table <- DT::renderDataTable({
     chunks_reset()
-    chunks_push_data_merge(ae_merged_data())
     chunks_push_chunks(ae_calls())
-    chunks_safe_eval()
     chunks_get_var("ae_table")
   })
 
   ae_chart <- reactive({
     chunks_reset()
-    chunks_push_data_merge(ae_merged_data())
     chunks_push_chunks(ae_calls())
-    chunks_safe_eval()
     chunks_get_var("ae_chart")
   })
 
@@ -1772,6 +1769,8 @@ srv_g_patient_profile <- function(input,
     height = plot_height,
     width = plot_width
   )
+
+  # Swapping out global chunks ----
   # Make sure that get_chunks_object() has the code for the currently viewed tab
   observeEvent(input$tabs, handlerExpr = {
     chunks_reset()
