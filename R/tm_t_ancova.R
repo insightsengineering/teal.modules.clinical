@@ -319,7 +319,7 @@ tm_t_ancova <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE),
+    avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE, include_vars = TRUE),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
   )
 
@@ -517,6 +517,7 @@ srv_ancova <- function(input,
     anl_adsl <- adsl_merged()
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
+
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
 

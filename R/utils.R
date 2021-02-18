@@ -340,9 +340,11 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #' Convert choices_selected to data_extract_spec with only filter_spec
 #'
 #' @inheritParams cs_to_des_select
+#' @param include_vars (`flag`)\cr whether to include the filter variables as fixed selection
+#'   in the result. This can be useful for preserving for reuse in `rtables` code e.g.
 #'
 #' @return ([teal::data_extract_spec()])
-cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
+cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -364,9 +366,25 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE) {
   }
 
   if (is.choices_selected(cs)) {
+    vars <- if (inherits(cs, "delayed_choices_selected")) {
+      cs$choices$var_choices
+    } else {
+      attr(cs$choices, "var_choices")
+    }
+    select <- if (include_vars) {
+      select_spec(
+        choices = vars,
+        selected = vars,
+        fixed = TRUE
+      )
+    } else {
+      NULL
+    }
+
     data_extract_spec(
       dataname = dataname,
-      filter = cs_to_filter_spec(cs, multiple = multiple)
+      filter = cs_to_filter_spec(cs, multiple = multiple),
+      select = select
     )
   } else {
     return(cs)

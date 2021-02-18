@@ -4,7 +4,7 @@
 \alias{cs_to_des_filter}
 \title{Convert choices_selected to data_extract_spec with only filter_spec}
 \usage{
-cs_to_des_filter(cs, dataname, multiple = FALSE)
+cs_to_des_filter(cs, dataname, multiple = FALSE, include_vars = FALSE)
 }
 \arguments{
 \item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
@@ -12,6 +12,9 @@ cs_to_des_filter(cs, dataname, multiple = FALSE)
 \item{dataname}{(\code{character}) name of the data}
 
 \item{multiple}{(\code{logical}) whether allow multiple selection in the select input}
+
+\item{include_vars}{(\code{flag})\cr whether to include the filter variables as fixed selection
+in the result. This can be useful for preserving for reuse in \code{rtables} code e.g.}
 }
 \value{
 (\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})
