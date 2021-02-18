@@ -295,6 +295,8 @@ srv_g_barchart_simple <- function(input,
                                   y_facet,
                                   plot_height,
                                   plot_width) {
+  stopifnot(is_cdisc_data(datasets))
+
   data_extract <- list(
     x = x, fill = fill, x_facet = x_facet, y_facet = y_facet
   )

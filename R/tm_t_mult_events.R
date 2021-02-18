@@ -312,11 +312,7 @@ template_mult_events <- function(dataname,
 #'
 #' adsl <- radsl(N = 400, study_duration = 2, seed = 1234)
 #' adcm <- radcm(ADSL = adsl, seed = 1234, cached = FALSE, who_coding = TRUE)
-#' adcm_keys <- keys(
-#'   primary = c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4"),
-#'   foreign = c("STUDYID", "USUBJID"),
-#'   parent = "ADSL"
-#' )
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
@@ -464,6 +460,8 @@ srv_t_mult_events_byterm <- function(input,
                                      hlt,
                                      llt,
                                      label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   anl_merged <- data_merge_module(
@@ -567,7 +565,7 @@ srv_t_mult_events_byterm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
     modal_title = "Event Table",
     code_header = label
   )

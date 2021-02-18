@@ -459,6 +459,8 @@ srv_summary_by <- function(input,
                            summarize_vars,
                            na_level,
                            label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   anl_merged <- data_merge_module(

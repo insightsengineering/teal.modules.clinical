@@ -5,6 +5,8 @@
 * New module `tm_g_patient_profile` was added to profile patients based on predefined categories.
 * Exposed hard-coded variables using `data_extract_input`.
 * New module `tm_g_ipp` was added for individual patient plots.
+* `arm_ref_comp_observer` to include `parentname` argument.
+* Show R code to include datasets retrieved from `data_extract_spec` objects.
 
 # teal.modules.clinical 0.8.6
 

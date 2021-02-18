@@ -209,6 +209,8 @@ srv_g_ci <- function(input, # nousage # nolint
                      label,
                      plot_height,
                      plot_width) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   merged_data <- data_merge_module(

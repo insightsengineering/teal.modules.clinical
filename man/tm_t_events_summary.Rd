@@ -193,13 +193,11 @@ app <- init(
         fixed = FALSE
       ),
       add_total = TRUE
-      )
     )
   )
+)
 \dontrun{
 shinyApp(app$ui, app$server)
 }
-
-
 
 }

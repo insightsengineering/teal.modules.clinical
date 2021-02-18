@@ -20,7 +20,6 @@ template_forest_tte <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU") {
-
   assert_that(
     is.string(dataname),
     is.string(arm_var),
@@ -440,6 +439,7 @@ srv_g_forest_tte <- function(input,
                              time_unit_var,
                              plot_height,
                              plot_width) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
@@ -452,6 +452,7 @@ srv_g_forest_tte <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_g_forest_tte"
   )

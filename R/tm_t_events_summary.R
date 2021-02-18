@@ -591,14 +591,12 @@ template_events_summary <- function(anl_name,
 #'         fixed = FALSE
 #'       ),
 #'       add_total = TRUE
-#'       )
 #'     )
 #'   )
+#' )
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-#'
-#'
 #'
 tm_t_events_summary <- function(label,
                                 dataname,
@@ -797,6 +795,8 @@ srv_t_events_summary <- function(input,
                                  aeseq_var,
                                  llt,
                                  label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   data_extract_vars <- list(arm_var, dthfl_var, dcsreas_var, aeseq_var, llt)
@@ -903,7 +903,7 @@ srv_t_events_summary <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(data_extract_vars),
     modal_title = "Adverse Event Summary Table",
     code_header = label
   )

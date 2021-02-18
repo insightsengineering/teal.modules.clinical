@@ -205,16 +205,13 @@ ADSL <- subset(
 arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 app <- init(
   data = cdisc_data(
-    dataset(
-      dataname = "ADSL", data = ADSL,
-      keys = keys(primary = c("USUBJID"), foreign = NULL, parent  = NULL)
+    cdisc_dataset(
+      dataname = "ADSL",
+      x = ADSL
     ),
-    dataset(
-      dataname = "ADTTE", data = ADTTE,
-      keys = keys(
-        primary = c("USUBJID", "PARAMCD"), foreign = c("USUBJID"),
-        parent = "ADSL"
-      )
+    cdisc_dataset(
+      dataname = "ADTTE",
+      x = ADTTE
     )
   ),
   modules = root_modules(

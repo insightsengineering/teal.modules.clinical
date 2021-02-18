@@ -380,6 +380,8 @@ srv_t_abnormality <- function(input,
                               baseline_var,
                               treatment_flag_var,
                               label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   # Update UI choices depending on selection of previous options

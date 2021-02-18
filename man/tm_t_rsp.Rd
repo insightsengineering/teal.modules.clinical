@@ -111,12 +111,16 @@ arm_ref_comp = list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset(
-      dataname = "ADSL", data = ADSL, code =
+      dataname = "ADSL",
+      x = ADSL,
+      code =
         "ADSL <- radsl(cached = TRUE) \%>\%
            mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
     ),
     cdisc_dataset(
-      dataname = "ADRS", data = ADRS, code =
+      dataname = "ADRS",
+      x = ADRS,
+      code =
         "ADRS <- radrs(cached = TRUE) \%>\%
           mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
     )

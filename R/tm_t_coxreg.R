@@ -319,16 +319,13 @@ template_coxreg <- function(dataname,
 #' arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' app <- init(
 #'   data = cdisc_data(
-#'     dataset(
-#'       dataname = "ADSL", data = ADSL,
-#'       keys = keys(primary = c("USUBJID"), foreign = NULL, parent  = NULL)
+#'     cdisc_dataset(
+#'       dataname = "ADSL",
+#'       x = ADSL
 #'     ),
-#'     dataset(
-#'       dataname = "ADTTE", data = ADTTE,
-#'       keys = keys(
-#'         primary = c("USUBJID", "PARAMCD"), foreign = c("USUBJID"),
-#'         parent = "ADSL"
-#'       )
+#'     cdisc_dataset(
+#'       dataname = "ADTTE",
+#'       x = ADTTE
 #'     )
 #'   ),
 #'   modules = root_modules(
@@ -560,6 +557,7 @@ srv_t_coxreg <- function(input,
                          cov_var,
                          arm_ref_comp,
                          label) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
@@ -571,6 +569,7 @@ srv_t_coxreg <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_coxreg"
   )

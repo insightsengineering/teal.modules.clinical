@@ -420,6 +420,7 @@ srv_g_forest_rsp <- function(input,
                              plot_height,
                              plot_width,
                              label) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
@@ -431,6 +432,7 @@ srv_g_forest_rsp <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte"
   )

@@ -647,6 +647,7 @@ srv_t_tte <- function(input,
                       arm_ref_comp,
                       time_unit_var,
                       label) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
@@ -658,6 +659,7 @@ srv_t_tte <- function(input,
     id_comp = "comp_arm", # from UI
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
     on_off = reactive(input$compare_arms)

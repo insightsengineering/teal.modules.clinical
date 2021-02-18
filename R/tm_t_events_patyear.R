@@ -288,7 +288,10 @@ srv_events_patyear <- function(input,
                                avalu_var,
                                events_var,
                                label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
+
   observe({
     anl <- datasets$get_data(dataname, filtered = FALSE)
     avalu_choices <- anl %>%

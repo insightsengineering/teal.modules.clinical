@@ -599,6 +599,8 @@ srv_t_events_byterm <- function(input,
                                 hlt,
                                 llt,
                                 label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   anl_merged <- data_merge_module(
@@ -706,7 +708,7 @@ srv_t_events_byterm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(list(arm_var, hlt, llt)),
     modal_title = "Event Table",
     code_header = label
   )

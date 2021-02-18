@@ -1322,6 +1322,8 @@ srv_g_patient_profile <- function(input,
                                   plot_height,
                                   plot_width,
                                   label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   # global checks

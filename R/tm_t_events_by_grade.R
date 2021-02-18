@@ -380,6 +380,7 @@ srv_t_events_by_grade <- function(input,
                                   hlt,
                                   llt,
                                   grade) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 

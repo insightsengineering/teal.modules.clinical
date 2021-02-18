@@ -715,6 +715,8 @@ srv_mmrm <- function(input,
                      label,
                      plot_height,
                      plot_width) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   # Reactive responsible for sending a disable/enable signal
@@ -780,6 +782,7 @@ srv_mmrm <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),  # From UI.
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_mmrm"
   )

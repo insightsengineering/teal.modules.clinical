@@ -65,7 +65,7 @@ add_plot_title <- function(chunk, groupby_vars) {
 #' @return  `character` variable labels.
 #'
 get_var_labels <- function(datasets, dataname, vars) {
-   labels <- datasets$get_variable_labels(dataname, vars)
+   labels <- datasets$get_varlabels(dataname, vars)
    labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
    return(labels)
 }
@@ -622,4 +622,8 @@ prepare_arm <- function(dataname,
   }
 
   pipe_expr(data_list)
+}
+
+is_cdisc_data <- function(datasets) {
+  is(datasets, "CDISCFilteredData")
 }

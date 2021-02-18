@@ -398,9 +398,9 @@ srv_g_ipp <- function(input,
                       plot_height,
                       plot_width,
                       label) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
-
 
   anl_merged <- data_merge_module(
     datasets = datasets,

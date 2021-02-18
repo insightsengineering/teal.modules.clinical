@@ -526,6 +526,7 @@ srv_g_km <- function(input,
                      label,
                      plot_height,
                      plot_width) {
+  stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
@@ -537,6 +538,7 @@ srv_g_km <- function(input,
     id_comp = "comp_arm", # from UI
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
     on_off = reactive(input$compare_arms)

@@ -171,7 +171,7 @@ tm_t_summary <- function(label,
                            is(arm_var, "data_extract_spec"),
                            datanames_input(arm_var),
                            "ADSL"
-                           ),
+                         ),
                          arm_var,
                          summarize_vars,
                          useNA = c("ifany", "no"), # nolint
@@ -187,12 +187,12 @@ tm_t_summary <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
 
@@ -215,8 +215,8 @@ tm_t_summary <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level
-        )
-      ),
+      )
+    ),
     filters = dataname
   )
 
@@ -283,6 +283,8 @@ srv_summary <- function(input,
                         summarize_vars,
                         na_level,
                         label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   anl_merged <- data_merge_module(
@@ -363,7 +365,7 @@ srv_summary <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = dataname,
+    datanames = get_extract_datanames(list(arm_var, summarize_vars)),
     modal_title = "R Code for the current Summary Table",
     code_header = label
   )

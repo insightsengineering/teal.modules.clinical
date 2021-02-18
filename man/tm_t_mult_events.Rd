@@ -65,11 +65,7 @@ library(random.cdisc.data)
 
 adsl <- radsl(N = 400, study_duration = 2, seed = 1234)
 adcm <- radcm(ADSL = adsl, seed = 1234, cached = FALSE, who_coding = TRUE)
-adcm_keys <- keys(
-  primary = c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4"),
-  foreign = c("STUDYID", "USUBJID"),
-  parent = "ADSL"
-)
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- teal::init(
   data = cdisc_data(

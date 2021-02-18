@@ -358,12 +358,16 @@ template_rsp <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset(
-#'       dataname = "ADSL", data = ADSL, code =
+#'       dataname = "ADSL",
+#'       x = ADSL,
+#'       code =
 #'         "ADSL <- radsl(cached = TRUE) %>%
 #'            mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
 #'     ),
 #'     cdisc_dataset(
-#'       dataname = "ADRS", data = ADRS, code =
+#'       dataname = "ADRS",
+#'       x = ADRS,
+#'       code =
 #'         "ADRS <- radrs(cached = TRUE) %>%
 #'           mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
 #'     )
@@ -555,6 +559,8 @@ srv_t_rsp <- function(input,
                       arm_ref_comp,
                       strata_var,
                       label) {
+  stopifnot(is_cdisc_data(datasets))
+
   init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -565,6 +571,7 @@ srv_t_rsp <- function(input,
     id_comp = "comp_arm",
     id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
+    dataname = parentname,
     arm_ref_comp = arm_ref_comp,
     module = "tm_t_tte",
     on_off = reactive(input$compare_arms)
