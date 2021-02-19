@@ -24,7 +24,8 @@ template_g_km <- function(dataname = "ANL",
                           font_size = 8,
                           conf_level = 0.95,
                           ties = "efron",
-                          xlab = "Time",
+                          xlab = "Survival time",
+                          time_unit_var = "AVALU",
                           yval = "Survival",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
@@ -34,6 +35,7 @@ template_g_km <- function(dataname = "ANL",
     is.string(arm_var),
     is.string(aval_var),
     is.string(cnsr_var),
+    is.string(time_unit_var),
     is.flag(compare_arm),
     is.flag(combine_comp_arms)
   )
@@ -133,11 +135,12 @@ template_g_km <- function(dataname = "ANL",
                 vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
               )
             } else {
+
               g_km(
                 df = df_i,
                 variables = variables,
                 font_size = font_size,
-                xlab = xlab,
+                xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
                 yval = yval,
                 newpage = FALSE,
                 title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
@@ -155,6 +158,7 @@ template_g_km <- function(dataname = "ANL",
           font_size = font_size,
           facet_var = as.name(facet_var),
           xlab = xlab,
+          time_unit_var = as.name(time_unit_var),
           yval = yval,
           conf_level = conf_level,
           pval_method = pval_method,
@@ -173,7 +177,7 @@ template_g_km <- function(dataname = "ANL",
             df = anl,
             variables = variables,
             font_size = font_size,
-            xlab = xlab,
+            xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
             yval = yval,
             newpage = TRUE,
             ggtheme = theme_minimal(),
@@ -186,6 +190,7 @@ template_g_km <- function(dataname = "ANL",
         env = list(
           font_size = font_size,
           xlab = xlab,
+          time_unit_var = as.name(time_unit_var),
           yval = yval,
           conf_level = conf_level,
           pval_method = pval_method,
@@ -276,6 +281,7 @@ tm_g_km <- function(label,
                     paramcd,
                     strata_var,
                     facet_var,
+                    time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
                     aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
                     cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                     conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -283,6 +289,7 @@ tm_g_km <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
+
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
@@ -308,7 +315,8 @@ tm_g_km <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname)
+    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
+    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
   module(
@@ -345,7 +353,8 @@ ui_g_km <- function(id, ...) {
     a$strata_var,
     a$facet_var,
     a$aval_var,
-    a$cnsr_var
+    a$cnsr_var,
+    a$time_unit_var
   )
 
   ns <- NS(id)
@@ -496,7 +505,13 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          textInput(ns("xlab"), "X-axis label", "Time")
+          textInput(ns("xlab"), "X-axis label", "Time"),
+          data_extract_input(
+            id = ns("time_unit_var"),
+            label = "Time Unit Variable",
+            data_extract_spec = a$time_unit_var,
+            is_single_dataset = is_single_dataset_value
+          )
         )
       )
     ),
@@ -524,6 +539,7 @@ srv_g_km <- function(input,
                      aval_var,
                      cnsr_var,
                      label,
+                     time_unit_var,
                      plot_height,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
@@ -546,8 +562,8 @@ srv_g_km <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var),
-    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var"),
+    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
+    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -563,13 +579,14 @@ srv_g_km <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
       arm_var = input_arm_var
     )
 
@@ -616,6 +633,7 @@ srv_g_km <- function(input,
       cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       strata_var = as.vector(anl_m$columns_source$strata_var),
       time_points = NULL,
+      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
       facet_var = as.vector(anl_m$columns_source$facet_var),
       annot_surv_med = input$show_km_table,
       annot_coxph = input$compare_arms,
@@ -648,7 +666,7 @@ srv_g_km <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var)
+      list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
       ),
     modal_title = label
   )

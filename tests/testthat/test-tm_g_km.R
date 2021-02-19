@@ -30,7 +30,7 @@ test_that("template_g_km works as expected with default arguments", {
               df = df_i,
               variables = variables,
               font_size = 8,
-              xlab = "Time",
+              xlab = paste0("Survival time", " (", anl$AVALU[1], ")"),
               yval = "Survival",
               newpage = FALSE,
               title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),

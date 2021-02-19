@@ -19,7 +19,8 @@ template_g_km(
   font_size = 8,
   conf_level = 0.95,
   ties = "efron",
-  xlab = "Time",
+  xlab = "Survival time",
+  time_unit_var = "AVALU",
   yval = "Survival",
   pval_method = "log-rank",
   annot_surv_med = TRUE,
@@ -68,6 +69,9 @@ value for the confidence level within the range of (0, 1).}
 Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
 \item{xlab}{(\code{string})\cr label of x-axis.}
+
+\item{time_unit_var}{(\code{character})\cr
+name of the variable representing time units.}
 
 \item{yval}{(\code{string})\cr value of y-axis. Should be either
 \code{Survival} (default) or \code{Failure} probability.}

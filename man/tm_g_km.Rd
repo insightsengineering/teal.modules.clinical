@@ -14,6 +14,8 @@ tm_g_km(
   paramcd,
   strata_var,
   facet_var,
+  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
+    = TRUE),
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -53,6 +55,10 @@ names of the variables for stratified analysis.}
 \item{facet_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option
 for variable names that can be used for facet plotting.}
+
+\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the time unit
+variable.}
 
 \item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis
