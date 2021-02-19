@@ -624,6 +624,45 @@ prepare_arm <- function(dataname,
   pipe_expr(data_list)
 }
 
+#' Map value and level characters to values with with proper html tags, colors and icons.
+#'
+#' @param x (`character`)\cr vector with elements under the format (`value level`)\cr.
+#' @param classes (`character`)\cr vector
+#' @param default_color (`character`)\cr
+#' @param icons (`list`)\cr certain icons per level
+#'
+color_lab_values <- function(x,
+                             classes = c("HIGH", "NORMAL", "LOW"),
+                             colors = list(HIGH = "red", NORMAL = "grey", LOW = "blue"),
+                             default_color = "black",
+                             icons = list(
+                               HIGH = "glyphicon glyphicon-arrow-up",
+                               LOW = "glyphicon glyphicon-arrow-down"
+                             )) {
+
+
+  is_character <- is.character(x) && is.vector(x)
+
+  if ((!is_character) || !any(grepl(sprintf("(?:%s)", paste0(classes, collapse = "|")), x, perl = TRUE))) {
+    x
+  } else {
+    vapply(x, function(val) {
+      class <- classes[vapply(classes, function(class) {
+        grepl(sprintf("%s", class), val)
+      }, logical(1))]
+      if (!is.null(class) & length(class) > 0) {
+        color <- colors[class]
+        if (is.null(color)) color <- default_color
+        icony <- icons[class]
+        value_val <- strsplit(val, " ")[[1]][1]
+        sprintf("<span style='color:%s!important'>%s<i class='%s'></i></span>", color, value_val, icony)
+      } else {
+        val
+      }
+    }, character(1))
+  }
+}
+
 is_cdisc_data <- function(datasets) {
   is(datasets, "CDISCFilteredData")
 }

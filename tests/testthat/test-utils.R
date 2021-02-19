@@ -218,3 +218,31 @@ test_that("prepare_arm does not do anything when we don't want to compare or dro
   )
   expect_identical(result, result2)
 })
+
+
+test_that("color_lab_values main", {
+
+  vals <- c("3 HIGH", "2 NORMAL", "5 HIGH", "4", "0 LOW")
+
+  expect_identical(
+    color_lab_values(vals),
+    c(
+      `3 HIGH` = "<span style='color:red!important'>3<i class='glyphicon glyphicon-arrow-up'></i></span>",
+      `2 NORMAL` = "<span style='color:grey!important'>2<i class='NULL'></i></span>",
+      `5 HIGH` = "<span style='color:red!important'>5<i class='glyphicon glyphicon-arrow-up'></i></span>",
+      `4` = "4",
+      `0 LOW` = "<span style='color:blue!important'>0<i class='glyphicon glyphicon-arrow-down'></i></span>"
+    )
+  )
+
+})
+
+test_that("color_lab_values neutral for none characters", {
+
+  vals <- 1:5
+
+  expect_identical(color_lab_values(vals), vals)
+
+  expect_identical(color_lab_values(letters), letters)
+
+})

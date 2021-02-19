@@ -8,7 +8,7 @@ template_vitals(
   dataname,
   patient_id,
   paramcd = "PARAMCD",
-  paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
+  vitals_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   vitals_xaxis = "ADY",
   aval = "AVAL"
 )
@@ -22,7 +22,7 @@ analysis data used in teal module.}
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
-\item{paramcd_levels}{(\code{character})\cr \code{paramcd} levels.}
+\item{vitals_paramcd_levels}{(\code{character})\cr (\code{paramcd})\cr vector with (\code{vitals_paramcd})\cr levels.}
 
 \item{vitals_xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
 

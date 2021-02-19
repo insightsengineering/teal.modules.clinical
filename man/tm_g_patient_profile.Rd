@@ -14,9 +14,16 @@ tm_g_patient_profile(
   mhbodsys = NULL,
   atirel = NULL,
   medname_decoding = NULL,
-  paramcd = NULL,
+  vitals_paramcd = NULL,
+  vitals_param = NULL,
+  labor_paramcd = NULL,
+  labor_param = NULL,
   vitals_xaxis = NULL,
-  aval = NULL,
+  labor_timepoints = NULL,
+  anrind = NULL,
+  vitals_aval = NULL,
+  labor_aval = NULL,
+  labor_avalu = NULL,
   ae_term = NULL,
   ae_tox_grade = NULL,
   ae_causality = NULL,
@@ -60,12 +67,28 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDECOD} column of the ADCM dataset.}
 
-\item{paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
+\item{vitals_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
 
-\item{vitals_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr
-Time variable to be represented in the vitals plot x-axis.}
+\item{vitals_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADVS dataset.}
 
-\item{aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADVS dataset.}
+\item{labor_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADLB dataset.}
+
+\item{labor_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADLB dataset.}
+
+\item{vitals_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
+the vitals plot x-axis.}
+
+\item{labor_timepoints}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
+the laboratory table.}
+
+\item{anrind}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ANRIND} column of the ADLB dataset
+with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+
+\item{vitals_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADVS dataset.}
+
+\item{labor_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADLB dataset.}
+
+\item{labor_avalu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVALU} column of the ADLB dataset.}
 
 \item{ae_term}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AETERM} column of the ADAE dataset.}
 
@@ -127,8 +150,9 @@ ADMH <- radmh(cached = TRUE)
 ADAE <- radae(cached = TRUE)
 ADCM <- radcm(cached = TRUE)
 ADVS <- radvs(cached = TRUE)
+ADLB <- radlb(cached = TRUE)
 
-# Modify ADCM
+#' Modify ADCM
 ADCM$CMINDC <- ADCM$CMCAT
 ADCM$CMDECOD <- ADCM$CMCAT
 ADCM$CMDOSE <- 1
@@ -166,6 +190,7 @@ app <- init(
                   ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
                   "),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
+    cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE
   ),
   modules = root_modules(
@@ -210,11 +235,38 @@ app <- init(
           fixed = FALSE
         )
       ),
-      paramcd = data_extract_spec(
+      vitals_paramcd = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "PARAMCD"),
           selected = c("PARAMCD"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      vitals_param = data_extract_spec(
+        dataname = "ADVS",
+        select = select_spec(
+          choices = variable_choices(ADVS, "PARAM"),
+          selected = c("PARAM"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      labor_paramcd = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "PARAMCD"),
+          selected = c("PARAMCD"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      labor_param = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "PARAM"),
+          selected = c("PARAM"),
           multiple = FALSE,
           fixed = FALSE
         )
@@ -228,11 +280,47 @@ app <- init(
           fixed = FALSE
         )
       ),
-      aval = data_extract_spec(
+      labor_timepoints = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "ADY"),
+          selected = c("ADY"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      anrind = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "ANRIND"),
+          selected = c("ANRIND"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      vitals_aval = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "AVAL"),
           selected = c("AVAL"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      labor_aval = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "AVAL"),
+          selected = c("AVAL"),
+          multiple = FALSE,
+          fixed = FALSE
+        )
+      ),
+      labor_avalu = data_extract_spec(
+        dataname = "ADLB",
+        select = select_spec(
+          choices = variable_choices(ADLB, "AVALU"),
+          selected = c("AVALU"),
           multiple = FALSE,
           fixed = FALSE
         )
@@ -385,6 +473,7 @@ app <- init(
     )
   )
 )
+#' Not run:
 \dontrun{
 shinyApp(app$ui, app$server)
 }
