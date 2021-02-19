@@ -30,6 +30,8 @@ tm_g_patient_profile(
   ae_outcome = NULL,
   ae_action = NULL,
   ae_time = NULL,
+  ae_time_start = NULL,
+  ae_time_end = NULL,
   ae_decod = NULL,
   cmindc = NULL,
   cmdose = NULL,
@@ -39,6 +41,8 @@ tm_g_patient_profile(
   cmdosfrq = NULL,
   cmstdy = NULL,
   cmendy = NULL,
+  ds_time_start = NULL,
+  ds_time_end = NULL,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -102,6 +106,12 @@ with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
 
+\item{ae_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr
+\code{CMENDY} column of the AE start of the ADCM dataset.}
+
+\item{ae_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr
+\code{CMENDY} column of the AE end of the ADCM dataset.}
+
 \item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 
 \item{cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
@@ -119,6 +129,12 @@ with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 \item{cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
 
 \item{cmendy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMENDY} column of the ADCM dataset.}
+
+\item{ds_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr
+\code{CMENDY} column of treatment start of the ADCM dataset.}
+
+\item{ds_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr
+\code{CMENDY} column of treatment end of the ADCM dataset.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -166,6 +182,8 @@ ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
 ADCM$CMENDY <- 500
 ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+ADCM$CMASTDTM <- ADCM$ASTDTM
+ADCM$CMAENDTM <- ADCM$AENDTM
 
 ids <- unique(ADSL$USUBJID)
 
@@ -188,6 +206,8 @@ app <- init(
                   ADCM$CMENDY <- 500
                   ADCM[ADCM$CMCAT == 'medcl B' ,]$CMENDY <- 700
                   ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
+                  ADCM$CMASTDTM <- ADCM$ASTDTM
+                  ADCM$CMAENDTM <- ADCM$AENDTM
                   "),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
@@ -469,7 +489,43 @@ app <- init(
           fixed = FALSE
         )
       ),
-      ae_decod = NULL
+      ae_decod = NULL,
+      ae_time_start = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE, "ASTDTM"),
+          selected = c("ASTDTM"),
+          multiple = TRUE,
+          fixed = FALSE
+        )
+      ),
+      ae_time_end = data_extract_spec(
+        dataname = "ADAE",
+        select = select_spec(
+          choices = variable_choices(ADAE, "AENDTM"),
+          selected = c("AENDTM"),
+          multiple = TRUE,
+          fixed = FALSE
+        )
+      ),
+      ds_time_start = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM, "CMASTDTM"),
+          selected = c("CMASTDTM"),
+          multiple = TRUE,
+          fixed = FALSE
+        )
+      ),
+      ds_time_end = data_extract_spec(
+        dataname = "ADCM",
+        select = select_spec(
+          choices = variable_choices(ADCM, "CMAENDTM"),
+          selected = c("CMAENDTM"),
+          multiple = TRUE,
+          fixed = FALSE
+        )
+      )
     )
   )
 )

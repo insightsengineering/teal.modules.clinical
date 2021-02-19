@@ -33,7 +33,6 @@ template_basic_info <- function(dataname,
           data.frame(key = key, value = values) %>%
           select(key, value) %>%
           rename(`   ` = key, ` ` = value)
-
       }, env = list(
         dataname = as.name(dataname),
         binf_vars = binf_vars
@@ -238,10 +237,12 @@ template_vitals <- function(dataname,
           aes(
             x = x,
             y = y,
-            label = l),
+            label = l
+          ),
           color = "black",
           alpha = 1,
-          nudge_y = 2.2) +
+          nudge_y = 2.2
+        ) +
         theme_minimal() +
         theme(
           axis.text.y = element_blank(),
@@ -348,21 +349,20 @@ template_therapy <- function(dataname,
 
       therapy_table <-
         dataname %>%
-          filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
-          select(cols_to_inlude) %>%
-          filter(!is.na(cmdecod)) %>%
-          mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
-          select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
-          select(cmindc, cmdecod, Dosage, everything()) %>%
-          mutate(CMDECOD = case_when(
-            nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
-            TRUE ~ as.character(cmdecod)
-          )) %>%
-          select(-cmtrt) %>%
-          arrange(cmindc, cmdecod, cmstdy) %>%
-          distinct()
-        # `colnames<-`(get_labels(dataname)$column_labels[cmindc, cmdecod, cmstdy]) # nolintr
-
+        filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
+        select(cols_to_inlude) %>%
+        filter(!is.na(cmdecod)) %>%
+        mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
+        select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
+        select(cmindc, cmdecod, Dosage, everything()) %>%
+        mutate(CMDECOD = case_when(
+          nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
+          TRUE ~ as.character(cmdecod)
+        )) %>%
+        select(-cmtrt) %>%
+        arrange(cmindc, cmdecod, cmstdy) %>%
+        distinct()
+      # `colnames<-`(get_labels(dataname)$column_labels[cmindc, cmdecod, cmstdy]) # nolintr
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -382,7 +382,6 @@ template_therapy <- function(dataname,
       cmdosu_char = cmdosu,
       cmroute_char = cmroute,
       cmdosfrq_char = cmdosfrq,
-      cmstdy_char = cmstdy,
       cmendy_char = cmendy
     ))
   )
@@ -422,7 +421,7 @@ template_therapy <- function(dataname,
         geom_text(
           data =
             data %>%
-            select(CMDECOD, cmindc) %>%
+              select(CMDECOD, cmindc) %>%
             distinct(),
           aes(x = 1, label = CMDECOD), color = "black",
           hjust = "left",
@@ -611,6 +610,136 @@ template_adverse_events <- function(patient_id,
   y
 }
 
+#' Template: Patient Timeline Tab
+#'
+#' Creates a patient timeline template call.
+#'
+#' @inheritParams template_arguments
+#' @param patient_id (`character`)\cr Patient ID.
+#' @param ae_term (`character`)\cr name of the reported term for the adverse event variable.
+#' @param ae_time_start (`character`)\cr name of datetime start of adverse event variable.
+#' @param ae_time_end (`character`)\cr name of datetime end of adverse event variable.
+#' @param ds_time_start (`character`)\cr name of datetime first exposure to treatment variable.
+#' @param ds_time_end (`character`)\cr name of datetime last exposure to treatment variable.
+#' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @importFrom timevis timevis
+#'
+template_patient_timeline <- function(patient_id,
+                                      dataname = "ANL_FILTERED",
+                                      ae_term = "AETERM",
+                                      ae_time_start = "ASTDTM", # to be updated
+                                      ae_time_end = "AENDTM", # to be updated
+                                      ds_time_start = "CMASTDTM", # to be updated
+                                      ds_time_end = "CMAENDTM", # to be updated
+                                      cmtrt = "CMTRT") {
+  # Note: The variables used for ae_time_start, ae_time_end, ds_time_start and ds_time_end are to be updated after
+  # random.cdisc.data updates.
+  assert_that(
+    is.string(dataname)
+  )
+
+  y <- list()
+  y$chart <- list()
+
+  chart_list <- add_expr(
+    list(),
+    substitute(
+      expr = {
+        # three sections are represented here: advers events, dosing and medication
+        ae_chart <- dataname %>%
+          select(ae_term, ae_time_start, ae_time_end) %>%
+          distinct()
+
+        ds_chart <- dataname %>%
+          select(ds_time_start, ds_time_end) %>%
+          distinct() %>%
+          mutate(
+            label_start = "First Exposure to Treatment",
+            label_end = "Last Exposure to Treatment"
+          )
+
+        med_chart <- dataname %>%
+          select(cmtrt, ds_time_start, ds_time_end) %>%
+          distinct()
+
+        min_ds_chart_time_start <- min(ds_chart[[ds_time_start_var]])
+        min_ds_chart_time_end <- min(ds_chart[[ds_time_end_var]])
+        max_ds_chart_time_end <- max(ds_chart[[ds_time_end_var]])
+
+        timevis_data <- data.frame(
+          id = seq_len(nrow(ae_chart) +
+            length(unique(ds_chart[["label_start"]])) +
+            length(unique(ds_chart[["label_end"]])) +
+            nrow(med_chart)),
+          content = c(
+            as.character(ae_chart[[ae_term_var]]),
+            as.character(unique(ds_chart[["label_start"]])),
+            as.character(unique(ds_chart[["label_end"]])),
+            as.character(med_chart[[cmtrt_var]])
+          ),
+          start = c(
+            ae_chart[[ae_time_start_var]],
+            min_ds_chart_time_start,
+            max_ds_chart_time_end,
+            med_chart[[ds_time_start_var]]
+          ),
+          end = c(
+            ae_chart[[ae_time_end_var]],
+            min_ds_chart_time_start,
+            max_ds_chart_time_end,
+            med_chart[[ds_time_end_var]]
+          ),
+          group = c(
+            rep("AE", length(ae_chart[[ae_term_var]])),
+            rep("DOS", length(min_ds_chart_time_start)),
+            rep("DOS", length(min_ds_chart_time_end)),
+            rep("MED", length(med_chart[[cmtrt_var]]))
+          ),
+          type = c(
+            rep("range", length(ae_chart[[ae_term_var]])),
+            rep("point", length(min_ds_chart_time_start)),
+            rep("point", length(min_ds_chart_time_end)),
+            rep("range", length(med_chart[[cmtrt_var]]))
+          )
+        )
+
+        timevis_data_groups <- data.frame(
+          id = c("AE", "DOS", "MED"),
+          content = c(
+            "Adverse Events", "Dosing", "Medication"
+          )
+        )
+
+        patient_timeline_plot <-
+          timevis::timevis(data = timevis_data, groups = timevis_data_groups)
+      },
+      env = list(
+        dataname = as.name(dataname),
+        ae_term = as.name(ae_term),
+        ae_time_start = as.name(ae_time_start),
+        ae_time_end = as.name(ae_time_end),
+        ds_time_start = as.name(ds_time_start),
+        ds_time_end = as.name(ds_time_end),
+        cmtrt = as.name(cmtrt),
+        ae_term_var = ae_term,
+        ae_time_start_var = ae_time_start,
+        ae_time_end_var = ae_time_end,
+        ds_time_start_var = ds_time_start,
+        ds_time_end_var = ds_time_end,
+        cmtrt_var = cmtrt
+      )
+    )
+  )
+
+  chart_list <- add_expr(
+    expr_ls = chart_list,
+    new_expr = quote(patient_timeline_plot)
+  )
+
+  y$chart <- bracket_expr(chart_list)
+  y
+}
+
 
 #' Template: Laboratory
 #'
@@ -635,7 +764,6 @@ template_laboratory <- function(patient_id,
                                 labor_timepoints = "ADY",
                                 aval = "AVAL",
                                 avalu = "AVALU") {
-
   assert_that(
     is.string(dataname),
     is.string(paramcd),
@@ -652,7 +780,6 @@ template_laboratory <- function(patient_id,
   table_lab_list <- add_expr(
     list(),
     substitute({
-
       labor_table <- dataname %>%
         select(labor_timepoints, paramcd, param, aval, avalu, anrind) %>%
         arrange(labor_timepoints) %>%
@@ -666,7 +793,6 @@ template_laboratory <- function(patient_id,
         mutate(PARAM = stringr::str_replace_all(param, "\\(.*?\\)", "")) %>%
         mutate(PARAM = stringr::str_squish(param)) %>%
         mutate(PARAM = stringr::str_trunc(param, width = 20))
-
       },
       env = list(
         dataname = as.name(dataname),
@@ -676,12 +802,11 @@ template_laboratory <- function(patient_id,
         avalu = as.name(avalu),
         labor_timepoints = as.name(labor_timepoints),
         anrind = as.name(anrind)
+      )
     )
-  )
   )
 
   y$table <- bracket_expr(table_lab_list)
-
   y
 }
 
@@ -725,6 +850,14 @@ template_laboratory <- function(patient_id,
 #' @param cmdosfrq (`choices selected` or `data_extract_input`)\cr \code{CMDOSFRQ} column of the ADCM dataset.
 #' @param cmstdy (`choices selected` or `data_extract_input`)\cr \code{CMSTDY} column of the ADCM dataset.
 #' @param cmendy (`choices selected` or `data_extract_input`)\cr \code{CMENDY} column of the ADCM dataset.
+#' @param ae_time_start (`choices selected` or `data_extract_input`)\cr
+#' \code{CMENDY} column of the AE start of the ADCM dataset.
+#' @param  ae_time_end (`choices selected` or `data_extract_input`)\cr
+#' \code{CMENDY} column of the AE end of the ADCM dataset.
+#' @param ds_time_start (`choices selected` or `data_extract_input`)\cr
+#' \code{CMENDY} column of treatment start of the ADCM dataset.
+#' @param ds_time_end (`choices selected` or `data_extract_input`)\cr
+#' \code{CMENDY} column of treatment end of the ADCM dataset.
 #'
 #' @export
 #'
@@ -753,6 +886,8 @@ template_laboratory <- function(patient_id,
 #' ADCM$CMENDY <- 500
 #' ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 #' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+#' ADCM$CMASTDTM <- ADCM$ASTDTM
+#' ADCM$CMAENDTM <- ADCM$AENDTM
 #'
 #' ids <- unique(ADSL$USUBJID)
 #'
@@ -775,6 +910,8 @@ template_laboratory <- function(patient_id,
 #'                   ADCM$CMENDY <- 500
 #'                   ADCM[ADCM$CMCAT == 'medcl B' ,]$CMENDY <- 700
 #'                   ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
+#'                   ADCM$CMASTDTM <- ADCM$ASTDTM
+#'                   ADCM$CMAENDTM <- ADCM$AENDTM
 #'                   "),
 #'     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
 #'     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
@@ -1056,11 +1193,47 @@ template_laboratory <- function(patient_id,
 #'           fixed = FALSE
 #'         )
 #'       ),
-#'       ae_decod = NULL
+#'       ae_decod = NULL,
+#'       ae_time_start = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE, "ASTDTM"),
+#'           selected = c("ASTDTM"),
+#'           multiple = TRUE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ae_time_end = data_extract_spec(
+#'         dataname = "ADAE",
+#'         select = select_spec(
+#'           choices = variable_choices(ADAE, "AENDTM"),
+#'           selected = c("AENDTM"),
+#'           multiple = TRUE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ds_time_start = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM, "CMASTDTM"),
+#'           selected = c("CMASTDTM"),
+#'           multiple = TRUE,
+#'           fixed = FALSE
+#'         )
+#'       ),
+#'       ds_time_end = data_extract_spec(
+#'         dataname = "ADCM",
+#'         select = select_spec(
+#'           choices = variable_choices(ADCM, "CMAENDTM"),
+#'           selected = c("CMAENDTM"),
+#'           multiple = TRUE,
+#'           fixed = FALSE
+#'         )
+#'       )
 #'     )
 #'   )
 #' )
-#'#' Not run:
+#' #' Not run:
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
@@ -1090,6 +1263,8 @@ tm_g_patient_profile <- function(label,
                                  ae_outcome = NULL,
                                  ae_action = NULL,
                                  ae_time = NULL,
+                                 ae_time_start = NULL,
+                                 ae_time_end = NULL,
                                  ae_decod = NULL,
                                  cmindc = NULL,
                                  cmdose = NULL,
@@ -1099,6 +1274,8 @@ tm_g_patient_profile <- function(label,
                                  cmdosfrq = NULL,
                                  cmstdy = NULL,
                                  cmendy = NULL,
+                                 ds_time_start = NULL,
+                                 ds_time_end = NULL,
                                  plot_height = c(700L, 200L, 2000L),
                                  plot_width = c(900L, 200L, 2000L),
                                  pre_output = NULL,
@@ -1107,9 +1284,11 @@ tm_g_patient_profile <- function(label,
   assert_that(is_character_single(dataname))
   assert_that(is_character_single(parentname))
   assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object")
+    msg = "pre_output should be either null or shiny.tag type of object"
+  )
   assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object")
+    msg = "post_output should be either null or shiny.tag type of object"
+  )
 
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
@@ -1138,6 +1317,8 @@ tm_g_patient_profile <- function(label,
     ae_outcome = if_not_null(ae_outcome, cs_to_des_select(ae_outcome, dataname = parentname)),
     ae_action = if_not_null(ae_action, cs_to_des_select(ae_action, dataname = parentname)),
     ae_time = if_not_null(ae_time, cs_to_des_select(ae_time, dataname = parentname)),
+    ae_time_start = if_not_null(ae_time_start, cs_to_des_select(ae_time_start, dataname = parentname)),
+    ae_time_end = if_not_null(ae_time_end, cs_to_des_select(ae_time_end, dataname = parentname)),
     ae_decod = if_not_null(ae_decod, cs_to_des_select(ae_decod, dataname = parentname)),
     cmindc = if_not_null(cmindc, cs_to_des_select(cmindc, dataname = parentname)),
     cmdose = if_not_null(cmdose, cs_to_des_select(cmdose, dataname = parentname)),
@@ -1146,7 +1327,9 @@ tm_g_patient_profile <- function(label,
     cmdosfrq = if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = parentname)),
     cmroute = if_not_null(cmroute, cs_to_des_select(cmroute, dataname = parentname)),
     cmstdy = if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = parentname)),
-    cmendy = if_not_null(cmendy, cs_to_des_select(cmendy, dataname = parentname))
+    cmendy = if_not_null(cmendy, cs_to_des_select(cmendy, dataname = parentname)),
+    ds_time_start = if_not_null(ds_time_start, cs_to_des_select(ds_time_start, dataname = parentname)),
+    ds_time_end = if_not_null(ds_time_end, cs_to_des_select(ds_time_end, dataname = parentname))
   )
   assert_that(is.cs_or_des(patient_id))
   assert_that(is.null(binf_vars) || is.cs_or_des(binf_vars))
@@ -1165,6 +1348,7 @@ tm_g_patient_profile <- function(label,
   assert_that(is.null(ae_outcome) || is.cs_or_des(ae_outcome))
   assert_that(is.null(ae_action) || is.cs_or_des(ae_action))
   assert_that(is.null(ae_time) || is.cs_or_des(ae_time))
+  assert_that(is.null(ae_time_end) || is.cs_or_des(ae_time_end))
   assert_that(is.null(cmindc) || is.cs_or_des(cmindc))
   assert_that(is.null(cmdose) || is.cs_or_des(cmdose))
   assert_that(is.null(cmtrt) || is.cs_or_des(cmtrt))
@@ -1173,6 +1357,8 @@ tm_g_patient_profile <- function(label,
   assert_that(is.null(cmroute) || is.cs_or_des(cmroute))
   assert_that(is.null(cmstdy) || is.cs_or_des(cmstdy))
   assert_that(is.null(cmendy) || is.cs_or_des(cmendy))
+  assert_that(is.null(ds_time_start) || is.cs_or_des(ds_time_start))
+  assert_that(is.null(ds_time_end) || is.cs_or_des(ds_time_end))
 
   module(
     label = label,
@@ -1193,6 +1379,7 @@ tm_g_patient_profile <- function(label,
   )
 }
 
+#' @importFrom timevis timevisOutput
 ui_g_patient_profile <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- is_single_dataset(ui_args$patient_id)
@@ -1245,6 +1432,12 @@ ui_g_patient_profile <- function(id, ...) {
           "Laboratory values",
           div(
             DT::DTOutput(outputId = ns("lab_values"))
+          )
+        ),
+        tabPanel(
+          "Patient timeline",
+          div(
+            timevis::timevisOutput(outputId = ns("patient_timeline_plot"))
           )
         )
       )
@@ -1435,13 +1628,56 @@ ui_g_patient_profile <- function(id, ...) {
             data_extract_spec = ui_args$ae_time,
             is_single_dataset = is_single_dataset_value
           ),
-          if_not_null(ui_args$ae_decod,
+          if_not_null(
+            ui_args$ae_decod,
             data_extract_input(
               id = ns("ae_decod"),
               label = "Select DECOD variable:",
               data_extract_spec = ui_args$ae_decod,
               is_single_dataset = is_single_dataset_value
             )
+          )
+        )
+      ),
+      conditionalPanel(
+        condition =
+          paste0("input['", ns("tabs"), "'] == 'Patient timeline'"),
+        list(
+          data_extract_input(
+            id = ns("ae_term"),
+            label = "Select AETERM variable:",
+            data_extract_spec = ui_args$ae_term,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_time_start"),
+            label = "Select ASTDTM variable:",
+            data_extract_spec = ui_args$ae_time_start,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ae_time_end"),
+            label = "Select AENDTM variable:",
+            data_extract_spec = ui_args$ae_time_end,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("cmtrt"),
+            label = "Select CMTRT variable:",
+            data_extract_spec = ui_args$cmtrt,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ds_time_start"),
+            label = "Select TRTSDTM variable:",
+            data_extract_spec = ui_args$ds_time_start,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("ds_time_end"),
+            label = "Select TRTEDTM variable:",
+            data_extract_spec = ui_args$ds_time_end,
+            is_single_dataset = is_single_dataset_value
           )
         )
       ),
@@ -1493,6 +1729,7 @@ ui_g_patient_profile <- function(id, ...) {
   )
 }
 
+#' @importFrom timevis renderTimevis
 srv_g_patient_profile <- function(input,
                                   output,
                                   session,
@@ -1529,7 +1766,11 @@ srv_g_patient_profile <- function(input,
                                   ae_outcome,
                                   ae_action,
                                   ae_time,
+                                  ae_time_start,
+                                  ae_time_end,
                                   ae_decod,
+                                  ds_time_start,
+                                  ds_time_end,
                                   plot_height,
                                   plot_width,
                                   label) {
@@ -1792,7 +2033,7 @@ srv_g_patient_profile <- function(input,
     data_extract = list(atirel, medname_decoding, cmindc, cmdose, cmtrt, cmdosu, cmroute, cmdosfrq, cmstdy, cmendy),
     input_id = c(
       "atirel", "medname_decoding", "cmindc", "cmdose", "cmtrt", "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
-      ),
+    ),
     merge_function = "dplyr::left_join",
     anl_name = "ANL"
   )
@@ -1961,6 +2202,46 @@ srv_g_patient_profile <- function(input,
     chunks_get_var("ae_chart")
   })
 
+  # Patient timeline tab ----
+  patient_timeline_merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(ae_term, ae_time_start, ae_time_end, ds_time_start, ds_time_end, cmtrt),
+    input_id = c("ae_term", "ae_time_start", "ae_time_end", "ds_time_start", "ds_time_end", "cmtrt"),
+    anl_name = "ANL"
+  )
+
+  patient_timeline_calls <- reactive({
+    patient_timeline_stack <- chunks$new()
+    validate_checks()
+    chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)
+
+    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
+    patient_timeline_stack$push(bquote({
+      ANL_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
+    }))
+
+    patient_timeline_calls <- template_patient_timeline(
+      dataname = "ANL_FILTERED",
+      patient_id = patient_id,
+      ae_term = input$`ae_term-dataset_ADAE_singleextract-select`,
+      ae_time_start = input$`ae_time_start-dataset_ADAE_singleextract-select`,
+      ae_time_end = input$`ae_time_end-dataset_ADAE_singleextract-select`,
+      ds_time_start = input$`ds_time_start-dataset_ADCM_singleextract-select`,
+      ds_time_end = input$`ds_time_end-dataset_ADCM_singleextract-select`,
+      cmtrt = input$`cmtrt-dataset_ADCM_singleextract-select`
+    )
+
+    mapply(patient_timeline_calls, FUN = function(x) chunks_push(x, chunks = patient_timeline_stack))
+    chunks_safe_eval(chunks = patient_timeline_stack)
+    patient_timeline_stack
+  })
+
+  output$patient_timeline_plot <- timevis::renderTimevis({
+    chunks_reset()
+    chunks_push_chunks(patient_timeline_calls())
+    chunks_get_var("patient_timeline_plot")
+  })
+
 
   # Laboratory values tab ----
   labor_merged_data <- data_merge_module(
@@ -2007,10 +2288,10 @@ srv_g_patient_profile <- function(input,
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     labor_stack$push(bquote({
-      ADLB_FILTERED <- ANL[ANL$USUBJID == .(patient_id),] # nolint
+      ADLB_FILTERED <- ANL[ANL$USUBJID == .(patient_id), ] # nolint
     }))
 
-    labor_calls <-   template_laboratory(
+    labor_calls <- template_laboratory(
       dataname = "ADLB_FILTERED",
       labor_timepoints = input[[extract_input("labor_timepoints", "ADLB")]],
       aval = input[[extract_input("labor_aval", "ADLB")]],
@@ -2030,7 +2311,9 @@ srv_g_patient_profile <- function(input,
     chunks_push_chunks(labor_calls())
     chunks_safe_eval()
     chunks_get_var("labor_table")
-  }, escape = FALSE)
+    },
+    escape = FALSE
+  )
 
   callModule(
     plot_with_settings_srv,
@@ -2104,7 +2387,11 @@ srv_g_patient_profile <- function(input,
       ae_causality,
       ae_outcome,
       ae_action,
-      ae_time
+      ae_time,
+      ae_time_start,
+      ae_time_end,
+      ds_time_start,
+      ds_time_end
     )),
     modal_title = label
   )

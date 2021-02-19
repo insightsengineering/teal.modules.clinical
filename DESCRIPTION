@@ -37,7 +37,8 @@ Imports:
   utils,
   utils.nest (>= 0.2.7),
   DT,
-  tidyr
+  tidyr,
+  timevis
 Suggests:
   knitr,
   rmarkdown,
