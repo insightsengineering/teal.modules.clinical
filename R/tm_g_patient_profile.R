@@ -2302,14 +2302,13 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(labor_calls, FUN = function(x) chunks_push(x, chunks = labor_stack))
+    chunks_safe_eval(chunks = labor_stack)
     labor_stack
   })
 
   output$lab_values <- DT::renderDataTable({
     chunks_reset()
-    chunks_push_data_merge(labor_merged_data())
     chunks_push_chunks(labor_calls())
-    chunks_safe_eval()
     chunks_get_var("labor_table")
     },
     escape = FALSE
