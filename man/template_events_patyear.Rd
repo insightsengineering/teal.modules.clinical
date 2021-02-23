@@ -10,8 +10,8 @@ template_events_patyear(
   arm_var,
   events_var,
   aval_var = "AVAL",
-  control = control_incidence_rate(),
-  add_total = TRUE
+  add_total = TRUE,
+  control = control_incidence_rate()
 )
 }
 \arguments{
@@ -29,10 +29,10 @@ variable names that can be used as \code{arm_var}.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
-\item{control}{(\code{list})\cr list of settings for the analysis.}
-
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{control}{(\code{list})\cr list of settings for the analysis.}
 }
 \description{
 Template: Event rates adjusted for patient-years

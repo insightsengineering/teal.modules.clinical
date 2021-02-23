@@ -15,6 +15,7 @@ tm_t_events_patyear(
   aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
   avalu_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed =
     TRUE),
+  add_total = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
@@ -47,6 +48,9 @@ variable.}
 \item{avalu_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis unit variable.}
 
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
@@ -66,11 +70,13 @@ Teal module: Event rates adjusted for patient-years
 # Preparation of the test case.
 library(dplyr)
 library(random.cdisc.data)
+
 adsl <- radsl(cached = TRUE)
 adaette <- radaette(cached = TRUE)
 adaette <- adaette \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
   dplyr::mutate(n_events = as.integer(is_event))
+
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
@@ -89,6 +95,7 @@ app <- init(
       arm_var = choices_selected(
         choices = variable_choices(adsl, c("ARM", "ARMCD")),
         selected = "ARMCD"),
+      add_total = TRUE,
       events_var = choices_selected(
         choices = variable_choices(adaette, "n_events"),
        selected = "n_events",

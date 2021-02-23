@@ -11,8 +11,8 @@ template_events_patyear <- function(dataname,
                                     arm_var,
                                     events_var,
                                     aval_var = "AVAL",
-                                    control = control_incidence_rate(),
-                                    add_total = TRUE) {
+                                    add_total = TRUE,
+                                    control = control_incidence_rate()) {
   # initialize
   y <- list()
 
@@ -95,11 +95,13 @@ template_events_patyear <- function(dataname,
 #' # Preparation of the test case.
 #' library(dplyr)
 #' library(random.cdisc.data)
+#'
 #' adsl <- radsl(cached = TRUE)
 #' adaette <- radaette(cached = TRUE)
 #' adaette <- adaette %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
 #'   dplyr::mutate(n_events = as.integer(is_event))
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
@@ -118,6 +120,7 @@ template_events_patyear <- function(dataname,
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
 #'         selected = "ARMCD"),
+#'       add_total = TRUE,
 #'       events_var = choices_selected(
 #'         choices = variable_choices(adaette, "n_events"),
 #'        selected = "n_events",
@@ -149,6 +152,7 @@ tm_t_events_patyear <- function(label,
                                 avalu_var = choices_selected(
                                   variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
                                 ),
+                                add_total = TRUE,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 pre_output = NULL,
                                 post_output = NULL
@@ -156,6 +160,12 @@ tm_t_events_patyear <- function(label,
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),
+    is.choices_selected(arm_var),
+    is.choices_selected(events_var),
+    is.choices_selected(paramcd),
+    is.choices_selected(aval_var),
+    is.choices_selected(avalu_var),
+    is.flag(add_total),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
@@ -206,6 +216,13 @@ ui_events_patyear <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
       data_extract_input(
+        id = ns("arm_var"),
+        label = "Select Treatment Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      data_extract_input(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
         data_extract_spec = a$paramcd,
@@ -236,12 +253,6 @@ ui_events_patyear <- function(id, ...) {
         selected = NULL,
         multiple = FALSE
       ),
-      data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
       optionalSelectInput(
         ns("time_unit_output"),
         "Time Unit for AE Rate (in Patient-Years)",
@@ -265,15 +276,13 @@ ui_events_patyear <- function(id, ...) {
         selected = "Normal (rate)",
         multiple = FALSE,
         fixed = FALSE
-      ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total)
+      )
     ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
-
 
 #' @noRd
 srv_events_patyear <- function(input,
@@ -287,6 +296,7 @@ srv_events_patyear <- function(input,
                                aval_var,
                                avalu_var,
                                events_var,
+                               add_total,
                                label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -375,6 +385,7 @@ srv_events_patyear <- function(input,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$aval_var),
       events_var = as.vector(anl_m$columns_source$events_var),
+      add_total = input$add_total,
       control = control_incidence_rate(
         conf_level = as.numeric(input$conf_level), # nolint
         conf_type = if (input$conf_method == "Normal (rate)") {
@@ -394,8 +405,7 @@ srv_events_patyear <- function(input,
           "year"
         },
         time_unit_output = as.numeric(input$time_unit_output)
-      ),
-      add_total = input$add_total
+      )
     )
     mapply(expression = my_calls, chunks_push)
   })

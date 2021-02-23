@@ -21,6 +21,7 @@ tm_t_abnormality(
     selected = "ONTRTFL", fixed = TRUE),
   treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
     fixed = TRUE),
+  add_total = TRUE,
   exclude_base_abn = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -60,6 +61,9 @@ variable for baseline abnormality grade.}
 
 \item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
 records in \code{treatment_flag_var}.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 
@@ -119,6 +123,7 @@ app <- init(
         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
+      add_total = FALSE,
       by_vars = choices_selected(
         choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
@@ -134,6 +139,7 @@ app <- init(
     )
   )
 )
+
 \dontrun{
 shinyApp(app$ui, app$server)
 }

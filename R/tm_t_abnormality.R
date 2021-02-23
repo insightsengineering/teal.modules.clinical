@@ -184,6 +184,7 @@ template_abnormality <- function(parentname,
 #'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
+#'       add_total = FALSE,
 #'       by_vars = choices_selected(
 #'         choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
 #'         selected = c("LBCAT", "PARAM"),
@@ -199,6 +200,7 @@ template_abnormality <- function(parentname,
 #'     )
 #'   )
 #' )
+#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
@@ -222,12 +224,14 @@ tm_t_abnormality <- function(label,
                              treatment_flag = choices_selected(
                                value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
                              ),
+                             add_total = TRUE,
                              exclude_base_abn = FALSE,
                              pre_output = NULL,
                              post_output = NULL) {
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
+    is.flag(add_total),
     is.choices_selected(by_vars),
     is.choices_selected(grade),
     is_character_vector(abnormal),
@@ -302,7 +306,7 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       data_extract_input(
         id = ns("by_vars"),
         label = "Row By Variable",
@@ -379,6 +383,7 @@ srv_t_abnormality <- function(input,
                               grade,
                               baseline_var,
                               treatment_flag_var,
+                              add_total,
                               label) {
   stopifnot(is_cdisc_data(datasets))
 

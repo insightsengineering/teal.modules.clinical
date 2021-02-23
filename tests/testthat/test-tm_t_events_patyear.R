@@ -5,8 +5,8 @@ test_that("template_events_patyear generates standard expressions", {
     arm_var = "ARMCD",
     events_var = "n_events",
     aval_var = "AVAL",
-    control = control_incidence_rate(),
-    add_total = TRUE
+    add_total = TRUE,
+    control = control_incidence_rate()
   )
 
   expected <- list(
@@ -49,8 +49,8 @@ test_that("template_events_patyear generates right expressions with non-default"
     arm_var = "ARM",
     events_var = "n_events",
     aval_var = "AVAL",
-    control = control_incidence_rate(),
-    add_total = FALSE
+    add_total = FALSE,
+    control = control_incidence_rate()
   )
 
   expected <- list(
@@ -90,15 +90,15 @@ test_that("template_events_patyear generates right expressions with non-default 
     dataname = "adaette",
     parentname = "adsl",
     arm_var = "ARMCD",
-    events_var = "n_events",
     aval_var = "AVAL",
+    events_var = "n_events",
+    add_total = TRUE,
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",
       time_unit_input = "month",
       time_unit_output = 100
-    ),
-    add_total = TRUE
+    )
   )
 
   expected <- list(
