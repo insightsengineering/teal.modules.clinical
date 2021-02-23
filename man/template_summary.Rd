@@ -9,8 +9,8 @@ template_summary(
   parentname,
   arm_var,
   sum_vars,
+  add_total = TRUE,
   var_labels = character(),
-  add_total = FALSE,
   na.rm = FALSE,
   na_level = "<Missing>",
   denominator = c("N", "n", "omit")
@@ -29,11 +29,11 @@ variable names that can be used as \code{arm_var}.}
 \item{sum_vars}{(\code{character})\cr
 names of the variables that should be summarized.}
 
-\item{var_labels}{optional, (named \code{character})\cr
-variable labels for relabeling the analysis variables.}
-
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{var_labels}{optional, (named \code{character})\cr
+variable labels for relabeling the analysis variables.}
 
 \item{na.rm}{(\code{logical})\cr
 whether \code{NA} values should be removed prior to analysis.}

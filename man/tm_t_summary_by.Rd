@@ -13,6 +13,7 @@ tm_t_summary_by(
   by_vars,
   summarize_vars,
   paramcd = NULL,
+  add_total = TRUE,
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
@@ -46,6 +47,9 @@ names of the variables that should be summarized.}
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
@@ -76,9 +80,11 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 Teal Module: Summarize Variables by Row Groups Module
 }
 \examples{
+# Preparation of the test case.
 library(random.cdisc.data)
 adsl <- radsl(cached = TRUE)
 adlb <- radlb(cached = TRUE)
+
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl, code = 'ADSL <- radsl(cached = TRUE)'),
@@ -93,6 +99,7 @@ app <- init(
         choices = variable_choices(adsl, c("ARM", "ARMCD")),
         selected = "ARM"
       ),
+      add_total = TRUE,
       by_vars = choices_selected(
         choices = variable_choices(adlb, c("PARAM", "AVISIT")),
         selected = c("AVISIT")

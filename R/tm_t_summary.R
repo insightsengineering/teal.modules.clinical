@@ -8,8 +8,8 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
+                             add_total = TRUE,
                              var_labels = character(),
-                             add_total = FALSE,
                              na.rm = FALSE,  #nolint
                              na_level = "<Missing>",
                              denominator = c("N", "n", "omit")) {
@@ -18,8 +18,8 @@ template_summary <- function(dataname,
     is.string(parentname),
     is.string(arm_var),
     is.character(sum_vars),
-    is.character(var_labels),
     is.flag(add_total),
+    is.character(var_labels),
     is.flag(na.rm),
     is.string(na_level)
   )
@@ -152,6 +152,7 @@ template_summary <- function(dataname,
 #'       label = "Demographic Table",
 #'       dataname = "ADSL",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       add_total = TRUE,
 #'       summarize_vars = choices_selected(
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS"),
 #'         c("SEX", "RACE")
@@ -174,6 +175,7 @@ tm_t_summary <- function(label,
                          ),
                          arm_var,
                          summarize_vars,
+                         add_total = TRUE,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
                          denominator = c("N", "n", "omit"),
@@ -240,7 +242,7 @@ ui_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       data_extract_input(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
@@ -281,6 +283,7 @@ srv_summary <- function(input,
                         parentname,
                         arm_var,
                         summarize_vars,
+                        add_total,
                         na_level,
                         label) {
   stopifnot(is_cdisc_data(datasets))
@@ -344,8 +347,8 @@ srv_summary <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       sum_vars = sum_vars,
-      var_labels = get_var_labels(datasets, dataname, sum_vars),
       add_total = input$add_total,
+      var_labels = get_var_labels(datasets, dataname, sum_vars),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,
       denominator = input$denominator

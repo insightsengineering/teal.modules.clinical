@@ -4,8 +4,8 @@ test_that("template_summary generates correct expressions", {
     parentname = "adsl",
     arm_var = "ARM",
     sum_vars = c("RACE", "COUNTRY", "AGE"),
-    var_labels = character(),
     add_total = FALSE,
+    var_labels = character(),
     na.rm = FALSE,
     denominator = "N"
   )
@@ -43,8 +43,8 @@ test_that("template_summary can generate customized table", {
     parentname = "adsl",
     arm_var = "ARMCD",
     sum_vars = "RACE",
-    var_labels = c(RACE = "Race"),
     add_total = TRUE,
+    var_labels = c(RACE = "Race"),
     na.rm = TRUE,
     denominator = "omit"
   )

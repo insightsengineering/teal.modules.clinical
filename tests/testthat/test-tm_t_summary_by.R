@@ -4,8 +4,8 @@ test_that("template_summary_by generates correct expressions", {
     dataname = "adlb",
     arm_var = "ARM",
     sum_vars = c("AVAL"),
-    by_vars = c("AVISIT"),
     add_total = TRUE,
+    by_vars = c("AVISIT"),
     na.rm = FALSE,
     denominator = "N"
   )
@@ -59,9 +59,9 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     dataname = "adlb",
     arm_var = "ARM",
     sum_vars = c("AVAL", "CHG"),
+    add_total = TRUE,
     parallel_vars = TRUE,
     by_vars = c("AVISIT"),
-    add_total = TRUE,
     na.rm = FALSE,
     denominator = "N"
   )
@@ -111,10 +111,10 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
     dataname = "adsl",
     arm_var = "ARM",
     sum_vars = c("AVAL"),
+    add_total = FALSE,
     parallel_vars = FALSE,
     row_groups = TRUE,
     by_vars = c("SEX", "COUNTRY"),
-    add_total = FALSE,
     na.rm = FALSE,
     denominator = "N"
   )

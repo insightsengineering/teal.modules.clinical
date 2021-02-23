@@ -11,6 +11,7 @@ tm_t_summary(
     "ADSL"),
   arm_var,
   summarize_vars,
+  add_total = TRUE,
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   denominator = c("N", "n", "omit"),
@@ -34,6 +35,9 @@ and preselected option for variable names that can be used as \code{arm_var}.}
 
 \item{summarize_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 names of the variables that should be summarized.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{useNA}{(\code{character})\cr
 whether missing data (\code{NA}) should be displayed as a level.}
@@ -83,6 +87,7 @@ app <- init(
       label = "Demographic Table",
       dataname = "ADSL",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      add_total = TRUE,
       summarize_vars = choices_selected(
         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS"),
         c("SEX", "RACE")

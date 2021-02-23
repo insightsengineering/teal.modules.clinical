@@ -11,9 +11,9 @@ template_summary_by(
   sum_vars,
   by_vars,
   var_labels = character(),
+  add_total = TRUE,
   parallel_vars = FALSE,
   row_groups = FALSE,
-  add_total = FALSE,
   na.rm = FALSE,
   na_level = "<Missing>",
   denominator = c("N", "n", "omit")
@@ -38,14 +38,14 @@ variable names used to split the summary by rows.}
 \item{var_labels}{optional, (named \code{character})\cr
 variable labels for relabeling the analysis variables.}
 
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
 \item{row_groups}{(\code{logical}) used to display \code{summarize_vars} as row groups
 (\code{FALSE} on default).}
-
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
 
 \item{na.rm}{(\code{logical})\cr
 whether \code{NA} values should be removed prior to analysis.}

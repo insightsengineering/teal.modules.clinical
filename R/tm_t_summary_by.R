@@ -14,9 +14,9 @@ template_summary_by <- function(parentname,
                                 sum_vars,
                                 by_vars,
                                 var_labels = character(),
+                                add_total = TRUE,
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
-                                add_total = FALSE,
                                 na.rm = FALSE, # nolint
                                 na_level = "<Missing>",
                                 denominator = c("N", "n", "omit")) {
@@ -27,9 +27,9 @@ template_summary_by <- function(parentname,
     is.character(sum_vars),
     is.character(by_vars),
     is.character(var_labels),
+    is.flag(add_total),
     is.flag(parallel_vars),
     is.flag(row_groups),
-    is.flag(add_total),
     is.flag(na.rm),
     is.string(na_level)
   )
@@ -265,9 +265,11 @@ template_summary_by <- function(parentname,
 #'
 #' @export
 #' @examples
+#' # Preparation of the test case.
 #' library(random.cdisc.data)
 #' adsl <- radsl(cached = TRUE)
 #' adlb <- radlb(cached = TRUE)
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- radsl(cached = TRUE)'),
@@ -282,6 +284,7 @@ template_summary_by <- function(parentname,
 #'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
+#'       add_total = TRUE,
 #'       by_vars = choices_selected(
 #'         choices = variable_choices(adlb, c("PARAM", "AVISIT")),
 #'         selected = c("AVISIT")
@@ -313,6 +316,7 @@ tm_t_summary_by <- function(label,
                             by_vars,
                             summarize_vars,
                             paramcd = NULL,
+                            add_total = TRUE,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
@@ -326,6 +330,7 @@ tm_t_summary_by <- function(label,
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
+    is.flag(add_total),
     is_logical_single(parallel_vars),
     is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
@@ -396,6 +401,7 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       if_not_null(
         a$paramcd,
         data_extract_input(
@@ -411,7 +417,6 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$by_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = TRUE),
       data_extract_input(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
@@ -457,6 +462,7 @@ srv_summary_by <- function(input,
                            paramcd,
                            by_vars,
                            summarize_vars,
+                           add_total,
                            na_level,
                            label) {
   stopifnot(is_cdisc_data(datasets))
@@ -541,10 +547,10 @@ srv_summary_by <- function(input,
       sum_vars = sum_vars,
       by_vars = as.vector(anl_m$columns_source$by_vars),
       var_labels = get_var_labels(datasets, dataname, sum_vars),
-      add_total = input$add_total,
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       na_level = na_level,
       denominator = input$denominator,
+      add_total = input$add_total,
       parallel_vars = input$parallel_vars,
       row_groups = input$row_groups
     )
