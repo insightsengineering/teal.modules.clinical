@@ -18,6 +18,7 @@ template_g_km <- function(dataname = "ANL",
                           combine_comp_arms = FALSE,
                           aval_var = "AVAL",
                           cnsr_var = "CNSR",
+                          xticks = NULL,
                           strata_var = NULL,
                           time_points = NULL,
                           facet_var = "SEX",
@@ -37,7 +38,8 @@ template_g_km <- function(dataname = "ANL",
     is.string(cnsr_var),
     is.string(time_unit_var),
     is.flag(compare_arm),
-    is.flag(combine_comp_arms)
+    is.flag(combine_comp_arms),
+    is.null(xticks) | is.numeric(xticks)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -142,6 +144,7 @@ template_g_km <- function(dataname = "ANL",
                 font_size = font_size,
                 xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
                 yval = yval,
+                xticks = xticks,
                 newpage = FALSE,
                 title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
                 ggtheme = theme_minimal(),
@@ -157,6 +160,7 @@ template_g_km <- function(dataname = "ANL",
         env = list(
           font_size = font_size,
           facet_var = as.name(facet_var),
+          xticks = xticks,
           xlab = xlab,
           time_unit_var = as.name(time_unit_var),
           yval = yval,
@@ -179,6 +183,7 @@ template_g_km <- function(dataname = "ANL",
             font_size = font_size,
             xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
             yval = yval,
+            xticks = xticks,
             newpage = TRUE,
             ggtheme = theme_minimal(),
             control_surv = control_surv_timepoint(conf_level = conf_level),
@@ -189,6 +194,7 @@ template_g_km <- function(dataname = "ANL",
         },
         env = list(
           font_size = font_size,
+          xticks = xticks,
           xlab = xlab,
           time_unit_var = as.name(time_unit_var),
           yval = yval,
@@ -298,12 +304,12 @@ tm_g_km <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
@@ -476,6 +482,10 @@ ui_g_km <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional plot settings",
+          textInput(
+            inputId = ns("xticks"),
+            label = "Specify break intervals for x-axis e.g. 0 ; 500"
+          ),
           radioButtons(
             ns("yval"),
             tags$label("Value on y-axis", class = "text-primary"),
@@ -580,6 +590,10 @@ srv_g_km <- function(input,
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars"]
     input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
+    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+      strsplit(",") %>%
+      unlist() %>%
+      as.numeric()
 
     # validate inputs
     validate_args <- list(
@@ -599,6 +613,16 @@ srv_g_km <- function(input,
     }
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    # validate xticks
+    if (length(input_xticks) == 0) {
+      input_xticks <- NULL
+    }
+    else {
+      validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
+      validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
+      validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
+    }
 
     validate(need(
       input$conf_level > 0 && input$conf_level < 1,
@@ -622,6 +646,15 @@ srv_g_km <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 10)
 
+    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+      strsplit(",") %>%
+      unlist() %>%
+      as.numeric()
+
+    if (length(input_xticks) == 0) {
+      input_xticks <- NULL
+    }
+
     my_calls <- template_g_km(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
@@ -637,6 +670,7 @@ srv_g_km <- function(input,
       facet_var = as.vector(anl_m$columns_source$facet_var),
       annot_surv_med = input$show_km_table,
       annot_coxph = input$compare_arms,
+      xticks = input_xticks,
       font_size = input$font_size,
       pval_method = input$pval_method_coxph,
       conf_level = as.numeric(input$conf_level),

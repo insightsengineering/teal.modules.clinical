@@ -13,6 +13,7 @@ template_g_km(
   combine_comp_arms = FALSE,
   aval_var = "AVAL",
   cnsr_var = "CNSR",
+  xticks = NULL,
   strata_var = NULL,
   time_points = NULL,
   facet_var = "SEX",
@@ -51,6 +52,12 @@ name of the analysis variable.}
 
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
+
+\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr
+numeric vector of ticks or single number with spacing
+between ticks on the x axis.
+If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
+an optimal tick position on the x axis.}
 
 \item{time_points}{(\code{character})\cr
 time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}

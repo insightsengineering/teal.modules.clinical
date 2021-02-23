@@ -1,7 +1,7 @@
 # teal.modules.clinical 0.8.6.9000
 
 * The argument `cnsr_val` was removed from `tm_t_events_patyear` and a new argument `events_var` was added.
-* `tm_g_km` updated to allow plot of failure probability on y-axis.
+* `tm_g_km` updated to allow plot of failure probability on y-axis and tick interval selection on x-axis.
 * New module `tm_g_patient_profile` was added to profile patients based on predefined categories.
 * Exposed hard-coded variables using `data_extract_input`.
 * New module `tm_g_ipp` was added for individual patient plots.

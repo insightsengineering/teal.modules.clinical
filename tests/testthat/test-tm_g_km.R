@@ -32,6 +32,7 @@ test_that("template_g_km works as expected with default arguments", {
               font_size = 8,
               xlab = paste0("Survival time", " (", anl$AVALU[1], ")"),
               yval = "Survival",
+              xticks = NULL,
               newpage = FALSE,
               title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
               ggtheme = theme_minimal(),
