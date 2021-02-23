@@ -382,7 +382,8 @@ template_therapy <- function(dataname,
       cmdosu_char = cmdosu,
       cmroute_char = cmroute,
       cmdosfrq_char = cmdosfrq,
-      cmendy_char = cmendy
+      cmendy_char = cmendy,
+      cmstdy_char = cmstdy
     ))
   )
 
@@ -2120,7 +2121,7 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(expression = my_calls, therapy_stack_push)
-    therapy_stack$eval()
+    chunks_safe_eval(chunks = therapy_stack)
     therapy_stack
   })
 
