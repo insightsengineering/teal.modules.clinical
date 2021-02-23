@@ -567,6 +567,14 @@ template_adverse_events <- function(patient_id,
             vjust = "bottom",
             size = 3
           ) +
+          scale_fill_manual(values = c(
+            "1" = "#E2264633",
+            "2" = "#E2264666",
+            "3" = "#E2264699",
+            "4" = "#E22646CC",
+            "5" = "#E22646FF",
+            "UNKNOWN" = "#ACADB1FF"
+            )) +
           scale_y_discrete(expand = expansion(add = 1.2)) +
           xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
           geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
