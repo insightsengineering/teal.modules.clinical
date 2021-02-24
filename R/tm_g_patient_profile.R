@@ -2220,8 +2220,32 @@ srv_g_patient_profile <- function(input,
   )
 
   patient_timeline_calls <- reactive({
-    patient_timeline_stack <- chunks$new()
     validate_checks()
+
+    validate(
+      need(
+        input[[extract_input("ae_term", "ADAE")]],
+        "Please select AETERM variable."
+      ),
+      need(
+        input[[extract_input("ae_time_start", "ADAE")]],
+        "Please select ASTDTM variable."
+      ),
+      need(
+        input[[extract_input("ae_time_end", "ADAE")]],
+        "Please select AENDTM variable."
+      ),
+      need(
+        input[[extract_input("ds_time_start", "ADCM")]],
+        "Please select CMASTDTM variable."
+      ),
+      need(
+        input[[extract_input("ds_time_end", "ADCM")]],
+        "Please select CMAENDTM variable."
+      )
+    )
+
+    patient_timeline_stack <- chunks$new()
     chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)
 
     patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
@@ -2357,7 +2381,8 @@ srv_g_patient_profile <- function(input,
       "Prior medication" = pmed_call(),
       "Vitals" = vitals_call(),
       "Adverse events" = ae_calls(),
-      "Laboratory values" = labor_calls()
+      "Laboratory values" = labor_calls(),
+      "Patient timeline" = patient_timeline_calls()
     )
     if (!is.null(new_chunks)) chunks_push_chunks(new_chunks)
   }, priority = -1)
