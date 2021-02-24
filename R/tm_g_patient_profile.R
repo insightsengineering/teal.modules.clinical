@@ -1241,7 +1241,7 @@ template_laboratory <- function(patient_id,
 #'     )
 #'   )
 #' )
-#' #' Not run:
+#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

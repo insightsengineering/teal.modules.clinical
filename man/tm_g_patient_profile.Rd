@@ -529,7 +529,7 @@ app <- init(
     )
   )
 )
-#' Not run:
+
 \dontrun{
 shinyApp(app$ui, app$server)
 }
