@@ -14,29 +14,21 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     data = quote({
       anl <- adcm
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
-      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count",
-          .labels = c(unique_count = "Total number of treatments")
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
         ) %>%
         split_rows_by(
           "ATC1",
@@ -68,18 +60,15 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
         ) %>%
         append_varlabels(adcm, "CMDECOD", indent = TRUE)
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
+    table_sorted = quote({
+      sorted_result <- result %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )
@@ -104,29 +93,22 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
     data = quote({
       anl <- adcm
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "CMDECOD")))
-      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
-        ) %>%
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
+          ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
@@ -151,19 +133,15 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
           indent = TRUE
         )
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>%
+    table_sorted = quote({
+      sorted_result <- result %>%
         sort_at_path(path = c("ATC1", "*", "ATC2", "*", "CMDECOD"), scorefun = score_occurrences)
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )
@@ -188,29 +166,22 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
     data = quote({
       anl <- adcm
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "CMDECOD")))
-      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
-        ) %>%
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
+          ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
@@ -237,14 +208,11 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
         )), eval, FUN.VALUE = character(1)), collapse = "/")) %>%
         append_varlabels(adcm, "CMDECOD", indent = TRUE)
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>%
+    table_sorted = quote({
+      sorted_result <- result %>%
         sort_at_path(
           path = c(
             "ATC1",
@@ -259,8 +227,7 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
         )
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )
@@ -286,30 +253,22 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
       anl <- adcm
       anl <- anl %>%
         df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
-      anl <- anl %>%
-        mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+        anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count", .labels = c(unique_count = "Total number of treatments")
-        ) %>%
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
+          ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
@@ -343,22 +302,18 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
           indent = TRUE
         )
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>%
+    table_sorted = quote({
+      sorted_result <- result %>%
         sort_at_path(
           path = c("ATC1", "*", "ATC2", "*", "ATC3", "*", "ATC4", "*", "CMDECOD"),
           scorefun = score_occurrences
         )
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )
@@ -384,45 +339,33 @@ test_that("template_mult_events generates correct expressions with no HLT parame
     data = quote({
       anl <- adcm
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), "CMDECOD"))
-      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count",
-          .labels = c(unique_count = "Total number of treatments")
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
         ) %>%
         count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>%
         append_varlabels(adcm, "CMDECOD", indent = FALSE)
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>% sort_at_path(path = "CMDECOD", scorefun = score_occurrences)
+    table_sorted = quote({
+      sorted_result <- result %>% sort_at_path(path = "CMDECOD", scorefun = score_occurrences)
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )
@@ -447,27 +390,20 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     data = quote({
       anl <- adcm
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
-      anl <- anl %>% mutate(USUBJID2 = paste0(USUBJID, "@", ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
-    layout1 = quote(
-      lyt_1 <- basic_table() %>%
+    layout = quote(
+      lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         summarize_num_patients(
           var = "USUBJID",
-          .stats = "unique",
-          .labels = c(unique = "Total number of patients with at least one treatment")
-        )
-    ),
-    layout2 = quote(
-      lyt_2 <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        summarize_num_patients(
-          var = "USUBJID2",
-          .stats = "unique_count",
-          .labels = c(unique_count = "Total number of treatments")
+          count_by = "ASEQ",
+          .stats = c("unique_count", "nonunique"),
+          .labels = c(
+            unique_count = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments")
         ) %>%
         split_rows_by(
           "ATC1",
@@ -499,18 +435,14 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
         ) %>%
         append_varlabels(adcm, "CMDECOD", indent = TRUE)
     ),
-    table1 = quote(
-      result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = adsl)
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
-    table2 = quote(
-      result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = adsl)
-    ),
-    table2_sorted = quote({
-      sorted_result_2 <- result_2 %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
+    table_sorted = quote({
+      sorted_result <- result %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
     }),
     final_table = quote({
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     })
   )

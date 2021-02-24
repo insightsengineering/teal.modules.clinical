@@ -59,10 +59,10 @@ template_mult_events <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    substitute(
+    substitute_names(
       expr = anl <- anl %>%
-        mutate(USUBJID2 = paste0(USUBJID, "@", seq_var)),
-      env = list(
+        mutate(seq_var = as.factor(seq_var)),
+      names = list(
         seq_var = as.name(seq_var)
       )
     )
@@ -74,6 +74,7 @@ template_mult_events <- function(dataname,
 
   # Start layout steps.
   layout_list <- list()
+
   layout_list <- add_expr(layout_list, quote(basic_table()))
   layout_list <- add_expr(
     layout_list,
@@ -94,64 +95,21 @@ template_mult_events <- function(dataname,
   }
 
   unique_label <- paste0("Total number of patients with at least one ", event_type)
+  nonunique_label <- paste0("Total number of ", event_type, "s")
 
   layout_list <- add_expr(
     layout_list,
     substitute(
       summarize_num_patients(
         var = "USUBJID",
-        .stats = "unique",
+        count_by = seq_var,
+        .stats = c("unique_count", "nonunique"),
         .labels = c(
-          unique = unique_label
+          unique_count = unique_label,
+          nonunique = nonunique_label
         )
       ),
-      env = list(unique_label = unique_label)
-    )
-  )
-
-
-  lyt_1 <- substitute(
-    expr = lyt_1 <- layout_pipe,
-    env = list(layout_pipe = pipe_expr(layout_list))
-  )
-
-  y$layout1 <- lyt_1
-
-  # Re-start layout steps.
-  layout_list <- list()
-
-  layout_list <- add_expr(layout_list, quote(basic_table()))
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var) %>%
-        add_colcounts(),
-      env = list(arm_var = arm_var)
-    )
-  )
-
-  if (add_total) {
-    layout_list <- add_expr(
-      layout_list,
-      quote(
-        add_overall_col(label = "All Patients")
-      )
-    )
-  }
-
-  unique_count_label <- paste0("Total number of ", event_type, "s")
-
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      summarize_num_patients(
-        var = "USUBJID2",
-        .stats = "unique_count",
-        .labels = c(
-          unique_count = unique_count_label
-        )
-      ),
-      env = list(unique_count_label = unique_count_label)
+      env = list(unique_label = unique_label, nonunique_label = nonunique_label, seq_var = seq_var)
     )
   )
 
@@ -216,8 +174,6 @@ template_mult_events <- function(dataname,
       )
     )
 
-    nonunique_label <- unique_count_label
-
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -242,29 +198,22 @@ template_mult_events <- function(dataname,
     )
   }
 
-  lyt_2 <- substitute(
-    expr = lyt_2 <- layout_pipe,
+  lyt <- substitute(
+    expr = lyt <- layout_pipe,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$layout2 <- lyt_2
+  y$layout <- lyt
 
-  y$table1 <- substitute(
-    expr = result_1 <- build_table(lyt = lyt_1, df = anl, alt_counts_df = parent),
+  # Table
+  y$table <- substitute(
+    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(
       parent = as.name(parentname)
     )
   )
 
-  # Table 2.
-  y$table2 <- substitute(
-    expr = result_2 <- build_table(lyt = lyt_2, df = anl, alt_counts_df = parent),
-    env = list(
-      parent = as.name(parentname)
-    )
-  )
-
-  # Start sorting table 2.
+  # Start sorting table
   if (is.null(hlt)) {
     pth <- c(llt)
   } else {
@@ -276,19 +225,18 @@ template_mult_events <- function(dataname,
   sort_list <- add_expr(
     sort_list,
     substitute(
-      expr = sorted_result_2 <- result_2 %>%
+      expr = sorted_result <- result %>%
         sort_at_path(path = pth, scorefun = score_occurrences),
       env = list(pth = pth)
     )
   )
 
-  y$table2_sorted <- bracket_expr(sort_list)
+  y$table_sorted <- bracket_expr(sort_list)
 
   # Combine tables.
   y$final_table <- quote(
     expr = {
-      col_info(result_1) <- col_info(sorted_result_2)
-      result <- rbind(result_1, sorted_result_2)
+      result <- sorted_result
       result
     }
   )
