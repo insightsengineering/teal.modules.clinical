@@ -13,7 +13,6 @@ template_basic_info <- function(dataname,
     is.string(dataname),
     is_character_vector(binf_vars)
   )
-
   y <- list()
   y$table <- list()
 
@@ -422,7 +421,7 @@ template_therapy <- function(dataname,
         geom_text(
           data =
             data %>%
-              select(CMDECOD, cmindc) %>%
+            select(CMDECOD, cmindc) %>%
             distinct(),
           aes(x = 1, label = CMDECOD), color = "black",
           hjust = "left",
@@ -575,7 +574,7 @@ template_adverse_events <- function(patient_id,
             "4" = "#E22646CC",
             "5" = "#E22646FF",
             "UNKNOWN" = "#ACADB1FF"
-            )) +
+          )) +
           scale_y_discrete(expand = expansion(add = 1.2)) +
           xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
           geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
@@ -1394,7 +1393,6 @@ ui_g_patient_profile <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(ui_args$patient_id)
 
   ns <- NS(id)
-
   standard_layout(
     output = white_small_well(
       tabsetPanel(
@@ -1460,9 +1458,8 @@ ui_g_patient_profile <- function(id, ...) {
         data_extract_spec = ui_args$patient_id,
         is_single_dataset = is_single_dataset_value
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Basic info'"),
+      div(
+        id = ns("binf_vars-div"),
         data_extract_input(
           id = ns("binf_vars"),
           label = "Select variable:",
@@ -1470,265 +1467,299 @@ ui_g_patient_profile <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Medical history'"),
-        list(
+      div(
+        id = ns("mhterm-div"),
+        data_extract_input(
+          id = ns("mhterm"),
+          label = "Select MHTERM variable:",
+          data_extract_spec = ui_args$mhterm,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("mhbodsys-div"),
+        data_extract_input(
+          id = ns("mhbodsys"),
+          label = "Select MHBODSYS variable:",
+          data_extract_spec = ui_args$mhbodsys,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("medname_decoding-div"),
+        data_extract_input(
+          id = ns("medname_decoding"),
+          label = "Select the medication decoding column:",
+          data_extract_spec = ui_args$medname_decoding,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("vitals_paramcd-div"),
+        data_extract_input(
+          id = ns("vitals_paramcd"),
+          label = "Select PARAMCD variable:",
+          data_extract_spec = ui_args$vitals_paramcd,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("vitals_paramcd_levels-div"),
+        uiOutput(ns("vitals_paramcd_levels"))
+      ),
+      div(
+        id = ns("vitals_xaxis-div"),
+        data_extract_input(
+          id = ns("vitals_xaxis"),
+          label = "Select vital plot x-axis:",
+          data_extract_spec = ui_args$vitals_xaxis,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("vitals_aval-div"),
+        data_extract_input(
+          id = ns("vitals_aval"),
+          label = "Select AVAL variable:",
+          data_extract_spec = ui_args$vitals_aval,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("atirel-div"),
+        data_extract_input(
+          id = ns("atirel"),
+          label = "Select ATIREL variable:",
+          data_extract_spec = ui_args$atirel,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmindc-div"),
+        data_extract_input(
+          id = ns("cmindc"),
+          label = "Select CMINDC variable:",
+          data_extract_spec = ui_args$cmindc,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmdose-div"),
+        data_extract_input(
+          id = ns("cmdose"),
+          label = "Select CMDOSE variable:",
+          data_extract_spec = ui_args$cmdose,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmtrt-div"),
+        data_extract_input(
+          id = ns("cmtrt"),
+          label = "Select CMTRT variable:",
+          data_extract_spec = ui_args$cmtrt,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmdosu-div"),
+        data_extract_input(
+          id = ns("cmdosu"),
+          label = "Select CMDOSU variable:",
+          data_extract_spec = ui_args$cmdosu,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmroute-div"),
+        data_extract_input(
+          id = ns("cmroute"),
+          label = "Select CMROUTE variable:",
+          data_extract_spec = ui_args$cmroute,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmdosfrq-div"),
+        data_extract_input(
+          id = ns("cmdosfrq"),
+          label = "Select CMDOSFRQ variable:",
+          data_extract_spec = ui_args$cmdosfrq,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmstdy-div"),
+        data_extract_input(
+          id = ns("cmstdy"),
+          label = "Select CMSTDY variable:",
+          data_extract_spec = ui_args$cmstdy,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("cmendy-div"),
+        data_extract_input(
+          id = ns("cmendy"),
+          label = "Select CMENDY variable:",
+          data_extract_spec = ui_args$cmendy,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_term-div"),
+        data_extract_input(
+          id = ns("ae_term"),
+          label = "Select AETERM variable:",
+          data_extract_spec = ui_args$ae_term,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_tox_grade-div"),
+        data_extract_input(
+          id = ns("ae_tox_grade"),
+          label = "Select AETOXGR variable:",
+          data_extract_spec = ui_args$ae_tox_grade,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_causality-div"),
+        data_extract_input(
+          id = ns("ae_causality"),
+          label = "Select AEREL variable:",
+          data_extract_spec = ui_args$ae_causality,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_outcome-div"),
+        data_extract_input(
+          id = ns("ae_outcome"),
+          label = "Select AEOUT variable:",
+          data_extract_spec = ui_args$ae_outcome,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_action-div"),
+        data_extract_input(
+          id = ns("ae_action"),
+          label = "Select AEACN variable:",
+          data_extract_spec = ui_args$ae_action,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("ae_time-div"),
+        data_extract_input(
+          id = ns("ae_time"),
+          label = "Select ASTDY variable:",
+          data_extract_spec = ui_args$ae_time,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      if_not_null(
+        ui_args$ae_decod,
+        div(
+          id = ns("ae_decod-div"),
           data_extract_input(
-            id = ns("mhterm"),
-            label = "Select MHTERM variable:",
-            data_extract_spec = ui_args$mhterm,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("mhbodsys"),
-            label = "Select MHBODSYS variable:",
-            data_extract_spec = ui_args$mhbodsys,
+            id = ns("ae_decod"),
+            label = "Select DECOD variable:",
+            data_extract_spec = ui_args$ae_decod,
             is_single_dataset = is_single_dataset_value
           )
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Prior medication'"),
-        list(
-          data_extract_input(
-            id = ns("atirel"),
-            label = "Select ATIREL:",
-            data_extract_spec = ui_args$atirel,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("medname_decoding"),
-            label = "Select the medication decoding column:",
-            data_extract_spec = ui_args$medname_decoding,
-            is_single_dataset = is_single_dataset_value
-          )
+      div(
+        id = ns("ae_time_start-div"),
+        data_extract_input(
+          id = ns("ae_time_start"),
+          label = "Select ASTDTM variable:",
+          data_extract_spec = ui_args$ae_time_start,
+          is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Vitals'"),
-        list(
-          data_extract_input(
-            id = ns("vitals_paramcd"),
-            label = "Select PARAMCD variable:",
-            data_extract_spec = ui_args$vitals_paramcd,
-            is_single_dataset = is_single_dataset_value
-          ),
-          uiOutput(ns("vitals_paramcd_levels")),
-          data_extract_input(
-            id = ns("vitals_xaxis"),
-            label = "Select vital plot x-axis:",
-            data_extract_spec = ui_args$vitals_xaxis,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("vitals_aval"),
-            label = "Select AVAL variable:",
-            data_extract_spec = ui_args$vitals_aval,
-            is_single_dataset = is_single_dataset_value
-          )
+      div(
+        id = ns("ae_time_end-div"),
+        data_extract_input(
+          id = ns("ae_time_end"),
+          label = "Select AENDTM variable:",
+          data_extract_spec = ui_args$ae_time_end,
+          is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Therapy'"),
-        list(
-          data_extract_input(
-            id = ns("atirel"),
-            label = "Select ATIREL variable:",
-            data_extract_spec = ui_args$atirel,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("medname_decoding"),
-            label = "Select medication decoding column:",
-            data_extract_spec = ui_args$medname_decoding,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmindc"),
-            label = "Select CMINDC variable:",
-            data_extract_spec = ui_args$cmindc,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmdose"),
-            label = "Select CMDOSE variable:",
-            data_extract_spec = ui_args$cmdose,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmtrt"),
-            label = "Select CMTRT variable:",
-            data_extract_spec = ui_args$cmtrt,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmdosu"),
-            label = "Select CMDOSU variable:",
-            data_extract_spec = ui_args$cmdosu,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmroute"),
-            label = "Select CMROUTE variable:",
-            data_extract_spec = ui_args$cmroute,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmdosfrq"),
-            label = "Select CMDOSFRQ variable:",
-            data_extract_spec = ui_args$cmdosfrq,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmstdy"),
-            label = "Select CMSTDY variable:",
-            data_extract_spec = ui_args$cmstdy,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmendy"),
-            label = "Select CMENDY variable:",
-            data_extract_spec = ui_args$cmendy,
-            is_single_dataset = is_single_dataset_value
-          )
+      div(
+        id = ns("ds_time_start-div"),
+        data_extract_input(
+          id = ns("ds_time_start"),
+          label = "Select TRTSDTM variable:",
+          data_extract_spec = ui_args$ds_time_start,
+          is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Adverse events'"),
-        list(
-          data_extract_input(
-            id = ns("ae_term"),
-            label = "Select AETERM variable:",
-            data_extract_spec = ui_args$ae_term,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_tox_grade"),
-            label = "Select AETOXGR variable:",
-            data_extract_spec = ui_args$ae_tox_grade,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_causality"),
-            label = "Select AEREL variable:",
-            data_extract_spec = ui_args$ae_causality,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_outcome"),
-            label = "Select AEOUT variable:",
-            data_extract_spec = ui_args$ae_outcome,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_action"),
-            label = "Select AEACN variable:",
-            data_extract_spec = ui_args$ae_action,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_time"),
-            label = "Select ASTDY variable:",
-            data_extract_spec = ui_args$ae_time,
-            is_single_dataset = is_single_dataset_value
-          ),
-          if_not_null(
-            ui_args$ae_decod,
-            data_extract_input(
-              id = ns("ae_decod"),
-              label = "Select DECOD variable:",
-              data_extract_spec = ui_args$ae_decod,
-              is_single_dataset = is_single_dataset_value
-            )
-          )
+      div(
+        id = ns("ds_time_end-div"),
+        data_extract_input(
+          id = ns("ds_time_end"),
+          label = "Select TRTEDTM variable:",
+          data_extract_spec = ui_args$ds_time_end,
+          is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition =
-          paste0("input['", ns("tabs"), "'] == 'Patient timeline'"),
-        list(
-          data_extract_input(
-            id = ns("ae_term"),
-            label = "Select AETERM variable:",
-            data_extract_spec = ui_args$ae_term,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_time_start"),
-            label = "Select ASTDTM variable:",
-            data_extract_spec = ui_args$ae_time_start,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ae_time_end"),
-            label = "Select AENDTM variable:",
-            data_extract_spec = ui_args$ae_time_end,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("cmtrt"),
-            label = "Select CMTRT variable:",
-            data_extract_spec = ui_args$cmtrt,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ds_time_start"),
-            label = "Select TRTSDTM variable:",
-            data_extract_spec = ui_args$ds_time_start,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("ds_time_end"),
-            label = "Select TRTEDTM variable:",
-            data_extract_spec = ui_args$ds_time_end,
-            is_single_dataset = is_single_dataset_value
-          )
+      div(
+        id = ns("labor_paramcd-div"),
+        data_extract_input(
+          id = ns("labor_paramcd"),
+          label = "Select PARAMCD variable:",
+          data_extract_spec = ui_args$labor_paramcd,
+          is_single_dataset = is_single_dataset_value
         )
       ),
-      conditionalPanel(
-        condition = paste0("input['", ns("tabs"), "'] == 'Laboratory values'"),
-        list(
-          data_extract_input(
-            id = ns("labor_paramcd"),
-            label = "Select PARAMCD variable:",
-            data_extract_spec = ui_args$labor_paramcd,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("labor_param"),
-            label = "Select PARAM variable:",
-            data_extract_spec = ui_args$labor_param,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("labor_timepoints"),
-            label = "Select timepoints variable:",
-            data_extract_spec = ui_args$labor_timepoints,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("labor_aval"),
-            label = "Select AVAL variable:",
-            data_extract_spec = ui_args$labor_aval,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("labor_avalu"),
-            label = "Select AVALU variable:",
-            data_extract_spec = ui_args$labor_avalu,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("anrind"),
-            label = "Select ANRIND variable:",
-            data_extract_spec = ui_args$anrind,
-            is_single_dataset = is_single_dataset_value
-          )
+      div(
+        id = ns("labor_param-div"),
+        data_extract_input(
+          id = ns("labor_param"),
+          label = "Select PARAM variable:",
+          data_extract_spec = ui_args$labor_param,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("labor_timepoints-div"),
+        data_extract_input(
+          id = ns("labor_timepoints"),
+          label = "Select timepoints variable:",
+          data_extract_spec = ui_args$labor_timepoints,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("labor_aval-div"),
+        data_extract_input(
+          id = ns("labor_aval"),
+          label = "Select AVAL variable:",
+          data_extract_spec = ui_args$labor_aval,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("labor_avalu-div"),
+        data_extract_input(
+          id = ns("labor_avalu"),
+          label = "Select AVALU variable:",
+          data_extract_spec = ui_args$labor_avalu,
+          is_single_dataset = is_single_dataset_value
+        )
+      ),
+      div(
+        id = ns("anrind-div"),
+        data_extract_input(
+          id = ns("anrind"),
+          label = "Select ANRIND variable:",
+          data_extract_spec = ui_args$anrind,
+          is_single_dataset = is_single_dataset_value
         )
       )
     ),
@@ -1808,7 +1839,6 @@ srv_g_patient_profile <- function(input,
 
   basic_info_call <- reactive({
     validate_checks()
-
     validate(
       need(
         input$`binf_vars-dataset_ADSL_singleextract-select`,
@@ -1913,7 +1943,7 @@ srv_g_patient_profile <- function(input,
     validate(
       need(
         input$`atirel-dataset_ADCM_singleextract-select`,
-        "Please select MHBODSYS variable."
+        "Please select ATIREL variable."
       ),
       need(
         input$`medname_decoding-dataset_ADCM_singleextract-select`,
@@ -2240,8 +2270,8 @@ srv_g_patient_profile <- function(input,
         "Please select CMASTDTM variable."
       ),
       need(
-        input[[extract_input("ds_time_end", "ADCM")]],
-        "Please select CMAENDTM variable."
+        input[[extract_input("cmtrt", "ADCM")]],
+        "Please select CMTRT variable."
       )
     )
 
@@ -2386,6 +2416,44 @@ srv_g_patient_profile <- function(input,
     )
     if (!is.null(new_chunks)) chunks_push_chunks(new_chunks)
   }, priority = -1)
+
+
+  # Shinyjs wrapper ----
+  encoding_list <- list(
+    "Basic info" = c("binf_vars-div"),
+    "Medical history" = c("mhterm-div", "mhbodsys-div"),
+    "Prior medication" = c("atirel-div", "medname_decoding-div"),
+    "Vitals" = c("vitals_paramcd-div", "vitals_paramcd_levels-div", "vitals_xaxis-div", "vitals_aval-div"),
+    "Therapy" = c(
+      "atirel-div", "medname_decoding-div", "cmindc-div", "cmdose-div", "cmtrt-div",
+      "cmdosu-div", "cmroute-div", "cmdosfrq-div", "cmstdy-div", "cmendy-div"
+    ),
+    "Adverse events" = c(
+      "ae_term-div", "ae_tox_grade-div", "ae_causality-div",
+      "ae_outcome-div", "ae_action-div", "ae_time-div", "ae_decod-div"
+    ),
+    "Laboratory values" = c(
+      "labor_timepoints-div", "labor_aval-div", "labor_avalu-div", "labor_param-div", "labor_paramcd-div", "anrind-div"
+    ),
+    "Patient timeline" = c(
+      "ae_term-div", "ae_time_start-div", "ae_time_end-div", "ds_time_start-div", "ds_time_end-div", "cmtrt-div"
+    )
+  )
+
+  all_encoding_list <- c(
+    "binf_vars-div", "mhterm-div", "mhbodsys-div", "vitals_paramcd-div", "vitals_xaxis-div", "vitals_aval-div",
+    "atirel-div", "medname_decoding-div", "Vitals-div", "vitals_paramcd-div", "vitals_paramcd_levels-div",
+    "vitals_xaxis-div", "vitals_ava-divl", "medname_decoding-div", "cmindc-div", "cmdose-div", "cmtrt-div",
+    "cmdosu-div", "cmroute-div", "cmdosfrq-div", "cmstdy-div", "cmendy-div", "ae_tox_grade-div", "ae_causality-div",
+    "ae_outcome-div", "ae_action-div", "ae_time-div", "ae_decod-div", "labor_timepoints-div", "labor_aval-div",
+    "labor_avalu-div", "labor_param-div", "labor_paramcd-div", "anrind-div", "ae_term-div", "ae_time_start-div",
+    "ae_time_end-div", "ds_time_start-div", "ds_time_end-div"
+  )
+
+  observeEvent(input$tabs, handlerExpr = {
+    lapply(encoding_list[[input$tabs]], shinyjs::show)
+    lapply(setdiff(all_encoding_list, encoding_list[[input$tabs]]), shinyjs::hide)
+  })
 
   callModule(
     get_rcode_srv,
