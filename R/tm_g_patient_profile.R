@@ -643,7 +643,13 @@ template_patient_timeline <- function(patient_id,
   # Note: The variables used for ae_time_start, ae_time_end, ds_time_start and ds_time_end are to be updated after
   # random.cdisc.data updates.
   assert_that(
-    is.string(dataname)
+    is.string(dataname),
+    is.string(ae_term) || is.null(ae_term),
+    is.string(ae_time_start) || is.null(ae_time_start),
+    is.string(ae_time_end) || is.null(ae_time_end),
+    is.string(ds_time_start) || is.null(ds_time_start),
+    is.string(ds_time_end) || is.null(ds_time_end),
+    is.string(cmtrt) || is.null(cmtrt)
   )
 
   y <- list()
@@ -654,25 +660,47 @@ template_patient_timeline <- function(patient_id,
     substitute(
       expr = {
         # three sections are represented here: advers events, dosing and medication
-        ae_chart <- dataname %>%
-          select(ae_term, ae_time_start, ae_time_end) %>%
-          distinct()
-
-        ds_chart <- dataname %>%
-          select(ds_time_start, ds_time_end) %>%
-          distinct() %>%
-          mutate(
-            label_start = "First Exposure to Treatment",
-            label_end = "Last Exposure to Treatment"
+        # adverse events
+        ae_chart_vars_na <- any(
+          vapply(list(ae_term_var, ae_time_start_var, ae_time_end_var), is.null, FUN.VALUE = logical(1))
           )
+        if (ae_chart_vars_na) {
+          ae_chart <- dataname[FALSE, ]
+        } else {
+          ae_chart <- dataname %>%
+            select(ae_term, ae_time_start, ae_time_end) %>%
+            distinct()
+        }
 
-        med_chart <- dataname %>%
-          select(cmtrt, ds_time_start, ds_time_end) %>%
-          distinct()
+        # dosing
+        ds_chart_vars_na <- any(vapply(list(ds_time_start_var, ds_time_end_var), is.null, FUN.VALUE = logical(1)))
+        if (ds_chart_vars_na) {
+          ds_chart <- dataname[FALSE, ]
+        } else {
+          ds_chart <- dataname %>%
+            select(ds_time_start, ds_time_end) %>%
+            distinct() %>%
+            mutate(
+              label_start = "First Exposure to Treatment",
+              label_end = "Last Exposure to Treatment"
+            )
+        }
 
-        min_ds_chart_time_start <- min(ds_chart[[ds_time_start_var]])
-        min_ds_chart_time_end <- min(ds_chart[[ds_time_end_var]])
-        max_ds_chart_time_end <- max(ds_chart[[ds_time_end_var]])
+        # medication
+        med_chart_vars_na <- any(
+          vapply(list(cmtrt_var, ds_time_start_var, ds_time_end_var), is.null, FUN.VALUE = logical(1))
+          )
+        if (med_chart_vars_na) {
+          med_chart <- dataname[FALSE, ]
+        } else {
+          med_chart <- dataname %>%
+            select(cmtrt, ds_time_start, ds_time_end) %>%
+            distinct()
+        }
+
+        min_ds_chart_time_start <- if (ds_chart_vars_na) c() else min(ds_chart[[ds_time_start_var]])
+        min_ds_chart_time_end <- if (ds_chart_vars_na) c() else min(ds_chart[[ds_time_end_var]])
+        max_ds_chart_time_end <- if (ds_chart_vars_na) c() else  max(ds_chart[[ds_time_end_var]])
 
         timevis_data <- data.frame(
           id = seq_len(nrow(ae_chart) +
@@ -680,36 +708,43 @@ template_patient_timeline <- function(patient_id,
             length(unique(ds_chart[["label_end"]])) +
             nrow(med_chart)),
           content = c(
-            as.character(ae_chart[[ae_term_var]]),
+            if (ae_chart_vars_na) c() else as.character(ae_chart[[ae_term_var]]),
             as.character(unique(ds_chart[["label_start"]])),
             as.character(unique(ds_chart[["label_end"]])),
-            as.character(med_chart[[cmtrt_var]])
+            if (med_chart_vars_na) c() else as.character(med_chart[[cmtrt_var]])
           ),
           start = c(
-            ae_chart[[ae_time_start_var]],
+            if (ae_chart_vars_na) c() else ae_chart[[ae_time_start_var]],
             min_ds_chart_time_start,
             max_ds_chart_time_end,
-            med_chart[[ds_time_start_var]]
+            if (med_chart_vars_na) c() else med_chart[[ds_time_start_var]]
           ),
           end = c(
-            ae_chart[[ae_time_end_var]],
+            if (ae_chart_vars_na) c() else ae_chart[[ae_time_end_var]],
             min_ds_chart_time_start,
             max_ds_chart_time_end,
-            med_chart[[ds_time_end_var]]
+            if (med_chart_vars_na) c() else med_chart[[ds_time_end_var]]
           ),
           group = c(
-            rep("AE", length(ae_chart[[ae_term_var]])),
+            rep("AE", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
             rep("DOS", length(min_ds_chart_time_start)),
             rep("DOS", length(min_ds_chart_time_end)),
-            rep("MED", length(med_chart[[cmtrt_var]]))
+            rep("MED", if (med_chart_vars_na) 0 else length(med_chart[[cmtrt_var]]))
           ),
           type = c(
-            rep("range", length(ae_chart[[ae_term_var]])),
+            rep("range", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
             rep("point", length(min_ds_chart_time_start)),
             rep("point", length(min_ds_chart_time_end)),
-            rep("range", length(med_chart[[cmtrt_var]]))
+            rep("range", if (med_chart_vars_na) 0 else length(med_chart[[cmtrt_var]]))
           )
         )
+
+        # in some cases, dates are converted to numeric so this is a step to convert them back
+
+        posixct_origin <- "1970-01-01 00:00.00 UTC"
+        timevis_data_empty <- nrow(timevis_data) == 0
+        timevis_data$start <- if (!timevis_data_empty) as.POSIXct(timevis_data$start, origin = posixct_origin)
+        timevis_data$end <- if (!timevis_data_empty) as.POSIXct(timevis_data$end, origin = posixct_origin)
 
         timevis_data_groups <- data.frame(
           id = c("AE", "DOS", "MED"),
@@ -723,12 +758,12 @@ template_patient_timeline <- function(patient_id,
       },
       env = list(
         dataname = as.name(dataname),
-        ae_term = as.name(ae_term),
-        ae_time_start = as.name(ae_time_start),
-        ae_time_end = as.name(ae_time_end),
-        ds_time_start = as.name(ds_time_start),
-        ds_time_end = as.name(ds_time_end),
-        cmtrt = as.name(cmtrt),
+        ae_term = if (is.null(ae_term)) ae_term else as.name(ae_term),
+        ae_time_start = if (is.null(ae_time_start)) ae_time_start else as.name(ae_time_start),
+        ae_time_end = if (is.null(ae_time_end)) ae_time_end else as.name(ae_time_end),
+        ds_time_start = if (is.null(ds_time_start)) ds_time_start else as.name(ds_time_start),
+        ds_time_end = if (is.null(ds_time_end)) ds_time_end else as.name(ds_time_end),
+        cmtrt = if (is.null(cmtrt)) cmtrt else as.name(cmtrt),
         ae_term_var = ae_term,
         ae_time_start_var = ae_time_start,
         ae_time_end_var = ae_time_end,
@@ -2323,29 +2358,6 @@ srv_g_patient_profile <- function(input,
 
   patient_timeline_calls <- reactive({
     validate_checks()
-
-    validate(
-      need(
-        input[[extract_input("ae_term", "ADAE")]],
-        "Please select AETERM variable."
-      ),
-      need(
-        input[[extract_input("ae_time_start", "ADAE")]],
-        "Please select ASTDTM variable."
-      ),
-      need(
-        input[[extract_input("ae_time_end", "ADAE")]],
-        "Please select AENDTM variable."
-      ),
-      need(
-        input[[extract_input("ds_time_start", "ADCM")]],
-        "Please select CMASTDTM variable."
-      ),
-      need(
-        input[[extract_input("cmtrt", "ADCM")]],
-        "Please select CMTRT variable."
-      )
-    )
 
     patient_timeline_stack <- chunks$new()
     chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)

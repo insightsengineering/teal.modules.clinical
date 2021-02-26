@@ -9,7 +9,8 @@
 * The argument `time_unit_var` was added to `template_g_km` to add the time unit to the x-axis label
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
-* Updated UI encodings to show/hide the required input variables.
+* Updated UI encodings to show/hide the required input variables in `tm_g_patient_profile`.
+* Updated patient timeline tab in `tm_g_patient_profile` to show available input variables only.
 
 # teal.modules.clinical 0.8.6
 
