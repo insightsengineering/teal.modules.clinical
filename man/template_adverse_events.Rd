@@ -5,8 +5,7 @@
 \title{Template: Adverse Events Tab}
 \usage{
 template_adverse_events(
-  patient_id,
-  dataname = "ADAE_FILTERED",
+  dataname = "ae_merge",
   ae_term = "AETERM",
   ae_tox_grade = "AETOXGR",
   ae_causality = "AEREL",
@@ -17,8 +16,6 @@ template_adverse_events(
 )
 }
 \arguments{
-\item{patient_id}{(\code{character})\cr Patient ID.}
-
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
@@ -33,6 +30,8 @@ analysis data used in teal module.}
 \item{ae_action}{(\code{character})\cr name of action taken with study treatment variable.}
 
 \item{ae_time}{(\code{character})\cr name of study day of start of adverse event variable.}
+
+\item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 }
 \description{
 Creates an adverse events template call.

@@ -4,17 +4,13 @@
 \alias{template_basic_info}
 \title{Template: Basic Info}
 \usage{
-template_basic_info(dataname, binf_vars)
+template_basic_info(dataname = "bi_merge", bi_vars)
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{binf_vars}{(\code{character})\cr variable names to be shown in Basic Info tab.}
-
-\item{patient_id}{(\code{character})\cr Patient ID.}
-
-\item{mhterm}{(\code{character})\cr name of reported name for medical history variable.}
+\item{bi_vars}{(\code{character})\cr variable names to be shown in Basic Info tab.}
 }
 \description{
 Creates a basic info template.

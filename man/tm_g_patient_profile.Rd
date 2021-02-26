@@ -6,24 +6,23 @@
 \usage{
 tm_g_patient_profile(
   label,
-  dataname,
   parentname = "ADSL",
   patient_id,
-  binf_vars = NULL,
-  mhterm = NULL,
-  mhbodsys = NULL,
+  bi_vars = NULL,
+  mh_term = NULL,
+  mh_bodsys = NULL,
   atirel = NULL,
   medname_decoding = NULL,
-  vitals_paramcd = NULL,
-  vitals_param = NULL,
-  labor_paramcd = NULL,
-  labor_param = NULL,
-  vitals_xaxis = NULL,
-  labor_timepoints = NULL,
-  anrind = NULL,
-  vitals_aval = NULL,
-  labor_aval = NULL,
-  labor_avalu = NULL,
+  v_paramcd = NULL,
+  v_param = NULL,
+  v_xaxis = NULL,
+  v_aval = NULL,
+  lb_paramcd = NULL,
+  lb_param = NULL,
+  lb_timepoints = NULL,
+  lb_anrind = NULL,
+  lb_aval = NULL,
+  lb_avalu = NULL,
   ae_term = NULL,
   ae_tox_grade = NULL,
   ae_causality = NULL,
@@ -33,14 +32,14 @@ tm_g_patient_profile(
   ae_time_start = NULL,
   ae_time_end = NULL,
   ae_decod = NULL,
-  cmindc = NULL,
-  cmdose = NULL,
-  cmtrt = NULL,
-  cmdosu = NULL,
-  cmroute = NULL,
-  cmdosfrq = NULL,
-  cmstdy = NULL,
-  cmendy = NULL,
+  t_cmindc = NULL,
+  t_cmdose = NULL,
+  t_cmtrt = NULL,
+  t_cmdosu = NULL,
+  t_cmroute = NULL,
+  t_cmdosfrq = NULL,
+  t_cmstdy = NULL,
+  t_cmendy = NULL,
   ds_time_start = NULL,
   ds_time_end = NULL,
   plot_height = c(700L, 200L, 2000L),
@@ -53,46 +52,43 @@ tm_g_patient_profile(
 \item{label}{(\code{character})\cr
 menu item label of the module in the teal app}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
-
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_id}{(\verb{choices selected} or \code{data_extract_input})\cr patient ID column to be used.}
 
-\item{binf_vars}{(\verb{choices selected} or \code{data_extract_input})\cr ADSL columns to be shown in Basic Info tab.}
+\item{bi_vars}{(\verb{choices selected} or \code{data_extract_input})\cr ADSL columns to be shown in Basic Info tab.}
 
-\item{mhterm}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHTERM} column of the ADMH dataset.}
+\item{mh_term}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHTERM} column of the ADMH dataset.}
 
-\item{mhbodsys}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHBODSYS} column of the ADMH dataset.}
+\item{mh_bodsys}{(\verb{choices selected} or \code{data_extract_input})\cr \code{MHBODSYS} column of the ADMH dataset.}
 
 \item{atirel}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ATIREL} column of the ADCM dataset.}
 
 \item{medname_decoding}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDECOD} column of the ADCM dataset.}
 
-\item{vitals_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
+\item{v_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADVS dataset.}
 
-\item{vitals_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADVS dataset.}
+\item{v_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADVS dataset.}
 
-\item{labor_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADLB dataset.}
-
-\item{labor_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADLB dataset.}
-
-\item{vitals_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
+\item{v_xaxis}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
 the vitals plot x-axis.}
 
-\item{labor_timepoints}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
+\item{v_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADVS dataset.}
+
+\item{lb_paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADLB dataset.}
+
+\item{lb_param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADLB dataset.}
+
+\item{lb_timepoints}{(\verb{choices selected} or \code{data_extract_input})\cr Time variable to be represented in
 the laboratory table.}
 
-\item{anrind}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ANRIND} column of the ADLB dataset
+\item{lb_anrind}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ANRIND} column of the ADLB dataset
 with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
-\item{vitals_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADVS dataset.}
+\item{lb_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADLB dataset.}
 
-\item{labor_aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADLB dataset.}
-
-\item{labor_avalu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVALU} column of the ADLB dataset.}
+\item{lb_avalu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVALU} column of the ADLB dataset.}
 
 \item{ae_term}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AETERM} column of the ADAE dataset.}
 
@@ -106,35 +102,35 @@ with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
 
-\item{ae_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr
-\code{CMENDY} column of the AE start of the ADCM dataset.}
+\item{ae_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDTM} column of the AE
+start of the ADAE dataset.}
 
-\item{ae_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr
-\code{CMENDY} column of the AE end of the ADCM dataset.}
+\item{ae_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AENDTM} column of the AE
+end of the ADAE dataset.}
 
 \item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 
-\item{cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
+\item{t_cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
 
-\item{cmdose}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSE} column of the ADCM dataset.}
+\item{t_cmdose}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSE} column of the ADCM dataset.}
 
-\item{cmtrt}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMTRT} column of the ADCM dataset.}
+\item{t_cmtrt}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMTRT} column of the ADCM dataset.}
 
-\item{cmdosu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSU} column of the ADCM dataset.}
+\item{t_cmdosu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSU} column of the ADCM dataset.}
 
-\item{cmroute}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMROUTE} column of the ADCM dataset.}
+\item{t_cmroute}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMROUTE} column of the ADCM dataset.}
 
-\item{cmdosfrq}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSFRQ} column of the ADCM dataset.}
+\item{t_cmdosfrq}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSFRQ} column of the ADCM dataset.}
 
-\item{cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
+\item{t_cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
 
-\item{cmendy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMENDY} column of the ADCM dataset.}
+\item{t_cmendy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMENDY} column of the ADCM dataset.}
 
-\item{ds_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr
-\code{CMENDY} column of treatment start of the ADCM dataset.}
+\item{ds_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMASTDTM} column of treatment
+start of the ADCM dataset.}
 
-\item{ds_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr
-\code{CMENDY} column of treatment end of the ADCM dataset.}
+\item{ds_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMAENDTM} column of treatment
+end of the ADCM dataset.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -192,23 +188,22 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-    cdisc_dataset("ADCM", ADCM, code = "ADCM <- radcm(cached = TRUE)
-                  ADCM$CMINDC <- ADCM$CMCAT
-                  ADCM$CMDECOD <- ADCM$CMCAT
-                  ADCM$CMDOSE <- 1
-                  ADCM$CMTRT <- ADCM$CMCAT
-                  ADCM$CMDOSU <- 'U'
-                  ADCM$CMROUTE <- 'CMROUTE'
-                  ADCM$CMDOSFRQ <- 'CMDOSFRQ'
-                  ADCM$CMSTDY <- 1
-                  ADCM[ADCM$CMCAT == 'medcl B' ,]$CMSTDY <- 20
-                  ADCM[ADCM$CMCAT == 'medcl C' ,]$CMSTDY <- 150
-                  ADCM$CMENDY <- 500
-                  ADCM[ADCM$CMCAT == 'medcl B' ,]$CMENDY <- 700
-                  ADCM[ADCM$CMCAT == 'medcl C' ,]$CMENDY <- 1000
-                  ADCM$CMASTDTM <- ADCM$ASTDTM
-                  ADCM$CMAENDTM <- ADCM$AENDTM
-                  "),
+    cdisc_dataset("ADCM", ADCM, code = 'ADCM <- radcm(cached = TRUE)
+      ADCM$CMINDC <- ADCM$CMCAT
+      ADCM$CMDECOD <- ADCM$CMCAT
+      ADCM$CMDOSE <- 1
+      ADCM$CMTRT <- ADCM$CMCAT
+      ADCM$CMDOSU <- "U"
+      ADCM$CMROUTE <- "CMROUTE"
+      ADCM$CMDOSFRQ <- "CMDOSFRQ"
+      ADCM$CMSTDY <- 1
+      ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+      ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+      ADCM$CMENDY <- 500
+      ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+      ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+      ADCM$CMASTDTM <- ADCM$ASTDTM
+      ADCM$CMAENDTM <- ADCM$AENDTM'),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE
@@ -216,7 +211,6 @@ app <- init(
   modules = root_modules(
     tm_g_patient_profile(
       label = "Patient Profile",
-      dataname = "ADSL",
       parentname = "ADSL",
       plot_height = c(600L, 200L, 2000L),
       patient_id = data_extract_spec(
@@ -228,7 +222,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      binf_vars = data_extract_spec(
+      bi_vars = data_extract_spec(
         dataname = "ADSL",
         select = select_spec(
           choices = variable_choices(ADSL),
@@ -237,7 +231,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      mhterm = data_extract_spec(
+      mh_term = data_extract_spec(
         dataname = "ADMH",
         select = select_spec(
           choices = variable_choices(ADMH, c("MHTERM")),
@@ -246,7 +240,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      mhbodsys = data_extract_spec(
+      mh_bodsys = data_extract_spec(
         dataname = "ADMH",
         select = select_spec(
           choices = variable_choices(ADMH, "MHBODSYS"),
@@ -255,7 +249,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      vitals_paramcd = data_extract_spec(
+      v_paramcd = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "PARAMCD"),
@@ -264,7 +258,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      vitals_param = data_extract_spec(
+      v_param = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "PARAM"),
@@ -273,7 +267,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      labor_paramcd = data_extract_spec(
+      lb_paramcd = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "PARAMCD"),
@@ -282,7 +276,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      labor_param = data_extract_spec(
+      lb_param = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "PARAM"),
@@ -291,7 +285,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      vitals_xaxis = data_extract_spec(
+      v_xaxis = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "ADY"),
@@ -300,7 +294,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      labor_timepoints = data_extract_spec(
+      lb_timepoints = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "ADY"),
@@ -309,7 +303,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      anrind = data_extract_spec(
+      lb_anrind = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "ANRIND"),
@@ -318,7 +312,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      vitals_aval = data_extract_spec(
+      v_aval = data_extract_spec(
         dataname = "ADVS",
         select = select_spec(
           choices = variable_choices(ADVS, "AVAL"),
@@ -327,7 +321,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      labor_aval = data_extract_spec(
+      lb_aval = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "AVAL"),
@@ -336,7 +330,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      labor_avalu = data_extract_spec(
+      lb_avalu = data_extract_spec(
         dataname = "ADLB",
         select = select_spec(
           choices = variable_choices(ADLB, "AVALU"),
@@ -363,7 +357,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmindc = data_extract_spec(
+      t_cmindc = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMINDC"),
@@ -372,7 +366,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmdose = data_extract_spec(
+      t_cmdose = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMDOSE"),
@@ -381,7 +375,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmtrt = data_extract_spec(
+      t_cmtrt = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMTRT"),
@@ -390,7 +384,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmdosu = data_extract_spec(
+      t_cmdosu = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMDOSU"),
@@ -399,7 +393,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmroute = data_extract_spec(
+      t_cmroute = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMROUTE"),
@@ -408,7 +402,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmdosfrq = data_extract_spec(
+      t_cmdosfrq = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMDOSFRQ"),
@@ -417,7 +411,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmstdy = data_extract_spec(
+      t_cmstdy = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMSTDY"),
@@ -426,7 +420,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      cmendy = data_extract_spec(
+      t_cmendy = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMENDY"),
@@ -529,7 +523,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

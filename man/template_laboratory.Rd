@@ -5,35 +5,31 @@
 \title{Template: Laboratory}
 \usage{
 template_laboratory(
-  patient_id,
-  dataname = "ADLB_FILTERED",
-  paramcd = "PARAMCD",
-  param = "PARAM",
-  anrind = "ANRIND",
-  labor_timepoints = "ADY",
-  aval = "AVAL",
-  avalu = "AVALU"
+  dataname = "lb_merge",
+  lb_paramcd = "PARAMCD",
+  lb_param = "PARAM",
+  lb_anrind = "ANRIND",
+  lb_timepoints = "ADY",
+  lb_aval = "AVAL",
+  lb_avalu = "AVALU"
 )
 }
 \arguments{
-\item{patient_id}{(\code{character})\cr Patient ID.}
-
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{paramcd}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAMCD} column of the ADLB dataset.}
+\item{lb_paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{param}{(\verb{choices selected} or \code{data_extract_input})\cr \code{PARAM} column of the ADLB dataset.}
+\item{lb_param}{(\code{character})\cr name of the parameter variable.}
 
-\item{anrind}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ANRIND} column of the ADLB dataset
-with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+\item{lb_anrind}{(\code{character})\cr name of the analysis reference range indicator variable.}
 
-\item{labor_timepoints}{(\verb{choices selected} or \code{data_extract_input})\cr name of time variable used for
+\item{lb_timepoints}{(\code{character})\cr name of time variable used for
 the laboratory table.}
 
-\item{aval}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVAL} column of the ADLB dataset.}
+\item{lb_aval}{(\code{character})\cr name of the analysis value variable.}
 
-\item{avalu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AVALU} column of the ADLB dataset.}
+\item{lb_avalu}{(\code{character})\cr name of the analysis value unit variable.}
 }
 \description{
 Creates a latoratory template.

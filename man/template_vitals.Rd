@@ -5,28 +5,24 @@
 \title{Template: Vitals}
 \usage{
 template_vitals(
-  dataname,
-  patient_id,
-  paramcd = "PARAMCD",
-  vitals_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
-  vitals_xaxis = "ADY",
-  aval = "AVAL"
+  dataname = "v_merge",
+  v_paramcd = "PARAMCD",
+  v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
+  v_xaxis = "ADY",
+  v_aval = "AVAL"
 )
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{patient_id}{(\code{character})\cr Patient ID.}
+\item{v_paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{v_paramcd_levels}{(\code{character})\cr (\code{paramcd})\cr vector with (\code{v_paramcd})\cr levels.}
 
-\item{vitals_paramcd_levels}{(\code{character})\cr (\code{paramcd})\cr vector with (\code{vitals_paramcd})\cr levels.}
+\item{v_xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
 
-\item{vitals_xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
-
-\item{aval}{(\code{character})\cr name of the analysis value variable.}
+\item{v_aval}{(\code{character})\cr name of the analysis value variable.}
 }
 \description{
 Creates a vitals template.

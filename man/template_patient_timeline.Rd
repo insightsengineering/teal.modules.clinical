@@ -5,19 +5,16 @@
 \title{Template: Patient Timeline Tab}
 \usage{
 template_patient_timeline(
-  patient_id,
-  dataname = "ANL_FILTERED",
+  dataname = "pt_merge",
   ae_term = "AETERM",
   ae_time_start = "ASTDTM",
   ae_time_end = "AENDTM",
   ds_time_start = "CMASTDTM",
   ds_time_end = "CMAENDTM",
-  cmtrt = "CMTRT"
+  t_cmtrt = "CMTRT"
 )
 }
 \arguments{
-\item{patient_id}{(\code{character})\cr Patient ID.}
-
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
@@ -31,7 +28,7 @@ analysis data used in teal module.}
 
 \item{ds_time_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
 
-\item{cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
+\item{t_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 }
 \description{
 Creates a patient timeline template call.

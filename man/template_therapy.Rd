@@ -5,45 +5,42 @@
 \title{Template: Therapy}
 \usage{
 template_therapy(
-  dataname,
-  patient_id,
+  dataname = "t_merge",
   atirel = "ATIREL",
   medname_decoding = "CMDECOD",
-  cmindc = "CMINDC",
-  cmdose = "CMDOSE",
-  cmtrt = "CMTRT",
-  cmdosu = "CMDOSU",
-  cmroute = "CMROUTE",
-  cmdosfrq = "CMDOSFRQ",
-  cmstdy = "CMSTDY",
-  cmendy = "CMENDY"
+  t_cmindc = "CMINDC",
+  t_cmdose = "CMDOSE",
+  t_cmtrt = "CMTRT",
+  t_cmdosu = "CMDOSU",
+  t_cmroute = "CMROUTE",
+  t_cmdosfrq = "CMDOSFRQ",
+  t_cmstdy = "CMSTDY",
+  t_cmendy = "CMENDY"
 )
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{patient_id}{(\code{character})\cr Patient ID.}
-
 \item{atirel}{(\code{character})\cr name of time relation of medication variable.}
 
 \item{medname_decoding}{(\code{character})\cr name of standardized medication name variable.}
 
-\item{cmindc}{(\code{character})\cr name of indication variable.}
+\item{t_cmindc}{(\code{character})\cr name of indication variable.}
 
-\item{cmdose}{(\code{character})\cr name of dose per administration variable.}
+\item{t_cmdose}{(\code{character})\cr name of dose per administration variable.}
 
-\item{cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
+\item{t_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 
-\item{cmdosu}{(\code{character})\cr name of dose units variable.}
+\item{t_cmdosu}{(\code{character})\cr name of dose units variable.}
 
-\item{cmroute}{(\code{character})\cr name of route of administration variable.}
+\item{t_cmroute}{(\code{character})\cr name of route of administration variable.}
 
-\item{cmdosfrq}{(\code{character})\cr name of dosing frequency per interval variable.}
+\item{t_cmdosfrq}{(\code{character})\cr name of dosing frequency per interval variable.}
 
-\item{cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
+\item{t_cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
 
-\item{cmendy}{(\code{character})\cr name of study day of end of medication variable.}
+\item{t_cmendy}{(\code{character})\cr name of study day of end of medication variable.}
 }
 \description{
 Creates a therapy template call.
