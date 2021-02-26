@@ -11,6 +11,9 @@
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
 * Updated UI encodings to show/hide the required input variables in `tm_g_patient_profile`.
 * Updated patient timeline tab in `tm_g_patient_profile` to show available input variables only.
+* Reactive on filtering patient id input in `tm_g_patient_profile`.
+* The patient id column is defined by the `patient_col` argument for `tm_g_patient_profile`.
+* The `tm_g_patient_profile` example was updated.
 
 # teal.modules.clinical 0.8.6
 

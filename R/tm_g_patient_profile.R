@@ -777,7 +777,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
 
 #' Template: Laboratory
 #'
-#' Creates a latoratory template.
+#' Creates a laboratory template.
 #' @inheritParams template_arguments
 #' @param lb_paramcd (`character`)\cr name of the parameter code variable.
 #' @param lb_param (`character`)\cr name of the parameter variable.
@@ -847,7 +847,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #' This teal module produces a patient profile report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_id (`choices selected` or `data_extract_input`)\cr patient ID column to be used.
+#' @param patient_col (`character`) value patient ID column to be used.
 #' @param bi_vars (`choices selected` or `data_extract_input`)\cr ADSL columns to be shown in Basic Info tab.
 #' @param ae_term (`choices selected` or `data_extract_input`)\cr \code{AETERM} column of the ADAE dataset.
 #' @param ae_tox_grade (`choices selected` or `data_extract_input`)\cr \code{AETOXGR} column of the ADAE dataset.
@@ -920,8 +920,6 @@ template_laboratory <- function(dataname = "lb_merge",
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #'
-#' ids <- unique(ADSL$USUBJID)
-#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
@@ -951,16 +949,8 @@ template_laboratory <- function(dataname = "lb_merge",
 #'     tm_g_patient_profile(
 #'       label = "Patient Profile",
 #'       parentname = "ADSL",
+#'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       patient_id = data_extract_spec(
-#'         dataname = "ADSL",
-#'         select = select_spec(
-#'           choices = ids,
-#'           selected = ids[1],
-#'           multiple = FALSE,
-#'           fixed = FALSE
-#'         )
-#'       ),
 #'       bi_vars = data_extract_spec(
 #'         dataname = "ADSL",
 #'         select = select_spec(
@@ -975,7 +965,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADMH, c("MHTERM")),
 #'           selected = c("MHTERM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1173,7 +1163,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AETERM"),
 #'           selected = c("AETERM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1182,7 +1172,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AETOXGR"),
 #'           selected = c("AETOXGR"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1191,7 +1181,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AEREL"),
 #'           selected = c("AEREL"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1200,7 +1190,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AEOUT"),
 #'           selected = c("AEOUT"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1209,7 +1199,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AEACN"),
 #'           selected = c("AEACN"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1218,7 +1208,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "ASTDY"),
 #'           selected = c("ASTDY"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1228,7 +1218,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "ASTDTM"),
 #'           selected = c("ASTDTM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1237,7 +1227,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADAE, "AENDTM"),
 #'           selected = c("AENDTM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1246,7 +1236,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADCM, "CMASTDTM"),
 #'           selected = c("CMASTDTM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       ),
@@ -1255,7 +1245,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'         select = select_spec(
 #'           choices = variable_choices(ADCM, "CMAENDTM"),
 #'           selected = c("CMAENDTM"),
-#'           multiple = TRUE,
+#'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
 #'       )
@@ -1268,7 +1258,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'
 tm_g_patient_profile <- function(label,
                                  parentname = "ADSL",
-                                 patient_id,
+                                 patient_col = "USUBJID",
                                  bi_vars = NULL,
                                  mh_term = NULL,
                                  mh_bodsys = NULL,
@@ -1309,6 +1299,7 @@ tm_g_patient_profile <- function(label,
                                  post_output = NULL) {
   assert_that(is_character_single(label))
   assert_that(is_character_single(parentname))
+  assert_that(is_character_single(patient_col))
   assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -1321,7 +1312,6 @@ tm_g_patient_profile <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    patient_id = cs_to_des_select(patient_id, dataname = parentname),
     bi_vars = if_not_null(bi_vars, cs_to_des_select(bi_vars, dataname = parentname)),
     mh_term = if_not_null(mh_term, cs_to_des_select(mh_term, dataname = parentname)),
     mh_bodsys = if_not_null(mh_bodsys, cs_to_des_select(mh_bodsys, dataname = parentname)),
@@ -1357,7 +1347,6 @@ tm_g_patient_profile <- function(label,
     ds_time_start = if_not_null(ds_time_start, cs_to_des_select(ds_time_start, dataname = parentname)),
     ds_time_end = if_not_null(ds_time_end, cs_to_des_select(ds_time_end, dataname = parentname))
   )
-  assert_that(is.cs_or_des(patient_id))
   assert_that(is.null(bi_vars) || is.cs_or_des(bi_vars))
   assert_that(is.null(mh_term) || is.cs_or_des(mh_term))
   assert_that(is.null(mh_bodsys) || is.cs_or_des(mh_bodsys))
@@ -1396,6 +1385,7 @@ tm_g_patient_profile <- function(label,
       list(
         parentname = parentname,
         label = label,
+        patient_col = patient_col,
         plot_height = plot_height,
         plot_width = plot_width
       )
@@ -1408,7 +1398,6 @@ tm_g_patient_profile <- function(label,
 ui_g_patient_profile <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    ui_args$patient_id,
     ui_args$bi_vars,
     ui_args$mh_term,
     ui_args$mh_bodsys,
@@ -1504,8 +1493,7 @@ ui_g_patient_profile <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(ui_args[
-        c("patient_id",
-          "bi_vars",
+        c("bi_vars",
           "mh_term",
           "mh_bodsys",
           "v_paramcd",
@@ -1541,12 +1529,8 @@ ui_g_patient_profile <- function(id, ...) {
           "ds_time_end"
         )]
       ),
-      data_extract_input(
-        id = ns("patient_id"),
-        label = "Select Patient",
-        data_extract_spec = ui_args$patient_id,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$span(class = "help-block", HTML(sprintf("Dataset: <code>%s</code>", ui_args$parentname))),
+      optionalSelectInput(ns("patient_id"), "Select Patient:"),
       div(
         id = ns("bi_vars-div"),
         data_extract_input(
@@ -1864,7 +1848,7 @@ srv_g_patient_profile <- function(input,
                                   session,
                                   datasets,
                                   parentname,
-                                  patient_id,
+                                  patient_col,
                                   bi_vars,
                                   mh_term,
                                   mh_bodsys,
@@ -1906,15 +1890,33 @@ srv_g_patient_profile <- function(input,
 
   init_chunks()
 
+  patient_id <- reactive(input$patient_id)
+
   # global checks
   validate_checks <- reactive({
     validate(
       need(
-        input$`patient_id-dataset_ADSL_singleextract-select`,
+        patient_id(),
         "Please select Patient ID."
       )
     )
   })
+
+  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+  # Init
+  unique_patients <- patient_data_base()
+  updateOptionalSelectInput(session, "patient_id", choices = unique_patients, selected = unique_patients[1])
+
+  observeEvent(patient_data_base(), {
+    patient_id_s <- patient_id()
+    unique_patients <- patient_data_base()
+    patient_selected <- if (is.null(patient_id_s) || !patient_id_s %in% unique_patients) {
+      NULL
+    } else {
+      patient_id_s
+    }
+    updateOptionalSelectInput(session, "patient_id", choices = unique_patients, selected = patient_selected)
+  }, ignoreInit = TRUE)
 
   # Basic Info tab ----
   binf_merged_data <- data_merge_module(
@@ -1940,10 +1942,8 @@ srv_g_patient_profile <- function(input,
     }
     chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
-
     call_stack_push(bquote({
-      bi_merge <- bi_merge[bi_merge$USUBJID == .(patient_id), ] # nolint
+      bi_merge <- bi_merge[bi_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
 
@@ -1992,10 +1992,8 @@ srv_g_patient_profile <- function(input,
     }
     chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
-
     mhist_stack_push(bquote({
-      mh_merge <- mh_merge[mh_merge$USUBJID == .(patient_id), ] # nolint
+      mh_merge <- mh_merge[mh_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     my_calls <- template_medical_history(
@@ -2044,10 +2042,8 @@ srv_g_patient_profile <- function(input,
     }
     chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
-
     pmed_stack_push(bquote({
-      pm_merge <- pm_merge[pm_merge$USUBJID == .(patient_id), ] # nolint
+      pm_merge <- pm_merge[pm_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     my_calls <- template_prior_medication(
@@ -2125,11 +2121,10 @@ srv_g_patient_profile <- function(input,
     }
     chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     v_xaxis <- input$`v_xaxis-dataset_ADVS_singleextract-select`
 
     vitals_stack_push(bquote({
-      v_merge <- v_merge[v_merge$USUBJID == .(patient_id), ] # nolint
+      v_merge <- v_merge[v_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     my_calls <- template_vitals(
@@ -2216,10 +2211,8 @@ srv_g_patient_profile <- function(input,
     }
     chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
-
     therapy_stack_push(bquote({
-      t_merge <- t_merge[t_merge$USUBJID == .(patient_id), ] # nolint
+      t_merge <- t_merge[t_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     my_calls <- template_therapy(
@@ -2297,9 +2290,8 @@ srv_g_patient_profile <- function(input,
 
     chunks_push_data_merge(ae_merged_data(), chunks = ae_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     ae_stack$push(bquote({
-      ae_merge <- ae_merge[ae_merge$USUBJID == .(patient_id), ] # nolint
+      ae_merge <- ae_merge[ae_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     ae_calls <- template_adverse_events(
@@ -2342,9 +2334,8 @@ srv_g_patient_profile <- function(input,
     patient_timeline_stack <- chunks$new()
     chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     patient_timeline_stack$push(bquote({
-      pt_merge <- pt_merge[pt_merge$USUBJID == .(patient_id), ] # nolint
+      pt_merge <- pt_merge[pt_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     patient_timeline_calls <- template_patient_timeline(
@@ -2412,9 +2403,8 @@ srv_g_patient_profile <- function(input,
 
     chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
 
-    patient_id <- input$`patient_id-dataset_ADSL_singleextract-select`
     labor_stack$push(bquote({
-      lb_merge <- lb_merge[lb_merge$USUBJID == .(patient_id), ] # nolint
+      lb_merge <- lb_merge[lb_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
     }))
 
     labor_calls <- template_laboratory(
@@ -2522,7 +2512,6 @@ srv_g_patient_profile <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(list(
-      patient_id,
       bi_vars,
       mh_term,
       v_aval,

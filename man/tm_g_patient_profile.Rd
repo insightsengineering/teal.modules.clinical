@@ -7,7 +7,7 @@
 tm_g_patient_profile(
   label,
   parentname = "ADSL",
-  patient_id,
+  patient_col = "USUBJID",
   bi_vars = NULL,
   mh_term = NULL,
   mh_bodsys = NULL,
@@ -55,7 +55,7 @@ menu item label of the module in the teal app}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_id}{(\verb{choices selected} or \code{data_extract_input})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character}) value patient ID column to be used.}
 
 \item{bi_vars}{(\verb{choices selected} or \code{data_extract_input})\cr ADSL columns to be shown in Basic Info tab.}
 
@@ -181,8 +181,6 @@ ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
 
-ids <- unique(ADSL$USUBJID)
-
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
@@ -212,16 +210,8 @@ app <- init(
     tm_g_patient_profile(
       label = "Patient Profile",
       parentname = "ADSL",
+      patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      patient_id = data_extract_spec(
-        dataname = "ADSL",
-        select = select_spec(
-          choices = ids,
-          selected = ids[1],
-          multiple = FALSE,
-          fixed = FALSE
-        )
-      ),
       bi_vars = data_extract_spec(
         dataname = "ADSL",
         select = select_spec(
@@ -236,7 +226,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADMH, c("MHTERM")),
           selected = c("MHTERM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -434,7 +424,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AETERM"),
           selected = c("AETERM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -443,7 +433,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AETOXGR"),
           selected = c("AETOXGR"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -452,7 +442,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AEREL"),
           selected = c("AEREL"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -461,7 +451,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AEOUT"),
           selected = c("AEOUT"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -470,7 +460,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AEACN"),
           selected = c("AEACN"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -479,7 +469,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "ASTDY"),
           selected = c("ASTDY"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -489,7 +479,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "ASTDTM"),
           selected = c("ASTDTM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -498,7 +488,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADAE, "AENDTM"),
           selected = c("AENDTM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -507,7 +497,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADCM, "CMASTDTM"),
           selected = c("CMASTDTM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       ),
@@ -516,7 +506,7 @@ app <- init(
         select = select_spec(
           choices = variable_choices(ADCM, "CMAENDTM"),
           selected = c("CMAENDTM"),
-          multiple = TRUE,
+          multiple = FALSE,
           fixed = FALSE
         )
       )

@@ -32,5 +32,5 @@ the laboratory table.}
 \item{lb_avalu}{(\code{character})\cr name of the analysis value unit variable.}
 }
 \description{
-Creates a latoratory template.
+Creates a laboratory template.
 }
