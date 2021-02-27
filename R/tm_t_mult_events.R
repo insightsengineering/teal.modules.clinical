@@ -258,15 +258,15 @@ template_mult_events <- function(dataname,
 #' library(dplyr)
 #' library(random.cdisc.data)
 #'
-#' adsl <- radsl(N = 400, study_duration = 2, seed = 1234)
-#' adcm <- radcm(ADSL = adsl, seed = 1234, cached = FALSE, who_coding = TRUE)
+#' adsl <- radsl(cached = TRUE)
+#' adcm <- radcm(cached = TRUE)
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(N = 400, study_duration = 2, seed = 1234)"),
+#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
 #'     cdisc_dataset("ADCM", adcm,
-#'       code = "ADCM <- radcm(ADSL = ADSL, seed = 1234, cached = FALSE, who_coding = TRUE)",
+#'       code = "ADCM <- radcm(cached = TRUE)",
 #'       keys = adcm_keys
 #'     )
 #'   ),

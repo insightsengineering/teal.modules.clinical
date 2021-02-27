@@ -180,6 +180,7 @@ ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- init(
   data = cdisc_data(
@@ -201,7 +202,8 @@ app <- init(
       ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
       ADCM$CMASTDTM <- ADCM$ASTDTM
-      ADCM$CMAENDTM <- ADCM$AENDTM'),
+      ADCM$CMAENDTM <- ADCM$AENDTM',
+      keys = adcm_keys),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE

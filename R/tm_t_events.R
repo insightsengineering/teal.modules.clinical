@@ -403,21 +403,10 @@ template_events <- function(dataname,
 #' adsl <- radsl(cached = TRUE)
 #' adae <- radae(cached = TRUE)
 #'
-#' # Process `adcm` to keep only one path per treatment.
-#' adcm <- radcm(cached = TRUE) %>%
-#'  group_by(STUDYID, USUBJID, CMDECOD) %>%
-#'  slice(1) %>%
-#'  ungroup
-#'
 #' app <- teal::init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)"),
-#'     cdisc_dataset("ADCM", adcm, code = "ADCM <- radcm(cached = TRUE) %>%
-#'         group_by(STUDYID, USUBJID, CMDECOD) %>%
-#'         slice(1) %>%
-#'         ungroup"
-#'     )
+#'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events(
@@ -434,21 +423,6 @@ template_events <- function(dataname,
 #'        ),
 #'       add_total = TRUE,
 #'       event_type = "adverse event"
-#'     ),
-#'     tm_t_events(
-#'       label = "Concomitant Medication Table",
-#'       dataname = "ADCM",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = choices_selected(
-#'         choices = variable_choices(adcm, "CMDECOD"),
-#'         selected = "CMDECOD"
-#'        ),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(adcm, "CMCLAS"),
-#'         selected = NULL
-#'        ),
-#'       add_total = TRUE,
-#'       event_type = "treatment"
 #'     )
 #'   )
 #' )
