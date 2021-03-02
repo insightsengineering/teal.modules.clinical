@@ -1397,6 +1397,7 @@ tm_g_patient_profile <- function(label,
 }
 
 #' @importFrom timevis timevisOutput
+#' @importFrom shinyWidgets pickerOptions
 ui_g_patient_profile <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- is_single_dataset(
@@ -1532,7 +1533,12 @@ ui_g_patient_profile <- function(id, ...) {
         )]
       ),
       tags$span(class = "help-block", HTML(sprintf("Dataset: <code>%s</code>", ui_args$parentname))),
-      optionalSelectInput(ns("patient_id"), "Select Patient:"),
+      optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        multiple = FALSE,
+        options = pickerOptions(`liveSearch` = T)
+      ),
       div(
         id = ns("bi_vars-div"),
         data_extract_input(
