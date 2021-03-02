@@ -33,7 +33,7 @@ test_that("template_events_summary generates minimal table", {
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
           denom = "N_col"
         )
-      ),
+    ),
     table_parent = quote(
       result_parent <- build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
     ),
@@ -92,6 +92,8 @@ test_that("template_events_summary generates table with multiple flags", {
           AEDECOD = as.character(AEDECOD),
           USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
         )
+      flag_var_anl_label <- var_labels(anl[, c("A", "B", "C")])
+      flag_var_aesi_label <- var_labels(anl[, c("X", "Y")])
     }),
     layout_parent = quote(
       lyt_parent <- basic_table() %>%
@@ -135,13 +137,13 @@ test_that("template_events_summary generates table with multiple flags", {
         ) %>%
         count_patients_with_flags(
           var = "USUBJID",
-          flag_variables = c("A", "B", "C"),
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_subj_", c("A", "B", "C")),
           .indent_mods = 1L
         ) %>%
         count_patients_with_flags(
           var = "AEDECOD",
-          flag_variables = c("A", "B", "C"),
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_pt_", c("A", "B", "C")),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -149,7 +151,7 @@ test_that("template_events_summary generates table with multiple flags", {
         ) %>%
         count_patients_with_flags(
           var = "USUBJID_AESEQ",
-          flag_variables = c("A", "B", "C"),
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_events_", c("A", "B", "C")),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -157,13 +159,13 @@ test_that("template_events_summary generates table with multiple flags", {
         ) %>%
         count_patients_with_flags(
           var = "USUBJID",
-          flag_variables = c("X", "Y"),
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_subj_", c("X", "Y")),
           .indent_mods = 1L
         ) %>%
         count_patients_with_flags(
           var = "AEDECOD",
-          flag_variables = c("X", "Y"),
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_pt_", c("X", "Y")),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -171,7 +173,7 @@ test_that("template_events_summary generates table with multiple flags", {
         ) %>%
         count_patients_with_flags(
           var = "USUBJID_AESEQ",
-          flag_variables = c("X", "Y"),
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_events_", c("X", "Y")),
           .stats = "count",
           .formats = c(count = "xx"),

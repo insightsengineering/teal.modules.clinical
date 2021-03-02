@@ -57,7 +57,7 @@ template_events_summary <- function(anl_name,
     is.flag(count_subj),
     is.flag(count_pt),
     is.flag(count_events)
-    )
+  )
 
   y <- list()
 
@@ -90,6 +90,24 @@ template_events_summary <- function(anl_name,
     )
   )
 
+  if (length(flag_var_anl) > 0){
+    data_list <- add_expr(
+      data_list,
+      substitute(flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
+                 env = list(flag_var_anl = flag_var_anl)
+      )
+    )
+  }
+
+  if (length(flag_var_aesi) > 0){
+    data_list <- add_expr(
+      data_list,
+      substitute(flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),
+                 env = list(flag_var_aesi = flag_var_aesi)
+      )
+    )
+  }
+
   y$data <- bracket_expr(data_list)
 
   # Layout to be used with `parentname` dataset
@@ -121,12 +139,12 @@ template_events_summary <- function(anl_name,
         .labels = c(count_fraction = "Total number of deaths"),
         denom = "N_col"
       ) %>%
-      count_values(
-        dcsreas_var,
-        values = "ADVERSE EVENT",
-        .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
-        denom = "N_col"
-      ),
+        count_values(
+          dcsreas_var,
+          values = "ADVERSE EVENT",
+          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          denom = "N_col"
+        ),
       env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
     )
   )
@@ -171,7 +189,7 @@ template_events_summary <- function(anl_name,
 
   layout_anl_list <- add_expr(
     layout_anl_list,
-      quote(
+    quote(
       expr = count_patients_with_event(
         vars = "USUBJID",
         filters = c("STUDYID" = study_id),
@@ -179,7 +197,7 @@ template_events_summary <- function(anl_name,
         .stats = "count_fraction",
         .labels = c(
           count_fraction = "Total number of patients with at least one adverse event" #nolint
-          ),
+        ),
         .indent_mods = c(count_fraction = 0L),
         table_names = "total_pts_at_least_one"
       ) %>% count_values(
@@ -210,7 +228,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = "USUBJID",
-          flag_variables = flag_var_anl,
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_subj_", flag_var_anl),
           .indent_mods = 1L
         ),
@@ -239,7 +257,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = llt,
-          flag_variables = flag_var_anl,
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_pt_", flag_var_anl),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -255,7 +273,7 @@ template_events_summary <- function(anl_name,
         expr = insert_rrow(
           rrow("Total number of unique preferred terms which are", ""),
           at = position
-          ),
+        ),
         env = list(
           position = sum(2, h_count_rows(count_flags[1:2], vars_anl = flag_var_anl))
         )
@@ -270,7 +288,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = "USUBJID_AESEQ",
-          flag_variables = flag_var_anl,
+          flag_variables = flag_var_anl_label,
           table_names = paste0("count_events_", flag_var_anl),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -301,7 +319,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = "USUBJID",
-          flag_variables = flag_var_aesi,
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_subj_", flag_var_aesi),
           .indent_mods = 1L
         ),
@@ -337,7 +355,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = llt,
-          flag_variables = flag_var_aesi,
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_pt_", flag_var_aesi),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -377,7 +395,7 @@ template_events_summary <- function(anl_name,
       substitute(
         expr = count_patients_with_flags(
           var = "USUBJID_AESEQ",
-          flag_variables = flag_var_aesi,
+          flag_variables = flag_var_aesi_label,
           table_names = paste0("count_events_", flag_var_aesi),
           .stats = "count",
           .formats = c(count = "xx"),
@@ -638,12 +656,12 @@ tm_t_events_summary <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   args <- c(as.list(environment()))
 
@@ -654,11 +672,11 @@ tm_t_events_summary <- function(label,
     flag_var_anl = if_not_null(
       flag_var_anl,
       cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
-      ),
+    ),
     flag_var_aesi = if_not_null(
       flag_var_aesi,
       cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
-      ),
+    ),
     aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
@@ -777,7 +795,7 @@ ui_t_events_summary <- function(id, ...) {
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
- )
+  )
 }
 
 #' @noRd
