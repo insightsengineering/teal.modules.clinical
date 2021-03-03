@@ -890,6 +890,10 @@ template_laboratory <- function(dataname = "lb_merge",
 #' @param ds_time_end (`choices selected` or `data_extract_input`)\cr \code{CMAENDTM} column of treatment
 #' end of the ADCM dataset.
 #'
+#' @note
+#' Please note that `tm_g_patient_profile` is the very first version and will be split into multiple separate modules
+#' in future releases.
+#'
 #' @export
 #'
 #' @examples

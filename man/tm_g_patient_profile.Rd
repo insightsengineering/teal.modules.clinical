@@ -153,6 +153,10 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \description{
 This teal module produces a patient profile report using ADaM datasets.
 }
+\note{
+Please note that \code{tm_g_patient_profile} is the very first version and will be split into multiple separate modules
+in future releases.
+}
 \examples{
 
 library(random.cdisc.data)
