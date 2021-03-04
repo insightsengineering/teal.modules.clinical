@@ -15,6 +15,7 @@
 * The patient id column is defined by the `patient_col` argument for `tm_g_patient_profile`.
 * The `tm_g_patient_profile` example was updated.
 * Updated `tm_g_patient_profile` documentation with a note section.
+* Updated missing arguments in `tm_g_patient_profile`.
 
 # teal.modules.clinical 0.8.6
 

@@ -16,9 +16,11 @@ color_lab_values(
 \arguments{
 \item{x}{(\code{character})\cr vector with elements under the format (\verb{value level})\cr.}
 
-\item{classes}{(\code{character})\cr vector}
+\item{classes}{(\code{character})\cr classes vector}
 
-\item{default_color}{(\code{character})\cr}
+\item{colors}{(\code{list})\cr color per class}
+
+\item{default_color}{(\code{character})\cr default color}
 
 \item{icons}{(\code{list})\cr certain icons per level}
 }
