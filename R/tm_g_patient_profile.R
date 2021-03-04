@@ -821,9 +821,13 @@ template_laboratory <- function(dataname = "lb_merge",
         mutate(INDEX = row_number()) %>%
         ungroup() %>%
         tidyr::pivot_wider(names_from = INDEX, values_from = aval_lb_anrind) %>%
-        mutate(PARAM = stringr::str_replace_all(param, "\\(.*?\\)", "")) %>%
-        mutate(PARAM = stringr::str_squish(param)) %>%
-        mutate(PARAM = stringr::str_trunc(param, width = 20))
+        mutate(PARAM = gsub("\\(.*?\\)", "", param)) %>%
+        mutate(PARAM = trimws(PARAM)) %>%
+        mutate(PARAM = gsub("[[:space:]]+", " ", PARAM)) %>%
+        mutate(PARAM = ifelse(
+          nchar(PARAM) > 20,
+          yes = paste0(strtrim(.data[["PARAM"]], width = 17), "..."),
+          no = .data[["PARAM"]]))
       },
       env = list(
         dataname = as.name(dataname),

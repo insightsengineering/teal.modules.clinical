@@ -17,6 +17,9 @@
 * Updated `tm_g_patient_profile` documentation with a note section.
 * Updated missing arguments in `tm_g_patient_profile`.
 
+### Miscellaneous
+* Refactored out the `stringr` dependency from the patient profile module.
+
 # teal.modules.clinical 0.8.6
 
 ### New Features
