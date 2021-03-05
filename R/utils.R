@@ -624,13 +624,17 @@ prepare_arm <- function(dataname,
   pipe_expr(data_list)
 }
 
+#' Mapping function for Laboratory Table
+#'
 #' Map value and level characters to values with with proper html tags, colors and icons.
 #'
-#' @param x (`character`)\cr vector with elements under the format (`value level`)\cr.
-#' @param classes (`character`)\cr classes vector
-#' @param colors (`list`)\cr color per class
-#' @param default_color (`character`)\cr default color
-#' @param icons (`list`)\cr certain icons per level
+#' @param x (`character`)\cr vector with elements under the format (`value level`).
+#' @param classes (`character`)\cr classes vector.
+#' @param colors (`list`)\cr color per class.
+#' @param default_color (`character`)\cr default color.
+#' @param icons (`list`)\cr certain icons per level.
+#'
+#' @export
 #'
 color_lab_values <- function(x,
                              classes = c("HIGH", "NORMAL", "LOW"),
@@ -666,4 +670,23 @@ color_lab_values <- function(x,
 
 is_cdisc_data <- function(datasets) {
   is(datasets, "CDISCFilteredData")
+}
+
+#' Clean a categorical variable descriptions
+#'
+#' Cleaning categorical variable descriptions before presenting.
+#'
+#' @param x (`character`)\cr vector with categories descriptions.
+#'
+#' @export
+#'
+clean_description <- function(x) {
+  x <- gsub("\\(.*?\\)", "", x)
+  x <- trimws(x)
+  x <- gsub("[[:space:]]+", " ", x)
+  x <- ifelse(nchar(x) > 20,
+    yes = paste0(strtrim(x, width = 17), "..."),
+    no = x
+  )
+  x
 }

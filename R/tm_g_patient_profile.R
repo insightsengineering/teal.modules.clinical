@@ -811,27 +811,33 @@ template_laboratory <- function(dataname = "lb_merge",
   table_lab_list <- add_expr(
     list(),
     substitute({
-      labor_table <- dataname %>%
+      labor_table_base <- dataname %>%
         select(lb_timepoints, paramcd, param, aval, avalu, lb_anrind) %>%
         arrange(lb_timepoints) %>%
         select(-lb_timepoints) %>%
-        mutate(aval_lb_anrind = color_lab_values(paste(aval, lb_anrind))) %>%
-        select(-c(aval, lb_anrind)) %>%
         group_by(paramcd, param) %>%
         mutate(INDEX = row_number()) %>%
         ungroup() %>%
+        mutate(aval_lb_anrind = paste(aval, lb_anrind)) %>%
+        select(-c(aval, lb_anrind))
+
+      labor_table_html <- labor_table_base %>%
+        mutate(aval_lb_anrind_col = color_lab_values(aval_lb_anrind)) %>%
+        select(-aval_lb_anrind) %>%
+        tidyr::pivot_wider(names_from = INDEX, values_from = aval_lb_anrind_col) %>%
+        mutate(param_char := clean_description(.data[[param_char]]))
+
+      labor_table_raw <- labor_table_base %>%
         tidyr::pivot_wider(names_from = INDEX, values_from = aval_lb_anrind) %>%
-        mutate(PARAM = gsub("\\(.*?\\)", "", param)) %>%
-        mutate(PARAM = trimws(PARAM)) %>%
-        mutate(PARAM = gsub("[[:space:]]+", " ", PARAM)) %>%
-        mutate(PARAM = ifelse(
-          nchar(PARAM) > 20,
-          yes = paste0(strtrim(.data[["PARAM"]], width = 17), "..."),
-          no = .data[["PARAM"]]))
+        mutate(param_char := clean_description(.data[[param_char]]))
+
+      labor_table_raw
+      labor_table_html
       },
       env = list(
         dataname = as.name(dataname),
         param = as.name(lb_param),
+        param_char = lb_param,
         paramcd = as.name(lb_paramcd),
         aval = as.name(lb_aval),
         avalu = as.name(lb_avalu),
@@ -2441,7 +2447,7 @@ srv_g_patient_profile <- function(input,
   output$lab_values <- DT::renderDataTable({
     chunks_reset()
     chunks_push_chunks(labor_calls())
-    chunks_get_var("labor_table")
+    chunks_get_var("labor_table_html")
     },
     escape = FALSE
   )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{color_lab_values}
 \alias{color_lab_values}
-\title{Map value and level characters to values with with proper html tags, colors and icons.}
+\title{Mapping function for Laboratory Table}
 \usage{
 color_lab_values(
   x,
@@ -14,15 +14,15 @@ color_lab_values(
 )
 }
 \arguments{
-\item{x}{(\code{character})\cr vector with elements under the format (\verb{value level})\cr.}
+\item{x}{(\code{character})\cr vector with elements under the format (\verb{value level}).}
 
-\item{classes}{(\code{character})\cr classes vector}
+\item{classes}{(\code{character})\cr classes vector.}
 
-\item{colors}{(\code{list})\cr color per class}
+\item{colors}{(\code{list})\cr color per class.}
 
-\item{default_color}{(\code{character})\cr default color}
+\item{default_color}{(\code{character})\cr default color.}
 
-\item{icons}{(\code{list})\cr certain icons per level}
+\item{icons}{(\code{list})\cr certain icons per level.}
 }
 \description{
 Map value and level characters to values with with proper html tags, colors and icons.

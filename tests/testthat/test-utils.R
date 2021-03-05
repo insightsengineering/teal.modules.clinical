@@ -246,3 +246,15 @@ test_that("color_lab_values neutral for none characters", {
   expect_identical(color_lab_values(letters), letters)
 
 })
+
+test_that("clean_description", {
+
+  vals <- rownames(mtcars)
+
+  expect_identical(clean_description(vals), vals)
+
+  vals2 <- 1:10
+
+  expect_identical(clean_description(vals2), as.character(vals2))
+
+})
