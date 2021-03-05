@@ -365,8 +365,8 @@ ui_g_forest_tte <- function(id, ...) {
       selectInput(
         ns("ref_arm"),
         div(
-          "Reference Arm",
-          title = "Cannot select more than one reference arm.",
+          "Reference Group",
+          title = "Cannot select more than one reference group.",
           icon("info-circle")
         ),
         choices = NULL,
@@ -376,8 +376,8 @@ ui_g_forest_tte <- function(id, ...) {
       selectInput(
         ns("comp_arm"),
         div(
-          "Comparison Arm",
-          title = "Multiple arms automatically combined into a single arm if more than one value selected.",
+          "Comparison Group",
+          title = "Multiple groups automatically combined into a single group if more than one value selected.",
           icon("info-circle")
         ),
         choices = NULL,

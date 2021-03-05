@@ -489,7 +489,7 @@ ui_t_tte <- function(id, ...) {
       ),
       div(
         class = "arm-comp-box",
-        tags$label("Compare Arms"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
