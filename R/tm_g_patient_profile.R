@@ -2100,6 +2100,9 @@ srv_g_patient_profile <- function(input,
 
   output$v_paramcd_levels <- renderUI({
     paramcd_var <- input$`v_paramcd-dataset_ADVS_singleextract-select`
+
+    req(paramcd_var)
+
     paramcd_col <- vitals_dat()[[paramcd_var]]
     paramcd_col_levels <- if (is.factor(paramcd_col)) {
       levels(paramcd_col)
