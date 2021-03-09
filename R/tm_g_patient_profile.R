@@ -255,7 +255,6 @@ template_vitals <- function(dataname = "v_merge",
           ),
           legend.position = "top"
         )
-
       print(result_plot)
     }, env = list(
       dataname = as.name(dataname),
@@ -445,6 +444,7 @@ template_therapy <- function(dataname = "t_merge",
         ) +
         ylab("Medication") +
         theme(legend.position = "none")
+      print(therapy_plot)
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
