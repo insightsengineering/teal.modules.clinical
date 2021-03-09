@@ -1,21 +1,17 @@
 # teal.modules.clinical 0.8.7
 
-* The argument `cnsr_val` was removed from `tm_t_events_patyear` and a new argument `events_var` was added.
-* `tm_g_km` updated to allow plot of failure probability on y-axis and tick interval selection on x-axis.
+### New Module
 * New module `tm_g_patient_profile` was added to profile patients based on predefined categories.
-* Exposed hard-coded variables using `data_extract_input`.
 * New module `tm_g_ipp` was added for individual patient plots.
-* New laboratory table tab was added for the patient profile module.
-* The argument `time_unit_var` was added to `template_g_km` to add the time unit to the x-axis label
+
+### Enhancements
+* `tm_g_km` updated to allow plot of failure probability on y-axis and tick interval selection on x-axis.
+* The argument `time_unit_var` was added to `template_g_km` to add the time unit to the x-axis label.
+
+### Miscellaneous
+* Removed argument `cnsr_val` from `tm_t_events_patyear` and added new argument `events_var`.
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
-* Updated UI encodings to show/hide the required input variables in `tm_g_patient_profile`.
-* Updated patient timeline tab in `tm_g_patient_profile` to show available input variables only.
-* Reactive on filtering patient id input in `tm_g_patient_profile`.
-* The patient id column is defined by the `patient_col` argument for `tm_g_patient_profile`.
-* The `tm_g_patient_profile` example was updated.
-* Updated `tm_g_patient_profile` documentation with a note section.
-* Updated missing arguments in `tm_g_patient_profile`.
 
 ### Miscellaneous
 * Refactored out the `stringr` dependency from the patient profile module.
