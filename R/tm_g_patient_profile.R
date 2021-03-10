@@ -2227,6 +2227,10 @@ srv_g_patient_profile <- function(input,
       need(
         input$`t_cmendy-dataset_ADCM_singleextract-select`,
         "Please select CMENDY variable."
+      ),
+      need(
+        nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
+        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       )
     )
 
