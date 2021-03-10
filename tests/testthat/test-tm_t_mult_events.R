@@ -28,7 +28,8 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
+            nonunique = "Total number of treatments"
+          )
         ) %>%
         split_rows_by(
           "ATC1",
@@ -38,6 +39,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           split_fun = split_fun
         ) %>% summarize_num_patients(
           var = "USUBJID",
+          count_by = "ASEQ",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one treatment",
@@ -107,8 +109,9 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
-          ) %>%
+            nonunique = "Total number of treatments"
+          )
+        ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
@@ -117,6 +120,7 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
           split_fun = split_fun
         ) %>% summarize_num_patients(
           var = "USUBJID",
+          count_by = "ASEQ",
           .stats = c("unique", "nonunique"), .labels = c(
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
@@ -180,28 +184,44 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
-          ) %>%
-        split_rows_by("ATC1",
-          child_labels = "visible", nested = FALSE,
-          indent_mod = -1L, split_fun = split_fun
-        ) %>% split_rows_by("ATC2",
-          child_labels = "visible", nested = TRUE, indent_mod = 0L,
-          split_fun = split_fun
-        ) %>% split_rows_by("ATC3",
-          child_labels = "visible",
-          nested = TRUE, indent_mod = 0L, split_fun = split_fun
+            nonunique = "Total number of treatments"
+          )
         ) %>%
-        summarize_num_patients(var = "USUBJID", .stats = c(
-          "unique",
-          "nonunique"
-        ), .labels = c(
-          unique = "Total number of patients with at least one treatment",
-          nonunique = "Total number of treatments"
-        )) %>% count_occurrences(
+        split_rows_by(
+          "ATC1",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun
+        ) %>%
+        split_rows_by(
+          "ATC2",
+          child_labels = "visible",
+          nested = TRUE,
+          indent_mod = 0L,
+          split_fun = split_fun
+        ) %>%
+        split_rows_by(
+          "ATC3",
+          child_labels = "visible",
+          nested = TRUE,
+          indent_mod = 0L,
+          split_fun = split_fun
+        ) %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          count_by = "ASEQ",
+          .stats = c("unique", "nonunique"),
+          .labels = c(
+            unique = "Total number of patients with at least one treatment",
+            nonunique = "Total number of treatments"
+          )
+        ) %>%
+        count_occurrences(
           vars = "CMDECOD",
           .indent_mods = -1L
-        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+        ) %>%
+        append_topleft(paste(vapply(list(attr(adcm$ATC1,
           which = "label"
         ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
           which = "label"
@@ -253,7 +273,7 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
       anl <- adcm
       anl <- anl %>%
         df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
-        anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -267,8 +287,9 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
-          ) %>%
+            nonunique = "Total number of treatments"
+          )
+        ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
@@ -284,6 +305,7 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
           indent_mod = 0L, split_fun = split_fun
         ) %>% summarize_num_patients(
           var = "USUBJID",
+          count_by = "ASEQ",
           .stats = c("unique", "nonunique"), .labels = c(
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
@@ -353,7 +375,8 @@ test_that("template_mult_events generates correct expressions with no HLT parame
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
+            nonunique = "Total number of treatments"
+          )
         ) %>%
         count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>%
         append_varlabels(adcm, "CMDECOD", indent = FALSE)
@@ -403,7 +426,8 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           .stats = c("unique_count", "nonunique"),
           .labels = c(
             unique_count = "Total number of patients with at least one treatment",
-            nonunique = "Total number of treatments")
+            nonunique = "Total number of treatments"
+          )
         ) %>%
         split_rows_by(
           "ATC1",
@@ -413,6 +437,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           split_fun = split_fun
         ) %>% summarize_num_patients(
           var = "USUBJID",
+          count_by = "ASEQ",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one treatment",
