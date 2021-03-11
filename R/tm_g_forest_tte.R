@@ -365,7 +365,8 @@ ui_g_forest_tte <- function(id, ...) {
         ns("ref_arm"),
         div(
           "Reference Group",
-          title = "Cannot select more than one reference group.",
+          title = paste("Multiple reference groups are automatically combined into a single group when more than one",
+          "value selected."),
           icon("info-circle")
         ),
         choices = NULL,
@@ -376,7 +377,8 @@ ui_g_forest_tte <- function(id, ...) {
         ns("comp_arm"),
         div(
           "Comparison Group",
-          title = "Multiple groups automatically combined into a single group if more than one value selected.",
+          title = paste("Multiple comparison groups are automatically combined into a single group when more than one",
+          "value selected."),
           icon("info-circle")
         ),
         choices = NULL,

@@ -87,8 +87,6 @@ template_forest_rsp <- function(dataname = "ANL",
     )
   )
 
-
-
   parent_list <- add_expr(
     parent_list,
     prepare_arm(
@@ -358,20 +356,28 @@ ui_g_forest_rsp <- function(id, ...) {
       ),
       selectInput(
         ns("ref_arm"),
-        "Reference Group",
+        div(
+          "Reference Group",
+          title = paste("Multiple reference groups are automatically combined into a single group when more than one",
+          "value selected."),
+          icon("info-circle")
+        ),
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      helpText("Multiple reference groups are automatically combined into a single group."),
       selectInput(
         ns("comp_arm"),
-        "Comparison Group",
+        div(
+          "Comparison Group",
+          title = paste("Multiple comparison groups are automatically combined into a single group when more than one",
+          "value selected."),
+          icon("info-circle")
+        ),
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      helpText("Multiple arms automatically combined into a single arm if more than one value selected."),
       data_extract_input(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
