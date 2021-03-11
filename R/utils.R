@@ -242,7 +242,7 @@ bracket_expr <- function(exprs) {
 
   # Because `deparse` returns a vector accounting for line break attempted
   # for string longer than max `width.cutoff = 500`.
-  expr <- lapply(expr, paste, collapse = " ")
+  expr <- lapply(expr, paste, collapse = "\n")
 
   expr <- paste(
     c(
