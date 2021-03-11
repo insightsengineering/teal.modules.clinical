@@ -9,11 +9,10 @@
 * The argument `time_unit_var` was added to `template_g_km` to add the time unit to the x-axis label.
 
 ### Miscellaneous
+* Removed redundant `Analysis Data:` label from Encodings Panel.
 * Removed argument `cnsr_val` from `tm_t_events_patyear` and added new argument `events_var`.
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
-
-### Miscellaneous
 * Refactored out the `stringr` dependency from the patient profile module.
 
 # teal.modules.clinical 0.8.6

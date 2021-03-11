@@ -317,7 +317,6 @@ ui_g_ipp <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]),
-      helpText("Analysis data:", code(a$dataname)),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Arm",

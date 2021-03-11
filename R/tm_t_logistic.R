@@ -280,7 +280,6 @@ ui_t_logistic <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis data:", tags$code(a$dataname)),
       datanames_input(a[c("arm_var", "paramcd", "avalc_var", "interaction_var", "cov_var")]),
       data_extract_input(
         id = ns("paramcd"),

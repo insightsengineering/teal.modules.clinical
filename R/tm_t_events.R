@@ -503,7 +503,6 @@ ui_t_events_byterm <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "hlt", "llt")]),
-      helpText("Analysis data:", tags$code(a$dataname)),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",

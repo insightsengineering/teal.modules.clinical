@@ -337,7 +337,6 @@ ui_g_forest_tte <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
-      helpText("Analysis data:", code(a$dataname)),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
