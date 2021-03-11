@@ -444,8 +444,7 @@ srv_g_ipp <- function(input,
         input_visit_var,
         input_base_var
       ),
-      arm_var = input_arm_var,
-      min_nrow = 1
+      arm_var = input_arm_var
     )
 
     do.call(what = "validate_standard_inputs", validate_args)

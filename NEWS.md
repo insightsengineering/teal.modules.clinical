@@ -10,6 +10,8 @@
 
 ### Miscellaneous
 * Removed redundant `Analysis Data:` label from Encodings Panel.
+* Removed limit requiring 15 or fewer columns for tabulation modules. New maximum threshold is 100 columns.
+* Lowered limit for minimum number of observations required by modules. Safety tables require at least one record. For efficacy outputs the requirement is per treatment group: `tm_a_mmrm` requires five records, `tm_t_logistic` and `tm_t_coxreg` require two records and the remaining modules require at least one record per treatment group. For graphs, the minimum threshold is two records. 
 * Removed argument `cnsr_val` from `tm_t_events_patyear` and added new argument `events_var`.
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.

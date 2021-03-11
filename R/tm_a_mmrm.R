@@ -1002,7 +1002,7 @@ srv_mmrm <- function(input,
       arm_var = input_arm_var,
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
-      min_nrow = 5
+      min_nrow = 10
     )
 
     anl_data <- anl_m$data()

@@ -644,7 +644,7 @@ srv_g_km <- function(input,
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 10)
+    validate_has_data(ANL, 2)
 
     input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
       strsplit(",") %>%

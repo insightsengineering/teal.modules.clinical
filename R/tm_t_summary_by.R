@@ -513,8 +513,7 @@ srv_summary_by <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars),
-      arm_var = input_arm_var,
-      min_nrow = 1
+      arm_var = input_arm_var
     )
 
     if (input$parallel_vars) {

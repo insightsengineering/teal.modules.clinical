@@ -747,7 +747,7 @@ srv_t_tte <- function(input,
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 10)
+
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     my_calls <- template_tte(
       dataname = "ANL",

@@ -313,7 +313,7 @@ srv_g_barchart_simple <- function(input,
 
   data_chunk <- reactive({
     ANL <- merged_data()()$data() # nolint
-    validate_has_data(ANL, 3)
+    validate_has_data(ANL, 2)
     chunk <- chunks$new()
     chunk$reset(envir = list2env(list(ANL = ANL)))
     chunk

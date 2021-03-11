@@ -441,19 +441,6 @@ srv_t_mult_events_byterm <- function(input,
     validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
 
     validate(
-      need(
-        nrow(anl_filtered[input_hlt]) > 0,
-        "Not enough observations in \"HIGH LEVEL TERM\" variable(s)."
-      )
-    )
-    validate(
-      need(
-        nrow(anl_filtered[input_llt]) > 0,
-        "Not enough observations in \"LOW LEVEL TERM\" variable."
-      )
-    )
-
-    validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     validate(
@@ -466,9 +453,7 @@ srv_t_mult_events_byterm <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_seq_var, input_hlt, input_llt),
-      arm_var = input_arm_var,
-      max_n_levels_armvar = NULL,
-      min_nrow = 1
+      arm_var = input_arm_var
     )
   })
 

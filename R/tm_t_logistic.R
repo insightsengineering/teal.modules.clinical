@@ -457,7 +457,8 @@ srv_t_logistic <- function(input,
       anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var, input_interaction_var),
       arm_var = input_arm_var,
       ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm
+      comp_arm = input$comp_arm,
+      min_nrow = 4
     )
 
     # validate arm levels
@@ -471,6 +472,17 @@ srv_t_logistic <- function(input,
     ))
 
     do.call(what = "validate_standard_inputs", validate_args)
+
+    arm_n <- table(anl_m$data()[[input_arm_var]])
+    anl_arm_n <- if (input$combine_comp_arms) {
+      c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+    } else {
+      c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+    }
+    validate(need(
+      all(anl_arm_n >= 2),
+      "Each treatment group should have at least 2 records."
+    ))
 
     validate(
       need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
@@ -500,7 +512,6 @@ srv_t_logistic <- function(input,
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 10)
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
 
     interaction_var <- as.vector(anl_m$columns_source$interaction_var)

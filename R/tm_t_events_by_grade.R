@@ -418,12 +418,6 @@ srv_t_events_by_grade <- function(input,
       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
       )
     validate(
-      need(
-        nrow(anl_filtered[input_level_term]) > 0,
-        "Not enough observations in  \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-        )
-      )
-    validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
 
@@ -433,9 +427,7 @@ srv_t_events_by_grade <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_level_term, input_grade),
-      arm_var = input_arm_var,
-      max_n_levels_armvar = NULL,
-      min_nrow = 1
+      arm_var = input_arm_var
     )
   })
 

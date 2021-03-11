@@ -405,7 +405,6 @@ srv_t_binary_outcome <- function(input,
     chunks_push_new_line()
 
     anl <- chunks_get_var("ANL") # nolint
-    validate_has_data(anl, 10)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
 
     my_calls <- template_rsp(

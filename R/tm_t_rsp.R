@@ -659,7 +659,6 @@ srv_t_rsp <- function(input,
     chunks_push_new_line()
 
     anl <- chunks_get_var("ANL")
-    validate_has_data(anl, 10)
     validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID"))
 
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)

@@ -521,7 +521,6 @@ srv_ancova <- function(input,
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 10)
 
     paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
 

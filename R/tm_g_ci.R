@@ -232,7 +232,7 @@ srv_g_ci <- function(input, # nousage # nolint
         "Select an analyzed value (y axis)."
       )
     )
-    validate_has_data(merged_data()$data(), min_nrow = 15)
+    validate_has_data(merged_data()$data(), min_nrow = 2)
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,

@@ -427,9 +427,6 @@ srv_t_abnormality <- function(input,
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    validate_has_data(adsl_filtered, 1)
-    validate_has_data(anl_filtered, 1)
-
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
@@ -453,8 +450,7 @@ srv_t_abnormality <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_id_var, input_by_vars, input_grade),
-      arm_var = input_arm_var,
-      min_nrow = 10
+      arm_var = input_arm_var
     )
   })
 

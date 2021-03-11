@@ -868,9 +868,7 @@ srv_t_events_summary <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
-      arm_var = input_arm_var,
-      max_n_levels_armvar = NULL,
-      min_nrow = 1
+      arm_var = input_arm_var
     )
   })
 
