@@ -660,7 +660,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
         # adverse events
         ae_chart_vars_na <- any(
           vapply(list(ae_term_var, ae_time_start_var, ae_time_end_var), is.null, FUN.VALUE = logical(1))
-          )
+        )
+
         if (ae_chart_vars_na) {
           ae_chart <- dataname[FALSE, ]
         } else {
@@ -683,10 +684,11 @@ template_patient_timeline <- function(dataname = "pt_merge",
             )
         }
 
+
         # medication
         med_chart_vars_na <- any(
           vapply(list(t_cmtrt_var, ds_time_start_var, ds_time_end_var), is.null, FUN.VALUE = logical(1))
-          )
+        )
         if (med_chart_vars_na) {
           med_chart <- dataname[FALSE, ]
         } else {
@@ -695,63 +697,45 @@ template_patient_timeline <- function(dataname = "pt_merge",
             distinct()
         }
 
-        min_ds_chart_time_start <- if (ds_chart_vars_na) c() else min(ds_chart[[ds_time_start_var]])
-        min_ds_chart_time_end <- if (ds_chart_vars_na) c() else min(ds_chart[[ds_time_end_var]])
-        max_ds_chart_time_end <- if (ds_chart_vars_na) c() else  max(ds_chart[[ds_time_end_var]])
+        min_ds_chart_time_start <- if (ds_chart_vars_na) NULL else min(ds_chart[[ds_time_start_var]])
+        min_ds_chart_time_end <- if (ds_chart_vars_na) NULL else min(ds_chart[[ds_time_end_var]])
+        max_ds_chart_time_end <- if (ds_chart_vars_na) NULL else  max(ds_chart[[ds_time_end_var]])
 
-        timevis_data <- data.frame(
-          id = seq_len(nrow(ae_chart) +
-            length(unique(ds_chart[["label_start"]])) +
-            length(unique(ds_chart[["label_end"]])) +
-            nrow(med_chart)),
-          content = c(
-            if (ae_chart_vars_na) c() else as.character(ae_chart[[ae_term_var]]),
+        vistime_data <- data.frame(
+          event = c(
+            if (ae_chart_vars_na) NULL else as.character(ae_chart[[ae_term_var]]),
             as.character(unique(ds_chart[["label_start"]])),
             as.character(unique(ds_chart[["label_end"]])),
-            if (med_chart_vars_na) c() else as.character(med_chart[[t_cmtrt_var]])
+            if (med_chart_vars_na) NULL else as.character(med_chart[[t_cmtrt_var]])
           ),
           start = c(
-            if (ae_chart_vars_na) c() else ae_chart[[ae_time_start_var]],
+            if (ae_chart_vars_na) NULL else ae_chart[[ae_time_start_var]],
             min_ds_chart_time_start,
             max_ds_chart_time_end,
-            if (med_chart_vars_na) c() else med_chart[[ds_time_start_var]]
+            if (med_chart_vars_na) NULL else med_chart[[ds_time_start_var]]
           ),
           end = c(
-            if (ae_chart_vars_na) c() else ae_chart[[ae_time_end_var]],
+            if (ae_chart_vars_na) NULL else ae_chart[[ae_time_end_var]],
             min_ds_chart_time_start,
             max_ds_chart_time_end,
-            if (med_chart_vars_na) c() else med_chart[[ds_time_end_var]]
+            if (med_chart_vars_na) NULL else med_chart[[ds_time_end_var]]
           ),
           group = c(
-            rep("AE", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
-            rep("DOS", length(min_ds_chart_time_start)),
-            rep("DOS", length(min_ds_chart_time_end)),
-            rep("MED", if (med_chart_vars_na) 0 else length(med_chart[[t_cmtrt_var]]))
-          ),
-          type = c(
-            rep("range", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
-            rep("point", length(min_ds_chart_time_start)),
-            rep("point", length(min_ds_chart_time_end)),
-            rep("range", if (med_chart_vars_na) 0 else length(med_chart[[t_cmtrt_var]]))
+            rep("Adverse Events", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
+            rep("Dosing", length(min_ds_chart_time_start)),
+            rep("Dosing", length(min_ds_chart_time_end)),
+            rep("Medication", if (med_chart_vars_na) 0 else length(med_chart[[t_cmtrt_var]]))
           )
         )
 
         # in some cases, dates are converted to numeric so this is a step to convert them back
-
         posixct_origin <- "1970-01-01 00:00.00 UTC"
-        timevis_data_empty <- nrow(timevis_data) == 0
-        timevis_data$start <- if (!timevis_data_empty) as.POSIXct(timevis_data$start, origin = posixct_origin)
-        timevis_data$end <- if (!timevis_data_empty) as.POSIXct(timevis_data$end, origin = posixct_origin)
-
-        timevis_data_groups <- data.frame(
-          id = c("AE", "DOS", "MED"),
-          content = c(
-            "Adverse Events", "Dosing", "Medication"
-          )
-        )
+        vistime_data_empty <- nrow(vistime_data) == 0
+        vistime_data$start <- if (!vistime_data_empty) as.POSIXct(vistime_data$start, origin = posixct_origin)
+        vistime_data$end <- if (!vistime_data_empty) as.POSIXct(vistime_data$end, origin = posixct_origin)
 
         patient_timeline_plot <-
-          timevis::timevis(data = timevis_data, groups = timevis_data_groups)
+          vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group")
       },
       env = list(
         dataname = as.name(dataname),
@@ -946,7 +930,8 @@ template_laboratory <- function(dataname = "lb_merge",
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
 #'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
 #'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-#'     cdisc_dataset("ADCM", ADCM, code = 'ADCM <- radcm(cached = TRUE)
+#'     cdisc_dataset("ADCM", ADCM,
+#'       code = 'ADCM <- radcm(cached = TRUE)
 #'       ADCM$CMINDC <- ADCM$CMCAT
 #'       ADCM$CMDECOD <- ADCM$CMCAT
 #'       ADCM$CMDOSE <- 1
@@ -962,7 +947,8 @@ template_laboratory <- function(dataname = "lb_merge",
 #'       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM',
-#'       keys = adcm_keys),
+#'       keys = adcm_keys
+#'     ),
 #'     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
 #'     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
 #'     check = TRUE
@@ -1416,7 +1402,6 @@ tm_g_patient_profile <- function(label,
   )
 }
 
-#' @importFrom timevis timevisOutput
 #' @importFrom shinyWidgets pickerOptions
 ui_g_patient_profile <- function(id, ...) {
   ui_args <- list(...)
@@ -1454,7 +1439,8 @@ ui_g_patient_profile <- function(id, ...) {
     ui_args$t_cmstdy,
     ui_args$t_cmendy,
     ui_args$ds_time_start,
-    ui_args$ds_time_end)
+    ui_args$ds_time_end
+  )
 
   ns <- NS(id)
   standard_layout(
@@ -1508,7 +1494,7 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Patient timeline",
           div(
-            timevis::timevisOutput(outputId = ns("patient_timeline_plot"))
+            plot_with_settings_ui(id = ns("patient_timeline_plot"))
           )
         )
       )
@@ -1516,7 +1502,8 @@ ui_g_patient_profile <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(ui_args[
-        c("bi_vars",
+        c(
+          "bi_vars",
           "mh_term",
           "mh_bodsys",
           "v_paramcd",
@@ -1550,8 +1537,8 @@ ui_g_patient_profile <- function(id, ...) {
           "t_cmendy",
           "ds_time_start",
           "ds_time_end"
-        )]
-      ),
+        )
+      ]),
       tags$span(class = "help-block", HTML(sprintf("Dataset: <code>%s</code>", ui_args$parentname))),
       optionalSelectInput(
         ns("patient_id"),
@@ -1870,7 +1857,6 @@ ui_g_patient_profile <- function(id, ...) {
   )
 }
 
-#' @importFrom timevis renderTimevis
 srv_g_patient_profile <- function(input,
                                   output,
                                   session,
@@ -1944,7 +1930,9 @@ srv_g_patient_profile <- function(input,
       patient_id_s
     }
     updateOptionalSelectInput(session, "patient_id", choices = unique_patients, selected = patient_selected)
-  }, ignoreInit = TRUE)
+  },
+  ignoreInit = TRUE
+  )
 
   # Basic Info tab ----
   binf_merged_data <- data_merge_module(
@@ -2112,8 +2100,7 @@ srv_g_patient_profile <- function(input,
     paramcd_col <- vitals_dat()[[paramcd_var]]
     paramcd_col_levels <- if (is.factor(paramcd_col)) {
       levels(paramcd_col)
-    }
-    else {
+    } else {
       unique(paramcd_col)
     }
 
@@ -2180,8 +2167,10 @@ srv_g_patient_profile <- function(input,
   # Therapy tab ----
   therapy_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(atirel, medname_decoding, t_cmindc,
-      t_cmdose, t_cmtrt, t_cmdosu, t_cmroute, t_cmdosfrq, t_cmstdy, t_cmendy),
+    data_extract = list(
+      atirel, medname_decoding, t_cmindc,
+      t_cmdose, t_cmtrt, t_cmdosu, t_cmroute, t_cmdosfrq, t_cmstdy, t_cmendy
+    ),
     input_id = c(
       "atirel", "medname_decoding", "t_cmindc", "t_cmdose",
       "t_cmtrt", "t_cmdosu", "t_cmroute", "t_cmdosfrq", "t_cmstdy", "t_cmendy"
@@ -2388,11 +2377,12 @@ srv_g_patient_profile <- function(input,
     patient_timeline_stack
   })
 
-  output$patient_timeline_plot <- timevis::renderTimevis({
+  patient_timeline_plot <- reactive({
     chunks_reset()
     chunks_push_chunks(patient_timeline_calls())
     chunks_get_var("patient_timeline_plot")
   })
+
 
 
   # Laboratory values tab ----
@@ -2485,6 +2475,14 @@ srv_g_patient_profile <- function(input,
     plot_with_settings_srv,
     id = "therapy_plot",
     plot_r = therapy_plot,
+    height = plot_height,
+    width = plot_width
+  )
+
+  callModule(
+    plot_with_settings_srv,
+    id = "patient_timeline_plot",
+    plot_r = patient_timeline_plot,
     height = plot_height,
     width = plot_width
   )

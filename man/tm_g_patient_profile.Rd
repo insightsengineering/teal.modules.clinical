@@ -191,7 +191,8 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-    cdisc_dataset("ADCM", ADCM, code = 'ADCM <- radcm(cached = TRUE)
+    cdisc_dataset("ADCM", ADCM,
+      code = 'ADCM <- radcm(cached = TRUE)
       ADCM$CMINDC <- ADCM$CMCAT
       ADCM$CMDECOD <- ADCM$CMCAT
       ADCM$CMDOSE <- 1
@@ -207,7 +208,8 @@ app <- init(
       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM',
-      keys = adcm_keys),
+      keys = adcm_keys
+    ),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE

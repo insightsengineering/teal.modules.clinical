@@ -39,7 +39,7 @@ Imports:
   utils.nest (>= 0.2.8),
   DT,
   tidyr,
-  timevis
+  vistime
 Suggests:
   rmarkdown,
   random.cdisc.data (>= 0.3.8),
