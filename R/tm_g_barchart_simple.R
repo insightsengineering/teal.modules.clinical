@@ -297,6 +297,8 @@ srv_g_barchart_simple <- function(input,
                                   plot_width) {
   stopifnot(is_cdisc_data(datasets))
 
+  init_chunks()
+
   data_extract <- list(
     x = x, fill = fill, x_facet = x_facet, y_facet = y_facet
   )
@@ -403,8 +405,8 @@ srv_g_barchart_simple <- function(input,
 
   generate_code <- reactive({
     chunk <- plot_chunk()
-
-    init_chunks(chunk) # set session chunks for ShowRCode
+    chunks_reset()
+    chunks_push_chunks(chunk) # set session chunks for ShowRCode
 
     chunk
   })
