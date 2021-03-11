@@ -31,6 +31,7 @@ template_basic_info <- function(dataname = "bi_merge",
           data.frame(key = key, value = values) %>%
           select(key, value) %>%
           rename(`   ` = key, ` ` = value)
+        result
       }, env = list(
         dataname = as.name(dataname),
         bi_vars = bi_vars
@@ -75,6 +76,7 @@ template_medical_history <- function(dataname = "mh_merge",
         mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         distinct() %>%
         `colnames<-`(get_labels(dataname)$column_labels[c(mh_bodsys_char, mh_term_char)])
+      result
     }, env = list(
       dataname = as.name(dataname),
       mh_bodsys = as.name(mh_bodsys),
@@ -121,6 +123,7 @@ template_prior_medication <- function(dataname = "pm_merge",
         filter(!is.na(cmdecod)) %>%
         distinct() %>%
         `colnames<-`(get_labels(dataname)$column_labels[c(atirel_char, cmdecod_char)])
+      result
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -356,6 +359,7 @@ template_therapy <- function(dataname = "t_merge",
         select(-t_cmtrt) %>%
         arrange(t_cmindc, cmdecod, t_cmstdy) %>%
         distinct()
+      therapy_table
       # `colnames<-`(get_labels(dataname)$column_labels[t_cmindc, cmdecod, t_cmstdy]) # nolintr
     }, env = list(
       dataname = as.name(dataname),
@@ -513,13 +517,15 @@ template_adverse_events <- function(dataname = "ae_merge",
 
   table_list <- add_expr(
     list(),
-    substitute(
+    substitute(expr = {
       ae_table <- dataname %>%
         select(
           ae_term, ae_tox_grade, ae_causality, ae_outcome, ae_action, ae_time, ae_decod
         ) %>%
         arrange(desc(ae_tox_grade)) %>%
-        `colnames<-`(get_labels(dataname)$column_labels[ae_vars]),
+        `colnames<-`(get_labels(dataname)$column_labels[ae_vars])
+      ae_table
+      },
       env = list(
         dataname = as.name(dataname),
         ae_term = as.name(ae_term),
