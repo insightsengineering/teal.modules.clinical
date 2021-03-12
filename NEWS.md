@@ -16,6 +16,7 @@
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
 * Refactored out the `stringr` dependency from the patient profile module.
+* Added missing table calls in chunks for `tm_t_events` and `tm_t_events_by_grade`.
 
 # teal.modules.clinical 0.8.6
 

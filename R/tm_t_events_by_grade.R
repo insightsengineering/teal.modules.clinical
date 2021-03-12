@@ -180,13 +180,16 @@ template_events_by_grade <- function(dataname,
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
     y$pruned_and_sorted_result <- substitute(
-      expr = result <- result %>%
-        trim_rows() %>%
-        sort_at_path(
-          path = term_var,
-          scorefun = scorefun,
-          decreasing = TRUE
-        ),
+      expr = {
+        result <- result %>%
+          trim_rows() %>%
+          sort_at_path(
+            path = term_var,
+            scorefun = scorefun,
+            decreasing = TRUE
+          )
+        result
+      },
       env = list(
         term_var = term_var,
         scorefun = scorefun
@@ -194,18 +197,21 @@ template_events_by_grade <- function(dataname,
     )
   } else {
     y$pruned_and_sorted_result <- substitute(
-      expr = result <- result %>%
-        trim_rows() %>%
-        sort_at_path(
-          path = hlt,
-          scorefun = scorefun,
-          decreasing = TRUE
-        ) %>%
-        sort_at_path(
-          path = c(hlt, "*", llt),
-          scorefun = scorefun,
-          decreasing = TRUE
-        ),
+      expr = {
+        result <- result %>%
+          trim_rows() %>%
+          sort_at_path(
+            path = hlt,
+            scorefun = scorefun,
+            decreasing = TRUE
+          ) %>%
+          sort_at_path(
+            path = c(hlt, "*", llt),
+            scorefun = scorefun,
+            decreasing = TRUE
+          )
+        result
+        },
       env = list(
         hlt = hlt,
         llt = llt,

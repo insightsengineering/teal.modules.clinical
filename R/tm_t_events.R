@@ -288,9 +288,10 @@ template_events <- function(dataname,
 
       sort_list <- add_expr(
         sort_list,
-        quote(
+        quote({
           pruned_and_sorted_result <- trim_rows(pruned_result, criteria = criteria_fun)
-        )
+          pruned_and_sorted_result
+        })
       )
     }
 
