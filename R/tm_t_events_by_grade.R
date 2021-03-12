@@ -471,7 +471,7 @@ srv_t_events_by_grade <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm, hlt, llt, grade)
+      list(arm_var, hlt, llt, grade)
     ),
     modal_title = "AE by Grade Table",
     code_header = label
