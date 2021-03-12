@@ -406,17 +406,19 @@ srv_t_logistic <- function(input,
   )
 
   # Because the AVALC values depends on the selected PARAMCD.
-  observe({
+  observeEvent(anl_merged(), {
     avalc_var <- anl_merged()$columns_source$avalc_var
-    responder_choices <- if (is_empty(avalc_var)) {
-      character(0)
+    if (nrow(anl_merged()$data()) == 0) {
+      responder_choices <- c("CR", "PR")
+      responder_sel <- c("CR", "PR")
     } else {
-      unique(anl_merged()$data()[[avalc_var]])
+      responder_choices <- unique(anl_merged()$data()[[avalc_var]])
+      responder_sel <- intersect(responder_choices, isolate(input$responders))
     }
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = intersect(responder_choices, isolate(input$responders))
+      selected = responder_sel
     )
   })
 

@@ -458,7 +458,7 @@ srv_g_forest_rsp <- function(input,
   )
 
   # Update UI choices depending on selection of previous options
-  observe({
+  observeEvent(anl_merged(), {
     aval_var <- anl_merged()$columns_source$aval_var
     if (nrow(anl_merged()$data()) == 0) {
       responder_choices <- c("CR", "PR")
