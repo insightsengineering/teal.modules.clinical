@@ -2380,6 +2380,13 @@ srv_g_patient_profile <- function(input,
   patient_timeline_calls <- reactive({
     validate_checks()
 
+    df <- patient_timeline_merged_data()$data()
+
+    validate(need(
+      nrow(df[df[[patient_col]] == patient_id(), ]) > 0,
+      "Selected patient does not have enough data for a timeline plot"
+    ))
+
     patient_timeline_stack <- chunks$new()
     chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)
 
@@ -2398,6 +2405,7 @@ srv_g_patient_profile <- function(input,
     )
 
     mapply(patient_timeline_calls, FUN = function(x) chunks_push(x, chunks = patient_timeline_stack))
+
     chunks_safe_eval(chunks = patient_timeline_stack)
     patient_timeline_stack
   })
