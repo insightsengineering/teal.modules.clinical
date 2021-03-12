@@ -7,7 +7,9 @@
 template_prior_medication(
   dataname = "pm_merge",
   atirel = "ATIREL",
-  medname_decoding = "CMDECOD"
+  medname_decoding = "CMDECOD",
+  pm_cmindc = "CMINDC",
+  pm_cmstdy = "CMSTDY"
 )
 }
 \arguments{
@@ -17,6 +19,10 @@ analysis data used in teal module.}
 \item{atirel}{(\code{character})\cr name of time relation of medication variable.}
 
 \item{medname_decoding}{(\code{character})\cr name of standardized medication name variable.}
+
+\item{pm_cmindc}{(\code{character})\cr name of indication variable.}
+
+\item{pm_cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
 }
 \description{
 Creates a prior medication template.

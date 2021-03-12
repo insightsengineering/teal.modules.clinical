@@ -29,19 +29,19 @@ tm_g_patient_profile(
   ae_outcome = NULL,
   ae_action = NULL,
   ae_time = NULL,
-  ae_time_start = NULL,
-  ae_time_end = NULL,
+  pt_aetime_start = NULL,
+  pt_aetime_end = NULL,
   ae_decod = NULL,
-  t_cmindc = NULL,
+  cmindc = NULL,
   t_cmdose = NULL,
-  t_cmtrt = NULL,
+  cmtrt = NULL,
   t_cmdosu = NULL,
   t_cmroute = NULL,
   t_cmdosfrq = NULL,
-  t_cmstdy = NULL,
+  cmstdy = NULL,
   t_cmendy = NULL,
-  ds_time_start = NULL,
-  ds_time_end = NULL,
+  pt_dstime_start = NULL,
+  pt_dstime_end = NULL,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -102,19 +102,19 @@ with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{ae_time}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDY} column of the ADAE dataset.}
 
-\item{ae_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDTM} column of the AE
+\item{pt_aetime_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{ASTDTM} column of the AE
 start of the ADAE dataset.}
 
-\item{ae_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AENDTM} column of the AE
+\item{pt_aetime_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AENDTM} column of the AE
 end of the ADAE dataset.}
 
 \item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
 
-\item{t_cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
+\item{cmindc}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMINDC} column of the ADCM dataset.}
 
 \item{t_cmdose}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSE} column of the ADCM dataset.}
 
-\item{t_cmtrt}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMTRT} column of the ADCM dataset.}
+\item{cmtrt}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMTRT} column of the ADCM dataset.}
 
 \item{t_cmdosu}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSU} column of the ADCM dataset.}
 
@@ -122,14 +122,14 @@ end of the ADAE dataset.}
 
 \item{t_cmdosfrq}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMDOSFRQ} column of the ADCM dataset.}
 
-\item{t_cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
+\item{cmstdy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMSTDY} column of the ADCM dataset.}
 
 \item{t_cmendy}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMENDY} column of the ADCM dataset.}
 
-\item{ds_time_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMASTDTM} column of treatment
+\item{pt_dstime_start}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMASTDTM} column of treatment
 start of the ADCM dataset.}
 
-\item{ds_time_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMAENDTM} column of treatment
+\item{pt_dstime_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMAENDTM} column of treatment
 end of the ADCM dataset.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
@@ -169,8 +169,7 @@ ADVS <- radvs(cached = TRUE)
 ADLB <- radlb(cached = TRUE)
 
 #' Modify ADCM
-ADCM$CMINDC <- ADCM$CMCAT
-ADCM$CMDECOD <- ADCM$CMCAT
+ADCM$CMINDC <- "Indication"
 ADCM$CMDOSE <- 1
 ADCM$CMTRT <- ADCM$CMCAT
 ADCM$CMDOSU <- "U"
@@ -184,6 +183,12 @@ ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
+rtables::var_labels(
+  ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+    "Indication",
+    "Reported Name of Drug, Med, or Therapy",
+    "Study Day of Start of Medication",
+    "Study Day of End of Medication")
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- init(
@@ -191,10 +196,8 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
-    cdisc_dataset("ADCM", ADCM,
-      code = 'ADCM <- radcm(cached = TRUE)
-      ADCM$CMINDC <- ADCM$CMCAT
-      ADCM$CMDECOD <- ADCM$CMCAT
+    cdisc_dataset("ADCM", ADCM, code = 'ADCM <- radcm(cached = TRUE)
+      ADCM$CMINDC <- "Indication"
       ADCM$CMDOSE <- 1
       ADCM$CMTRT <- ADCM$CMCAT
       ADCM$CMDOSU <- "U"
@@ -207,9 +210,14 @@ app <- init(
       ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
       ADCM$CMASTDTM <- ADCM$ASTDTM
-      ADCM$CMAENDTM <- ADCM$AENDTM',
-      keys = adcm_keys
-    ),
+      ADCM$CMAENDTM <- ADCM$AENDTM
+      rtables::var_labels(
+        ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+          "Indication",
+          "Reported Name of Drug, Med, or Therapy",
+          "Study Day of Start of Medication",
+          "Study Day of End of Medication")',
+      keys = adcm_keys),
     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
     check = TRUE
@@ -355,7 +363,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      t_cmindc = data_extract_spec(
+      cmindc = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMINDC"),
@@ -373,7 +381,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      t_cmtrt = data_extract_spec(
+      cmtrt = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMTRT"),
@@ -409,7 +417,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      t_cmstdy = data_extract_spec(
+      cmstdy = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMSTDY"),
@@ -482,7 +490,7 @@ app <- init(
         )
       ),
       ae_decod = NULL,
-      ae_time_start = data_extract_spec(
+      pt_aetime_start = data_extract_spec(
         dataname = "ADAE",
         select = select_spec(
           choices = variable_choices(ADAE, "ASTDTM"),
@@ -491,7 +499,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      ae_time_end = data_extract_spec(
+      pt_aetime_end = data_extract_spec(
         dataname = "ADAE",
         select = select_spec(
           choices = variable_choices(ADAE, "AENDTM"),
@@ -500,7 +508,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      ds_time_start = data_extract_spec(
+      pt_dstime_start = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMASTDTM"),
@@ -509,7 +517,7 @@ app <- init(
           fixed = FALSE
         )
       ),
-      ds_time_end = data_extract_spec(
+      pt_dstime_end = data_extract_spec(
         dataname = "ADCM",
         select = select_spec(
           choices = variable_choices(ADCM, "CMAENDTM"),

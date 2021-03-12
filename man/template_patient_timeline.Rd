@@ -7,11 +7,11 @@
 template_patient_timeline(
   dataname = "pt_merge",
   ae_term = "AETERM",
-  ae_time_start = "ASTDTM",
-  ae_time_end = "AENDTM",
-  ds_time_start = "CMASTDTM",
-  ds_time_end = "CMAENDTM",
-  t_cmtrt = "CMTRT"
+  pt_aetime_start = "ASTDTM",
+  pt_aetime_end = "AENDTM",
+  pt_dstime_start = "CMASTDTM",
+  pt_dstime_end = "CMAENDTM",
+  pt_cmtrt = "CMTRT"
 )
 }
 \arguments{
@@ -20,13 +20,13 @@ analysis data used in teal module.}
 
 \item{ae_term}{(\code{character})\cr name of the reported term for the adverse event variable.}
 
-\item{ae_time_start}{(\code{character})\cr name of datetime start of adverse event variable.}
+\item{pt_aetime_start}{(\code{character})\cr name of datetime start of adverse event variable.}
 
-\item{ae_time_end}{(\code{character})\cr name of datetime end of adverse event variable.}
+\item{pt_aetime_end}{(\code{character})\cr name of datetime end of adverse event variable.}
 
-\item{ds_time_start}{(\code{character})\cr name of datetime first exposure to treatment variable.}
+\item{pt_dstime_start}{(\code{character})\cr name of datetime first exposure to treatment variable.}
 
-\item{ds_time_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
+\item{pt_dstime_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
 
 \item{t_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 }
