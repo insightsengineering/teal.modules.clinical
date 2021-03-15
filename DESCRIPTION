@@ -25,7 +25,6 @@ Imports:
   assertthat,
   broom,
   grid,
-  knitr,
   magrittr,
   methods,
   rtables (>= 0.3.3),
@@ -41,6 +40,7 @@ Imports:
   tidyr,
   vistime
 Suggests:
+  knitr,
   rmarkdown,
   random.cdisc.data (>= 0.3.8),
   test.nest (>= 0.2.7),
