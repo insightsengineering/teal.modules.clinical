@@ -103,9 +103,9 @@ template_mult_events <- function(dataname,
       summarize_num_patients(
         var = "USUBJID",
         count_by = seq_var,
-        .stats = c("unique_count", "nonunique"),
+        .stats = c("unique", "nonunique"),
         .labels = c(
-          unique_count = unique_label,
+          unique = unique_label,
           nonunique = nonunique_label
         )
       ),

@@ -25,9 +25,9 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
@@ -106,9 +106,9 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
@@ -181,9 +181,9 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
@@ -284,9 +284,9 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
@@ -372,9 +372,9 @@ test_that("template_mult_events generates correct expressions with no HLT parame
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
@@ -423,9 +423,9 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
-          .stats = c("unique_count", "nonunique"),
+          .stats = c("unique", "nonunique"),
           .labels = c(
-            unique_count = "Total number of patients with at least one treatment",
+            unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
         ) %>%
