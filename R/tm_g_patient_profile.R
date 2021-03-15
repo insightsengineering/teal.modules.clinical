@@ -2141,6 +2141,8 @@ srv_g_patient_profile <- function(input,
   vitals_call <- reactive({
     validate_checks()
 
+    validate_has_data(vitals_merged_data()$data(), 1)
+
     validate(
       need(
         input$`v_paramcd-dataset_ADVS_singleextract-select`,
@@ -2157,6 +2159,10 @@ srv_g_patient_profile <- function(input,
       need(
         input$`v_aval-dataset_ADVS_singleextract-select`,
         "Please select AVAL variable."
+      ),
+      need(
+        nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
+        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       )
     )
 
