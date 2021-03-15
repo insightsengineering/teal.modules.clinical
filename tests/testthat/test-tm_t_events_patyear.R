@@ -6,13 +6,18 @@ test_that("template_events_patyear generates standard expressions", {
     events_var = "n_events",
     aval_var = "AVAL",
     add_total = TRUE,
+    drop_arm_levels = TRUE,
     control = control_incidence_rate()
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adaette
-    ),
+      anl <- anl %>% mutate(ARMCD = droplevels(ARMCD))
+      arm_levels <- levels(anl[["ARMCD"]])
+      adsl <- adsl %>% filter(ARMCD %in% arm_levels)
+      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+    }),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD") %>%
@@ -50,13 +55,17 @@ test_that("template_events_patyear generates right expressions with non-default"
     events_var = "n_events",
     aval_var = "AVAL",
     add_total = FALSE,
+    drop_arm_levels = FALSE,
     control = control_incidence_rate()
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adaette
-    ),
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+    }),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
@@ -93,6 +102,7 @@ test_that("template_events_patyear generates right expressions with non-default 
     aval_var = "AVAL",
     events_var = "n_events",
     add_total = TRUE,
+    drop_arm_levels = TRUE,
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",
@@ -102,9 +112,13 @@ test_that("template_events_patyear generates right expressions with non-default 
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adaette
-    ),
+      anl <- anl %>% mutate(ARMCD = droplevels(ARMCD))
+      arm_levels <- levels(anl[["ARMCD"]])
+      adsl <- adsl %>% filter(ARMCD %in% arm_levels)
+      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+    }),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD") %>%

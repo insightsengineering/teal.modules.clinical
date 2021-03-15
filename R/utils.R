@@ -624,6 +624,141 @@ prepare_arm <- function(dataname,
   pipe_expr(data_list)
 }
 
+#' Expression: Prepare Arm Levels
+#'
+#' This function generates the standard expression for pre-processing of dataset
+#' arm levels in and is used to apply the same steps in safety teal modules.
+#'
+#' @inheritParams template_arguments
+#'
+#' @examples
+#' \dontrun{
+#' teal.modules.clinical::prepare_arm_levels(
+#'   dataname = "adae",
+#'   parentname = "adsl",
+#'   arm_var = "ARMCD",
+#'   drop_arm_levels = TRUE
+#' )
+#'
+#' teal.modules.clinical::prepare_arm_levels(
+#'   dataname = "adae",
+#'   parentname = "adsl",
+#'   arm_var = "ARMCD",
+#'   drop_arm_levels = FALSE
+#' )
+#' }
+#'
+prepare_arm_levels <- function(dataname,
+                               parentname,
+                               arm_var,
+                               drop_arm_levels = TRUE) {
+
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.flag(drop_arm_levels)
+  )
+
+  data_list <- list()
+
+  if (drop_arm_levels) {
+
+    # Keep only levels that exist in `dataname` dataset
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = dataname <- dataname %>% mutate(
+          arm_var = droplevels(arm_var)
+        ),
+        names = list(
+          dataname = as.name(dataname),
+          arm_var = as.name(arm_var)
+        )
+      )
+    )
+
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = arm_levels <- levels(dataname[[arm_var]]),
+        env = list(
+          dataname = as.name(dataname),
+          arm_var = arm_var
+        )
+      )
+    )
+
+    # Data are filtered to keep only arms of interest.
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = parentname <- parentname %>%
+          filter(arm_var %in% arm_levels),
+        env = list(
+          parentname = as.name(parentname),
+          arm_var = as.name(arm_var)
+        )
+      )
+    )
+
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = parentname <- parentname %>% mutate(
+          arm_var = droplevels(arm_var)
+        ),
+        names = list(
+          parentname = as.name(parentname),
+          arm_var = as.name(arm_var)
+        )
+      )
+    )
+
+  } else {
+
+    # Keep only levels that exist in `parentname` dataset
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = parentname <- parentname %>% mutate(
+          arm_var = droplevels(arm_var)
+        ),
+        names = list(
+          parentname = as.name(parentname),
+          arm_var = as.name(arm_var)
+        )
+      )
+    )
+
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = arm_levels <- levels(parentname[[arm_var]]),
+        env = list(
+          parentname = as.name(parentname),
+          arm_var = arm_var
+        )
+      )
+    )
+
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = dataname <- dataname %>% mutate(
+          arm_var = factor(arm_var, levels = arm_levels)
+        ),
+        names = list(
+          dataname = as.name(dataname),
+          arm_var = as.name(arm_var)
+        )
+      )
+    )
+  }
+
+  bracket_expr(data_list)
+}
+
 #' Mapping function for Laboratory Table
 #'
 #' Map value and level characters to values with with proper html tags, colors and icons.

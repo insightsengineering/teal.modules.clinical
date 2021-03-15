@@ -17,6 +17,7 @@ tm_t_events(
   sort_criteria = c("freq_desc", "alpha"),
   prune_freq = 0,
   prune_diff = 0,
+  drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -55,6 +56,10 @@ alphabetically.}
 
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

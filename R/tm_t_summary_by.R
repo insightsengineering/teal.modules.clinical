@@ -19,7 +19,8 @@ template_summary_by <- function(parentname,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint
                                 na_level = "<Missing>",
-                                denominator = c("N", "n", "omit")) {
+                                denominator = c("N", "n", "omit"),
+                                drop_arm_levels = TRUE) {
   assert_that(
     is.string(parentname),
     is.string(dataname),
@@ -31,7 +32,8 @@ template_summary_by <- function(parentname,
     is.flag(parallel_vars),
     is.flag(row_groups),
     is.flag(na.rm),
-    is.string(na_level)
+    is.string(na_level),
+    is.flag(drop_arm_levels)
   )
   denominator <- match.arg(denominator)
 
@@ -39,16 +41,33 @@ template_summary_by <- function(parentname,
   y <- list()
 
   # Data processing
-  y$data <- substitute(
-    expr =  anl <- df %>%
-      df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
-    env = list(
-      df = as.name(dataname),
-      by_vars = by_vars,
-      sum_vars = sum_vars,
-      na_level = na_level
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr =  anl <- df %>%
+        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
+      env = list(
+        df = as.name(dataname),
+        by_vars = by_vars,
+        sum_vars = sum_vars,
+        na_level = na_level
+      )
     )
   )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
+    )
+  )
+
+  y$data <- bracket_expr(data_list)
 
   # Build layout
   y$layout_prep <- quote(split_fun <- drop_split_levels)
@@ -322,6 +341,7 @@ tm_t_summary_by <- function(label,
                             useNA = c("ifany", "no"), # nolint
                             na_level = "<Missing>",
                             denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+                            drop_arm_levels = TRUE,
                             pre_output = NULL,
                             post_output = NULL) {
 
@@ -337,6 +357,7 @@ tm_t_summary_by <- function(label,
     is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
+    is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -440,6 +461,11 @@ ui_summary_by <- function(id, ...) {
             choices = a$denominator$choices,
             selected = a$denominator$selected,
             fixed = a$denominator$fixed
+          ),
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
           )
         )
       )
@@ -464,6 +490,7 @@ srv_summary_by <- function(input,
                            summarize_vars,
                            add_total,
                            na_level,
+                           drop_arm_levels,
                            label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -551,7 +578,8 @@ srv_summary_by <- function(input,
       denominator = input$denominator,
       add_total = input$add_total,
       parallel_vars = input$parallel_vars,
-      row_groups = input$row_groups
+      row_groups = input$row_groups,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

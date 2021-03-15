@@ -11,7 +11,8 @@ template_events_by_grade(
   hlt,
   llt,
   grade,
-  add_total = TRUE
+  add_total = TRUE,
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 Template: Events by Grade

@@ -12,7 +12,8 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE,  #nolint
                              na_level = "<Missing>",
-                             denominator = c("N", "n", "omit")) {
+                             denominator = c("N", "n", "omit"),
+                             drop_arm_levels = TRUE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -21,7 +22,8 @@ template_summary <- function(dataname,
     is.flag(add_total),
     is.character(var_labels),
     is.flag(na.rm),
-    is.string(na_level)
+    is.string(na_level),
+    is.flag(drop_arm_levels)
   )
   denominator <- match.arg(denominator)
 
@@ -38,6 +40,15 @@ template_summary <- function(dataname,
         sum_vars = sum_vars,
         na_level = na_level
       )
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
   y$data <- bracket_expr(data_list)
@@ -179,6 +190,7 @@ tm_t_summary <- function(label,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
                          denominator = c("N", "n", "omit"),
+                         drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL) {
   stop_if_not(
@@ -186,6 +198,7 @@ tm_t_summary <- function(label,
     is_character_single(parentname),
     useNA %in% c("ifany", "no"), # nolint,
     is_character_single(na_level),
+    is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -263,6 +276,11 @@ ui_summary <- function(id, ...) {
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
             selected = a$denominator
+          ),
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
           )
         )
       )
@@ -285,6 +303,7 @@ srv_summary <- function(input,
                         summarize_vars,
                         add_total,
                         na_level,
+                        drop_arm_levels,
                         label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -351,7 +370,8 @@ srv_summary <- function(input,
       var_labels = get_var_labels(datasets, dataname, sum_vars),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,
-      denominator = input$denominator
+      denominator = input$denominator,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

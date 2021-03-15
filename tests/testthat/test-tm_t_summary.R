@@ -7,7 +7,8 @@ test_that("template_summary generates correct expressions", {
     add_total = FALSE,
     var_labels = character(),
     na.rm = FALSE,
-    denominator = "N"
+    denominator = "N",
+    drop_arm_levels = TRUE
   )
   expected <- list(
     data = quote({
@@ -16,6 +17,10 @@ test_that("template_summary generates correct expressions", {
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
           na_level = "<Missing>"
         )
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -46,7 +51,8 @@ test_that("template_summary can generate customized table", {
     add_total = TRUE,
     var_labels = c(RACE = "Race"),
     na.rm = TRUE,
-    denominator = "omit"
+    denominator = "omit",
+    drop_arm_levels = FALSE
   )
   expected <- list(
     data = quote({
@@ -55,6 +61,9 @@ test_that("template_summary can generate customized table", {
           omit_columns = setdiff(names(adrs), c("RACE")),
           na_level = "<Missing>"
         )
+      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+      arm_levels <- levels(adsl[["ARMCD"]])
+      anl <- anl %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
     }),
     layout = quote(
       lyt <- basic_table() %>%

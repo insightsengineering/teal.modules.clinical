@@ -15,7 +15,8 @@ template_abnormality <- function(parentname,
                                  treatment_flag_var = "ONTRTFL",
                                  treatment_flag = "Y",
                                  add_total = FALSE,
-                                 exclude_base_abn = FALSE) {
+                                 exclude_base_abn = FALSE,
+                                 drop_arm_levels = TRUE) {
   y <- list()
 
   data_list <- list()
@@ -31,6 +32,16 @@ template_abnormality <- function(parentname,
         treatment_flag_var = as.name(treatment_flag_var),
         treatment_flag = treatment_flag
       )
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
 
@@ -226,6 +237,7 @@ tm_t_abnormality <- function(label,
                              ),
                              add_total = TRUE,
                              exclude_base_abn = FALSE,
+                             drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL) {
   stop_if_not(
@@ -240,6 +252,7 @@ tm_t_abnormality <- function(label,
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
     is_logical_single(exclude_base_abn),
+    is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -333,6 +346,16 @@ ui_t_abnormality <- function(id, ...) {
       ),
       panel_group(
         panel_item(
+          "Additional table settings",
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
+          )
+        )
+      ),
+      panel_group(
+        panel_item(
           "Additional Variables Info",
           data_extract_input(
             id = ns("id_var"),
@@ -384,6 +407,7 @@ srv_t_abnormality <- function(input,
                               baseline_var,
                               treatment_flag_var,
                               add_total,
+                              drop_arm_levels,
                               label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -477,7 +501,8 @@ srv_t_abnormality <- function(input,
       treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
       treatment_flag = input$treatment_flag,
       add_total = input$add_total,
-      exclude_base_abn = input$exclude_base_abn
+      exclude_base_abn = input$exclude_base_abn,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

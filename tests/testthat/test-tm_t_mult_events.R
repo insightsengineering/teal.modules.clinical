@@ -7,12 +7,17 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     hlt = "ATC1",
     llt = "CMDECOD",
     add_total = TRUE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
@@ -79,7 +84,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
 })
 
 
-test_that("template_mult_events generates correct expressions with 2 HLT parameters", {
+test_that("template_mult_events generates correct expressions with 2 HLT parameters and drop_arm_levels = FALSE", {
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -88,12 +93,16 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
     hlt = c("ATC1", "ATC2"),
     llt = "CMDECOD",
     add_total = TRUE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = FALSE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
@@ -163,12 +172,17 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
     hlt = c("ATC1", "ATC2", "ATC3"),
     llt = "CMDECOD",
     add_total = TRUE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
@@ -265,12 +279,17 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
     hlt = c("ATC1", "ATC2", "ATC3", "ATC4"),
     llt = "CMDECOD",
     add_total = TRUE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>%
         df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
@@ -354,12 +373,17 @@ test_that("template_mult_events generates correct expressions with no HLT parame
     hlt = NULL,
     ll = "CMDECOD",
     add_total = TRUE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), "CMDECOD"))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),
@@ -406,12 +430,17 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     hlt = "ATC1",
     llt = "CMDECOD",
     add_total = FALSE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
     }),

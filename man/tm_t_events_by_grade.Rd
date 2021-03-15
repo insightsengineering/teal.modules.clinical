@@ -14,6 +14,7 @@ tm_t_events_by_grade(
   llt,
   grade,
   add_total = TRUE,
+  drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -42,6 +43,10 @@ name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

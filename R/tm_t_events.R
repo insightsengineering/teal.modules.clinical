@@ -21,7 +21,8 @@ template_events <- function(dataname,
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
                             prune_freq = 0,
-                            prune_diff = 0) {
+                            prune_diff = 0,
+                            drop_arm_levels = TRUE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -32,7 +33,8 @@ template_events <- function(dataname,
     is.flag(add_total),
     is.string(event_type),
     is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff)
+    is_numeric_single(prune_diff),
+    is.flag(drop_arm_levels)
   )
 
   sort_criteria <- match.arg(sort_criteria)
@@ -47,6 +49,16 @@ template_events <- function(dataname,
     substitute(
       expr = anl <- df,
       env = list(df = as.name(dataname))
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
 
@@ -442,6 +454,7 @@ tm_t_events <- function(label,
                         sort_criteria = c("freq_desc", "alpha"),
                         prune_freq = 0,
                         prune_diff = 0,
+                        drop_arm_levels = TRUE,
                         pre_output = NULL,
                         post_output = NULL) {
 
@@ -452,6 +465,7 @@ tm_t_events <- function(label,
     is_character_single(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
+    is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -525,6 +539,11 @@ ui_t_events_byterm <- function(id, ...) {
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       panel_item(
         "Additional table settings",
+        checkboxInput(
+          ns("drop_arm_levels"),
+          label = "Drop columns not in filtered analysis dataset",
+          value = a$drop_arm_levels
+        ),
         selectInput(
           inputId = ns("sort_criteria"),
           label = "Sort Criteria",
@@ -572,6 +591,7 @@ srv_t_events_byterm <- function(input,
                                 arm_var,
                                 hlt,
                                 llt,
+                                drop_arm_levels,
                                 label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -657,7 +677,8 @@ srv_t_events_byterm <- function(input,
       event_type = event_type,
       sort_criteria = input$sort_criteria,
       prune_freq = input$prune_freq / 100,
-      prune_diff = input$prune_diff / 100
+      prune_diff = input$prune_diff / 100,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

@@ -6,12 +6,17 @@ test_that("template_events generates correct expressions", {
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
-    add_total = TRUE
+    add_total = TRUE,
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adae
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
@@ -76,12 +81,16 @@ test_that("template_events can generate customized table", {
     hlt = NULL,
     llt = "CMDECOD",
     add_total = FALSE,
-    event_type = "treatment"
+    event_type = "treatment",
+    drop_arm_levels = FALSE
   )
 
   expected <- list(
     data = quote({
       anl <- adcm
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(adsl[["ACTARM"]])
+      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), "CMDECOD")
       )
@@ -124,12 +133,17 @@ test_that("template_events can generate customized table with alphabetical sorti
     llt = "AEDECOD",
     add_total = TRUE,
     event_type = "event",
-    sort_criteria = "alpha"
+    sort_criteria = "alpha",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adae
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       anl <- anl %>% dplyr::mutate(AEBODSYS = as.character(AEBODSYS))
       anl <- anl %>% dplyr::mutate(AEDECOD = as.character(AEDECOD))
       anl <- anl %>% df_explicit_na(
@@ -190,12 +204,17 @@ test_that("template_events can generate customized table with pruning", {
     add_total = TRUE,
     event_type = "event",
     prune_freq = 0.4,
-    prune_diff = 0.1
+    prune_diff = 0.1,
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adae
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )

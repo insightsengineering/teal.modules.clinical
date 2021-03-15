@@ -7,17 +7,22 @@ test_that("template_summary_by generates correct expressions", {
     add_total = TRUE,
     by_vars = c("AVISIT"),
     na.rm = FALSE,
-    denominator = "N"
+    denominator = "N",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adlb %>%
         df_explicit_na(
           omit_columns = setdiff(names(adlb), c("AVISIT", "AVAL")),
           na_level = "<Missing>"
         )
-    ),
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
@@ -63,17 +68,21 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     parallel_vars = TRUE,
     by_vars = c("AVISIT"),
     na.rm = FALSE,
-    denominator = "N"
+    denominator = "N",
+    drop_arm_levels = FALSE
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adlb %>%
         df_explicit_na(
           omit_columns = setdiff(names(adlb), c("AVISIT", c("AVAL", "CHG"))),
           na_level = "<Missing>"
         )
-    ),
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
@@ -116,15 +125,22 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
     row_groups = TRUE,
     by_vars = c("SEX", "COUNTRY"),
     na.rm = FALSE,
-    denominator = "N"
+    denominator = "N",
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
-    data = quote(
+    data = quote({
       anl <- adsl %>%
-        df_explicit_na(omit_columns = setdiff(names(adsl), c(c("SEX", "COUNTRY"), "AVAL")),
-                       na_level = "<Missing>")
-    ),
+        df_explicit_na(
+          omit_columns = setdiff(names(adsl), c(c("SEX", "COUNTRY"), "AVAL")),
+          na_level = "<Missing>"
+        )
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%

@@ -19,6 +19,7 @@ tm_t_summary_by(
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+  drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -67,6 +68,10 @@ chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

@@ -67,6 +67,9 @@
 #'   time points that can be used in [tern::surv_timepoint()].
 #' @param time_unit_var (`character`)\cr
 #'   name of the variable representing time units.
+#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
+#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
+#'   `arm_var` levels are set to those used in the `parantname` dataset.
 #' @name template_arguments
 #'
 NULL
@@ -156,6 +159,9 @@ NULL
 #' @param time_unit_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for the time unit
 #'   variable.
+#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
+#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
+#'   `arm_var` levels are set to those used in the `parantname` dataset.
 #' @param pre_output optional, (`shiny.tag`)\cr
 #'   with text placed before the output to put the output into context.
 #'   For example a title.

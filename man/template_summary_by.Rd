@@ -16,7 +16,8 @@ template_summary_by(
   row_groups = FALSE,
   na.rm = FALSE,
   na_level = "<Missing>",
-  denominator = c("N", "n", "omit")
+  denominator = c("N", "n", "omit"),
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
@@ -59,6 +60,10 @@ population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is
 omitted.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 Template: Summarize Variables by Row Groups Module

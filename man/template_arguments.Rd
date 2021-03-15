@@ -88,6 +88,10 @@ time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_
 
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

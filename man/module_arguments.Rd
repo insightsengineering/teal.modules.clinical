@@ -103,6 +103,10 @@ can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 object with all available choices and preselected option for the time unit
 variable.}
 
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
 For example a title.}

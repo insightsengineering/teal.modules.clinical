@@ -6,12 +6,17 @@ test_that("template_events_by_grade generates standard expressions", {
     hlt = "AEBODSYS",
     llt = "AEDECOD",
     grade = "AESEV",
-    add_total = TRUE
+    add_total = TRUE,
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adae # nolintr
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -82,12 +87,16 @@ test_that("template_events_by_grade without adding total column option works as 
     hlt = "AEBODSYS",
     llt = "AEDECOD",
     grade = "AESEV",
-    add_total = FALSE
+    add_total = FALSE,
+    drop_arm_levels = FALSE
   )
 
   expected <- list(
     data = quote({
       anl <- adae # nolintr
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(adsl[["ACTARM"]])
+      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -161,12 +170,17 @@ test_that("template_events_by_grade with hlt only works", {
     hlt = "AEBODSYS",
     llt = NULL,
     grade = "AESEV",
-    add_total = TRUE
+    add_total = TRUE,
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adae # nolintr
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),

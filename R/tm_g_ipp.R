@@ -140,7 +140,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' library(dplyr)
 #' library(random.cdisc.data)
 #'
-#' adsl <- radsl(N = 20, seed = 1)
+#' adsl <- radsl(cached = TRUE) %>% slice(1:20)
 #' adlb <- radlb(adsl, seed = 3)
 #'
 #' adsl <- df_explicit_na(adsl)
@@ -152,7 +152,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'     cdisc_dataset(
 #'     "ADSL",
 #'     adsl,
-#'     code = "ADSL <- radsl(N = 20, seed = 1)
+#'     code = "ADSL <- radsl(cached = TRUE) %>% slice(1:20)
 #'             ADSL <- df_explicit_na(ADSL)"
 #'             ),
 #'     cdisc_dataset(

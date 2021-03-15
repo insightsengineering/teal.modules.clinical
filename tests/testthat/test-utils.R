@@ -219,6 +219,41 @@ test_that("prepare_arm does not do anything when we don't want to compare or dro
   expect_identical(result, result2)
 })
 
+# prepare_arm_levels ----
+test_that("prepare_arm_levels with standard inputs", {
+  result <- prepare_arm_levels(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ARMCD",
+    drop_arm_levels = TRUE
+  )
+
+  expected <- quote({
+    adae <- adae %>% mutate(ARMCD = droplevels(ARMCD))
+    arm_levels <- levels(adae[["ARMCD"]])
+    adsl <- adsl %>% filter(ARMCD %in% arm_levels)
+    adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+  })
+
+  expect_equal(result, expected)
+})
+
+test_that("prepare_arm_levels can use parentname arm levels", {
+  result <- prepare_arm_levels(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ARMCD",
+    drop_arm_levels = FALSE
+  )
+
+  expected <- quote({
+    adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+    arm_levels <- levels(adsl[["ARMCD"]])
+    adae <- adae %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
+  })
+
+  expect_equal(result, expected)
+})
 
 test_that("color_lab_values main", {
 

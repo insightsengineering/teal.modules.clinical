@@ -23,6 +23,7 @@ tm_t_abnormality(
     fixed = TRUE),
   add_total = TRUE,
   exclude_base_abn = FALSE,
+  drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -66,6 +67,10 @@ records in \code{treatment_flag_var}.}
 whether to include column with total number of patients.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

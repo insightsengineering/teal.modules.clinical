@@ -12,7 +12,8 @@ template_mult_events(
   hlt,
   llt,
   add_total = TRUE,
-  event_type = "event"
+  event_type = "event",
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ whether to include column with total number of patients.}
 
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
 Default is "event".}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 Template: Events by Term

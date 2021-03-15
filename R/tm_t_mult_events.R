@@ -14,7 +14,8 @@ template_mult_events <- function(dataname,
                                  hlt,
                                  llt,
                                  add_total = TRUE,
-                                 event_type = "event") {
+                                 event_type = "event",
+                                 drop_arm_levels = TRUE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -24,7 +25,8 @@ template_mult_events <- function(dataname,
     is.null(hlt) || is.character(hlt),
     is.string(llt),
     is.flag(add_total),
-    is.string(event_type)
+    is.string(event_type),
+    is.flag(drop_arm_levels)
   )
 
   y <- list()
@@ -37,6 +39,16 @@ template_mult_events <- function(dataname,
     substitute(
       expr = anl <- df,
       env = list(df = as.name(dataname))
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
 
@@ -301,6 +313,7 @@ tm_t_mult_events <- function(label, # nolint
                              llt,
                              add_total = TRUE,
                              event_type = "event",
+                             drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL) {
   stop_if_not(
@@ -308,6 +321,7 @@ tm_t_mult_events <- function(label, # nolint
     is_character_single(dataname),
     is_logical_single(add_total),
     is_character_single(event_type),
+    is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -379,6 +393,16 @@ ui_t_mult_events_byterm <- function(id, ...) {
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       panel_group(
         panel_item(
+          "Additional table settings",
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
+          )
+        )
+      ),
+      panel_group(
+        panel_item(
           "Additional Variables Info",
           data_extract_input(
             id = ns("seq_var"),
@@ -407,6 +431,7 @@ srv_t_mult_events_byterm <- function(input,
                                      seq_var,
                                      hlt,
                                      llt,
+                                     drop_arm_levels,
                                      label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -481,7 +506,8 @@ srv_t_mult_events_byterm <- function(input,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = input_llt,
       add_total = input$add_total,
-      event_type = event_type
+      event_type = event_type,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

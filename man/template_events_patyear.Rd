@@ -11,7 +11,8 @@ template_events_patyear(
   events_var,
   aval_var = "AVAL",
   add_total = TRUE,
-  control = control_incidence_rate()
+  control = control_incidence_rate(),
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,10 @@ name of the analysis variable.}
 whether to include column with total number of patients.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 Template: Event rates adjusted for patient-years

@@ -7,12 +7,17 @@ test_that("template_abnormality generates correct expressions with default argum
     abnormal = c(Low = "LOW"),
     grade = "ANRIND",
     add_total = FALSE,
-    exclude_base_abn = FALSE
+    exclude_base_abn = FALSE,
+    drop_arm_levels = TRUE
   )
 
   expected <- list(
     data = quote({
       anl <- adlb %>% filter(ONTRTFL == "Y" & !is.na(ANRIND))
+      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(anl[["ARM"]])
+      adsl <- adsl %>% filter(ARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -57,12 +62,16 @@ test_that("template_abnormality generates correct expressions with custom argume
     treatment_flag_var = "MYTRTFL",
     treatment_flag = "YES",
     add_total = TRUE,
-    exclude_base_abn = TRUE
+    exclude_base_abn = TRUE,
+    drop_arm_levels = FALSE
   )
 
   expected <- list(
     data = quote({
       anl <- adlb %>% filter(MYTRTFL == "YES" & !is.na(MYANRIND))
+      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(

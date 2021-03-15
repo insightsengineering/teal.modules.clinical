@@ -123,9 +123,9 @@ add_event_flags <- function(dat) {
       TMPFL_SER = "Serious AE",
       TMPFL_REL = "Related AE",
       TMPFL_GR5 = "Grade 5 AE",
-      TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
+      TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-      TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
+      TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
     )
 }
 
@@ -164,9 +164,9 @@ app <- init(
                 TMPFL_SER = "Serious AE",
                 TMPFL_REL = "Related AE",
                 TMPFL_GR5 = "Grade 5 AE",
-                TMP_SMQ01 = aesi_label(ADAE$SMQ01NAM, ADAE$SMQ01SC),
+                TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
                 TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-                TMP_CQ01 = aesi_label(ADAE$CQ01NAM)
+                TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
               )
           }
           # Generating user-defined event flags.

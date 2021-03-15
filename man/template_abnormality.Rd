@@ -15,7 +15,8 @@ template_abnormality(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   add_total = FALSE,
-  exclude_base_abn = FALSE
+  exclude_base_abn = FALSE,
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ variable names used to split the summary by rows.}
 whether to include column with total number of patients.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 Template: Abnormality Summary Table

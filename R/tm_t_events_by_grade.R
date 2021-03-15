@@ -11,7 +11,8 @@ template_events_by_grade <- function(dataname,
                                      hlt,
                                      llt,
                                      grade,
-                                     add_total = TRUE) {
+                                     add_total = TRUE,
+                                     drop_arm_levels = TRUE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -19,7 +20,8 @@ template_events_by_grade <- function(dataname,
     is.string(hlt) || is.null(hlt),
     is.string(llt) || is.null(llt),
     is.string(grade),
-    is.flag(add_total)
+    is.flag(add_total),
+    is.flag(drop_arm_levels)
   )
 
   y <- list()
@@ -35,6 +37,17 @@ template_events_by_grade <- function(dataname,
       )
     )
   )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
+    )
+  )
+
   data_list <- add_expr(
     data_list,
     substitute(
@@ -282,6 +295,7 @@ tm_t_events_by_grade <- function(label,
                                  llt,
                                  grade,
                                  add_total = TRUE,
+                                 drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL) {
 
@@ -290,6 +304,7 @@ tm_t_events_by_grade <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is_logical_single(add_total),
+    is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -365,7 +380,17 @@ ui_t_events_by_grade <- function(id, ...) {
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total)
+        value = a$add_total),
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
+          )
+        )
+      )
     ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
@@ -384,7 +409,8 @@ srv_t_events_by_grade <- function(input,
                                   arm_var,
                                   hlt,
                                   llt,
-                                  grade) {
+                                  grade,
+                                  drop_arm_levels) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -459,7 +485,8 @@ srv_t_events_by_grade <- function(input,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
       grade = as.vector(anl_m$columns_source$grade),
-      add_total = input$add_total
+      add_total = input$add_total,
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

@@ -12,15 +12,30 @@ template_events_patyear <- function(dataname,
                                     events_var,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
-                                    control = control_incidence_rate()) {
+                                    control = control_incidence_rate(),
+                                    drop_arm_levels = TRUE) {
   # initialize
   y <- list()
 
   # data
-  y$data <- substitute(
-    expr = anl <- df,
-    env = list(df = as.name(dataname))
+  data_list <- list()
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- df,
+      env = list(df = as.name(dataname))
+    )
   )
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
+    )
+  )
+  y$data <- bracket_expr(data_list)
 
   # layout
   layout_list <- list()
@@ -99,6 +114,7 @@ template_events_patyear <- function(dataname,
 #' adsl <- radsl(cached = TRUE)
 #' adaette <- radaette(cached = TRUE)
 #' adaette <- adaette %>%
+#'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
 #'   dplyr::mutate(n_events = as.integer(is_event))
 #'
@@ -110,6 +126,7 @@ template_events_patyear <- function(dataname,
 #'       "ADSL <- radsl(cached = TRUE)
 #'       ADAETTE <- radaette(cached = TRUE)
 #'       ADAETTE <- ADAETTE %>%
+#'         dplyr::filter(PARAMCD %in% c('AETTE1', 'AETTE2', 'AETTE3')) %>%
 #'         dplyr::mutate(is_event = CNSR == 0) %>%
 #'         dplyr::mutate(n_events = as.integer(is_event))"
 #'   ),
@@ -154,6 +171,7 @@ tm_t_events_patyear <- function(label,
                                 ),
                                 add_total = TRUE,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL
                                 ) {
@@ -167,6 +185,7 @@ tm_t_events_patyear <- function(label,
     is.choices_selected(avalu_var),
     is.flag(add_total),
     is.choices_selected(conf_level),
+    is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -235,31 +254,16 @@ ui_events_patyear <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("avalu_var"),
-        label = "Analysis Unit Variable",
-        data_extract_spec = a$avalu_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
         id = ns("events_var"),
         label = "Event Variable",
         data_extract_spec = a$events_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
-        ns("time_unit_input"),
-        "Analysis Unit",
-        choices = NULL,
-        selected = NULL,
-        multiple = FALSE
-      ),
-      optionalSelectInput(
-        ns("time_unit_output"),
-        "Time Unit for AE Rate (in Patient-Years)",
-        choices = c(0.1, 1, 10, 100, 1000),
-        selected = 100,
-        multiple = FALSE,
-        fixed = FALSE
+      data_extract_input(
+        id = ns("avalu_var"),
+        label = "Analysis Unit Variable",
+        data_extract_spec = a$avalu_var,
+        is_single_dataset = is_single_dataset_value
       ),
       optionalSelectInput(
         inputId = ns("conf_level"),
@@ -276,6 +280,31 @@ ui_events_patyear <- function(id, ...) {
         selected = "Normal (rate)",
         multiple = FALSE,
         fixed = FALSE
+      ),
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
+          ),
+          optionalSelectInput(
+            ns("time_unit_output"),
+            "Time Unit for AE Rate (in Patient-Years)",
+            choices = c(0.1, 1, 10, 100, 1000),
+            selected = 100,
+            multiple = FALSE,
+            fixed = FALSE
+          ),
+          selectInput(
+            ns("time_unit_input"),
+            "Analysis Unit",
+            choices = NULL,
+            selected = NULL,
+            multiple = FALSE
+          )
+        )
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -297,6 +326,7 @@ srv_events_patyear <- function(input,
                                avalu_var,
                                events_var,
                                add_total,
+                               drop_arm_levels,
                                label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -405,7 +435,8 @@ srv_events_patyear <- function(input,
           "year"
         },
         time_unit_output = as.numeric(input$time_unit_output)
-      )
+      ),
+      drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

@@ -17,6 +17,7 @@ tm_t_events_patyear(
     TRUE),
   add_total = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -55,6 +56,10 @@ whether to include column with total number of patients.}
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
 For example a title.}
@@ -74,6 +79,7 @@ library(random.cdisc.data)
 adsl <- radsl(cached = TRUE)
 adaette <- radaette(cached = TRUE)
 adaette <- adaette \%>\%
+  dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
   dplyr::mutate(n_events = as.integer(is_event))
 
@@ -85,6 +91,7 @@ app <- init(
       "ADSL <- radsl(cached = TRUE)
       ADAETTE <- radaette(cached = TRUE)
       ADAETTE <- ADAETTE \%>\%
+        dplyr::filter(PARAMCD \%in\% c('AETTE1', 'AETTE2', 'AETTE3')) \%>\%
         dplyr::mutate(is_event = CNSR == 0) \%>\%
         dplyr::mutate(n_events = as.integer(is_event))"
   ),
