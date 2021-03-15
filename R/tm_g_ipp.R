@@ -11,6 +11,7 @@
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
+                           arm_var,
                            aval_var = "AVAL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
@@ -22,6 +23,7 @@ template_g_ipp <- function(dataname = "ANL",
   assert_that(
     is.string(dataname),
     is.string(paramcd),
+    is.string(arm_var),
     is.string(aval_var),
     is.string(avalu_var),
     is.string(id_var),
@@ -36,7 +38,7 @@ template_g_ipp <- function(dataname = "ANL",
 
   y$data <- substitute(
     expr = {
-      anl <- df
+      anl <- df %>% droplevels()
       },
     env = list(df = as.name(dataname))
   )
@@ -66,6 +68,7 @@ template_g_ipp <- function(dataname = "ANL",
             ")",
             " over Time"
           ),
+          subtitle = paste(levels(anl[[arm]]), collapse = ", "),
           id_var = id,
           add_baseline_hline = add_baseline_hline,
           yvar_baseline = base
@@ -79,7 +82,8 @@ template_g_ipp <- function(dataname = "ANL",
         id = id_var,
         add_baseline_hline = add_baseline_hline,
         base = base_var,
-        avalu = avalu_var
+        avalu = avalu_var,
+        arm = arm_var
       )
     )
   )
@@ -168,7 +172,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
-#'         value_choices(adlb, c("ARMCD")),
+#'         value_choices(adlb, "ARMCD"),
 #'         "ARM A"
 #'       ),
 #'       paramcd = choices_selected(
@@ -269,7 +273,7 @@ tm_g_ipp <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    arm_var = cs_to_des_filter(arm_var, dataname = parentname, multiple = TRUE),
+    arm_var = cs_to_des_filter(arm_var, dataname = parentname, multiple = TRUE, include_vars = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
@@ -481,7 +485,8 @@ srv_g_ipp <- function(input,
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
-      input_paramcd <- unlist(paramcd$filter)["vars"]
+      paramcd <- unlist(paramcd$filter)["vars"],
+      arm_var <-  unlist(arm_var$filter)["vars"]
     )
     mapply(expression = my_calls, chunks_push)
   })

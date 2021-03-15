@@ -123,7 +123,7 @@ app <- init(
       label = "Individual Patient Plot",
       dataname = "ADLB",
       arm_var = choices_selected(
-        value_choices(adlb, c("ARMCD")),
+        value_choices(adlb, "ARMCD"),
         "ARM A"
       ),
       paramcd = choices_selected(

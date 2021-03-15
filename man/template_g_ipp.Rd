@@ -7,6 +7,7 @@
 template_g_ipp(
   dataname = "ANL",
   paramcd,
+  arm_var,
   aval_var = "AVAL",
   avalu_var = "AVALU",
   id_var = "USUBJID",
@@ -22,6 +23,9 @@ analysis data used in teal module.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
+
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}

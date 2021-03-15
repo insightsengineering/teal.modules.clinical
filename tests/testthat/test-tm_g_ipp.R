@@ -1,9 +1,9 @@
 test_that("template_g_ipp works as expected with default arguments", {
-  result <- template_g_ipp(paramcd = "PARAMCD")
+  result <- template_g_ipp(paramcd = "PARAMCD", arm_var = "ARMCD")
 
   expected <- list(
     data = quote({
-      anl <- ANL
+      anl <- ANL %>% droplevels()
     }),
     graph = quote({
       plot <- h_g_ipp(
@@ -26,6 +26,10 @@ test_that("template_g_ipp works as expected with default arguments", {
           ")",
           " over Time"
         ),
+        subtitle = paste(
+          levels(anl[["ARMCD"]]),
+          collapse = ", "
+          ),
         id_var = "USUBJID",
         add_baseline_hline = FALSE,
         yvar_baseline = "BASE"
@@ -44,6 +48,7 @@ test_that("template_g_ipp works as expected with non-default arguments", {
     paramcd = "PARAM",
     aval_var = "AVAL",
     avalu_var = "AVALU",
+    arm_var = "ARMCD",
     id_var = "SUBJID",
     visit_var = "AVISIT",
     base_var = "BASE",
@@ -53,7 +58,7 @@ test_that("template_g_ipp works as expected with non-default arguments", {
 
   expected <- list(
     data = quote({
-      anl <- adlb
+      anl <- adlb %>% droplevels()
     }),
     graph = quote({
       plot <- h_g_ipp(
@@ -76,6 +81,10 @@ test_that("template_g_ipp works as expected with non-default arguments", {
           ")",
           " over Time"
         ),
+        subtitle = paste(
+          levels(anl[["ARMCD"]]),
+          collapse = ", "
+          ),
         id_var = "SUBJID",
         add_baseline_hline = TRUE,
         yvar_baseline = "BASE"
