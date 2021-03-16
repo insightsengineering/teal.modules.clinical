@@ -288,6 +288,7 @@ template_mult_events <- function(dataname,
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",
 #'       dataname = "ADCM",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
 #'       hlt = choices_selected(
 #'         choices = variable_choices(adcm, c("ATC1", "ATC2", "ATC3", "ATC4")),
 #'         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
@@ -308,7 +309,7 @@ tm_t_mult_events <- function(label, # nolint
                              dataname,
                              parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                              arm_var,
-                             seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
+                             seq_var,
                              hlt,
                              llt,
                              add_total = TRUE,
