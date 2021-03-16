@@ -693,7 +693,6 @@ template_patient_timeline <- function(dataname = "pt_merge",
             )
         }
 
-
         # medication
         med_chart_vars_na <- any(
           vapply(list(pt_cmtrt_var, pt_dstime_start_var, pt_dstime_end_var), is.null, FUN.VALUE = logical(1))
@@ -917,7 +916,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #' ADLB <- radlb(cached = TRUE)
 #'
 #' #' Modify ADCM
-#' ADCM$CMINDC <- "Indication"
+#' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #' ADCM$CMDOSE <- 1
 #' ADCM$CMTRT <- ADCM$CMCAT
 #' ADCM$CMDOSU <- "U"
@@ -945,7 +944,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
 #'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
 #'     cdisc_dataset("ADCM", ADCM, code = 'ADCM <- radcm(cached = TRUE)
-#'       ADCM$CMINDC <- "Indication"
+#'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMTRT <- ADCM$CMCAT
 #'       ADCM$CMDOSU <- "U"
