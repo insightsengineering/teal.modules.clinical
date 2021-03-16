@@ -364,7 +364,7 @@ template_tte <- function(dataname = "ANL",
 #'             strata_var = choices_selected(
 #'               variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'               "SEX"),
-#'             time_points = choices_selected(c(6, 8), 6),
+#'             time_points = choices_selected(c(182, 243), 182),
 #'             event_desc_var = choices_selected(
 #'               variable_choices(ADTTE, "EVNTDESC"),
 #'               "EVNTDESC",
