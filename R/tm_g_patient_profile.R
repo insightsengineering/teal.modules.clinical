@@ -2386,10 +2386,25 @@ srv_g_patient_profile <- function(input,
     validate_checks()
 
     df <- patient_timeline_merged_data()$data()
+    ae_term <- input$`ae_term-dataset_ADAE_singleextract-select`
+    pt_aetime_start <- input$`pt_aetime_start-dataset_ADAE_singleextract-select`
+    pt_aetime_end <- input$`pt_aetime_end-dataset_ADAE_singleextract-select`
+    pt_dstime_start <- input$`pt_dstime_start-dataset_ADCM_singleextract-select`
+    pt_dstime_end <- input$`pt_dstime_end-dataset_ADCM_singleextract-select`
+    pt_cmtrt <- input$`cmtrt-dataset_ADCM_singleextract-select`
+
+    ae_chart_vars_na <- any(vapply(list(ae_term, pt_aetime_start, pt_aetime_end), is.null, FUN.VALUE = logical(1)))
+    ds_chart_vars_na <- any(vapply(list(pt_dstime_start, pt_dstime_end), is.null, FUN.VALUE = logical(1)))
 
     validate(need(
       nrow(df[df[[patient_col]] == patient_id(), ]) > 0,
       "Selected patient does not have enough data for a timeline plot"
+    ))
+
+    validate(need(
+      isFALSE(ae_chart_vars_na) || isFALSE(ds_chart_vars_na),
+      "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+      Please select the appropriate input variables."
     ))
 
     patient_timeline_stack <- chunks$new()
@@ -2401,12 +2416,12 @@ srv_g_patient_profile <- function(input,
 
     patient_timeline_calls <- template_patient_timeline(
       dataname = "pt_merge",
-      ae_term = input$`ae_term-dataset_ADAE_singleextract-select`,
-      pt_aetime_start = input$`pt_aetime_start-dataset_ADAE_singleextract-select`,
-      pt_aetime_end = input$`pt_aetime_end-dataset_ADAE_singleextract-select`,
-      pt_dstime_start = input$`pt_dstime_start-dataset_ADCM_singleextract-select`,
-      pt_dstime_end = input$`pt_dstime_end-dataset_ADCM_singleextract-select`,
-      pt_cmtrt = input$`cmtrt-dataset_ADCM_singleextract-select`
+      ae_term = ae_term,
+      pt_aetime_start = pt_aetime_start,
+      pt_aetime_end = pt_aetime_end,
+      pt_dstime_start = pt_dstime_start,
+      pt_dstime_end = pt_dstime_end,
+      pt_cmtrt = pt_cmtrt
     )
 
     mapply(patient_timeline_calls, FUN = function(x) chunks_push(x, chunks = patient_timeline_stack))
