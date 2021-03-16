@@ -337,6 +337,7 @@ srv_events_patyear <- function(input,
     avalu_choices <- anl %>%
       select(as.name(avalu_var$select$selected)) %>%
       unique() %>%
+      filter(!is.na(.data[[avalu_var$select$selected]])) %>%
       arrange() %>%
       pull()
     updateSelectInput(
