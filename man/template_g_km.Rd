@@ -87,8 +87,7 @@ name of the variable representing time units.}
 \code{wald} (default) or \code{likelihood}.}
 
 \item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table
-on the top right corner of the Kaplan-Meier curve estimating the
-median survival time per group.}
+on the Kaplan-Meier curve estimating the median survival time per group.}
 
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 }

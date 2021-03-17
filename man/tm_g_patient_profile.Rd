@@ -243,7 +243,7 @@ app <- init(
           choices = variable_choices(ADMH, c("MHTERM")),
           selected = c("MHTERM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       mh_bodsys = data_extract_spec(
@@ -252,7 +252,7 @@ app <- init(
           choices = variable_choices(ADMH, "MHBODSYS"),
           selected = c("MHBODSYS"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       v_paramcd = data_extract_spec(
@@ -261,7 +261,7 @@ app <- init(
           choices = variable_choices(ADVS, "PARAMCD"),
           selected = c("PARAMCD"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       v_param = data_extract_spec(
@@ -270,7 +270,7 @@ app <- init(
           choices = variable_choices(ADVS, "PARAM"),
           selected = c("PARAM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_paramcd = data_extract_spec(
@@ -279,7 +279,7 @@ app <- init(
           choices = variable_choices(ADLB, "PARAMCD"),
           selected = c("PARAMCD"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_param = data_extract_spec(
@@ -288,7 +288,7 @@ app <- init(
           choices = variable_choices(ADLB, "PARAM"),
           selected = c("PARAM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       v_xaxis = data_extract_spec(
@@ -297,7 +297,7 @@ app <- init(
           choices = variable_choices(ADVS, "ADY"),
           selected = c("ADY"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_timepoints = data_extract_spec(
@@ -306,7 +306,7 @@ app <- init(
           choices = variable_choices(ADLB, "ADY"),
           selected = c("ADY"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_anrind = data_extract_spec(
@@ -315,7 +315,7 @@ app <- init(
           choices = variable_choices(ADLB, "ANRIND"),
           selected = c("ANRIND"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       v_aval = data_extract_spec(
@@ -324,7 +324,7 @@ app <- init(
           choices = variable_choices(ADVS, "AVAL"),
           selected = c("AVAL"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_aval = data_extract_spec(
@@ -333,7 +333,7 @@ app <- init(
           choices = variable_choices(ADLB, "AVAL"),
           selected = c("AVAL"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       lb_avalu = data_extract_spec(
@@ -342,7 +342,7 @@ app <- init(
           choices = variable_choices(ADLB, "AVALU"),
           selected = c("AVALU"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       atirel = data_extract_spec(
@@ -351,7 +351,7 @@ app <- init(
           choices = variable_choices(ADCM, "ATIREL"),
           selected = c("ATIREL"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       medname_decoding = data_extract_spec(
@@ -360,7 +360,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMDECOD"),
           selected = c("CMDECOD"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       cmindc = data_extract_spec(
@@ -369,7 +369,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMINDC"),
           selected = c("CMINDC"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       t_cmdose = data_extract_spec(
@@ -378,7 +378,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMDOSE"),
           selected = c("CMDOSE"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       cmtrt = data_extract_spec(
@@ -387,7 +387,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMTRT"),
           selected = c("CMTRT"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       t_cmdosu = data_extract_spec(
@@ -396,7 +396,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMDOSU"),
           selected = c("CMDOSU"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       t_cmroute = data_extract_spec(
@@ -405,7 +405,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMROUTE"),
           selected = c("CMROUTE"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       t_cmdosfrq = data_extract_spec(
@@ -414,7 +414,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMDOSFRQ"),
           selected = c("CMDOSFRQ"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       cmstdy = data_extract_spec(
@@ -423,7 +423,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMSTDY"),
           selected = c("CMSTDY"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       t_cmendy = data_extract_spec(
@@ -432,7 +432,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMENDY"),
           selected = c("CMENDY"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_term = data_extract_spec(
@@ -441,7 +441,7 @@ app <- init(
           choices = variable_choices(ADAE, "AETERM"),
           selected = c("AETERM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_tox_grade = data_extract_spec(
@@ -450,7 +450,7 @@ app <- init(
           choices = variable_choices(ADAE, "AETOXGR"),
           selected = c("AETOXGR"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_causality = data_extract_spec(
@@ -459,7 +459,7 @@ app <- init(
           choices = variable_choices(ADAE, "AEREL"),
           selected = c("AEREL"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_outcome = data_extract_spec(
@@ -468,7 +468,7 @@ app <- init(
           choices = variable_choices(ADAE, "AEOUT"),
           selected = c("AEOUT"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_action = data_extract_spec(
@@ -477,7 +477,7 @@ app <- init(
           choices = variable_choices(ADAE, "AEACN"),
           selected = c("AEACN"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_time = data_extract_spec(
@@ -486,7 +486,7 @@ app <- init(
           choices = variable_choices(ADAE, "ASTDY"),
           selected = c("ASTDY"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       ae_decod = NULL,
@@ -496,7 +496,7 @@ app <- init(
           choices = variable_choices(ADAE, "ASTDTM"),
           selected = c("ASTDTM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       pt_aetime_end = data_extract_spec(
@@ -505,7 +505,7 @@ app <- init(
           choices = variable_choices(ADAE, "AENDTM"),
           selected = c("AENDTM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       pt_dstime_start = data_extract_spec(
@@ -514,7 +514,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMASTDTM"),
           selected = c("CMASTDTM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       ),
       pt_dstime_end = data_extract_spec(
@@ -523,7 +523,7 @@ app <- init(
           choices = variable_choices(ADCM, "CMAENDTM"),
           selected = c("CMAENDTM"),
           multiple = FALSE,
-          fixed = FALSE
+          fixed = TRUE
         )
       )
     )
