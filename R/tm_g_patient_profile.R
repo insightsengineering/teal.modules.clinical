@@ -410,7 +410,6 @@ template_therapy <- function(dataname = "t_merge",
         distinct() %>%
         mutate(CMSTDY = case_when(
           is.na(t_cmstdy) ~ 1,
-          t_cmstdy < 1 ~ 1,
           TRUE ~ t_cmstdy
         )) %>%
         mutate(CMENDY = case_when(
@@ -429,15 +428,14 @@ template_therapy <- function(dataname = "t_merge",
         geom_text(
           data =
             data %>%
-            select(CMDECOD, t_cmindc) %>%
+            select(CMDECOD, t_cmindc, CMSTDY) %>%
             distinct(),
-          aes(x = 1, label = CMDECOD), color = "black",
+          aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",
           nudge_y = 0.1,
           size = 3
         ) +
-        xlim(1, max_day) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
         theme_minimal() +
