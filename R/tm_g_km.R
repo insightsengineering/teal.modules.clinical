@@ -30,7 +30,8 @@ template_g_km <- function(dataname = "ANL",
                           yval = "Survival",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
-                          annot_coxph = TRUE) {
+                          annot_coxph = TRUE,
+                          ci_ribbon = FALSE) {
   assert_that(
     is.string(dataname),
     is.string(arm_var),
@@ -152,6 +153,7 @@ template_g_km <- function(dataname = "ANL",
                 annot_coxph = annot_coxph,
                 control_surv = control_surv_timepoint(conf_level = conf_level),
                 control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+                ci_ribbon = ci_ribbon,
                 vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
               )
             }
@@ -168,7 +170,8 @@ template_g_km <- function(dataname = "ANL",
           pval_method = pval_method,
           annot_surv_med = annot_surv_med,
           annot_coxph = annot_coxph,
-          ties = ties
+          ties = ties,
+          ci_ribbon = ci_ribbon
         )
       )
     )
@@ -189,7 +192,8 @@ template_g_km <- function(dataname = "ANL",
             control_surv = control_surv_timepoint(conf_level = conf_level),
             control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
             annot_surv_med = annot_surv_med,
-            annot_coxph = annot_coxph
+            annot_coxph = annot_coxph,
+            ci_ribbon = ci_ribbon
           )
         },
         env = list(
@@ -202,7 +206,8 @@ template_g_km <- function(dataname = "ANL",
           pval_method = pval_method,
           annot_surv_med = annot_surv_med,
           annot_coxph = annot_coxph,
-          ties = ties
+          ties = ties,
+          ci_ribbon = ci_ribbon
         )
       )
     )
@@ -502,6 +507,12 @@ ui_g_km <- function(id, ...) {
             width = "100%"
           ),
           checkboxInput(
+            inputId = ns("show_ci_ribbon"),
+            label = "Show CI ribbon",
+            value = FALSE,
+            width = "100%"
+          ),
+          checkboxInput(
             inputId = ns("show_km_table"),
             label = "Show KM table",
             value = TRUE,
@@ -676,7 +687,8 @@ srv_g_km <- function(input,
       conf_level = as.numeric(input$conf_level),
       ties = input$ties_coxph,
       xlab = input$xlab,
-      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure")
+      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+      ci_ribbon = input$show_ci_ribbon
     )
     mapply(expression = my_calls, chunks_push)
   })

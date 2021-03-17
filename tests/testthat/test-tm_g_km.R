@@ -44,6 +44,7 @@ test_that("template_g_km works as expected with default arguments", {
                 pval_method = "log-rank",
                 ties = "efron"
               ),
+              ci_ribbon = FALSE,
               vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
             )
           }

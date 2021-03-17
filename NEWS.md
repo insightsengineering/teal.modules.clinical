@@ -6,7 +6,7 @@
 
 ### Enhancements
 * The argument `drop_arm_levels` was added to all safety modules. This allows removal of columns based on factor levels not found in filtered data.
-* `tm_g_km` updated to allow plot of failure probability on y-axis and tick interval selection on x-axis.
+* `tm_g_km` updated to allow plot of failure probability on y-axis, tick interval selection on x-axis and option to create plot without confidence interval ribbon (new default).
 * The argument `time_unit_var` was added to `template_g_km` to add the time unit to the x-axis label.
 
 ### Miscellaneous
