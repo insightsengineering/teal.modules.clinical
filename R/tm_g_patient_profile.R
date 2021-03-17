@@ -740,7 +740,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
         vistime_data_empty <- nrow(vistime_data) == 0
         vistime_data$start <- if (!vistime_data_empty) as.POSIXct(vistime_data$start, origin = posixct_origin)
         vistime_data$end <- if (!vistime_data_empty) as.POSIXct(vistime_data$end, origin = posixct_origin)
-        vistime_data <- vistime_data %>% filter(complete.cases(.))
+        vistime_data <- vistime_data %>% filter(stats::complete.cases(.))
         patient_timeline_plot <-
           vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group")
       },
@@ -2399,7 +2399,7 @@ srv_g_patient_profile <- function(input,
 
     validate(
       need(
-        sum(complete.cases(p_timeline_data[p_timeline_data[[patient_col]] == patient_id(),  p_time_cols])) > 0,
+        sum(stats::complete.cases(p_timeline_data[p_timeline_data[[patient_col]] == patient_id(),  p_time_cols])) > 0,
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(
