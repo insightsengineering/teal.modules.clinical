@@ -668,6 +668,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
       expr = {
         # three sections are represented here: advers events, dosing and medication
         # adverse events
+
         ae_chart_vars_na <- any(
           vapply(list(ae_term_var, pt_aetime_start_var, pt_aetime_end_var), is.null, FUN.VALUE = logical(1))
           )
@@ -711,7 +712,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
 
         vistime_data <- data.frame(
           event = c(
-            if (ae_chart_vars_na) NULL else as.character(ae_chart[[ae_term_var]]),
+            if (ae_chart_vars_na) NULL else  as.character(ae_chart[[ae_term_var]]),
             as.character(unique(ds_chart[["label_start"]])),
             as.character(unique(ds_chart[["label_end"]])),
             if (med_chart_vars_na) NULL else as.character(med_chart[[pt_cmtrt_var]])
@@ -741,7 +742,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
         vistime_data_empty <- nrow(vistime_data) == 0
         vistime_data$start <- if (!vistime_data_empty) as.POSIXct(vistime_data$start, origin = posixct_origin)
         vistime_data$end <- if (!vistime_data_empty) as.POSIXct(vistime_data$end, origin = posixct_origin)
-
+        vistime_data <- vistime_data %>% filter(complete.cases(.))
         patient_timeline_plot <-
           vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group")
       },
@@ -2375,7 +2376,7 @@ srv_g_patient_profile <- function(input,
   })
 
   # Patient timeline tab ----
-  patient_timeline_merged_data <- data_merge_module(
+  p_timeline_merged_data <- data_merge_module(
     datasets = datasets,
     data_extract = list(ae_term, pt_aetime_start, pt_aetime_end, pt_dstime_start, pt_dstime_end, cmtrt),
     input_id = c("ae_term", "pt_aetime_start", "pt_aetime_end", "pt_dstime_start", "pt_dstime_end", "cmtrt"),
@@ -2385,7 +2386,6 @@ srv_g_patient_profile <- function(input,
   patient_timeline_calls <- reactive({
     validate_checks()
 
-    df <- patient_timeline_merged_data()$data()
     ae_term <- input$`ae_term-dataset_ADAE_singleextract-select`
     pt_aetime_start <- input$`pt_aetime_start-dataset_ADAE_singleextract-select`
     pt_aetime_end <- input$`pt_aetime_end-dataset_ADAE_singleextract-select`
@@ -2396,19 +2396,23 @@ srv_g_patient_profile <- function(input,
     ae_chart_vars_na <- any(vapply(list(ae_term, pt_aetime_start, pt_aetime_end), is.null, FUN.VALUE = logical(1)))
     ds_chart_vars_na <- any(vapply(list(pt_dstime_start, pt_dstime_end), is.null, FUN.VALUE = logical(1)))
 
-    validate(need(
-      nrow(df[df[[patient_col]] == patient_id(), ]) > 0,
-      "Selected patient does not have enough data for a timeline plot"
-    ))
+    p_timeline_data <- p_timeline_merged_data()$data()
+    p_time_cols <- c(pt_cmtrt, ae_term, pt_aetime_start, pt_aetime_end, pt_dstime_start, pt_dstime_end)
 
-    validate(need(
-      isFALSE(ae_chart_vars_na) || isFALSE(ds_chart_vars_na),
-      "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+    validate(
+      need(
+        sum(complete.cases(p_timeline_data[p_timeline_data[[patient_col]] == patient_id(),  p_time_cols])) > 0,
+        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+      ),
+      need(
+        isFALSE(ae_chart_vars_na) || isFALSE(ds_chart_vars_na),
+        "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
       Please select the appropriate input variables."
-    ))
+      )
+    )
 
     patient_timeline_stack <- chunks$new()
-    chunks_push_data_merge(patient_timeline_merged_data(), chunks = patient_timeline_stack)
+    chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
 
     patient_timeline_stack$push(bquote({
       pt_merge <- pt_merge[pt_merge[[.(patient_col)]] == .(patient_id()), ] # nolint
@@ -2554,7 +2558,6 @@ srv_g_patient_profile <- function(input,
     )
     if (!is.null(new_chunks)) chunks_push_chunks(new_chunks)
   }, priority = -1)
-
 
   # Shinyjs wrapper ----
   encoding_list <- list(
