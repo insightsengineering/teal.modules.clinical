@@ -1,4 +1,6 @@
 # teal.modules.clinical 0.8.7.9000
+### Enhancements
+* Improved the message on one of the errors in the patient profile module.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to ensure good performance.

@@ -1926,7 +1926,7 @@ srv_g_patient_profile <- function(input,
     validate(
       need(
         patient_id(),
-        "Please select Patient ID."
+        "Please select a patient."
       )
     )
   })
@@ -1937,16 +1937,13 @@ srv_g_patient_profile <- function(input,
   updateOptionalSelectInput(session, "patient_id", choices = unique_patients, selected = unique_patients[1])
 
   observeEvent(patient_data_base(), {
-    patient_id_s <- patient_id()
-    unique_patients <- patient_data_base()
-    patient_selected <- if (is.null(patient_id_s) || !patient_id_s %in% unique_patients) {
-      NULL
-    } else {
-      patient_id_s
-    }
-    updateOptionalSelectInput(session, "patient_id", choices = unique_patients, selected = patient_selected)
-  },
-  ignoreInit = TRUE
+    updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = intersect(patient_id(), patient_data_base())
+    )},
+    ignoreInit = TRUE
   )
 
   # Basic Info tab ----
