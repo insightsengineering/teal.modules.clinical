@@ -414,7 +414,7 @@ srv_t_abnormality <- function(input,
   init_chunks()
 
   # Update UI choices depending on selection of previous options
-  observe({
+  observeEvent(input$grade, {
     anl <- datasets$get_data(dataname, filtered = FALSE)
 
     validate_has_elements(input$grade, "Please select a grade variable")

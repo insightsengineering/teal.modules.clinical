@@ -332,18 +332,20 @@ srv_events_patyear <- function(input,
 
   init_chunks()
 
-  observe({
-    anl <- datasets$get_data(dataname, filtered = FALSE)
-    avalu_choices <- anl %>%
-      select(as.name(avalu_var$select$selected)) %>%
-      unique() %>%
-      filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-      arrange() %>%
-      pull()
+  # This reactiveVal and the observeEvent that listens to it are only run upon app launch
+  # They are used in combination to avoid the use of observe, which is costly in terms of performance
+  avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
+    select(as.name(avalu_var$select$selected)) %>%
+    unique() %>%
+    filter(!is.na(.data[[avalu_var$select$selected]])) %>%
+    arrange() %>%
+    pull())
+
+  observeEvent(avalu_choices(), {
     updateSelectInput(
       session, "time_unit_input",
-      choices = avalu_choices,
-      selected = avalu_choices[1]
+      choices = avalu_choices(),
+      selected = avalu_choices()[1]
     )
   })
 

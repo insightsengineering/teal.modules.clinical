@@ -1,4 +1,8 @@
 # teal.modules.clinical 0.8.7.9000
+
+### Miscellaneous
+* Replaced the remaining two `observe` function calls with `observeEvent` to ensure good performance.
+
 Issues with no news:
 
 # teal.modules.clinical 0.8.7
