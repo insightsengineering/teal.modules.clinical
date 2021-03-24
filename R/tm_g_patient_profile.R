@@ -638,6 +638,7 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param pt_dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
 #' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #'
+#' @importFrom scales date_format
 template_patient_timeline <- function(dataname = "pt_merge",
                                       ae_term = "AETERM",
                                       pt_aetime_start = "ASTDTM", # to be updated
@@ -742,7 +743,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
         vistime_data$end <- if (!vistime_data_empty) as.POSIXct(vistime_data$end, origin = posixct_origin)
         vistime_data <- vistime_data %>% filter(stats::complete.cases(.))
         patient_timeline_plot <-
-          vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group")
+          vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group") +
+          scale_x_datetime(labels = scales::date_format("%b-%Y"))
       },
       env = list(
         dataname = as.name(dataname),
