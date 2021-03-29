@@ -349,7 +349,7 @@ ui_t_events_by_grade <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("as_html"))),
+    output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
@@ -492,11 +492,17 @@ srv_t_events_by_grade <- function(input,
   })
 
   # Outputs to render.
-  output$as_html <- renderUI({
+  table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   # Render R code.
   callModule(

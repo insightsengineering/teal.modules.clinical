@@ -412,7 +412,7 @@ ui_summary_by <- function(id, ...) {
     )
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("table"))),
+    output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "by_vars", "summarize_vars")]),
@@ -585,11 +585,17 @@ srv_summary_by <- function(input,
   })
 
   # Outputs to render.
-  output$table <- renderUI({
+  table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   # Render R code.
   callModule(

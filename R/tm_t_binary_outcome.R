@@ -121,7 +121,7 @@ ui_t_binary_outcome <- function(id, ...) {
 
   ns <- NS(id)
   standard_layout(
-    output = white_small_well(uiOutput(ns("as_html"))),
+    output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
@@ -436,12 +436,19 @@ srv_t_binary_outcome <- function(input,
     )
     mapply(expression = my_calls, chunks_push)
   })
+
   # Outputs to render.
-  output$as_html <- renderUI({
+  table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   # Render R code.
   callModule(

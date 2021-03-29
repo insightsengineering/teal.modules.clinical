@@ -230,7 +230,7 @@ ui_events_patyear <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("patyear_table"))),
+    output = white_small_well(table_with_settings_ui(ns("patyear_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
@@ -445,11 +445,17 @@ srv_events_patyear <- function(input,
   })
 
   # Outputs to render.
-  output$patyear_table <- renderUI({
+  patyear_table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "patyear_table",
+    table_r = patyear_table
+  )
 
   # Render R code.
   callModule(

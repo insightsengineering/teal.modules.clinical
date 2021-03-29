@@ -368,7 +368,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
 
   standard_layout(
     output = white_small_well(
-      uiOutput(ns("table"))
+      table_with_settings_ui(ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -514,11 +514,17 @@ srv_t_mult_events_byterm <- function(input,
   })
 
   # Outputs to render.
-  output$table <- renderUI({
+  table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   # Render R code.
   callModule(

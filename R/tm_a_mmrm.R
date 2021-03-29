@@ -484,7 +484,7 @@ ui_mmrm <- function(id, ...) {
     output = white_small_well(
       textOutput(ns("null_input_msg")),
       h3(textOutput(ns("mmrm_title"))),
-      uiOutput(ns("mmrm_table")),
+      table_with_settings_ui(ns("mmrm_table")),
       plot_with_settings_ui(id = ns("mmrm_plot"))
     ),
     encoding = div(
@@ -1094,7 +1094,7 @@ srv_mmrm <- function(input,
     output_title
   })
 
-  output$mmrm_table <- renderUI({
+  mmrm_table <- reactive({
     validate(
       need(
         !state_has_changed(),
@@ -1224,6 +1224,11 @@ srv_mmrm <- function(input,
     show_hide_signal = reactive(show_plot_rv())
   )
 
+  callModule(
+    table_with_settings_srv,
+    id = "mmrm_table",
+    table_r = mmrm_table
+  )
 
   # Endpoint:
   # Optimizer that was selected.

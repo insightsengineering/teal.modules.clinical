@@ -276,7 +276,7 @@ ui_t_logistic <- function(id, ...) {
   ns <- NS(id)
   standard_layout(
     output = white_small_well(
-      uiOutput(ns("table"))
+      table_with_settings_ui(ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -475,7 +475,7 @@ srv_t_logistic <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    arm_n <- table(anl_m$data()[[input_arm_var]])
+    arm_n <- base::table(anl_m$data()[[input_arm_var]])
     anl_arm_n <- if (input$combine_comp_arms) {
       c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
     } else {
@@ -547,11 +547,17 @@ srv_t_logistic <- function(input,
     mapply(expression = calls, chunks_push)
   })
 
-  output$table <- renderUI({
+  table <- reactive({
     call_preparation()
     chunks_safe_eval()
     as_html(chunks_get_var("result"))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   callModule(
     module = get_rcode_srv,

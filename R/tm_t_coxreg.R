@@ -420,7 +420,7 @@ ui_t_coxreg <- function(id, ...) {
   ns <- NS(id)
 
   standard_layout(
-    output = white_small_well(uiOutput(ns("as_html"))),
+    output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding = div(
       radioButtons(
         ns("type"),
@@ -654,7 +654,7 @@ srv_t_coxreg <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    arm_n <- table(anl_m$data()[[input_arm_var]])
+    arm_n <- base::table(anl_m$data()[[input_arm_var]])
     anl_arm_n <- if (input$combine_comp_arms) {
       c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
     } else {
@@ -717,7 +717,7 @@ srv_t_coxreg <- function(input,
   }
 
   ## generate table call with template and render table ----
-  output$as_html <- renderUI({
+  table <- reactive({
     validate_checks()
 
     chunks_reset()
@@ -748,6 +748,12 @@ srv_t_coxreg <- function(input,
 
     div(lapply(res, as_html))
   })
+
+  callModule(
+    table_with_settings_srv,
+    id = "table",
+    table_r = table
+  )
 
   callModule(
     module = get_rcode_srv,
