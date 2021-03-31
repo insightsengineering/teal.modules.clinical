@@ -638,7 +638,6 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param pt_dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
 #' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #'
-#' @importFrom scales date_format
 template_patient_timeline <- function(dataname = "pt_merge",
                                       ae_term = "AETERM",
                                       pt_aetime_start = "ASTDTM", # to be updated
@@ -665,86 +664,63 @@ template_patient_timeline <- function(dataname = "pt_merge",
     list(),
     substitute(
       expr = {
-        # three sections are represented here: advers events, dosing and medication
-        # adverse events
-
-        ae_chart_vars_na <- any(
-          vapply(list(ae_term_var, pt_aetime_start_var, pt_aetime_end_var), is.null, FUN.VALUE = logical(1))
-          )
-        if (ae_chart_vars_na) {
-          ae_chart <- dataname[FALSE, ]
-        } else {
-          ae_chart <- dataname %>%
-            select(ae_term, pt_aetime_start, pt_aetime_end) %>%
-            distinct()
-        }
-
-        # dosing
-        ds_chart_vars_na <- any(vapply(list(pt_dstime_start_var, pt_dstime_end_var), is.null, FUN.VALUE = logical(1)))
-        if (ds_chart_vars_na) {
-          ds_chart <- dataname[FALSE, ]
-        } else {
-          ds_chart <- dataname %>%
-            select(pt_dstime_start, pt_dstime_end) %>%
-            distinct() %>%
-            mutate(
-              label_start = "First Exposure to Treatment",
-              label_end = "Last Exposure to Treatment"
-            )
-        }
-
-        # medication
-        med_chart_vars_na <- any(
-          vapply(list(pt_cmtrt_var, pt_dstime_start_var, pt_dstime_end_var), is.null, FUN.VALUE = logical(1))
-          )
-        if (med_chart_vars_na) {
-          med_chart <- dataname[FALSE, ]
-        } else {
-          med_chart <- dataname %>%
-            select(pt_cmtrt, pt_dstime_start, pt_dstime_end) %>%
-            distinct()
-        }
-
-        min_ds_chart_time_start <- if (ds_chart_vars_na) NULL else min(ds_chart[[pt_dstime_start_var]])
-        min_ds_chart_time_end <- if (ds_chart_vars_na) NULL else min(ds_chart[[pt_dstime_end_var]])
-        max_ds_chart_time_end <- if (ds_chart_vars_na) NULL else  max(ds_chart[[pt_dstime_end_var]])
-
-        vistime_data <- data.frame(
-          event = c(
-            if (ae_chart_vars_na) NULL else  as.character(ae_chart[[ae_term_var]]),
-            as.character(unique(ds_chart[["label_start"]])),
-            as.character(unique(ds_chart[["label_end"]])),
-            if (med_chart_vars_na) NULL else as.character(med_chart[[pt_cmtrt_var]])
-          ),
-          start = c(
-            if (ae_chart_vars_na) NULL else ae_chart[[pt_aetime_start_var]],
-            min_ds_chart_time_start,
-            max_ds_chart_time_end,
-            if (med_chart_vars_na) NULL else med_chart[[pt_dstime_start_var]]
-          ),
-          end = c(
-            if (ae_chart_vars_na) NULL else ae_chart[[pt_aetime_end_var]],
-            min_ds_chart_time_start,
-            max_ds_chart_time_end,
-            if (med_chart_vars_na) NULL else med_chart[[pt_dstime_end_var]]
-          ),
-          group = c(
-            rep("Adverse Events", if (ae_chart_vars_na) 0 else length(ae_chart[[ae_term_var]])),
-            rep("Dosing", length(min_ds_chart_time_start)),
-            rep("Dosing", length(min_ds_chart_time_end)),
-            rep("Medication", if (med_chart_vars_na) 0 else length(med_chart[[pt_cmtrt_var]]))
-          )
-        )
-
-        # in some cases, dates are converted to numeric so this is a step to convert them back
         posixct_origin <- "1970-01-01 00:00.00 UTC"
-        vistime_data_empty <- nrow(vistime_data) == 0
-        vistime_data$start <- if (!vistime_data_empty) as.POSIXct(vistime_data$start, origin = posixct_origin)
-        vistime_data$end <- if (!vistime_data_empty) as.POSIXct(vistime_data$end, origin = posixct_origin)
-        vistime_data <- vistime_data %>% filter(stats::complete.cases(.))
-        patient_timeline_plot <-
-          vistime::gg_vistime(vistime_data, col.event = "event", col.group = "group") +
-          scale_x_datetime(labels = scales::date_format("%b-%Y"))
+
+        dose_base <- NULL
+        med_chart <- NULL
+        ae_chart <- NULL
+
+        if (all(vapply(list(pt_dstime_start_var, pt_dstime_end_var), Negate(is.null), logical(1)))) {
+
+          min_date <- min(dataname[[pt_dstime_start_var]], na.rm = TRUE)
+          max_date <- max(dataname[[pt_dstime_end_var]], na.rm = TRUE)
+
+          dose_base <- data.frame(
+            start = c(min_date, max_date),
+            end =  c(min_date, max_date),
+            event = c("First Exposure to Treatment", "Last Exposure to Treatment")
+          )
+          dose_base$group <- "Dosing"
+        }
+
+        if (all(vapply(list(pt_cmtrt_var, pt_dstime_start_var, pt_dstime_end_var), Negate(is.null), logical(1)))) {
+          med_chart <- dataname %>%
+            select(pt_dstime_start, pt_dstime_end, pt_cmtrt) %>%
+            distinct()
+
+          colnames(med_chart) <- c("start", "end", "event")
+          med_chart$group <- "Medication"
+        }
+        if (all(vapply(list(ae_term_var, pt_aetime_start_var, pt_aetime_end_var), Negate(is.null), logical(1)))) {
+          ae_chart <- dataname %>%
+            select(pt_aetime_start, pt_aetime_end, ae_term) %>%
+            distinct()
+          colnames(ae_chart) <- c("start", "end", "event")
+          ae_chart$group <- "Adverse Events"
+        }
+
+        vistime_data <- dplyr::bind_rows(list(dose_base, ae_chart, med_chart))
+        # in some cases, dates are converted to numeric so this is a step to convert them back
+        vistime_data$start <- as.POSIXct(vistime_data$start, origin = posixct_origin)
+        vistime_data$end <- as.POSIXct(vistime_data$end, origin = posixct_origin)
+
+
+        vistime_data <- vistime_data %>%
+          filter(stats::complete.cases(.[, c("start", "end", "group")])) %>%
+          filter(!is.na(format(.data$start))) %>%
+          filter(!is.na(format(.data$end)))
+
+        if (nrow(vistime_data) == 0 || all(is.na(format(c(vistime_data$start, vistime_data$end))))) {
+          vistime_data <- data.frame(start = as.POSIXct(0, origin = posixct_origin),
+                                     end = as.POSIXct(0, origin = posixct_origin),
+                                     event = "",
+                                     group = "Nothing")
+        }
+
+        patient_timeline_plot <- vistime::gg_vistime(vistime_data,
+                                                     col.event = "event",
+                                                     col.group = "group")
+
       },
       env = list(
         dataname = as.name(dataname),
@@ -772,7 +748,6 @@ template_patient_timeline <- function(dataname = "pt_merge",
   y$chart <- bracket_expr(chart_list)
   y
 }
-
 
 #' Template: Laboratory
 #'
@@ -2390,21 +2365,23 @@ srv_g_patient_profile <- function(input,
     pt_dstime_end <- input$`pt_dstime_end-dataset_ADCM_singleextract-select`
     pt_cmtrt <- input$`cmtrt-dataset_ADCM_singleextract-select`
 
-    ae_chart_vars_na <- any(vapply(list(ae_term, pt_aetime_start, pt_aetime_end), is.null, FUN.VALUE = logical(1)))
-    ds_chart_vars_na <- any(vapply(list(pt_dstime_start, pt_dstime_end), is.null, FUN.VALUE = logical(1)))
+    ae_chart_vars_null <- any(vapply(list(ae_term, pt_aetime_start, pt_aetime_end), is.null, FUN.VALUE = logical(1)))
+    ds_chart_vars_null <- any(vapply(list(pt_dstime_start, pt_dstime_end), is.null, FUN.VALUE = logical(1)))
 
     p_timeline_data <- p_timeline_merged_data()$data()
-    p_time_cols <- c(pt_cmtrt, ae_term, pt_aetime_start, pt_aetime_end, pt_dstime_start, pt_dstime_end)
+    # time variables can not be NA
+    p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
     validate(
       need(
-        sum(stats::complete.cases(p_timeline_data[p_timeline_data[[patient_col]] == patient_id(),  p_time_cols])) > 0,
+        sum(stats::complete.cases(p_time_data_pat[, c(pt_aetime_start, pt_aetime_end)])) > 0 ||
+          sum(stats::complete.cases(p_time_data_pat[, c(pt_dstime_start, pt_dstime_end)])) > 0,
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(
-        isFALSE(ae_chart_vars_na) || isFALSE(ds_chart_vars_na),
+        isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null),
         "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
-      Please select the appropriate input variables."
+          Please select the appropriate input variables."
       )
     )
 

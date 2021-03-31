@@ -1,7 +1,9 @@
 # teal.modules.clinical 0.8.7.9000
 ### Enhancements
 * Improved the message on one of the errors in the patient profile module.
+* The timeline plot inside `tm_patient_profile` is supporting more edge cases.
 * Added the option to download and expand tables.
+
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to ensure good performance.
