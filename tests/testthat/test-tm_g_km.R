@@ -15,41 +15,40 @@ test_that("template_g_km works as expected with default arguments", {
         grid::viewport(layout = .) %>%
         grid::pushViewport()
       result <- mapply(
-        df = split(anl, f = anl$SEX),
-        nrow = seq_along(levels(anl$SEX)),
+        df = split(anl, f = anl$SEX), nrow = seq_along(levels(anl$SEX)),
         FUN = function(df_i, nrow_i) {
           if (nrow(df_i) == 0) {
-            grid::grid.text(
-              "No data found for a given facet value.",
-              x = 0.5,
-              y = 0.5,
-              vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
-            )
-          } else {
-            g_km(
-              df = df_i,
-              variables = variables,
-              font_size = 8,
-              xlab = paste0("Survival time", " (", anl$AVALU[1], ")"),
-              yval = "Survival",
-              xticks = NULL,
-              newpage = FALSE,
-              title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
-              ggtheme = theme_minimal(),
-              annot_surv_med = TRUE,
-              annot_coxph = TRUE,
-              control_surv = control_surv_timepoint(conf_level = 0.95),
-              control_coxph_pw = control_coxph(
-                conf_level = 0.95,
-                pval_method = "log-rank",
-                ties = "efron"
-              ),
-              ci_ribbon = FALSE,
-              vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
+            grid::grid.text("No data found for a given facet value.",
+              x = 0.5, y = 0.5, vp = grid::viewport(
+                layout.pos.row = nrow_i,
+                layout.pos.col = 1
+              )
             )
           }
-        }
+          else {
+            g_km(
+              df = df_i, variables = variables, font_size = 8,
+              xlab = paste0(
+                "Survival time", " (", anl$AVALU[1],
+                ")"
+              ), yval = "Survival", xticks = NULL, newpage = FALSE,
+              title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
+              ggtheme = theme_minimal(), annot_surv_med = TRUE,
+              annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
+              control_coxph_pw = control_coxph(
+                conf_level = 0.95,
+                pval_method = "log-rank", ties = "efron"
+              ),
+              ci_ribbon = FALSE, vp = grid::viewport(
+                layout.pos.row = nrow_i,
+                layout.pos.col = 1
+              ), draw = TRUE
+            )
+          }
+        }, SIMPLIFY = FALSE
       )
+      km_grobs <- tern::stack_grobs(grobs = result)
+      km_grobs
     })
   )
   expect_equal(result, expected)
