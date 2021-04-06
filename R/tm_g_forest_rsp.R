@@ -7,9 +7,6 @@
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
-#' @param subgroup_var (`character`)\cr
-#'   object with all available choices and
-#'   preselected option for variable names that can be used as the default subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
 #'
@@ -189,8 +186,6 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param subgroup_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
-#'   object with all available choices and
 #'
 #' @export
 #'

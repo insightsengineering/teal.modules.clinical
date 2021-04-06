@@ -3,6 +3,7 @@
 * Improved the message on one of the errors in the patient profile module.
 * The timeline plot inside `tm_patient_profile` is supporting more edge cases.
 * Added the option to download and expand tables.
+* Fixed subgroup_var definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`. 
 * Supporting image download for `tm_g_km`.
 
 ### Miscellaneous

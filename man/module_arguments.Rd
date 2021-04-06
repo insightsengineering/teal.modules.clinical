@@ -114,6 +114,10 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used
+as the default subgroups.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

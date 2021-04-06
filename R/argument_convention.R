@@ -70,6 +70,7 @@
 #' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
 #'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
 #'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @name template_arguments
 #'
 NULL
@@ -168,6 +169,9 @@ NULL
 #' @param post_output optional, (`shiny.tag`)\cr
 #'   with text placed after the output to put the output into context. For example
 #'   the [shiny::helpText()] elements are useful.
+#' @param subgroup_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and preselected option for variable names that can be used
+#'   as the default subgroups.
 #' @name module_arguments
 #'
 NULL

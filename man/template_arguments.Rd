@@ -92,6 +92,8 @@ name of the variable representing time units.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

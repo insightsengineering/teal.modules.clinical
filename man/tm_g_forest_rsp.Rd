@@ -53,7 +53,8 @@ object with all available choices and preselected option for the analysis
 variable.}
 
 \item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices and}
+object with all available choices and preselected option for variable names that can be used
+as the default subgroups.}
 
 \item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 names of the variables for stratified analysis.}

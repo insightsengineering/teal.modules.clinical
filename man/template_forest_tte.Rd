@@ -41,9 +41,7 @@ name of the analysis variable.}
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
 
-\item{subgroup_var}{(\code{character})\cr
-object with all available choices and
-preselected option for variable names that can be used as the default subgroups.}
+\item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
 \item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}

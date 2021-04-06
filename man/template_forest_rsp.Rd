@@ -39,9 +39,7 @@ name of the analysis variable.}
 
 \item{responders}{(\code{character})\cr values of \code{aval_var} that are considered to be responders.}
 
-\item{subgroup_var}{(\code{character})\cr
-object with all available choices and
-preselected option for variable names that can be used as the default subgroups.}
+\item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
 \item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}
