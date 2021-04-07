@@ -1442,18 +1442,21 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Basic info",
           div(
+            get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
             DT::DTOutput(outputId = ns("basic_info_table"))
           )
         ),
         tabPanel(
           "Medical history",
           div(
+            get_dt_rows(ns("medical_history_table"), ns("medical_history_table_rows")),
             DT::DTOutput(outputId = ns("medical_history_table"))
           )
         ),
         tabPanel(
           "Prior medication",
           div(
+            get_dt_rows(ns("prior_medication_table"), ns("prior_medication_table_rows")),
             DT::DTOutput(outputId = ns("prior_medication_table"))
           )
         ),
@@ -1466,6 +1469,7 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Therapy",
           div(
+            get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
             DT::DTOutput(outputId = ns("therapy_table")),
             plot_with_settings_ui(id = ns("therapy_plot"))
           )
@@ -1473,6 +1477,7 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Adverse events",
           div(
+            get_dt_rows(ns("ae_table"), ns("ae_table_rows")),
             DT::DTOutput(outputId = ns("ae_table")),
             plot_with_settings_ui(id = ns("ae_chart"))
           )
@@ -1480,7 +1485,8 @@ ui_g_patient_profile <- function(id, ...) {
         tabPanel(
           "Laboratory values",
           div(
-            DT::DTOutput(outputId = ns("lab_values"))
+            get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
+            DT::DTOutput(outputId = ns("lab_values_table"))
           )
         ),
         tabPanel(
@@ -1966,7 +1972,7 @@ srv_g_patient_profile <- function(input,
     chunks_reset()
     chunks_push_chunks(basic_info_call())
     chunks_get_var("result")
-  })
+  }, options = list(pageLength = input$basic_info_table_rows))
 
   # Medical history tab ----
   mhist_merged_data <- data_merge_module(
@@ -2016,7 +2022,7 @@ srv_g_patient_profile <- function(input,
     chunks_reset()
     chunks_push_chunks(mhist_call())
     chunks_get_var("result")
-  })
+  }, options = list(pageLength = input$medical_history_table_rows))
 
   # Prior medication tab ----
   pmed_merged_data <- data_merge_module(
@@ -2076,7 +2082,7 @@ srv_g_patient_profile <- function(input,
     chunks_reset()
     chunks_push_chunks(pmed_call())
     chunks_get_var("result")
-  })
+  }, options = list(pageLength = input$prior_medication_table_rows))
 
   # Vitals tab ----
   vitals_merged_data <- data_merge_module(
@@ -2265,7 +2271,7 @@ srv_g_patient_profile <- function(input,
     chunks_reset()
     chunks_push_chunks(therapy_call())
     chunks_get_var("therapy_table")
-  })
+  }, options = list(pageLength = input$therapy_table_rows))
 
   therapy_plot <- reactive({
     chunks_reset()
@@ -2339,7 +2345,7 @@ srv_g_patient_profile <- function(input,
     chunks_reset()
     chunks_push_chunks(ae_calls())
     chunks_get_var("ae_table")
-  })
+  }, options = list(pageLength = input$ae_table_rows))
 
   ae_chart <- reactive({
     chunks_reset()
@@ -2478,12 +2484,13 @@ srv_g_patient_profile <- function(input,
     labor_stack
   })
 
-  output$lab_values <- DT::renderDataTable({
+  output$lab_values_table <- DT::renderDataTable({
     chunks_reset()
     chunks_push_chunks(labor_calls())
     chunks_get_var("labor_table_html")
     },
-    escape = FALSE
+    escape = FALSE,
+    options = list(pageLength = input$lab_values_table_rows)
   )
 
   callModule(
