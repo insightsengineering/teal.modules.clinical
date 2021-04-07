@@ -97,7 +97,8 @@ template_tte <- function(dataname = "ANL",
           case_when(
             is_event == TRUE ~ "Patients with event (%)",
             is_event == FALSE ~ "Patients without event (%)"
-          )
+          ),
+          levels = c("Patients with event (%)", "Patients without event (%)")
         ),
         EVNTDESC = factor(event_desc_var)
       ),

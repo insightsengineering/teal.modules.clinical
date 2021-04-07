@@ -32,7 +32,8 @@ test_that("template_tte produces healthy standard output", {
             case_when(
               is_event == TRUE ~ "Patients with event (%)",
               is_event == FALSE ~ "Patients without event (%)"
-            )
+            ),
+            levels = c("Patients with event (%)", "Patients without event (%)")
           ),
           EVNTDESC = factor(EVNTDESC)
         )
@@ -127,7 +128,8 @@ test_that("template_tte produces correct data expression when not comparing arms
         is_not_event = CNSR == 1,
         EVNT1 = factor(case_when(
           is_event == TRUE ~ "Patients with event (%)",
-          is_event == FALSE ~ "Patients without event (%)")
+          is_event == FALSE ~ "Patients without event (%)"),
+          levels = c("Patients with event (%)", "Patients without event (%)")
         ),
         EVNTDESC = factor(EVNTDESC)
       )

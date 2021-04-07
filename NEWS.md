@@ -1,5 +1,6 @@
 # teal.modules.clinical 0.8.7.9000
 ### Enhancements
+* Update pre-processing code for template_tte so that case with 0 events still produces a table.
 * Added persistence for selected table lengths in `tm_g_patient_profile`.
 * Improved the message on one of the errors in the patient profile module.
 * The timeline plot inside `tm_patient_profile` is supporting more edge cases.
