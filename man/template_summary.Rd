@@ -9,6 +9,7 @@ template_summary(
   parentname,
   arm_var,
   sum_vars,
+  show_labels = c("default", "visible", "hidden"),
   add_total = TRUE,
   var_labels = character(),
   na.rm = FALSE,
@@ -29,6 +30,9 @@ variable names that can be used as \code{arm_var}.}
 
 \item{sum_vars}{(\code{character})\cr
 names of the variables that should be summarized.}
+
+\item{show_labels}{(\code{character})\cr
+defines whether the labels for \code{sum_vars} should display. For details see \code{\link[rtables:analyze]{rtables::analyze()}}.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

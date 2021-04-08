@@ -1,5 +1,7 @@
 #' Template: Summary of Variables
 #'
+#' @param show_labels (`character`)\cr
+#'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -8,6 +10,7 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
+                             show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
                              var_labels = character(),
                              na.rm = FALSE,  #nolint
@@ -26,6 +29,7 @@ template_summary <- function(dataname,
     is.flag(drop_arm_levels)
   )
   denominator <- match.arg(denominator)
+  show_labels <- match.arg(show_labels)
 
   y <- list()
 
@@ -80,6 +84,7 @@ template_summary <- function(dataname,
   env_sum_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
+    show_labels = show_labels,
     na.rm = na.rm,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
@@ -96,6 +101,7 @@ template_summary <- function(dataname,
         expr = summarize_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
+          show_labels = show_labels,
           na.rm = na.rm,
           na_level = na_level,
           denom = denom,
@@ -107,6 +113,7 @@ template_summary <- function(dataname,
       substitute(
         expr = summarize_vars(
           vars = sum_vars,
+          show_labels = show_labels,
           na.rm = na.rm,
           na_level = na_level,
           denom = denom,
@@ -132,6 +139,8 @@ template_summary <- function(dataname,
 
   y
 }
+
+
 
 #' Teal Module: Summary of Variables
 #'
@@ -366,6 +375,7 @@ srv_summary <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       sum_vars = sum_vars,
+      show_labels = "visible",
       add_total = input$add_total,
       var_labels = get_var_labels(datasets, dataname, sum_vars),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
