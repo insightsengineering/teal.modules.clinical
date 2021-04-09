@@ -277,6 +277,7 @@ template_coxreg <- function(dataname,
 #' shinyApp(app$ui, app$server)
 #' }
 #'
+#'
 #' ## Second example
 #' ## ==============
 #' ## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
@@ -425,8 +426,11 @@ ui_t_coxreg <- function(id, ...) {
       radioButtons(
         ns("type"),
         label = tags$label("Type of Regression:", class = "text-primary"),
-        choices = c("Univariate", "Multivariate"),
-        selected = if (a$multivariate) "Multivariate" else "Univariate"
+        choices = c(
+          "Separate models for comparison groups with one covariate at a time" = "Univariate",
+          "One model with all comparison groups and covariates" = "Multivariate"
+        ),
+        selected = if_else(a$multivariate, "Multivariate", "Univariate")
       ),
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),

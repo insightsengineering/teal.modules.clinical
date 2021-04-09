@@ -163,6 +163,7 @@ app <- init(
 shinyApp(app$ui, app$server)
 }
 
+
 ## Second example
 ## ==============
 ## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
