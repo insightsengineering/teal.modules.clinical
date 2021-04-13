@@ -457,6 +457,10 @@ srv_g_ipp <- function(input,
       need(is_character_single(input_aval_var), "Analysis variable should be a single column.")
       )
 
+    validate(
+      need(is_character_single(input_visit_var), "Please select a timepoint variable.")
+    )
+
     NULL
   })
 

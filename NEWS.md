@@ -9,6 +9,7 @@
 * Supporting image download for `tm_g_km`.
 * Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly show in
 resulting table.
+* Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to ensure good performance.
@@ -16,7 +17,6 @@ resulting table.
 Issues with no news:
 
 # teal.modules.clinical 0.8.7
-
 ### New Module
 * New module `tm_g_patient_profile` was added to profile patients based on predefined categories.
 * New module `tm_g_ipp` was added for individual patient plots.
