@@ -409,6 +409,7 @@ tm_t_rsp <- function(label,
                      paramcd,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
+                     conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      pre_output = NULL,
                      post_output = NULL) {
 
@@ -416,6 +417,7 @@ tm_t_rsp <- function(label,
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
+    is.choices_selected(conf_level),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -525,6 +527,14 @@ ui_t_rsp <- function(id, ...) {
             )
           )
         )
+      ),
+      optionalSelectInput(
+        inputId = ns("conf_level"),
+        label = HTML(paste("Confidence Level")),
+        a$conf_level$choices,
+        a$conf_level$selected,
+        multiple = FALSE,
+        fixed = a$conf_level$fixed
       ),
       data_extract_input(
         id = ns("strata_var"),
@@ -640,6 +650,11 @@ srv_t_rsp <- function(input,
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
 
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+
     NULL
   })
 
@@ -677,7 +692,7 @@ srv_t_rsp <- function(input,
       control = list(
         global = list(
           method = "clopper-pearson",
-          conf_level = 0.95
+          conf_level = as.numeric(input$conf_level)
         ),
         unstrat = list(
           method_ci = "wald",

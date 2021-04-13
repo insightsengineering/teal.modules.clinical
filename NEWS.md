@@ -2,6 +2,8 @@
 ### Enhancements
 * Update pre-processing code for template_tte so that case with 0 events still produces a table.
 * Added persistence for selected table lengths in `tm_g_patient_profile`.
+* Added a new argument `conf_arg` to `tm_t_rsp` to be consistent with other efficacy
+modules.
 * Improved the message on one of the errors in the patient profile module.
 * The timeline plot inside `tm_patient_profile` is supporting more edge cases.
 * Added the option to download and expand tables.

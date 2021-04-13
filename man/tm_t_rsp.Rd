@@ -15,6 +15,7 @@ tm_t_rsp(
   strata_var,
   aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
     TRUE),
+  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL
 )
@@ -49,6 +50,10 @@ names of the variables for stratified analysis.}
 \item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis
 variable.}
+
+\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+object with all available choices and preselected option for the confidence
+level, each within range of (0, 1).}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
