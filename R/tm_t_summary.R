@@ -20,7 +20,7 @@ template_summary <- function(dataname,
   assert_that(
     is.string(dataname),
     is.string(parentname),
-    is.string(arm_var),
+    is.character(arm_var),
     is.character(sum_vars),
     is.flag(add_total),
     is.character(var_labels),
@@ -51,10 +51,21 @@ template_summary <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
   y$data <- bracket_expr(data_list)
 
   layout_list <- list()
@@ -67,15 +78,24 @@ template_summary <- function(dataname,
     if (add_total) {
       substitute(
         expr = split_cols_by(arm_var, split_fun = add_overall_level(label = "All Patients", first = FALSE)),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var[[1]])
       )
     } else {
       substitute(
         expr = split_cols_by(arm_var),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var[[1]])
       )
     }
   )
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+        env = list(nested_col = arm_var[[2]])
+      )
+    )
+  }
   layout_list <- add_expr(
     layout_list,
     quote(add_colcounts())
@@ -144,6 +164,10 @@ template_summary <- function(dataname,
 
 #' Teal Module: Summary of Variables
 #'
+#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -223,7 +247,7 @@ tm_t_summary <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
   )
 
@@ -251,54 +275,54 @@ ui_summary <- function(id, ...) {
 
   ns <- NS(id)
   a <- list(...)
+
   is_single_dataset_value <- is_single_dataset(a$arm_var, a$summarize_vars)
 
   standard_layout(
     output = white_small_well(table_with_settings_ui(ns("table"))),
-    encoding =  div(
-      tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "summarize_vars")]),
-      data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_input(
-        id = ns("summarize_vars"),
-        label = "Summarize Variables",
-        data_extract_spec = a$summarize_vars,
-        is_single_dataset = is_single_dataset_value
-      ),
-      panel_group(
-        panel_item(
-          "Additional table settings",
-          radioButtons(
-            ns("useNA"),
-            label = "Display NA counts",
-            choices = c("ifany", "no"),
-            selected = a$useNA
-          ),
-          radioButtons(
-            ns("denominator"),
-            label = "Denominator choice",
-            choices = c("N", "n", "omit"),
-            selected = a$denominator
-          ),
-          checkboxInput(
-            ns("drop_arm_levels"),
-            label = "Drop columns not in filtered analysis dataset",
-            value = a$drop_arm_levels
+      encoding =  div(
+        tags$label("Encodings", class = "text-primary"),
+        datanames_input(a[c("arm_var", "summarize_vars")]),
+        data_extract_input(
+          id = ns("arm_var"),
+          label = "Select Treatment Variable",
+          data_extract_spec = a$arm_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+        data_extract_input(
+          id = ns("summarize_vars"),
+          label = "Summarize Variables",
+          data_extract_spec = a$summarize_vars,
+          is_single_dataset = is_single_dataset_value
+        ),
+        panel_group(
+          panel_item(
+            "Additional table settings",
+            radioButtons(
+              ns("useNA"),
+              label = "Display NA counts",
+              choices = c("ifany", "no"),
+              selected = a$useNA
+            ),
+            radioButtons(
+              ns("denominator"),
+              label = "Denominator choice",
+              choices = c("N", "n", "omit"),
+              selected = a$denominator
+            ),
+            checkboxInput(
+              ns("drop_arm_levels"),
+              label = "Drop columns not in filtered analysis dataset",
+              value = a$drop_arm_levels
+            )
           )
         )
-      )
-    ),
-    forms = get_rcode_ui(ns("rcode")),
-    pre_output = a$pre_output,
-    post_output = a$post_output
-  )
-
+      ),
+      forms = get_rcode_ui(ns("rcode")),
+      pre_output = a$pre_output,
+      post_output = a$post_output
+    )
 }
 
 #' @noRd
@@ -343,7 +367,16 @@ srv_summary <- function(input,
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
-      need(input_summarize_vars, "Please select a summarize variable")
+      need(input_summarize_vars, "Please select a summarize variable"),
+      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+      if (length(input_arm_var) == 2) {
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+            "", NA
+          )),
+          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
+        )
+      }
     )
 
     validate_standard_inputs(
@@ -351,7 +384,7 @@ srv_summary <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_summarize_vars),
-      arm_var = input_arm_var
+      arm_var = input_arm_var[[1]]
     )
   })
 

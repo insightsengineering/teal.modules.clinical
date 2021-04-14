@@ -9,6 +9,10 @@ modules.
 * Added the option to download and expand tables.
 * Fixed subgroup_var definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`. 
 * Supporting image download for `tm_g_km`.
+* Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly 
+show in resulting table.
+* Modified the argument `arm_var` in `tm_t_summary` so that it can take more than one variable. If two variables were 
+selected for `arm_var`, then the second variable will be nested under the first one.
 * Updated `xlab` in title case in `tm_g_km`.
 * Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly show in resulting table.
 * Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
