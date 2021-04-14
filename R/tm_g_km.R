@@ -143,7 +143,17 @@ template_g_km <- function(dataname = "ANL",
                   df = df_i,
                   variables = variables,
                   font_size = font_size,
-                  xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
+                  xlab = paste0(
+                    xlab,
+                    " (",
+                    gsub(
+                      "(^|[[:space:]])([[:alpha:]])",
+                      "\\1\\U\\2",
+                      tolower(anl$time_unit_var[1]),
+                      perl = TRUE
+                    ),
+                    ")"
+                  ),
                   yval = yval,
                   xticks = xticks,
                   newpage = FALSE,
@@ -160,9 +170,9 @@ template_g_km <- function(dataname = "ANL",
               }
             },
             SIMPLIFY = FALSE
-        )
-        km_grobs <- tern::stack_grobs(grobs = result)
-        km_grobs
+          )
+          km_grobs <- tern::stack_grobs(grobs = result)
+          km_grobs
         },
         env = list(
           font_size = font_size,
@@ -189,7 +199,17 @@ template_g_km <- function(dataname = "ANL",
             df = anl,
             variables = variables,
             font_size = font_size,
-            xlab = paste0(xlab, " (", anl$time_unit_var[1], ")"),
+            xlab = paste0(
+              xlab,
+              " (",
+              gsub(
+                "(^|[[:space:]])([[:alpha:]])",
+                "\\1\\U\\2",
+                tolower(anl$time_unit_var[1]),
+                perl = TRUE
+              ),
+              ")"
+            ),
             yval = yval,
             xticks = xticks,
             newpage = TRUE,
@@ -719,7 +739,7 @@ srv_g_km <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
-      ),
+    ),
     modal_title = label
   )
 }

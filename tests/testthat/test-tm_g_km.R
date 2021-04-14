@@ -29,9 +29,16 @@ test_that("template_g_km works as expected with default arguments", {
             g_km(
               df = df_i, variables = variables, font_size = 8,
               xlab = paste0(
-                "Survival time", " (", anl$AVALU[1],
+                "Survival time",
+                " (",
+                gsub(
+                  "(^|[[:space:]])([[:alpha:]])",
+                  "\\1\\U\\2",
+                  tolower(anl$AVALU[1]),
+                  perl = TRUE
+                ),
                 ")"
-              ), yval = "Survival", xticks = NULL, newpage = FALSE,
+              ),  yval = "Survival", xticks = NULL, newpage = FALSE,
               title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
               ggtheme = theme_minimal(), annot_surv_med = TRUE,
               annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
