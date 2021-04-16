@@ -11,7 +11,8 @@ template_patient_timeline(
   pt_aetime_end = "AENDTM",
   pt_dstime_start = "CMASTDTM",
   pt_dstime_end = "CMAENDTM",
-  pt_cmtrt = "CMTRT"
+  pt_cmtrt = "CMTRT",
+  font_size = c(12L, 12L, 25L)
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ analysis data used in teal module.}
 \item{pt_dstime_start}{(\code{character})\cr name of datetime first exposure to treatment variable.}
 
 \item{pt_dstime_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
 \item{t_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 }

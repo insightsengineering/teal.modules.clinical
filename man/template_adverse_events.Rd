@@ -12,7 +12,8 @@ template_adverse_events(
   ae_outcome = "AEOUT",
   ae_action = "AEACN",
   ae_time = "ASTDY",
-  ae_decod = NULL
+  ae_decod = NULL,
+  font_size = c(12L, 12L, 25L)
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ analysis data used in teal module.}
 \item{ae_time}{(\code{character})\cr name of study day of start of adverse event variable.}
 
 \item{ae_decod}{(\verb{choices selected} or \code{data_extract_input})\cr \code{AEDECOD} column of the ADAE dataset.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
 \description{
 Creates an adverse events template call.

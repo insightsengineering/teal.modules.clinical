@@ -9,7 +9,8 @@ template_vitals(
   v_paramcd = "PARAMCD",
   v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   v_xaxis = "ADY",
-  v_aval = "AVAL"
+  v_aval = "AVAL",
+  font_size = c(12L, 12L, 25L)
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ analysis data used in teal module.}
 \item{v_xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
 
 \item{v_aval}{(\code{character})\cr name of the analysis value variable.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
 \description{
 Creates a vitals template.

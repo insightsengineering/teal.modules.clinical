@@ -1,5 +1,6 @@
 # teal.modules.clinical 0.8.7.9000
 ### Enhancements
+* Added graph font size slider in `tm_g_patient_profile`.
 * Update pre-processing code for template_tte so that case with 0 events still produces a table.
 * Added persistence for selected table lengths in `tm_g_patient_profile`.
 * Added a new argument `conf_arg` to `tm_t_rsp` to be consistent with other efficacy

@@ -155,18 +155,21 @@ template_prior_medication <- function(dataname = "pm_merge",
 #' @param v_paramcd_levels (`character`)\cr (`paramcd`)\cr vector with (`v_paramcd`)\cr levels.
 #' @param v_xaxis (`character`)\cr name of time variable used for the x-axis.
 #' @param v_aval (`character`)\cr name of the analysis value variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #' @inheritParams tm_g_patient_profile
 #'
 template_vitals <- function(dataname = "v_merge",
                             v_paramcd = "PARAMCD",
                             v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             v_xaxis = "ADY",
-                            v_aval = "AVAL") {
+                            v_aval = "AVAL",
+                            font_size = c(12L, 12L, 25L)) {
   assert_that(
     is.string(dataname),
     is.string(v_paramcd),
     is.string(v_xaxis),
-    is.string(v_aval)
+    is.string(v_aval),
+    is.numeric(font_size)
   )
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
@@ -222,7 +225,8 @@ template_vitals <- function(dataname = "v_merge",
         ) +
         geom_text(
           data = base_stats_df,
-          aes(x = x, y = y, label = label, color = color), alpha = 1, nudge_y = 2.2
+          aes(x = x, y = y, label = label, color = color), alpha = 1, nudge_y = 2.2,
+          size = font_size_var[1] / 3.5
         ) +
         geom_hline(
           data = base_stats_df,
@@ -249,10 +253,12 @@ template_vitals <- function(dataname = "v_merge",
           ),
           color = "black",
           alpha = 1,
-          nudge_y = 2.2
+          nudge_y = 2.2,
+          size = font_size_var[1] / 3.5
         ) +
         theme_minimal() +
         theme(
+          text = element_text(size = font_size_var[1]),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid.major = element_line(
@@ -267,6 +273,7 @@ template_vitals <- function(dataname = "v_merge",
           ),
           legend.position = "top"
         )
+
       print(result_plot)
     }, env = list(
       dataname = as.name(dataname),
@@ -276,7 +283,8 @@ template_vitals <- function(dataname = "v_merge",
       v_xaxis = as.name(v_xaxis),
       v_xaxis_char = v_xaxis,
       aval = as.name(v_aval),
-      aval_char = v_aval
+      aval_char = v_aval,
+      font_size_var = font_size
     ))
   )
 
@@ -299,6 +307,7 @@ template_vitals <- function(dataname = "v_merge",
 #' @param t_cmdosfrq (`character`)\cr name of dosing frequency per interval variable.
 #' @param t_cmstdy (`character`)\cr name of study day of start of medication variable.
 #' @param t_cmendy (`character`)\cr name of study day of end of medication variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #' @inheritParams tm_g_patient_profile
 
 template_therapy <- function(dataname = "t_merge",
@@ -311,7 +320,8 @@ template_therapy <- function(dataname = "t_merge",
                              t_cmroute = "CMROUTE",
                              t_cmdosfrq = "CMDOSFRQ",
                              t_cmstdy = "CMSTDY", # replaces t_cmstdy
-                             t_cmendy = "CMENDY" # replaces t_cmendy
+                             t_cmendy = "CMENDY", # replaces t_cmendy
+                             font_size = c(12L, 12L, 25L)
 ) {
   assert_that(
     is.string(dataname),
@@ -324,7 +334,8 @@ template_therapy <- function(dataname = "t_merge",
     is.string(t_cmroute),
     is.string(t_cmdosfrq),
     is.string(t_cmstdy),
-    is.string(t_cmendy)
+    is.string(t_cmendy),
+    is.numeric(font_size)
   )
 
   y <- list()
@@ -434,12 +445,13 @@ template_therapy <- function(dataname = "t_merge",
           hjust = "left",
           vjust = "bottom",
           nudge_y = 0.1,
-          size = 3
+          size = font_size_var[1] / 3.5
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
         theme_minimal() +
         theme(
+          text = element_text(size = font_size_var[1]),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid.major = element_line(
@@ -477,7 +489,8 @@ template_therapy <- function(dataname = "t_merge",
       t_cmroute_char = t_cmroute,
       t_cmdosfrq_char = t_cmdosfrq,
       t_cmstdy_char = t_cmstdy,
-      t_cmendy_char = t_cmendy
+      t_cmendy_char = t_cmendy,
+      font_size_var = font_size
     ))
   )
   y$table_list <- bracket_expr(table_list)
@@ -497,6 +510,7 @@ template_therapy <- function(dataname = "t_merge",
 #' @param ae_outcome (`character`)\cr name of outcome of adverse event variable.
 #' @param ae_action (`character`)\cr name of action taken with study treatment variable.
 #' @param ae_time (`character`)\cr name of study day of start of adverse event variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #' @inheritParams tm_g_patient_profile
 #'
 template_adverse_events <- function(dataname = "ae_merge",
@@ -506,7 +520,8 @@ template_adverse_events <- function(dataname = "ae_merge",
                                     ae_outcome = "AEOUT",
                                     ae_action = "AEACN",
                                     ae_time = "ASTDY",
-                                    ae_decod = NULL) {
+                                    ae_decod = NULL,
+                                    font_size = c(12L, 12L, 25L)) {
   assert_that(
     is.string(dataname),
     is.string(ae_term),
@@ -515,7 +530,8 @@ template_adverse_events <- function(dataname = "ae_merge",
     is.string(ae_outcome),
     is.string(ae_action),
     is.string(ae_time) || is.null(ae_time),
-    is.string(ae_decod) || is.null(ae_decod)
+    is.string(ae_decod) || is.null(ae_decod),
+    is.numeric(font_size)
   )
 
   y <- list()
@@ -568,12 +584,11 @@ template_adverse_events <- function(dataname = "ae_merge",
           ggplot(aes(
             fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time
           )) +
-          geom_label(
+          ggrepel::geom_label_repel(
             aes(label = ae_term),
             color = "black",
             hjust = "left",
-            vjust = "bottom",
-            size = 3
+            size = font_size_var[1] / 3.5
           ) +
           scale_fill_manual(values = c(
             "1" = "#E2264633",
@@ -588,6 +603,7 @@ template_adverse_events <- function(dataname = "ae_merge",
           geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
           ylab("Adverse Events") +
           theme(
+            text = element_text(size = font_size_var[1]),
             axis.text.y = element_blank(),
             axis.ticks.y = element_blank(),
             panel.grid.major = element_line(
@@ -599,8 +615,7 @@ template_adverse_events <- function(dataname = "ae_merge",
               size = 0.5,
               linetype = "dotted",
               colour = "grey"
-            ),
-            legend.position = "top"
+            )
           ) +
           theme(legend.position = "none"),
         env = list(
@@ -609,7 +624,8 @@ template_adverse_events <- function(dataname = "ae_merge",
           ae_time = as.name(ae_time),
           ae_tox_grade = as.name(ae_tox_grade),
           ae_causality = as.name(ae_causality),
-          ae_time_var = ae_time
+          ae_time_var = ae_time,
+          font_size_var = font_size
         )
       )
     )
@@ -637,6 +653,7 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param pt_dstime_start (`character`)\cr name of datetime first exposure to treatment variable.
 #' @param pt_dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
 #' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 template_patient_timeline <- function(dataname = "pt_merge",
                                       ae_term = "AETERM",
@@ -644,7 +661,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
                                       pt_aetime_end = "AENDTM", # to be updated
                                       pt_dstime_start = "CMASTDTM", # to be updated
                                       pt_dstime_end = "CMAENDTM", # to be updated
-                                      pt_cmtrt = "CMTRT") {
+                                      pt_cmtrt = "CMTRT",
+                                      font_size = c(12L, 12L, 25L)) {
   # Note: The variables used for pt_aetime_start, pt_aetime_end, pt_dstime_start and pt_dstime_end are to be
   # updated after random.cdisc.data updates.
   assert_that(
@@ -654,7 +672,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
     is.string(pt_aetime_end) || is.null(pt_aetime_end),
     is.string(pt_dstime_start) || is.null(pt_dstime_start),
     is.string(pt_dstime_end) || is.null(pt_dstime_end),
-    is.string(pt_cmtrt) || is.null(pt_cmtrt)
+    is.string(pt_cmtrt) || is.null(pt_cmtrt),
+    is.numeric(font_size)
   )
 
   y <- list()
@@ -717,9 +736,19 @@ template_patient_timeline <- function(dataname = "pt_merge",
                                      group = "Nothing")
         }
 
-        patient_timeline_plot <- vistime::gg_vistime(vistime_data,
-                                                     col.event = "event",
-                                                     col.group = "group")
+        patient_timeline_plot <- vistime::gg_vistime(
+          vistime_data,
+          col.event = "event",
+          col.group = "group",
+          show_labels = FALSE
+        ) +
+          theme(text = element_text(size = font_size_var[1])) +
+          ggrepel::geom_text_repel(
+            aes(label = event),
+            size = font_size_var[1] / 3.5,
+            color = "black"
+          )
+
 
       },
       env = list(
@@ -735,7 +764,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
         pt_aetime_end_var = pt_aetime_end,
         pt_dstime_start_var = pt_dstime_start,
         pt_dstime_end_var = pt_dstime_end,
-        pt_cmtrt_var = pt_cmtrt
+        pt_cmtrt_var = pt_cmtrt,
+        font_size_var = font_size
       )
     )
   )
@@ -873,6 +903,7 @@ template_laboratory <- function(dataname = "lb_merge",
 #' start of the ADCM dataset.
 #' @param pt_dstime_end (`choices selected` or `data_extract_input`)\cr \code{CMAENDTM} column of treatment
 #' end of the ADCM dataset.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @note
 #' Please note that `tm_g_patient_profile` is the very first version and will be split into multiple separate modules
@@ -1293,6 +1324,7 @@ tm_g_patient_profile <- function(label,
                                  t_cmendy = NULL,
                                  pt_dstime_start = NULL,
                                  pt_dstime_end = NULL,
+                                 font_size = c(12L, 12L, 25L),
                                  plot_height = c(700L, 200L, 2000L),
                                  plot_width = c(900L, 200L, 2000L),
                                  pre_output = NULL,
@@ -1307,6 +1339,7 @@ tm_g_patient_profile <- function(label,
     msg = "post_output should be either null or shiny.tag type of object"
   )
 
+  check_slider_input(font_size, allow_null = FALSE)
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 
@@ -1795,6 +1828,14 @@ ui_g_patient_profile <- function(id, ...) {
         )
       ),
       div(
+        id = ns("font_size-div"),
+        panel_item(
+          title = "Plot settings",
+          collapsed = TRUE,
+          optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        )
+      ),
+      div(
         id = ns("lb_paramcd-div"),
         data_extract_input(
           id = ns("lb_paramcd"),
@@ -2161,7 +2202,8 @@ srv_g_patient_profile <- function(input,
       v_paramcd = input$`v_paramcd-dataset_ADVS_singleextract-select`,
       v_paramcd_levels = input$`v_paramcd_levels_vals`,
       v_xaxis = input$`v_xaxis-dataset_ADVS_singleextract-select`,
-      v_aval = input$`v_aval-dataset_ADVS_singleextract-select`
+      v_aval = input$`v_aval-dataset_ADVS_singleextract-select`,
+      font_size = input$`font_size`
     )
 
     mapply(expression = my_calls, vitals_stack_push)
@@ -2259,7 +2301,8 @@ srv_g_patient_profile <- function(input,
       t_cmstdy = input$`cmstdy-dataset_ADCM_singleextract-select`,
       t_cmendy = input$`t_cmendy-dataset_ADCM_singleextract-select`,
       t_cmindc = input$`cmindc-dataset_ADCM_singleextract-select`,
-      t_cmdose = input$`t_cmdose-dataset_ADCM_singleextract-select`
+      t_cmdose = input$`t_cmdose-dataset_ADCM_singleextract-select`,
+      font_size = input$`font_size`
     )
 
     mapply(expression = my_calls, therapy_stack_push)
@@ -2335,7 +2378,8 @@ srv_g_patient_profile <- function(input,
       ae_outcome = input$`ae_outcome-dataset_ADAE_singleextract-select`,
       ae_action = input$`ae_action-dataset_ADAE_singleextract-select`,
       ae_time = input$`ae_time-dataset_ADAE_singleextract-select`,
-      ae_decod = input$`ae_decod-dataset_ADAE_singleextract-select`
+      ae_decod = input$`ae_decod-dataset_ADAE_singleextract-select`,
+      font_size = input$`font_size`
     )
     mapply(ae_calls, FUN = function(x) chunks_push(x, chunks = ae_stack))
     chunks_safe_eval(chunks = ae_stack)
@@ -2370,6 +2414,7 @@ srv_g_patient_profile <- function(input,
     pt_dstime_start <- input$`pt_dstime_start-dataset_ADCM_singleextract-select`
     pt_dstime_end <- input$`pt_dstime_end-dataset_ADCM_singleextract-select`
     pt_cmtrt <- input$`cmtrt-dataset_ADCM_singleextract-select`
+    font_size <- input$`font_size`
 
     ae_chart_vars_null <- any(vapply(list(ae_term, pt_aetime_start, pt_aetime_end), is.null, FUN.VALUE = logical(1)))
     ds_chart_vars_null <- any(vapply(list(pt_dstime_start, pt_dstime_end), is.null, FUN.VALUE = logical(1)))
@@ -2405,7 +2450,8 @@ srv_g_patient_profile <- function(input,
       pt_aetime_end = pt_aetime_end,
       pt_dstime_start = pt_dstime_start,
       pt_dstime_end = pt_dstime_end,
-      pt_cmtrt = pt_cmtrt
+      pt_cmtrt = pt_cmtrt,
+      font_size = font_size
     )
 
     mapply(patient_timeline_calls, FUN = function(x) chunks_push(x, chunks = patient_timeline_stack))
@@ -2545,20 +2591,21 @@ srv_g_patient_profile <- function(input,
     "Basic info" = c("bi_vars-div"),
     "Medical history" = c("mh_term-div", "mh_bodsys-div"),
     "Prior medication" = c("atirel-div", "medname_decoding-div", "cmindc-div", "cmstdy-div"),
-    "Vitals" = c("v_paramcd-div", "v_paramcd_levels-div", "v_xaxis-div", "v_aval-div"),
+    "Vitals" = c("v_paramcd-div", "v_paramcd_levels-div", "v_xaxis-div", "v_aval-div", "font_size-div"),
     "Therapy" = c(
       "atirel-div", "medname_decoding-div", "cmindc-div", "t_cmdose-div", "cmtrt-div",
-      "t_cmdosu-div", "t_cmroute-div", "t_cmdosfrq-div", "cmstdy-div", "t_cmendy-div"
+      "t_cmdosu-div", "t_cmroute-div", "t_cmdosfrq-div", "cmstdy-div", "t_cmendy-div", "font_size-div"
     ),
     "Adverse events" = c(
       "ae_term-div", "ae_tox_grade-div", "ae_causality-div",
-      "ae_outcome-div", "ae_action-div", "ae_time-div", "ae_decod-div"
+      "ae_outcome-div", "ae_action-div", "ae_time-div", "ae_decod-div", "font_size-div"
     ),
     "Laboratory values" = c(
       "lb_timepoints-div", "lb_aval-div", "lb_avalu-div", "lb_param-div", "lb_paramcd-div", "lb_anrind-div"
     ),
     "Patient timeline" = c(
-      "ae_term-div", "pt_aetime_start-div", "pt_aetime_end-div", "pt_dstime_start-div", "pt_dstime_end-div", "cmtrt-div"
+      "ae_term-div", "pt_aetime_start-div", "pt_aetime_end-div", "pt_dstime_start-div", "pt_dstime_end-div",
+      "cmtrt-div", "font_size-div"
     )
   )
 
@@ -2569,7 +2616,7 @@ srv_g_patient_profile <- function(input,
     "t_cmdosu-div", "t_cmroute-div", "t_cmdosfrq-div", "cmstdy-div", "t_cmendy-div", "ae_tox_grade-div",
     "ae_outcome-div", "ae_action-div", "ae_time-div", "ae_decod-div", "ae_causality-div", "lb_timepoints-div",
     "lb_aval-div", "lb_avalu-div", "lb_param-div", "lb_paramcd-div", "lb_anrind-div", "ae_term-div",
-    "pt_aetime_start-div", "pt_aetime_end-div", "pt_dstime_start-div", "pt_dstime_end-div"
+    "pt_aetime_start-div", "pt_aetime_end-div", "pt_dstime_start-div", "pt_dstime_end-div", "font_size-div"
   )
 
   observeEvent(input$tabs, handlerExpr = {

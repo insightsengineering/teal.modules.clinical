@@ -15,7 +15,8 @@ template_therapy(
   t_cmroute = "CMROUTE",
   t_cmdosfrq = "CMDOSFRQ",
   t_cmstdy = "CMSTDY",
-  t_cmendy = "CMENDY"
+  t_cmendy = "CMENDY",
+  font_size = c(12L, 12L, 25L)
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ analysis data used in teal module.}
 \item{t_cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
 
 \item{t_cmendy}{(\code{character})\cr name of study day of end of medication variable.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
 \description{
 Creates a therapy template call.

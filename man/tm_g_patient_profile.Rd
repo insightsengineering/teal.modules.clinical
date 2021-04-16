@@ -42,6 +42,7 @@ tm_g_patient_profile(
   t_cmendy = NULL,
   pt_dstime_start = NULL,
   pt_dstime_end = NULL,
+  font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -131,6 +132,8 @@ start of the ADCM dataset.}
 
 \item{pt_dstime_end}{(\verb{choices selected} or \code{data_extract_input})\cr \code{CMAENDTM} column of treatment
 end of the ADCM dataset.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
