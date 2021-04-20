@@ -43,7 +43,6 @@ test_that("template_forest_rsp generates correct expressions", {
     plot = quote({
       p <- g_forest(
         tbl = result, col_x = 8, col_ci = 9, vline = 1,
-        forest_header = paste0(levels(adrs[["ARMCD"]]), "\nbetter"),
         xlim = c(0.1, 10), logx = TRUE, x_at = c(0.1, 1, 10),
         draw = FALSE, col_symbol_size = NULL
       )

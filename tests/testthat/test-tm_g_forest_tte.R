@@ -56,7 +56,6 @@ test_that("template_forest_tte generates correct expressions", {
         col_x = 8,
         col_ci = 9,
         vline = 1,
-        forest_header = paste0(rev(levels(anl[["ARMCD"]])), "\nbetter"),
         xlim = c(0.1, 10),
         logx = TRUE,
         x_at = c(0.1, 1, 10),

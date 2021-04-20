@@ -18,6 +18,7 @@ selected for `arm_var`, then the second variable will be nested under the first 
 * Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly show in resulting table.
 * Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
 * Clarified "Type of Regression" related labeling in the encoding panel from `tm_t_coxreg`.
+* Removed the header in `tm_g_forest_rsp` and `tm_g_forest_tte` as there's a default header in `g_forest`.
 
 
 ### Miscellaneous
