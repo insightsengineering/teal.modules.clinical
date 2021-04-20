@@ -1,28 +1,24 @@
 # teal.modules.clinical 0.8.7.9000
 ### Enhancements
-* Added graph font size slider in `tm_g_patient_profile`.
-* Update pre-processing code for template_tte so that case with 0 events still produces a table.
+* Added a slider for the font size in the plots in `tm_g_patient_profile`.
+* Updated the pre-processing code for `template_tte` so that a case with no events still produces a table.
 * Added persistence for selected table lengths in `tm_g_patient_profile`.
-* Added a new argument `conf_arg` to `tm_t_rsp` to be consistent with other efficacy
-modules.
-* Improved the message on one of the errors in the patient profile module.
+* Added a new parameter `conf_arg` to `tm_t_rsp` to be consistent with other efficacy modules.
 * The timeline plot inside `tm_patient_profile` is supporting more edge cases.
 * Added the option to download and expand tables.
 * Fixed subgroup_var definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`. 
-* Supporting image download for `tm_g_km`.
-* Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly 
-show in resulting table.
-* Modified the argument `arm_var` in `tm_t_summary` so that it can take more than one variable. If two variables were 
-selected for `arm_var`, then the second variable will be nested under the first one.
+* Added support for downloading images in `tm_g_km`.
+* Added the parameter `show_labels` to the `template_summary` function for single summarize variable to explicitly show in resulting table.
+* Modified the parameter `arm_var` in `tm_t_summary` to accept more than one column. If two columns were selected for `arm_var`, then the second variable will be nested under the first one.
 * Updated `xlab` in title case in `tm_g_km`.
 * Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly show in resulting table.
 * Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
 * Clarified "Type of Regression" related labeling in the encoding panel from `tm_t_coxreg`.
 * Removed the header in `tm_g_forest_rsp` and `tm_g_forest_tte` as there's a default header in `g_forest`.
 
-
 ### Miscellaneous
-* Replaced the remaining two `observe` function calls with `observeEvent` to ensure good performance.
+* Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
+* Fixed grammar in the "Select a patient's id" error message in the `tm_g_patient_profile`.
 
 Issues with no news:
 

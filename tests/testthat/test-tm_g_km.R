@@ -38,7 +38,7 @@ test_that("template_g_km works as expected with default arguments", {
                   perl = TRUE
                 ),
                 ")"
-              ),  yval = "Survival", xticks = NULL, newpage = FALSE,
+              ), yval = "Survival", xticks = NULL, newpage = FALSE,
               title = paste("KM Plot", quote(SEX), "=", as.character(unique(df_i$SEX))),
               ggtheme = theme_minimal(), annot_surv_med = TRUE,
               annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
