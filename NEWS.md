@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.7.9000
+# teal.modules.clinical 0.8.8
 ### Enhancements
 * Added a slider for the font size in the plots in `tm_g_patient_profile`.
 * Updated the pre-processing code for `template_tte` so that a case with no events still produces a table.
@@ -19,8 +19,6 @@
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
 * Fixed grammar in the "Select a patient's id" error message in the `tm_g_patient_profile`.
-
-Issues with no news:
 
 # teal.modules.clinical 0.8.7
 ### New Module
