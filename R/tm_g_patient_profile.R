@@ -2233,6 +2233,8 @@ srv_g_patient_profile <- function(input,
   therapy_call <- reactive({
     validate_checks()
 
+    validate_has_data(therapy_merged_data()$data(), 1)
+
     validate(
       need(
         input$`atirel-dataset_ADCM_singleextract-select`,
@@ -2579,6 +2581,7 @@ srv_g_patient_profile <- function(input,
       "Medical history" = mhist_call(),
       "Prior medication" = pmed_call(),
       "Vitals" = vitals_call(),
+      "Therapy" = therapy_call(),
       "Adverse events" = ae_calls(),
       "Laboratory values" = labor_calls(),
       "Patient timeline" = patient_timeline_calls()

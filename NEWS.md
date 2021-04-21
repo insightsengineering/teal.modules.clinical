@@ -20,6 +20,9 @@
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
 * Fixed grammar in the "Select a patient's id" error message in the `tm_g_patient_profile`.
 
+### Bug fixes
+* Added a validation for the case when all rows are filtered out in the therapy tab of `tm_g_patient_profile`.
+
 # teal.modules.clinical 0.8.7
 ### New Module
 * New module `tm_g_patient_profile` was added to profile patients based on predefined categories.
