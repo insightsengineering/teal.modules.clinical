@@ -655,6 +655,7 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
+#' @importFrom scales date_format
 template_patient_timeline <- function(dataname = "pt_merge",
                                       ae_term = "AETERM",
                                       pt_aetime_start = "ASTDTM", # to be updated
@@ -747,8 +748,8 @@ template_patient_timeline <- function(dataname = "pt_merge",
             aes(label = event),
             size = font_size_var[1] / 3.5,
             color = "black"
-          )
-
+          ) +
+          scale_x_datetime(labels = scales::date_format("%b-%Y"))
 
       },
       env = list(
