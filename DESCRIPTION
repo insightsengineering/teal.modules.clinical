@@ -38,7 +38,8 @@ Imports:
   utils.nest (>= 0.2.8),
   DT,
   tidyr,
-  vistime
+  vistime,
+  ggrepel
 Suggests:
   knitr,
   rmarkdown,

@@ -512,6 +512,7 @@ template_therapy <- function(dataname = "t_merge",
 #' @param ae_time (`character`)\cr name of study day of start of adverse event variable.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #' @inheritParams tm_g_patient_profile
+#' @importFrom ggrepel geom_text_repel geom_label_repel
 #'
 template_adverse_events <- function(dataname = "ae_merge",
                                     ae_term = "AETERM",
