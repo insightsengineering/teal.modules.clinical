@@ -19,6 +19,7 @@
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
 * Fixed grammar in the "Select a patient's id" error message in the `tm_g_patient_profile`.
+* Fixed the `font_size` default of the templates to be 12L instead of a vector of 3 integers and cleaned associated unnecessary code.
 
 ### Bug fixes
 * Added a validation for the case when all rows are filtered out in the therapy tab of `tm_g_patient_profile`.

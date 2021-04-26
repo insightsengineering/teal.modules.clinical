@@ -10,7 +10,7 @@ template_vitals(
   v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   v_xaxis = "ADY",
   v_aval = "AVAL",
-  font_size = c(12L, 12L, 25L)
+  font_size = 12L
 )
 }
 \arguments{

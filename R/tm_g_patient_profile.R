@@ -163,7 +163,7 @@ template_vitals <- function(dataname = "v_merge",
                             v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             v_xaxis = "ADY",
                             v_aval = "AVAL",
-                            font_size = c(12L, 12L, 25L)) {
+                            font_size = 12L) {
   assert_that(
     is.string(dataname),
     is.string(v_paramcd),
@@ -171,6 +171,7 @@ template_vitals <- function(dataname = "v_merge",
     is.string(v_aval),
     is.numeric(font_size)
   )
+
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
   y$plot <- list()
@@ -226,7 +227,7 @@ template_vitals <- function(dataname = "v_merge",
         geom_text(
           data = base_stats_df,
           aes(x = x, y = y, label = label, color = color), alpha = 1, nudge_y = 2.2,
-          size = font_size_var[1] / 3.5
+          size = font_size_var / 3.5
         ) +
         geom_hline(
           data = base_stats_df,
@@ -254,11 +255,11 @@ template_vitals <- function(dataname = "v_merge",
           color = "black",
           alpha = 1,
           nudge_y = 2.2,
-          size = font_size_var[1] / 3.5
+          size = font_size_var / 3.5
         ) +
         theme_minimal() +
         theme(
-          text = element_text(size = font_size_var[1]),
+          text = element_text(size = font_size_var),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid.major = element_line(
@@ -321,7 +322,7 @@ template_therapy <- function(dataname = "t_merge",
                              t_cmdosfrq = "CMDOSFRQ",
                              t_cmstdy = "CMSTDY", # replaces t_cmstdy
                              t_cmendy = "CMENDY", # replaces t_cmendy
-                             font_size = c(12L, 12L, 25L)
+                             font_size = 12L
 ) {
   assert_that(
     is.string(dataname),
@@ -445,13 +446,13 @@ template_therapy <- function(dataname = "t_merge",
           hjust = "left",
           vjust = "bottom",
           nudge_y = 0.1,
-          size = font_size_var[1] / 3.5
+          size = font_size_var / 3.5
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
         theme_minimal() +
         theme(
-          text = element_text(size = font_size_var[1]),
+          text = element_text(size = font_size_var),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid.major = element_line(
@@ -522,7 +523,7 @@ template_adverse_events <- function(dataname = "ae_merge",
                                     ae_action = "AEACN",
                                     ae_time = "ASTDY",
                                     ae_decod = NULL,
-                                    font_size = c(12L, 12L, 25L)) {
+                                    font_size = 12L) {
   assert_that(
     is.string(dataname),
     is.string(ae_term),
@@ -589,7 +590,7 @@ template_adverse_events <- function(dataname = "ae_merge",
             aes(label = ae_term),
             color = "black",
             hjust = "left",
-            size = font_size_var[1] / 3.5
+            size = font_size_var / 3.5
           ) +
           scale_fill_manual(values = c(
             "1" = "#E2264633",
@@ -604,7 +605,7 @@ template_adverse_events <- function(dataname = "ae_merge",
           geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
           ylab("Adverse Events") +
           theme(
-            text = element_text(size = font_size_var[1]),
+            text = element_text(size = font_size_var),
             axis.text.y = element_blank(),
             axis.ticks.y = element_blank(),
             panel.grid.major = element_line(
@@ -656,7 +657,6 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
-#' @importFrom scales date_format
 template_patient_timeline <- function(dataname = "pt_merge",
                                       ae_term = "AETERM",
                                       pt_aetime_start = "ASTDTM", # to be updated
@@ -664,7 +664,7 @@ template_patient_timeline <- function(dataname = "pt_merge",
                                       pt_dstime_start = "CMASTDTM", # to be updated
                                       pt_dstime_end = "CMAENDTM", # to be updated
                                       pt_cmtrt = "CMTRT",
-                                      font_size = c(12L, 12L, 25L)) {
+                                      font_size = 12L) {
   # Note: The variables used for pt_aetime_start, pt_aetime_end, pt_dstime_start and pt_dstime_end are to be
   # updated after random.cdisc.data updates.
   assert_that(
@@ -744,10 +744,10 @@ template_patient_timeline <- function(dataname = "pt_merge",
           col.group = "group",
           show_labels = FALSE
         ) +
-          theme(text = element_text(size = font_size_var[1])) +
+          theme(text = element_text(size = font_size_var)) +
           ggrepel::geom_text_repel(
             aes(label = event),
-            size = font_size_var[1] / 3.5,
+            size = font_size_var / 3.5,
             color = "black"
           ) +
           scale_x_datetime(labels = scales::date_format("%b-%Y"))

@@ -603,7 +603,6 @@ add_plot_call <- function(chunk,
 }
 
 # NULL means option is not set
-#' @importFrom scales comma
 apply_simple_ggplot_options <- function(chunk,
                                         flip_axis = NULL,
                                         rotate_x_label = NULL,

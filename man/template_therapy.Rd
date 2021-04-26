@@ -16,7 +16,7 @@ template_therapy(
   t_cmdosfrq = "CMDOSFRQ",
   t_cmstdy = "CMSTDY",
   t_cmendy = "CMENDY",
-  font_size = c(12L, 12L, 25L)
+  font_size = 12L
 )
 }
 \arguments{

@@ -13,7 +13,7 @@ template_adverse_events(
   ae_action = "AEACN",
   ae_time = "ASTDY",
   ae_decod = NULL,
-  font_size = c(12L, 12L, 25L)
+  font_size = 12L
 )
 }
 \arguments{

@@ -12,7 +12,7 @@ template_patient_timeline(
   pt_dstime_start = "CMASTDTM",
   pt_dstime_end = "CMAENDTM",
   pt_cmtrt = "CMTRT",
-  font_size = c(12L, 12L, 25L)
+  font_size = 12L
 )
 }
 \arguments{
