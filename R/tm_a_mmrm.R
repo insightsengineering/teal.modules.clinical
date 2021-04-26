@@ -975,7 +975,7 @@ srv_mmrm <- function(input,
     input_visit_var <- as.vector(anl_m$columns_source$visit_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
     input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
@@ -1122,7 +1122,7 @@ srv_mmrm <- function(input,
 
     ANL <- chunks_get_var("ANL", chunks = fit_stack) # nolint
     ANL_ADSL <- chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
-    paramcd <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
+    paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
     mmrm_table <- function(table_type) {
       res <- template_mmrm_tables(

@@ -449,7 +449,7 @@ srv_t_logistic <- function(input,
     input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
     input_interaction_var <- as.vector(anl_m$columns_source$interaction_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
     validate_args <- list(
@@ -514,7 +514,7 @@ srv_t_logistic <- function(input,
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
-    paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars"]]]))
+    paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
     interaction_var <- as.vector(anl_m$columns_source$interaction_var)
     interaction_var <- interaction_var[interaction_var %in% as.vector(anl_m$columns_source$cov_var)]

@@ -373,7 +373,7 @@ srv_events_patyear <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
     input_events_var <- as.vector(anl_m$columns_source$events_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
     validate_standard_inputs(

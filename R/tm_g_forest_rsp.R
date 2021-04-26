@@ -478,7 +478,7 @@ srv_g_forest_rsp <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
     validate_args <- list(

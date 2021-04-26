@@ -625,7 +625,7 @@ srv_g_km <- function(input,
     input_facet_var <- as.vector(anl_m$columns_source$facet_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
     input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
       strsplit(",") %>%

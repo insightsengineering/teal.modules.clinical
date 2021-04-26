@@ -527,7 +527,7 @@ srv_summary_by <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_by_vars <- as.vector(anl_m$columns_source$by_vars)
     input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
-    input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars"])
+    input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),

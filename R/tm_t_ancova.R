@@ -476,8 +476,8 @@ srv_ancova <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    input_avisit <- unlist(avisit$filter)["vars"]
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_avisit <- unlist(avisit$filter)["vars_selected"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # Validate inputs.
     validate_args <- list(
@@ -522,7 +522,7 @@ srv_ancova <- function(input,
 
     ANL <- chunks_get_var("ANL") # nolint
 
-    paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars"]]])
+    paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
     my_calls <- template_ancova(
       parentname = "ANL_ADSL",
@@ -534,8 +534,8 @@ srv_ancova <- function(input,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
-      paramcd_var = unlist(paramcd$filter)["vars"],
-      visit_var = unlist(avisit$filter)["vars"],
+      paramcd_var = unlist(paramcd$filter)["vars_selected"],
+      visit_var = unlist(avisit$filter)["vars_selected"],
       conf_level = as.numeric(input$conf_level)
     )
     mapply(expression = my_calls, chunks_push)

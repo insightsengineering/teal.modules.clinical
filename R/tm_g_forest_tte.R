@@ -482,7 +482,7 @@ srv_g_forest_tte <- function(input,
     input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
     validate_args <- list(

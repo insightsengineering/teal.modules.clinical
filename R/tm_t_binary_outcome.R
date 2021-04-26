@@ -356,7 +356,7 @@ srv_t_binary_outcome <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     validate_args <- list(
       adsl = adsl_filtered,

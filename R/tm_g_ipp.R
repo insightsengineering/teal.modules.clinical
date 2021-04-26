@@ -425,13 +425,13 @@ srv_g_ipp <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- unlist(arm_var$filter)["vars"]
+    input_arm_var <- unlist(arm_var$filter)["vars_selected"]
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_visit_var <- as.vector(anl_m$columns_source$visit_var)
     input_base_var <- as.vector(anl_m$columns_source$base_var)
-    input_paramcd <- unlist(paramcd$filter)["vars"]
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
     validate_args <- list(
@@ -489,8 +489,8 @@ srv_g_ipp <- function(input,
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
-      paramcd <- unlist(paramcd$filter)["vars"],
-      arm_var <-  unlist(arm_var$filter)["vars"]
+      paramcd <- unlist(paramcd$filter)["vars_selected"],
+      arm_var <-  unlist(arm_var$filter)["vars_selected"]
     )
     mapply(expression = my_calls, chunks_push)
   })
