@@ -17,6 +17,7 @@
 * Removed the header in `tm_g_forest_rsp` and `tm_g_forest_tte` as there's a default header in `g_forest`.
 * Updated adverse events tab in `tm_g_patient_profile` to show a warning message instead of an empty plot when data is empty.
 * Updated vitals plot in `tm_g_patient_profile` to display stable colors per levels.
+* Fixed the legend of the vitals plot in `tm_g_patient_profile` to update when filtering.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
@@ -26,6 +27,7 @@
 ### Bug fixes
 * Added a validation for the case when all rows are filtered out in the therapy tab of `tm_g_patient_profile`.
 * Updated the internals of the modules to read data from the correct field of the `filter_spec` objects.
+* Fixed the reactivity between the filter panel and the PARAMCD variable levels input in `tm_g_patient_profile` vitals tab so that the plot does not get reset when filtering.
 
 # teal.modules.clinical 0.8.7
 ### New Module

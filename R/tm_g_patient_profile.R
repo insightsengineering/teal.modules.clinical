@@ -2140,17 +2140,25 @@ srv_g_patient_profile <- function(input,
     req(paramcd_var)
 
     paramcd_col <- vitals_dat()[[paramcd_var]]
-    paramcd_col_levels <- if (is.factor(paramcd_col)) {
-      levels(paramcd_col)
+    paramcd_col_levels <- unique(paramcd_col)
+
+    cur_selected <- isolate(input$v_paramcd_levels_vals)
+
+    selected <- if (!is_empty(cur_selected)) {
+      cur_selected
     } else {
-      unique(paramcd_col)
+      paramcd_col_levels
     }
 
-    tagList(selectInput(session$ns("v_paramcd_levels_vals"),
-      "Select PARAMCD variable levels:",
-      selected = paramcd_col_levels,
-      choices = paramcd_col_levels, multiple = TRUE
-    ))
+    tagList(
+      selectInput(
+        session$ns("v_paramcd_levels_vals"),
+        "Select PARAMCD variable levels:",
+        selected = selected,
+        choices = paramcd_col_levels,
+        multiple = TRUE
+        )
+      )
   })
 
   vitals_call <- reactive({
