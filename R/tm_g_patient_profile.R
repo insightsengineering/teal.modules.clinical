@@ -191,14 +191,15 @@ template_vitals <- function(dataname = "v_merge",
       max_aval <- max(vitals[[aval_char]], na.rm = T)
       max_aval_seq <- seq(0, max_aval, 10)
 
+      full_vita <- levels(dataname[[paramcd_char]])
       provided_vita <- v_paramcd_levels_chars
-      len_paramcd_levels_chars <- length(provided_vita)
       known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
       v_paramcd_levels_e <- known_vita[na.omit(pmatch(provided_vita, known_vita))]
       len_v_paramcd_levels_e <- length(v_paramcd_levels_e)
 
-      vars_colors <- color_palette(len_paramcd_levels_chars)
+      all_colors <- setNames(color_palette(length(full_vita)), full_vita)
+      vars_colors <- all_colors[provided_vita]
       names(vars_colors) <- provided_vita
 
       base_stats <- setNames(c(140, 90, 38, 20, 94, 100), known_vita)
