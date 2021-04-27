@@ -566,72 +566,65 @@ template_adverse_events <- function(dataname = "ae_merge",
     )
   )
 
-  if (is.null(ae_time)) {
-    chart_list <- add_expr(
-      list(),
-      quote(ae_chart <- ggplot())
-    )
-  } else {
-    chart_list <- add_expr(
-      list(),
-      substitute(
-        expr = ae_chart <- dataname %>%
-          select(ae_term, ae_time, ae_tox_grade, ae_causality) %>%
-          mutate(ATOXGR = as.character(ae_tox_grade)) %>%
-          arrange(desc(ATOXGR)) %>%
-          mutate(ATOXGR = case_when(
-            ATOXGR == "." ~ "UNKNOWN",
-            TRUE ~ ATOXGR
-          )) %>%
-          ggplot(aes(
-            fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time
-          )) +
-          ggrepel::geom_label_repel(
-            aes(label = ae_term),
-            color = "black",
-            hjust = "left",
-            size = font_size_var / 3.5
-          ) +
-          scale_fill_manual(values = c(
-            "1" = "#E2264633",
-            "2" = "#E2264666",
-            "3" = "#E2264699",
-            "4" = "#E22646CC",
-            "5" = "#E22646FF",
-            "UNKNOWN" = "#ACADB1FF"
-          )) +
-          scale_y_discrete(expand = expansion(add = 1.2)) +
-          xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
-          geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-          ylab("Adverse Events") +
-          theme(
-            text = element_text(size = font_size_var),
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            panel.grid.major = element_line(
-              size = 0.5,
-              linetype = "dotted",
-              colour = "grey"
-            ),
-            panel.grid.minor = element_line(
-              size = 0.5,
-              linetype = "dotted",
-              colour = "grey"
-            )
-          ) +
-          theme(legend.position = "none"),
-        env = list(
-          dataname = as.name(dataname),
-          ae_term = as.name(ae_term),
-          ae_time = as.name(ae_time),
-          ae_tox_grade = as.name(ae_tox_grade),
-          ae_causality = as.name(ae_causality),
-          ae_time_var = ae_time,
-          font_size_var = font_size
-        )
+  chart_list <- add_expr(
+    list(),
+    substitute(
+      expr = ae_chart <- dataname %>%
+        select(ae_term, ae_time, ae_tox_grade, ae_causality) %>%
+        mutate(ATOXGR = as.character(ae_tox_grade)) %>%
+        arrange(desc(ATOXGR)) %>%
+        mutate(ATOXGR = case_when(
+          ATOXGR == "." ~ "UNKNOWN",
+          TRUE ~ ATOXGR
+        )) %>%
+        ggplot(aes(
+          fill = ATOXGR, color = ae_term, y = ae_term, x = ae_time
+        )) +
+        ggrepel::geom_label_repel(
+          aes(label = ae_term),
+          color = "black",
+          hjust = "left",
+          size = font_size_var[1] / 3.5
+        ) +
+        scale_fill_manual(values = c(
+          "1" = "#E2264633",
+          "2" = "#E2264666",
+          "3" = "#E2264699",
+          "4" = "#E22646CC",
+          "5" = "#E22646FF",
+          "UNKNOWN" = "#ACADB1FF"
+        )) +
+        scale_y_discrete(expand = expansion(add = 1.2)) +
+        xlim(1, 1.2 * max(dataname[[ae_time_var]])) +
+        geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ylab("Adverse Events") +
+        theme(
+          text = element_text(size = font_size_var[1]),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ),
+          panel.grid.minor = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )
+        ) +
+        theme(legend.position = "none"),
+      env = list(
+        dataname = as.name(dataname),
+        ae_term = as.name(ae_term),
+        ae_time = as.name(ae_time),
+        ae_tox_grade = as.name(ae_tox_grade),
+        ae_causality = as.name(ae_causality),
+        ae_time_var = ae_time,
+        font_size_var = font_size
       )
     )
-  }
+  )
 
   chart_list <- add_expr(
     expr_ls = chart_list,
@@ -2337,6 +2330,8 @@ srv_g_patient_profile <- function(input,
 
   ae_calls <- reactive({
     validate_checks()
+
+    validate_has_data(ae_merged_data()$data(), 1)
 
     validate(
       need(

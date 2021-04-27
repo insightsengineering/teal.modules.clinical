@@ -15,6 +15,7 @@
 * Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
 * Clarified "Type of Regression" related labeling in the encoding panel from `tm_t_coxreg`.
 * Removed the header in `tm_g_forest_rsp` and `tm_g_forest_tte` as there's a default header in `g_forest`.
+* Updated adverse events tab in `tm_g_patient_profile` to show a warning message instead of an empty plot when data is empty.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
