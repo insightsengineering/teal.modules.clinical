@@ -346,7 +346,7 @@ srv_t_binary_outcome <- function(input,
       choices = responder_choices,
       selected = intersect(responder_choices, common_rsp)
     )
-  }, once = TRUE)
+  }, once = TRUE, ignoreInit = TRUE)
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
