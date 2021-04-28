@@ -227,12 +227,19 @@ template_vitals <- function(dataname = "v_merge",
         ) +
         geom_text(
           data = base_stats_df,
-          aes(x = x, y = y, label = label, color = color), alpha = 1, nudge_y = 2.2,
-          size = font_size_var / 3.5
+          aes(x = x, y = y, label = label, color = color),
+          alpha = 1,
+          nudge_y = 2.2,
+          size = font_size_var[1] / 3.5,
+          show.legend = FALSE
         ) +
         geom_hline(
           data = base_stats_df,
-          aes(yintercept = y, color = color), linetype = 2, alpha = 0.5, size = 1
+          aes(yintercept = y, color = color),
+          linetype = 2,
+          alpha = 0.5,
+          size = 1,
+          show.legend = FALSE
         ) +
         scale_x_continuous(
           limits = c(1, max_day)
