@@ -151,18 +151,7 @@ template_forest_tte <- function(dataname = "ANL",
     expr = {
       p <- g_forest(
         tbl = result,
-        col_x = 8,
-        col_ci = 9,
-        vline = 1,
-        xlim = c(0.1, 10),
-        logx = TRUE,
-        x_at = c(0.1, 1, 10),
-        width_row_names = NULL,
-        width_columns = NULL,
-        width_forest = unit(1, "null"),
-        col_symbol_size = col_symbol_size,
-        draw = TRUE,
-        newpage = TRUE
+        col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),

@@ -151,13 +151,6 @@ template_forest_rsp <- function(dataname = "ANL",
     expr = {
       p <- g_forest(
         tbl = result,
-        col_x = 8,
-        col_ci = 9,
-        vline = 1,
-        xlim = c(.1, 10),
-        logx = TRUE,
-        x_at = c(.1, 1, 10),
-        draw = FALSE,
         col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {

@@ -7,7 +7,7 @@ test_that("template_forest_tte generates correct expressions", {
     subgroup_var = c("SEX", "BMRKR2"),
     strata_var = "STRATA2",
     conf_level = 0.90,
-    col_symbol_size = 1
+    col_symbol_size = NULL
   )
 
   expected <- list(
@@ -53,18 +53,7 @@ test_that("template_forest_tte generates correct expressions", {
     plot = quote({
       p <- g_forest(
         tbl = result,
-        col_x = 8,
-        col_ci = 9,
-        vline = 1,
-        xlim = c(0.1, 10),
-        logx = TRUE,
-        x_at = c(0.1, 1, 10),
-        width_row_names = NULL,
-        width_columns = NULL,
-        width_forest = unit(1, "null"),
-        col_symbol_size = 1,
-        draw = TRUE,
-        newpage = TRUE
+        col_symbol_size = NULL
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
