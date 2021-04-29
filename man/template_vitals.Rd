@@ -30,3 +30,6 @@ analysis data used in teal module.}
 \description{
 Creates a vitals template.
 }
+\note{
+The vitals plot supports horizontal lines for 6 PARAMCD levels (\verb{SYSBP, DIABP, TEMP, RESP, OXYSAT and PULSE})\cr when these levels are present in the analyzed dataset and the spelling matches.
+}

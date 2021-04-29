@@ -158,6 +158,10 @@ template_prior_medication <- function(dataname = "pm_merge",
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #' @inheritParams tm_g_patient_profile
 #'
+#' @note
+#' The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
+#' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
+#'
 template_vitals <- function(dataname = "v_merge",
                             v_paramcd = "PARAMCD",
                             v_paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
@@ -909,8 +913,10 @@ template_laboratory <- function(dataname = "lb_merge",
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @note
-#' Please note that `tm_g_patient_profile` is the very first version and will be split into multiple separate modules
+#' - Please note that `tm_g_patient_profile` is the very first version and will be split into multiple separate modules
 #' in future releases.
+#' - The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
+#' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
 #'
 #' @export
 #'

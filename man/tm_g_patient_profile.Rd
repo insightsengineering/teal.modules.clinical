@@ -157,8 +157,11 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile report using ADaM datasets.
 }
 \note{
-Please note that \code{tm_g_patient_profile} is the very first version and will be split into multiple separate modules
+\itemize{
+\item Please note that \code{tm_g_patient_profile} is the very first version and will be split into multiple separate modules
 in future releases.
+\item The vitals plot supports horizontal lines for 6 PARAMCD levels (\verb{SYSBP, DIABP, TEMP, RESP, OXYSAT and PULSE})\cr when these levels are present in the analyzed dataset and the spelling matches.
+}
 }
 \examples{
 
