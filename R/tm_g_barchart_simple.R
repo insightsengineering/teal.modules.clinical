@@ -636,7 +636,7 @@ apply_simple_ggplot_options <- function(chunk,
   if (!is.null(expand_y_range)) {
     plot_args <- c(plot_args, bquote(scale_y_continuous(
       labels = scales::comma,
-      expand = expand_scale(c(0, .(expand_y_range)))
+      expand = expansion(c(0, .(expand_y_range)))
     )))
   }
 
