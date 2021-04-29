@@ -75,25 +75,31 @@ template_summary <- function(dataname,
   )
   layout_list <- add_expr(
     layout_list,
-    if (add_total) {
-      substitute(
-        expr = split_cols_by(arm_var, split_fun = add_overall_level(label = "All Patients", first = FALSE)),
-        env = list(arm_var = arm_var[[1]])
-      )
-    } else {
-      substitute(
-        expr = split_cols_by(arm_var),
-        env = list(arm_var = arm_var[[1]])
-      )
-    }
+    substitute(
+      expr = split_cols_by(arm_var),
+      env = list(arm_var = arm_var[[1]])
+    )
   )
   if (length(arm_var) == 2) {
     layout_list <- add_expr(
       layout_list,
-      substitute(
-        expr = split_cols_by(nested_col, split_fun = drop_split_levels),
-        env = list(nested_col = arm_var[[2]])
-      )
+      if (drop_arm_levels) {
+        substitute(
+          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      quote(add_overall_col("All Patients"))
     )
   }
   layout_list <- add_expr(
