@@ -476,7 +476,7 @@ split_choices <- function(x) {
 #'   and "-filter1" if TRUE
 extract_input <- function(varname, dataname, filter = FALSE) {
   if (filter) {
-    paste0(varname, "-dataset_", dataname, "_singleextract-filter1")
+    paste0(varname, "-dataset_", dataname, "_singleextract-filter1-vals")
   } else {
     paste0(varname, "-dataset_", dataname, "_singleextract-select")
   }
