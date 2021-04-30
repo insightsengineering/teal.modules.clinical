@@ -154,12 +154,21 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = add_colcounts() %>%
-        split_rows_by(
-          var = "EVNT1",
-          split_fun = keep_split_levels("Patients with event (%)")
+        summarize_vars(
+          "is_event",
+          .stats = "count_fraction",
+          .labels = c(count_fraction = "Patients with event (%)")
         ) %>%
-        summarize_row_groups() %>%
-        summarize_vars(vars = event_desc_var, .stats = "count") %>%
+        split_rows_by(
+          "EVNT1",
+          split_label = "Earliest contributing event",
+          split_fun = keep_split_levels("Patients with event (%)"),
+          visible_label = TRUE,
+          child_labels = "hidden",
+          indent_mod = 1L,
+        ) %>%
+        split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
+        summarize_row_groups(format = "xx") %>%
         summarize_vars(
           "is_not_event",
           .stats = "count_fraction",

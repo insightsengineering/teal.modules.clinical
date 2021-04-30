@@ -2,6 +2,7 @@
 ### Enhancements
 * Added a slider for the font size in the plots in `tm_g_patient_profile`.
 * Updated the pre-processing code for `template_tte` so that a case with no events still produces a table.
+Also updated code to use correct denominator for duration of response endpoints.
 * Added persistence for selected table lengths in `tm_g_patient_profile`.
 * Added a new parameter `conf_arg` to `tm_t_rsp` to be consistent with other efficacy modules.
 * The timeline plot inside `tm_patient_profile` is supporting more edge cases.

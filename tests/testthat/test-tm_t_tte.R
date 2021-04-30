@@ -44,15 +44,21 @@ test_that("template_tte produces healthy standard output", {
       lyt <- basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
-        split_rows_by(
-          var = "EVNT1",
-          split_fun = keep_split_levels("Patients with event (%)")
-        ) %>%
-        summarize_row_groups() %>%
         summarize_vars(
-          vars = "EVNTDESC",
-          .stats = "count"
+          "is_event",
+          .stats = "count_fraction",
+          .labels = c(count_fraction = "Patients with event (%)")
         ) %>%
+        split_rows_by(
+          "EVNT1",
+          split_label = "Earliest contributing event",
+          split_fun = keep_split_levels("Patients with event (%)"),
+          visible_label = TRUE,
+          child_labels = "hidden",
+          indent_mod = 1L,
+        ) %>%
+        split_rows_by("EVNTDESC", split_fun = drop_split_levels) %>%
+        summarize_row_groups(format = "xx") %>%
         summarize_vars(
           "is_not_event",
           .stats = "count_fraction",
