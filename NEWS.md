@@ -19,6 +19,8 @@
 * Updated adverse events tab in `tm_g_patient_profile` to show a warning message instead of an empty plot when data is empty.
 * Updated vitals plot in `tm_g_patient_profile` to display stable colors per levels.
 * Fixed the legend of the vitals plot in `tm_g_patient_profile` to update when filtering.
+* Cleared x-axis limit in vitals plot in `tm_g_patient_profile`.
+* Fixed PARAMCD selected levels for current patient in `tm_g_patient_profile`.
 * Added a note in `tm_g_patient_profile` module to clarify the supported horizontal lines cases in the vitals plot tab.
 
 ### Miscellaneous

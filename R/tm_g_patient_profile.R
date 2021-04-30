@@ -199,7 +199,7 @@ template_vitals <- function(dataname = "v_merge",
       provided_vita <- v_paramcd_levels_chars
       known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
-      v_paramcd_levels_e <- known_vita[na.omit(pmatch(provided_vita, known_vita))]
+      v_paramcd_levels_e <- known_vita[na.omit(match(provided_vita, known_vita))]
       len_v_paramcd_levels_e <- length(v_paramcd_levels_e)
 
       all_colors <- setNames(color_palette(length(full_vita)), full_vita)
@@ -227,14 +227,14 @@ template_vitals <- function(dataname = "v_merge",
           alpha = 0.5
         ) +
         scale_color_manual(
-          values = vars_colors, # removed  "PUL", "OXYSAT", "WGHT"
+          values = vars_colors,
         ) +
         geom_text(
           data = base_stats_df,
           aes(x = x, y = y, label = label, color = color),
           alpha = 1,
           nudge_y = 2.2,
-          size = font_size_var[1] / 3.5,
+          size = font_size_var / 3.5,
           show.legend = FALSE
         ) +
         geom_hline(
@@ -244,9 +244,6 @@ template_vitals <- function(dataname = "v_merge",
           alpha = 0.5,
           size = 1,
           show.legend = FALSE
-        ) +
-        scale_x_continuous(
-          limits = c(1, max_day)
         ) +
         scale_y_continuous(
           breaks = seq(0, max(vitals[[v_xaxis_char]], na.rm = T), 50),
@@ -2143,16 +2140,17 @@ srv_g_patient_profile <- function(input,
     anl_name = "v_merge"
   )
 
-  vitals_dat <- reactive({
-    vitals_merged_data()$data()
-  })
+
+  vitals_dat <- vitals_merged_data()$data()
 
   output$v_paramcd_levels <- renderUI({
     paramcd_var <- input$`v_paramcd-dataset_ADVS_singleextract-select`
 
     req(paramcd_var)
+    req(input$patient_id)
 
-    paramcd_col <- vitals_dat()[[paramcd_var]]
+    vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
+    paramcd_col <- vitals_dat_sub[[paramcd_var]]
     paramcd_col_levels <- unique(paramcd_col)
 
     cur_selected <- isolate(input$v_paramcd_levels_vals)
