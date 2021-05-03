@@ -187,9 +187,8 @@ template_vitals <- function(dataname = "v_merge",
         dataname %>%
         group_by(paramcd, v_xaxis) %>%
         filter(paramcd %in% v_paramcd_levels_chars) %>%
-        summarise(
-          AVAL = max(aval, na.rm = T)
-        )
+        summarise(AVAL = max(aval, na.rm = T)) %>%
+        mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
       max_day <- max(vitals[[v_xaxis_char]], na.rm = T)
       max_aval <- max(vitals[[aval_char]], na.rm = T)

@@ -34,6 +34,7 @@ Also updated code to use correct denominator for duration of response endpoints.
 * Added a validation for the case when all rows are filtered out in the therapy tab of `tm_g_patient_profile`.
 * Updated the internals of the modules to read data from the correct field of the `filter_spec` objects.
 * Fixed the reactivity between the filter panel and the PARAMCD variable levels input in `tm_g_patient_profile` vitals tab so that the plot does not get reset when filtering.
+* Updated the vitals plot tab in `tm_g_patient_profile` to drop NA entries in the plot.
 
 # teal.modules.clinical 0.8.7
 ### New Module
