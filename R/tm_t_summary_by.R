@@ -279,6 +279,11 @@ template_summary_by <- function(parentname,
 
 #' Teal Module: Summarize Variables by Row Groups Module
 #'
+#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
+#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
+#'   `arm_var` levels are set to those used in the `parentname` dataset.
+#'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
+#'   TRUE regardless of the user choice when `tm_t_summary_by` is called.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
@@ -462,11 +467,21 @@ ui_summary_by <- function(id, ...) {
             selected = a$denominator$selected,
             fixed = a$denominator$fixed
           ),
-          checkboxInput(
-            ns("drop_arm_levels"),
-            label = "Drop columns not in filtered analysis dataset",
-            value = a$drop_arm_levels
-          )
+          if (a$dataname == a$parentname) {
+            shinyjs::hidden(
+              checkboxInput(
+                ns("drop_arm_levels"),
+                label = "it's a BUG if you see this",
+                value = TRUE
+              )
+            )
+          } else {
+            checkboxInput(
+              ns("drop_arm_levels"),
+              label = sprintf("Drop columns not in filtered %s", a$dataname),
+              value = a$drop_arm_levels
+            )
+          }
         )
       )
     ),

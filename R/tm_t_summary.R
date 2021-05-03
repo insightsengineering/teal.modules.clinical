@@ -174,6 +174,11 @@ template_summary <- function(dataname,
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
+#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
+#'   `arm_var` levels are set to those used in the `parentname` dataset.
+#'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
+#'   TRUE regardless of the user choice when `tm_t_summary` is called.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -317,11 +322,21 @@ ui_summary <- function(id, ...) {
               choices = c("N", "n", "omit"),
               selected = a$denominator
             ),
-            checkboxInput(
-              ns("drop_arm_levels"),
-              label = "Drop columns not in filtered analysis dataset",
-              value = a$drop_arm_levels
-            )
+            if (a$dataname == a$parentname) {
+              shinyjs::hidden(
+                checkboxInput(
+                  ns("drop_arm_levels"),
+                  label = "it's a BUG if you see this",
+                  value = TRUE
+                )
+              )
+            } else {
+              checkboxInput(
+                ns("drop_arm_levels"),
+                label = sprintf("Drop columns not in filtered %s", a$dataname),
+                value = a$drop_arm_levels
+              )
+            }
           )
         )
       ),
