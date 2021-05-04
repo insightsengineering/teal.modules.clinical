@@ -499,7 +499,7 @@ srv_ancova <- function(input,
       length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
       "ANCOVA table needs at least 2 arm groups to make comparisons."
     ))
-    # check that for there is at least one record with no missing data
+    # check that there is at least one record with no missing data
     validate(need(
       !all(is.na(anl_m$data()[[input_aval_var]])),
       "ANCOVA table cannot be calculated as all values are missing."
@@ -515,6 +515,16 @@ srv_ancova <- function(input,
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
+    ))
+
+    validate(need(
+      input[[extract_input("avisit", avisit$filter[[1]]$dataname, filter = TRUE)]],
+      "`Analysis Visit` field cannot be empty"
+    ))
+
+    validate(need(
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+      "`Select Endpoint` is not selected."
     ))
 
   })
