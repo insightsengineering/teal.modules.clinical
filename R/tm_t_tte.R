@@ -739,6 +739,17 @@ srv_t_tte <- function(input,
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
     validate(need(is_character_single(input_event_desc), "Event description variable should be a single column."))
 
+    # check that there is at least one record with no missing data
+    validate(need(
+      !all(is.na(anl_m$data()[[input_aval_var]])),
+      "ANCOVA table cannot be calculated as all values are missing."
+    ))
+
+    validate(need(
+      !is_empty(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]),
+      "`Select Endpoint` field is NULL")
+    )
+
     NULL
   })
 
