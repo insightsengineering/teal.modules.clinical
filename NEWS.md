@@ -23,6 +23,7 @@
 * Cleared x-axis limit in vitals plot in `tm_g_patient_profile`.
 * Fixed PARAMCD selected levels for current patient in `tm_g_patient_profile`.
 * Added a note in `tm_g_patient_profile` module to clarify the supported horizontal lines cases in the vitals plot tab.
+* Fixed validate statement in `tm_t_coxreg` so that models without strata and using likelihood tests return a result.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.

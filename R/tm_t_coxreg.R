@@ -670,7 +670,7 @@ srv_t_coxreg <- function(input,
     ))
 
     # validate p-value method
-    if (!is.null(input_strata_var)) {
+    if (length(input_strata_var) > 0) {
       validate(need(
         input$pval_method == "wald",
         "Only Wald tests are supported for models with strata."
