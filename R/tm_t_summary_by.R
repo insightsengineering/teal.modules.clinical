@@ -544,12 +544,14 @@ srv_summary_by <- function(input,
     input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
     input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(input_summarize_vars, "Please select a summarize variable")
-    )
 
     # validate inputs
+    validate(
+      need(input_arm_var, "Please select a treatment variable."),
+      need(input_summarize_vars, "Please select a summarize variable."),
+      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+        "`Select Endpoint` is not selected.")
+    )
     validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),

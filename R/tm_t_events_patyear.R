@@ -393,7 +393,9 @@ srv_events_patyear <- function(input,
       need(is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
       need(is_character_single(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected"),
-      need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty")
+      need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
+      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+        "`Select an Event Type Parameter is not selected.")
     )
 
     NULL
