@@ -499,7 +499,19 @@ srv_ancova <- function(input,
       length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
       "ANCOVA table needs at least 2 arm groups to make comparisons."
     ))
-
+    # check that for there is at least one record with no missing data
+    validate(need(
+      !all(is.na(anl_m$data()[[input_aval_var]])),
+      "ANCOVA table cannot be calculated as all values are missing."
+    ))
+    # check that for each visit there is at least one record with no missing data
+    all_NA_dataset <- anl_m$data() %>% # nolint
+      group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
+      summarize(all_NA = all(is.na(!!sym(input_aval_var))))
+    validate(need(
+      !any(all_NA_dataset$all_NA),
+      "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
+    ))
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
