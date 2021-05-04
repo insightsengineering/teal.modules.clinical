@@ -8,6 +8,7 @@ template_summary_by(
   parentname,
   dataname,
   arm_var,
+  id_var,
   sum_vars,
   by_vars,
   var_labels = character(),
@@ -29,6 +30,9 @@ analysis data used in teal module.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
+
+\item{id_var}{(\code{character})\cr
+the variable name for subject id.}
 
 \item{sum_vars}{(\code{character})\cr
 names of the variables that should be summarized.}

@@ -12,6 +12,8 @@ tm_t_summary_by(
   arm_var,
   by_vars,
   summarize_vars,
+  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
+    "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   parallel_vars = FALSE,
@@ -44,6 +46,9 @@ used to split the summary by rows.}
 
 \item{summarize_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 names of the variables that should be summarized.}
+
+\item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object specifying the variable name for subject id.}
 
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}

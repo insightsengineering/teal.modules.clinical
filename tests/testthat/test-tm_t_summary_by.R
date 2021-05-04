@@ -3,6 +3,7 @@ test_that("template_summary_by generates correct expressions", {
     parentname = "adsl",
     dataname = "adlb",
     arm_var = "ARM",
+    id_var = "USUBJID",
     sum_vars = c("AVAL"),
     add_total = TRUE,
     by_vars = c("AVISIT"),
@@ -63,6 +64,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     parentname = "adsl",
     dataname = "adlb",
     arm_var = "ARM",
+    id_var = "USUBJID",
     sum_vars = c("AVAL", "CHG"),
     add_total = TRUE,
     parallel_vars = TRUE,
@@ -119,6 +121,7 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
     parentname = "adsl",
     dataname = "adsl",
     arm_var = "ARM",
+    id_var = "USUBJID",
     sum_vars = c("AVAL"),
     add_total = FALSE,
     parallel_vars = FALSE,
@@ -142,6 +145,15 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
+    layout_cfun = quote(
+      cfun_unique <- function(x, labelstr = "", .N_col) { #nolint
+        y <- length(unique(x))
+        rcell(
+          c(y , y / .N_col), #nolint
+          label = labelstr
+        )
+      }
+    ),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ARM") %>%
@@ -152,14 +164,14 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
           split_fun = split_fun,
           visible_label = TRUE
         ) %>%
-        summarize_row_groups() %>%
+        summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
         split_rows_by(
           "COUNTRY",
           split_label = var_labels(adsl)[["COUNTRY"]],
           split_fun = split_fun,
           visible_label = TRUE
         ) %>%
-        summarize_row_groups()
+        summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
