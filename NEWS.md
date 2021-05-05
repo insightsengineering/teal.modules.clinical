@@ -1,35 +1,33 @@
 # teal.modules.clinical 0.8.8
 ### Enhancements
-* Added a slider for the font size in the plots in `tm_g_patient_profile`.
-* Updated the pre-processing code for `template_tte` so that a case with no events still produces a table. 
-* Updated code to use correct denominator for duration of response endpoints.
-* Added persistence for selected table lengths in `tm_g_patient_profile`.
-* Added a new parameter `conf_arg` to `tm_t_rsp` to be consistent with other efficacy modules.
-* The timeline plot inside `tm_patient_profile` is supporting more edge cases.
 * Added the option to download and expand tables.
-* Fixed subgroup_var definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`. 
-* Added support for downloading images in `tm_g_km`.
-* Added the parameter `show_labels` to the `template_summary` function for single summarize variable to explicitly show in resulting table.
-* Modified the parameter `arm_var` in `tm_t_summary` to accept more than one column. If two columns were selected for `arm_var`, then the second variable will be nested under the first one.
-* Updated `xlab` in title case in `tm_g_km`.
-* Added the argument `show_labels` to `template_summary` function for single summarize variable to explicitly show in resulting table.
+* In `tm_g_km` added support for downloading images and updated x-axis label to be shown in title case.
+* For `tm_g_patient_profile`:
+  * Added a slider for the font size in plots.
+  * Added persistence for selected table lengths.
+  * The timeline plot now supports more edge cases.
+  * In vitals tab, removed unused label text legend, updated plot to display stable colors per levels, cleared x-axis limit and fixed legend to update when filtering. Also added a note to clarify the supported horizontal lines cases.
+  * Updated adverse events tab to show a warning message instead of an empty plot when data is empty.
+  * Fixed PARAMCD selected levels for current patient.
+* For `tm_t_tte`:
+  * Updated the pre-processing code inside `template_tte` so that a dataset without any events still produces a table. 
+  * Updated code to use correct denominator for duration of response endpoints.
+* For `tm_t_summary`:
+  * Modified the parameter `arm_var` to accept more than one column. When two columns are selected for `arm_var`, then the second variable will be nested under the first one.
+  * Added argument `show_labels` to `template_summary` so that the label for a single summary variable is shown in the table.
+* Added a new parameter `conf_arg` to `tm_t_rsp` to be consistent with other efficacy modules.
 * Added validate statement in `tm_g_ipp` module to print message when `Timepoint Variable` drop down is deselected.
-* Clarified "Type of Regression" related labeling in the encoding panel from `tm_t_coxreg`.
-* Removed the header in `tm_g_forest_rsp` and `tm_g_forest_tte` as there's a default header in `g_forest`.
-* Removed unused label text legend from the vitals tab of `tm_g_patient_profile`.
-* Updated adverse events tab in `tm_g_patient_profile` to show a warning message instead of an empty plot when data is empty.
-* Updated vitals plot in `tm_g_patient_profile` to display stable colors per levels.
-* Fixed the legend of the vitals plot in `tm_g_patient_profile` to update when filtering.
-* Cleared x-axis limit in vitals plot in `tm_g_patient_profile`.
-* Fixed PARAMCD selected levels for current patient in `tm_g_patient_profile`.
-* Added a note in `tm_g_patient_profile` module to clarify the supported horizontal lines cases in the vitals plot tab.
+* Removed header definition in `tm_g_forest_rsp` and `tm_g_forest_tte` as there is now a default header in `g_forest`.
 * Fixed validate statement in `tm_t_coxreg` so that models without strata and using likelihood tests return a result.
+* Clarified functionality of `drop_arm_levels` for `tm_t_summary` and `tm_t_summary_by`. In the encodings panel, the checkbox will only be shown when the parent dataset and analysis dataset are different.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
 * Fixed grammar in the "Select a patient's id" error message in the `tm_g_patient_profile`.
 * Fixed the `font_size` default of the templates to be 12L instead of a vector of 3 integers and cleaned associated unnecessary code.
 * Fixed deprecated function warning in `tm_g_barchart_simple`.
+* Fixed `subgroup_var` definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`.
+* Clarified "Type of Regression" related labeling in the encoding panel from `tm_t_coxreg`.
 
 ### Bug fixes
 * Added a validation for the case when all rows are filtered out in the therapy tab of `tm_g_patient_profile`.
