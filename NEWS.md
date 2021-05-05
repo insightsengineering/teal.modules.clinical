@@ -1,3 +1,6 @@
+# teal.modules.clinical 0.8.8.9000
+.
+
 # teal.modules.clinical 0.8.8
 ### Enhancements
 * Added the option to download and expand tables.
