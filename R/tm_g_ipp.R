@@ -88,7 +88,7 @@ template_g_ipp <- function(dataname = "ANL",
     )
   )
 
-  if (separate_by_obs){
+  if (separate_by_obs) {
     graph_list <- add_expr(
       graph_list,
       substitute(

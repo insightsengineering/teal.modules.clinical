@@ -140,7 +140,7 @@ template_mult_events <- function(dataname,
   } else {
     lbl_lst <- list()
 
-    for (ii in 1:length(hlt)) {
+    for (ii in seq_along(hlt)) {
       hlt_new <- hlt[ii]
 
       lbl_lst <- add_expr(

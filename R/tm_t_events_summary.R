@@ -103,7 +103,7 @@ template_events_summary <- function(anl_name,
     )
   )
 
-  if (length(flag_var_anl) > 0){
+  if (length(flag_var_anl) > 0) {
     data_list <- add_expr(
       data_list,
       substitute(flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
@@ -112,7 +112,7 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  if (length(flag_var_aesi) > 0){
+  if (length(flag_var_aesi) > 0) {
     data_list <- add_expr(
       data_list,
       substitute(flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),

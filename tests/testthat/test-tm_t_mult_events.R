@@ -42,7 +42,8 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun
-        ) %>% summarize_num_patients(
+        ) %>%
+        summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
           .stats = c("unique", "nonunique"),
@@ -50,10 +51,12 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
-        ) %>% count_occurrences(
+        ) %>%
+        count_occurrences(
           vars = "CMDECOD",
           .indent_mods = -1L
-        ) %>% append_topleft(
+        ) %>%
+        append_topleft(
           paste(
             vapply(
               list(attr(adcm$ATC1,
@@ -124,24 +127,29 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
-        ) %>% split_rows_by("ATC2",
+        ) %>%
+        split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun
-        ) %>% summarize_num_patients(
+        ) %>%
+        summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
           .stats = c("unique", "nonunique"), .labels = c(
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
-        ) %>% count_occurrences(
+        ) %>%
+        count_occurrences(
           vars = "CMDECOD",
           .indent_mods = -1L
-        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+        ) %>%
+        append_topleft(paste(vapply(list(attr(adcm$ATC1,
           which = "label"
         ), attr(adcm$ATC2, which = "label")), eval,
         FUN.VALUE = character(1)
-        ), collapse = "/")) %>% append_varlabels(adcm,
+        ), collapse = "/")) %>%
+        append_varlabels(adcm,
           "CMDECOD",
           indent = TRUE
         )
@@ -312,33 +320,39 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun
-        ) %>% split_rows_by("ATC2",
+        ) %>%
+        split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun
-        ) %>% split_rows_by("ATC3",
+        ) %>%
+        split_rows_by("ATC3",
           child_labels = "visible",
           nested = TRUE, indent_mod = 0L, split_fun = split_fun
         ) %>%
         split_rows_by("ATC4",
           child_labels = "visible", nested = TRUE,
           indent_mod = 0L, split_fun = split_fun
-        ) %>% summarize_num_patients(
+        ) %>%
+        summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
           .stats = c("unique", "nonunique"), .labels = c(
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
-        ) %>% count_occurrences(
+        ) %>%
+        count_occurrences(
           vars = "CMDECOD",
           .indent_mods = -1L
-        ) %>% append_topleft(paste(vapply(list(attr(adcm$ATC1,
+        ) %>%
+        append_topleft(paste(vapply(list(attr(adcm$ATC1,
           which = "label"
         ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
           which = "label"
         ), attr(adcm$ATC4, which = "label")), eval,
         FUN.VALUE = character(1)
-        ), collapse = "/")) %>% append_varlabels(adcm,
+        ), collapse = "/")) %>%
+        append_varlabels(adcm,
           "CMDECOD",
           indent = TRUE
         )
@@ -464,7 +478,8 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun
-        ) %>% summarize_num_patients(
+        ) %>%
+        summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
           .stats = c("unique", "nonunique"),
@@ -472,10 +487,12 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
             unique = "Total number of patients with at least one treatment",
             nonunique = "Total number of treatments"
           )
-        ) %>% count_occurrences(
+        ) %>%
+        count_occurrences(
           vars = "CMDECOD",
           .indent_mods = -1L
-        ) %>% append_topleft(
+        ) %>%
+        append_topleft(
           paste(
             vapply(
               list(attr(adcm$ATC1,
