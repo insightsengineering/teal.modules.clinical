@@ -33,7 +33,7 @@ test_that("template_summary_by generates correct expressions", {
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
-          visible_label = TRUE
+          label_pos = "visible"
         ) %>%
         summarize_vars(
           vars = "AVAL",
@@ -94,7 +94,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
-          visible_label = TRUE
+          label_pos = "visible"
         ) %>%
         split_cols_by_multivar(vars = c("AVAL", "CHG")) %>%
         summarize_colvars(
@@ -162,14 +162,14 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
           "SEX",
           split_label = var_labels(adsl)[["SEX"]],
           split_fun = split_fun,
-          visible_label = TRUE
+          label_pos = "visible"
         ) %>%
         summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
         split_rows_by(
           "COUNTRY",
           split_label = var_labels(adsl)[["COUNTRY"]],
           split_fun = split_fun,
-          visible_label = TRUE
+          label_pos = "visible"
         ) %>%
         summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
     ),

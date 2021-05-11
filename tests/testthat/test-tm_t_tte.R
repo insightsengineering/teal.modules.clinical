@@ -53,7 +53,7 @@ test_that("template_tte produces healthy standard output", {
           "EVNT1",
           split_label = "Earliest contributing event",
           split_fun = keep_split_levels("Patients with event (%)"),
-          visible_label = TRUE,
+          label_pos = "visible",
           child_labels = "hidden",
           indent_mod = 1L,
         ) %>%

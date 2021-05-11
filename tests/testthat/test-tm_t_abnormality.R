@@ -25,12 +25,12 @@ test_that("template_abnormality generates correct expressions with default argum
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          visible_label = TRUE,
+          label_pos = "visible",
           split_fun = split_fun
         ) %>%
         split_rows_by("PARAM",
           split_label = var_labels(adlb)[["PARAM"]],
-          visible_label = TRUE,
+          label_pos = "visible",
           split_fun = split_fun
         ) %>%
         count_abnormal(
@@ -81,13 +81,13 @@ test_that("template_abnormality generates correct expressions with custom argume
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          visible_label = TRUE,
+          label_pos = "visible",
           split_fun = split_fun
         ) %>%
         split_rows_by(
           "PARAMCD",
           split_label = var_labels(adlb)[["PARAMCD"]],
-          visible_label = TRUE,
+          label_pos = "visible",
           split_fun = split_fun
         ) %>%
         count_abnormal(

@@ -86,7 +86,7 @@ template_abnormality <- function(parentname,
         split_rows_by(
           by_var,
           split_label = split_label,
-          visible_label = TRUE,
+          label_pos = "visible",
           split_fun = split_fun
         ),
         env = list(

@@ -170,7 +170,7 @@ template_summary_by <- function(parentname,
           by_var,
           split_label = split_label,
           split_fun = split_fun,
-          visible_label = TRUE
+          label_pos = "visible"
         ),
         env = list(
           by_var = by_var,

@@ -163,7 +163,7 @@ template_tte <- function(dataname = "ANL",
           "EVNT1",
           split_label = "Earliest contributing event",
           split_fun = keep_split_levels("Patients with event (%)"),
-          visible_label = TRUE,
+          label_pos = "visible",
           child_labels = "hidden",
           indent_mod = 1L,
         ) %>%
