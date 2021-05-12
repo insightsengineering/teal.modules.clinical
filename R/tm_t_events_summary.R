@@ -253,7 +253,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow("Total number of patients with at least one", ""),
+          rrow("Total number of patients with at least one"),
           at = position
         ),
         env = list(
@@ -284,7 +284,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow("Total number of unique preferred terms which are", ""),
+          rrow("Total number of unique preferred terms which are"),
           at = position
         ),
         env = list(
@@ -315,7 +315,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow("Total number of adverse events which are", ""),
+          rrow("Total number of adverse events which are"),
           at = position
         ),
         env = list(
@@ -343,7 +343,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow("Medical concepts: number of patients with", ""),
+          rrow("Medical concepts: number of patients with"),
           at = position
         ),
         env = list(
@@ -381,9 +381,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow("Medical concepts: number of unique preferred terms which are part of", #nolint
-               ""
-          ),
+          rrow("Medical concepts: number of unique preferred terms which are part of"), #nolint
           at = position
         ),
         env = list(
@@ -422,10 +420,7 @@ template_events_summary <- function(anl_name,
       table_anl_list,
       substitute(
         expr = insert_rrow(
-          rrow(
-            "Medical concepts: number of adverse events which are part of",
-            ""
-          ),
+          rrow("Medical concepts: number of adverse events which are part of"),
           at = position
         ),
         env = list(

@@ -188,12 +188,12 @@ test_that("template_events_summary generates table with multiple flags", {
     ),
     table_anl = quote(
       result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl) %>%
-        insert_rrow(rrow("Total number of patients with at least one", ""), at = 3) %>%
-        insert_rrow(rrow("Total number of unique preferred terms which are", ""), at = 7) %>%
-        insert_rrow(rrow("Total number of adverse events which are", ""), at = 11) %>%
-        insert_rrow(rrow("Medical concepts: number of patients with", ""), at = 15) %>%
-        insert_rrow(rrow("Medical concepts: number of unique preferred terms which are part of", ""), at = 18) %>%
-        insert_rrow(rrow("Medical concepts: number of adverse events which are part of", ""), at = 21)
+        insert_rrow(rrow("Total number of patients with at least one"), at = 3) %>%
+        insert_rrow(rrow("Total number of unique preferred terms which are"), at = 7) %>%
+        insert_rrow(rrow("Total number of adverse events which are"), at = 11) %>%
+        insert_rrow(rrow("Medical concepts: number of patients with"), at = 15) %>%
+        insert_rrow(rrow("Medical concepts: number of unique preferred terms which are part of"), at = 18) %>%
+        insert_rrow(rrow("Medical concepts: number of adverse events which are part of"), at = 21)
     ),
     table = quote({
       col_info(result_parent) <- col_info(result_anl)
