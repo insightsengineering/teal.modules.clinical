@@ -5,6 +5,13 @@
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_coxreg()].
+#' @param multivariate (`logical`)\cr
+#'   If `FALSE`, the univariate approach is used
+#'   (equivalent to `COXT01` standard) instead of the multivariate model
+#'   (equivalent to `COXT02` standard).
+#' @param at (`list` of `numeric`)\cr when the candidate covariate is a
+#'  `numeric`, use `at` to specify the value of the covariate at which the
+#'  effect should be estimated.
 #'
 #' @importFrom broom tidy
 #' @importFrom stats relevel
@@ -20,7 +27,7 @@ template_coxreg <- function(dataname,
                             comp_arm,
                             paramcd,
                             at = list(),
-                            strata = NULL,
+                            strata_var = NULL,
                             combine_comp_arms = FALSE,
                             multivariate = FALSE,
                             control = control_coxreg()) {
@@ -84,13 +91,13 @@ template_coxreg <- function(dataname,
     )
   )
 
-  if (!is.null(strata)) {
+  if (!is.null(strata_var)) {
     data_list <- add_expr(
       data_list,
       substitute(
         expr = variables$strata <- strata_var,
         env = list(
-          strata_var = strata
+          strata_var = strata_var
         )
       )
     )
@@ -708,7 +715,7 @@ srv_t_coxreg <- function(input,
       ref_arm = input$ref_arm,
       comp_arm = comp_arm,
       paramcd = paramcd,
-      strata = if (length(strata_var) != 0) strata_var else NULL,
+      strata_var = if (length(strata_var) != 0) strata_var else NULL,
       combine_comp_arms = input$combine_comp_arms,
       multivariate = input$type == "Multivariate",
       control = control_coxreg(

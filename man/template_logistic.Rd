@@ -7,7 +7,7 @@
 template_logistic(
   dataname,
   arm_var,
-  avalc_var,
+  aval_var,
   cov_var,
   interaction_var,
   ref_arm,
@@ -26,8 +26,14 @@ analysis data used in teal module.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
+
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
+
+\item{interaction_var}{(\code{character})\cr
+names of the variables that can be used for interaction variable selection.}
 
 \item{ref_arm}{(\code{character})\cr
 the level of reference arm in case of arm comparison.}
@@ -35,7 +41,8 @@ the level of reference arm in case of arm comparison.}
 \item{comp_arm}{(\code{character})\cr
 the level of comparison arm in case of arm comparison.}
 
-\item{topleft}{(\code{character})\cr the top-left annotation in the table.}
+\item{topleft}{(\code{character})\cr
+the top-left annotation in the table.}
 
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
@@ -43,7 +50,11 @@ value for the confidence level within the range of (0, 1).}
 \item{combine_comp_arms}{(\code{logical})\cr
 triggers the combination of comparison arms.}
 
-\item{at}{optional, (\code{NULL} or \code{numeric})\cr values for the interaction variable. Otherwise the median is used.}
+\item{responder_val}{(\code{character})\cr
+values of the responder variable corresponding with a successful response.}
+
+\item{at}{optional, (\code{NULL} or \code{numeric})\cr
+values for the interaction variable. Otherwise the median is used.}
 }
 \description{
 Creates an expression for logistic regressions.

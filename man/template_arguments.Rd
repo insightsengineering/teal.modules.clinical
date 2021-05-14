@@ -94,6 +94,9 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
+
+\item{strata_var}{(\code{character})\cr
+names of the variables for stratified analysis.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

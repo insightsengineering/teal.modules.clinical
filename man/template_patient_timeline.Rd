@@ -29,9 +29,9 @@ analysis data used in teal module.}
 
 \item{pt_dstime_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{pt_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 
-\item{t_cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
 \description{
 Creates a patient timeline template call.

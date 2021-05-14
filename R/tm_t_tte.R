@@ -40,10 +40,9 @@ control_tte <- function(
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
+#' @param event_desc_var (`character`)\cr name of the variable with events description.
 #'
 #' @seealso [tm_t_tte()]
-#'
-#' @examples
 #'
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
@@ -52,8 +51,8 @@ template_tte <- function(dataname = "ANL",
                          comp_arm = NULL,
                          compare_arm = FALSE,
                          combine_comp_arms = FALSE,
-                         aval = "AVAL",
-                         cnsr = "CNSR",
+                         aval_var = "AVAL",
+                         cnsr_var = "CNSR",
                          strata_var = NULL,
                          time_points = NULL,
                          time_unit_var = "AVALU",
@@ -63,8 +62,8 @@ template_tte <- function(dataname = "ANL",
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
-    is.string(aval),
-    is.string(cnsr),
+    is.string(aval_var),
+    is.string(cnsr_var),
     is.string(time_unit_var),
     is.string(event_desc_var),
     is.flag(compare_arm),
@@ -91,8 +90,8 @@ template_tte <- function(dataname = "ANL",
     data_list,
     substitute(
       expr = mutate(
-        is_event = cnsr == 0,
-        is_not_event = cnsr == 1,
+        is_event = cnsr_var == 0,
+        is_not_event = cnsr_var == 1,
         EVNT1 = factor(
           case_when(
             is_event == TRUE ~ "Patients with event (%)",
@@ -103,7 +102,7 @@ template_tte <- function(dataname = "ANL",
         EVNTDESC = factor(event_desc_var)
       ),
       env = list(
-        cnsr = as.name(cnsr),
+        cnsr_var = as.name(cnsr_var),
         event_desc_var = as.name(event_desc_var)
       )
     )
@@ -186,7 +185,7 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = surv_time(
-        vars = aval,
+        vars = aval_var,
         var_labels = paste0("Time to Event (", as.character(anl$time_unit_var[1]), ")"),
         is_event = "is_event",
         control = list(
@@ -197,7 +196,7 @@ template_tte <- function(dataname = "ANL",
         table_names = "time_to_event"
       ),
       env = c(
-        aval = aval,
+        aval_var = aval_var,
         control$surv_time,
         time_unit_var = as.name(time_unit_var)
       )
@@ -209,7 +208,7 @@ template_tte <- function(dataname = "ANL",
       layout_list,
       substitute(
         expr = coxph_pairwise(
-          vars = aval,
+          vars = aval_var,
           is_event = "is_event",
           var_labels = c("Unstratified Analysis"),
           control = list(
@@ -220,7 +219,7 @@ template_tte <- function(dataname = "ANL",
           table_names = "unstratified"
         ),
         env = c(
-          aval = aval,
+          aval_var = aval_var,
           control$coxph
         )
       )
@@ -232,7 +231,7 @@ template_tte <- function(dataname = "ANL",
       layout_list,
       substitute(
         expr = coxph_pairwise(
-          vars = aval,
+          vars = aval_var,
           is_event = "is_event",
           var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),
           strat = strata_var,
@@ -244,7 +243,7 @@ template_tte <- function(dataname = "ANL",
           table_names = "stratified"
         ),
         env = list(
-          aval = aval,
+          aval_var = aval_var,
           strata_var = strata_var,
           pval_method = control$coxph$pval_method,
           ties = control$coxph$ties,
@@ -268,7 +267,7 @@ template_tte <- function(dataname = "ANL",
       layout_list,
       substitute(
         expr = surv_timepoint(
-          vars = aval,
+          vars = aval_var,
           var_labels = as.character(anl$time_unit_var[1]),
           is_event = "is_event",
           time_point = time_points,
@@ -281,7 +280,7 @@ template_tte <- function(dataname = "ANL",
           table_names = "time_points"
         ),
         env = list(
-          aval = aval,
+          aval_var = aval_var,
           time_points = time_points,
           method = method,
           indents = indents,
@@ -778,8 +777,8 @@ srv_t_tte <- function(input,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
       combine_comp_arms = input$combine_comp_arms,
-      aval = as.vector(anl_m$columns_source$aval_var),
-      cnsr = as.vector(anl_m$columns_source$cnsr_var),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       time_points = as.numeric(input$time_points),
       time_unit_var = as.vector(anl_m$columns_source$time_unit_var),

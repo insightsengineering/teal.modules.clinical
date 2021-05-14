@@ -60,6 +60,9 @@ between ticks on the x axis.
 If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
 an optimal tick position on the x axis.}
 
+\item{strata_var}{(\code{character})\cr
+names of the variables for stratified analysis.}
+
 \item{time_points}{(\code{character})\cr
 time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 

@@ -32,6 +32,19 @@ variable names that can be used as \code{arm_var}.}
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}
 
+\item{abnormal}{(\code{character})\cr indicating abnormality grade.}
+
+\item{grade}{(\code{character})\cr name of the variable that can be used to
+specify the abnormality grade. Variable must be factor.}
+
+\item{baseline_var}{(\code{character})\cr
+name of the variable for baseline abnormality grade.}
+
+\item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
+
+\item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
+records in \code{treatment_flag_var}.}
+
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 

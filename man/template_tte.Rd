@@ -12,8 +12,8 @@ template_tte(
   comp_arm = NULL,
   compare_arm = FALSE,
   combine_comp_arms = FALSE,
-  aval = "AVAL",
-  cnsr = "CNSR",
+  aval_var = "AVAL",
+  cnsr_var = "CNSR",
   strata_var = NULL,
   time_points = NULL,
   time_unit_var = "AVALU",
@@ -43,20 +43,28 @@ triggers the comparison between study arms.}
 \item{combine_comp_arms}{(\code{logical})\cr
 triggers the combination of comparison arms.}
 
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
+
+\item{cnsr_var}{(\code{character})\cr
+name of the censoring variable.}
+
+\item{strata_var}{(\code{character})\cr
+names of the variables for stratified analysis.}
+
 \item{time_points}{(\code{character})\cr
 time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
 
+\item{event_desc_var}{(\code{character})\cr name of the variable with events description.}
+
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}
 }
 \description{
 Creates a valid expression for time-to-event analysis.
-}
-\examples{
-
 }
 \seealso{
 \code{\link[=tm_t_tte]{tm_t_tte()}}

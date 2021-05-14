@@ -2,6 +2,10 @@
 #'
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
+#' @param paramcd_levels (`character`)\cr
+#'   levels variable value designating the studied parameter.
+#' @param paramcd_var (`character`)\cr
+#'   levels variable value designating the studied parameter.
 #'
 #' @seealso [tm_t_ancova()]
 #'

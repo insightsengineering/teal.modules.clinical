@@ -3,15 +3,21 @@
 #' Creates an expression for logistic regressions.
 #'
 #' @inheritParams template_arguments
-#' @param topleft (`character`)\cr the top-left annotation in the table.
-#' @param at optional, (`NULL` or `numeric`)\cr values for the interaction variable. Otherwise the median is used.
+#' @param topleft (`character`)\cr
+#'  the top-left annotation in the table.
+#' @param at optional, (`NULL` or `numeric`)\cr
+#'  values for the interaction variable. Otherwise the median is used.
+#' @param interaction_var (`character`)\cr
+#'  names of the variables that can be used for interaction variable selection.
+#' @param responder_val (`character`)\cr
+#'  values of the responder variable corresponding with a successful response.
 #'
 #' @seealso [tm_t_logistic()]
 #'
 #' @importFrom broom tidy
 template_logistic <- function(dataname,
                               arm_var,
-                              avalc_var,
+                              aval_var,
                               cov_var,
                               interaction_var,
                               ref_arm,
@@ -25,7 +31,7 @@ template_logistic <- function(dataname,
   assert_that(
     is.string(dataname),
     is.string(arm_var),
-    is.string(avalc_var),
+    is.string(aval_var),
     is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
     is.string(interaction_var) || is.null(interaction_var),
@@ -64,8 +70,8 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(Response = avalc_var %in% responder_val),
-      env = list(avalc_var = as.name(avalc_var), responder_val = responder_val)
+      expr = mutate(Response = aval_var %in% responder_val),
+      env = list(aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
 
@@ -532,7 +538,7 @@ srv_t_logistic <- function(input,
     calls <- template_logistic(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      avalc_var = as.vector(anl_m$columns_source$avalc_var),
+      aval_var = as.vector(anl_m$columns_source$avalc_var),
       cov_var = if (length(cov_var) > 0) cov_var else NULL,
       interaction_var = if (interaction_flag) interaction_var else NULL,
       ref_arm = input$ref_arm,

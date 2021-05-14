@@ -14,7 +14,7 @@ template_coxreg(
   comp_arm,
   paramcd,
   at = list(),
-  strata = NULL,
+  strata_var = NULL,
   combine_comp_arms = FALSE,
   multivariate = FALSE,
   control = control_coxreg()
@@ -45,8 +45,20 @@ the level of comparison arm in case of arm comparison.}
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
+\item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a
+\code{numeric}, use \code{at} to specify the value of the covariate at which the
+effect should be estimated.}
+
+\item{strata_var}{(\code{character})\cr
+names of the variables for stratified analysis.}
+
 \item{combine_comp_arms}{(\code{logical})\cr
 triggers the combination of comparison arms.}
+
+\item{multivariate}{(\code{logical})\cr
+If \code{FALSE}, the univariate approach is used
+(equivalent to \code{COXT01} standard) instead of the multivariate model
+(equivalent to \code{COXT02} standard).}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_coxreg]{control_coxreg()}}.}

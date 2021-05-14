@@ -3,7 +3,7 @@ test_that("template_logistic generates correct expressions", {
   result <- template_logistic(
     dataname = "ANL",
     arm_var = "ARMCD",
-    avalc_var = "AVALC",
+    aval_var = "AVALC",
     cov_var = c("AGE", "SEX"),
     interaction_var = "AGE",
     ref_arm = c("ARM A", "ARM B"),

@@ -71,6 +71,8 @@
 #'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
 #'   `arm_var` levels are set to those used in the `parantname` dataset.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
+#' @param strata_var (`character`)\cr
+#'   names of the variables for stratified analysis.
 #' @name template_arguments
 #'
 NULL

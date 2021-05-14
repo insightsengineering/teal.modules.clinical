@@ -44,6 +44,12 @@ name of the analysis variable.}
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
+\item{paramcd_levels}{(\code{character})\cr
+levels variable value designating the studied parameter.}
+
+\item{paramcd_var}{(\code{character})\cr
+levels variable value designating the studied parameter.}
+
 \item{visit_var}{(\code{character})\cr
 variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 

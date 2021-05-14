@@ -655,7 +655,7 @@ template_adverse_events <- function(dataname = "ae_merge",
 #' @param pt_aetime_end (`character`)\cr name of datetime end of adverse event variable.
 #' @param pt_dstime_start (`character`)\cr name of datetime first exposure to treatment variable.
 #' @param pt_dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
-#' @param t_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @param pt_cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 template_patient_timeline <- function(dataname = "pt_merge",
