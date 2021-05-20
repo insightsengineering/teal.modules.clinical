@@ -170,7 +170,7 @@ template_summary_by <- function(parentname,
           by_var,
           split_label = split_label,
           split_fun = split_fun,
-          label_pos = "visible"
+          label_pos = "topleft"
         ),
         env = list(
           by_var = by_var,
@@ -266,16 +266,6 @@ template_summary_by <- function(parentname,
           )
         }
       }
-    )
-  }
-
-  if (!row_groups && !parallel_vars && (length(sum_vars) == 1)) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr = append_varlabels(dataname, sum_vars),
-        env = list(dataname = as.name(dataname), sum_vars = sum_vars)
-      )
     )
   }
 

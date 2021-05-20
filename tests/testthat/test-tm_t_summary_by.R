@@ -33,7 +33,7 @@ test_that("template_summary_by generates correct expressions", {
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
-          label_pos = "visible"
+          label_pos = "topleft"
         ) %>%
         summarize_vars(
           vars = "AVAL",
@@ -48,8 +48,7 @@ test_that("template_summary_by generates correct expressions", {
             range = "xx.xx - xx.xx",
             count_fraction = "xx (xx.%)"
           )
-        ) %>%
-        append_varlabels(adlb, "AVAL")
+        )
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -94,7 +93,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
-          label_pos = "visible"
+          label_pos = "topleft"
         ) %>%
         split_cols_by_multivar(vars = c("AVAL", "CHG")) %>%
         summarize_colvars(
@@ -162,14 +161,14 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
           "SEX",
           split_label = var_labels(adsl)[["SEX"]],
           split_fun = split_fun,
-          label_pos = "visible"
+          label_pos = "topleft"
         ) %>%
         summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
         split_rows_by(
           "COUNTRY",
           split_label = var_labels(adsl)[["COUNTRY"]],
           split_fun = split_fun,
-          label_pos = "visible"
+          label_pos = "topleft"
         ) %>%
         summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
     ),
