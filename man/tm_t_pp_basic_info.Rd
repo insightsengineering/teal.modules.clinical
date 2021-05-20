@@ -38,8 +38,6 @@ This teal module produces a patient profile basic info report using ADaM dataset
 }
 \examples{
 library(random.cdisc.data)
-library(random.cdisc.data)
-library(dplyr)
 ADSL <- radsl(cached = TRUE)
 
 app <- init(

@@ -169,7 +169,6 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
 #' ADVS <- radvs(cached = TRUE)
 #'

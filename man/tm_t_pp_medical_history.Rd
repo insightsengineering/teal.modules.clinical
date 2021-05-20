@@ -45,7 +45,6 @@ This teal module produces a patient medical history report using ADaM datasets.
 }
 \examples{
 library(random.cdisc.data)
-library(dplyr)
 ADSL <- radsl(cached = TRUE)
 ADMH <- radmh(cached = TRUE)
 

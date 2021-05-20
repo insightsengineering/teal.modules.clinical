@@ -56,8 +56,6 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(random.cdisc.data)
-#' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
 #'
 #' app <- init(

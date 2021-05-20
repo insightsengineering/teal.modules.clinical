@@ -59,7 +59,6 @@ This teal module produces a patient profile laboratory table using ADaM datasets
 }
 \examples{
 library(random.cdisc.data)
-library(dplyr)
 ADSL <- radsl(cached = TRUE)
 ADLB <- radlb(cached = TRUE)
 

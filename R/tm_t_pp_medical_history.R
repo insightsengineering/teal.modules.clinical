@@ -59,7 +59,6 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
 #' ADMH <- radmh(cached = TRUE)
 #'

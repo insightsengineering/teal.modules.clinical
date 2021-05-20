@@ -54,7 +54,6 @@ This teal module produces a patient prior medication report using ADaM datasets.
 }
 \examples{
 library(random.cdisc.data)
-library(dplyr)
 ADSL <- radsl(cached = TRUE)
 ADCM <- radcm(cached = TRUE)
 

@@ -78,7 +78,6 @@ This teal module produces a patient profile timeline plot using ADaM datasets.
 }
 \examples{
 library(random.cdisc.data)
-library(dplyr)
 ADSL <- radsl(cached = TRUE)
 ADAE <- radae(cached = TRUE)
 ADCM <- radcm(cached = TRUE)

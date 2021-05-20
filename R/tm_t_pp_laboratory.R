@@ -94,7 +94,6 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
 #' ADLB <- radlb(cached = TRUE)
 #'

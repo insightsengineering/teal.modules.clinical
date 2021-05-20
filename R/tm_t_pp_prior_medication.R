@@ -72,7 +72,6 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(random.cdisc.data)
-#' library(dplyr)
 #' ADSL <- radsl(cached = TRUE)
 #' ADCM <- radcm(cached = TRUE)
 #'
