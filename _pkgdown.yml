@@ -22,6 +22,9 @@ reference:
   - title: General analyses
     contents:
       - starts_with("tm_a_")
+  - title: Patient profile modules
+    contents:
+      - starts_with("tm_[g|t]_pp_")
   - title: Templates
     contents:
       - starts_with("template_")

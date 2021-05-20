@@ -1,0 +1,539 @@
+#' Template: Patient Timeline Tab
+#'
+#' Creates a patient timeline template call.
+#'
+#' @inheritParams template_arguments
+#' @param aeterm (`character`)\cr name of the reported term for the adverse event variable.
+#' @param aetime_start (`character`)\cr name of datetime start of adverse event variable.
+#' @param aetime_end (`character`)\cr name of datetime end of adverse event variable.
+#' @param dstime_start (`character`)\cr name of datetime first exposure to treatment variable.
+#' @param dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
+#' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#'
+template_patient_timeline <- function(dataname = "ANL",
+                                      aeterm = "AETERM",
+                                      aetime_start = "ASTDTM",
+                                      aetime_end = "AENDTM",
+                                      dstime_start = "CMASTDTM",
+                                      dstime_end = "CMAENDTM",
+                                      cmtrt = "CMTRT",
+                                      font_size = 12L) {
+  # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
+  # updated after random.cdisc.data updates.
+  assert_that(
+    is.string(dataname),
+    is.string(aeterm) || is.null(aeterm),
+    is.string(aetime_start) || is.null(aetime_start),
+    is.string(aetime_end) || is.null(aetime_end),
+    is.string(dstime_start) || is.null(dstime_start),
+    is.string(dstime_end) || is.null(dstime_end),
+    is.string(cmtrt) || is.null(cmtrt),
+    is.numeric(font_size)
+  )
+
+  y <- list()
+  y$chart <- list()
+
+  chart_list <- add_expr(
+    list(),
+    substitute(
+      expr = {
+        posixct_origin <- "1970-01-01 00:00.00 UTC"
+
+        dose_base <- NULL
+        med_chart <- NULL
+        ae_chart <- NULL
+
+        if (all(vapply(list(dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
+          min_date <- min(dataname[[dstime_start_var]], na.rm = TRUE)
+          max_date <- max(dataname[[dstime_end_var]], na.rm = TRUE)
+
+          dose_base <- data.frame(
+            start = c(min_date, max_date),
+            end = c(min_date, max_date),
+            event = c("First Exposure to Treatment", "Last Exposure to Treatment")
+          )
+          dose_base$group <- "Dosing"
+        }
+
+        if (all(vapply(list(cmtrt_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
+          med_chart <- dataname %>%
+            select(dstime_start, dstime_end, cmtrt) %>%
+            distinct()
+
+          colnames(med_chart) <- c("start", "end", "event")
+          med_chart$group <- "Medication"
+        }
+        if (all(vapply(list(aeterm_var, aetime_start_var, aetime_end_var), Negate(is.null), logical(1)))) {
+          ae_chart <- dataname %>%
+            select(aetime_start, aetime_end, aeterm) %>%
+            distinct()
+          colnames(ae_chart) <- c("start", "end", "event")
+          ae_chart$group <- "Adverse Events"
+        }
+
+        vistime_data <- dplyr::bind_rows(list(dose_base, ae_chart, med_chart))
+        # in some cases, dates are converted to numeric so this is a step to convert them back
+        vistime_data$start <- as.POSIXct(vistime_data$start, origin = posixct_origin)
+        vistime_data$end <- as.POSIXct(vistime_data$end, origin = posixct_origin)
+
+
+        vistime_data <- vistime_data %>%
+          filter(stats::complete.cases(.[, c("start", "end", "group")])) %>%
+          filter(!is.na(format(.data$start))) %>%
+          filter(!is.na(format(.data$end)))
+
+        if (nrow(vistime_data) == 0 || all(is.na(format(c(vistime_data$start, vistime_data$end))))) {
+          vistime_data <- data.frame(
+            start = as.POSIXct(0, origin = posixct_origin),
+            end = as.POSIXct(0, origin = posixct_origin),
+            event = "",
+            group = "Nothing"
+          )
+        }
+
+        patient_timeline_plot <- vistime::gg_vistime(
+          vistime_data,
+          col.event = "event",
+          col.group = "group",
+          show_labels = FALSE
+        ) +
+          theme(text = element_text(size = font_size_var)) +
+          ggrepel::geom_text_repel(
+            aes(label = event),
+            size = font_size_var / 3.5,
+            color = "black"
+          ) +
+          scale_x_datetime(labels = scales::date_format("%b-%Y"))
+      },
+      env = list(
+        dataname = as.name(dataname),
+        aeterm = if (is.null(aeterm)) aeterm else as.name(aeterm),
+        aetime_start = if (is.null(aetime_start)) aetime_start else as.name(aetime_start),
+        aetime_end = if (is.null(aetime_end)) aetime_end else as.name(aetime_end),
+        dstime_start = if (is.null(dstime_start)) dstime_start else as.name(dstime_start),
+        dstime_end = if (is.null(dstime_end)) dstime_end else as.name(dstime_end),
+        cmtrt = if (is.null(cmtrt)) cmtrt else as.name(cmtrt),
+        aeterm_var = aeterm,
+        aetime_start_var = aetime_start,
+        aetime_end_var = aetime_end,
+        dstime_start_var = dstime_start,
+        dstime_end_var = dstime_end,
+        cmtrt_var = cmtrt,
+        font_size_var = font_size
+      )
+    )
+  )
+
+  chart_list <- add_expr(
+    expr_ls = chart_list,
+    new_expr = quote(patient_timeline_plot)
+  )
+
+  y$chart <- bracket_expr(chart_list)
+  y
+}
+
+#' Teal Module: Patient Profile Timeline Teal Module
+#'
+#' This teal module produces a patient profile timeline plot using ADaM datasets.
+#'
+#' @inheritParams module_arguments
+#' @param patient_col (`character`) value patient ID column to be used.
+#' @param aeterm ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AETERM} column of the
+#' ADAE dataset.
+#' @param dataname_adcm (`character`) name of ADCM dataset or equivalent.
+#' @param dataname_adae (`character`) name of ADAE dataset or equivalent.
+#' @param cmtrt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMTRT} column of the ADCM dataset.
+#' @param aetime_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDTM} column of the AE
+#' start of the ADAE dataset.
+#' @param aetime_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDTM} column of the AE
+#' end of the ADAE dataset.
+#' @param dstime_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMASTDTM} column of
+#' treatment start of the ADCM dataset.
+#' @param dstime_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMAENDTM} column of treatment
+#' end of the ADCM dataset.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#'
+#' @export
+#'
+#' @examples
+#' library(random.cdisc.data)
+#' library(dplyr)
+#' ADSL <- radsl(cached = TRUE)
+#' ADAE <- radae(cached = TRUE)
+#' ADCM <- radcm(cached = TRUE)
+#'
+#' #' Modify ADCM
+#' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+#' ADCM$CMDOSE <- 1
+#' ADCM$CMTRT <- ADCM$CMCAT
+#' ADCM$CMDOSU <- "U"
+#' ADCM$CMROUTE <- "CMROUTE"
+#' ADCM$CMDOSFRQ <- "CMDOSFRQ"
+#' ADCM$CMSTDY <- 1
+#' ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+#' ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+#' ADCM$CMENDY <- 500
+#' ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+#' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+#' ADCM$CMASTDTM <- ADCM$ASTDTM
+#' ADCM$CMAENDTM <- ADCM$AENDTM
+#' rtables::var_labels(
+#'   ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]
+#' ) <- c(
+#'   "Indication",
+#'   "Reported Name of Drug, Med, or Therapy",
+#'   "Study Day of Start of Medication",
+#'   "Study Day of End of Medication"
+#' )
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#'
+#' app <- init(
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
+#'     cdisc_dataset("ADCM", ADCM,
+#'                   code = 'ADCM <- radcm(cached = TRUE)
+#'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+#'       ADCM$CMDOSE <- 1
+#'       ADCM$CMTRT <- ADCM$CMCAT
+#'       ADCM$CMDOSU <- "U"
+#'       ADCM$CMROUTE <- "CMROUTE"
+#'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
+#'       ADCM$CMSTDY <- 1
+#'       ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+#'       ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+#'       ADCM$CMENDY <- 500
+#'       ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+#'       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+#'       ADCM$CMASTDTM <- ADCM$ASTDTM
+#'       ADCM$CMAENDTM <- ADCM$AENDTM
+#'       rtables::var_labels(
+#'         ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+#'           "Indication",
+#'           "Reported Name of Drug, Med, or Therapy",
+#'           "Study Day of Start of Medication",
+#'           "Study Day of End of Medication")',
+#'                   keys = adcm_keys
+#'     ),
+#'     check = TRUE
+#'   ),
+#'   modules = root_modules(
+#'     tm_g_pp_patient_timeline(
+#'       label = "Vitals",
+#'       dataname_adae = "ADAE",
+#'       dataname_adcm = "ADCM",
+#'       parentname = "ADSL",
+#'       patient_col = "USUBJID",
+#'       plot_height = c(600L, 200L, 2000L),
+#'       cmtrt = choices_selected(
+#'         choices = variable_choices(ADCM, "CMTRT"),
+#'         selected = "CMTRT",
+#'       ),
+#'       aeterm = choices_selected(
+#'         choices = variable_choices(ADAE, "AETERM"),
+#'         selected = c("AETERM")
+#'       ),
+#'       aetime_start = choices_selected(
+#'         choices = variable_choices(ADAE, "ASTDTM"),
+#'         selected = c("ASTDTM")
+#'       ),
+#'       aetime_end = choices_selected(
+#'         choices = variable_choices(ADAE, "AENDTM"),
+#'         selected = c("AENDTM")
+#'       ),
+#'       dstime_start = choices_selected(
+#'         choices = variable_choices(ADCM, "CMASTDTM"),
+#'         selected = c("CMASTDTM")
+#'       ),
+#'       dstime_end = choices_selected(
+#'         choices = variable_choices(ADCM, "CMAENDTM"),
+#'         selected = c("CMAENDTM")
+#'       )
+#'     )
+#'   )
+#' )
+#' \dontrun{
+#' shinyApp(app$ui, app$server)
+#' }
+#'
+tm_g_pp_patient_timeline <- function(label,
+                                     dataname_adcm = "ADCM",
+                                     dataname_adae = "ADAE",
+                                     parentname = "ADSL",
+                                     patient_col = "USUBJID",
+                                     aeterm = NULL,
+                                     cmtrt = NULL,
+                                     aetime_start = NULL,
+                                     aetime_end = NULL,
+                                     dstime_start = NULL,
+                                     dstime_end = NULL,
+                                     font_size = c(12L, 12L, 25L),
+                                     plot_height = c(700L, 200L, 2000L),
+                                     plot_width = c(900L, 200L, 2000L),
+                                     pre_output = NULL,
+                                     post_output = NULL) {
+  assert_that(is_character_single(label))
+  assert_that(is_character_single(dataname_adcm))
+  assert_that(is_character_single(dataname_adae))
+  assert_that(is_character_single(parentname))
+  assert_that(is_character_single(patient_col))
+  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
+    msg = "pre_output should be either null or shiny.tag type of object"
+  )
+  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
+    msg = "post_output should be either null or shiny.tag type of object"
+  )
+
+  check_slider_input(font_size, allow_null = FALSE)
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
+
+  args <- as.list(environment())
+  data_extract_list <- list(
+    aeterm = if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
+    cmtrt = if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname_adcm)),
+    aetime_start = if_not_null(aetime_start, cs_to_des_select(aetime_start, dataname = dataname_adae)),
+    aetime_end = if_not_null(aetime_end, cs_to_des_select(aetime_end, dataname = dataname_adae)),
+    dstime_start = if_not_null(dstime_start, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
+    dstime_end = if_not_null(dstime_end, cs_to_des_select(dstime_end, dataname = dataname_adcm))
+  )
+
+  module(
+    label = label,
+    ui = ui_g_patient_timeline,
+    ui_args = c(data_extract_list, args),
+    server = srv_g_patient_timeline,
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname_adae = dataname_adae,
+        dataname_adcm = dataname_adcm,
+        parentname = parentname,
+        label = label,
+        patient_col = patient_col,
+        plot_height = plot_height,
+        plot_width = plot_width
+      )
+    ),
+    filters = "all"
+  )
+}
+
+ui_g_patient_timeline <- function(id, ...) {
+  ui_args <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    ui_args$aeterm,
+    ui_args$cmtrt,
+    ui_args$aetime_start,
+    ui_args$aetime_end,
+    ui_args$dstime_start,
+    ui_args$dstime_end
+  )
+
+  ns <- NS(id)
+  standard_layout(
+    output = plot_with_settings_ui(id = ns("patient_timeline_plot")),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(
+        ui_args[c("aeterm", "cmtrt", "aetime_start", "aetime_end", "dstime_start", "dstime_end")]
+      ),
+      optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        multiple = FALSE,
+        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+      ),
+      data_extract_input(
+        id = ns("cmtrt"),
+        label = "Select CMTRT variable:",
+        data_extract_spec = ui_args$cmtrt,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aeterm"),
+        label = "Select AETERM variable:",
+        data_extract_spec = ui_args$aeterm,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aetime_start"),
+        label = "Select ASTDTM variable:",
+        data_extract_spec = ui_args$aetime_start,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aetime_end"),
+        label = "Select AENDTM variable:",
+        data_extract_spec = ui_args$aetime_end,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("dstime_start"),
+        label = "Select TRTSDTM variable:",
+        data_extract_spec = ui_args$dstime_start,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("dstime_end"),
+        label = "Select TRTEDTM variable:",
+        data_extract_spec = ui_args$dstime_end,
+        is_single_dataset = is_single_dataset_value
+      ),
+      panel_item(
+        title = "Plot settings",
+        collapsed = TRUE,
+        optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = ui_args$pre_output,
+    post_output = ui_args$post_output
+  )
+}
+
+
+srv_g_patient_timeline <- function(input,
+                                   output,
+                                   session,
+                                   datasets,
+                                   dataname_adae,
+                                   dataname_adcm,
+                                   parentname,
+                                   patient_col,
+                                   aeterm,
+                                   cmtrt,
+                                   aetime_start,
+                                   aetime_end,
+                                   dstime_start,
+                                   dstime_end,
+                                   plot_height,
+                                   plot_width,
+                                   label) {
+  stopifnot(is_cdisc_data(datasets))
+
+  init_chunks()
+
+  patient_id <- reactive(input$patient_id)
+
+  # global checks
+  validate_checks <- reactive({
+    validate(need(patient_id(), "Please select a patient."))
+  })
+
+  # Init
+  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+
+  observeEvent(patient_data_base(), {
+    updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = if (length(patient_data_base()) == 1) {
+        patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
+      )
+    },
+    ignoreInit = TRUE
+  )
+
+  # Patient timeline tab ----
+  p_timeline_merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmtrt),
+    input_id = c("aeterm", "aetime_start", "aetime_end", "dstime_start", "dstime_end", "cmtrt")
+  )
+
+  patient_timeline_calls <- reactive({
+    validate_checks()
+
+    aeterm <- input[[extract_input("aeterm", dataname_adae)]]
+    aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
+    aetime_end <- input[[extract_input("aetime_end", dataname_adae)]]
+    dstime_start <- input[[extract_input("dstime_start", dataname_adcm)]]
+    dstime_end <- input[[extract_input("dstime_end", dataname_adcm)]]
+    cmtrt <- input[[extract_input("cmtrt", dataname_adcm)]]
+    font_size <- input[["font_size"]]
+
+    ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
+    ds_chart_vars_null <- any(vapply(list(dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
+
+    p_timeline_data <- p_timeline_merged_data()$data()
+    # time variables can not be NA
+    p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
+
+    validate(
+      need(
+        sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
+          sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0,
+        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+      ),
+      need(
+        isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null),
+        "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+          Please select the appropriate input variables."
+      )
+    )
+
+    patient_timeline_stack <- chunks$new()
+    time_line_stack_push <- function(...) {
+      chunks_push(..., chunks = patient_timeline_stack)
+    }
+
+    chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
+
+    time_line_stack_push(substitute(
+      expr = {
+        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+      }, env = list(
+        patient_col = patient_col,
+        patient_id = patient_id()
+      )
+    ))
+
+    patient_timeline_calls <- template_patient_timeline(
+      dataname = "ANL",
+      aeterm = aeterm,
+      aetime_start = aetime_start,
+      aetime_end = aetime_end,
+      dstime_start = dstime_start,
+      dstime_end = dstime_end,
+      cmtrt = cmtrt,
+      font_size = font_size
+    )
+
+    lapply(patient_timeline_calls, time_line_stack_push)
+    chunks_safe_eval(chunks = patient_timeline_stack)
+    patient_timeline_stack
+  })
+
+  patient_timeline_plot <- reactive({
+    chunks_reset()
+    chunks_push_chunks(patient_timeline_calls())
+    chunks_get_var("patient_timeline_plot")
+  })
+
+  callModule(
+    plot_with_settings_srv,
+    id = "patient_timeline_plot",
+    plot_r = patient_timeline_plot,
+    height = plot_height,
+    width = plot_width
+  )
+
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(
+      aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmtrt
+    )),
+    modal_title = label
+  )
+}

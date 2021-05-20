@@ -1,0 +1,483 @@
+#' Template: Vitals
+#'
+#' Creates a vitals template.
+#' @inheritParams template_arguments
+#' @param paramcd (`character`)\cr name of the parameter code variable.
+#' @param paramcd_levels (`character`)\cr (`paramcd`)\cr vector with (`#'paramcd`)\cr levels.
+#' @param xaxis (`character`)\cr name of time variable used for the x-axis.
+#' @param aval (`character`)\cr name of the analysis value variable.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#'
+#' @note
+#' The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
+#' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
+#'
+template_vitals <- function(dataname = "ANL",
+                            paramcd = "PARAMCD",
+                            paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
+                            xaxis = "ADY",
+                            aval = "AVAL",
+                            font_size = 12L) {
+  assert_that(
+    is.string(dataname),
+    is.string(paramcd),
+    is.string(xaxis),
+    is.string(aval),
+    is.numeric(font_size)
+  )
+
+  # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
+  y <- list()
+  y$plot <- list()
+
+  vital_plot <- add_expr(
+    list(),
+    substitute(expr = {
+      vitals <-
+        dataname %>%
+        group_by(paramcd, xaxis) %>%
+        filter(paramcd %in% paramcd_levels_chars) %>%
+        summarise(AVAL = max(aval, na.rm = T)) %>%
+        mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
+
+      max_day <- max(vitals[[xaxis_char]], na.rm = T)
+      max_aval <- max(vitals[[aval_char]], na.rm = T)
+      max_aval_seq <- seq(0, max_aval, 10)
+
+      full_vita <- levels(dataname[[paramcd_char]])
+      provided_vita <- paramcd_levels_chars
+      known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
+
+      paramcd_levels_e <- known_vita[na.omit(match(provided_vita, known_vita))]
+      len_paramcd_levels_e <- length(paramcd_levels_e)
+
+      all_colors <- setNames(color_palette(length(full_vita)), full_vita)
+      vars_colors <- all_colors[provided_vita]
+      names(vars_colors) <- provided_vita
+
+      base_stats <- setNames(c(140, 90, 38, 20, 94, 100), known_vita)
+      paramcd_stats_e <- base_stats[paramcd_levels_e]
+
+      base_labels <- setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
+      paramcd_labels_e <- base_labels[paramcd_levels_e]
+
+      base_stats_df <- data.frame(
+        x = rep(1, len_paramcd_levels_e),
+        y = paramcd_stats_e,
+        label = paramcd_labels_e,
+        color = paramcd_levels_e
+      )
+
+      result_plot <- ggplot(data = vitals, mapping = aes(x = xaxis)) + # replaced VSDY
+        geom_line(
+          data = vitals,
+          mapping = aes(y = aval, color = paramcd),
+          size = 1.5,
+          alpha = 0.5
+        ) +
+        scale_color_manual(
+          values = vars_colors,
+        ) +
+        geom_text(
+          data = base_stats_df,
+          aes(x = x, y = y, label = label, color = color),
+          alpha = 1,
+          nudge_y = 2.2,
+          size = font_size_var / 3.5,
+          show.legend = FALSE
+        ) +
+        geom_hline(
+          data = base_stats_df,
+          aes(yintercept = y, color = color),
+          linetype = 2,
+          alpha = 0.5,
+          size = 1,
+          show.legend = FALSE
+        ) +
+        scale_y_continuous(
+          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = T), 50),
+          name = "Vitals",
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
+        ) +
+        geom_text(
+          data = data.frame(
+            x = rep(max_day, length(max_aval_seq)),
+            y = max_aval_seq,
+            l = as.character(max_aval_seq)
+          ),
+          aes(
+            x = x,
+            y = y,
+            label = l
+          ),
+          color = "black",
+          alpha = 1,
+          nudge_y = 2.2,
+          size = font_size_var / 3.5
+        ) +
+        theme_minimal() +
+        theme(
+          text = element_text(size = font_size_var),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ),
+          panel.grid.minor = element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ),
+          legend.position = "top"
+        )
+
+      print(result_plot)
+    }, env = list(
+      dataname = as.name(dataname),
+      paramcd = as.name(paramcd),
+      paramcd_char = paramcd,
+      paramcd_levels_chars = paramcd_levels,
+      xaxis = as.name(xaxis),
+      xaxis_char = xaxis,
+      aval = as.name(aval),
+      aval_char = aval,
+      font_size_var = font_size
+    ))
+  )
+
+  y$plot <- bracket_expr(vital_plot)
+  y
+}
+
+#' Teal Module: Patient Profile Vitals Teal Module
+#'
+#' This teal module produces a patient profile vitals plot using ADaM datasets.
+#'
+#' @inheritParams module_arguments
+#' @param patient_col (`character`) value patient ID column to be used.
+#' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
+#' ADVS dataset.
+#' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADVS dataset.
+#' @param aval ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AVAL} column of the ADVS dataset.
+#' @param xaxis ([teal::choices_selected()] or [teal::data_extract_spec()])\cr time variable to be represented in
+#' the vitals plot x-axis.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#'
+#' @export
+#'
+#' @examples
+#' library(random.cdisc.data)
+#' library(dplyr)
+#' ADSL <- radsl(cached = TRUE)
+#' ADVS <- radvs(cached = TRUE)
+#'
+#' app <- init(
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
+#'     check = TRUE
+#'   ),
+#'   modules = root_modules(
+#'     tm_g_pp_vitals(
+#'       label = "Vitals",
+#'       dataname = "ADVS",
+#'       parentname = "ADSL",
+#'       patient_col = "USUBJID",
+#'       plot_height = c(600L, 200L, 2000L),
+#'       paramcd = choices_selected(
+#'         choices = variable_choices(ADVS, "PARAMCD"),
+#'         selected = "PARAMCD"
+#'       ),
+#'       param = choices_selected(
+#'         choices = variable_choices(ADVS, "PARAM"),
+#'         selected = "PARAM"
+#'       ),
+#'       xaxis = choices_selected(
+#'         choices = variable_choices(ADVS, "ADY"),
+#'         selected = "ADY"
+#'       ),
+#'       aval = choices_selected(
+#'         choices = variable_choices(ADVS, "AVAL"),
+#'         selected = "AVAL"
+#'       )
+#'     )
+#'   )
+#' )
+#' \dontrun{
+#' shinyApp(app$ui, app$server)
+#' }
+#'
+tm_g_pp_vitals <- function(label,
+                           dataname = "ADVS",
+                           parentname = "ADSL",
+                           patient_col = "USUBJID",
+                           paramcd = NULL,
+                           param = NULL,
+                           aval = NULL,
+                           xaxis = NULL,
+                           font_size = c(12L, 12L, 25L),
+                           plot_height = c(700L, 200L, 2000L),
+                           plot_width = c(900L, 200L, 2000L),
+                           pre_output = NULL,
+                           post_output = NULL) {
+  assert_that(is_character_single(label))
+  assert_that(is_character_single(dataname))
+  assert_that(is_character_single(parentname))
+  assert_that(is_character_single(patient_col))
+  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
+    msg = "pre_output should be either null or shiny.tag type of object"
+  )
+  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
+    msg = "post_output should be either null or shiny.tag type of object"
+  )
+
+  check_slider_input(font_size, allow_null = FALSE)
+  check_slider_input(plot_height, allow_null = FALSE)
+  check_slider_input(plot_width)
+
+  args <- as.list(environment())
+  data_extract_list <- list(
+    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
+    param = if_not_null(param, cs_to_des_select(param, dataname = dataname)),
+    aval = if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
+    xaxis = if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
+  )
+
+  module(
+    label = label,
+    ui = ui_g_vitals,
+    ui_args = c(data_extract_list, args),
+    server = srv_g_vitals,
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parentname = parentname,
+        label = label,
+        patient_col = patient_col,
+        plot_height = plot_height,
+        plot_width = plot_width
+      )
+    ),
+    filters = "all"
+  )
+}
+
+ui_g_vitals <- function(id, ...) {
+  ui_args <- list(...)
+  is_single_dataset_value <- is_single_dataset(
+    ui_args$paramcd,
+    ui_args$param,
+    ui_args$aval,
+    ui_args$xaxis
+  )
+
+  ns <- NS(id)
+  standard_layout(
+    output = plot_with_settings_ui(id = ns("vitals_plot")),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
+      optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        multiple = FALSE,
+        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+      ),
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select PARAMCD variable:",
+        data_extract_spec = ui_args$paramcd,
+        is_single_dataset = is_single_dataset_value
+      ),
+      uiOutput(ns("paramcd_levels")),
+      data_extract_input(
+        id = ns("xaxis"),
+        label = "Select vital plot x-axis:",
+        data_extract_spec = ui_args$xaxis,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("aval"),
+        label = "Select AVAL variable:",
+        data_extract_spec = ui_args$aval,
+        is_single_dataset = is_single_dataset_value
+      ),
+      panel_item(
+        title = "Plot settings",
+        collapsed = TRUE,
+        optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = ui_args$pre_output,
+    post_output = ui_args$post_output
+  )
+}
+
+
+srv_g_vitals <- function(input,
+                         output,
+                         session,
+                         datasets,
+                         dataname,
+                         parentname,
+                         patient_col,
+                         paramcd,
+                         param,
+                         aval,
+                         xaxis,
+                         plot_height,
+                         plot_width,
+                         label) {
+  stopifnot(is_cdisc_data(datasets))
+
+  init_chunks()
+
+  patient_id <- reactive(input$patient_id)
+
+  # global checks
+  validate_checks <- reactive({
+    validate(need(patient_id(), "Please select a patient."))
+  })
+
+  # Init
+  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+
+  observeEvent(patient_data_base(), {
+    updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = if (length(patient_data_base()) == 1) {
+        patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
+      )
+    },
+    ignoreInit = TRUE
+  )
+
+  # Vitals tab ----
+  vitals_merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(paramcd, xaxis, aval),
+    input_id = c("paramcd", "xaxis", "aval"),
+    merge_function = "dplyr::left_join"
+  )
+
+
+  vitals_dat <- vitals_merged_data()$data()
+
+  output$paramcd_levels <- renderUI({
+    paramcd_var <- input[[extract_input("paramcd", dataname)]]
+
+    req(paramcd_var)
+    req(input$patient_id)
+
+    vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
+    paramcd_col <- vitals_dat_sub[[paramcd_var]]
+    paramcd_col_levels <- unique(paramcd_col)
+
+    cur_selected <- isolate(input$paramcd_levels_vals)
+
+    selected <- if (!is_empty(cur_selected)) {
+      cur_selected
+    } else {
+      paramcd_col_levels
+    }
+
+    tagList(
+      selectInput(
+        session$ns("paramcd_levels_vals"),
+        "Select PARAMCD variable levels:",
+        selected = selected,
+        choices = paramcd_col_levels,
+        multiple = TRUE
+      )
+    )
+  })
+
+  vitals_call <- reactive({
+    validate_checks()
+
+    validate_has_data(vitals_merged_data()$data(), 1)
+
+    validate(
+      need(
+        input[[extract_input("paramcd", dataname)]],
+        "Please select PARAMCD variable."
+      ),
+      need(
+        input[["paramcd_levels_vals"]],
+        "Please select PARAMCD variable levels."
+      ),
+      need(
+        input[[extract_input("xaxis", dataname)]],
+        "Please select Vitals x-axis variable."
+      ),
+      need(
+        input[[extract_input("aval", dataname)]],
+        "Please select AVAL variable."
+      ),
+      need(
+        nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
+        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+      )
+    )
+
+    vitals_stack <- chunks$new()
+    vitals_stack_push <- function(...) {
+      chunks_push(..., chunks = vitals_stack)
+    }
+    chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
+
+    vitals_stack_push(substitute(
+      expr = {
+        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+      }, env = list(
+        patient_col = patient_col,
+        patient_id = patient_id()
+      )
+    ))
+
+    my_calls <- template_vitals(
+      dataname = "ANL",
+      paramcd = input[[extract_input("paramcd", dataname)]],
+      paramcd_levels = input[["paramcd_levels_vals"]],
+      xaxis = input[[extract_input("xaxis", dataname)]],
+      aval = input[[extract_input("aval", dataname)]],
+      font_size = input$`font_size`
+    )
+
+    lapply(my_calls, vitals_stack_push)
+    chunks_safe_eval(chunks = vitals_stack)
+    vitals_stack
+  })
+
+  vitals_plot <- reactive({
+    chunks_reset()
+    chunks_push_chunks(vitals_call())
+    chunks_get_var("result_plot")
+  })
+
+  callModule(
+    plot_with_settings_srv,
+    id = "vitals_plot",
+    plot_r = vitals_plot,
+    height = plot_height,
+    width = plot_width
+  )
+
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(paramcd, param, aval, xaxis)),
+    modal_title = label
+  )
+}

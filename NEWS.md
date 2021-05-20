@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.8.8.9000
-.
+### New features
+* Split `tm_g_patient_profile` tabs into 8 separate new modules.
+* Added the option to select patient ID from the filter panel for all the modules of patient profile.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements
