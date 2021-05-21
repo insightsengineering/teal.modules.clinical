@@ -687,7 +687,7 @@ srv_t_events_byterm <- function(input,
   table <- reactive({
     call_preparation()
     chunks_safe_eval()
-    as_html(chunks_get_var("pruned_and_sorted_result"))
+    chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(

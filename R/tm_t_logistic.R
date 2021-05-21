@@ -556,7 +556,7 @@ srv_t_logistic <- function(input,
   table <- reactive({
     call_preparation()
     chunks_safe_eval()
-    as_html(chunks_get_var("result"))
+    chunks_get_var("result")
   })
 
   callModule(

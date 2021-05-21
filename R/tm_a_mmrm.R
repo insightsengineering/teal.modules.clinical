@@ -1147,10 +1147,10 @@ srv_mmrm <- function(input,
     # Depending on the table function type, produce different code
     switch(
       output_function,
-      t_mmrm_lsmeans = as_html(chunks_get_var("lsmeans_table")),
-      t_mmrm_diagnostic = as_html(chunks_get_var("diagnostic_table")),
-      t_mmrm_fixed = as_html(chunks_get_var("fixed_effects")),
-      t_mmrm_cov = as_html(chunks_get_var("cov_matrix"))
+      t_mmrm_lsmeans = chunks_get_var("lsmeans_table"),
+      t_mmrm_diagnostic = chunks_get_var("diagnostic_table"),
+      t_mmrm_fixed = chunks_get_var("fixed_effects"),
+      t_mmrm_cov = chunks_get_var("cov_matrix")
     )
   })
 

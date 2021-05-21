@@ -757,7 +757,7 @@ srv_t_coxreg <- function(input,
         chunks_get_var("result")
       })
 
-    div(lapply(res, as_html))
+    rtables::rbindl_rtables(res, check_headers = TRUE)
   })
 
   callModule(
