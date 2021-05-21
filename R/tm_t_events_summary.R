@@ -852,6 +852,9 @@ srv_t_events_summary <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  flag_var_anl_ordered <- get_input_order("flag_var_anl", flag_var_anl$dataname)
+  flag_var_aesi <- get_input_order("flag_var_aesi", flag_var_aesi$dataname)
+
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
@@ -860,8 +863,8 @@ srv_t_events_summary <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
     input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-    input_flag_var_anl <- if_not_null(flag_var_anl, as.vector(anl_m$columns_source$flag_var_anl))
-    input_flag_var_aesi <- if_not_null(flag_var_aesi, as.vector(anl_m$columns_source$flag_var_aesi))
+    input_flag_var_anl <- flag_var_anl_ordered()
+    input_flag_var_aesi <- flag_var_aesi()
     input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
@@ -893,8 +896,8 @@ srv_t_events_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_flag_var_anl <- as.vector(anl_m$columns_source$flag_var_anl)
-    input_flag_var_aesi <- as.vector(anl_m$columns_source$flag_var_aesi)
+    input_flag_var_anl <- flag_var_anl_ordered()
+    input_flag_var_aesi <- flag_var_aesi()
 
     my_calls <- template_events_summary(
       anl_name = "ANL",

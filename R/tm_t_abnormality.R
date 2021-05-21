@@ -455,6 +455,8 @@ srv_t_abnormality <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  by_vars_ordered <- get_input_order("by_vars", by_vars$dataname)
+
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
@@ -462,7 +464,7 @@ srv_t_abnormality <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- as.vector(anl_m$columns_source$by_vars)
+    input_by_vars <- by_vars_ordered()
     input_grade <- as.vector(anl_m$columns_source$grade)
     input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
@@ -502,7 +504,7 @@ srv_t_abnormality <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      by_vars = as.vector(anl_m$columns_source$by_vars),
+      by_vars = by_vars_ordered(),
       abnormal = input$abnormal_values,
       grade = as.vector(anl_m$columns_source$grade),
       baseline_var = as.vector(anl_m$columns_source$baseline_var),

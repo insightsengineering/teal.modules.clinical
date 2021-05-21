@@ -377,14 +377,17 @@ srv_summary <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  summary_user_input <- get_input_order("summarize_vars", summarize_vars$dataname)
+  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
+
   # validate inputs
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+    input_arm_var <- arm_var_user_input()
+    input_summarize_vars <- summary_user_input()
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
@@ -422,12 +425,12 @@ srv_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    sum_vars <- as.vector(anl_m$columns_source$summarize_vars)
+    sum_vars <- summary_user_input()
 
     my_calls <- template_summary(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_var = arm_var_user_input(),
       sum_vars = sum_vars,
       show_labels = "visible",
       add_total = input$add_total,

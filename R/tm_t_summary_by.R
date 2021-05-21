@@ -558,6 +558,9 @@ srv_summary_by <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  by_vars_ordered <- get_input_order("by_vars", by_vars$dataname)
+  summarize_vars_ordered <- get_input_order("summarize_vars", summarize_vars$dataname)
+
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -566,8 +569,8 @@ srv_summary_by <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- as.vector(anl_m$columns_source$by_vars)
-    input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+    input_by_vars <- by_vars_ordered()
+    input_summarize_vars <- summarize_vars_ordered()
     input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
 
@@ -608,15 +611,13 @@ srv_summary_by <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    sum_vars <- as.vector(anl_m$columns_source$summarize_vars)
-
     my_calls <- template_summary_by(
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      sum_vars = sum_vars,
-      by_vars = as.vector(anl_m$columns_source$by_vars),
-      var_labels = get_var_labels(datasets, dataname, sum_vars),
+      sum_vars = summarize_vars_ordered(),
+      by_vars = by_vars_ordered(),
+      var_labels = get_var_labels(datasets, dataname, summarize_vars_ordered()),
       id_var = as.vector(anl_m$columns_source$id_var),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       na_level = na_level,
