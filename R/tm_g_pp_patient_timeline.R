@@ -85,27 +85,37 @@ template_patient_timeline <- function(dataname = "ANL",
           filter(!is.na(format(.data$end)))
 
         if (nrow(vistime_data) == 0 || all(is.na(format(c(vistime_data$start, vistime_data$end))))) {
-          vistime_data <- data.frame(
-            start = as.POSIXct(0, origin = posixct_origin),
-            end = as.POSIXct(0, origin = posixct_origin),
-            event = "",
-            group = "Nothing"
+          empty_plot_label <- "Empty Plot (either due to filtering or missing values).\n Consider relaxing filters."
+          df <- data.frame(
+            x = 0,
+            y = 0,
+            label = empty_plot_label
           )
-        }
-
-        patient_timeline_plot <- vistime::gg_vistime(
-          vistime_data,
-          col.event = "event",
-          col.group = "group",
-          show_labels = FALSE
-        ) +
-          theme(text = element_text(size = font_size_var)) +
-          ggrepel::geom_text_repel(
-            aes(label = event),
-            size = font_size_var / 3.5,
-            color = "black"
+          patient_timeline_plot <- ggplot(
+            data = df,
+            aes(
+              x = x,
+              y = y,
+              label = label
+            )
           ) +
-          scale_x_datetime(labels = scales::date_format("%b-%Y"))
+            geom_label() +
+            theme_void()
+        } else {
+          patient_timeline_plot <- vistime::gg_vistime(
+            vistime_data,
+            col.event = "event",
+            col.group = "group",
+            show_labels = FALSE
+          ) +
+            theme(text = element_text(size = font_size_var)) +
+            ggrepel::geom_text_repel(
+              aes(label = event),
+              size = font_size_var / 3.5,
+              color = "black"
+            ) +
+            scale_x_datetime(labels = scales::date_format("%b-%Y"))
+          }
       },
       env = list(
         dataname = as.name(dataname),
