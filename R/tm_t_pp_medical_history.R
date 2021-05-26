@@ -190,11 +190,6 @@ srv_t_medical_history <- function(input,
 
   patient_id <- reactive(input$patient_id)
 
-  # global checks
-  validate_checks <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-  })
-
   # Init
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
@@ -223,7 +218,7 @@ srv_t_medical_history <- function(input,
   )
 
   mhist_call <- reactive({
-    validate_checks()
+    validate(need(patient_id(), "Please select a patient."))
 
     validate(
       need(

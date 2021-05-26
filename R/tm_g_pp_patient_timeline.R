@@ -428,11 +428,6 @@ srv_g_patient_timeline <- function(input,
 
   patient_id <- reactive(input$patient_id)
 
-  # global checks
-  validate_checks <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-  })
-
   # Init
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
@@ -460,7 +455,7 @@ srv_g_patient_timeline <- function(input,
   )
 
   patient_timeline_calls <- reactive({
-    validate_checks()
+    validate(need(patient_id(), "Please select a patient."))
 
     aeterm <- input[[extract_input("aeterm", dataname_adae)]]
     aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]

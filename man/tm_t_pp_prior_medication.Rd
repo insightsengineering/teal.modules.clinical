@@ -117,7 +117,6 @@ app <- init(
       dataname = "ADCM",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      pre_output = div("AAAAA"),
       atirel = choices_selected(
         choices = variable_choices(ADCM, "ATIREL"),
         selected = "ATIREL"

@@ -135,7 +135,6 @@ template_prior_medication <- function(dataname = "ANL",
 #'       dataname = "ADCM",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       pre_output = div("AAAAA"),
 #'       atirel = choices_selected(
 #'         choices = variable_choices(ADCM, "ATIREL"),
 #'         selected = "ATIREL"
@@ -280,11 +279,6 @@ srv_t_prior_medication <- function(input,
 
   patient_id <- reactive(input$patient_id)
 
-  # global checks
-  validate_checks <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-  })
-
   # Init
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
@@ -313,7 +307,7 @@ srv_t_prior_medication <- function(input,
   )
 
   pmed_call <- reactive({
-    validate_checks()
+    validate(need(patient_id(), "Please select a patient."))
 
     validate(
       need(

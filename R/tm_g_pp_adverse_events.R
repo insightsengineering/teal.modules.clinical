@@ -381,11 +381,6 @@ srv_g_adverse_events <- function(input,
 
   patient_id <- reactive(input$patient_id)
 
-  # global checks
-  validate_checks <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-    })
-
   # Init
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
@@ -413,9 +408,8 @@ srv_g_adverse_events <- function(input,
   )
 
   calls <- reactive({
-    validate_checks()
-
-    validate_has_data(ae_merged_data()$data(), 1)
+    validate(need(patient_id(), "Please select a patient."))
+    validate_has_data(ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ], 1)
 
     validate(
       need(
