@@ -27,6 +27,7 @@ Imports:
   grid,
   magrittr,
   methods,
+  rmarkdown,
   rtables (>= 0.3.7),
   scales,
   shinyjs,
@@ -42,7 +43,6 @@ Imports:
   ggrepel
 Suggests:
   knitr,
-  rmarkdown,
   random.cdisc.data (>= 0.3.10),
   test.nest (>= 0.2.8),
   testthat (>= 2.0)

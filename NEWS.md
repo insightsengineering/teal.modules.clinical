@@ -3,8 +3,13 @@
 * Split `tm_g_patient_profile` tabs into 8 separate new modules.
 * Added the option to select patient ID from the filter panel for all the modules of patient profile.
 * Moved as_html() function call inside `teal.devel::table_with_settings` 
-* Added a capability to remember the order of user input to some encoding UI elements. The inputs with tracking enabled are marked with a double arrow icon. The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
+* Added a capability to remember the order of user input to some encoding UI elements. 
+The inputs with tracking enabled are marked with a double arrow icon. 
+The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, 
+`tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
 * Added an additional validation for `tm_g_patient_timeline` when the plot is empty.
+* Fixed Get R Code output of `rm_t_pp_laboratory` to return identical HTML 
+formatted table as displayed in the app.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements

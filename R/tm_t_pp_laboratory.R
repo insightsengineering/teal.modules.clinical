@@ -53,8 +53,12 @@ template_laboratory <- function(dataname = "ANL",
         tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
         mutate(param_char := clean_description(.data[[param_char]]))
 
-      labor_table_raw
-      labor_table_html
+      labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
+      labor_table_html_dt$dependencies <- c(
+        labor_table_html_dt$dependencies,
+        list(rmarkdown::html_dependency_bootstrap("default"))
+      )
+      labor_table_html_dt
       },
       env = list(
         dataname = as.name(dataname),
