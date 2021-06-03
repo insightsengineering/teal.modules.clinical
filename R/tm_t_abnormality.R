@@ -55,6 +55,7 @@ template_abnormality <- function(parentname,
 
   y$data <- bracket_expr(data_list)
 
+  # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   layout_list <- list()
 
@@ -94,7 +95,7 @@ template_abnormality <- function(parentname,
         split_rows_by(
           by_var,
           split_label = split_label,
-          label_pos = "visible",
+          label_pos = "topleft",
           split_fun = split_fun
         ),
         env = list(
@@ -114,14 +115,16 @@ template_abnormality <- function(parentname,
         variables = list(id = usubjid, baseline = baseline_var),
         exclude_base_abn = exclude_base_abn
       ) %>%
-        append_varlabels(dataname, grade),
+        append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
         abnormal = setNames(abnormal, tolower(abnormal)),
         usubjid = "USUBJID",
         baseline_var = baseline_var,
         exclude_base_abn = exclude_base_abn,
-        dataname = as.name(dataname)
+        dataname = as.name(dataname),
+        by_vars = by_vars,
+        indent_space = length(by_vars)
       )
     )
   )

@@ -25,12 +25,12 @@ test_that("template_abnormality generates correct expressions with default argum
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          label_pos = "visible",
+          label_pos = "topleft",
           split_fun = split_fun
         ) %>%
         split_rows_by("PARAM",
           split_label = var_labels(adlb)[["PARAM"]],
-          label_pos = "visible",
+          label_pos = "topleft",
           split_fun = split_fun
         ) %>%
         count_abnormal(
@@ -39,7 +39,7 @@ test_that("template_abnormality generates correct expressions with default argum
           variables = list(id = "USUBJID", baseline = "BNRIND"),
           exclude_base_abn = FALSE
         ) %>%
-        append_varlabels(adlb, "ANRIND")
+        append_varlabels(adlb, "ANRIND", indent = 2L)
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
@@ -81,13 +81,13 @@ test_that("template_abnormality generates correct expressions with custom argume
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
-          label_pos = "visible",
+          label_pos = "topleft",
           split_fun = split_fun
         ) %>%
         split_rows_by(
           "PARAMCD",
           split_label = var_labels(adlb)[["PARAMCD"]],
-          label_pos = "visible",
+          label_pos = "topleft",
           split_fun = split_fun
         ) %>%
         count_abnormal(
@@ -96,7 +96,7 @@ test_that("template_abnormality generates correct expressions with custom argume
           variables = list(id = "USUBJID", baseline = "MYBASELINE"),
           exclude_base_abn = TRUE
       ) %>%
-        append_varlabels(adlb, "MYANRIND")
+        append_varlabels(adlb, "MYANRIND", indent = 2L)
     ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
