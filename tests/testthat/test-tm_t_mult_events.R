@@ -41,7 +41,9 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -56,19 +58,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           vars = "CMDECOD",
           .indent_mods = -1L
         ) %>%
-        append_topleft(
-          paste(
-            vapply(
-              list(attr(adcm$ATC1,
-                which = "label"
-              )),
-              eval,
-              FUN.VALUE = character(1)
-            ),
-            collapse = "/"
-          )
-        ) %>%
-        append_varlabels(adcm, "CMDECOD", indent = TRUE)
+        append_varlabels(adcm, "CMDECOD", indent = 1L)
     ),
 
     table = quote(
@@ -126,11 +116,15 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
         ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
-          indent_mod = -1L, split_fun = split_fun
+          indent_mod = -1L, split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -144,14 +138,9 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
           vars = "CMDECOD",
           .indent_mods = -1L
         ) %>%
-        append_topleft(paste(vapply(list(attr(adcm$ATC1,
-          which = "label"
-        ), attr(adcm$ATC2, which = "label")), eval,
-        FUN.VALUE = character(1)
-        ), collapse = "/")) %>%
         append_varlabels(adcm,
           "CMDECOD",
-          indent = TRUE
+          indent = 2L
         )
     ),
     table = quote(
@@ -214,21 +203,27 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         split_rows_by(
           "ATC2",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = 0L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
         split_rows_by(
           "ATC3",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = 0L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC3"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -243,12 +238,7 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
           vars = "CMDECOD",
           .indent_mods = -1L
         ) %>%
-        append_topleft(paste(vapply(list(attr(adcm$ATC1,
-          which = "label"
-        ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
-          which = "label"
-        )), eval, FUN.VALUE = character(1)), collapse = "/")) %>%
-        append_varlabels(adcm, "CMDECOD", indent = TRUE)
+        append_varlabels(adcm, "CMDECOD", indent = 3L)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -319,19 +309,27 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
         ) %>%
         split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
-          indent_mod = -1L, split_fun = split_fun
+          indent_mod = -1L, split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
         split_rows_by("ATC3",
           child_labels = "visible",
-          nested = TRUE, indent_mod = 0L, split_fun = split_fun
+          nested = TRUE, indent_mod = 0L, split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC3"], fill = TRUE)
         ) %>%
         split_rows_by("ATC4",
           child_labels = "visible", nested = TRUE,
-          indent_mod = 0L, split_fun = split_fun
+          indent_mod = 0L, split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC4"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -345,16 +343,9 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
           vars = "CMDECOD",
           .indent_mods = -1L
         ) %>%
-        append_topleft(paste(vapply(list(attr(adcm$ATC1,
-          which = "label"
-        ), attr(adcm$ATC2, which = "label"), attr(adcm$ATC3,
-          which = "label"
-        ), attr(adcm$ATC4, which = "label")), eval,
-        FUN.VALUE = character(1)
-        ), collapse = "/")) %>%
         append_varlabels(adcm,
           "CMDECOD",
-          indent = TRUE
+          indent = 4L
         )
     ),
     table = quote(
@@ -417,7 +408,7 @@ test_that("template_mult_events generates correct expressions with no HLT parame
           )
         ) %>%
         count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>%
-        append_varlabels(adcm, "CMDECOD", indent = FALSE)
+        append_varlabels(adcm, "CMDECOD", indent = 0L)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -477,7 +468,9 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -492,19 +485,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
           vars = "CMDECOD",
           .indent_mods = -1L
         ) %>%
-        append_topleft(
-          paste(
-            vapply(
-              list(attr(adcm$ATC1,
-                which = "label"
-              )),
-              eval,
-              FUN.VALUE = character(1)
-            ),
-            collapse = "/"
-          )
-        ) %>%
-        append_varlabels(adcm, "CMDECOD", indent = TRUE)
+        append_varlabels(adcm, "CMDECOD", indent = 1L)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)

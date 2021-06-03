@@ -131,7 +131,7 @@ template_mult_events <- function(dataname,
       substitute(
         expr =
           count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = FALSE),
+          append_varlabels(dataname, llt, indent = 0L),
         env = list(
           dataname = as.name(dataname), llt = llt
         )
@@ -167,24 +167,20 @@ template_mult_events <- function(dataname,
               child_labels = "visible",
               nested = nested,
               indent_mod = indent_mod,
-              split_fun = split_fun
+              split_fun = split_fun,
+              label_pos = "topleft",
+              split_label = var_labels(dataname[hlt_new], fill = TRUE)
             ),
           env = list(
             hlt = hlt_new,
             nested = nested,
-            indent_mod = indent_mod
+            indent_mod = indent_mod,
+            dataname = as.name(dataname),
+            hlt_new = hlt_new
           )
         )
       )
     }
-
-    top_left_lbl <- substitute(
-      expr =
-        paste(vapply(lbl_lst, eval, FUN.VALUE = character(1)), collapse = "/"),
-      env = list(
-        lbl_lst = lbl_lst
-      )
-    )
 
     layout_list <- add_expr(
       layout_list,
@@ -200,12 +196,12 @@ template_mult_events <- function(dataname,
             )
           ) %>%
           count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_topleft(top_left_lbl) %>%
-          append_varlabels(dataname, llt, indent = TRUE),
+          append_varlabels(dataname, llt, indent = indent_space),
         env = list(
           dataname = as.name(dataname), llt = llt,
           unique_label = unique_label, nonunique_label = nonunique_label,
-          top_left_lbl = top_left_lbl, seq_var = seq_var
+          seq_var = seq_var,
+          indent_space = length(hlt)
         )
       )
     )
