@@ -9,6 +9,7 @@
 #'
 #' @seealso [tm_t_ancova()]
 #'
+#'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL_FILTERED",
                             arm_var,
@@ -121,8 +122,12 @@ template_ancova <- function(dataname = "ANL",
     substitute(
       expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
         add_colcounts() %>%
-        split_rows_by(visit_var, split_fun = split_fun) %>%
-        append_varlabels(dataname, visit_var),
+        split_rows_by(
+          visit_var,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(dataname[visit_var], fill = TRUE)
+        ),
       env = list(
         arm_var = arm_var,
         ref_group = paste(ref_arm, collapse = "/"),
@@ -136,8 +141,12 @@ template_ancova <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(paramcd_var, split_fun = split_fun) %>%
-          append_varlabels(dataname, paramcd_var, indent = TRUE) %>%
+        split_rows_by(
+          paramcd_var,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+        ) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),

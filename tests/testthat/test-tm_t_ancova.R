@@ -28,10 +28,18 @@ test_that("template_ancova generates expressions with multiple endpoints", {
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_fun = split_fun) %>%
-        append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = split_fun) %>%
-        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
+        split_rows_by(
+          "AVISIT",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+        ) %>%
+        split_rows_by(
+          "PARAMCD",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+        ) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -79,10 +87,18 @@ test_that("template_ancova generates expressions with multiple endpoints with co
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_fun = split_fun) %>%
-        append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = split_fun) %>%
-        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
+        split_rows_by(
+          "AVISIT",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+        ) %>%
+        split_rows_by(
+          "PARAMCD",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+        ) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -131,10 +147,18 @@ test_that("template_ancova generates expressions with multiple endpoints with co
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_fun = split_fun) %>%
-        append_varlabels(adqs, "AVISIT") %>%
-        split_rows_by("PARAMCD", split_fun = split_fun) %>%
-        append_varlabels(adqs, "PARAMCD", indent = TRUE) %>%
+        split_rows_by(
+          "AVISIT",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+        ) %>%
+        split_rows_by(
+          "PARAMCD",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+        ) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = c("BASE", "STRATA1")),
@@ -181,8 +205,12 @@ test_that("template_ancova generates expressions with single endpoint", {
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
-        split_rows_by("AVISIT", split_fun = split_fun) %>%
-        append_varlabels(adqs, "AVISIT") %>%
+        split_rows_by(
+          "AVISIT",
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+        ) %>%
         append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(
           vars = "CHG",
