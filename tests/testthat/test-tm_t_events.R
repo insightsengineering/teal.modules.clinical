@@ -38,9 +38,10 @@ test_that("template_events generates correct expressions", {
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
@@ -48,7 +49,7 @@ test_that("template_events generates correct expressions", {
                       nonunique = "Overall total number of events")
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
-        append_varlabels(adae, "AEDECOD", indent = TRUE)
+        append_varlabels(adae, "AEDECOD", indent = 1L)
       ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -167,9 +168,10 @@ test_that("template_events can generate customized table with alphabetical sorti
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
@@ -177,7 +179,7 @@ test_that("template_events can generate customized table with alphabetical sorti
                       nonunique = "Overall total number of events")
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
-        append_varlabels(adae, "AEDECOD", indent = TRUE)
+        append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -236,9 +238,10 @@ test_that("template_events can generate customized table with pruning", {
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
@@ -246,7 +249,7 @@ test_that("template_events can generate customized table with pruning", {
                       nonunique = "Overall total number of events")
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
-        append_varlabels(adae, "AEDECOD", indent = TRUE)
+        append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)

@@ -168,9 +168,10 @@ template_events <- function(dataname,
             child_labels = "visible",
             nested = FALSE,
             indent_mod = -1L,
-            split_fun = split_fun
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[hlt], fill = TRUE)
           ) %>%
-          append_varlabels(dataname, hlt) %>%
           summarize_num_patients(
             var = "USUBJID",
             .stats = c("unique", "nonunique"),
@@ -179,7 +180,7 @@ template_events <- function(dataname,
               nonunique = nonunique_label
             )) %>%
           count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = TRUE),
+          append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),
           hlt = hlt,
