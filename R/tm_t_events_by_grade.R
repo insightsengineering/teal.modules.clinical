@@ -106,7 +106,9 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[term_var], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = "USUBJID",
@@ -114,7 +116,7 @@ template_events_by_grade <- function(dataname,
             .labels = c("- Any Intensity -")
           ) %>%
           count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
-          append_varlabels(dataname, c(term_var, grade)),
+          append_varlabels(dataname, grade, indent = 1L),
         env = list(
           arm_var = arm_var,
           term_var = term_var,
@@ -137,9 +139,10 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[hlt], fill = TRUE)
           ) %>%
-          append_varlabels(dataname, hlt) %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
@@ -149,15 +152,17 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[llt], fill = TRUE)
           ) %>%
-          append_varlabels(dataname, c(llt, grade), indent = TRUE) %>%
           summarize_num_patients(
             var = "USUBJID",
             .stats = "unique",
             .labels = c("- Any Intensity -")
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L),
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
+          append_varlabels(dataname, grade, indent = 2L),
         env = list(
           arm_var = arm_var,
           hlt = hlt,

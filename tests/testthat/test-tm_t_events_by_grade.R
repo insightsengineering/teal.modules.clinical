@@ -33,9 +33,10 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
@@ -44,14 +45,16 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
           .labels = c("- Any Intensity -")) %>%
-        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L)
+        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
+        append_varlabels(adae, "AESEV", indent = 2L)
     ),
     table = quote(
       result <- build_table(
@@ -113,9 +116,10 @@ test_that("template_events_by_grade without adding total column option works as 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, "AEBODSYS") %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups
@@ -125,14 +129,16 @@ test_that("template_events_by_grade without adding total column option works as 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
-        append_varlabels(adae, c("AEDECOD", "AESEV"), indent = TRUE) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
           .labels = c("- Any Intensity -")) %>%
-        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L)
+        count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
+        append_varlabels(adae, "AESEV", indent = 2L)
     ),
     table = quote(
       result <- build_table(
@@ -197,14 +203,16 @@ test_that("template_events_by_grade with hlt only works", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
           .labels = c("- Any Intensity -")) %>%
         count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
-        append_varlabels(adae, c("AEBODSYS", "AESEV"))
+        append_varlabels(adae,  "AESEV", indent = 1L)
     ),
     table = quote(
       result <- build_table(
