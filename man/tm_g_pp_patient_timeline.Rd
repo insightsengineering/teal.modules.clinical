@@ -16,6 +16,10 @@ tm_g_pp_patient_timeline(
   aetime_end = NULL,
   dstime_start = NULL,
   dstime_end = NULL,
+  aerelday_start = NULL,
+  aerelday_end = NULL,
+  dsrelday_start = NULL,
+  dsrelday_end = NULL,
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
@@ -52,6 +56,18 @@ treatment start of the ADCM dataset.}
 
 \item{dstime_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{CMAENDTM} column of treatment
 end of the ADCM dataset.}
+
+\item{aerelday_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDY}
+column of the ADAE dataset.}
+
+\item{aerelday_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AENDY}
+column of the ADAE dataset.}
+
+\item{dsrelday_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDY}
+column of the ADCM dataset.}
+
+\item{dsrelday_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AENDY}
+column of the ADCM dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -168,6 +184,22 @@ app <- init(
       dstime_end = choices_selected(
         choices = variable_choices(ADCM, "CMAENDTM"),
         selected = c("CMAENDTM")
+      ),
+      aerelday_start = choices_selected(
+        choices = variable_choices(ADAE, "ASTDY"),
+        selected = c("ASTDY")
+      ),
+      aerelday_end = choices_selected(
+        choices = variable_choices(ADAE, "AENDY"),
+        selected = c("AENDY")
+      ),
+      dsrelday_start = choices_selected(
+        choices = variable_choices(ADCM, "ASTDY"),
+        selected = c("ASTDY")
+      ),
+      dsrelday_end = choices_selected(
+        choices = variable_choices(ADCM, "AENDY"),
+        selected = c("AENDY")
       )
     )
   )

@@ -12,7 +12,12 @@ template_patient_timeline(
   dstime_start = "CMASTDTM",
   dstime_end = "CMAENDTM",
   cmtrt = "CMTRT",
-  font_size = 12L
+  aerelday_start = NULL,
+  aerelday_end = NULL,
+  dsrelday_start = NULL,
+  dsrelday_end = NULL,
+  font_size = 12L,
+  relative_day = FALSE
 )
 }
 \arguments{
@@ -31,7 +36,17 @@ analysis data used in teal module.}
 
 \item{cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
 
+\item{aerelday_start}{(\code{character})\cr name of start study day variable.}
+
+\item{aerelday_end}{(\code{character})\cr name of end study day variable.}
+
+\item{dsrelday_start}{(\code{character})\cr name of start study day variable.}
+
+\item{dsrelday_end}{(\code{character})\cr name of end study day variable.}
+
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+
+\item{relative_day}{(\code{logical})\cr whether to use relative days or absolute dates}
 }
 \description{
 Creates a patient timeline template call.
