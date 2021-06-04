@@ -321,7 +321,7 @@ library(teal.devel)
 #'
 styled_expr <- function(expr) {
   styler:::print.vertical(
-    styler::style_text(text = deparse(expr), style = teal.devel::nest_style),
+    styler::style_text(text = deparse(expr)),
     colored = FALSE
   )
 }
