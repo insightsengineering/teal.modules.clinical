@@ -11,7 +11,8 @@ template_laboratory(
   anrind = "ANRIND",
   timepoints = "ADY",
   aval = "AVAL",
-  avalu = "AVALU"
+  avalu = "AVALU",
+  round_value = 0L
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ the laboratory table.}
 \item{aval}{(\code{character})\cr name of the analysis value variable.}
 
 \item{avalu}{(\code{character})\cr name of the analysis value unit variable.}
+
+\item{round_value}{(\code{numeric})\cr number of decimal places to be used when rounding.}
 }
 \description{
 Creates a laboratory template.

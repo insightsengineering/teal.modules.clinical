@@ -9,6 +9,7 @@
 #' @param anrind (`character`)\cr name of the analysis reference range indicator variable.
 #' @param aval (`character`)\cr name of the analysis value variable.
 #' @param avalu (`character`)\cr name of the analysis value unit variable.
+#' @param round_value (`numeric`)\cr number of decimal places to be used when rounding.
 #'
 template_laboratory <- function(dataname = "ANL",
                                 paramcd = "PARAMCD",
@@ -16,7 +17,8 @@ template_laboratory <- function(dataname = "ANL",
                                 anrind = "ANRIND",
                                 timepoints = "ADY",
                                 aval = "AVAL",
-                                avalu = "AVALU") {
+                                avalu = "AVALU",
+                                round_value = 0L) {
   assert_that(
     is.string(dataname),
     is.string(paramcd),
@@ -24,7 +26,8 @@ template_laboratory <- function(dataname = "ANL",
     is.string(anrind),
     is.string(timepoints),
     is.string(aval),
-    is.string(avalu)
+    is.string(avalu),
+    is.integer(round_value)
   )
 
   y <- list()
@@ -33,6 +36,7 @@ template_laboratory <- function(dataname = "ANL",
   table_lab_list <- add_expr(
     list(),
     substitute({
+      dataname[, aval_char] <- round(dataname[, aval_char], round_value)
       labor_table_base <- dataname %>%
         select(timepoints, paramcd, param, aval, avalu, anrind) %>%
         arrange(timepoints) %>%
@@ -66,9 +70,11 @@ template_laboratory <- function(dataname = "ANL",
         param_char = param,
         paramcd = as.name(paramcd),
         aval = as.name(aval),
+        aval_char = aval,
         avalu = as.name(avalu),
         timepoints = as.name(timepoints),
-        anrind = as.name(anrind)
+        anrind = as.name(anrind),
+        round_value = round_value
       )
     )
   )
@@ -255,6 +261,11 @@ ui_g_laboratory <- function(id, ...) {
         label = "Select ANRIND variable:",
         data_extract_spec = ui_args$anrind,
         is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        inputId = ns("round_value"),
+        label = "Select number of decimal places for rounding:",
+        choices = NULL
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -300,6 +311,18 @@ srv_g_laboratory <- function(input,
       )
     },
     ignoreInit = TRUE
+  )
+
+  # Update round_values
+  aval_values <- datasets$get_data(dataname, filtered = TRUE)[, aval$select$selected]
+  decimal_nums <- aval_values[trunc(aval_values) != aval_values]
+  max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
+
+  updateSelectInput(
+    session,
+    "round_value",
+    choices = seq(0, max_decimal),
+    selected = max_decimal
   )
 
   # Laboratory values tab ----
@@ -363,7 +386,8 @@ srv_g_laboratory <- function(input,
       avalu = input[[extract_input("avalu", dataname)]],
       param = input[[extract_input("param", dataname)]],
       paramcd = input[[extract_input("paramcd", dataname)]],
-      anrind = input[[extract_input("anrind", dataname)]]
+      anrind = input[[extract_input("anrind", dataname)]],
+      round_value = as.integer(input$round_value)
     )
 
     lapply(labor_calls, labor_stack_push)
