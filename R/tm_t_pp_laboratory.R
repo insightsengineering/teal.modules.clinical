@@ -27,7 +27,7 @@ template_laboratory <- function(dataname = "ANL",
     is.string(timepoints),
     is.string(aval),
     is.string(avalu),
-    is.integer(round_value)
+    is.integer(round_value) && round_value >= 0
   )
 
   y <- list()
