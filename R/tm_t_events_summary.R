@@ -106,8 +106,9 @@ template_events_summary <- function(anl_name,
   if (length(flag_var_anl) > 0) {
     data_list <- add_expr(
       data_list,
-      substitute(flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
-                 env = list(flag_var_anl = flag_var_anl)
+      substitute(
+        flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
+        env = list(flag_var_anl = flag_var_anl)
       )
     )
   }
@@ -115,11 +116,25 @@ template_events_summary <- function(anl_name,
   if (length(flag_var_aesi) > 0) {
     data_list <- add_expr(
       data_list,
-      substitute(flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),
-                 env = list(flag_var_aesi = flag_var_aesi)
+      substitute(
+        flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),
+        env = list(flag_var_aesi = flag_var_aesi)
       )
     )
   }
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      dataname <- df_explicit_na(dataname, na_level = ""),
+      env = list(dataname = as.name("anl")))
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parentname <- df_explicit_na(parentname, na_level = ""),
+      env = list(parentname = as.name(parentname)))
+  )
 
   y$data <- bracket_expr(data_list)
 

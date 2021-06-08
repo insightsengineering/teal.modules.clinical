@@ -103,10 +103,12 @@ template_rsp <- function(dataname,
     )
   )
 
+  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation
+      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
     },
     env = list(
       data_pipe = pipe_expr(data_list),

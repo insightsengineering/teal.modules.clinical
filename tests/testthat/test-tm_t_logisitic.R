@@ -23,14 +23,16 @@ test_that("template_logistic generates correct expressions", {
       mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
       mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
       mutate(ARMCD = droplevels(ARMCD)) %>%
-      mutate(Response = AVALC %in% c("CR", "PR"))
+      mutate(Response = AVALC %in% c("CR", "PR")) %>%
+      df_explicit_na(na_level = "")
     ),
     relabel = quote(rtables::var_labels(anl["ARMCD"]) <- arm_var_lab),
     model = quote(
     mod <- fit_logistic(
       anl, variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")
     ) %>%
-      broom::tidy(conf_level = 0.95, at = c(30, 40))
+      broom::tidy(conf_level = 0.95, at = c(30, 40)) %>%
+      df_explicit_na(na_level = "")
     ),
     table = quote({
       result <- basic_table() %>%

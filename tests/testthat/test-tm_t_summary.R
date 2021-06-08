@@ -22,6 +22,7 @@ test_that("template_summary generates correct expressions", {
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -67,6 +68,7 @@ test_that("template_summary can generate customized table", {
       adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(adsl[["ARMCD"]])
       anl <- anl %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -119,6 +121,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
       arm_levels <- levels(anl[["STRATA1"]])
       adsl <- adsl %>% filter(STRATA1 %in% arm_levels)
       adsl <- adsl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -170,6 +173,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
       arm_levels <- levels(anl[["STRATA1"]])
       adsl <- adsl %>% filter(STRATA1 %in% arm_levels)
       adsl <- adsl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%

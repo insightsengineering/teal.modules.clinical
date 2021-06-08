@@ -68,6 +68,8 @@ template_coxreg <- function(dataname,
     )
   )
 
+  data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
+
   data_list <- add_expr(
     data_list,
     substitute(

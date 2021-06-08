@@ -75,6 +75,8 @@ template_logistic <- function(dataname,
     )
   )
 
+  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+
   y$data <- substitute(
     expr = anl <- data_pipe,
     env = list(data_pipe = pipe_expr(data_list))
@@ -130,6 +132,8 @@ template_logistic <- function(dataname,
       )
     )
   }
+
+  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,

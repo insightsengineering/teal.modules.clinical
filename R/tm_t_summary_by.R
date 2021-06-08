@@ -69,6 +69,13 @@ template_summary_by <- function(parentname,
     )
   )
 
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parentname <- df_explicit_na(parentname, na_level = ""),
+      env = list(parentname = as.name(parentname)))
+  )
+
   y$data <- bracket_expr(data_list)
 
   # Build layout

@@ -18,6 +18,8 @@ test_that("template_abnormality generates correct expressions with default argum
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -72,6 +74,8 @@ test_that("template_abnormality generates correct expressions with custom argume
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
       anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(

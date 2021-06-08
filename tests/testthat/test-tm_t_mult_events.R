@@ -20,6 +20,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -98,6 +99,7 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
       anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -182,6 +184,7 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -291,6 +294,7 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
       anl <- anl %>%
         df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -391,6 +395,7 @@ test_that("template_mult_events generates correct expressions with no HLT parame
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), "CMDECOD"))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -448,6 +453,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), c("ATC1", "CMDECOD")))
       anl <- anl %>% mutate(ASEQ = as.factor(ASEQ))
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(

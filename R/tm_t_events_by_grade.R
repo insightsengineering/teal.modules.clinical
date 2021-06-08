@@ -51,6 +51,19 @@ template_events_by_grade <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
+      dataname <- df_explicit_na(dataname, na_level = ""),
+      env = list(dataname = as.name("anl")))
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parentname <- df_explicit_na(parentname, na_level = ""),
+      env = list(parentname = as.name(parentname)))
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
       expr = grade_groups <- list("- Any Intensity -" = levels(dataname$grade)),
       env = list(
         dataname = as.name(dataname),

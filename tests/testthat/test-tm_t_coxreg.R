@@ -25,7 +25,8 @@ test_that("template_coxreg generates correct univariate cox regression expressio
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(event = 1 - CNSR)
+        mutate(event = 1 - CNSR) %>%
+        df_explicit_na(na_level = "")
       variables <- list(time = "AVAL", event = "event", arm = "ARMCD", covariates = NULL)
       variables$strata <- "STRATA1"
       model <- fit_coxreg_univar(
@@ -78,7 +79,8 @@ test_that("template_coxreg generates correct multivariate cox regression express
         mutate(ARM = relevel(ARM, ref = "A: Drug X")) %>%
         mutate(ARM = droplevels(ARM)) %>%
         mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", "C: Combination"))) %>%
-        mutate(event = 1 - CNSR)
+        mutate(event = 1 - CNSR) %>%
+        df_explicit_na(na_level = "")
       variables <- list(time = "AVAL", event = "event", arm = "ARM", covariates = c("AGE", "SEX"))
       model <- fit_coxreg_multivar(
         variables = variables,

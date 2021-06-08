@@ -17,6 +17,7 @@ test_that("template_events generates correct expressions", {
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
@@ -92,6 +93,7 @@ test_that("template_events can generate customized table", {
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(adsl[["ACTARM"]])
       anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
+      adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), "CMDECOD")
       )
@@ -145,6 +147,7 @@ test_that("template_events can generate customized table with alphabetical sorti
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% dplyr::mutate(AEBODSYS = as.character(AEBODSYS))
       anl <- anl %>% dplyr::mutate(AEDECOD = as.character(AEDECOD))
       anl <- anl %>% df_explicit_na(
@@ -217,6 +220,7 @@ test_that("template_events can generate customized table with pruning", {
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )

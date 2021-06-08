@@ -17,11 +17,13 @@ test_that("template_rsp generates standard expressions", {
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD))
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -85,11 +87,13 @@ test_that("template_rsp generates right expressions with non-default", {
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM))
+        mutate(ARM = droplevels(ARM)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -145,9 +149,11 @@ test_that("template_rsp generates expression without arm comparison", {
     data = quote({
       anl <- ADRS %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       ADSL <- ADSL %>%  # nolint
-        mutate(ARM = droplevels(ARM))
+        mutate(ARM = droplevels(ARM)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -194,11 +200,13 @@ test_that("template_rsp generates expression with non-default controls and strat
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
         mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
         filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
         mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM))
+        mutate(ARM = droplevels(ARM)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -278,11 +286,13 @@ test_that("template_rsp can combine comparison arms", {
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD))
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        df_explicit_na(na_level = "")
     }),
     combine_comp_arms = quote(
       groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
@@ -365,12 +375,14 @@ test_that("template_rsp can combine refs", {
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
         mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR"))
+        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        df_explicit_na(na_level = "")
       adsl <- adsl %>%
         filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
         mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-        mutate(ARMCD = droplevels(ARMCD))
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%

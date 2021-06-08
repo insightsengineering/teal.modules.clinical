@@ -18,6 +18,8 @@ test_that("template_events_summary generates minimal table", {
           AEDECOD = as.character(AEDECOD),
           USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
         )
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_parent = quote(
       lyt_parent <- basic_table() %>%
@@ -100,6 +102,8 @@ test_that("template_events_summary generates table with multiple flags", {
         )
       flag_var_anl_label <- var_labels(anl[, c("A", "B", "C")])
       flag_var_aesi_label <- var_labels(anl[, c("X", "Y")])
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_parent = quote(
       lyt_parent <- basic_table() %>%

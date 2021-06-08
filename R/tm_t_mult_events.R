@@ -80,6 +80,13 @@ template_mult_events <- function(dataname,
     )
   )
 
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parentname <- df_explicit_na(parentname, na_level = ""),
+      env = list(parentname = as.name(parentname)))
+  )
+
   y$data <- bracket_expr(data_list)
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)

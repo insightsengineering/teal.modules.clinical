@@ -86,6 +86,9 @@ template_ancova <- function(dataname = "ANL",
     )
   }
 
+  anl_list <- add_expr(anl_list, quote(df_explicit_na(na_level = "")))
+  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+
   data_list <- add_expr(
     data_list,
     substitute(

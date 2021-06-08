@@ -62,6 +62,13 @@ template_events <- function(dataname,
     )
   )
 
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      parentname <- df_explicit_na(parentname, na_level = ""),
+      env = list(parentname = as.name(parentname)))
+  )
+
   if (sort_criteria == "alpha") {
 
     if (!is.null(hlt)) {

@@ -36,9 +36,11 @@ test_that("template_tte produces healthy standard output", {
             levels = c("Patients with event (%)", "Patients without event (%)")
           ),
           EVNTDESC = factor(EVNTDESC)
-        )
+        ) %>%
+        df_explicit_na(na_level = "")
       ANL_ADSL <- ANL_ADSL %>%# nolint
-        mutate(ARM = droplevels(ARM))
+        mutate(ARM = droplevels(ARM)) %>%
+        df_explicit_na(na_level = "")
     }),
     layout = quote(
       lyt <- basic_table() %>%
@@ -138,9 +140,11 @@ test_that("template_tte produces correct data expression when not comparing arms
           levels = c("Patients with event (%)", "Patients without event (%)")
         ),
         EVNTDESC = factor(EVNTDESC)
-      )
+      ) %>%
+      df_explicit_na(na_level = "")
     ANL_ADSL <- ANL_ADSL %>% #nolint
-      mutate(ARM = droplevels(ARM))
+      mutate(ARM = droplevels(ARM)) %>%
+      df_explicit_na(na_level = "")
   })
   expect_equal(result$data, expected_data)
 })
