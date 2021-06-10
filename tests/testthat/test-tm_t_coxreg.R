@@ -47,6 +47,66 @@ test_that("template_coxreg generates correct univariate cox regression expressio
         split_rows_by("effect") %>%
         append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
+        summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
+    ),
+    table = quote({
+      result <- build_table(lyt = lyt, df = df)
+      result
+    })
+  )
+  expect_equal(result, expected)
+})
+
+
+test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
+  result <- template_coxreg(
+    dataname = "adrs",
+    cov_var = NULL,
+    arm_var = "ARMCD",
+    cnsr_var = "CNSR",
+    aval_var = "AVAL",
+    ref_arm = "ARM A",
+    comp_arm = c("ARM B", "ARM C"),
+    paramcd = "OS",
+    at = list(AGE = c(35, 45)),
+    strata = "STRATA1",
+    combine_comp_arms = FALSE,
+    multivariate = FALSE,
+    control = control_coxreg(
+      pval_method = "wald",
+      ties = "efron",
+      interaction = TRUE
+    )
+  )
+
+  lapply(result, styled_expr)
+  expected <- list(
+    data = quote({
+      anl <- adrs %>%
+        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        mutate(ARMCD = droplevels(ARMCD)) %>%
+        mutate(event = 1 - CNSR)
+      variables <- list(time = "AVAL", event = "event", arm = "ARMCD", covariates = NULL)
+      variables$strata <- "STRATA1"
+      model <- fit_coxreg_univar(
+        variables = variables,
+        data = anl,
+        control = list(
+          pval_method = "wald",
+          ties = "efron",
+          conf_level = 0.95,
+          interaction = TRUE
+        ),
+        at = list(AGE = c(35, 45))
+      )
+      df <- broom::tidy(model)
+    }),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_rows_by("effect") %>%
+        append_topleft("OS") %>%
+        split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
     table = quote({

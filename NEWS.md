@@ -38,6 +38,7 @@ variables cannot be overlapped.
 * Removed header definition in `tm_g_forest_rsp` and `tm_g_forest_tte` as there is now a default header in `g_forest`.
 * Fixed validate statement in `tm_t_coxreg` so that models without strata and using likelihood tests return a result.
 * Clarified functionality of `drop_arm_levels` for `tm_t_summary` and `tm_t_summary_by`. In the encodings panel, the checkbox will only be shown when the parent dataset and analysis dataset are different.
+* Added interaction p-value column for `tm_t_coxreg`.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.

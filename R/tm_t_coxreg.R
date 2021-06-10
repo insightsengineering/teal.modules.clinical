@@ -176,7 +176,7 @@ template_coxreg <- function(dataname,
       env = list(
         multivariate = multivariate,
         conf_level = control$conf_level,
-        vars = if (!is_empty(at)) c(vars, "pval_inter") else vars
+        vars = if (control$interaction) c(vars, "pval_inter") else vars
       )
     )
   )
