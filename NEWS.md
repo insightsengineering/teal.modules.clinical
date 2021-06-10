@@ -14,6 +14,7 @@ formatted table as displayed in the app.
 variables cannot be overlapped. 
 * Added the option to choose the number of decimal places for rounding in `tm_t_pp_laboratory`.
 * Added checkbox to `tm_g_pp_patient_timeline` to choose to display relative study days on the x-axis.
+* Limited the label repel feature in `tm_g_pp_patient_timeline` to X-axis for a more consistent look.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements

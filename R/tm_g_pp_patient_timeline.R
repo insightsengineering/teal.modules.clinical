@@ -124,9 +124,12 @@ template_patient_timeline <- function(dataname = "ANL",
             ) +
               theme(text = element_text(size = font_size_var)) +
               ggrepel::geom_text_repel(
-                aes(label = event),
+                mapping = aes(label = event),
                 size = font_size_var / 3.5,
-                color = "black"
+                color = "black",
+                direction = "x",
+                nudge_x = 0.5,
+                segment.size = 0.1
               ) +
               scale_x_datetime(labels = scales::date_format("%b-%Y"))
           }
