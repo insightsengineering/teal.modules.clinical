@@ -8,7 +8,10 @@ The inputs with tracking enabled are marked with a double arrow icon.
 The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, 
 `tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
 * Added an additional validation for `tm_g_patient_timeline` when the plot is empty.
-* Fixed Get R Code output of `tm_t_pp_laboratory` to return identical HTML formatted table as displayed in the app.
+* Fixed Get R Code output of `rm_t_pp_laboratory` to return identical HTML 
+formatted table as displayed in the app.
+* Added an additional validation for `tm_t_coxreg` so that treatment, strata and covariate
+variables cannot be overlapped. 
 * Added the option to choose the number of decimal places for rounding in `tm_t_pp_laboratory`.
 * Added checkbox to `tm_g_pp_patient_timeline` to choose to display relative study days on the x-axis.
 

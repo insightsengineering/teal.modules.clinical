@@ -78,7 +78,6 @@ template_coxreg <- function(dataname,
     )
   )
 
-
   data_list <- add_expr(
     data_list,
     substitute(
@@ -393,7 +392,7 @@ tm_t_coxreg <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+    cov_var = cs_to_des_select(cov_var, dataname = parentname, multiple = TRUE)
   )
 
   module(
@@ -594,14 +593,7 @@ srv_t_coxreg <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var, strata_var),
-    input_id = c("arm_var", "strata_var"),
-    anl_name = "ANL_ADSL"
-  )
-
-  ## render conditional strata levels input UI ----
+  ## render conditional strata levels input UI  ----
   open_textinput <- function(x, anl) {
     # For every numeric covariate, the numeric level for the Hazard Ration
     # estimation is proposed only if the covariate is included in the model:
@@ -642,6 +634,8 @@ srv_t_coxreg <- function(input,
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+
 
     # validate inputs
     validate_args <- list(
@@ -655,15 +649,33 @@ srv_t_coxreg <- function(input,
       min_nrow = 4
     )
 
-    # validate arm levels
+    #  validate arm levels
     if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
+
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
+    validate_no_intersection(
+      input_arm_var,
+      input_strata_var,
+      "`Treatment` and `Strata` variables should not be overlapped."
+    )
+    validate_no_intersection(
+      input_arm_var,
+      input_cov_var,
+      "`Treatment` and `Covariate` variables should not be overlapped."
+    )
+    validate_no_intersection(
+      input_strata_var,
+      input_cov_var,
+      "`Strata` and `Covariate` variables should not be overlapped."
+    )
+
 
     do.call(what = "validate_standard_inputs", validate_args)
 
@@ -736,10 +748,6 @@ srv_t_coxreg <- function(input,
     chunks_reset()
     anl_m <- anl_merged()
     chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
