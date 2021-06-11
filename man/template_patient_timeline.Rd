@@ -16,8 +16,9 @@ template_patient_timeline(
   aerelday_end = NULL,
   dsrelday_start = NULL,
   dsrelday_end = NULL,
-  font_size = 12L,
-  relative_day = FALSE
+  relative_day = FALSE,
+  patient_id,
+  font_size = 12L
 )
 }
 \arguments{
@@ -44,9 +45,11 @@ analysis data used in teal module.}
 
 \item{dsrelday_end}{(\code{character})\cr name of end study day variable.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
-
 \item{relative_day}{(\code{logical})\cr whether to use relative days or absolute dates}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
 \description{
 Creates a patient timeline template call.

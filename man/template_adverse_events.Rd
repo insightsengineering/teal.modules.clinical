@@ -13,6 +13,7 @@ template_adverse_events(
   action = "AEACN",
   time = "ASTDY",
   decod = NULL,
+  patient_id,
   font_size = 12L
 )
 }
@@ -33,6 +34,8 @@ analysis data used in teal module.}
 \item{time}{(\code{character})\cr name of study day of start of adverse event variable.}
 
 \item{decod}{(\code{character})\cr name of dictionary derived term variable.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }

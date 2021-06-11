@@ -10,6 +10,7 @@ template_vitals(
   paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   xaxis = "ADY",
   aval = "AVAL",
+  patient_id,
   font_size = 12L
 )
 }
@@ -24,6 +25,8 @@ analysis data used in teal module.}
 \item{xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
 
 \item{aval}{(\code{character})\cr name of the analysis value variable.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }

@@ -14,6 +14,7 @@
 #' @param dsrelday_start (`character`)\cr name of start study day variable.
 #' @param dsrelday_end (`character`)\cr name of end study day variable.
 #' @param relative_day (`logical`)\cr whether to use relative days or absolute dates
+#' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 template_patient_timeline <- function(dataname = "ANL",
@@ -27,8 +28,9 @@ template_patient_timeline <- function(dataname = "ANL",
                                       aerelday_end = NULL,
                                       dsrelday_start = NULL,
                                       dsrelday_end = NULL,
-                                      font_size = 12L,
-                                      relative_day = FALSE) {
+                                      relative_day = FALSE,
+                                      patient_id,
+                                      font_size = 12L) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
   assert_that(
@@ -42,7 +44,8 @@ template_patient_timeline <- function(dataname = "ANL",
     is.string(aerelday_start) || is.null(aerelday_start),
     is.string(dsrelday_start) || is.null(dsrelday_start),
     is.numeric(font_size),
-    is.logical(relative_day)
+    is.logical(relative_day),
+    is.string(patient_id)
   )
 
   y <- list()
@@ -131,7 +134,9 @@ template_patient_timeline <- function(dataname = "ANL",
                 nudge_x = 0.5,
                 segment.size = 0.1
               ) +
-              scale_x_datetime(labels = scales::date_format("%b-%Y"))
+              scale_x_datetime(labels = scales::date_format("%b-%Y")) +
+              ggtitle(paste0("Patient ID: ", patient_id)) +
+              theme(plot.title = element_text(hjust = 0, size = font_size_var))
           }
           patient_timeline_plot
         },
@@ -149,7 +154,8 @@ template_patient_timeline <- function(dataname = "ANL",
           dstime_start_var = dstime_start,
           dstime_end_var = dstime_end,
           cmtrt_var = cmtrt,
-          font_size_var = font_size
+          font_size_var = font_size,
+          patient_id = patient_id
         )
       )
     )
@@ -212,7 +218,9 @@ template_patient_timeline <- function(dataname = "ANL",
               theme_classic() +
               theme(text = element_text(size = font_size_var), legend.position = "none") +
               xlab("") +
-              ylab("")
+              ylab("") +
+              ggtitle(paste0("Patient ID: ", patient_id)) +
+              theme(plot.title = element_text(hjust = 0))
           }
           patient_timeline_plot
         },
@@ -224,7 +232,8 @@ template_patient_timeline <- function(dataname = "ANL",
           aerelday_end_var = aerelday_end,
           dsrelday_start_var = dsrelday_start,
           dsrelday_end_var = dsrelday_end,
-          font_size_var = font_size
+          font_size_var = font_size,
+          patient_id = patient_id
         )
       )
     )
@@ -740,7 +749,8 @@ srv_g_patient_timeline <- function(input,
       dsrelday_start = dsrelday_start_name,
       dsrelday_end = dsrelday_end_name,
       font_size = font_size,
-      relative_day = input$relday_x_axis
+      relative_day = input$relday_x_axis,
+      patient_id = patient_id()
     )
 
     lapply(patient_timeline_calls, time_line_stack_push)

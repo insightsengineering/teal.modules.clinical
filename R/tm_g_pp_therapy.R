@@ -13,6 +13,7 @@
 #' @param cmdosfrq (`character`)\cr name of dosing frequency per interval variable.
 #' @param cmstdy (`character`)\cr name of study day of start of medication variable.
 #' @param cmendy (`character`)\cr name of study day of end of medication variable.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 
 template_therapy <- function(dataname = "ANL",
@@ -26,6 +27,7 @@ template_therapy <- function(dataname = "ANL",
                              cmdosfrq = "CMDOSFRQ",
                              cmstdy = "CMSTDY", # replaces cmstdy
                              cmendy = "CMENDY", # replaces cmendy
+                             patient_id = patient_id,
                              font_size = 12L) {
   assert_that(
     is.string(dataname),
@@ -39,6 +41,7 @@ template_therapy <- function(dataname = "ANL",
     is.string(cmdosfrq),
     is.string(cmstdy),
     is.string(cmendy),
+    is.string(patient_id),
     is.numeric(font_size)
   )
 
@@ -169,7 +172,10 @@ template_therapy <- function(dataname = "ANL",
           legend.position = "top"
         ) +
         ylab("Medication") +
-        theme(legend.position = "none")
+        theme(legend.position = "none") +
+        ggtitle(paste0("Patient ID: ", patient_id)) +
+        theme(plot.title = element_text(size = font_size_var))
+
       print(therapy_plot)
     }, env = list(
       dataname = as.name(dataname),
@@ -192,6 +198,7 @@ template_therapy <- function(dataname = "ANL",
       cmdosfrq_char = cmdosfrq,
       cmstdy_char = cmstdy,
       cmendy_char = cmendy,
+      patient_id = patient_id,
       font_size_var = font_size
     ))
   )
@@ -655,6 +662,7 @@ srv_g_therapy <- function(input,
       cmendy = input[[extract_input("cmendy", dataname)]],
       cmindc = input[[extract_input("cmindc", dataname)]],
       cmdose = input[[extract_input("cmdose", dataname)]],
+      patient_id = patient_id(),
       font_size = input[["font_size"]]
       )
 

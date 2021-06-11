@@ -6,6 +6,7 @@
 #' @param paramcd_levels (`character`)\cr (`paramcd`)\cr vector with (`#'paramcd`)\cr levels.
 #' @param xaxis (`character`)\cr name of time variable used for the x-axis.
 #' @param aval (`character`)\cr name of the analysis value variable.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @note
@@ -17,12 +18,14 @@ template_vitals <- function(dataname = "ANL",
                             paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             xaxis = "ADY",
                             aval = "AVAL",
+                            patient_id,
                             font_size = 12L) {
   assert_that(
     is.string(dataname),
     is.string(paramcd),
     is.string(xaxis),
     is.string(aval),
+    is.string(patient_id),
     is.numeric(font_size)
   )
 
@@ -131,7 +134,9 @@ template_vitals <- function(dataname = "ANL",
             colour = "grey"
           ),
           legend.position = "top"
-        )
+        ) +
+        ggtitle(paste0("Patient ID: ", patient_id)) +
+        theme(plot.title = element_text(size = font_size_var))
 
       print(result_plot)
     }, env = list(
@@ -143,6 +148,7 @@ template_vitals <- function(dataname = "ANL",
       xaxis_char = xaxis,
       aval = as.name(aval),
       aval_char = aval,
+      patient_id = patient_id,
       font_size_var = font_size
     ))
   )
@@ -445,6 +451,7 @@ srv_g_vitals <- function(input,
       paramcd_levels = input[["paramcd_levels_vals"]],
       xaxis = input[[extract_input("xaxis", dataname)]],
       aval = input[[extract_input("aval", dataname)]],
+      patient_id = patient_id(),
       font_size = input$`font_size`
     )
 

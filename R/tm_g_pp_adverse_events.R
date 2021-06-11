@@ -10,6 +10,7 @@
 #' @param action (`character`)\cr name of action taken with study treatment variable.
 #' @param time (`character`)\cr name of study day of start of adverse event variable.
 #' @param decod (`character`)\cr name of dictionary derived term variable.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 template_adverse_events <- function(dataname = "ANL",
@@ -20,6 +21,7 @@ template_adverse_events <- function(dataname = "ANL",
                                     action = "AEACN",
                                     time = "ASTDY",
                                     decod = NULL,
+                                    patient_id,
                                     font_size = 12L) {
   assert_that(
     is.string(dataname),
@@ -30,6 +32,7 @@ template_adverse_events <- function(dataname = "ANL",
     is.string(action),
     is.string(time) || is.null(time),
     is.string(decod) || is.null(decod),
+    is.string(patient_id),
     is.numeric(font_size)
   )
 
@@ -111,7 +114,8 @@ template_adverse_events <- function(dataname = "ANL",
             colour = "grey"
           )
         ) +
-        theme(legend.position = "none"),
+        theme(legend.position = "none") +
+        ggtitle(paste0("Patient ID: ", patient_id)),
       env = list(
         dataname = as.name(dataname),
         aeterm = as.name(aeterm),
@@ -119,7 +123,8 @@ template_adverse_events <- function(dataname = "ANL",
         tox_grade = as.name(tox_grade),
         causality = as.name(causality),
         time_var = time,
-        font_size_var = font_size
+        font_size_var = font_size,
+        patient_id = patient_id
       )
     )
   )
@@ -462,6 +467,7 @@ srv_g_adverse_events <- function(input,
       action = input[[extract_input("action", dataname)]],
       time = input[[extract_input("time", dataname)]],
       decod = input[[extract_input("decod", dataname)]],
+      patient_id = patient_id(),
       font_size = input[["font_size"]]
     )
 

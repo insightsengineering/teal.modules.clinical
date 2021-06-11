@@ -16,6 +16,7 @@ template_therapy(
   cmdosfrq = "CMDOSFRQ",
   cmstdy = "CMSTDY",
   cmendy = "CMENDY",
+  patient_id = patient_id,
   font_size = 12L
 )
 }
@@ -42,6 +43,8 @@ analysis data used in teal module.}
 \item{cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
 
 \item{cmendy}{(\code{character})\cr name of study day of end of medication variable.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 }
