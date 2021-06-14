@@ -511,6 +511,7 @@ srv_g_forest_tte <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
+    validate(need(!is_empty(anl_m$data()[[input_paramcd]]), "Value of the endpoint variable should not be empty."))
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
