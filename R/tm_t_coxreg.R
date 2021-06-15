@@ -698,6 +698,13 @@ srv_t_coxreg <- function(input,
       ))
     }
 
+    if (input$type == "Multivariate") {
+      validate(need(
+        input$interactions == FALSE,
+        "Interaction is only supported for univariate models."
+      ))
+    }
+
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
