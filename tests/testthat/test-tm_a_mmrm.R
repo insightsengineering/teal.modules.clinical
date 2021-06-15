@@ -123,6 +123,33 @@ test_that("template_mmrm_tables works as expected", {
   expect_equal(result, expected)
 })
 
+test_that("template_mmrm_tables works as expected when arm is not considered in the model", {
+  result <- template_mmrm_tables(
+    parentname = "ADSL",
+    dataname = "ANL",
+    fit_name = "fit_mmrm",
+    arm_var = NULL,
+    ref_arm = NULL,
+    visit_var = "AVISIT",
+    paramcd = "ALBUMIN",
+    show_relative = NULL
+  )
+  expected <- list(
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_rows_by("AVISIT") %>%
+        summarize_lsmeans(
+          arms = FALSE
+        ) %>%
+        append_topleft(paste0("  ", "ALBUMIN"))
+    ),
+    cov_matrix = quote({
+      cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+      cov_matrix
+    })
+  )
+  expect_equal(result, expected)
+})
 
 test_that("template_mmrm_plots works as expected", {
   result <- template_mmrm_plots(
@@ -140,7 +167,31 @@ test_that("template_mmrm_plots works as expected", {
   expected <- list(
     lsmeans_plot = substitute(
       expr = {
-        lsmeans_plot <- g_mmrm_lsmeans(fit_mmrm, select = select, width = 0.6, show_pval = FALSE)
+        lsmeans_plot <- g_mmrm_lsmeans(
+          fit_mmrm,
+          select = select,
+          width = 0.6,
+          show_pval = FALSE,
+          titles = if (is.null(fit_mmrm$vars$arm)) {
+            c(estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
+              contrasts = " ")
+          } else {
+            c(
+              estimates = paste(
+                "Adjusted mean of",
+                fit_mmrm$labels$response,
+                "by treatment at visits"
+              ),
+              contrasts = paste0(
+                "Differences of ",
+                fit_mmrm$labels$response,
+                " adjusted means vs. control ('",
+                fit_mmrm$ref_level,
+                "')"
+              )
+            )
+          }
+        )
         lsmeans_plot
       },
       env = list(

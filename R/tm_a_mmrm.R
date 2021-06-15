@@ -33,6 +33,8 @@ template_fit_mmrm <- function(parentname,
   y <- list()
   data_list <- list()
   parent_list <- list()
+
+if (!is.null(arm_var)) {
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
   data_list <- add_expr(
@@ -45,6 +47,7 @@ template_fit_mmrm <- function(parentname,
       ref_arm_val = ref_arm_val
     )
   )
+
 
   parent_list <- add_expr(
     parent_list,
@@ -75,7 +78,29 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
+} else {
 
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname,
+      env = list(
+        dataname = as.name(dataname)
+      )
+    )
+  )
+
+  parent_list <- add_expr(
+    parent_list,
+    substitute(
+      expr = parentname,
+      env = list(
+        parentname = as.name(parentname)
+      )
+    )
+  )
+
+}
   data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
   parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
 
@@ -107,7 +132,6 @@ template_fit_mmrm <- function(parentname,
       visit_var = visit_var
     )
   )
-
   y$fit <- substitute(
     expr = fit <- fit_mmrm(
       vars = vars,
@@ -160,51 +184,64 @@ template_mmrm_tables <- function(parentname,
   layout_list <- layout_list %>%
     add_expr(quote(basic_table()))
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var, ref_group = ref_arm),
-      env = list(
-        arm_var = arm_var,
-        ref_arm = ref_arm_val
-      )
-    )
-  )
-
-  show_relative <- match.arg(show_relative)
-
-  if (show_relative == "none") {
+  if (!is.null(arm_var)) {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
-          split_rows_by(visit_var) %>%
-          summarize_lsmeans(
-            .stats = c(
-              "n", "adj_mean_se", "adj_mean_ci",
-              "diff_mean_se", "diff_mean_ci", "p_value"
-            )
-          ),
-        env = list(
-          visit_var = visit_var
+        expr = split_cols_by(var = arm_var, ref_group = ref_arm),
+        env = list(arm_var = arm_var, ref_arm = ref_arm_val)
         )
       )
-    )
+    show_relative <- match.arg(show_relative)
+
+    if (show_relative == "none") {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = add_colcounts() %>%
+            split_rows_by(visit_var) %>%
+            summarize_lsmeans(
+              .stats = c(
+                "n",
+                "adj_mean_se",
+                "adj_mean_ci",
+                "diff_mean_se",
+                "diff_mean_ci",
+                "p_value"
+              )
+            ),
+          env = list(visit_var = visit_var)
+        )
+      )
+    } else {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = add_colcounts() %>%
+            split_rows_by(visit_var) %>%
+            append_varlabels(dataname, visit_var) %>%
+            summarize_lsmeans(show_relative = show_relative) %>%
+            append_topleft(paste0("  ", paramcd)),
+          env = list(
+            dataname = as.name(dataname),
+            visit_var = visit_var,
+            paramcd = paramcd,
+            show_relative = show_relative
+          )
+        )
+      )
+    }
+
   } else {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
+        expr =
           split_rows_by(visit_var) %>%
-          append_varlabels(dataname, visit_var) %>%
-          summarize_lsmeans(show_relative = show_relative) %>%
+          summarize_lsmeans(arms = FALSE) %>%
           append_topleft(paste0("  ", paramcd)),
-        env = list(
-          dataname = as.name(dataname),
-          visit_var = visit_var,
-          paramcd = paramcd,
-          show_relative = show_relative
-        )
+        env = list(visit_var = visit_var,
+                   paramcd = paramcd)
       )
     )
   }
@@ -265,10 +302,8 @@ template_mmrm_tables <- function(parentname,
       )
     }
   )
-
   y
 }
-
 
 #' @describeIn template_fit_mmrm
 #'
@@ -295,8 +330,28 @@ template_mmrm_plots <- function(fit_name,
           fit_mmrm,
           select = select,
           width = width,
-          show_pval = show_pval
-        )
+          show_pval = show_pval,
+          titles = if (is.null(fit_mmrm$vars$arm)) {
+            c(estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
+              contrasts = " ")
+          } else {
+            c(
+              estimates = paste(
+                "Adjusted mean of",
+                fit_mmrm$labels$response,
+                "by treatment at visits"
+              ),
+              contrasts = paste0(
+                "Differences of ",
+                fit_mmrm$labels$response,
+                " adjusted means vs. control ('",
+                fit_mmrm$ref_level,
+                "')"
+              )
+            )
+          }
+          )
+
         lsmeans_plot
       },
       env = list(
@@ -390,7 +445,7 @@ template_mmrm_plots <- function(fit_name,
 #'       dataname = 'ADQS',
 #'       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
 #'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
@@ -536,25 +591,32 @@ ui_mmrm <- function(id, ...) {
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          selectInput(
+          shinyjs::hidden(selectInput(
             ns("ref_arm"),
             "Reference Group",
             choices = NULL,
             selected = NULL,
             multiple = TRUE
+            )
           ),
-          helpText("Multiple reference groups are automatically combined into a single group."),
+          shinyjs::hidden(
+          helpText(id = ns("help_text"), "Multiple reference groups are automatically combined into a single group.")
+          ),
+          shinyjs::hidden(
           selectInput(
             ns("comp_arm"),
             "Comparison Group",
             choices = NULL,
             selected = NULL,
             multiple = TRUE
+            )
           ),
+          shinyjs::hidden(
           checkboxInput(
             ns("combine_comp_arms"),
             "Combine all comparison groups?",
             value = FALSE
+            )
           ),
           data_extract_input(
             id = ns("id_var"),
@@ -781,6 +843,22 @@ srv_mmrm <- function(input,
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
+
+observeEvent(adsl_merged()$columns_source$arm_var, {
+  arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
+    if (is_empty(arm_var)) {
+      shinyjs::hide("ref_arm")
+      shinyjs::hide("comp_arm")
+      shinyjs::hide("help_text")
+      shinyjs::hide("combine_comp_arms")
+    } else {
+      shinyjs::show("ref_arm")
+      shinyjs::show("comp_arm")
+      shinyjs::show("help_text")
+      shinyjs::show("combine_comp_arms")
+    }
+  })
+
   arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
@@ -900,9 +978,6 @@ srv_mmrm <- function(input,
       need(
         encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
         "`Select Endpoint` field is not selected"),
-      need(encoding_inputs[[extract_input("arm_var", parentname)]], "Please select a treatment variable"),
-      need(encoding_inputs[["ref_arm"]], "`Reference Group` field is empty"),
-      need(encoding_inputs[["comp_arm"]], "`Comparison Group` field is empty"),
       need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
       need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
       need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
@@ -976,8 +1051,13 @@ srv_mmrm <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    if (!is.null(input[[extract_input("arm_var", parentname)]])) {
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    } else {
+      input_arm_var <- NULL
+    }
     input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
@@ -1007,8 +1087,10 @@ srv_mmrm <- function(input,
       arm_var = input_arm_var,
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
-      min_nrow = 10
+      min_nrow = 10,
+      need_arm = FALSE
     )
+
 
     anl_data <- anl_m$data()
 
@@ -1049,7 +1131,7 @@ srv_mmrm <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       aval_var = as.vector(anl_m$columns_source$aval_var),
-      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_var = input[[extract_input("arm_var", parentname)]],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       combine_comp_arms = input$combine_comp_arms,
@@ -1134,7 +1216,7 @@ srv_mmrm <- function(input,
         parentname = "ANL_ADSL",
         dataname = "ANL",
         fit_name = "fit",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
+        arm_var = input[[extract_input("arm_var", parentname)]],
         ref_arm = input$ref_arm,
         visit_var = as.vector(anl_m$columns_source$visit_var),
         paramcd = paramcd,
@@ -1232,7 +1314,8 @@ srv_mmrm <- function(input,
   callModule(
     table_with_settings_srv,
     id = "mmrm_table",
-    table_r = mmrm_table
+    table_r = mmrm_table,
+    show_hide_signal = reactive(!show_plot_rv())
   )
 
   # Endpoint:
@@ -1255,6 +1338,7 @@ srv_mmrm <- function(input,
     } else if (currnt_state) {
         isolate(state$optimizer)
     } else NULL
+
     return(what_to_return)
   })
 

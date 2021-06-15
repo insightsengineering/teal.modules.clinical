@@ -140,7 +140,7 @@ app <- init(
       dataname = 'ADQS',
       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARMCD"),
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
