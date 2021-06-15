@@ -5,39 +5,71 @@
 #' @inheritParams template_arguments
 #' @param mhterm (`character`)\cr name of reported name for medical history variable.
 #' @param mhbodsys (`character`)\cr name of body system or organ class variable.
+#' @param mhdistat (`character`)\cr name of status of the disease variable.
+#' @param nrow_mh (`character`)\cr number of rows of dataname.
 #'
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
-                                     mhbodsys = "MHBODSYS") {
+                                     mhbodsys = "MHBODSYS",
+                                     mhdistat = "MHDISTAT",
+                                     nrow_mh) {
   assert_that(
     is.string(dataname),
     is.string(mhterm),
-    is.string(mhbodsys)
+    is.string(mhbodsys),
+    is.string(mhdistat),
+    is.numeric(nrow_mh)
   )
 
   y <- list()
   y$table <- list()
 
-  table_list <- add_expr(
-    list(),
-    substitute(expr = {
-      result <- # compared to the original app, MHDISTAT is not available in ADHM
-        dataname %>%
-        select(mhbodsys, mhterm) %>%
-        arrange(mhbodsys) %>%
-        mutate_if(is.character, as.factor) %>%
-        mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
-        distinct() %>%
-        `colnames<-`(get_labels(dataname)$column_labels[c(mhbodsys_char, mhterm_char)])
-      result
-    }, env = list(
-      dataname = as.name(dataname),
-      mhbodsys = as.name(mhbodsys),
-      mhterm = as.name(mhterm),
-      mhbodsys_char = mhbodsys,
-      mhterm_char = mhterm
-    ))
-  )
+  table_list <- if (nrow_mh != 0) {
+    add_expr(
+      list(),
+      substitute(expr = {
+        labels <- rtables::var_labels(dataname)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+        mhbodsys_label <- labels[mhbodsys_char]
+
+        result <-
+          dataname %>%
+          select(mhbodsys, mhterm, mhdistat) %>%
+          arrange(mhbodsys) %>%
+          mutate_if(is.character, as.factor) %>%
+          mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
+          distinct() %>%
+          `colnames<-`(labels)
+
+        result_without_mhbodsys <- result[, -1]
+        result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
+
+        result_kbl <- result_kbl %>%
+          kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
+          kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
+
+        result_kbl
+      }, env = list(
+        dataname = as.name(dataname),
+        mhbodsys = as.name(mhbodsys),
+        mhterm = as.name(mhterm),
+        mhdistat = as.name(mhdistat),
+        mhbodsys_char = mhbodsys,
+        mhterm_char = mhterm,
+        mhdistat_char = mhdistat
+      ))
+    )
+  } else {
+    add_expr(
+      list(),
+      substitute(expr = {
+        result_kbl <- kableExtra::kable(
+          data.frame("Patient has no data about medical history."),
+          col.names = NULL,
+          table.attr = "style='width:100%;'"
+        )
+      }, env = list())
+    )
+  }
 
   y$table <- bracket_expr(table_list)
 
@@ -54,6 +86,8 @@ template_medical_history <- function(dataname = "ANL",
 #' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
 #' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the
 #' ADMH dataset.
+#' @param mhdistat ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHDISTAT} column of the
+#' ADMH dataset.
 #'
 #' @export
 #'
@@ -61,11 +95,15 @@ template_medical_history <- function(dataname = "ANL",
 #' library(random.cdisc.data)
 #' ADSL <- radsl(cached = TRUE)
 #' ADMH <- radmh(cached = TRUE)
+#' ADMH[["MHDISTAT"]] <- "ONGOING"
+#' rtables::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
+#'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)
+#'                    ADMH[['MHDISTAT']] <- 'ONGOING'
+#'                    rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -81,6 +119,10 @@ template_medical_history <- function(dataname = "ANL",
 #'       mhbodsys = choices_selected(
 #'         choices = variable_choices(ADMH, "MHBODSYS"),
 #'         selected = "MHBODSYS"
+#'       ),
+#'       mhdistat = choices_selected(
+#'         choices = variable_choices(ADMH, "MHDISTAT"),
+#'         selected = "MHDISTAT"
 #'       )
 #'     )
 #'   )
@@ -95,6 +137,7 @@ tm_t_pp_medical_history <- function(label,
                                     patient_col = "USUBJID",
                                     mhterm = NULL,
                                     mhbodsys = NULL,
+                                    mhdistat = NULL,
                                     pre_output = NULL,
                                     post_output = NULL) {
   assert_that(is_character_single(label))
@@ -111,7 +154,8 @@ tm_t_pp_medical_history <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     mhterm = if_not_null(mhterm, cs_to_des_select(mhterm, dataname = dataname)),
-    mhbodsys = if_not_null(mhbodsys, cs_to_des_select(mhbodsys, dataname = dataname))
+    mhbodsys = if_not_null(mhbodsys, cs_to_des_select(mhbodsys, dataname = dataname)),
+    mhdistat = if_not_null(mhdistat, cs_to_des_select(mhdistat, dataname = dataname))
   )
 
   module(
@@ -136,18 +180,18 @@ ui_t_medical_history <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- is_single_dataset(
     ui_args$mhterm,
-    ui_args$mhbodsys
+    ui_args$mhbodsys,
+    ui_args$mhdistat
   )
 
   ns <- NS(id)
   standard_layout(
     output = div(
-      get_dt_rows(ns("medical_history_table"), ns("medical_history_table_rows")),
-      DT::DTOutput(outputId = ns("medical_history_table"))
+      htmlOutput(outputId = ns("medical_history_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c("mhterm", "mhbodsys")]),
+      datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
@@ -164,6 +208,12 @@ ui_t_medical_history <- function(id, ...) {
         id = ns("mhbodsys"),
         label = "Select MHBODSYS variable:",
         data_extract_spec = ui_args$mhbodsys,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("mhdistat"),
+        label = "Select MHDISTAT variable:",
+        data_extract_spec = ui_args$mhdistat,
         is_single_dataset = is_single_dataset_value
       )
     ),
@@ -183,6 +233,7 @@ srv_t_medical_history <- function(input,
                                   patient_col,
                                   mhterm,
                                   mhbodsys,
+                                  mhdistat,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -201,19 +252,19 @@ srv_t_medical_history <- function(input,
       choices = patient_data_base(),
       selected = if (length(patient_data_base()) == 1) {
         patient_data_base()
-        } else {
+      } else {
         intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
+      }
+    )
+  },
+  ignoreInit = TRUE
   )
 
   # Medical history tab ----
   mhist_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(mhterm, mhbodsys),
-    input_id = c("mhterm", "mhbodsys"),
+    data_extract = list(mhterm, mhbodsys, mhdistat),
+    input_id = c("mhterm", "mhbodsys", "mhdistat"),
     merge_function = "dplyr::left_join"
   )
 
@@ -228,6 +279,10 @@ srv_t_medical_history <- function(input,
       need(
         input[[extract_input("mhbodsys", dataname)]],
         "Please select MHBODSYS variable."
+      ),
+      need(
+        input[[extract_input("mhdistat", dataname)]],
+        "Please select MHDISTAT variable."
       )
     )
 
@@ -249,26 +304,26 @@ srv_t_medical_history <- function(input,
     my_calls <- template_medical_history(
       dataname = "ANL",
       mhterm = input[[extract_input("mhterm", dataname)]],
-      mhbodsys = input[[extract_input("mhbodsys", dataname)]]
+      mhbodsys = input[[extract_input("mhbodsys", dataname)]],
+      mhdistat = input[[extract_input("mhdistat", dataname)]],
+      nrow_mh <- nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ])
     )
     lapply(my_calls, mhist_stack_push)
     chunks_safe_eval(chunks = mhist_stack)
     mhist_stack
   })
 
-  output$medical_history_table <- DT::renderDataTable({
+  output$medical_history_table <- reactive({
     chunks_reset()
     chunks_push_chunks(mhist_call())
-    chunks_get_var("result")
-    },
-    options = list(pageLength = input$medical_history_table_rows)
-  )
+    chunks_get_var("result_kbl")
+  })
 
   callModule(
     get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(mhterm, mhbodsys)),
+    datanames = get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
     modal_title = label
   )
 }

@@ -40,7 +40,8 @@ Imports:
   DT,
   tidyr,
   vistime,
-  ggrepel
+  ggrepel,
+  kableExtra
 Suggests:
   knitr,
   random.cdisc.data (>= 0.3.10),

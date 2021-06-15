@@ -11,6 +11,7 @@ tm_t_pp_medical_history(
   patient_col = "USUBJID",
   mhterm = NULL,
   mhbodsys = NULL,
+  mhdistat = NULL,
   pre_output = NULL,
   post_output = NULL
 )
@@ -32,6 +33,9 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{mhbodsys}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{MHBODSYS} column of the
 ADMH dataset.}
 
+\item{mhdistat}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{MHDISTAT} column of the
+ADMH dataset.}
+
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
 For example a title.}
@@ -47,11 +51,15 @@ This teal module produces a patient medical history report using ADaM datasets.
 library(random.cdisc.data)
 ADSL <- radsl(cached = TRUE)
 ADMH <- radmh(cached = TRUE)
+ADMH[["MHDISTAT"]] <- "ONGOING"
+rtables::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)"),
+    cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)
+                   ADMH[['MHDISTAT']] <- 'ONGOING'
+                   rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
     check = TRUE
   ),
   modules = root_modules(
@@ -67,6 +75,10 @@ app <- init(
       mhbodsys = choices_selected(
         choices = variable_choices(ADMH, "MHBODSYS"),
         selected = "MHBODSYS"
+      ),
+      mhdistat = choices_selected(
+        choices = variable_choices(ADMH, "MHDISTAT"),
+        selected = "MHDISTAT"
       )
     )
   )
