@@ -13,6 +13,7 @@ test_that("template_events_summary generates minimal table", {
       arm_levels <- levels(adsl[["ARM"]])
       anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
+      anl$tmp_aefl <- "Y"
       anl <- anl %>%
         dplyr::mutate(
           AEDECOD = as.character(AEDECOD),
@@ -49,7 +50,7 @@ test_that("template_events_summary generates minimal table", {
         add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
-          filters = c(STUDYID = study_id),
+          filters = c("tmp_aefl" = "Y"),
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),
@@ -95,6 +96,7 @@ test_that("template_events_summary generates table with multiple flags", {
       arm_levels <- levels(adsl[["ARM"]])
       anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
+      anl$tmp_aefl <- "Y"
       anl <- anl %>%
         dplyr::mutate(
           AEDECOD = as.character(AEDECOD),
@@ -133,7 +135,7 @@ test_that("template_events_summary generates table with multiple flags", {
         add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
-          filters = c(STUDYID = study_id),
+          filters = c("tmp_aefl" = "Y"),
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),

@@ -88,6 +88,13 @@ template_events_summary <- function(anl_name,
     quote(study_id <- unique(anl[["STUDYID"]]))
   )
 
+
+  #Create dummy variable for counting patients with an AE
+  data_list <- add_expr(
+    data_list,
+    quote(anl$tmp_aefl <- "Y")
+  )
+
   data_list <- add_expr(
     data_list,
     substitute_names(
@@ -220,7 +227,7 @@ template_events_summary <- function(anl_name,
     quote(
       expr = count_patients_with_event(
         vars = "USUBJID",
-        filters = c("STUDYID" = study_id),
+        filters = c("tmp_aefl" = "Y"),
         denom = "N_col",
         .stats = "count_fraction",
         .labels = c(
