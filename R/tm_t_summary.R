@@ -2,6 +2,9 @@
 #'
 #' @param show_labels (`character`)\cr
 #'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
+#' @param numeric_stats (`character`)\cr
+#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
+#'   `median`, `median_ci`, `range`. All are selected by default.
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -15,6 +18,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE,  #nolint
                              na_level = "<Missing>",
+                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range"),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE) {
   assert_that(
@@ -26,7 +30,8 @@ template_summary <- function(dataname,
     is.character(var_labels),
     is.flag(na.rm),
     is.string(na_level),
-    is.flag(drop_arm_levels)
+    is.flag(drop_arm_levels),
+    is.character(numeric_stats)
   )
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
@@ -123,7 +128,7 @@ template_summary <- function(dataname,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
     stats = c(
-      c("n", "mean_sd", "median", "range"),
+      numeric_stats,
       ifelse(denominator == "omit", "count", "count_fraction")
     )
   )
@@ -187,6 +192,9 @@ template_summary <- function(dataname,
 #'   `arm_var` levels are set to those used in the `parentname` dataset.
 #'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
 #'   TRUE regardless of the user choice when `tm_t_summary` is called.
+#' @param numeric_stats (`character`)\cr
+#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
+#'   `median`, `median_ci`, `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -217,7 +225,7 @@ template_summary <- function(dataname,
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       add_total = TRUE,
 #'       summarize_vars = choices_selected(
-#'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS"),
+#'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
 #'       ),
 #'       useNA = "ifany"
@@ -241,6 +249,7 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
+                         numeric_stats = c("n", "mean_sd", "median", "range"),
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
@@ -262,6 +271,12 @@ tm_t_summary <- function(label,
   )
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
+
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "range")
+  if (!all(numeric_stats %in% allowed_numeric_stats)) {
+    stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
+  }
+
 
   args <- as.list(environment())
 
@@ -323,6 +338,19 @@ ui_summary <- function(id, ...) {
               label = "Display NA counts",
               choices = c("ifany", "no"),
               selected = a$useNA
+            ),
+            checkboxGroupInput(
+              ns("numeric_stats"),
+              label = "Choose the statistics to display for numeric variables",
+              choices = c(
+                "n" = "n",
+                "Mean (SD)" = "mean_sd",
+                "Mean 95% CI" = "mean_ci",
+                "Median" = "median",
+                "Median 95% CI" = "median_ci",
+                "Min - Max" = "range"
+              ),
+              selected = a$numeric_stats
             ),
             radioButtons(
               ns("denominator"),
@@ -445,6 +473,7 @@ srv_summary <- function(input,
       var_labels = get_var_labels(datasets, dataname, sum_vars),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,
+      numeric_stats = input$numeric_stats,
       denominator = input$denominator,
       drop_arm_levels = input$drop_arm_levels
     )
