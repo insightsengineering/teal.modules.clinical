@@ -17,9 +17,11 @@ variables cannot be overlapped.
 * Added checkbox to `tm_g_pp_patient_timeline` to choose to display relative study days on the x-axis.
 * Limited the label repel feature in `tm_g_pp_patient_timeline` to X-axis for a more consistent look.
 * Added patient ID title to plots in patient profile modules.
-* Updated `tm_t_summary_by`so that `paramcd` is not required when analyzing ADSL variables. 
+* Updated `tm_t_summary_by`so that `paramcd` is not required when analyzing `ADSL` variables. 
 * Added a new argument `numeric_stats` in `tm_t_summary` module so that users can control what statistics to display
 for numeric summarize variables.
+* Updated `tm_t_coxreg` so that it can work when there is no covariate selected. 
+* Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements

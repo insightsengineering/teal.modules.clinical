@@ -654,11 +654,11 @@ srv_t_coxreg <- function(input,
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
 
-
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
+
 
     validate_no_intersection(
       input_arm_var,
@@ -675,7 +675,6 @@ srv_t_coxreg <- function(input,
       input_cov_var,
       "`Strata` and `Covariate` variables should not be overlapped."
     )
-
 
     do.call(what = "validate_standard_inputs", validate_args)
 
@@ -726,9 +725,10 @@ srv_t_coxreg <- function(input,
 
   call_template <- function(comp_arm, anl, paramcd) {
     strata_var <- as.vector(anl$columns_source$strata_var)
+    cov_var <- as.vector(anl$columns_source$cov_var)
     template_coxreg(
       dataname = "ANL",
-      cov_var = as.vector(anl$columns_source$cov_var),
+      cov_var = if (length(cov_var) > 0) cov_var else NULL,
       at = if (!is.null(input$interactions) && input$interactions) at() else list(),
       arm_var = as.vector(anl$columns_source$arm_var),
       cnsr_var = as.vector(anl$columns_source$cnsr_var),
