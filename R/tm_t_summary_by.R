@@ -5,6 +5,9 @@
 #'  (`FALSE` on default). Can be used only if all chosen analysis variables are numeric.
 #' @param row_groups (`logical`) used to display `summarize_vars` as row groups
 #'  (`FALSE` on default).
+#' @param numeric_stats (`character`)\cr
+#'  selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
+#'  `median`, `median_ci`, `quantiles`, `range`. All are selected by default.
 #'
 #' @seealso [tm_t_summary_by()]
 #'
@@ -20,6 +23,9 @@ template_summary_by <- function(parentname,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint
                                 na_level = "<Missing>",
+                                numeric_stats = c(
+                                  "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
+                                ),
                                 denominator = c("N", "n", "omit"),
                                 drop_arm_levels = TRUE) {
   assert_that(
@@ -35,7 +41,8 @@ template_summary_by <- function(parentname,
     is.flag(row_groups),
     is.flag(na.rm),
     is.string(na_level),
-    is.flag(drop_arm_levels)
+    is.flag(drop_arm_levels),
+    is.character(numeric_stats)
   )
   denominator <- match.arg(denominator)
 
@@ -132,14 +139,7 @@ template_summary_by <- function(parentname,
       na.rm = na.rm,
       na_level = na_level,
       denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c("n", "mean_sd", "median", "range", "count"),
-      formats = c(
-        n = "xx",
-        mean_sd = "xx.xx (xx.xx)",
-        median = "xx.xx",
-        range = "xx.xx - xx.xx",
-        count = "xx"
-      )
+      stats = c(numeric_stats, "count")
     )
   }
   else{
@@ -149,14 +149,7 @@ template_summary_by <- function(parentname,
       na.rm = na.rm,
       na_level = na_level,
       denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c("n", "mean_sd", "median", "range", "count_fraction"),
-      formats = c(
-        n = "xx",
-        mean_sd = "xx.xx (xx.xx)",
-        median = "xx.xx",
-        range = "xx.xx - xx.xx",
-        count_fraction = "xx (xx.%)"
-      )
+      stats = c(numeric_stats, "count_fraction")
     )
   }
 
@@ -253,8 +246,7 @@ template_summary_by <- function(parentname,
               na.rm = na.rm,
               na_level = na_level,
               denom = denom,
-              .stats = stats,
-              .formats = formats
+              .stats = stats
             ),
             env = env_vars
           )
@@ -266,8 +258,7 @@ template_summary_by <- function(parentname,
               na.rm = na.rm,
               na_level = na_level,
               denom = denom,
-              .stats = stats,
-              .formats = formats
+              .stats = stats
             ),
             env = env_vars
           )
@@ -298,6 +289,9 @@ template_summary_by <- function(parentname,
 #'   `arm_var` levels are set to those used in the `parentname` dataset.
 #'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
 #'   TRUE regardless of the user choice when `tm_t_summary_by` is called.
+#' @param numeric_stats (`character`)\cr
+#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
+#'   `median`, `median_ci`, `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
@@ -362,6 +356,7 @@ tm_t_summary_by <- function(label,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
                             na_level = "<Missing>",
+                            numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
                             pre_output = NULL,
@@ -391,6 +386,10 @@ tm_t_summary_by <- function(label,
       )
     )
 
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
+  if (!all(numeric_stats %in% allowed_numeric_stats)) {
+    stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
+  }
 
   args <- c(as.list(environment()))
 
@@ -486,6 +485,20 @@ ui_summary_by <- function(id, ...) {
             choices = a$denominator$choices,
             selected = a$denominator$selected,
             fixed = a$denominator$fixed
+          ),
+          checkboxGroupInput(
+            ns("numeric_stats"),
+            label = "Choose the statistics to display for numeric variables",
+            choices = c(
+              "n" = "n",
+              "Mean (SD)" = "mean_sd",
+              "Mean 95% CI" = "mean_ci",
+              "Median" = "median",
+              "Median 95% CI" = "median_ci",
+              "25% and 75%-ile" = "quantiles",
+              "Min - Max" = "range"
+            ),
+            selected = a$numeric_stats
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
@@ -629,6 +642,7 @@ srv_summary_by <- function(input,
       id_var = as.vector(anl_m$columns_source$id_var),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       na_level = na_level,
+      numeric_stats = input$numeric_stats,
       denominator = input$denominator,
       add_total = input$add_total,
       parallel_vars = input$parallel_vars,

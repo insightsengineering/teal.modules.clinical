@@ -17,6 +17,8 @@ template_summary_by(
   row_groups = FALSE,
   na.rm = FALSE,
   na_level = "<Missing>",
+  numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
+    "range"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE
 )
@@ -57,6 +59,10 @@ whether \code{NA} values should be removed prior to analysis.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
+
+\item{numeric_stats}{(\code{character})\cr
+selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
+\code{median}, \code{median_ci}, \code{quantiles}, \code{range}. All are selected by default.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference
