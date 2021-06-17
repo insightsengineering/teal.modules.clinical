@@ -34,7 +34,7 @@ test_that("template_summary generates correct expressions", {
           na.rm = FALSE,
           na_level = "<Missing>",
           denom = "N_col",
-          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range", "count_fraction")
+          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "count_fraction")
         )
     ),
     table = quote({
@@ -82,7 +82,7 @@ test_that("template_summary can generate customized table", {
           na.rm = TRUE,
           na_level = "<Missing>",
           denom = "N_col",
-          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range", "count")
+          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "count")
         )
     ),
     table = quote({
@@ -134,7 +134,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
           na.rm = FALSE,
           na_level = "<Missing>",
           denom = "N_col",
-          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range", "count_fraction")
+          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "count_fraction")
         )
     ),
     table = quote({
@@ -187,7 +187,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
           na.rm = FALSE,
           na_level = "<Missing>",
           denom = "N_col",
-          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range", "count_fraction")
+          .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "count_fraction")
         )
     ),
     table = quote({

@@ -4,7 +4,7 @@
 #'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `range`. All are selected by default.
+#'   `median`, `median_ci`, `quantiles` and `range`. All are selected by default.
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -18,7 +18,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE,  #nolint
                              na_level = "<Missing>",
-                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range"),
+                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE) {
   assert_that(
@@ -194,7 +194,7 @@ template_summary <- function(dataname,
 #'   TRUE regardless of the user choice when `tm_t_summary` is called.
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
+#'   `median`, `median_ci`, `quantiles` and `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -272,7 +272,7 @@ tm_t_summary <- function(label,
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
 
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "range")
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
   if (!all(numeric_stats %in% allowed_numeric_stats)) {
     stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
   }
@@ -348,6 +348,7 @@ ui_summary <- function(id, ...) {
                 "Mean 95% CI" = "mean_ci",
                 "Median" = "median",
                 "Median 95% CI" = "median_ci",
+                "25% and 75%-ile" = "quantiles",
                 "Min - Max" = "range"
               ),
               selected = a$numeric_stats

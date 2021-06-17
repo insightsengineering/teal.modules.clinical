@@ -14,7 +14,8 @@ template_summary(
   var_labels = character(),
   na.rm = FALSE,
   na_level = "<Missing>",
-  numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "range"),
+  numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
+    "range"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE
 )
@@ -49,7 +50,7 @@ in character or factor variables in the data.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{range}. All are selected by default.}
+\code{median}, \code{median_ci}, \code{quantiles} and \code{range}. All are selected by default.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference
