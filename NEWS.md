@@ -61,8 +61,10 @@
 * Updated the internals of the modules to read data from the correct field of the `filter_spec` objects.
 * Fixed the reactivity between the filter panel and the PARAMCD variable levels input in `tm_g_patient_profile` vitals tab so that the plot does not get reset when filtering.
 * Updated the vitals plot tab in `tm_g_patient_profile` to drop NA entries in the plot.
+* Updated `tm_t_coxreg` to take at values into account.
 * Added a check in `tm_t_coxreg` to only have interactions for univariate models.
 * Updated `tm_t_events_summary` to work with pooled studies.
+
 
 # teal.modules.clinical 0.8.7
 ### New Module

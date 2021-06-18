@@ -377,12 +377,12 @@ tm_t_coxreg <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   args <- as.list(environment())
 
@@ -539,15 +539,15 @@ ui_t_coxreg <- function(id, ...) {
               span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
-              ),
+            ),
             a$conf_level$choices,
             a$conf_level$selected,
             multiple = FALSE,
             fixed = a$conf_level$fixed
-            )
           )
         )
-      ),
+      )
+    ),
     forms = get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
@@ -593,16 +593,16 @@ srv_t_coxreg <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
+
   ## render conditional strata levels input UI  ----
   open_textinput <- function(x, anl) {
     # For every numeric covariate, the numeric level for the Hazard Ration
     # estimation is proposed only if the covariate is included in the model:
     # for this purpose, a function and a UI-rendered output.
-    med <- signif(stats::median(anl[[x]], na.rm = TRUE), 3)
     textInput(
       session$ns(paste0("interact_", x)),
-      label = paste("Hazard Ratios for", x, "at:"),
-      value = as.character(med)
+      label = paste("Hazard Ratios for", x, "at (comma delimited):"),
+      value = as.character(median(anl$data()[[x]]))
     )
   }
 
@@ -610,15 +610,16 @@ srv_t_coxreg <- function(input,
     # exclude cases when increments are not necessary and
     # finally accessing the UI-rendering function defined above.
     if (!is.null(input$interactions) &&
-        input$interactions &&
-        !is.null(input$cov_var)) {
+        input$interactions) {
+
+      anl_m <- anl_merged()
+      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+
       anl <- datasets$get_data(dataname, filtered = FALSE)
-
-      cov_is_numeric <- vapply(anl[input$cov_var], is.numeric, logical(1))
-      interaction_var <- input$cov_var[cov_is_numeric]
-
-      if (length(interaction_var) != 0) {
-        lapply(interaction_var, open_textinput, anl = anl)
+      cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+      interaction_var <- input_cov_var[cov_is_numeric]
+      if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
+        lapply(interaction_var, open_textinput, anl = anl_m)
       }
     }
   })
@@ -635,7 +636,9 @@ srv_t_coxreg <- function(input,
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-
+    anl <- datasets$get_data(dataname, filtered = FALSE)
+    cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+    interaction_var <- input_cov_var[cov_is_numeric]
 
     # validate inputs
     validate_args <- list(
@@ -704,6 +707,20 @@ srv_t_coxreg <- function(input,
       ))
     }
 
+    if (!is.null(input$interactions) && input$interactions) {
+      validate(need(
+        (length(input_cov_var) > 0),
+        "If interactions are selected at least one covariate should be specified."
+      ))
+    }
+
+    if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
+      validate(need(
+        (sum(sapply(at(), is_empty)) == 0),
+        "Please specify all the interaction levels."
+      ))
+    }
+
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
@@ -711,17 +728,25 @@ srv_t_coxreg <- function(input,
   })
 
   at <- reactive({
-    res <- lapply(
-      input$cov_var,
-      function(x) {
-        cov <- input[[paste0("interact_", x)]]
-        if (!is.null(cov)) {
-          vec <- strsplit(cov, split = ",")
-          as.numeric(unlist(vec))
-        }
-      })
-    setNames(res, input$cov_var)
+    anl_m <- anl_merged()
+    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+    anl <- datasets$get_data(dataname, filtered = FALSE)
+    cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+    interaction_var <- input_cov_var[cov_is_numeric]
+    if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
+      res <- lapply(
+        interaction_var,
+        function(x) {
+          cov <- input[[paste0("interact_", x)]]
+          if (!is.null(cov)) {
+            vec <- strsplit(cov, split = ",")
+            as.numeric(unlist(vec))
+          }
+        })
+      setNames(res, interaction_var)
+    }
   })
+
 
   call_template <- function(comp_arm, anl, paramcd) {
     strata_var <- as.vector(anl$columns_source$strata_var)
