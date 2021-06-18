@@ -1,27 +1,28 @@
 # teal.modules.clinical 0.8.8.9000
 ### New features
+* Added a capability to remember the order of user input to some encoding UI elements. The inputs with tracking enabled are marked with a double arrow icon. The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
+* Added a new argument `numeric_stats` to `tm_t_summary` and `tm_t_summary_by` to control displayed summary statistics for numeric variables.
+
+### Enhancements
 * Split `tm_g_patient_profile` tabs into 8 separate new modules.
 * Added the option to select patient ID from the filter panel for all the modules of patient profile.
-* Moved as_html() function call inside `teal.devel::table_with_settings` 
-* Added a capability to remember the order of user input to some encoding UI elements. 
-The inputs with tracking enabled are marked with a double arrow icon. 
-The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, 
-`tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
 * Added an additional validation for `tm_g_patient_timeline` when the plot is empty.
-* Enhanced `tm_a_mmrm` so that it can work without the treatment variable. 
-* Fixed Get R Code output of `rm_t_pp_laboratory` to return identical HTML 
-formatted table as displayed in the app.
-* Added an additional validation for `tm_t_coxreg` so that treatment, strata and covariate
-variables cannot be overlapped. 
+* Enhanced `tm_a_mmrm` to work without the treatment variable. 
 * Added the option to choose the number of decimal places for rounding in `tm_t_pp_laboratory`.
-* Added checkbox to `tm_g_pp_patient_timeline` to choose to display relative study days on the x-axis.
+* Added a check box to `tm_g_pp_patient_timeline` hiding/showing relative study days on the x-axis.
+* Added a title with patient's id to plots in patient profile modules.
+* Made the grey error message in `tm_g_forest_tte` more informative when the `Endpoint` column was deselected in the left-hand encoding panel.
+* Added the twenty-fifth and seventy-fifth quantile to summary statistics in `tm_t_summary`.
+* Added an interaction p-value column for `tm_t_coxreg`.
+
+### Bug fixes
+* Fixed Get R Code output of `tm_t_pp_laboratory` to return identical HTML formatted table as displayed in the app.
+* Added an additional validation for `tm_t_coxreg` to ensure treatment, strata and covariate variables do not overlap. 
 * Limited the label repel feature in `tm_g_pp_patient_timeline` to X-axis for a more consistent look.
-* Added patient ID title to plots in patient profile modules.
-* Updated `tm_t_summary_by`so that `paramcd` is not required when analyzing `ADSL` variables. 
-* Added a new argument `numeric_stats` in `tm_t_summary` and `tm_t_summary_by` module so that users can control what 
-statistics to display for numeric summarize variables.
+* Updated `tm_t_summary_by` so that `paramcd` is not required when analyzing `ADSL` variables. 
 * Updated `tm_t_coxreg` so that it can work when there is no covariate selected. 
 * Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
+* Updated `tm_t_events_summary` to work with pooled studies.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements
@@ -45,7 +46,6 @@ statistics to display for numeric summarize variables.
 * Removed header definition in `tm_g_forest_rsp` and `tm_g_forest_tte` as there is now a default header in `g_forest`.
 * Fixed validate statement in `tm_t_coxreg` so that models without strata and using likelihood tests return a result.
 * Clarified functionality of `drop_arm_levels` for `tm_t_summary` and `tm_t_summary_by`. In the encodings panel, the checkbox will only be shown when the parent dataset and analysis dataset are different.
-* Added interaction p-value column for `tm_t_coxreg`.
 
 ### Miscellaneous
 * Replaced the remaining two `observe` function calls with `observeEvent` to optimize performance.
