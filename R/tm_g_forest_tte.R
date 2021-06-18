@@ -140,7 +140,7 @@ template_forest_tte <- function(dataname = "ANL",
       result <- basic_table() %>%
         tabulate_survival_subgroups(
           df,
-          vars = c("n_tot", "n", "n_events", "median", "hr", "ci"),
+          vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
           time_unit = as.character(anl$time_unit_var[1])
         )
     },

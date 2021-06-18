@@ -22,6 +22,7 @@
 * Updated `tm_t_summary_by` so that `paramcd` is not required when analyzing `ADSL` variables. 
 * Updated `tm_t_coxreg` so that it can work when there is no covariate selected. 
 * Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
+* Updated `tm_g_forest_tte` so that total number of events are also shown in the table. 
 * Updated `tm_t_events_summary` to work with pooled studies.
 
 # teal.modules.clinical 0.8.8
