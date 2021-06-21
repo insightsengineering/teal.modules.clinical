@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.8.9000
+# teal.modules.clinical 0.8.9
 ### New features
 * Added a capability to remember the order of user input to some encoding UI elements. The inputs with tracking enabled are marked with a double arrow icon. The affected modules are: `tm_t_summary`, `tm_t_summary_by`, `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_t_events_summary`, `tm_t_abnormality`, `tm_t_mult_events`.
 * Added a new argument `numeric_stats` to `tm_t_summary` and `tm_t_summary_by` to control displayed summary statistics for numeric variables.
