@@ -24,6 +24,8 @@
 * Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
 * Updated `tm_g_forest_tte` so that total number of events are also shown in the table. 
 * Updated `tm_t_events_summary` to work with pooled studies.
+* Updated `tm_t_coxreg` to validate the `at` level.
+* Updated `tm_t_logistic` to validate the `at` level.
 
 # teal.modules.clinical 0.8.8
 ### Enhancements

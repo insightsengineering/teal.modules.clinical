@@ -440,7 +440,7 @@ srv_t_logistic <- function(input,
         tagList(
           textInput(
             session$ns("interaction_values"),
-            label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation):"),
+            label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation, comma delimited):"),
             value = as.character(median(anl_m$data()[[interaction_var]]))
           )
         )
@@ -460,6 +460,15 @@ srv_t_logistic <- function(input,
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
     input_interaction_var <- as.vector(anl_m$columns_source$interaction_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+    input_interaction_at <- input_interaction_var[input_interaction_var %in% as.vector(anl_m$columns_source$cov_var)]
+    interaction_flag <- length(input_interaction_at) != 0
+
+    at_values <- if (is.null(input$interaction_values)) {
+      NA
+    } else {
+      unlist(utils.nest::as_num(input$interaction_values))
+    }
 
     # validate inputs
     validate_args <- list(
@@ -506,8 +515,15 @@ srv_t_logistic <- function(input,
           "Select the corresponding covariate or deselect the interaction."
         )
       )
-
     )
+
+    # validate interaction values
+    if (interaction_flag && (is.numeric(anl_m$data()[[input_interaction_at]]))) {
+      validate(need(
+        !is.na(at_values),
+        "If interaction is specified the level should be entered."
+      ))
+    }
     NULL
   })
 
