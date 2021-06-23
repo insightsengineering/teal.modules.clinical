@@ -8,21 +8,18 @@ template_medical_history(
   dataname = "ANL",
   mhterm = "MHTERM",
   mhbodsys = "MHBODSYS",
-  mhdistat = "MHDISTAT",
-  nrow_mh
+  mhdistat = "MHDISTAT"
 )
 }
 \arguments{
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{mhterm}{(\code{character})\cr name of reported name for medical history variable.}
+\item{mhterm}{(\code{character})\cr name of the reported name for medical history variable.}
 
-\item{mhbodsys}{(\code{character})\cr name of body system or organ class variable.}
+\item{mhbodsys}{(\code{character})\cr name of the body system or organ class variable.}
 
-\item{mhdistat}{(\code{character})\cr name of status of the disease variable.}
-
-\item{nrow_mh}{(\code{character})\cr number of rows of dataname.}
+\item{mhdistat}{(\code{character})\cr name of the status of the disease variable.}
 }
 \description{
 Creates medical history template.

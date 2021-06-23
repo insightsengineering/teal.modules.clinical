@@ -3,73 +3,57 @@
 #' Creates medical history template.
 #'
 #' @inheritParams template_arguments
-#' @param mhterm (`character`)\cr name of reported name for medical history variable.
-#' @param mhbodsys (`character`)\cr name of body system or organ class variable.
-#' @param mhdistat (`character`)\cr name of status of the disease variable.
-#' @param nrow_mh (`character`)\cr number of rows of dataname.
+#' @param mhterm (`character`)\cr name of the reported name for medical history variable.
+#' @param mhbodsys (`character`)\cr name of the body system or organ class variable.
+#' @param mhdistat (`character`)\cr name of the status of the disease variable.
 #'
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS",
-                                     mhdistat = "MHDISTAT",
-                                     nrow_mh) {
+                                     mhdistat = "MHDISTAT") {
   assert_that(
     is.string(dataname),
     is.string(mhterm),
     is.string(mhbodsys),
-    is.string(mhdistat),
-    is.numeric(nrow_mh)
+    is.string(mhdistat)
   )
 
   y <- list()
   y$table <- list()
 
-  table_list <- if (nrow_mh != 0) {
-    add_expr(
-      list(),
-      substitute(expr = {
-        labels <- rtables::var_labels(dataname)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
-        mhbodsys_label <- labels[mhbodsys_char]
+  table_list <- add_expr(
+    list(),
+    substitute(expr = {
+      labels <- rtables::var_labels(dataname)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+      mhbodsys_label <- labels[mhbodsys_char]
 
-        result <-
-          dataname %>%
-          select(mhbodsys, mhterm, mhdistat) %>%
-          arrange(mhbodsys) %>%
-          mutate_if(is.character, as.factor) %>%
-          mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
-          distinct() %>%
-          `colnames<-`(labels)
+      result <-
+        dataname %>%
+        select(mhbodsys, mhterm, mhdistat) %>%
+        arrange(mhbodsys) %>%
+        mutate_if(is.character, as.factor) %>%
+        mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
+        distinct() %>%
+        `colnames<-`(labels)
 
-        result_without_mhbodsys <- result[, -1]
-        result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
+      result_without_mhbodsys <- result[, -1]
+      result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
 
-        result_kbl <- result_kbl %>%
-          kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
-          kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
+      result_kbl <- result_kbl %>%
+        kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
+        kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
 
-        result_kbl
-      }, env = list(
-        dataname = as.name(dataname),
-        mhbodsys = as.name(mhbodsys),
-        mhterm = as.name(mhterm),
-        mhdistat = as.name(mhdistat),
-        mhbodsys_char = mhbodsys,
-        mhterm_char = mhterm,
-        mhdistat_char = mhdistat
-      ))
-    )
-  } else {
-    add_expr(
-      list(),
-      substitute(expr = {
-        result_kbl <- kableExtra::kable(
-          data.frame("Patient has no data about medical history."),
-          col.names = NULL,
-          table.attr = "style='width:100%;'"
-        )
-      }, env = list())
-    )
-  }
+      result_kbl
+    }, env = list(
+      dataname = as.name(dataname),
+      mhbodsys = as.name(mhbodsys),
+      mhterm = as.name(mhterm),
+      mhdistat = as.name(mhdistat),
+      mhbodsys_char = mhbodsys,
+      mhterm_char = mhterm,
+      mhdistat_char = mhdistat
+    ))
+  )
 
   y$table <- bracket_expr(table_list)
 
@@ -81,7 +65,7 @@ template_medical_history <- function(dataname = "ANL",
 #' This teal module produces a patient medical history report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`) name of the patients' ids column.
 #' @param mhterm
 #' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
 #' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the
@@ -283,6 +267,10 @@ srv_t_medical_history <- function(input,
       need(
         input[[extract_input("mhdistat", dataname)]],
         "Please select MHDISTAT variable."
+      ),
+      need(
+        nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
+        "Patient has no data about medical history."
       )
     )
 
@@ -305,8 +293,7 @@ srv_t_medical_history <- function(input,
       dataname = "ANL",
       mhterm = input[[extract_input("mhterm", dataname)]],
       mhbodsys = input[[extract_input("mhbodsys", dataname)]],
-      mhdistat = input[[extract_input("mhdistat", dataname)]],
-      nrow_mh <- nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ])
+      mhdistat = input[[extract_input("mhdistat", dataname)]]
     )
     lapply(my_calls, mhist_stack_push)
     chunks_safe_eval(chunks = mhist_stack)

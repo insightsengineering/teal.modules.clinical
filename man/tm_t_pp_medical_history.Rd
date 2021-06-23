@@ -26,7 +26,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character}) value patient ID column to be used.}
+\item{patient_col}{(\code{character}) name of the patients' ids column.}
 
 \item{mhterm}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{MHTERM} column of the ADMH dataset.}
 
