@@ -20,7 +20,8 @@ template_summary_by(
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range"),
   denominator = c("N", "n", "omit"),
-  drop_arm_levels = TRUE
+  drop_arm_levels = TRUE,
+  drop_zero_levels = TRUE
 )
 }
 \arguments{
@@ -74,6 +75,8 @@ omitted.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
 }
 \description{
 Template: Summarize Variables by Row Groups Module

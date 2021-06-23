@@ -8,6 +8,7 @@
 #' @param numeric_stats (`character`)\cr
 #'  selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'  `median`, `median_ci`, `quantiles`, `range`. All are selected by default.
+#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
 #'
 #' @seealso [tm_t_summary_by()]
 #'
@@ -27,7 +28,8 @@ template_summary_by <- function(parentname,
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
                                 ),
                                 denominator = c("N", "n", "omit"),
-                                drop_arm_levels = TRUE) {
+                                drop_arm_levels = TRUE,
+                                drop_zero_levels = TRUE) {
   assert_that(
     is.string(parentname),
     is.string(dataname),
@@ -42,7 +44,8 @@ template_summary_by <- function(parentname,
     is.flag(na.rm),
     is.string(na_level),
     is.flag(drop_arm_levels),
-    is.character(numeric_stats)
+    is.character(numeric_stats),
+    is.flag(drop_zero_levels)
   )
   denominator <- match.arg(denominator)
 
@@ -272,13 +275,24 @@ template_summary_by <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- substitute(
-    expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+  if (drop_zero_levels) {
+    y$table <- substitute(
+      expr = {
+        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows()
+        result
       },
-    env = list(parent = as.name(parentname))
-  )
+      env = list(parent = as.name(parentname))
+    )
+  } else {
+    y$table <- substitute(
+      expr = {
+        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+        result
+      },
+      env = list(parent = as.name(parentname))
+    )
+  }
+
   y
 }
 
@@ -292,6 +306,7 @@ template_summary_by <- function(parentname,
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'   `median`, `median_ci`, `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
+#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
@@ -359,6 +374,7 @@ tm_t_summary_by <- function(label,
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
+                            drop_zero_levels = TRUE,
                             pre_output = NULL,
                             post_output = NULL) {
 
@@ -369,6 +385,7 @@ tm_t_summary_by <- function(label,
     is_character_single(parentname),
     is.choices_selected(id_var),
     is.flag(add_total),
+    is.flag(drop_zero_levels),
     is_logical_single(parallel_vars),
     is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
@@ -473,6 +490,7 @@ ui_summary_by <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional table settings",
+          checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
             ns("useNA"),
             label = "Display NA counts",
@@ -551,6 +569,7 @@ srv_summary_by <- function(input,
                            add_total,
                            na_level,
                            drop_arm_levels,
+                           drop_zero_levels,
                            label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -647,7 +666,8 @@ srv_summary_by <- function(input,
       add_total = input$add_total,
       parallel_vars = input$parallel_vars,
       row_groups = input$row_groups,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      drop_zero_levels = input$drop_zero_levels
     )
     mapply(expression = my_calls, chunks_push)
   })

@@ -23,6 +23,7 @@ tm_t_summary_by(
   numeric_stats = c("n", "mean_sd", "median", "range"),
   denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
   drop_arm_levels = TRUE,
+  drop_zero_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -84,6 +85,8 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \code{arm_var} levels are set to those used in the \code{parentname} dataset.
 If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. ADSL), then \code{drop_arm_levels} will always be
 TRUE regardless of the user choice when \code{tm_t_summary_by} is called.}
+
+\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
