@@ -28,7 +28,7 @@ Imports:
   magrittr,
   methods,
   rmarkdown,
-  rtables (>= 0.3.7),
+  rtables (>= 0.3.8),
   scales,
   shinyjs,
   shinyWidgets,
