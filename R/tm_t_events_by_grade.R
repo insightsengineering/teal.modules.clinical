@@ -19,6 +19,7 @@ template_events_by_grade <- function(dataname,
     is.string(arm_var),
     is.string(hlt) || is.null(hlt),
     is.string(llt) || is.null(llt),
+    !is.null(hlt) || !is.null(llt),
     is.string(grade),
     is.flag(add_total),
     is.flag(drop_arm_levels)
@@ -270,11 +271,8 @@ template_events_by_grade <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAE", adae),
-#'     code =
-#'       "ADSL <- radsl(cached = TRUE)
-#'       ADAE <- radae(cached = TRUE)"
+#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events_by_grade(
@@ -296,7 +294,6 @@ template_events_by_grade <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
@@ -307,7 +304,7 @@ tm_t_events_by_grade <- function(label,
                                    is(arm_var, "data_extract_spec"),
                                    datanames_input(arm_var),
                                    "ADSL"
-                                   ),
+                                 ),
                                  arm_var,
                                  hlt,
                                  llt,
@@ -462,11 +459,11 @@ srv_t_events_by_grade <- function(input,
     validate(
       need(input_arm_var, "Please select a treatment variable"),
       need(input_grade, "Please select a grade variable")
-      )
+    )
     teal.devel::validate_has_elements(
       input_level_term,
       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-      )
+    )
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )

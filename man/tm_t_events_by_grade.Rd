@@ -69,11 +69,8 @@ adae <- radae(cached = TRUE)
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae),
-    code =
-      "ADSL <- radsl(cached = TRUE)
-      ADAE <- radae(cached = TRUE)"
+    cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
   ),
   modules = root_modules(
     tm_t_events_by_grade(
@@ -95,7 +92,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }
