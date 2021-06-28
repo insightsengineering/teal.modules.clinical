@@ -524,13 +524,13 @@ ui_g_patient_timeline <- function(id, ...) {
               shiny::tagList(
                 data_extract_input(
                   id = ns("aerelday_start"),
-                  label = "Select relative start date variable:",
+                  label = "Select AE relative start date variable:",
                   data_extract_spec = ui_args$aerelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
                 data_extract_input(
                   id = ns("aerelday_end"),
-                  label = "Select relative end date variable:",
+                  label = "Select AE relative end date variable:",
                   data_extract_spec = ui_args$aerelday_end,
                   is_single_dataset = is_single_dataset_value
                 )
@@ -540,13 +540,13 @@ ui_g_patient_timeline <- function(id, ...) {
               shiny::tagList(
                 data_extract_input(
                   id = ns("dsrelday_start"),
-                  label = "Select relative start date variable:",
+                  label = "Select Medication relative start date variable:",
                   data_extract_spec = ui_args$dsrelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
                 data_extract_input(
                   id = ns("dsrelday_end"),
-                  label = "Select relative end date variable:",
+                  label = "Select Medication relative end date variable:",
                   data_extract_spec = ui_args$dsrelday_end,
                   is_single_dataset = is_single_dataset_value
                 )
