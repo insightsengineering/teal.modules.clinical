@@ -16,7 +16,7 @@ template_therapy(
   cmdosfrq = "CMDOSFRQ",
   cmstdy = "CMSTDY",
   cmendy = "CMENDY",
-  patient_id = patient_id,
+  patient_id,
   font_size = 12L
 )
 }

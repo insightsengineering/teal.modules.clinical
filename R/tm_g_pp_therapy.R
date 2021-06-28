@@ -27,7 +27,7 @@ template_therapy <- function(dataname = "ANL",
                              cmdosfrq = "CMDOSFRQ",
                              cmstdy = "CMSTDY", # replaces cmstdy
                              cmendy = "CMENDY", # replaces cmendy
-                             patient_id = patient_id,
+                             patient_id,
                              font_size = 12L) {
   assert_that(
     is.string(dataname),
