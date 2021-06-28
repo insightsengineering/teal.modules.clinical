@@ -620,7 +620,8 @@ srv_summary_by <- function(input,
       if (!all(input_summarize_vars %in% names(adsl_filtered))) {
         need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected.")
-        }
+        },
+      need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
     )
     validate_standard_inputs(
       adsl = adsl_filtered,

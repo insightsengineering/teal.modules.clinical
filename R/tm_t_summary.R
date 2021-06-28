@@ -437,7 +437,8 @@ srv_summary <- function(input,
           )),
           "Please check nested treatment variable which needs to be a factor without NA or empty strings."
         )
-      }
+      },
+      need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
     )
 
     validate_standard_inputs(
