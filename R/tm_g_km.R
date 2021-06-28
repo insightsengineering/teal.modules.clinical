@@ -525,7 +525,7 @@ ui_g_km <- function(id, ...) {
           ),
           numericInput(
             inputId = ns("font_size"),
-            label = "Font size",
+            label = "Plot tables font size",
             value = 8,
             min = 5,
             max = 15,
