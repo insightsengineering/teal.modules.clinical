@@ -16,6 +16,7 @@ table.
 * Made the grey error message in `tm_g_forest_tte` more informative when the `Endpoint` column was deselected in the left-hand encoding panel.
 * Added the twenty-fifth and seventy-fifth quantile to summary statistics in `tm_t_summary`.
 * Added an interaction p-value column for `tm_t_coxreg`.
+* Added an additional validation for `tm_t_events_patyear` when the events variable is empty.
 * Changed the description of the font size input in `Additional plot settings` (`tm_g_km`) to more precisely represent what it controls.
 
 ### Bug fixes
