@@ -18,6 +18,7 @@ table.
 * Added an interaction p-value column for `tm_t_coxreg`.
 * Added an additional validation for `tm_t_events_patyear` when the events variable is empty.
 * Changed the description of the font size input in `Additional plot settings` (`tm_g_km`) to more precisely represent what it controls.
+* Enhanced `tm_t_logistic` so that interaction choices depend on the selected covariates. 
 
 ### Bug fixes
 * Fixed Get R Code output of `tm_t_pp_laboratory` to return identical HTML formatted table as displayed in the app.

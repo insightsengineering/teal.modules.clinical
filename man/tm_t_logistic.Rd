@@ -13,7 +13,6 @@ tm_t_logistic(
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
-  interaction_var = NULL,
   avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
     TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -48,9 +47,6 @@ variable value designating the studied parameter.}
 \item{cov_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the covariates
 variables.}
-
-\item{interaction_var}{\code{\link[teal:choices_selected]{teal::choices_selected()}} object with all available choices and preselected option
-for variable names that can be used for interaction variable selection.}
 
 \item{avalc_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis variable (categorical).}
@@ -115,10 +111,6 @@ app <- init(
       cov_var = choices_selected(
         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
         selected = "SEX"
-      ),
-      interaction_var = choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = NULL
       )
     )
   )

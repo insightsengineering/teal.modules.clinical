@@ -160,8 +160,6 @@ template_logistic <- function(dataname,
 #'   STREAM template `lgrt02`.
 #'
 #' @inheritParams module_arguments
-#' @param interaction_var [teal::choices_selected()] object with all available choices and preselected option
-#'   for variable names that can be used for interaction variable selection.
 #' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
 #'
@@ -210,10 +208,6 @@ template_logistic <- function(dataname,
 #'       cov_var = choices_selected(
 #'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
 #'         selected = "SEX"
-#'       ),
-#'       interaction_var = choices_selected(
-#'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-#'         selected = NULL
 #'       )
 #'     )
 #'   )
@@ -230,7 +224,6 @@ tm_t_logistic <- function(label,
                           arm_ref_comp = NULL,
                           paramcd,
                           cov_var = NULL,
-                          interaction_var = NULL,
                           avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
@@ -247,8 +240,7 @@ tm_t_logistic <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    interaction_var = cs_to_des_select(interaction_var, dataname = dataname)
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
   )
 
   module(
@@ -279,8 +271,7 @@ ui_t_logistic <- function(id, ...) {
     a$arm_var,
     a$paramcd,
     a$avalc_var,
-    a$cov_var,
-    a$interaction_var
+    a$cov_var
   )
 
   ns <- NS(id)
@@ -290,7 +281,7 @@ ui_t_logistic <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "avalc_var", "interaction_var", "cov_var")]),
+      datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
       data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -339,12 +330,7 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("interaction_var"),
-        label = "Interaction",
-        data_extract_spec = a$interaction_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      uiOutput(ns("interaction_var")),
       uiOutput(ns("interaction_input")),
       optionalSelectInput(
         inputId = ns("conf_level"),
@@ -366,7 +352,6 @@ ui_t_logistic <- function(id, ...) {
   )
 }
 
-
 #' Server Function for `tm_t_logistic`
 #' @noRd
 #' @importFrom stats median
@@ -382,7 +367,6 @@ srv_t_logistic <- function(input,
                            paramcd,
                            avalc_var,
                            cov_var,
-                           interaction_var,
                            label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -403,8 +387,8 @@ srv_t_logistic <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, avalc_var, cov_var, interaction_var),
-    input_id = c("arm_var", "paramcd", "avalc_var", "cov_var", "interaction_var"),
+    data_extract = list(arm_var, paramcd, avalc_var, cov_var),
+    input_id = c("arm_var", "paramcd", "avalc_var", "cov_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -432,15 +416,31 @@ srv_t_logistic <- function(input,
     )
   })
 
+  output$interaction_var <- renderUI({
+    anl_m <- anl_merged()
+    cov_var <- as.vector(anl_m$columns_source$cov_var)
+    if (length(cov_var) > 0) {
+      optionalSelectInput(
+        session$ns("interaction_var"),
+        label = "Interaction",
+        choices = cov_var,
+        selected = NULL,
+        multiple = FALSE
+      )
+    } else {
+      NULL
+    }
+  })
+
   output$interaction_input <- renderUI({
     anl_m <- anl_merged()
-    interaction_var <- as.vector(anl_m$columns_source$interaction_var)
+    interaction_var <- input$interaction_var
     if (length(interaction_var) > 0) {
       if (is.numeric(anl_m$data()[[interaction_var]])) {
         tagList(
           textInput(
             session$ns("interaction_values"),
-            label = paste0("Specify ", interaction_var, " values (for treatment ORs calculation, comma delimited):"),
+            label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
             value = as.character(median(anl_m$data()[[interaction_var]]))
           )
         )
@@ -458,10 +458,10 @@ srv_t_logistic <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
     input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    input_interaction_var <- as.vector(anl_m$columns_source$interaction_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+    input_interaction_var <- input$interaction_var
 
-    input_interaction_at <- input_interaction_var[input_interaction_var %in% as.vector(anl_m$columns_source$cov_var)]
+    input_interaction_at <- input_interaction_var[input_interaction_var %in% input_cov_var]
     interaction_flag <- length(input_interaction_at) != 0
 
     at_values <- if (is.null(input$interaction_values)) {
@@ -475,7 +475,7 @@ srv_t_logistic <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var, input_interaction_var),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var),
       arm_var = input_arm_var,
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
@@ -507,14 +507,7 @@ srv_t_logistic <- function(input,
 
     validate(
       need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty"),
-      need(
-        all(input_interaction_var %in% input_cov_var),
-        paste0(
-          "The interaction variable was not found among selected covariates.\n",
-          "Select the corresponding covariate or deselect the interaction."
-        )
-      )
+      need(input$responders, "`Responders` field is empty")
     )
 
     # validate interaction values
@@ -542,8 +535,7 @@ srv_t_logistic <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
-    interaction_var <- as.vector(anl_m$columns_source$interaction_var)
-    interaction_var <- interaction_var[interaction_var %in% as.vector(anl_m$columns_source$cov_var)]
+    interaction_var <- input$interaction_var
     interaction_flag <- length(interaction_var) != 0
 
     at_values <- if (is.null(input$interaction_values)) {
@@ -590,7 +582,7 @@ srv_t_logistic <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, interaction_var, avalc_var, cov_var)
+      list(arm_var, paramcd, avalc_var, cov_var)
     ),
     modal_title = "R Code for the Current Logistic Regression",
     code_header = label
