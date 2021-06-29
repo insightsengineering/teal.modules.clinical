@@ -58,21 +58,8 @@ template_patient_timeline <- function(dataname = "ANL",
         expr = {
           posixct_origin <- "1970-01-01 00:00.00 UTC"
 
-          dose_base <- NULL
           med_chart <- NULL
           ae_chart <- NULL
-
-          if (all(vapply(list(dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
-            min_date <- min(dataname[[dstime_start_var]], na.rm = TRUE)
-            max_date <- max(dataname[[dstime_end_var]], na.rm = TRUE)
-
-            dose_base <- data.frame(
-              start = c(min_date, max_date),
-              end = c(min_date, max_date),
-              event = c("First Exposure to Treatment", "Last Exposure to Treatment")
-            )
-            dose_base$group <- "Dosing"
-          }
 
           if (all(vapply(list(cmtrt_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
             med_chart <- dataname %>%
@@ -90,7 +77,7 @@ template_patient_timeline <- function(dataname = "ANL",
             ae_chart$group <- "Adverse Events"
           }
 
-          vistime_data <- dplyr::bind_rows(list(dose_base, ae_chart, med_chart))
+          vistime_data <- dplyr::bind_rows(list(ae_chart, med_chart))
           # in some cases, dates are converted to numeric so this is a step to convert them back
           vistime_data$start <- as.POSIXct(vistime_data$start, origin = posixct_origin)
           vistime_data$end <- as.POSIXct(vistime_data$end, origin = posixct_origin)
@@ -136,18 +123,19 @@ template_patient_timeline <- function(dataname = "ANL",
               ) +
               scale_x_datetime(labels = scales::date_format("%b-%Y")) +
               ggtitle(paste0("Patient ID: ", patient_id)) +
-              theme(plot.title = element_text(hjust = 0, size = font_size_var))
+              theme(plot.title = element_text(hjust = 0, size = font_size_var)) +
+              xlab("Absolute Study Dates")
           }
           patient_timeline_plot
         },
         env = list(
           dataname = as.name(dataname),
-          aeterm = if (is.null(aeterm)) aeterm else as.name(aeterm),
-          aetime_start = if (is.null(aetime_start)) aetime_start else as.name(aetime_start),
-          aetime_end = if (is.null(aetime_end)) aetime_end else as.name(aetime_end),
-          dstime_start = if (is.null(dstime_start)) dstime_start else as.name(dstime_start),
-          dstime_end = if (is.null(dstime_end)) dstime_end else as.name(dstime_end),
-          cmtrt = if (is.null(cmtrt)) cmtrt else as.name(cmtrt),
+          aeterm = if_not_empty(aeterm, as.name(aeterm)),
+          aetime_start = if_not_empty(aetime_start, as.name(aetime_start)),
+          aetime_end = if_not_empty(aetime_end, as.name(aetime_end)),
+          dstime_start = if_not_empty(dstime_start, as.name(dstime_start)),
+          dstime_end = if_not_empty(dstime_end, as.name(dstime_end)),
+          cmtrt = if_not_empty(cmtrt, as.name(cmtrt)),
           aeterm_var = aeterm,
           aetime_start_var = aetime_start,
           aetime_end_var = aetime_end,
@@ -166,30 +154,30 @@ template_patient_timeline <- function(dataname = "ANL",
         expr = {
           med_chart <- if (length(c(dsrelday_start_var, dsrelday_end_var, cmtrt)) == 3) {
             dataname %>%
-              select(dsrelday_start_var, dsrelday_end_var, cmtrt) %>%
-              distinct() %>%
-              rename(start = dsrelday_start_var, end = dsrelday_end_var, event = cmtrt) %>%
-              mutate(group = "Medication")
+              dplyr::select(dsrelday_start_var, dsrelday_end_var, cmtrt) %>%
+              dplyr::distinct() %>%
+              dplyr::rename(start = dsrelday_start_var, end = dsrelday_end_var, event = cmtrt) %>%
+              dplyr::mutate(group = "Medication")
           } else {
             NULL
           }
 
           ae_chart <- if (length(c(aerelday_start_var, aerelday_end_var, aeterm)) == 3) {
             dataname %>%
-              select(aerelday_start_var, aerelday_end_var, aeterm) %>%
-              distinct() %>%
-              rename(start = aerelday_start_var, end = aerelday_end_var, event = aeterm) %>%
-              mutate(group = "Adverse Events")
+              dplyr::select(aerelday_start_var, aerelday_end_var, aeterm) %>%
+              dplyr::distinct() %>%
+              dplyr::rename(start = aerelday_start_var, end = aerelday_end_var, event = aeterm) %>%
+              dplyr::mutate(group = "Adverse Events")
           } else {
             NULL
           }
 
           vistime_data <- dplyr::bind_rows(list(ae_chart, med_chart))
           vistime_data <- vistime_data %>%
-            filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
-            filter(!is.na(format(.data$start))) %>%
-            filter(!is.na(format(.data$end))) %>%
-            mutate(color = make.unique(group))
+            dplyr::filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
+            dplyr::filter(!is.na(format(.data$start))) %>%
+            dplyr::filter(!is.na(format(.data$end))) %>%
+            dplyr::mutate(color = make.unique(group))
 
           if (nrow(vistime_data) == 0 || all(is.na(format(c(vistime_data$start, vistime_data$end))))) {
             empty_plot_label <- "Empty Plot (either due to filtering or missing values).\n Consider relaxing filters."
@@ -217,7 +205,7 @@ template_patient_timeline <- function(dataname = "ANL",
               facet_grid(group ~ ., scales = "free", space = "free") +
               theme_classic() +
               theme(text = element_text(size = font_size_var), legend.position = "none") +
-              xlab("") +
+              xlab("Relative Study Days") +
               ylab("") +
               ggtitle(paste0("Patient ID: ", patient_id)) +
               theme(plot.title = element_text(hjust = 0))
@@ -516,7 +504,7 @@ ui_g_patient_timeline <- function(id, ...) {
       ),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
         shiny::tagList(
-          checkboxInput(ns("relday_x_axis"), label = "Use relative days in x-axis", value = TRUE),
+          checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
           shiny::conditionalPanel(
             paste0("input.relday_x_axis == true"),
             ns = ns,
