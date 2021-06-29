@@ -564,7 +564,7 @@ ui_t_events_byterm <- function(id, ...) {
         helpText("Pruning Options"),
         numericInput(
           inputId = ns("prune_freq"),
-          label = "Incidence Rate (%)",
+          label = "Minimum Incidence Rate(%) in any of the treatment groups",
           value = a$prune_freq,
           min = 0,
           max = 100,
@@ -573,7 +573,7 @@ ui_t_events_byterm <- function(id, ...) {
         ),
         numericInput(
           inputId = ns("prune_diff"),
-          label = "Difference Rate (%)",
+          label = "Minimum Difference Rate(%) between any of the treatment groups",
           value = a$prune_diff,
           min = 0,
           max = 100,
