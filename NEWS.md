@@ -30,6 +30,8 @@ table.
 * Updated `tm_t_events_summary` to work with pooled studies.
 * Updated `tm_t_coxreg` to validate the `at` level.
 * Updated `tm_t_logistic` to validate the `at` level.
+* Added an additional validation for `tm_t_binary_outcome` and `tm_t_rsp` to ensure strata variable
+contains more than one level when just one strata variable is selected. 
 * Updated the warning message when all statistics are deselected in `tm_t_summary` and `tm_t_summary_by` explaining at least one statistic has to be selected.
 
 # teal.modules.clinical 0.8.8

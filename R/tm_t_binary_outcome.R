@@ -377,10 +377,16 @@ srv_t_binary_outcome <- function(input,
 
     validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
-    validate(need(
+    validate(
+      need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
-    ))
+    ),
+    if (length(input_strata_var) == 1L) {
+      need(length(unique(anl_merged()$data()[[input_strata_var]])) > 1L,
+           "Strata variable should have more than one level if there is just one strata variable selected.")
+    }
+    )
 
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),

@@ -650,7 +650,13 @@ srv_t_rsp <- function(input,
 
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty"))
+      need(input$responders, "`Responders` field is empty"),
+      if (length(input_strata_var) == 1L) {
+        need(length(unique(anl_merged()$data()[[input_strata_var]])) > 1L,
+             "Strata variable should have more than one level if there
+             is just one strata variable selected.")
+        }
+      )
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
