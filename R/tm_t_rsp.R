@@ -526,6 +526,12 @@ ui_t_rsp <- function(id, ...) {
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
+            ),
+            data_extract_input(
+              id = ns("strata_var"),
+              label = "Stratification Factors",
+              data_extract_spec = a$strata_var,
+              is_single_dataset = is_single_dataset_value
             )
           )
         )
@@ -537,12 +543,6 @@ ui_t_rsp <- function(id, ...) {
         a$conf_level$selected,
         multiple = FALSE,
         fixed = a$conf_level$fixed
-      ),
-      data_extract_input(
-        id = ns("strata_var"),
-        label = "Stratification Factors",
-        data_extract_spec = a$strata_var,
-        is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("aval_var"),
@@ -651,7 +651,7 @@ srv_t_rsp <- function(input,
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"),
-      if (length(input_strata_var) == 1L) {
+      if (length(input_strata_var) == 1L && input$compare_arms) {
         need(length(unique(anl_merged()$data()[[input_strata_var]])) > 1L,
              "Strata variable should have more than one level if there
              is just one strata variable selected.")
