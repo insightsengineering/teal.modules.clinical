@@ -541,8 +541,21 @@ srv_ancova <- function(input,
     validate(need(
       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
       "`Select Endpoint` is not selected."
-    ))
+    )
+  )
 
+    if (length(input_cov_var >= 1L)) {
+      input_cov_var_dataset <- anl_filtered[input_cov_var]
+      validate(
+        need(
+          all(vapply(input_cov_var_dataset, function(x) {
+            length(unique(x)) > 1L
+          },
+          logical(1))),
+          "Selected covariates should have more than one level for showing the adjusted analysis."
+        )
+      )
+    }
   })
 
   # The R-code corresponding to the analysis.
