@@ -97,6 +97,9 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 
 \item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}
+
+\item{title}{(\code{character})\cr
+title of the output.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

@@ -26,7 +26,8 @@ template_g_km(
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
-  ci_ribbon = FALSE
+  ci_ribbon = FALSE,
+  title = "KM Plot"
 )
 }
 \arguments{
@@ -96,6 +97,9 @@ on the Kaplan-Meier curve estimating the median survival time per group.}
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 
 \item{ci_ribbon}{(\code{flag})\cr draw the confidence interval around the Kaplan-Meier curve.}
+
+\item{title}{(\code{character})\cr
+title of the output.}
 }
 \description{
 Template: Kaplan-Meier

@@ -31,7 +31,8 @@ template_g_km <- function(dataname = "ANL",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
-                          ci_ribbon = FALSE) {
+                          ci_ribbon = FALSE,
+                          title = "KM Plot") {
   assert_that(
     is.string(dataname),
     is.string(arm_var),
@@ -40,7 +41,8 @@ template_g_km <- function(dataname = "ANL",
     is.string(time_unit_var),
     is.flag(compare_arm),
     is.flag(combine_comp_arms),
-    is.null(xticks) | is.numeric(xticks)
+    is.null(xticks) | is.numeric(xticks),
+    is.string(title)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -157,7 +159,10 @@ template_g_km <- function(dataname = "ANL",
                   yval = yval,
                   xticks = xticks,
                   newpage = FALSE,
-                  title = paste("KM Plot", quote(facet_var), "=", as.character(unique(df_i$facet_var))),
+                  title = paste(
+                    title, ",", quote(facet_var),
+                    "=", as.character(unique(df_i$facet_var))
+                    ),
                   ggtheme = theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
@@ -186,7 +191,8 @@ template_g_km <- function(dataname = "ANL",
           annot_surv_med = annot_surv_med,
           annot_coxph = annot_coxph,
           ties = ties,
-          ci_ribbon = ci_ribbon
+          ci_ribbon = ci_ribbon,
+          title = title
         )
       )
     )
@@ -218,7 +224,8 @@ template_g_km <- function(dataname = "ANL",
             control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
             annot_surv_med = annot_surv_med,
             annot_coxph = annot_coxph,
-            ci_ribbon = ci_ribbon
+            ci_ribbon = ci_ribbon,
+            title = title,
           )
           result
         },
@@ -233,7 +240,8 @@ template_g_km <- function(dataname = "ANL",
           annot_surv_med = annot_surv_med,
           annot_coxph = annot_coxph,
           ties = ties,
-          ci_ribbon = ci_ribbon
+          ci_ribbon = ci_ribbon,
+          title = title
         )
       )
     )
@@ -692,6 +700,9 @@ srv_g_km <- function(input,
       input_xticks <- NULL
     }
 
+    input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
+    title <- paste("KM Plot of", input_paramcd)
+
     my_calls <- template_g_km(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
@@ -714,7 +725,8 @@ srv_g_km <- function(input,
       ties = input$ties_coxph,
       xlab = input$xlab,
       yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-      ci_ribbon = input$show_ci_ribbon
+      ci_ribbon = input$show_ci_ribbon,
+      title = title
     )
     mapply(expression = my_calls, chunks_push)
   })
@@ -723,6 +735,7 @@ srv_g_km <- function(input,
     call_preparation()
     chunks_safe_eval()
   })
+
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
@@ -742,4 +755,5 @@ srv_g_km <- function(input,
     ),
     modal_title = label
   )
+
 }
