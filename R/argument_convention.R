@@ -73,6 +73,8 @@
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
+#' @param title (`character`)\cr
+#'   title of the output.
 #' @name template_arguments
 #'
 NULL

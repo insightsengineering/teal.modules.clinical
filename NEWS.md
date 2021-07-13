@@ -1,4 +1,5 @@
 # teal.modules.clinical 0.8.9.9000
+* Enhanced `tm_g_km` to add the selected `paramcd` in the plot title. 
 
 # teal.modules.clinical 0.8.9
 ### New features
