@@ -1,4 +1,5 @@
 # teal.modules.clinical 0.8.9.9000
+* Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title. 
 
 # teal.modules.clinical 0.8.9

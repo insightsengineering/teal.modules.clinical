@@ -17,7 +17,7 @@ template_rsp(
   responder_val = c("CR", "PR"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
-    list(method_ci = "waldcc", method_test = "cmh", strat = NULL))
+    list(method_ci = "cmh", method_test = "cmh", strat = NULL))
 )
 }
 \arguments{

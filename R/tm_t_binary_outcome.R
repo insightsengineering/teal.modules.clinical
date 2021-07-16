@@ -435,6 +435,7 @@ srv_t_binary_outcome <- function(input,
           odds = input$u_odds_ratio
         ),
         strat = list(
+          method_ci = input$s_diff_ci,
           method_test = input$s_diff_test,
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
