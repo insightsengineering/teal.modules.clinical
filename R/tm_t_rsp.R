@@ -59,7 +59,7 @@ template_rsp <- function(dataname,
                              odds = TRUE
                            ),
                            strat = list(
-                             method_ci = "waldcc",
+                             method_ci = "cmh",
                              method_test = "cmh",
                              strat = NULL
                            )
@@ -708,7 +708,7 @@ srv_t_rsp <- function(input,
           odds = TRUE
         ),
         strat = list(
-          method_ci = "wald",
+          method_ci = "cmh",
           method_test = "cmh",
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
