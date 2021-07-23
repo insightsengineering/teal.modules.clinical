@@ -26,7 +26,7 @@ template_events <- function(dataname,
   assert_that(
     is.string(dataname),
     is.string(parentname),
-    is.string(arm_var),
+    is.character(arm_var) && length(arm_var) %in% c(1, 2),
     is.string(hlt) || is.null(hlt),
     is.string(llt) || is.null(llt),
     is.character(c(llt, hlt)),
@@ -57,10 +57,21 @@ template_events <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -113,10 +124,30 @@ template_events <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(var = arm_var) %>%
-        add_colcounts(),
-      env = list(arm_var = arm_var)
+      expr = split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]])
     )
+  )
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      if (drop_arm_levels) {
+        substitute(
+          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+
+  layout_list <- add_expr(
+    layout_list,
+    quote(add_colcounts())
   )
 
   if (add_total) {
@@ -225,15 +256,12 @@ template_events <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = col_indices <- seq_along(table(parent$arm_var)),
-        env = list(
-          parent = as.name(parentname),
-          arm_var = as.name(arm_var)
-        )
+        expr = col_indices <- 1:(ncol(result) - add_total),
+        env = list(add_total = add_total)
       )
     )
 
-    if (prune_freq > 0 && prune_diff == 0) {
+  if (prune_freq > 0 && prune_diff == 0) {
 
       prune_list <- add_expr(
         prune_list,
@@ -320,24 +348,12 @@ template_events <- function(dataname,
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
-      substitute(
-        expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
-        env = list(
-          parent = as.name(parentname),
-          arm_var = as.name(arm_var)
-        )
-      )
+      quote(cont_n_onecol(ncol(result)))
     } else {
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      substitute(
-        expr = score_occurrences_cols(col_indices = length(levels(parent$arm_var)) + 1),
-        env = list(
-          parent = as.name(parentname),
-          arm_var = as.name(arm_var)
-        )
-      )
+      quote(score_occurrences_cols(col_indices = seq(1, ncol(result))))
     } else {
       quote(score_occurrences)
     }
@@ -451,6 +467,7 @@ template_events <- function(dataname,
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
+#'
 tm_t_events <- function(label,
                         dataname,
                         parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
@@ -489,7 +506,7 @@ tm_t_events <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
     hlt = cs_to_des_select(hlt, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
@@ -619,24 +636,37 @@ srv_t_events_byterm <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
+
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_arm_var <- arm_var_user_input()
     input_level_term <- c(
       as.vector(anl_m$columns_source$hlt),
       as.vector(anl_m$columns_source$llt)
     )
 
-    validate(need(input_arm_var, "Please select a treatment variable"))
+    validate(
+      need(input_arm_var, "Please select a treatment variable"),
+      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+      if (length(input_arm_var) >= 1) {
+        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
+      },
+      if (length(input_arm_var) == 2) {
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+            "", NA
+          )),
+          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
+        )
+      }
+    )
     teal.devel::validate_has_elements(
       input_level_term,
       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-    )
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     validate(
       need(
@@ -655,7 +685,7 @@ srv_t_events_byterm <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_level_term),
-      arm_var = input_arm_var
+      arm_var = input_arm_var[[1]]
     )
   })
 
@@ -678,7 +708,7 @@ srv_t_events_byterm <- function(input,
     my_calls <- template_events(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_var = arm_var_user_input(),
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
       add_total = input$add_total,

@@ -62,11 +62,92 @@ test_that("template_events generates correct expressions", {
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = c("AEBODSYS"),
-          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1)
+          scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
           path =  c("AEBODSYS", "*", "AEDECOD"),
-          scorefun = score_occurrences_cols(col_indices = length(levels(adsl$ACTARM)) + 1)
+          scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
+        )
+      pruned_and_sorted_result
+    })
+  )
+  expect_equal(result, expected)
+})
+
+test_that("template_events generates correct expressions for nested columns", {
+
+  result <- template_events(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = c("ACTARM", "ACTARMCD"),
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    add_total = TRUE,
+    drop_arm_levels = TRUE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adae
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      arm_levels <- levels(anl[["ACTARMCD"]])
+      adsl <- adsl %>% filter(ACTARMCD %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- df_explicit_na(adsl, na_level = "")
+      anl <- anl %>% df_explicit_na(
+        omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
+      )
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ACTARM") %>%
+        split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(unique = "Total number of patients with at least one event",
+                      nonunique = "Overall total number of events")
+        ) %>%
+        split_rows_by(
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+        ) %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(unique = "Total number of patients with at least one event",
+                      nonunique = "Overall total number of events")
+        ) %>%
+        count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
+        append_varlabels(adae, "AEDECOD", indent = 1L)
+    ),
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+    ),
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
+        sort_at_path(
+          path = c("AEBODSYS"),
+          scorefun = cont_n_onecol(ncol(result))
+        ) %>%
+        sort_at_path(
+          path =  c("AEBODSYS", "*", "AEDECOD"),
+          scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       pruned_and_sorted_result
     })
@@ -260,7 +341,7 @@ test_that("template_events can generate customized table with pruning", {
     ),
     prune = quote({
       pruned_result <- result %>% prune_table()
-      col_indices <- seq_along(table(adsl$ACTARM))
+      col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
       pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
@@ -269,11 +350,103 @@ test_that("template_events can generate customized table with pruning", {
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path =  c("AEBODSYS"),
-          scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1)
+          scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
           path =  c("AEBODSYS", "*", "AEDECOD"),
-          scorefun =  score_occurrences_cols(col_indices = length(levels(adsl$ACTARM)) + 1)
+          scorefun =  score_occurrences_cols(col_indices = seq(1, ncol(result)))
+        )
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+      pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+      pruned_and_sorted_result
+    })
+  )
+  expect_equal(result, expected)
+})
+
+test_that("template_events can generate customized table with pruning for nested column", {
+
+  result <- template_events(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = c("ACTARM", "ACTARMCD"),
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    add_total = TRUE,
+    event_type = "event",
+    prune_freq = 0.4,
+    prune_diff = 0.1,
+    drop_arm_levels = TRUE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adae
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      arm_levels <- levels(anl[["ACTARMCD"]])
+      adsl <- adsl %>% filter(ACTARMCD %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- df_explicit_na(adsl, na_level = "")
+      anl <- anl %>% df_explicit_na(
+        omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
+      )
+    }),
+    layout_prep = quote(split_fun <- drop_split_levels),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ACTARM") %>%
+        split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
+        add_colcounts() %>%
+        add_overall_col(label = "All Patients") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(unique = "Total number of patients with at least one event",
+                      nonunique = "Overall total number of events")
+        ) %>%
+        split_rows_by(
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+        ) %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(unique = "Total number of patients with at least one event",
+                      nonunique = "Overall total number of events")
+        ) %>%
+        count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
+        append_varlabels(adae, "AEDECOD", indent = 1L)
+    ),
+    table = quote(
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+    ),
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+      col_indices <- 1:(ncol(result) - TRUE)
+      row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
+        has_fractions_difference(atleast = 0.1, col_indices = col_indices)
+      pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
+        sort_at_path(
+          path =  c("AEBODSYS"),
+          scorefun = cont_n_onecol(ncol(result))
+        ) %>%
+        sort_at_path(
+          path =  c("AEBODSYS", "*", "AEDECOD"),
+          scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       criteria_fun <- function(tr) {
         is(tr, "ContentRow")
