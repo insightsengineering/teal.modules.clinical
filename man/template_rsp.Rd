@@ -60,10 +60,10 @@ Creates a valid expression for responder analysis.
 \dontrun{
 # Preparation of the test case.
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 library(tern)
-adsl <- radsl(cached = TRUE)
-adrs <- radrs(cached = TRUE) \%>\%
+adsl <- synthetic_cdisc_data("latest")$adsl
+adrs <- synthetic_cdisc_data("latest")$adrs \%>\%
   filter(PARAMCD == "BESRSPI")
 
 # Generate an expression for the analysis of responders.

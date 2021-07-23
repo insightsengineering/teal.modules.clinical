@@ -1,5 +1,5 @@
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 library(tern)
 
 test_that("h_concat_expr returns a string for long expression", {
@@ -87,7 +87,7 @@ test_that("add_expr manages expression list which can be used by pipe_expr", {
   expect_identical(result, expected)
 })
 
-adrs <- radrs(cached = TRUE)
+adrs <- synthetic_cdisc_data("rcd_2021_07_07")$adrs
 expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")

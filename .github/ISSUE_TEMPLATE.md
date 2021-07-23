@@ -5,7 +5,7 @@ Please also provide the output of `utils::sessionInfo()` or
 `devtools::session_info()` at the end of your post.
 
 If at all possible, please include a [minimal, reproducible
-example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). If the data is restricted for your example then try to generate random data that re-creates the problem, the [random.cdisc.data](https://github.roche.com/NEST/random.cdisc.data) R package might be useful for that.
+example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). If the data is restricted for your example then try to generate random data that re-creates the problem, the [scda](https://github.roche.com/NEST/scda) R package might be useful for that.
 The `teal.modules.clinical` team will be much more likely to resolve your issue if they are
 able to reproduce it themselves locally.
 
@@ -20,13 +20,13 @@ library(teal.modules.clinical)
 
 # your reproducible example here, e.g.
 
-library(random.cdisc.data)
-ADSL <- radsl(seed = 1)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL)
-    code = "ADSL <- radsl(seed = 1)"
+    code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
     check = TRUE
   ),
   modules = root_modules(

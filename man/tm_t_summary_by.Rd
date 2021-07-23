@@ -101,14 +101,14 @@ Teal Module: Summarize Variables by Row Groups Module
 }
 \examples{
 # Preparation of the test case.
-library(random.cdisc.data)
-adsl <- radsl(cached = TRUE)
-adlb <- radlb(cached = TRUE)
+library(scda)
+adsl <- synthetic_cdisc_data("latest")$adsl
+adlb <- synthetic_cdisc_data("latest")$adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- radsl(cached = TRUE)'),
-    cdisc_dataset("ADLB", adlb, code = 'ADLB <- radlb(cached = TRUE)'),
+    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADLB", adlb, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
     check = TRUE
   ),
   modules = root_modules(

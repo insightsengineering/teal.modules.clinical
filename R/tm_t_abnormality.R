@@ -179,11 +179,11 @@ template_abnormality <- function(parentname,
 #'
 #' @export
 #' @examples
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(dplyr)
 #'
-#' adsl <- radsl(cached = TRUE)
-#' adlb <- radlb(cached = TRUE) %>%
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adlb <- synthetic_cdisc_data("latest")$adlb %>%
 #'   mutate(
 #'     ONTRTFL = case_when(
 #'       AVISIT %in% c("SCREENING", "BASELINE") ~ "",
@@ -196,18 +196,18 @@ template_abnormality <- function(parentname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", adsl, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADLB", adlb,
-#'       code = 'ADLB <- radlb(cached = TRUE) %>%
+#'       code = "ADLB <- synthetic_cdisc_data('latest')$adlb %>%
 #'                 mutate(
 #'                   ONTRTFL = case_when(
-#'                     AVISIT %in% c("SCREENING", "BASELINE") ~ "",
-#'                     TRUE ~ "Y"
+#'                     AVISIT %in% c('SCREENING', 'BASELINE') ~ '',
+#'                     TRUE ~ 'Y'
 #'                   )
 #'                 ) %>%
 #'                 var_relabel(
-#'                   ONTRTFL = "On Treatment Record Flag"
-#'                 )'
+#'                   ONTRTFL = 'On Treatment Record Flag'
+#'                 )"
 #'     ),
 #'     check = TRUE
 #'   ),

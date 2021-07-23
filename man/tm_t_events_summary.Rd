@@ -94,9 +94,9 @@ Teal Module: Adverse Events Summary
 }
 \examples{
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 
-ADSL <- radsl(cached = TRUE) \%>\%
+ADSL <- synthetic_cdisc_data("latest")$adsl \%>\%
   mutate(
     DTHFL = case_when(  # nolint
       !is.na(DTHDT) ~ "Y",
@@ -107,7 +107,7 @@ ADSL <- radsl(cached = TRUE) \%>\%
     DTHFL = "Subject Death Flag"
   )
 
-ADAE <- radae(cached = TRUE)
+ADAE <- synthetic_cdisc_data("latest")$adae
 
 add_event_flags <- function(dat) {
   dat \%>\%
@@ -138,7 +138,7 @@ aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code =
-          'ADSL <- radsl(cached = TRUE) \%>\%
+          'ADSL <- synthetic_cdisc_data("latest")$adsl \%>\%
             mutate(
               DTHFL = case_when(  # nolint
                 !is.na(DTHDT) ~ "Y",
@@ -149,7 +149,7 @@ app <- init(
               DTHFL = "Subject Death Flag"
             )'),
     cdisc_dataset("ADAE", ADAE, code =
-          'ADAE <- radae(cached = TRUE)
+          'ADAE <- synthetic_cdisc_data("latest")$adae
           add_event_flags <- function(dat) {
             dat \%>\%
               dplyr::mutate(

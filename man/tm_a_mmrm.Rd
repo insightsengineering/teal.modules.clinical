@@ -96,10 +96,10 @@ numerical precision.
 }
 \examples{
 
-library(random.cdisc.data)
+library(scda)
 
-ADSL <- radsl(cached = TRUE)
-ADQS <- radqs(cached = TRUE) \%>\%
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
   dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
   dplyr::mutate(
@@ -119,9 +119,9 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
     cdisc_dataset("ADQS", ADQS,
-      code = 'ADQS <- radqs(cached = TRUE) \%>\%
+      code = 'ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
               dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
               dplyr::mutate(

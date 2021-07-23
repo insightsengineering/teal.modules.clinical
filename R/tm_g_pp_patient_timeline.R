@@ -263,10 +263,10 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(random.cdisc.data)
-#' ADSL <- radsl(cached = TRUE)
-#' ADAE <- radae(cached = TRUE)
-#' ADCM <- radcm(cached = TRUE)
+#' library(scda)
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADAE <- synthetic_cdisc_data("latest")$adae
+#' ADCM <- synthetic_cdisc_data("latest")$adcm
 #'
 #' #' Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -295,10 +295,10 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- radcm(cached = TRUE)
+#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMTRT <- ADCM$CMCAT

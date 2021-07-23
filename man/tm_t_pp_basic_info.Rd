@@ -37,12 +37,12 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile basic info report using ADaM datasets.
 }
 \examples{
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     check = TRUE
   ),
   modules = root_modules(

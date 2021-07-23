@@ -180,10 +180,10 @@ template_forest_tte <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(random.cdisc.data)
+#' library(scda)
 #'
-#' ADSL <- radsl(cached = TRUE)
-#' ADTTE <- radtte(cached = TRUE)
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADTTE <- synthetic_cdisc_data("latest")$adtte
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
@@ -201,9 +201,9 @@ template_forest_tte <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- radsl(cached = TRUE)
+#'       code = 'ADSL <- synthetic_cdisc_data("latest")$adsl
 #'               ADSL$RACE <- droplevels(ADSL$RACE)'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE)'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(

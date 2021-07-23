@@ -78,10 +78,10 @@ Teal Module: Summary of Variables
 \examples{
 # Preparation of the test case.
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 library(tern)
 
-adsl <- radsl(cached = TRUE)
+adsl <- synthetic_cdisc_data("latest")$adsl
 
 # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 stopifnot(
@@ -92,7 +92,7 @@ stopifnot(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
-    code = 'ADSL <- radsl(cached = TRUE)',
+    code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
     check = TRUE
   ),
   modules = root_modules(

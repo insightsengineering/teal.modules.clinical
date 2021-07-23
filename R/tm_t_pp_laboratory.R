@@ -103,14 +103,14 @@ template_laboratory <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(random.cdisc.data)
-#' ADSL <- radsl(cached = TRUE)
-#' ADLB <- radlb(cached = TRUE)
+#' library(scda)
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADLB <- synthetic_cdisc_data("latest")$adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-#'     cdisc_dataset("ADLB", ADLB, code = "ADLB <- radlb(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+#'     cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
