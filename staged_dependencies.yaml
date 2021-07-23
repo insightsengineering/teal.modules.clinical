@@ -1,17 +1,13 @@
 
 ---
+current_repo:
+  repo: insightsengineering/teal.modules.clinical
+  host: https://github.com
+
 upstream_repos:
 - repo: insightsengineering/tern
-  host: https://github.com
-- repo: insightsengineering/teal
   host: https://github.com
 - repo: insightsengineering/teal.devel
   host: https://github.com
 
 downstream_repos:
-- repo: insightsengineering/random.cdisc.data
-  host: https://github.com
-
-current_repo:
-  repo: insightsengineering/teal.modules.clinical
-  host: https://github.com
