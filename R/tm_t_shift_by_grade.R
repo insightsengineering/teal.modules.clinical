@@ -453,17 +453,17 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @export
 #' @examples
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(dplyr)
-
-#' adsl <- radsl(cached = TRUE)
-#' adlb <- radlb(cached = TRUE)
+#'
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adlb <- synthetic_cdisc_data("latest")$adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- radsl(cached = TRUE)'),
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADLB", adlb,
-#'                   code = 'ADLB <- radlb(cached = TRUE)'),
+#'                   code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -481,6 +481,9 @@ template_shift_by_grade <- function(parentname,
 #'       worst_flag_var = choices_selected(
 #'         choices = variable_choices(adlb, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
 #'         selected = c("WGRLOVFL")
+#'       ),
+#'       worst_flag_indicator = choices_selected(
+#'         value_choices(adlb, "WGRLOVFL"), selected = "Y", fixed = TRUE
 #'       ),
 #'       anl_toxgrade_var = choices_selected(
 #'         choices = variable_choices(adlb, subset = c("ATOXGR")),
@@ -519,11 +522,14 @@ tm_t_shift_by_grade <- function(label,
                                   ),
                                   selected = "WGRLOVFL"
                                 ),
+                                worst_flag_indicator = choices_selected(
+                                  value_choices(dataname, "WGRLOVFL"), selected = "Y", fixed = TRUE
+                                ),
                                 anl_toxgrade_var = choices_selected(
-                                  variable_choices(adlb, subset = c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE
+                                  variable_choices(dataname, subset = c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE
                                 ),
                                 base_toxgrade_var = choices_selected(
-                                  variable_choices(adlb, subset = c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE
+                                  variable_choices(dataname, subset = c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE
                                 ),
                                 id_var = choices_selected(
                                   variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
@@ -539,6 +545,7 @@ tm_t_shift_by_grade <- function(label,
     is.choices_selected(arm_var),
     is.choices_selected(paramcd),
     is.choices_selected(worst_flag_var),
+    is.choices_selected(worst_flag_indicator),
     is.choices_selected(anl_toxgrade_var),
     is.choices_selected(base_toxgrade_var),
     is.choices_selected(id_var),
@@ -599,6 +606,7 @@ ui_t_shift_by_grade <- function(id, ...) {
     a$visit_var,
     a$paramcd,
     a$worst_flag_var,
+    a$worst_flag_indicator,
     a$anl_toxgrade_var,
     a$base_toxgrade_var
   )
@@ -671,12 +679,13 @@ ui_t_shift_by_grade <- function(id, ...) {
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          selectInput(
+          optionalSelectInput(
             ns("worst_flag_indicator"),
-            "Value Indicating Worst Grade",
-            choices = c("Y"),
-            selected = "Y",
-            multiple = FALSE
+            label = "Value Indicating Worst Grade",
+            choices = a$worst_flag_indicator$choices,
+            selected = a$worst_flag_indicator$selected,
+            multiple = FALSE,
+            fixed = a$worst_flag_indicator$fixed
           )
         )
       )

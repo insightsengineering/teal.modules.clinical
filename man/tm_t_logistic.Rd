@@ -89,10 +89,8 @@ arm_ref_comp = list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset(
-      "ADRS", ADRS,
-      code = 'ADRS <- synthetic_cdisc_data("latest")$adrs \%>\% filter(PARAMCD \%in\% c("BESRSPI", "INVET"))'
-    ),
+    cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
+      filter(PARAMCD \%in\% c("BESRSPI", "INVET"))'),
     check = TRUE
   ),
   modules = root_modules(

@@ -15,10 +15,12 @@ tm_t_shift_by_grade(
   paramcd,
   worst_flag_var = choices_selected(variable_choices(dataname, subset = c("WGRLOVFL",
     "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
-  anl_toxgrade_var = choices_selected(variable_choices(adlb, subset = c("ATOXGR")),
+  worst_flag_indicator = choices_selected(value_choices(dataname, "WGRLOVFL"), selected
+    = "Y", fixed = TRUE),
+  anl_toxgrade_var = choices_selected(variable_choices(dataname, subset = c("ATOXGR")),
     selected = c("ATOXGR"), fixed = TRUE),
-  base_toxgrade_var = choices_selected(variable_choices(adlb, subset = c("BTOXGR")),
-    selected = c("BTOXGR"), fixed = TRUE),
+  base_toxgrade_var = choices_selected(variable_choices(dataname, subset =
+    c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
   add_total = FALSE,
@@ -52,6 +54,9 @@ variable value designating the studied parameter.}
 \item{worst_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr object with all available
 choices and preselected option for variable names that can be used as worst flag variable.}
 
+\item{worst_flag_indicator}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating
+worst grade.}
+
 \item{anl_toxgrade_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
 variable for analysis toxicity grade.}
 
@@ -81,24 +86,22 @@ in character or factor variables in the data.}
 
 \item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
 as grade 0.}
-
-\item{worst_flag_indicator}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating
-worst grade.}
 }
 \description{
 Teal Module: Grade Summary Table
 }
 \examples{
-library(random.cdisc.data)
+library(scda)
 library(dplyr)
-adsl <- radsl(cached = TRUE)
-adlb <- radlb(cached = TRUE)
+
+adsl <- synthetic_cdisc_data("latest")$adsl
+adlb <- synthetic_cdisc_data("latest")$adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- radsl(cached = TRUE)'),
+    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADLB", adlb,
-                  code = 'ADLB <- radlb(cached = TRUE)'),
+                  code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
     check = TRUE
   ),
   modules = root_modules(
@@ -116,6 +119,9 @@ app <- init(
       worst_flag_var = choices_selected(
         choices = variable_choices(adlb, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
         selected = c("WGRLOVFL")
+      ),
+      worst_flag_indicator = choices_selected(
+        value_choices(adlb, "WGRLOVFL"), selected = "Y", fixed = TRUE
       ),
       anl_toxgrade_var = choices_selected(
         choices = variable_choices(adlb, subset = c("ATOXGR")),
