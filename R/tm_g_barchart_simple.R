@@ -182,6 +182,9 @@ tm_g_barchart_simple <- function(x = NULL,
   )
 }
 
+THIS IS A DANGEROUS EXPLOIT.
+SOME NONSENSE.
+
 ui_g_barchart_simple <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
