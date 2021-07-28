@@ -73,6 +73,8 @@ template_g_km <- function(dataname = "ANL",
       )
     )
   )
+  
+  banana <- "healthy"
 
   if (compare_arm && combine_comp_arms) {
     comp_arm_val <- paste(comp_arm, collapse = "/")
