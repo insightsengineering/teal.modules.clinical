@@ -463,17 +463,18 @@ split_choices <- function(x) {
   return(split_x)
 }
 
-#' Get input id for a data extract input
-#'
+#' Extracts html id for data_extract_input
+#' @description The data_extract_input is located under extended html id.
+#'   We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
 #' @param varname (`character`)\cr
-#'   name of the variable corresponding to the
-#'   data extract input.
+#'   the original html id.  This should be retrieved with \code{ns("original id")} in the ui function
+#'   or \code{session$ns("original id")}/"original id" in the server function.
 #' @param dataname (`character`)\cr
-#'   name of the dataset corresponding to the
-#'   data extract input.
+#'   \code{dataname} from data_extract input.
+#'   This might be retrieved like \code{data_extract_spec(...)[[1]]$dataname}.
 #' @param filter optional, (`logical`)\cr
-#'   string output will end with "-select" suffix if FALSE
-#'   and "-filter1" if TRUE
+#'   if the connected \code{extract_data_spec} has objects passed to its `filter` argument
+#'
 extract_input <- function(varname, dataname, filter = FALSE) {
   if (filter) {
     paste0(varname, "-dataset_", dataname, "_singleextract-filter1-vals")
