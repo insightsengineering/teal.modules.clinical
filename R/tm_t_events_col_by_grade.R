@@ -27,7 +27,8 @@ template_events_col_by_grade <- function(dataname,
                                          sort_criteria = c("freq_desc"),
                                          prune_freq = 0.10,
                                          prune_diff = 0,
-                                         drop_arm_levels = FALSE) {
+                                         drop_arm_levels = FALSE
+                                         ) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -120,14 +121,14 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  if (add_total) {
-    layout_list <- add_expr(
-      layout_list,
-      quote(
-        add_overall_col(label = "All Patients")
-      )
-    )
-  }
+  # if (add_total) {
+  #   layout_list <- add_expr(
+  #     layout_list,
+  #     quote(
+  #       add_overall_col(label = "All Patients")
+  #     )
+  #   )
+  # }
 
   layout_list <- add_expr(
     layout_list,
@@ -181,7 +182,7 @@ template_events_col_by_grade <- function(dataname,
   }
   lengths <- lapply(grading_groups, length)
   start_index <- unname(which.max(lengths))
-  col_indices <- seq(start_index, ncol(result), by = length(grading_groups))
+  col_indices <- quote(seq(start_index, ncol(result), by = length(grading_groups)))
   at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices)
   at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices)
 
@@ -254,7 +255,6 @@ template_events_col_by_grade <- function(dataname,
   y$sort <- bracket_expr(sort_list)
 
   y
-
 }
 
 #' Teal Module: Events by Term
@@ -299,20 +299,20 @@ template_events_col_by_grade <- function(dataname,
 #' shinyApp(app$ui, app$server)
 #' }
 #'
-tm_t_events <- function(label,
-                        dataname,
-                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
-                        arm_var,
-                        hlt,
-                        llt,
-                        add_total = TRUE,
-                        event_type = "event",
-                        sort_criteria = c("freq_desc", "alpha"),
-                        prune_freq = 0,
-                        prune_diff = 0,
-                        drop_arm_levels = TRUE,
-                        pre_output = NULL,
-                        post_output = NULL) {
+tm_t_events_col_by_grade <- function(label,
+                                     dataname,
+                                     parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                                     arm_var,
+                                     hlt,
+                                     llt,
+                                     add_total = TRUE,
+                                     event_type = "event",
+                                     sort_criteria = c("freq_desc", "alpha"),
+                                     prune_freq = 0,
+                                     prune_diff = 0,
+                                     drop_arm_levels = TRUE,
+                                     pre_output = NULL,
+                                     post_output = NULL) {
 
   stop_if_not(
     is_character_single(label),
