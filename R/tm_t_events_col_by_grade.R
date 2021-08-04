@@ -36,7 +36,7 @@ template_events_col_by_grade <- function(dataname,
     is.list(grading_groups),
     is.flag(add_total),
     is.string(ae_soc) || is.null(ae_soc),
-    is.string(ae_term) || is.null(ae_term),
+    is.string(ae_term),
     is.string(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
@@ -71,36 +71,42 @@ template_events_col_by_grade <- function(dataname,
     data_list,
     substitute(
       parentname <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
-      env = list(parentname = as.name(parentname), grading_groups = grading_groups)
+      env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
     )
   )
-  data_list <- add_expr(
-    data_list,
+
+  data_pipe <- list()
+  data_pipe <- add_expr(
+    data_pipe,
     substitute(
       expr = anl <- anl %>% group_by("USUBJID", arm_var, ae_soc, ae_term),
-      env = list(arm_var = arm_var, ae_soc, ae_term = ae_term)
+      env = list(arm_var = arm_var, ae_soc = ae_soc, ae_term = ae_term)
     )
   )
-  data_list <- add_expr(
-    data_list,
+  data_pipe <- add_expr(
+    data_pipe,
     quote(summarize(MAXAETOXGR = factor(max(as.numeric("AETOXGR"))), .group = "drop"))
   )
-  data_list <- add_expr(
-    data_list,
+  data_pipe <- add_expr(
+    data_pipe,
     quote(ungroup())
   )
-  data_list <- add_expr(
-    data_list,
+  data_pipe <- add_expr(
+    data_pipe,
     substitute(
       expr = mutate(AEDECOD = droplevels(as.factor(ae_term))),
       env = list(ae_term = ae_term)
     )
   )
-  data_list <- add_expr(
-    data_list,
+  data_pipe <- add_expr(
+    data_pipe,
     quote(df_explicit_na())
   )
-
+  data_pipe <- pipe_expr(data_pipe)
+  data_list <- add_expr(
+    data_list,
+    data_pipe
+  )
   y$data <- bracket_expr(data_list)
 
   # Start layout steps.
@@ -130,27 +136,38 @@ template_events_col_by_grade <- function(dataname,
   #   )
   # }
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = split_rows_by(ae_soc, child_labels = "visible", nested = FALSE),
-      env = list(ae_soc = ae_soc)
+  # for variant 8 in STREAM manual
+  if(!is.null(ae_soc)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = split_rows_by(ae_soc, child_labels = "visible", nested = FALSE),
+        env = list(ae_soc = ae_soc)
+      )
     )
-  )
 
-  unique_label <- paste0("Total number of patients with at least one ", event_type)
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_soc),
+        env = list(ae_soc = ae_soc)
+      )
+    )
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      summarize_num_patients(
-        var = "USUBJID",
-        .stats = "unique",
-        .labels = unique_label,
+    unique_label <- paste0("Total number of patients with at least one ", event_type)
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = unique_label,
         ),
-      env = list(unique_label = unique_label)
+        env = list(unique_label = unique_label)
+      )
     )
-  )
+  }
+
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -165,6 +182,24 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
+  if (is.null(ae_soc)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_term),
+        env = list(ae_term = ae_term)
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_term, indent = 1L),
+        env = list(ae_term = ae_term)
+      )
+    )
+  }
+
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
     env = list(layout_pipe = pipe_expr(layout_list))
@@ -177,50 +212,97 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Start pruning table.
-  criteria_fun <- function(tr) {
-    is(tr, "ContentRow")
-  }
-  lengths <- lapply(grading_groups, length)
-  start_index <- unname(which.max(lengths))
-  col_indices <- quote(seq(start_index, ncol(result), by = length(grading_groups)))
-  at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices)
-  at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices)
-
   prune_list <- list()
   prune_list <- add_expr(
     prune_list,
+    quote(
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+    )
+  )
+  prune_list <- add_expr(
+    prune_list,
+    substitute(
+      expr = lengths <- lapply(grading_groups, length),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+  prune_list <- add_expr(
+    prune_list,
+    quote(start_index <- unname(which.max(lengths)))
+  )
+  prune_list <- add_expr(
+    prune_list,
+    quote(col_indices <- seq(start_index, ncol(result), by = length(grading_groups)))
+  )
+
+  prune_list <- add_expr(
+    prune_list,
+    substitute(
+      expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+      env = list(prune_freq = prune_freq)
+    )
+  )
+
+  if (prune_diff > 0) {
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+        env = list(prune_diff = prune_diff)
+      )
+    )
+  }
+
+  prune_pipe <- list()
+  prune_pipe <- add_expr(
+    prune_pipe,
     quote(
       pruned_result <- result %>% trim_rows(criteria = criteria_fun)
     )
   )
 
   if (prune_freq > 0 & prune_diff > 0) {
-    prune_list <- add_expr(
-      prune_list,
+    prune_pipe <- add_expr(
+      prune_pipe,
       quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
     )
   } else if (prune_freq > 0 & prune_diff == 0) {
-    prune_list <- add_expr(
-      prune_list,
+    prune_pipe <- add_expr(
+      prune_pipe,
       quote(prune_table(keep_rows(at_least_percent_any)))
     )
   } else {
-    prune_list <- add_expr(
-      prune_list,
+    prune_pipe <- add_expr(
+      prune_pipe,
       quote(prune_table())
     )
   }
+  prune_pipe <- pipe_expr(prune_pipe)
+  prune_list <- add_expr(
+    prune_list,
+    prune_pipe
+  )
 
   y$prune <- bracket_expr(prune_list)
 
   # Start sorting pruned table.
   sort_list <- list()
 
-    # Sort by decreasing frequency.
-    scorefun_soc <- quote(score_occurrences_cont_cols(col_indices = col_indices))
-    scorefun_term <- quote(score_occurrences_cols(col_indices = col_indices))
+  if (!is.null(ae_soc)) {
+    sort_list <- add_expr(
+      sort_list,
+      quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
+    )
+  }
 
-    if (is.null(ae_soc)) {
+  sort_list <- add_expr(
+    sort_list,
+    quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
+  )
+
+  if (is.null(ae_soc)) {
       sort_list <- add_expr(
         sort_list,
         substitute(
@@ -229,10 +311,10 @@ template_events_col_by_grade <- function(dataname,
               sort_at_path(path = c(ae_term), scorefun = scorefun_term, decreasing = TRUE)
             pruned_and_sorted_result
           },
-          env = list(ae_term = ae_term, scorefun_term = scorefun_term)
+          env = list(ae_term = ae_term)
         )
       )
-    } else if ((!is.null(ae_soc)) & (!is.null(ae_term))) {
+  } else {
       sort_list <- add_expr(
         sort_list,
         substitute(
@@ -244,9 +326,7 @@ template_events_col_by_grade <- function(dataname,
           },
           env = list(
             ae_soc = ae_soc,
-            ae_term = ae_term,
-            scorefun_soc = scorefun_soc,
-            scorefun_term = scorefun_term
+            ae_term = ae_term
           )
         )
       )
