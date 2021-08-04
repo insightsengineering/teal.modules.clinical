@@ -23,6 +23,7 @@ template_events_col_by_grade <- function(dataname,
                                          add_total = FALSE,
                                          ae_soc,
                                          ae_term,
+                                         ae_grade = "AETOXGR",
                                          event_type = "event",
                                          sort_criteria = c("freq_desc"),
                                          prune_freq = 0.10,
@@ -37,6 +38,7 @@ template_events_col_by_grade <- function(dataname,
     is.flag(add_total),
     is.string(ae_soc) || is.null(ae_soc),
     is.string(ae_term),
+    is.string(ae_grade),
     is.string(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
@@ -70,7 +72,7 @@ template_events_col_by_grade <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
+      col_counts <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
       env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
     )
   )
@@ -85,7 +87,10 @@ template_events_col_by_grade <- function(dataname,
   )
   data_pipe <- add_expr(
     data_pipe,
-    quote(summarize(MAXAETOXGR = factor(max(as.numeric("AETOXGR"))), .group = "drop"))
+    substitute(
+      expr = summarize(MAXAETOXGR = factor(max(as.numeric(ae_grade))), .group = "drop"),
+      env = list(ae_grade = ae_grade)
+    )
   )
   data_pipe <- add_expr(
     data_pipe,
@@ -206,10 +211,7 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Full table.
-  y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
-    env = list(parent = as.name(parentname))
-  )
+  y$table <- quote(result <- build_table(lyt = lyt, df = anl, alt_counts_df = col_counts))
 
   # Start pruning table.
   prune_list <- list()
@@ -348,28 +350,27 @@ template_events_col_by_grade <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adae <- synthetic_cdisc_data("latest")$adae
+#' adsl <- haven::read_sas("./R/adsl.sas7bdat") %>% df_explicit_na()
+#' adae <- haven::read_sas("./R/adae.sas7bdat", encoding = "latin1") %>% df_explicit_na()
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- haven::read_sas("./R/adsl.sas7bdat") %>% df_explicit_na()'),
+#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- haven::read_sas("./R/adae.sas7bdat", encoding = "latin1") %>% df_explicit_na()')
 #'   ),
 #'   modules = root_modules(
-#'     tm_t_events(
-#'       label = "Adverse Event Table",
+#'     tm_t_events_col_by_grade(
+#'       label = "Adverse Event by Grade Table",
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = choices_selected(
+#'       ae_term = choices_selected(
 #'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
 #'        ),
-#'       hlt = choices_selected(
+#'       ae_soc = choices_selected(
 #'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
 #'        ),
-#'       add_total = TRUE,
 #'       event_type = "adverse event"
 #'     )
 #'   )
@@ -383,14 +384,20 @@ tm_t_events_col_by_grade <- function(label,
                                      dataname,
                                      parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                                      arm_var,
-                                     hlt,
-                                     llt,
-                                     add_total = TRUE,
+                                     ae_soc,
+                                     ae_term,
+                                     # ae_grade,
+                                     grading_groups = list(
+                                       "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+                                       "Grade 3-4 (%)" = c("3", "4"),
+                                       "Grade 5 (%)" = "5"
+                                     ),
+                                     add_total = FALSE,
                                      event_type = "event",
-                                     sort_criteria = c("freq_desc", "alpha"),
-                                     prune_freq = 0,
+                                     sort_criteria = c("freq_desc"),
+                                     prune_freq = 0.10,
                                      prune_diff = 0,
-                                     drop_arm_levels = TRUE,
+                                     drop_arm_levels = FALSE,
                                      pre_output = NULL,
                                      post_output = NULL) {
 
@@ -417,15 +424,16 @@ tm_t_events_col_by_grade <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
-    hlt = cs_to_des_select(hlt, dataname = dataname),
-    llt = cs_to_des_select(llt, dataname = dataname)
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    ae_soc = cs_to_des_select(ae_soc, dataname = dataname),
+    ae_term = cs_to_des_select(ae_term, dataname = dataname)
+    # ae_grade = cs_to_des_select(ae_grade, dataname = dataname)
   )
 
   module(
     label = label,
-    ui = ui_t_events_byterm,
-    server = srv_t_events_byterm,
+    ui = ui_t_events_col_by_grade,
+    server = srv_t_events_col_by_grade,
     ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
@@ -441,11 +449,11 @@ tm_t_events_col_by_grade <- function(label,
 }
 
 #' @noRd
-ui_t_events_byterm <- function(id, ...) {
+ui_t_events_col_by_grade <- function(id, ...) {
 
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$ae_soc, a$ae_term)
 
   standard_layout(
     output = white_small_well(
@@ -453,7 +461,7 @@ ui_t_events_byterm <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "hlt", "llt")]),
+      datanames_input(a[c("arm_var", "ae_soc", "ae_term")]),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -461,34 +469,40 @@ ui_t_events_byterm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("hlt"),
-        label = "Event High Level Term",
-        data_extract_spec = a$hlt,
+        id = ns("ae_soc"),
+        label = "Body System or Organ Class",
+        data_extract_spec = a$ae_soc,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("llt"),
-        label = "Event Low Level Term",
-        data_extract_spec = a$llt,
+        id = ns("ae_term"),
+        label = "Adverse Event MedDRA term",
+        data_extract_spec = a$ae_term,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      # data_extract_input(
+      #   id = ns("ae_grade"),
+      #   label = "AE Toxicity Grade",
+      #   data_extract_spec = a$ae_grade,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+      # checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       panel_item(
         "Additional table settings",
-        checkboxInput(
-          ns("drop_arm_levels"),
-          label = "Drop columns not in filtered analysis dataset",
-          value = a$drop_arm_levels
-        ),
-        selectInput(
-          inputId = ns("sort_criteria"),
-          label = "Sort Criteria",
-          choices = c("Decreasing frequency" = "freq_desc",
-                      "Alphabetically" = "alpha"
-          ),
-          selected = a$sort_criteria,
-          multiple = FALSE
-        ),
+        # checkboxInput(
+        #   ns("drop_arm_levels"),
+        #   label = "Drop columns not in filtered analysis dataset",
+        #   value = a$drop_arm_levels
+        # ),
+        # selectInput(
+        #   inputId = ns("sort_criteria"),
+        #   label = "Sort Criteria",
+        #   choices = c("Decreasing frequency" = "freq_desc",
+        #               "Alphabetically" = "alpha"
+        #   ),
+        #   selected = a$sort_criteria,
+        #   multiple = FALSE
+        # ),
         helpText("Pruning Options"),
         numericInput(
           inputId = ns("prune_freq"),
@@ -517,7 +531,7 @@ ui_t_events_byterm <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_byterm <- function(input,
+srv_t_events_col_by_grade <- function(input,
                                 output,
                                 session,
                                 datasets,
@@ -525,9 +539,10 @@ srv_t_events_byterm <- function(input,
                                 parentname,
                                 event_type,
                                 arm_var,
-                                hlt,
-                                llt,
-                                drop_arm_levels,
+                                ae_soc,
+                                ae_term,
+                                # ae_grade,
+                                # drop_arm_levels,
                                 label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -535,8 +550,8 @@ srv_t_events_byterm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, hlt, llt),
-    input_id = c("arm_var", "hlt", "llt"),
+    data_extract = list(arm_var, ae_soc, ae_term),
+    input_id = c("arm_var", "ae_soc", "ae_term"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -556,28 +571,18 @@ srv_t_events_byterm <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- arm_var_user_input()
     input_level_term <- c(
-      as.vector(anl_m$columns_source$hlt),
-      as.vector(anl_m$columns_source$llt)
+      as.vector(anl_m$columns_source$ae_soc),
+      as.vector(anl_m$columns_source$ae_term)
+      # as.vector(anl_m$columns_source$ae_grade)
     )
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
-      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
-      if (length(input_arm_var) >= 1) {
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
-      },
-      if (length(input_arm_var) == 2) {
-        need(
-          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-            "", NA
-          )),
-          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
-        )
-      }
+      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     teal.devel::validate_has_elements(
       input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+      "Please select at least one of \"Body System or Organ Class\" or \"Adverse Event Code\" variables."
     )
     validate(
       need(
@@ -596,7 +601,7 @@ srv_t_events_byterm <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_level_term),
-      arm_var = input_arm_var[[1]]
+      arm_var = input_arm_var
     )
   })
 
@@ -613,21 +618,23 @@ srv_t_events_byterm <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_hlt <- as.vector(anl_m$columns_source$hlt)
-    input_llt <- as.vector(anl_m$columns_source$llt)
+    input_ae_soc <- as.vector(anl_m$columns_source$ae_soc)
+    input_ae_term <- as.vector(anl_m$columns_source$ae_term)
+    # input_ae_grade <- as.vector(anl_m$columns_source$ae_grade)
 
-    my_calls <- template_events(
+    my_calls <- template_events_col_by_grade(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = arm_var_user_input(),
-      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-      llt = if (length(input_llt) != 0) input_llt else NULL,
-      add_total = input$add_total,
+      ae_soc = if (length(input_ae_soc) != 0) input_ae_soc else NULL,
+      ae_term = if (length(input_ae_term) != 0) input_ae_term else NULL,
+      # ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
+      # add_total = input$add_total,
       event_type = event_type,
       sort_criteria = input$sort_criteria,
       prune_freq = input$prune_freq / 100,
-      prune_diff = input$prune_diff / 100,
-      drop_arm_levels = input$drop_arm_levels
+      prune_diff = input$prune_diff / 100
+      # drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
   })
@@ -650,8 +657,9 @@ srv_t_events_byterm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, hlt, llt)),
+    datanames = get_extract_datanames(list(arm_var, ae_soc, ae_term)),
     modal_title = "Event Table",
     code_header = label
   )
 }
+
