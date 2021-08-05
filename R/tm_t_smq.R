@@ -101,106 +101,106 @@ template_smq <- function(
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
-
-  layout_list <- list()
-
-  layout_list <- add_expr(
-    layout_list,
-    if (add_total) {
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(
-            var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
-          ),
-        env = list(arm_var = arm_var)
-      )
-    } else {
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var)
-      )
-    }
-  )
-
-  if (is.null(col_by_var))
-  {
-    layout_list <- add_expr(
-      layout_list,
-      expr = quote(add_colcounts())
-    )
-  } else {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(var = col_by_var) %>%
-          add_colcounts(),
-        env = list(col_by_var = col_by_var)
-      )
-    )
-  }
-
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = summarize_num_patients(
-        var = id_var,
-        df = dataname,
-        .stats = c("unique"),
-        .labels = c(unique = "Total number of patients with at least one adverse event")
-      ) ,
-      env = list(
-        id_var = id_var,
-        dataname = "anl")
-    )
-  )
+  # y$layout_prep <- quote(split_fun <- drop_split_levels)
+  #
+  # layout_list <- list()
+  #
+  # layout_list <- add_expr(
+  #   layout_list,
+  #   if (add_total) {
+  #     substitute(
+  #       expr = basic_table() %>%
+  #         split_cols_by(
+  #           var = arm_var,
+  #           split_fun = add_overall_level("All Patients", first = FALSE)
+  #         ),
+  #       env = list(arm_var = arm_var)
+  #     )
+  #   } else {
+  #     substitute(
+  #       expr = basic_table() %>%
+  #         split_cols_by(var = arm_var),
+  #       env = list(arm_var = arm_var)
+  #     )
+  #   }
+  # )
+  #
+  # if (is.null(col_by_var))
+  # {
+  #   layout_list <- add_expr(
+  #     layout_list,
+  #     expr = quote(add_colcounts())
+  #   )
+  # } else {
+  #   layout_list <- add_expr(
+  #     layout_list,
+  #     substitute(
+  #       expr = basic_table() %>%
+  #         split_cols_by(var = col_by_var) %>%
+  #         add_colcounts(),
+  #       env = list(col_by_var = col_by_var)
+  #     )
+  #   )
+  # }
+  #
+  # layout_list <- add_expr(
+  #   layout_list,
+  #   substitute(
+  #     expr = summarize_num_patients(
+  #       var = id_var,
+  #       df = dataname,
+  #       .stats = c("unique"),
+  #       .labels = c(unique = "Total number of patients with at least one adverse event")
+  #     ) ,
+  #     env = list(
+  #       id_var = id_var,
+  #       dataname = "anl")
+  #   )
+  # )
 
   y
 
 
-  split_fun <- drop_split_levels
-
-  lyt <- basic_table() %>%
-    split_cols_by("ARM") %>%
-    split_cols_by("SEX") %>%
-    add_colcounts() %>%
-    summarize_num_patients(
-      var = "USUBJID",
-      .stats = c("unique"),
-      .labels = c(unique = "Total number of patients with at least one adverse event")
-    ) %>%
-    split_rows_by(
-      "SMQ",
-      child_labels = "visible",
-      nested = FALSE,
-      indent_mod = -1L,
-      split_fun = split_fun,
-      label_pos = "topleft",
-      split_label = obj_label(adae_smq1$SMQ)
-    ) %>%
-    summarize_num_patients(
-      var = "USUBJID",
-      .stats = c("unique", "nonunique"),
-      .labels = c(
-        unique = "Total number of patients with at least one adverse event",
-        nonunique = "Total number of events"
-      )
-    ) %>%
-    count_occurrences(vars = "AEDECOD") %>%
-    append_varlabels(adae_smq1, "AEDECOD", indent = 1L)
-
-  result <- build_table(
-    lyt = lyt,
-    df = adae_smq1,
-    alt_counts_df = adsl) %>%
-    prune_table() %>%
-    sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-    sort_at_path(path = c("SMQ", "*", "AEDECOD"), scorefun = score_occurrences)
-
-  result
+  # split_fun <- drop_split_levels
+  #
+  # lyt <- basic_table() %>%
+  #   split_cols_by("ARM") %>%
+  #   split_cols_by("SEX") %>%
+  #   add_colcounts() %>%
+  #   summarize_num_patients(
+  #     var = "USUBJID",
+  #     .stats = c("unique"),
+  #     .labels = c(unique = "Total number of patients with at least one adverse event")
+  #   ) %>%
+  #   split_rows_by(
+  #     "SMQ",
+  #     child_labels = "visible",
+  #     nested = FALSE,
+  #     indent_mod = -1L,
+  #     split_fun = split_fun,
+  #     label_pos = "topleft",
+  #     split_label = obj_label(adae_smq1$SMQ)
+  #   ) %>%
+  #   summarize_num_patients(
+  #     var = "USUBJID",
+  #     .stats = c("unique", "nonunique"),
+  #     .labels = c(
+  #       unique = "Total number of patients with at least one adverse event",
+  #       nonunique = "Total number of events"
+  #     )
+  #   ) %>%
+  #   count_occurrences(vars = "AEDECOD") %>%
+  #   append_varlabels(adae_smq1, "AEDECOD", indent = 1L)
+  #
+  # result <- build_table(
+  #   lyt = lyt,
+  #   df = adae_smq1,
+  #   alt_counts_df = adsl) %>%
+  #   prune_table() %>%
+  #   sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+  #   sort_at_path(path = c("SMQ", "*", "AEDECOD"), scorefun = score_occurrences)
+  #
+  # result
 
 
 }
