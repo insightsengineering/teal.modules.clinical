@@ -23,10 +23,10 @@ template_events_col_by_grade <- function(dataname,
                                          add_total = FALSE,
                                          ae_soc,
                                          ae_term,
-                                         ae_grade = "AETOXGR",
+                                         ae_grade,
                                          event_type = "event",
                                          sort_criteria = c("freq_desc"),
-                                         prune_freq = 0.10,
+                                         prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = FALSE
                                          ) {
@@ -81,15 +81,15 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = anl <- anl %>% group_by("USUBJID", arm_var, ae_soc, ae_term),
-      env = list(arm_var = arm_var, ae_soc = ae_soc, ae_term = ae_term)
+      expr = anl <- anl %>% group_by(USUBJID, arm_var, ae_soc, ae_term),
+      env = list(arm_var = as.name(arm_var), ae_soc = as.name(ae_soc), ae_term = as.name(ae_term))
     )
   )
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = summarize(MAXAETOXGR = factor(max(as.numeric(ae_grade))), .group = "drop"),
-      env = list(ae_grade = ae_grade)
+      expr = summarize(MAXAETOXGR = factor(max(as.numeric(ae_grade)))),
+      env = list(ae_grade = as.name(ae_grade))
     )
   )
   data_pipe <- add_expr(
@@ -100,7 +100,7 @@ template_events_col_by_grade <- function(dataname,
     data_pipe,
     substitute(
       expr = mutate(AEDECOD = droplevels(as.factor(ae_term))),
-      env = list(ae_term = ae_term)
+      env = list(ae_term = as.name(ae_term))
     )
   )
   data_pipe <- add_expr(
@@ -211,7 +211,73 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Full table.
-  y$table <- quote(result <- build_table(lyt = lyt, df = anl, alt_counts_df = col_counts))
+  y$table <- quote(result <- build_table(lyt = lyt, df = anl, col_counts = col_counts))
+
+  # Start sorting pruned table.
+  sort_list <- list()
+
+  sort_list <- add_expr(
+    sort_list,
+    substitute(
+      expr = lengths <- lapply(grading_groups, length),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+  sort_list <- add_expr(
+    sort_list,
+    quote(start_index <- unname(which.max(lengths)))
+  )
+  sort_list <- add_expr(
+    sort_list,
+    substitute(
+      expr = col_indices <- seq(start_index, ncol(result), by = length(grading_groups)),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+
+  if (!is.null(ae_soc)) {
+    sort_list <- add_expr(
+      sort_list,
+      quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
+    )
+  }
+
+  sort_list <- add_expr(
+    sort_list,
+    quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
+  )
+
+  if (is.null(ae_soc)) {
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          sorted_result <- result %>%
+            sort_at_path(path = c(ae_term), scorefun = scorefun_term, decreasing = TRUE)
+          pruned_and_sorted_result
+        },
+        env = list(ae_term = ae_term)
+      )
+    )
+  } else {
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          sorted_result <- result %>%
+            sort_at_path(path = c(ae_soc), scorefun = scorefun_soc, decreasing = TRUE) %>%
+            sort_at_path(path = c(ae_soc, "*", ae_term), scorefun = scorefun_term, decreasing = TRUE)
+        },
+        env = list(
+          ae_soc = ae_soc,
+          ae_term = ae_term
+        )
+      )
+    )
+  }
+
+  y$sort <- bracket_expr(sort_list)
+
 
   # Start pruning table.
   prune_list <- list()
@@ -222,21 +288,6 @@ template_events_col_by_grade <- function(dataname,
         is(tr, "ContentRow")
       }
     )
-  )
-  prune_list <- add_expr(
-    prune_list,
-    substitute(
-      expr = lengths <- lapply(grading_groups, length),
-      env = list(grading_groups = grading_groups)
-    )
-  )
-  prune_list <- add_expr(
-    prune_list,
-    quote(start_index <- unname(which.max(lengths)))
-  )
-  prune_list <- add_expr(
-    prune_list,
-    quote(col_indices <- seq(start_index, ncol(result), by = length(grading_groups)))
   )
 
   prune_list <- add_expr(
@@ -261,7 +312,7 @@ template_events_col_by_grade <- function(dataname,
   prune_pipe <- add_expr(
     prune_pipe,
     quote(
-      pruned_result <- result %>% trim_rows(criteria = criteria_fun)
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun)
     )
   )
 
@@ -286,55 +337,14 @@ template_events_col_by_grade <- function(dataname,
     prune_list,
     prune_pipe
   )
+  prune_list <- add_expr(
+    prune_list,
+    quote(pruned_and_sorted_result)
+  )
 
   y$prune <- bracket_expr(prune_list)
 
-  # Start sorting pruned table.
-  sort_list <- list()
 
-  if (!is.null(ae_soc)) {
-    sort_list <- add_expr(
-      sort_list,
-      quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
-    )
-  }
-
-  sort_list <- add_expr(
-    sort_list,
-    quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
-  )
-
-  if (is.null(ae_soc)) {
-      sort_list <- add_expr(
-        sort_list,
-        substitute(
-          expr = {
-            pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path = c(ae_term), scorefun = scorefun_term, decreasing = TRUE)
-            pruned_and_sorted_result
-          },
-          env = list(ae_term = ae_term)
-        )
-      )
-  } else {
-      sort_list <- add_expr(
-        sort_list,
-        substitute(
-          expr = {
-            pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path = c(ae_soc), scorefun = scorefun_soc, decreasing = TRUE) %>%
-              sort_at_path(path = c(ae_soc, "*", ae_term), scorefun = scorefun_term, decreasing = TRUE)
-            pruned_and_sorted_result
-          },
-          env = list(
-            ae_soc = ae_soc,
-            ae_term = ae_term
-          )
-        )
-      )
-    }
-
-  y$sort <- bracket_expr(sort_list)
 
   y
 }
@@ -350,13 +360,13 @@ template_events_col_by_grade <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- haven::read_sas("./R/adsl.sas7bdat") %>% df_explicit_na()
-#' adae <- haven::read_sas("./R/adae.sas7bdat", encoding = "latin1") %>% df_explicit_na()
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adae <- synthetic_cdisc_data("latest")$adae
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- haven::read_sas("./R/adsl.sas7bdat") %>% df_explicit_na()'),
-#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- haven::read_sas("./R/adae.sas7bdat", encoding = "latin1") %>% df_explicit_na()')
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_events_col_by_grade(
@@ -370,6 +380,10 @@ template_events_col_by_grade <- function(dataname,
 #'       ae_soc = choices_selected(
 #'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
+#'        ),
+#'       ae_grade = choices_selected(
+#'         choices = variable_choices(adae, c("AETOXGR")),
+#'         selected = "AETOXGR"
 #'        ),
 #'       event_type = "adverse event"
 #'     )
@@ -386,7 +400,7 @@ tm_t_events_col_by_grade <- function(label,
                                      arm_var,
                                      ae_soc,
                                      ae_term,
-                                     # ae_grade,
+                                     ae_grade,
                                      grading_groups = list(
                                        "Any Grade (%)" = c("1", "2", "3", "4", "5"),
                                        "Grade 3-4 (%)" = c("3", "4"),
@@ -395,7 +409,7 @@ tm_t_events_col_by_grade <- function(label,
                                      add_total = FALSE,
                                      event_type = "event",
                                      sort_criteria = c("freq_desc"),
-                                     prune_freq = 0.10,
+                                     prune_freq = 10,
                                      prune_diff = 0,
                                      drop_arm_levels = FALSE,
                                      pre_output = NULL,
@@ -426,8 +440,8 @@ tm_t_events_col_by_grade <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     ae_soc = cs_to_des_select(ae_soc, dataname = dataname),
-    ae_term = cs_to_des_select(ae_term, dataname = dataname)
-    # ae_grade = cs_to_des_select(ae_grade, dataname = dataname)
+    ae_term = cs_to_des_select(ae_term, dataname = dataname),
+    ae_grade = cs_to_des_select(ae_grade, dataname = dataname)
   )
 
   module(
@@ -453,7 +467,7 @@ ui_t_events_col_by_grade <- function(id, ...) {
 
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$ae_soc, a$ae_term)
+  is_single_dataset_value <- is_single_dataset(a$arm_var, a$ae_soc, a$ae_term, a$ae_grade)
 
   standard_layout(
     output = white_small_well(
@@ -461,7 +475,7 @@ ui_t_events_col_by_grade <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "ae_soc", "ae_term")]),
+      datanames_input(a[c("arm_var", "ae_soc", "ae_term", "ae_grade")]),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -480,12 +494,12 @@ ui_t_events_col_by_grade <- function(id, ...) {
         data_extract_spec = a$ae_term,
         is_single_dataset = is_single_dataset_value
       ),
-      # data_extract_input(
-      #   id = ns("ae_grade"),
-      #   label = "AE Toxicity Grade",
-      #   data_extract_spec = a$ae_grade,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
+      data_extract_input(
+        id = ns("ae_grade"),
+        label = "AE Toxicity Grade",
+        data_extract_spec = a$ae_grade,
+        is_single_dataset = is_single_dataset_value
+      ),
       # checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       panel_item(
         "Additional table settings",
@@ -541,7 +555,7 @@ srv_t_events_col_by_grade <- function(input,
                                 arm_var,
                                 ae_soc,
                                 ae_term,
-                                # ae_grade,
+                                ae_grade,
                                 # drop_arm_levels,
                                 label) {
   stopifnot(is_cdisc_data(datasets))
@@ -550,8 +564,8 @@ srv_t_events_col_by_grade <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, ae_soc, ae_term),
-    input_id = c("arm_var", "ae_soc", "ae_term"),
+    data_extract = list(arm_var, ae_soc, ae_term, ae_grade),
+    input_id = c("arm_var", "ae_soc", "ae_term", "ae_grade"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -572,8 +586,8 @@ srv_t_events_col_by_grade <- function(input,
     input_arm_var <- arm_var_user_input()
     input_level_term <- c(
       as.vector(anl_m$columns_source$ae_soc),
-      as.vector(anl_m$columns_source$ae_term)
-      # as.vector(anl_m$columns_source$ae_grade)
+      as.vector(anl_m$columns_source$ae_term),
+      as.vector(anl_m$columns_source$ae_grade)
     )
 
     validate(
@@ -620,7 +634,7 @@ srv_t_events_col_by_grade <- function(input,
 
     input_ae_soc <- as.vector(anl_m$columns_source$ae_soc)
     input_ae_term <- as.vector(anl_m$columns_source$ae_term)
-    # input_ae_grade <- as.vector(anl_m$columns_source$ae_grade)
+    input_ae_grade <- as.vector(anl_m$columns_source$ae_grade)
 
     my_calls <- template_events_col_by_grade(
       dataname = "ANL",
@@ -628,7 +642,7 @@ srv_t_events_col_by_grade <- function(input,
       arm_var = arm_var_user_input(),
       ae_soc = if (length(input_ae_soc) != 0) input_ae_soc else NULL,
       ae_term = if (length(input_ae_term) != 0) input_ae_term else NULL,
-      # ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
+      ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
       # add_total = input$add_total,
       event_type = event_type,
       sort_criteria = input$sort_criteria,
@@ -657,7 +671,7 @@ srv_t_events_col_by_grade <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, ae_soc, ae_term)),
+    datanames = get_extract_datanames(list(arm_var, ae_soc, ae_term, ae_grade)),
     modal_title = "Event Table",
     code_header = label
   )
