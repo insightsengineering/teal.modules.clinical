@@ -71,9 +71,9 @@ template_prior_medication <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(random.cdisc.data)
-#' ADSL <- radsl(cached = TRUE)
-#' ADCM <- radcm(cached = TRUE)
+#' library(scda)
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADCM <- synthetic_cdisc_data("latest")$adcm
 #'
 #' #' Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -102,9 +102,9 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- radcm(cached = TRUE)
+#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMTRT <- ADCM$CMCAT

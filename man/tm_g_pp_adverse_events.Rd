@@ -77,14 +77,14 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile adverse events table and plot using ADaM datasets.
 }
 \examples{
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
-ADAE <- radae(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADAE <- synthetic_cdisc_data("latest")$adae
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADAE", ADAE, code = "ADAE <- radae(cached = TRUE)"),
+    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+    cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
     check = TRUE
   ),
   modules = root_modules(

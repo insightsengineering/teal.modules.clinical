@@ -91,12 +91,12 @@ reference group.
 }
 \examples{
 
-library(random.cdisc.data)
+library(scda)
 library(dplyr)
 
-ADSL <- radsl(cached = TRUE) \%>\%
+ADSL <- synthetic_cdisc_data("latest")$adsl \%>\%
   mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
-ADRS <- radrs(cached = TRUE) \%>\%
+ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
   mutate(
     Dum_ARM = factor(rep("Single ARM", nrow(.))),
     AVALC = d_onco_rsp_label(AVALC)
@@ -119,15 +119,15 @@ app <- init(
       dataname = "ADSL",
       x = ADSL,
       code =
-        "ADSL <- radsl(cached = TRUE) \%>\%
-           mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
+        "ADSL <- synthetic_cdisc_data('latest')$adsl \%>\%
+           mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
     ),
     cdisc_dataset(
       dataname = "ADRS",
       x = ADRS,
       code =
-        "ADRS <- radrs(cached = TRUE) \%>\%
-          mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
+        "ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
+          mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
     )
   ),
   modules = root_modules(

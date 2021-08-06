@@ -66,14 +66,14 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile vitals plot using ADaM datasets.
 }
 \examples{
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
-ADVS <- radvs(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADVS <- synthetic_cdisc_data("latest")$advs
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADVS", ADVS, code = "ADVS <- radvs(cached = TRUE)"),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADVS", ADVS, code = 'ADVS <- synthetic_cdisc_data("latest")$advs'),
     check = TRUE
   ),
   modules = root_modules(

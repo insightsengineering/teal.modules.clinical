@@ -15,10 +15,10 @@ Groups several expressions in a single \emph{bracketed} expression.
 }
 \examples{
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 library(tern)
-adsl <- radsl(cached = TRUE)
-adrs <- radrs(cached = TRUE)
+adsl <- synthetic_cdisc_data("latest")$adsl
+adrs <- synthetic_cdisc_data("latest")$adrs
 
 expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),

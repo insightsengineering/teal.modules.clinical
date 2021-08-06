@@ -245,9 +245,9 @@ template_ancova <- function(dataname = "ANL",
 #'
 #' # Preparation of the test case.
 #' library(dplyr)
-#' library(random.cdisc.data)
-#' adsl <- radsl(cached = TRUE)
-#' adqs <- radqs(cached = TRUE)
+#' library(scda)
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adqs <- synthetic_cdisc_data("latest")$adqs
 #'
 #' arm_ref_comp = list(
 #'   ARM = list(
@@ -265,8 +265,10 @@ template_ancova <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", adsl),
 #'     cdisc_dataset("ADQS", adqs),
 #'     code =
-#'       "ADSL <- radsl(cached = TRUE)
-#'        ADQS <- radqs(cached = TRUE)"
+#'       '
+#'       adsl <- synthetic_cdisc_data("latest")$adsl
+#'       adqs <- synthetic_cdisc_data("latest")$adqs
+#'       '
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_ancova(

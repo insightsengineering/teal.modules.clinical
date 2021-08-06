@@ -15,10 +15,10 @@
 #' \dontrun{
 #' # Preparation of the test case.
 #' library(dplyr)
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(tern)
-#' adsl <- radsl(cached = TRUE)
-#' adrs <- radrs(cached = TRUE) %>%
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adrs <- synthetic_cdisc_data("latest")$adrs %>%
 #'   filter(PARAMCD == "BESRSPI")
 #'
 #' # Generate an expression for the analysis of responders.
@@ -335,12 +335,12 @@ template_rsp <- function(dataname,
 #'
 #' @examples
 #'
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(dplyr)
 #'
-#' ADSL <- radsl(cached = TRUE) %>%
+#' ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'   mutate(Dum_ARM = factor(rep("Single ARM", nrow(.))))
-#' ADRS <- radrs(cached = TRUE) %>%
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
 #'   mutate(
 #'     Dum_ARM = factor(rep("Single ARM", nrow(.))),
 #'     AVALC = d_onco_rsp_label(AVALC)
@@ -363,15 +363,15 @@ template_rsp <- function(dataname,
 #'       dataname = "ADSL",
 #'       x = ADSL,
 #'       code =
-#'         "ADSL <- radsl(cached = TRUE) %>%
-#'            mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
+#'         "ADSL <- synthetic_cdisc_data('latest')$adsl %>%
+#'            mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
 #'     ),
 #'     cdisc_dataset(
 #'       dataname = "ADRS",
 #'       x = ADRS,
 #'       code =
-#'         "ADRS <- radrs(cached = TRUE) %>%
-#'           mutate(Dum_ARM = factor(rep(\"Single ARM\", nrow(.))))"
+#'         "ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'           mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
 #'     )
 #'   ),
 #'   modules = root_modules(

@@ -1,5 +1,5 @@
-library(random.cdisc.data)
-adlb <- radlb(cached = TRUE)
+library(scda)
+adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
 ANL <- adlb %>% filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
 
 # Test correspond to sections in the TLG catalog.

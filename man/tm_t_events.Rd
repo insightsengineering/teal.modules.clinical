@@ -74,15 +74,15 @@ Teal Module: Events by Term
 }
 \examples{
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 
-adsl <- radsl(cached = TRUE)
-adae <- radae(cached = TRUE)
+adsl <- synthetic_cdisc_data("latest")$adsl
+adae <- synthetic_cdisc_data("latest")$adae
 
 app <- teal::init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADAE", adae, code = "ADAE <- radae(cached = TRUE)")
+    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
   ),
   modules = root_modules(
     tm_t_events(

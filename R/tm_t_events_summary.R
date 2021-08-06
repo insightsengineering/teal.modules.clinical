@@ -540,9 +540,9 @@ template_events_summary <- function(anl_name,
 #' @export
 #' @examples
 #' library(dplyr)
-#' library(random.cdisc.data)
+#' library(scda)
 #'
-#' ADSL <- radsl(cached = TRUE) %>%
+#' ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'   mutate(
 #'     DTHFL = case_when(  # nolint
 #'       !is.na(DTHDT) ~ "Y",
@@ -553,7 +553,7 @@ template_events_summary <- function(anl_name,
 #'     DTHFL = "Subject Death Flag"
 #'   )
 #'
-#' ADAE <- radae(cached = TRUE)
+#' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
 #' add_event_flags <- function(dat) {
 #'   dat %>%
@@ -584,7 +584,7 @@ template_events_summary <- function(anl_name,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code =
-#'           'ADSL <- radsl(cached = TRUE) %>%
+#'           'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'             mutate(
 #'               DTHFL = case_when(  # nolint
 #'                 !is.na(DTHDT) ~ "Y",
@@ -595,7 +595,7 @@ template_events_summary <- function(anl_name,
 #'               DTHFL = "Subject Death Flag"
 #'             )'),
 #'     cdisc_dataset("ADAE", ADAE, code =
-#'           'ADAE <- radae(cached = TRUE)
+#'           'ADAE <- synthetic_cdisc_data("latest")$adae
 #'           add_event_flags <- function(dat) {
 #'             dat %>%
 #'               dplyr::mutate(

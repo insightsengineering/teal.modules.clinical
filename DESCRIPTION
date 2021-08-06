@@ -44,7 +44,8 @@ Imports:
   kableExtra
 Suggests:
   knitr,
-  random.cdisc.data (>= 0.3.11),
+  scda(>= 0.1.0),
+  scda.2021(>= 0.1.0),
   test.nest (>= 0.2.9),
   testthat (>= 2.0)
 License: file LICENSE
