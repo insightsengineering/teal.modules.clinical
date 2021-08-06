@@ -9,5 +9,9 @@ upstream_repos:
   host: https://github.com
 - repo: insightsengineering/teal.devel
   host: https://github.com
+- repo: insightsengineering/scda
+  host: https://github.com
+- repo: insightsengineering/scda.2021
+  host: https://github.com
 
 downstream_repos:
