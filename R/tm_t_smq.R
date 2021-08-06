@@ -407,6 +407,7 @@ ui_t_exposure <- function(id, ...) {
   ns <- NS(id)
   a <- list(...) # module args
 
+
   is_single_dataset_value <- is_single_dataset(
     a$arm_var,
     a$col_by_var,
