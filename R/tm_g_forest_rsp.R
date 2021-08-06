@@ -185,11 +185,11 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @examples
 #'
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(dplyr)
 #'
-#' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(cached = TRUE)
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADRS <- synthetic_cdisc_data("latest")$adrs
 #'
 #' arm_ref_comp = list(
 #'   ARM = list(
@@ -204,8 +204,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
-#'     cdisc_dataset("ADRS", ADRS, code = 'ADRS <- radrs(cached = TRUE)'),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(

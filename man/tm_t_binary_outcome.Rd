@@ -68,9 +68,9 @@ Teal Module: Binary Outcome Table
 }
 \examples{
 library(dplyr)
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
-ADRS <- radrs(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADRS <- synthetic_cdisc_data("latest")$adrs
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -80,8 +80,8 @@ app <- init(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADRS", ADRS),
     code =
-      "ADSL <- radsl(cached = TRUE)
-    ADRS <- radrs(cached = TRUE)"
+      "ADSL <- synthetic_cdisc_data('latest')$adsl
+       ADRS <- synthetic_cdisc_data('latest')$adrs"
   ),
   modules = root_modules(
     tm_t_binary_outcome(

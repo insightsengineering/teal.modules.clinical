@@ -166,10 +166,10 @@ template_logistic <- function(dataname,
 #' @export
 #' @examples
 #'
-#' library(random.cdisc.data)
+#' library(scda)
 #' library(dplyr)
-#' ADSL <- radsl(cached = TRUE)
-#' ADRS <- radrs(cached = TRUE) %>%
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
 #'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp = list(
@@ -185,11 +185,9 @@ template_logistic <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- radsl(cached = TRUE)'),
-#'     cdisc_dataset(
-#'       "ADRS", ADRS,
-#'       code = 'ADRS <- radrs(cached = TRUE) %>% filter(PARAMCD %in% c("BESRSPI", "INVET"))'
-#'     ),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'       filter(PARAMCD %in% c("BESRSPI", "INVET"))'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(

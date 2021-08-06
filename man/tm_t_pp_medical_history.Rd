@@ -48,16 +48,16 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient medical history report using ADaM datasets.
 }
 \examples{
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
-ADMH <- radmh(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADMH <- synthetic_cdisc_data("latest")$admh
 ADMH[["MHDISTAT"]] <- "ONGOING"
 rtables::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
-    cdisc_dataset("ADMH", ADMH, code = "ADMH <- radmh(cached = TRUE)
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
                    ADMH[['MHDISTAT']] <- 'ONGOING'
                    rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
     check = TRUE

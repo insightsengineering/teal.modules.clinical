@@ -401,10 +401,10 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @examples
 #'
-#' library(random.cdisc.data)
+#' library(scda)
 #'
-#' ADSL <- radsl(cached = TRUE)
-#' ADQS <- radqs(cached = TRUE) %>%
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADQS <- synthetic_cdisc_data("latest")$adqs %>%
 #'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'   dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'   dplyr::mutate(
@@ -424,9 +424,9 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADQS", ADQS,
-#'       code = 'ADQS <- radqs(cached = TRUE) %>%
+#'       code = 'ADQS <- synthetic_cdisc_data("latest")$adqs %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'               dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'               dplyr::mutate(
@@ -792,10 +792,18 @@ srv_mmrm <- function(input,
 
   observeEvent(input[[extract_input("cov_var", dataname)]], {
     # update covariates as actual variables
+    split_interactions_values <- split_interactions(input[[extract_input("cov_var", dataname)]])
+    arm_var_value <- input[[extract_input("arm_var", parentname)]]
+    arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
+    if (arm_in_cov) {
+      split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+    } else {
+      split_covariates_selected <- split_interactions_values
+    }
     updateOptionalSelectInput(
       session,
       inputId = extract_input("split_covariates", dataname),
-      selected = split_interactions(input[[extract_input("cov_var", dataname)]])
+      selected = split_covariates_selected
     )
   })
 
@@ -1067,6 +1075,7 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
     covariate_parts <- split_interactions(input_cov_var)
 
     all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
+
     all_x_vars_in_adsl <- intersect(
       all_x_vars,
       colnames(adsl_filtered)

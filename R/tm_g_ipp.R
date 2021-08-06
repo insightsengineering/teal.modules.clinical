@@ -142,10 +142,11 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(dplyr)
-#' library(random.cdisc.data)
+#' library(scda)
 #'
-#' adsl <- radsl(cached = TRUE) %>% slice(1:20)
-#' adlb <- radlb(adsl, seed = 3)
+#' adsl <- synthetic_cdisc_data("latest")$adsl %>% slice(1:20)
+#' adlb <- synthetic_cdisc_data("latest")$adlb
+#' adlb <- adlb %>% filter(USUBJID %in% adsl$USUBJID)
 #'
 #' adsl <- df_explicit_na(adsl)
 #' adlb <- df_explicit_na(adlb) %>%
@@ -156,7 +157,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'     cdisc_dataset(
 #'     "ADSL",
 #'     adsl,
-#'     code = "ADSL <- radsl(cached = TRUE) %>% slice(1:20)
+#'     code = "adsl <- synthetic_cdisc_data('latest')$adsl %>% slice(1:20)
 #'             ADSL <- df_explicit_na(ADSL)"
 #'             ),
 #'     cdisc_dataset(

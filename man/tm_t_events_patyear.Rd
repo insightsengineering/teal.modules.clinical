@@ -74,10 +74,10 @@ Teal module: Event rates adjusted for patient-years
 \examples{
 # Preparation of the test case.
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 
-adsl <- radsl(cached = TRUE)
-adaette <- radaette(cached = TRUE)
+adsl <- synthetic_cdisc_data("latest")$adsl
+adaette <- synthetic_cdisc_data("latest")$adaette
 adaette <- adaette \%>\%
   dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
@@ -88,9 +88,9 @@ app <- init(
     cdisc_dataset("ADSL", adsl),
     cdisc_dataset("ADAETTE", adaette),
     code =
-      "ADSL <- radsl(cached = TRUE)
-      ADAETTE <- radaette(cached = TRUE)
-      ADAETTE <- ADAETTE \%>\%
+      "adsl <- synthetic_cdisc_data('latest')$adsl
+      adaette <- synthetic_cdisc_data('latest')$adaette
+      adaette <- adaette \%>\%
         dplyr::filter(PARAMCD \%in\% c('AETTE1', 'AETTE2', 'AETTE3')) \%>\%
         dplyr::mutate(is_event = CNSR == 0) \%>\%
         dplyr::mutate(n_events = as.integer(is_event))"

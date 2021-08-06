@@ -88,11 +88,11 @@ Patients with the same abnormality at baseline as on the treatment visit can be
 excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
-library(random.cdisc.data)
+library(scda)
 library(dplyr)
 
-adsl <- radsl(cached = TRUE)
-adlb <- radlb(cached = TRUE) \%>\%
+adsl <- synthetic_cdisc_data("latest")$adsl
+adlb <- synthetic_cdisc_data("latest")$adlb \%>\%
   mutate(
     ONTRTFL = case_when(
       AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
@@ -105,18 +105,18 @@ adlb <- radlb(cached = TRUE) \%>\%
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADSL", adsl, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
     cdisc_dataset("ADLB", adlb,
-      code = 'ADLB <- radlb(cached = TRUE) \%>\%
+      code = "ADLB <- synthetic_cdisc_data('latest')$adlb \%>\%
                 mutate(
                   ONTRTFL = case_when(
-                    AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
-                    TRUE ~ "Y"
+                    AVISIT \%in\% c('SCREENING', 'BASELINE') ~ '',
+                    TRUE ~ 'Y'
                   )
                 ) \%>\%
                 var_relabel(
-                  ONTRTFL = "On Treatment Record Flag"
-                )'
+                  ONTRTFL = 'On Treatment Record Flag'
+                )"
     ),
     check = TRUE
   ),

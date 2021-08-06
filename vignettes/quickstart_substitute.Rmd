@@ -263,11 +263,11 @@ per analysis visit in rows.
 The data can be prepared as follows:
 
 ```{r}
-library(random.cdisc.data)
+library(scda)
 library(rtables)
 library(dplyr)
 library(tern)
-adlb <- radlb(cached = TRUE)
+adlb <- synthetic_cdisc_data("latest")$adlb
 adlb_f <- adlb %>%
   filter(
     PARAM == "Alanine Aminotransferase Measurement" &
@@ -565,7 +565,7 @@ It is now possible to modify the studied parameter (`PARAMCD`)
 in addition to the study arm and visit variables names.
 
 ```{r}
-adlb <- radlb(cached = TRUE)
+adlb <- synthetic_cdisc_data("latest")$adlb
 result <- rtables_expr(
   df = adlb, paramcd = "CRP", arm = "ARM", visit = "AVISIT",
   .stats = c("n", "mean_sd")

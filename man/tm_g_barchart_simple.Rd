@@ -56,10 +56,10 @@ it is ignored.
 }
 \examples{
 library(dplyr)
-library(random.cdisc.data)
+library(scda)
 
-ADSL <- radsl(cached = TRUE)
-ADAE <- radae(cached = TRUE)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADAE <- synthetic_cdisc_data("latest")$adae
 
 adae_labels <- var_labels(ADAE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
@@ -70,9 +70,9 @@ ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- radsl(cached = TRUE)"),
+    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
     cdisc_dataset("ADAE", ADAE,
-      code = "ADAE <- radae(cached = TRUE)
+      code = "ADAE <- synthetic_cdisc_data('latest')$adae
               adae_labels <- var_labels(ADAE)
               ADAE <- ADAE \%>\%
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))

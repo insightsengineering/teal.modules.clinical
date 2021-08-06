@@ -2,23 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{extract_input}
 \alias{extract_input}
-\title{Get input id for a data extract input}
+\title{Extracts html id for data_extract_input}
 \usage{
 extract_input(varname, dataname, filter = FALSE)
 }
 \arguments{
 \item{varname}{(\code{character})\cr
-name of the variable corresponding to the
-data extract input.}
+the original html id.  This should be retrieved with \code{ns("original id")} in the ui function
+or \code{session$ns("original id")}/"original id" in the server function.}
 
 \item{dataname}{(\code{character})\cr
-name of the dataset corresponding to the
-data extract input.}
+\code{dataname} from data_extract input.
+This might be retrieved like \code{data_extract_spec(...)[[1]]$dataname}.}
 
 \item{filter}{optional, (\code{logical})\cr
-string output will end with "-select" suffix if FALSE
-and "-filter1" if TRUE}
+if the connected \code{extract_data_spec} has objects passed to its \code{filter} argument}
 }
 \description{
-Get input id for a data extract input
+The data_extract_input is located under extended html id.
+We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
 }

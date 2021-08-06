@@ -57,16 +57,16 @@ The module generates the R code and returns the corresponding output.
 }
 \examples{
 
-library(random.cdisc.data)
-ADSL <- radsl(cached = TRUE)
-ADLB <- radlb(cached = TRUE)
+library(scda)
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADLB <- synthetic_cdisc_data("latest")$adlb
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADLB", ADLB),
-    code = "ADSL <- radsl(cached = TRUE)
-    ADLB <- radlb(cached = TRUE)"
+    code = "ADSL <- synthetic_cdisc_data('latest')$adsl
+    ADLB <- synthetic_cdisc_data('latest')$adlb"
   ),
   modules = root_modules(
     tm_g_ci(
