@@ -60,7 +60,6 @@ arm are dropped.
 }
 }
 \examples{
-
 \dontrun{
 teal.modules.clinical::prepare_arm(
   dataname = "adrs",

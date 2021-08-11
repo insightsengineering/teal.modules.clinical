@@ -6,6 +6,7 @@
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title. 
 * `tm_t_events` now can have nested column as treatment variables, and same pruning and sorting logic remains the same.
 * Updated license and `README.md` with appropriate information for migration to public Github.
+* Previously package helper functions were never exported. These functions have now been exported so they can be utilized. 
 
 # teal.modules.clinical 0.8.9
 ### New features
