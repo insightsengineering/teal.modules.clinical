@@ -309,6 +309,7 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
+                                 col_by_grade = FALSE,
                                  add_total = TRUE,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
@@ -319,6 +320,7 @@ tm_t_events_by_grade <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is_logical_single(add_total),
+    is_logical_single(col_by_grade),
     is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
@@ -396,6 +398,10 @@ ui_t_events_by_grade <- function(id, ...) {
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total),
+      checkboxInput(
+        ns("col_by_grade"),
+        "Display grade groupings in nested columns",
+        value = a$col_by_grade),
       panel_group(
         panel_item(
           "Additional table settings",
@@ -425,6 +431,7 @@ srv_t_events_by_grade <- function(input,
                                   hlt,
                                   llt,
                                   grade,
+                                  col_by_grade,
                                   drop_arm_levels) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -493,16 +500,43 @@ srv_t_events_by_grade <- function(input,
     input_hlt <- as.vector(anl_m$columns_source$hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
-    my_calls <- template_events_by_grade(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-      llt = if (length(input_llt) != 0) input_llt else NULL,
-      grade = as.vector(anl_m$columns_source$grade),
-      add_total = input$add_total,
-      drop_arm_levels = input$drop_arm_levels
-    )
+    # my_calls <- template_events_by_grade(
+    #   dataname = "ANL",
+    #   parentname = "ANL_ADSL",
+    #   arm_var = as.vector(anl_m$columns_source$arm_var),
+    #   hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+    #   llt = if (length(input_llt) != 0) input_llt else NULL,
+    #   grade = as.vector(anl_m$columns_source$grade),
+    #   add_total = input$add_total,
+    #   drop_arm_levels = input$drop_arm_levels
+    # )
+    my_calls <- if (input$col_by_grade) {
+      template_events_col_by_grade(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = arm_var_user_input(),
+        ae_soc = if (length(input_ae_soc) != 0) input_ae_soc else NULL,
+        ae_term = if (length(input_ae_term) != 0) input_ae_term else NULL,
+        ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
+        # add_total = input$add_total,
+        event_type = event_type,
+        sort_criteria = input$sort_criteria,
+        prune_freq = input$prune_freq / 100,
+        prune_diff = input$prune_diff / 100
+        # drop_arm_levels = input$drop_arm_levels
+      )
+    } else {
+      template_events_by_grade(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        llt = if (length(input_llt) != 0) input_llt else NULL,
+        grade = as.vector(anl_m$columns_source$grade),
+        add_total = input$add_total,
+        drop_arm_levels = input$drop_arm_levels
+      )
+    }
     mapply(expression = my_calls, chunks_push)
   })
 
