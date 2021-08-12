@@ -257,6 +257,7 @@ template_events_by_grade <- function(dataname,
 #' Template: Adverse Events grouped by Grade with threshold
 #'
 #' @inheritParams template_arguments
+#' @param grading_groups (`character`) \cr list of grading groups.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
@@ -311,8 +312,8 @@ template_events_col_by_grade <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
-      drop_arm_levels = drop_arm_levels
+      arm_var = arm_var
+      # drop_arm_levels = drop_arm_levels
     )
   )
   data_list <- add_expr(
@@ -629,7 +630,7 @@ template_events_col_by_grade <- function(dataname,
 #'       ),
 #'       grade = choices_selected(
 #'         choices = variable_choices(adae, c("AETOXGR", "AESEV")),
-#'         selected = "AESEV"
+#'         selected = "AETOXGR"
 #'       )
 #'     )
 #'   )
@@ -649,6 +650,15 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
+                                 grading_groups = list(
+                                   "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+                                   "Grade 3-4 (%)" = c("3", "4"),
+                                   "Grade 5 (%)" = "5"
+                                 ),
+                                 col_by_grade = FALSE,
+                                 sort_criteria = c("freq_desc"),
+                                 prune_freq = 10,
+                                 prune_diff = 0,
                                  add_total = TRUE,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
@@ -659,6 +669,9 @@ tm_t_events_by_grade <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is_logical_single(add_total),
+    is_logical_single(col_by_grade),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff),
     is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
@@ -736,6 +749,10 @@ ui_t_events_by_grade <- function(id, ...) {
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total),
+      checkboxInput(
+        ns("col_by_grade"),
+        "Display grade groupings in nested columns",
+        value = a$col_by_grade),
       panel_group(
         panel_item(
           "Additional table settings",
@@ -743,6 +760,25 @@ ui_t_events_by_grade <- function(id, ...) {
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
+          ),
+          helpText("Pruning Options"),
+          numericInput(
+            inputId = ns("prune_freq"),
+            label = "Minimum Incidence Rate(%) in any of the treatment groups",
+            value = a$prune_freq,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("prune_diff"),
+            label = "Minimum Difference Rate(%) between any of the treatment groups",
+            value = a$prune_diff,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
           )
         )
       )
@@ -765,6 +801,7 @@ srv_t_events_by_grade <- function(input,
                                   hlt,
                                   llt,
                                   grade,
+                                  col_by_grade,
                                   drop_arm_levels) {
   stopifnot(is_cdisc_data(datasets))
 
