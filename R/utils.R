@@ -5,6 +5,8 @@
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
 #'
+#' @export
+#'
 #' @examples
 #' \dontrun{
 #' # What we want to achieve
@@ -64,6 +66,7 @@ add_plot_title <- function(chunk, groupby_vars) {
 #'
 #' @return  `character` variable labels.
 #'
+#' @export
 get_var_labels <- function(datasets, dataname, vars) {
    labels <- datasets$get_varlabels(dataname, vars)
    labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
@@ -77,6 +80,8 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' @param expr (`call`)\cr or an object which can be used as so.
 #'
 #' @return a `string`.
+#'
+#' @export
 #' @examples
 #' expr <- quote(
 #'   basic_table() %>%
@@ -102,6 +107,8 @@ h_concat_expr <- function(expr) {
 #' @param exprs (`list` of `call`)\cr expressions to concatenate in a
 #'   pipeline (`%>%`).
 #' @param pipe_str (`character`)\cr the character which separates the expressions.
+#'
+#' @export
 #'
 #' @examples
 #'
@@ -130,6 +137,7 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' @note The package `prettycode` must be installed to turn on colored output,
 #'   hence the warning.
 #'
+#' @export
 #' @importFrom styler style_text
 #'
 #' @examples
@@ -164,6 +172,7 @@ styled_expr <- function(expr) { # nolint nousage
 #'   for instance with `pipe_expr`.
 #'
 #' @import assertthat
+#' @export
 #'
 #' @examples
 #'
@@ -213,6 +222,7 @@ add_expr <- function(expr_ls, new_expr) {
 #' @param exprs (`list` of `call`)\cr expressions to concatenate into
 #'   a single _bracketed_ expression.
 #'
+#' @export
 #' @examples
 #' library(dplyr)
 #' library(scda)
@@ -263,6 +273,7 @@ bracket_expr <- function(exprs) {
 #' @param cs ([teal::choices_selected()]) object to be transformed
 #' @param multiple (`logical`) whether allow multiple selection in the select input
 #'
+#' @export
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
@@ -280,6 +291,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #'
 #' @inheritParams cs_to_select_spec
 #'
+#' @export
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
@@ -305,6 +317,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #' @inheritParams cs_to_select_spec
 #' @param dataname (`character`) name of the data
 #'
+#' @export
 #' @return ([teal::data_extract_spec()])
 cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
@@ -343,6 +356,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #' @param include_vars (`flag`)\cr whether to include the filter variables as fixed selection
 #'   in the result. This can be useful for preserving for reuse in `rtables` code e.g.
 #'
+#' @export
 #' @return ([teal::data_extract_spec()])
 cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALSE) {
   cs_sub <- substitute(cs)
@@ -395,6 +409,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #'
 #' @param x object to be checked
 #'
+#' @export
 #' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
   is.choices_selected(x) || is(x, "data_extract_spec")
@@ -411,6 +426,7 @@ is.cs_or_des <- function(x) { # nolint
 #' @param ref (`character`)\cr the reference level (not used for `combine = TRUE`).
 #' @param arm_var (`character`)\cr the arm or grouping variable name.
 #'
+#' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
 
   if  (compare & combine) {
@@ -449,6 +465,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @param x (`choices_selected`)\cr
 #'   object with interaction terms
 #'
+#' @export
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
   stopifnot(is.choices_selected(x))
@@ -475,6 +492,7 @@ split_choices <- function(x) {
 #' @param filter optional, (`logical`)\cr
 #'   if the connected \code{extract_data_spec} has objects passed to its `filter` argument
 #'
+#' @export
 extract_input <- function(varname, dataname, filter = FALSE) {
   if (filter) {
     paste0(varname, "-dataset_", dataname, "_singleextract-filter1-vals")
@@ -492,6 +510,7 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 #'  regex with which to split the interaction
 #'  term by.
 #'
+#' @export
 split_interactions <- function(x, by = "\\*|:") {
   if (length(x) >= 1) {
     unique(unlist(strsplit(x, split = by)))
@@ -528,8 +547,10 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @inheritParams template_arguments
 #' @param ref_arm_val (`character`)\cr replacement name for the reference level.
 #' @param drop (`logical`)\cr drop the unused variable levels.
-#' @examples
 #'
+#' @export
+#'
+#' @examples
 #' \dontrun{
 #' teal.modules.clinical::prepare_arm(
 #'   dataname = "adrs",
@@ -632,6 +653,7 @@ prepare_arm <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #'
+#' @export
 #' @examples
 #' \dontrun{
 #' teal.modules.clinical::prepare_arm_levels(

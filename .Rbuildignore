@@ -33,4 +33,5 @@
 ^templates$
 ^test_full_example$
 ^TODO\.md$
+^LICENSE\.md$
 ^staged_dependencies.yaml$
