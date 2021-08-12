@@ -1,11 +1,18 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
-#'   alphabetically.
+#' @param paramcd_var (`character`)\cr the variable name for the parameter.
+#' @param visit (`character`)\cr variable value designating the analysis visit.
+#' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
+#' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
+#'
+#' @examples
+#'
+#' adsl <- df_explicit_na(scda::synthetic_cdisc_data("latest")$adsl)
+#' adeg <- df_explicit_na(scda::synthetic_cdisc_data("latest")$adeg)
+#'
+#' tbl_code <- template_shift_by_arm("adeg", parentname = "adsl")
+#' lapply(tbl_code, eval)
 #'
 #'
 template_shift_by_arm <- function(dataname,
@@ -17,10 +24,10 @@ template_shift_by_arm <- function(dataname,
                                   visit = "POST-BASELINE MINIMUM",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
-                                  ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
-                                  ontrtfl = "Y",
-                                  saffl_var = "SAFFL",
-                                  saffl = "Y",
+                                  #ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
+                                  #ontrtfl = "Y",
+                                  #saffl_var = "SAFFL",
+                                  #saffl = "Y",
                                   #sort_criteria = c("freq_desc", "alpha"),
                                   drop_arm_levels = TRUE) {
 
@@ -34,10 +41,6 @@ template_shift_by_arm <- function(dataname,
     is.string(bnrind_var),
     is.string(visit_var),
     is.string(visit),
-    is.string(ontrtfl_var),
-    is.string(ontrtfl),
-    is.string(saffl_var),
-    is.string(saffl),
     is.flag(drop_arm_levels)
   )
 
@@ -50,20 +53,15 @@ template_shift_by_arm <- function(dataname,
       expr = anl <- df %>%
         filter(
           paramcd_var == paramcd,
-          saffl_var == saffl,
-          ontrtfl_var == ontrtfl,
           visit_var == visit
         ) %>%
+        mutate(col_label = visit) %>%
         df_explicit_na(na_level = ""),
       env = list(
         df = as.name(dataname),
         paramcd_var = as.name(paramcd_var),
-        saffl_var = as.name(saffl_var),
-        ontrtfl_var = as.name(ontrtfl_var),
         visit_var = as.name(visit_var),
         paramcd = paramcd,
-        saffl = saffl,
-        ontrtfl = ontrtfl,
         visit = visit
       )
     )
@@ -87,19 +85,6 @@ template_shift_by_arm <- function(dataname,
     )
   )
 
-  # term_vars <- c(hlt, llt)
-  #
-  #  data_list <- add_expr(
-  #    data_list,
-  #    substitute(
-  #      expr = anl <- anl %>%
-  #        df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
-  #      env = list(
-  #        term_vars = term_vars
-  #      )
-  #    )
-  #  )
-
   y$data <- bracket_expr(data_list)
 
   # Start layout steps.
@@ -107,21 +92,24 @@ template_shift_by_arm <- function(dataname,
     list(),
     substitute(
       expr = basic_table() %>%
+        split_cols_by("col_label") %>% # temprary solution for over arching column
         split_cols_by(anrind_var) %>%
-        split_rows_by(arm_var, split_fun = drop_split_levels, label_pos = "topleft") %>%
+        split_rows_by(
+          arm_var,
+          split_fun = drop_split_levels,
+          label_pos = "topleft",
+          split_label = obj_label(dataname$arm_var)) %>%
         add_rowcounts() %>%
-        summarize_vars(bnrind_var, denom = "N_row"),
-      append_varlabels(dataname, bnrind_var, indent = 1L),
+        summarize_vars(bnrind_var, denom = "N_row") %>%
+        append_varlabels(dataname, bnrind_var, indent = 1L),
       env = list(
-        anrind_var = as.name(anrind_var),
-        arm_var = as.name(arm_var),
-        bnrind_var = as.name(bnrind_var),
-        dataname = as.name(dataname),
+        anrind_var = anrind_var,
+        arm_var = arm_var,
+        bnrind_var = bnrind_var,
+        dataname = as.name(dataname)
       )
     )
   )
-
-  #y$layout_prep <- quote(split_fun <- drop_split_levels)
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
@@ -130,8 +118,7 @@ template_shift_by_arm <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
-    env = list(parent = as.name(parentname))
+    expr = result <- build_table(lyt = lyt, df = anl)
   )
 
   y
@@ -156,35 +143,30 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @export
 #' @examples
-#' # Preparation of the test case.
+#'
 #' library(dplyr)
-#' library(scda)
 #' library(tern)
+#' library(scda)
 #'
 #' adsl <- synthetic_cdisc_data("latest")$adsl
-#'
-#' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
-#' stopifnot(
-#'   any(is.na(adsl$EOSDY)),
-#'   any(is.na(adsl$DCSREAS))
-#' )
+#' adeg <- synthetic_cdisc_data("latest")$adeg
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
-#'     tm_t_summary(
-#'       label = "Demographic Table",
-#'       dataname = "ADSL",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       add_total = TRUE,
-#'       summarize_vars = choices_selected(
-#'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-#'         c("SEX", "RACE")
-#'       ),
+#'     tm_t_shift_by_arm(
+#'       label = "Shift by Arm Table",
+#'       dataname = "ADEG",
+#'       arm_var = choices_selected(variable_choices(adsl), "ARM"),
+#'       paramcd_var = choices_selected(variable_choices(adeg), "PARAMCD"),
+#'       visit_var = choices_selected(variable_choices(adeg), "AVISIT"),
+#'       anrind_var = choices_selected(variable_choices(adeg), "ANRIND"),
+#'       bnrind_var = choices_selected(variable_choices(adeg), "BNRIND"),
+#'       visit = "POST-BASELINE MINIMUM",
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -202,16 +184,24 @@ tm_t_shift_by_arm <- function(label,
                                 "ADSL"
                               ),
                               arm_var = "ARM",
-                              paramcd_var = "PARAMCD",
+                              paramcd_var = choices_selected(
+                                variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE
+                              ),
                               paramcd = "HR", # Heart Rate
-                              visit_var = "AVISIT",
+                              visit_var = choices_selected(
+                                variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE
+                              ),
                               visit = "POST-BASELINE MINIMUM",
-                              anrind_var = "ANRIND",
-                              bnrind_var = "BNRIND",
-                              ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
-                              ontrtfl = "Y",
-                              saffl_var = "SAFFL",
-                              saffl = "Y",
+                              anrind_var = choices_selected(
+                                variable_choices(dataname, "ANRIND"), "ANRIND", fixed = TRUE
+                              ),
+                              bnrind_var = choices_selected(
+                                variable_choices(dataname, "BNRIND"), "BNRIND", fixed = TRUE
+                              ),
+                              #ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
+                              #ontrtfl = "Y",
+                              #saffl_var = "SAFFL",
+                              #saffl = "Y",
                               #sort_criteria = c("freq_desc", "alpha"),
                               drop_arm_levels = TRUE,
                               useNA = c("ifany", "no"), # nolint
@@ -243,9 +233,9 @@ tm_t_shift_by_arm <- function(label,
     paramcd_var = cs_to_des_select(paramcd_var, dataname = dataname, multiple = TRUE),
     visit_var = cs_to_des_select(visit_var, dataname = dataname, multiple = TRUE),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname, multiple = TRUE),
-    bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname, multiple = TRUE),
-    ontrtfl_var = cs_to_des_select(ontrtfl_var, dataname = dataname, multiple = TRUE),
-    saffl_var = cs_to_des_select(saffl_var, dataname = dataname, multiple = TRUE)
+    bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname, multiple = TRUE)
+    #ontrtfl_var = cs_to_des_select(ontrtfl_var, dataname = dataname, multiple = TRUE),
+    #saffl_var = cs_to_des_select(saffl_var, dataname = dataname, multiple = TRUE)
   )
 
   module(
@@ -281,11 +271,11 @@ ui_shift_by_arm <- function(id, ...) {
     a$visit_var,
     a$visit,
     a$anrind_var,
-    a$bnrind_var,
-    a$ontrtfl_var,
-    a$ontrtfl,
-    a$saffl_var,
-    a$saffl
+    a$bnrind_var
+    #a$ontrtfl_var,
+    #a$ontrtfl,
+    #a$saffl_var,
+    #a$saffl
   )
 
   standard_layout(
@@ -294,7 +284,7 @@ ui_shift_by_arm <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
         "id_var", "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var",
-        "visit_var", "visit", "ontrtfl_var", "ontrtfl", "saffl_var", "saffl"
+        "visit_var", "visit" #, "ontrtfl_var", "ontrtfl", "saffl_var", "saffl"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -326,18 +316,18 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$bnrind_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("ontrtfl_var"),
-        label = "Select Treatment Record Flag Variable",
-        data_extract_spec = a$ontrtfl_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
-        id = ns("saffl_var"),
-        label = "Select Safety Population Flag Variable",
-        data_extract_spec = a$saffl_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      # data_extract_input(
+      #   id = ns("ontrtfl_var"),
+      #   label = "Select Treatment Record Flag Variable",
+      #   data_extract_spec = a$ontrtfl_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+      # data_extract_input(
+      #   id = ns("saffl_var"),
+      #   label = "Select Safety Population Flag Variable",
+      #   data_extract_spec = a$saffl_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
       if_not_null(
         a$paramcd,
         data_extract_input(
@@ -356,24 +346,24 @@ ui_shift_by_arm <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      if_not_null(
-        a$ontrtfl,
-        data_extract_input(
-          id = ns("ontrtfl"),
-          label = "Select Treatment Record Flag",
-          data_extract_spec = a$ontrtfl,
-          is_single_dataset = is_single_dataset_value
-        )
-      ),
-      if_not_null(
-        a$saffl,
-        data_extract_input(
-          id = ns("saffl"),
-          label = "Select Safety Population Flag",
-          data_extract_spec = a$saffl,
-          is_single_dataset = is_single_dataset_value
-        )
-      ),
+      # if_not_null(
+      #   a$ontrtfl,
+      #   data_extract_input(
+      #     id = ns("ontrtfl"),
+      #     label = "Select Treatment Record Flag",
+      #     data_extract_spec = a$ontrtfl,
+      #     is_single_dataset = is_single_dataset_value
+      #   )
+      # ),
+      # if_not_null(
+      #   a$saffl,
+      #   data_extract_input(
+      #     id = ns("saffl"),
+      #     label = "Select Safety Population Flag",
+      #     data_extract_spec = a$saffl,
+      #     is_single_dataset = is_single_dataset_value
+      #   )
+      # ),
       panel_group(
         panel_item(
           "Additional table settings",
@@ -432,10 +422,10 @@ srv_shift_by_arm <- function(input,
                              visit,
                              anrind_var,
                              bnrind_var,
-                             ontrtfl_var,
-                             ontrtfl,
-                             saffl_var,
-                             saffl,
+                             #ontrtfl_var,
+                             #ontrtfl,
+                             #saffl_var,
+                             #saffl,
                              drop_arm_levels = TRUE) {
 
   stopifnot(is_cdisc_data(datasets))
@@ -445,7 +435,7 @@ srv_shift_by_arm <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var, anrind_var, ),
-    input_id = c("arm_var", "paramcd_var", "visit_var", "anrind_var", "bnrind_var", "ontrtfl_var", "saffl_var"),
+    input_id = c("arm_var", "paramcd_var", "visit_var", "anrind_var", "bnrind_var"), # "ontrtfl_var", "saffl_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -461,8 +451,8 @@ srv_shift_by_arm <- function(input,
   visit_var_user_input <- get_input_order("visit_var", visit_var$dataname)
   anrind_var_user_input <- get_input_order("anrind_var", anrind_var$dataname)
   bnrind_var_user_input <- get_input_order("bnrind_var", bnrind_var$dataname)
-  ontrtfl_var_user_input <- get_input_order("ontrtfl_var", ontrtfl_var$dataname)
-  saffl_var_var_user_input <- get_input_order("saffl_var", saffl_var$dataname)
+  #ontrtfl_var_user_input <- get_input_order("ontrtfl_var", ontrtfl_var$dataname)
+  #saffl_var_var_user_input <- get_input_order("saffl_var", saffl_var$dataname)
 
   # validate inputs
   validate_checks <- reactive({
@@ -475,8 +465,8 @@ srv_shift_by_arm <- function(input,
     input_visit_var <- visit_var_user_input()
     input_anrind_var <- anrind_var_user_input()
     input_bnrind_var <- bnrind_var_user_input()
-    input_ontrtfl_var <- ontrtfl_var_user_input()
-    input_saffl_var <- saffl_var_var_user_input()
+    #input_ontrtfl_var <- ontrtfl_var_user_input()
+    #input_saffl_var <- saffl_var_var_user_input()
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
@@ -484,8 +474,8 @@ srv_shift_by_arm <- function(input,
       need(input_visit_var, "Please select visit variable"),
       need(input_anrind_var, "Please select analysis range indicator variable"),
       need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
-      need(input_ontrtfl_var, "Please select treatment record flag variable"),
-      need(input_saffl_var, "Please select safety population flag variable"),
+      #need(input_ontrtfl_var, "Please select treatment record flag variable"),
+      #need(input_saffl_var, "Please select safety population flag variable"),
 
       need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
       if (length(input_arm_var) == 2) {
@@ -495,15 +485,14 @@ srv_shift_by_arm <- function(input,
           )),
           "Please check nested treatment variable which needs to be a factor without NA or empty strings."
         )
-      },
-      need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+      }
     )
 
     validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_summarize_vars),
+      anlvars = c("USUBJID", "STUDYID", input_anrind_var, input_bnrind_var),
       arm_var = input_arm_var[[1]]
     )
   })
@@ -521,8 +510,6 @@ srv_shift_by_arm <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    sum_vars <- summary_user_input()
-
     my_calls <- template_shift_by_arm(
       dataname = "ANL",
       parentname = "ANL_ADSL",
@@ -533,10 +520,10 @@ srv_shift_by_arm <- function(input,
       visit = input$visit,
       anrind_var = anrind_var_user_input(),
       bnrind_var = bnrind_var_user_input(),
-      ontrtfl_var = ontrtfl_var_user_input(),
-      ontrtfl = input$ontrtfl,
-      saffl_var = saffl_var_var_user_input(),
-      saffl = saffl$saffl,
+      #ontrtfl_var = ontrtfl_var_user_input(),
+      #ontrtfl = input$ontrtfl,
+      #saffl_var = saffl_var_var_user_input(),
+      #saffl = saffl$saffl,
       drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
@@ -565,4 +552,3 @@ srv_shift_by_arm <- function(input,
     code_header = label
   )
 }
-
