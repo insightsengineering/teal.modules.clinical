@@ -272,27 +272,30 @@ template_events_col_by_grade <- function(dataname,
                                            "Grade 3-4 (%)" = c("3", "4"),
                                            "Grade 5 (%)" = "5"
                                          ),
-                                         # add_total = FALSE,
+                                         add_total = FALSE,
                                          ae_soc,
                                          ae_term,
                                          ae_grade,
+                                         sort_criteria = c("freq_desc"),
                                          prune_freq = 0.1,
-                                         prune_diff = 0
-                                         # drop_arm_levels = FALSE
+                                         prune_diff = 0,
+                                         drop_arm_levels = FALSE
 ) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
     is.list(grading_groups),
-    # is.flag(add_total),
+    is.flag(add_total),
     is.string(ae_soc) || is.null(ae_soc),
     is.string(ae_term),
     is.string(ae_grade),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
-    # is.flag(drop_arm_levels)
+    is.flag(drop_arm_levels)
   )
+
+  sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
 
@@ -312,8 +315,8 @@ template_events_col_by_grade <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var
-      # drop_arm_levels = drop_arm_levels
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
   data_list <- add_expr(
@@ -591,8 +594,6 @@ template_events_col_by_grade <- function(dataname,
 
   y$prune <- bracket_expr(prune_list)
 
-
-
   y
 }
 
@@ -682,6 +683,8 @@ tm_t_events_by_grade <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
+
+  sort_criteria <- match.arg(sort_criteria)
 
   args <- as.list(environment())
 
