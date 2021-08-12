@@ -589,7 +589,11 @@ template_events_col_by_grade <- function(dataname,
   )
   prune_list <- add_expr(
     prune_list,
-    quote(pruned_and_sorted_result)
+    quote(result <- pruned_and_sorted_result)
+  )
+  prune_list <- add_expr(
+    prune_list,
+    quote(result)
   )
 
   y$prune <- bracket_expr(prune_list)
