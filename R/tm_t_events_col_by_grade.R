@@ -24,7 +24,7 @@ template_events_col_by_grade <- function(dataname,
                                          ae_soc,
                                          ae_term,
                                          ae_grade,
-                                         event_type = "event",
+                                         # event_type = "event",
                                          sort_criteria = c("freq_desc"),
                                          prune_freq = 0.1,
                                          prune_diff = 0,
@@ -39,7 +39,7 @@ template_events_col_by_grade <- function(dataname,
     is.string(ae_soc) || is.null(ae_soc),
     is.string(ae_term),
     is.string(ae_grade),
-    is.string(event_type),
+    # is.string(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
     is.flag(drop_arm_levels)
@@ -159,7 +159,7 @@ template_events_col_by_grade <- function(dataname,
       )
     )
 
-    unique_label <- paste0("Total number of patients with at least one ", event_type)
+    unique_label <- paste0("Total number of patients with at least one adverse event")
     layout_list <- add_expr(
       layout_list,
       substitute(

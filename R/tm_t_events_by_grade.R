@@ -288,8 +288,8 @@ template_events_by_grade <- function(dataname,
 #'         selected = "AEBODSYS"
 #'       ),
 #'       grade = choices_selected(
-#'         choices = variable_choices(adae, c("AETOXGR", "AESEV")),
-#'         selected = "AESEV"
+#'         choices = variable_choices(adae, c("AETOXGR")),
+#'         selected = "AETOXGR"
 #'       )
 #'     )
 #'   )
@@ -309,7 +309,16 @@ tm_t_events_by_grade <- function(label,
                                  hlt,
                                  llt,
                                  grade,
+                                 grading_groups = list(
+                                   "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+                                   "Grade 3-4 (%)" = c("3", "4"),
+                                   "Grade 5 (%)" = "5"
+                                 ),
                                  col_by_grade = FALSE,
+                                 # event_type = "event",
+                                 sort_criteria = c("freq_desc"),
+                                 prune_freq = 0.1,
+                                 prune_diff = 0,
                                  add_total = TRUE,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
@@ -322,6 +331,9 @@ tm_t_events_by_grade <- function(label,
     is_logical_single(add_total),
     is_logical_single(col_by_grade),
     is_logical_single(drop_arm_levels),
+    # is_character_single(event_type),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -331,6 +343,8 @@ tm_t_events_by_grade <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
+
+  sort_criteria <- match.arg(sort_criteria)
 
   args <- as.list(environment())
 
@@ -351,6 +365,7 @@ tm_t_events_by_grade <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
+        # event_type = event_type,
         label = label
       )
     ),
@@ -409,6 +424,25 @@ ui_t_events_by_grade <- function(id, ...) {
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
+          ),
+          helpText("Pruning Options"),
+          numericInput(
+            inputId = ns("prune_freq"),
+            label = "Minimum Incidence Rate(%) in any of the treatment groups",
+            value = a$prune_freq,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("prune_diff"),
+            label = "Minimum Difference Rate(%) between any of the treatment groups",
+            value = a$prune_diff,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
           )
         )
       )
@@ -519,7 +553,7 @@ srv_t_events_by_grade <- function(input,
         ae_term = if (length(input_ae_term) != 0) input_ae_term else NULL,
         ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
         # add_total = input$add_total,
-        event_type = event_type,
+        # event_type = event_type,
         sort_criteria = input$sort_criteria,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100
