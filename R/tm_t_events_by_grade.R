@@ -254,6 +254,346 @@ template_events_by_grade <- function(dataname,
   y
 }
 
+#' Template: Adverse Events grouped by Grade with threshold
+#'
+#' @inheritParams template_arguments
+#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
+#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
+#'   rates between any two columns.
+#'
+#' @seealso [tm_t_events_col_by_grade()]
+#'
+template_events_col_by_grade <- function(dataname,
+                                         parentname,
+                                         arm_var,
+                                         grading_groups = list(
+                                           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+                                           "Grade 3-4 (%)" = c("3", "4"),
+                                           "Grade 5 (%)" = "5"
+                                         ),
+                                         # add_total = FALSE,
+                                         ae_soc,
+                                         ae_term,
+                                         ae_grade,
+                                         prune_freq = 0.1,
+                                         prune_diff = 0
+                                         # drop_arm_levels = FALSE
+) {
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.list(grading_groups),
+    # is.flag(add_total),
+    is.string(ae_soc) || is.null(ae_soc),
+    is.string(ae_term),
+    is.string(ae_grade),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff),
+    # is.flag(drop_arm_levels)
+  )
+
+  y <- list()
+
+  # Start data steps.
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- df,
+      env = list(df = as.name(dataname))
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      col_counts <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
+      env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
+    )
+  )
+
+  data_pipe <- list()
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = anl <- anl %>% group_by(USUBJID, arm_var, ae_soc, ae_term),
+      env = list(arm_var = as.name(arm_var), ae_soc = as.name(ae_soc), ae_term = as.name(ae_term))
+    )
+  )
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = summarize(MAXAETOXGR = factor(max(as.numeric(ae_grade)))),
+      env = list(ae_grade = as.name(ae_grade))
+    )
+  )
+  data_pipe <- add_expr(
+    data_pipe,
+    quote(ungroup())
+  )
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = mutate(AEDECOD = droplevels(as.factor(ae_term))),
+      env = list(ae_term = as.name(ae_term))
+    )
+  )
+  data_pipe <- add_expr(
+    data_pipe,
+    quote(df_explicit_na())
+  )
+  data_pipe <- pipe_expr(data_pipe)
+  data_list <- add_expr(
+    data_list,
+    data_pipe
+  )
+  y$data <- bracket_expr(data_list)
+
+  # Start layout steps.
+  layout_list <- list()
+  layout_list <- add_expr(layout_list, quote(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var)
+    )
+  )
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = split_cols_by_groups("MAXAETOXGR", groups = grading_groups),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+
+  # if (add_total) {
+  #   layout_list <- add_expr(
+  #     layout_list,
+  #     quote(
+  #       add_overall_col(label = "All Patients")
+  #     )
+  #   )
+  # }
+
+  # for variant 8 in STREAM manual
+  if(!is.null(ae_soc)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = split_rows_by(ae_soc, child_labels = "visible", nested = FALSE),
+        env = list(ae_soc = ae_soc)
+      )
+    )
+
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_soc),
+        env = list(ae_soc = ae_soc)
+      )
+    )
+
+    unique_label <- paste0("Total number of patients with at least one adverse event")
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = unique_label,
+        ),
+        env = list(unique_label = unique_label)
+      )
+    )
+  }
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      summarize_vars(
+        ae_term,
+        na.rm = FALSE,
+        denom = "N_col",
+        .stats = "count_fraction",
+        .formats = c(count_fraction = format_fraction_threshold(0.01))
+      ),
+      env = list(ae_term = ae_term)
+    )
+  )
+
+  if (is.null(ae_soc)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_term),
+        env = list(ae_term = ae_term)
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_varlabels(df = anl, vars = ae_term, indent = 1L),
+        env = list(ae_term = ae_term)
+      )
+    )
+  }
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+  # Full table.
+  y$table <- quote(result <- build_table(lyt = lyt, df = anl, col_counts = col_counts))
+
+  # Start sorting pruned table.
+  sort_list <- list()
+
+  sort_list <- add_expr(
+    sort_list,
+    substitute(
+      expr = lengths <- lapply(grading_groups, length),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+  sort_list <- add_expr(
+    sort_list,
+    quote(start_index <- unname(which.max(lengths)))
+  )
+  sort_list <- add_expr(
+    sort_list,
+    substitute(
+      expr = col_indices <- seq(start_index, ncol(result), by = length(grading_groups)),
+      env = list(grading_groups = grading_groups)
+    )
+  )
+
+  if (!is.null(ae_soc)) {
+    sort_list <- add_expr(
+      sort_list,
+      quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
+    )
+  }
+
+  sort_list <- add_expr(
+    sort_list,
+    quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
+  )
+
+  if (is.null(ae_soc)) {
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          sorted_result <- result %>%
+            sort_at_path(path = c(ae_term), scorefun = scorefun_term, decreasing = TRUE)
+          pruned_and_sorted_result
+        },
+        env = list(ae_term = ae_term)
+      )
+    )
+  } else {
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          sorted_result <- result %>%
+            sort_at_path(path = c(ae_soc), scorefun = scorefun_soc, decreasing = TRUE) %>%
+            sort_at_path(path = c(ae_soc, "*", ae_term), scorefun = scorefun_term, decreasing = TRUE)
+        },
+        env = list(
+          ae_soc = ae_soc,
+          ae_term = ae_term
+        )
+      )
+    )
+  }
+
+  y$sort <- bracket_expr(sort_list)
+
+
+  # Start pruning table.
+  prune_list <- list()
+  prune_list <- add_expr(
+    prune_list,
+    quote(
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+    )
+  )
+
+  prune_list <- add_expr(
+    prune_list,
+    substitute(
+      expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+      env = list(prune_freq = prune_freq)
+    )
+  )
+
+  if (prune_diff > 0) {
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+        env = list(prune_diff = prune_diff)
+      )
+    )
+  }
+
+  prune_pipe <- list()
+  prune_pipe <- add_expr(
+    prune_pipe,
+    quote(
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun)
+    )
+  )
+
+  if (prune_freq > 0 & prune_diff > 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
+    )
+  } else if (prune_freq > 0 & prune_diff == 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_any)))
+    )
+  } else {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table())
+    )
+  }
+  prune_pipe <- pipe_expr(prune_pipe)
+  prune_list <- add_expr(
+    prune_list,
+    prune_pipe
+  )
+  prune_list <- add_expr(
+    prune_list,
+    quote(pruned_and_sorted_result)
+  )
+
+  y$prune <- bracket_expr(prune_list)
+
+
+
+  y
+}
 
 #' Teal Module: Events by Grade
 #'
