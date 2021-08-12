@@ -384,8 +384,7 @@ template_events_col_by_grade <- function(dataname,
 #'       ae_grade = choices_selected(
 #'         choices = variable_choices(adae, c("AETOXGR")),
 #'         selected = "AETOXGR"
-#'        ),
-#'       event_type = "adverse event"
+#'        )
 #'     )
 #'   )
 #' )
@@ -407,7 +406,7 @@ tm_t_events_col_by_grade <- function(label,
                                        "Grade 5 (%)" = "5"
                                      ),
                                      add_total = FALSE,
-                                     event_type = "event",
+                                     # event_type = "event",
                                      sort_criteria = c("freq_desc"),
                                      prune_freq = 10,
                                      prune_diff = 0,
@@ -419,7 +418,7 @@ tm_t_events_col_by_grade <- function(label,
     is_character_single(label),
     is_character_single(dataname),
     is_logical_single(add_total),
-    is_character_single(event_type),
+    # is_character_single(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
     is.flag(drop_arm_levels),
@@ -454,7 +453,7 @@ tm_t_events_col_by_grade <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        event_type = event_type,
+        # event_type = event_type,
         label = label
       )
     ),
@@ -551,7 +550,7 @@ srv_t_events_col_by_grade <- function(input,
                                 datasets,
                                 dataname,
                                 parentname,
-                                event_type,
+                                # event_type,
                                 arm_var,
                                 ae_soc,
                                 ae_term,
@@ -644,7 +643,7 @@ srv_t_events_col_by_grade <- function(input,
       ae_term = if (length(input_ae_term) != 0) input_ae_term else NULL,
       ae_grade = if (length(input_ae_grade) != 0) input_ae_grade else NULL,
       # add_total = input$add_total,
-      event_type = event_type,
+      # event_type = event_type,
       sort_criteria = input$sort_criteria,
       prune_freq = input$prune_freq / 100,
       prune_diff = input$prune_diff / 100
