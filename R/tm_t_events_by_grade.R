@@ -382,15 +382,6 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  # if (add_total) {
-  #   layout_list <- add_expr(
-  #     layout_list,
-  #     quote(
-  #       add_overall_col(label = "All Patients")
-  #     )
-  #   )
-  # }
-
   # for variant 8 in STREAM manual
   if(!is.null(ae_soc)) {
     layout_list <- add_expr(
@@ -605,6 +596,7 @@ template_events_col_by_grade <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
+#' @inheritParams template_events_col_by_grade
 #'
 #' @export
 #' @examples
