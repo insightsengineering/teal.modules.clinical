@@ -13,6 +13,12 @@ tm_t_events_by_grade(
   hlt,
   llt,
   grade,
+  grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
+    = c("3", "4"), `Grade 5 (\%)` = "5"),
+  col_by_grade = FALSE,
+  sort_criteria = c("freq_desc"),
+  prune_freq = 10,
+  prune_diff = 0,
   add_total = TRUE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -40,6 +46,13 @@ name of the variable with high level term for events.}
 name of the variable with low level term for events.}
 
 \item{grade}{(\code{character}) \cr name of the severity level variable.}
+
+\item{grading_groups}{(\code{character}) \cr list of grading groups.}
+
+\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+
+\item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
+rates between any two columns.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
@@ -87,7 +100,7 @@ app <- init(
       ),
       grade = choices_selected(
         choices = variable_choices(adae, c("AETOXGR", "AESEV")),
-        selected = "AESEV"
+        selected = "AETOXGR"
       )
     )
   )
