@@ -273,9 +273,9 @@ template_events_col_by_grade <- function(dataname,
                                            "Grade 5 (%)" = "5"
                                          ),
                                          add_total = FALSE,
-                                         ae_soc,
-                                         ae_term,
-                                         ae_grade,
+                                         hlt,
+                                         llt,
+                                         grade,
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = FALSE
@@ -286,9 +286,9 @@ template_events_col_by_grade <- function(dataname,
     is.string(arm_var),
     is.list(grading_groups),
     is.flag(add_total),
-    is.string(ae_soc) || is.null(ae_soc),
-    is.string(ae_term),
-    is.string(ae_grade),
+    is.string(hlt) || is.null(hlt),
+    is.string(llt),
+    is.string(grade),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
     is.flag(drop_arm_levels)
@@ -328,15 +328,15 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = anl <- anl %>% group_by(USUBJID, arm_var, ae_soc, ae_term),
-      env = list(arm_var = as.name(arm_var), ae_soc = as.name(ae_soc), ae_term = as.name(ae_term))
+      expr = anl <- anl %>% group_by(USUBJID, arm_var, hlt, llt),
+      env = list(arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
     )
   )
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = summarize(MAXAETOXGR = factor(max(as.numeric(ae_grade)))),
-      env = list(ae_grade = as.name(ae_grade))
+      expr = summarize(MAXAETOXGR = factor(max(as.numeric(grade)))),
+      env = list(grade = as.name(grade))
     )
   )
   data_pipe <- add_expr(
@@ -346,8 +346,8 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = mutate(AEDECOD = droplevels(as.factor(ae_term))),
-      env = list(ae_term = as.name(ae_term))
+      expr = mutate(AEDECOD = droplevels(as.factor(llt))),
+      env = list(llt = as.name(llt))
     )
   )
   data_pipe <- add_expr(
@@ -380,20 +380,20 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # for variant 8 in STREAM manual
-  if (!is.null(ae_soc)) {
+  if (!is.null(hlt)) {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(ae_soc, child_labels = "visible", nested = FALSE),
-        env = list(ae_soc = ae_soc)
+        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE),
+        env = list(hlt = hlt)
       )
     )
 
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = ae_soc),
-        env = list(ae_soc = ae_soc)
+        expr = append_varlabels(df = anl, vars = hlt),
+        env = list(hlt = hlt)
       )
     )
 
@@ -415,30 +415,30 @@ template_events_col_by_grade <- function(dataname,
     layout_list,
     substitute(
       summarize_vars(
-        ae_term,
+        llt,
         na.rm = FALSE,
         denom = "N_col",
         .stats = "count_fraction",
         .formats = c(count_fraction = format_fraction_threshold(0.01))
       ),
-      env = list(ae_term = ae_term)
+      env = list(llt = llt)
     )
   )
 
-  if (is.null(ae_soc)) {
+  if (is.null(hlt)) {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = ae_term),
-        env = list(ae_term = ae_term)
+        expr = append_varlabels(df = anl, vars = llt),
+        env = list(llt = llt)
       )
     )
   } else {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = ae_term, indent = 1L),
-        env = list(ae_term = ae_term)
+        expr = append_varlabels(df = anl, vars = llt, indent = 1L),
+        env = list(llt = llt)
       )
     )
   }
@@ -473,7 +473,7 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  if (!is.null(ae_soc)) {
+  if (!is.null(hlt)) {
     sort_list <- add_expr(
       sort_list,
       quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
@@ -485,16 +485,16 @@ template_events_col_by_grade <- function(dataname,
     quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
   )
 
-  if (is.null(ae_soc)) {
+  if (is.null(hlt)) {
     sort_list <- add_expr(
       sort_list,
       substitute(
         expr = {
           sorted_result <- result %>%
-            sort_at_path(path = c(ae_term), scorefun = scorefun_term, decreasing = TRUE)
+            sort_at_path(path = c(llt), scorefun = scorefun_term, decreasing = TRUE)
           pruned_and_sorted_result
         },
-        env = list(ae_term = ae_term)
+        env = list(llt = llt)
       )
     )
   } else {
@@ -503,12 +503,12 @@ template_events_col_by_grade <- function(dataname,
       substitute(
         expr = {
           sorted_result <- result %>%
-            sort_at_path(path = c(ae_soc), scorefun = scorefun_soc, decreasing = TRUE) %>%
-            sort_at_path(path = c(ae_soc, "*", ae_term), scorefun = scorefun_term, decreasing = TRUE)
+            sort_at_path(path = c(hlt), scorefun = scorefun_soc, decreasing = TRUE) %>%
+            sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_term, decreasing = TRUE)
         },
         env = list(
-          ae_soc = ae_soc,
-          ae_term = ae_term
+          hlt = hlt,
+          llt = llt
         )
       )
     )
@@ -594,6 +594,7 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
+#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI
 #'
 #' @export
 #' @examples
@@ -880,9 +881,9 @@ srv_t_events_by_grade <- function(input,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        ae_soc = if (length(input_hlt) != 0) input_hlt else NULL,
-        ae_term = if (length(input_llt) != 0) input_llt else NULL,
-        ae_grade = if (length(input_grade) != 0) input_grade else NULL,
+        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        llt = if (length(input_llt) != 0) input_llt else NULL,
+        grade = if (length(input_grade) != 0) input_grade else NULL,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100
       )
