@@ -262,7 +262,7 @@ template_events_by_grade <- function(dataname,
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
 #'
-#' @seealso [tm_t_events_col_by_grade()]
+#' @seealso [tm_t_events_by_grade()]
 #'
 template_events_col_by_grade <- function(dataname,
                                          parentname,
@@ -276,7 +276,6 @@ template_events_col_by_grade <- function(dataname,
                                          ae_soc,
                                          ae_term,
                                          ae_grade,
-                                         sort_criteria = c("freq_desc"),
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = FALSE
@@ -294,8 +293,6 @@ template_events_col_by_grade <- function(dataname,
     is_numeric_single(prune_diff),
     is.flag(drop_arm_levels)
   )
-
-  sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
 
@@ -653,7 +650,6 @@ tm_t_events_by_grade <- function(label,
                                    "Grade 5 (%)" = "5"
                                  ),
                                  col_by_grade = FALSE,
-                                 sort_criteria = c("freq_desc"),
                                  prune_freq = 10,
                                  prune_diff = 0,
                                  add_total = TRUE,
@@ -679,8 +675,6 @@ tm_t_events_by_grade <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
-
-  sort_criteria <- match.arg(sort_criteria)
 
   args <- as.list(environment())
 
