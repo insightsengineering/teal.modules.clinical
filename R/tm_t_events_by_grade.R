@@ -383,7 +383,7 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # for variant 8 in STREAM manual
-  if(!is.null(ae_soc)) {
+  if (!is.null(ae_soc)) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -881,16 +881,6 @@ srv_t_events_by_grade <- function(input,
     input_llt <- as.vector(anl_m$columns_source$llt)
     input_grade <- as.vector(anl_m$columns_source$grade)
 
-    # my_calls <- template_events_by_grade(
-    #   dataname = "ANL",
-    #   parentname = "ANL_ADSL",
-    #   arm_var = as.vector(anl_m$columns_source$arm_var),
-    #   hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-    #   llt = if (length(input_llt) != 0) input_llt else NULL,
-    #   grade = as.vector(anl_m$columns_source$grade),
-    #   add_total = input$add_total,
-    #   drop_arm_levels = input$drop_arm_levels
-    # )
     my_calls <- if (input$col_by_grade) {
       template_events_col_by_grade(
         dataname = "ANL",
@@ -899,10 +889,8 @@ srv_t_events_by_grade <- function(input,
         ae_soc = if (length(input_hlt) != 0) input_hlt else NULL,
         ae_term = if (length(input_llt) != 0) input_llt else NULL,
         ae_grade = if (length(input_grade) != 0) input_grade else NULL,
-        # add_total = input$add_total,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100
-        # drop_arm_levels = input$drop_arm_levels
       )
     } else {
       template_events_by_grade(
