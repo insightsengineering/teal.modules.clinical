@@ -11,10 +11,9 @@ template_events_col_by_grade(
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
     = c("3", "4"), `Grade 5 (\%)` = "5"),
   add_total = FALSE,
-  ae_soc,
-  ae_term,
-  ae_grade,
-  sort_criteria = c("freq_desc"),
+  hlt,
+  llt,
+  grade = "AETOXGR",
   prune_freq = 0.1,
   prune_diff = 0,
   drop_arm_levels = FALSE
@@ -35,6 +34,14 @@ variable names that can be used as \code{arm_var}.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
+\item{hlt}{(\code{character})\cr
+name of the variable with high level term for events.}
+
+\item{llt}{(\code{character})\cr
+name of the variable with low level term for events.}
+
+\item{grade}{(\code{character}) \cr grade term which grading_groups is based on, default to "AETOXGR".}
+
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
@@ -48,5 +55,5 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 Template: Adverse Events grouped by Grade with threshold
 }
 \seealso{
-\code{\link[=tm_t_events_col_by_grade]{tm_t_events_col_by_grade()}}
+\code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}
 }

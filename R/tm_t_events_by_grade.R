@@ -257,6 +257,7 @@ template_events_by_grade <- function(dataname,
 #' Template: Adverse Events grouped by Grade with threshold
 #'
 #' @inheritParams template_arguments
+#' @param grade (`character`) \cr grade term which grading_groups is based on, default to "AETOXGR".
 #' @param grading_groups (`character`) \cr list of grading groups.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
@@ -275,7 +276,7 @@ template_events_col_by_grade <- function(dataname,
                                          add_total = FALSE,
                                          hlt,
                                          llt,
-                                         grade,
+                                         grade = "AETOXGR",
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = FALSE

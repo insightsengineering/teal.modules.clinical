@@ -16,7 +16,6 @@ tm_t_events_by_grade(
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
     = c("3", "4"), `Grade 5 (\%)` = "5"),
   col_by_grade = FALSE,
-  sort_criteria = c("freq_desc"),
   prune_freq = 10,
   prune_diff = 0,
   add_total = TRUE,
@@ -48,6 +47,8 @@ name of the variable with low level term for events.}
 \item{grade}{(\code{character}) \cr name of the severity level variable.}
 
 \item{grading_groups}{(\code{character}) \cr list of grading groups.}
+
+\item{col_by_grade}{(\code{flag}) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
