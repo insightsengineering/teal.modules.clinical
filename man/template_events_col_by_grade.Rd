@@ -10,7 +10,7 @@ template_events_col_by_grade(
   arm_var,
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
     = c("3", "4"), `Grade 5 (\%)` = "5"),
-  add_total = FALSE,
+  add_total = TRUE,
   hlt,
   llt,
   grade = "AETOXGR",
