@@ -905,6 +905,7 @@ srv_t_events_by_grade <- function(input,
       template_events_col_by_grade(
         dataname = "ANL",
         parentname = "ANL_ADSL",
+        add_total = input$add_total,
         arm_var = as.vector(anl_m$columns_source$arm_var),
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
