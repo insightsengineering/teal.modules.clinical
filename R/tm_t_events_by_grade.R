@@ -273,7 +273,7 @@ template_events_col_by_grade <- function(dataname,
                                            "Grade 3-4 (%)" = c("3", "4"),
                                            "Grade 5 (%)" = "5"
                                          ),
-                                         add_total = FALSE,
+                                         add_total = TRUE,
                                          hlt,
                                          llt,
                                          grade = "AETOXGR",
@@ -317,13 +317,25 @@ template_events_col_by_grade <- function(dataname,
       drop_arm_levels = drop_arm_levels
     )
   )
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      col_counts <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
-      env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
+
+  ## add_total for patients grouping across all arms
+  if (add_total) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        col_counts <- rep(c(table(parentname[[arm_var]]), nrow(parentname)), each = length(grading_groups)),
+        env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
+      )
     )
-  )
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        col_counts <- rep(table(parentname[[arm_var]]), each = length(grading_groups)),
+        env = list(parentname = as.name(parentname), grading_groups = grading_groups, arm_var = arm_var)
+      )
+    )
+  }
 
   data_pipe <- list()
   data_pipe <- add_expr(
@@ -365,13 +377,25 @@ template_events_col_by_grade <- function(dataname,
   # Start layout steps.
   layout_list <- list()
   layout_list <- add_expr(layout_list, quote(basic_table()))
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var),
-      env = list(arm_var = arm_var)
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = split_cols_by(var = arm_var, split_fun = add_overall_level("ALL ARMS", first = FALSE)),
+        env = list(arm_var = arm_var)
+      )
     )
-  )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = split_cols_by(var = arm_var),
+        env = list(arm_var = arm_var)
+      )
+    )
+  }
+
   layout_list <- add_expr(
     layout_list,
     substitute(
