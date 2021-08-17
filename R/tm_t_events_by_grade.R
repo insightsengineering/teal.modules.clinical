@@ -853,6 +853,8 @@ srv_t_events_by_grade <- function(input,
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    adsl_keys <- datasets$get_keys(parentname)
+    anl_keys <- datasets$get_keys(dataname)
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -893,9 +895,9 @@ srv_t_events_by_grade <- function(input,
     # validate inputs
     validate_standard_inputs(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      adslvars = c(adsl_keys, input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_level_term, input_grade),
+      anlvars = c(anl_keys, input_level_term, input_grade),
       arm_var = input_arm_var
     )
   })
