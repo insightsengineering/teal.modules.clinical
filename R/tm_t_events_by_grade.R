@@ -338,13 +338,24 @@ template_events_col_by_grade <- function(dataname,
   }
 
   data_pipe <- list()
-  data_pipe <- add_expr(
-    data_pipe,
-    substitute(
-      expr = anl <- anl %>% group_by(USUBJID, arm_var, hlt, llt),
-      env = list(arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
+  if (!is.null(hlt)) {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute(
+        expr = anl <- anl %>% group_by(USUBJID, arm_var, hlt, llt),
+        env = list(arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
+      )
     )
-  )
+  } else {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute(
+        expr = anl <- anl %>% group_by(USUBJID, arm_var, llt),
+        env = list(arm_var = as.name(arm_var), llt = as.name(llt))
+      )
+    )
+  }
+
   data_pipe <- add_expr(
     data_pipe,
     substitute(
@@ -476,7 +487,7 @@ template_events_col_by_grade <- function(dataname,
   # Full table.
   y$table <- quote(result <- build_table(lyt = lyt, df = anl, col_counts = col_counts))
 
-  # Start sorting pruned table.
+  # Start sorting table.
   sort_list <- list()
 
   sort_list <- add_expr(
@@ -517,7 +528,6 @@ template_events_col_by_grade <- function(dataname,
         expr = {
           sorted_result <- result %>%
             sort_at_path(path = c(llt), scorefun = scorefun_term, decreasing = TRUE)
-          pruned_and_sorted_result
         },
         env = list(llt = llt)
       )
@@ -858,7 +868,7 @@ srv_t_events_by_grade <- function(input,
     )
     teal.devel::validate_has_elements(
       input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for AET04_PI, \"LOW LEVEL TERM\" cannot be empty" #nolint
     )
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
