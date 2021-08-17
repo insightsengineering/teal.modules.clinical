@@ -875,6 +875,12 @@ srv_t_events_by_grade <- function(input,
     )
     validate(
       need(
+        input_grade == "AETOXGR",
+        "To support STREAM template AET04_PI, grade variable has to be \"AETOXGR\" for now."
+      )
+    )
+    validate(
+      need(
         input$prune_freq >= 0 && input$prune_freq <= 100,
         "Please provide an Incidence Rate between 0 and 100 (%)."
       ),
