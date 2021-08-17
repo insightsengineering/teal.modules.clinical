@@ -686,7 +686,7 @@ tm_t_events_by_grade <- function(label,
                                    "Grade 5 (%)" = "5"
                                  ),
                                  col_by_grade = FALSE,
-                                 prune_freq = 10,
+                                 prune_freq = 0,
                                  prune_diff = 0,
                                  add_total = TRUE,
                                  drop_arm_levels = TRUE,
