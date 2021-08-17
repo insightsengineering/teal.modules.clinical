@@ -279,7 +279,7 @@ template_events_col_by_grade <- function(dataname,
                                          grade = "AETOXGR",
                                          prune_freq = 0.1,
                                          prune_diff = 0,
-                                         drop_arm_levels = FALSE
+                                         drop_arm_levels = TRUE
 ) {
   assert_that(
     is.string(dataname),
@@ -927,7 +927,8 @@ srv_t_events_by_grade <- function(input,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         grade = if (length(input_grade) != 0) input_grade else NULL,
         prune_freq = input$prune_freq / 100,
-        prune_diff = input$prune_diff / 100
+        prune_diff = input$prune_diff / 100,
+        drop_arm_levels = input$drop_arm_levels
       )
     } else {
       template_events_by_grade(
