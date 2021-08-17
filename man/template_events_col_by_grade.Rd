@@ -16,7 +16,7 @@ template_events_col_by_grade(
   grade = "AETOXGR",
   prune_freq = 0.1,
   prune_diff = 0,
-  drop_arm_levels = FALSE
+  drop_arm_levels = TRUE
 )
 }
 \arguments{
