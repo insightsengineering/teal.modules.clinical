@@ -370,7 +370,7 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = mutate(AEDECOD = droplevels(as.factor(llt))),
+      expr = mutate(AEDECOD = as.factor(llt)),
       env = list(llt = as.name(llt))
     )
   )
