@@ -16,7 +16,7 @@ tm_t_events_by_grade(
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
     = c("3", "4"), `Grade 5 (\%)` = "5"),
   col_by_grade = FALSE,
-  prune_freq = 10,
+  prune_freq = 0,
   prune_diff = 0,
   add_total = TRUE,
   drop_arm_levels = TRUE,
