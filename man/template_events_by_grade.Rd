@@ -8,6 +8,7 @@ template_events_by_grade(
   dataname,
   parentname,
   arm_var,
+  id = "USUBJID",
   hlt,
   llt,
   grade,

@@ -8,6 +8,7 @@
 template_events_by_grade <- function(dataname,
                                      parentname,
                                      arm_var,
+                                     id = "USUBJID",
                                      hlt,
                                      llt,
                                      grade,
@@ -125,13 +126,14 @@ template_events_by_grade <- function(dataname,
             split_label = var_labels(dataname[term_var], fill = TRUE)
           ) %>%
           summarize_num_patients(
-            var = "USUBJID",
+            var = id,
             .stats = "unique",
             .labels = c("- Any Intensity -")
           ) %>%
           count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
           append_varlabels(dataname, grade, indent = 1L),
         env = list(
+          id = id,
           arm_var = arm_var,
           term_var = term_var,
           grade = grade,
@@ -171,13 +173,14 @@ template_events_by_grade <- function(dataname,
             split_label = var_labels(dataname[llt], fill = TRUE)
           ) %>%
           summarize_num_patients(
-            var = "USUBJID",
+            var = id,
             .stats = "unique",
             .labels = c("- Any Intensity -")
           ) %>%
           count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
           append_varlabels(dataname, grade, indent = 2L),
         env = list(
+          id = id,
           arm_var = arm_var,
           hlt = hlt,
           llt = llt,
@@ -939,6 +942,7 @@ srv_t_events_by_grade <- function(input,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
+        id = datasets$get_keys(parentname)[2],
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         grade = input_grade,
