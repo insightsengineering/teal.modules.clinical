@@ -274,7 +274,6 @@ test_that("template_events_col_by_grade generates standard expressions", {
         group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
         summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
         ungroup() %>%
-        mutate(AEDECOD = as.factor(AEDECOD)) %>%
         df_explicit_na()
     }),
     layout = quote(

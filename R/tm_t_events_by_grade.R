@@ -376,13 +376,6 @@ template_events_col_by_grade <- function(dataname,
   )
   data_pipe <- add_expr(
     data_pipe,
-    substitute(
-      expr = mutate(AEDECOD = as.factor(llt)), # AEDECOD needs to be changed?
-      env = list(llt = as.name(llt))
-    )
-  )
-  data_pipe <- add_expr(
-    data_pipe,
     quote(df_explicit_na())
   )
   data_pipe <- pipe_expr(data_pipe)
