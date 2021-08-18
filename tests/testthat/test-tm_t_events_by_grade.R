@@ -353,7 +353,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
   expect_equal(result, expected)
 })
 
-test_that("template_events_col_by_grade generates STREAM variant 8 ", {
+test_that("template_events_col_by_grade generates STREAM variant 8", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -391,6 +391,211 @@ test_that("template_events_col_by_grade generates STREAM variant 8 ", {
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ACTARM", split_fun = add_overall_level("ALL ARMS", first = FALSE)) %>%
+        split_cols_by_groups(
+          "MAXAETOXGR",
+          groups = list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        ) %>%
+        summarize_vars(
+          "AEDECOD",
+          na.rm = FALSE,
+          denom = "N_col",
+          .stats = "count_fraction",
+          .formats = c(count_fraction = format_fraction_threshold(0.01))
+        ) %>%
+        append_varlabels(df = anl, vars = "AEDECOD")
+    ),
+    table = quote(
+      result <- build_table(
+        lyt = lyt,
+        df = anl,
+        col_counts = col_counts
+      )
+    ),
+    sort = quote({
+      lengths <- lapply(
+        list(
+          "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 3-4 (%)" = c("3", "4"),
+          "Grade 5 (%)" = "5"
+        ),
+        length
+      )
+      start_index <- unname(which.max(lengths))
+      col_indices <- seq(
+        start_index,
+        ncol(result),
+        by = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      scorefun_term <- score_occurrences_cols(col_indices = col_indices)
+      sorted_result <- result %>%
+        sort_at_path(path = c("AEDECOD"), scorefun = scorefun_term, decreasing = TRUE)
+    }),
+    prune = quote({
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+      at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
+      pruned_and_sorted_result <- sorted_result %>%
+        trim_rows(criteria = criteria_fun) %>%
+        prune_table(keep_rows(at_least_percent_any))
+      result <- pruned_and_sorted_result
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("template_events_col_by_grade without adding total column option works as expected", {
+  result <- template_events_col_by_grade(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ACTARM",
+    hlt = NULL,
+    llt = "AEDECOD",
+    grade = "AETOXGR",
+    add_total = FALSE,
+    drop_arm_levels = TRUE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adae # nolintr
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      col_counts <- rep(
+        table(adsl[["ACTARM"]]),
+        each = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      anl <- anl %>%
+        group_by(USUBJID, ACTARM, AEDECOD) %>%
+        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        ungroup() %>%
+        df_explicit_na()
+    }),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ACTARM") %>%
+        split_cols_by_groups(
+          "MAXAETOXGR",
+          groups = list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        ) %>%
+        summarize_vars(
+          "AEDECOD",
+          na.rm = FALSE,
+          denom = "N_col",
+          .stats = "count_fraction",
+          .formats = c(count_fraction = format_fraction_threshold(0.01))
+        ) %>%
+        append_varlabels(df = anl, vars = "AEDECOD")
+    ),
+    table = quote(
+      result <- build_table(
+        lyt = lyt,
+        df = anl,
+        col_counts = col_counts
+      )
+    ),
+    sort = quote({
+      lengths <- lapply(
+        list(
+          "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 3-4 (%)" = c("3", "4"),
+          "Grade 5 (%)" = "5"
+        ),
+        length
+      )
+      start_index <- unname(which.max(lengths))
+      col_indices <- seq(
+        start_index,
+        ncol(result),
+        by = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      scorefun_term <- score_occurrences_cols(col_indices = col_indices)
+      sorted_result <- result %>%
+        sort_at_path(path = c("AEDECOD"), scorefun = scorefun_term, decreasing = TRUE)
+    }),
+    prune = quote({
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+      at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
+      pruned_and_sorted_result <- sorted_result %>%
+        trim_rows(criteria = criteria_fun) %>%
+        prune_table(keep_rows(at_least_percent_any))
+      result <- pruned_and_sorted_result
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("template_events_col_by_grade without dropping arm levels option works as expected", {
+  result <- template_events_col_by_grade(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ACTARM",
+    hlt = NULL,
+    llt = "AEDECOD",
+    grade = "AETOXGR",
+    add_total = FALSE,
+    drop_arm_levels = FALSE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adae # nolintr
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(adsl[["ACTARM"]])
+      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
+      col_counts <- rep(
+        table(adsl[["ACTARM"]]),
+        each = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      anl <- anl %>%
+        group_by(USUBJID, ACTARM, AEDECOD) %>%
+        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        ungroup() %>%
+        df_explicit_na()
+    }),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
