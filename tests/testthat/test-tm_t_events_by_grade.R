@@ -171,7 +171,6 @@ test_that("template_events_by_grade without adding total column option works as 
   expect_equal(result, expected)
 })
 
-
 test_that("template_events_by_grade with hlt only works", {
   result <- template_events_by_grade(
     dataname = "adae",
@@ -235,6 +234,117 @@ test_that("template_events_by_grade with hlt only works", {
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("template_events_col_by_grade generates standard expressions", {
+  result <- template_events_col_by_grade(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ACTARM",
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    grade = "AETOXGR",
+    add_total = TRUE,
+    drop_arm_levels = TRUE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adae # nolintr
+      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      arm_levels <- levels(anl[["ACTARM"]])
+      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      col_counts <- rep(
+        c(table(adsl[["ACTARM"]]), nrow(adsl)),
+        each = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      anl <- anl %>% group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
+        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        ungroup() %>%
+        mutate(AEDECOD = as.factor(AEDECOD)) %>%
+        df_explicit_na()
+    }),
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ACTARM", split_fun = add_overall_level("ALL ARMS", first = FALSE)) %>%
+        split_cols_by_groups(
+          "MAXAETOXGR",
+          groups = list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        ) %>%
+        split_rows_by("AEBODSYS", child_labels = "visible", nested = FALSE) %>%
+        append_varlabels(df = anl, vars = "AEBODSYS") %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = "unique",
+          .labels = "Total number of patients with at least one adverse event",
+        ) %>%
+        summarize_vars(
+          "AEDECOD",
+          na.rm = FALSE,
+          denom = "N_col",
+          .stats = "count_fraction",
+          .formats = c(count_fraction = format_fraction_threshold(0.01))
+        ) %>%
+        append_varlabels(df = anl, vars = "AEDECOD", indent = 1L)
+    ),
+    table = quote(
+      result <- build_table(
+        lyt = lyt,
+        df = anl,
+        col_counts = col_counts
+      )
+    ),
+    sort = quote({
+      lengths <- lapply(
+        list(
+          "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 3-4 (%)" = c("3", "4"),
+          "Grade 5 (%)" = "5"
+        ),
+        length
+      )
+      start_index <- unname(which.max(lengths))
+      col_indices <- seq(
+        start_index,
+        ncol(result),
+        by = length(
+          list(
+            "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 3-4 (%)" = c("3", "4"),
+            "Grade 5 (%)" = "5"
+          )
+        )
+      )
+      scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices)
+      scorefun_term <- score_occurrences_cols(col_indices = col_indices)
+      sorted_result <- result %>%
+        sort_at_path(path = c("AEBODSYS"), scorefun = scorefun_soc, decreasing = TRUE) %>%
+        sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), scorefun = scorefun_term, decreasing = TRUE)
+    }),
+    prune = quote({
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+      at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun) %>%
+        prune_table(keep_rows(at_least_percent_any))
+      result <- pruned_and_sorted_result
       result
     })
   )
