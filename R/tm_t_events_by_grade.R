@@ -1,6 +1,7 @@
 #' Template: Events by Grade
 #'
 #' @inheritParams template_arguments
+#' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
 #' @param grade (`character`) \cr name of the severity level variable.
 #'
 #' @seealso [tm_t_events_by_grade()]
@@ -376,7 +377,7 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = mutate(AEDECOD = as.factor(llt)),
+      expr = mutate(AEDECOD = as.factor(llt)), # AEDECOD needs to be changed?
       env = list(llt = as.name(llt))
     )
   )
