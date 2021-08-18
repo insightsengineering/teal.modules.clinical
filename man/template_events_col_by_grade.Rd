@@ -35,6 +35,8 @@ variable names that can be used as \code{arm_var}.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
+\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to "USUBJID".}
+
 \item{hlt}{(\code{character})\cr
 name of the variable with high level term for events.}
 
