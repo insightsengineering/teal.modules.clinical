@@ -270,7 +270,8 @@ test_that("template_events_col_by_grade generates standard expressions", {
           )
         )
       )
-      anl <- anl %>% group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
+      anl <- anl %>%
+        group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
         summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
         ungroup() %>%
         mutate(AEDECOD = as.factor(AEDECOD)) %>%
@@ -342,7 +343,8 @@ test_that("template_events_col_by_grade generates standard expressions", {
         is(tr, "ContentRow")
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun) %>%
+      pruned_and_sorted_result <- sorted_result %>%
+        trim_rows(criteria = criteria_fun) %>%
         prune_table(keep_rows(at_least_percent_any))
       result <- pruned_and_sorted_result
       result
