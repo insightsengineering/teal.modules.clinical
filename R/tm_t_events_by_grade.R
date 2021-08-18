@@ -274,6 +274,7 @@ template_events_col_by_grade <- function(dataname,
                                            "Grade 5 (%)" = "5"
                                          ),
                                          add_total = TRUE,
+                                         id = "USUBJID",
                                          hlt,
                                          llt,
                                          grade = "AETOXGR",
@@ -287,6 +288,7 @@ template_events_col_by_grade <- function(dataname,
     is.string(arm_var),
     is.list(grading_groups),
     is.flag(add_total),
+    is.string(id),
     is.string(hlt) || is.null(hlt),
     is.string(llt),
     is.string(grade),
@@ -342,16 +344,16 @@ template_events_col_by_grade <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute(
-        expr = anl <- anl %>% group_by(USUBJID, arm_var, hlt, llt),
-        env = list(arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
+        expr = anl <- anl %>% group_by(id, arm_var, hlt, llt),
+        env = list(id = as.name(id), arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
       )
     )
   } else {
     data_pipe <- add_expr(
       data_pipe,
       substitute(
-        expr = anl <- anl %>% group_by(USUBJID, arm_var, llt),
-        env = list(arm_var = as.name(arm_var), llt = as.name(llt))
+        expr = anl <- anl %>% group_by(id, arm_var, llt),
+        env = list(id = as.name(id), arm_var = as.name(arm_var), llt = as.name(llt))
       )
     )
   }
@@ -438,11 +440,11 @@ template_events_col_by_grade <- function(dataname,
       layout_list,
       substitute(
         summarize_num_patients(
-          var = "USUBJID",
+          var = id,
           .stats = "unique",
           .labels = unique_label,
         ),
-        env = list(unique_label = unique_label)
+        env = list(id = id, unique_label = unique_label)
       )
     )
   }
@@ -924,6 +926,7 @@ srv_t_events_by_grade <- function(input,
         parentname = "ANL_ADSL",
         add_total = input$add_total,
         arm_var = as.vector(anl_m$columns_source$arm_var),
+        id = datasets$get_keys(parentname)[2],
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         grade = if (length(input_grade) != 0) input_grade else NULL,
