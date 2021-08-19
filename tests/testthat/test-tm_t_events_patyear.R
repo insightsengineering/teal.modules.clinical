@@ -1,4 +1,6 @@
 test_that("template_events_patyear generates standard expressions", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -50,6 +52,8 @@ test_that("template_events_patyear generates standard expressions", {
 })
 
 test_that("template_events_patyear generates right expressions with non-default", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -99,6 +103,8 @@ test_that("template_events_patyear generates right expressions with non-default"
 })
 
 test_that("template_events_patyear generates right expressions with non-default controls", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",

@@ -4,6 +4,7 @@ ANL <- adlb %>% filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
 
 # Test correspond to sections in the TLG catalog.
 test_that("1. and 2. Mean and 95% CIs for mean", {
+  test.nest::skip_if_too_deep(0)
 
   result <- template_g_ci(
     dataname = "adlb",
@@ -46,6 +47,7 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
 })
 
 test_that("3. Confidence Interval Plot (using different stratification variable)", {
+  test.nest::skip_if_too_deep(0)
 
   result <- template_g_ci(
     dataname = "adlb",
@@ -88,6 +90,8 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
 })
 
 test_that("4. Median and 95% CIs for median", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
@@ -129,6 +133,8 @@ test_that("4. Median and 95% CIs for median", {
 })
 
 test_that("5. Using different alpha level", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
