@@ -883,7 +883,7 @@ srv_t_events_by_grade <- function(input,
     )
     validate(
       need(
-        input_grade == "AETOXGR",
+        (min(as.numeric(anl_filtered[[input_grade]])) >= 1) && (max(as.numeric(anl_filtered[[input_grade]])) <= 5),
         "To support STREAM template AET04_PI, grade variable has to be \"AETOXGR\" for now."
       )
     )
