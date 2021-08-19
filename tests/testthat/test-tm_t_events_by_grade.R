@@ -278,7 +278,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
     }),
     layout = quote(
       lyt <- basic_table() %>%
-        split_cols_by(var = "ACTARM", split_fun = add_overall_level("ALL ARMS", first = FALSE)) %>%
+        split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
@@ -390,7 +390,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
     }),
     layout = quote(
       lyt <- basic_table() %>%
-        split_cols_by(var = "ACTARM", split_fun = add_overall_level("ALL ARMS", first = FALSE)) %>%
+        split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
