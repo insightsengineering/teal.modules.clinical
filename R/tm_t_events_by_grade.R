@@ -393,7 +393,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var, split_fun = add_overall_level("ALL ARMS", first = FALSE)),
+        expr = split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
         env = list(arm_var = arm_var)
       )
     )
