@@ -563,13 +563,15 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  prune_list <- add_expr(
-    prune_list,
-    substitute(
-      expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
-      env = list(prune_freq = prune_freq)
+  if (prune_freq > 0) {
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+        env = list(prune_freq = prune_freq)
+      )
     )
-  )
+  }
 
   if (prune_diff > 0) {
     prune_list <- add_expr(
@@ -598,6 +600,11 @@ template_events_col_by_grade <- function(dataname,
     prune_pipe <- add_expr(
       prune_pipe,
       quote(prune_table(keep_rows(at_least_percent_any)))
+    )
+  } else if (prune_freq == 0 & prune_diff > 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_diff)))
     )
   } else {
     prune_pipe <- add_expr(
