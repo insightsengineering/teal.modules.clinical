@@ -885,7 +885,7 @@ srv_t_events_by_grade <- function(input,
       need(
         (min(as.numeric(as.character(anl_filtered[[input_grade]]))) >= 1) &&
           (max(as.numeric(as.character(anl_filtered[[input_grade]]))) <= 5),
-        "To support STREAM template AET04_PI, grade variable has to be numberic between 1 and 5."
+        "To support displaying grade grouping in nested columns, grade variable has to be numberic between 1 and 5."
       )
     )
     validate(
@@ -898,6 +898,14 @@ srv_t_events_by_grade <- function(input,
         "Please provide a Difference Rate between 0 and 100 (%)."
       )
     )
+    if (input$col_by_grade) {
+      validate(
+        need(
+          as.vector(anl_m$columns_source$llt),
+          "Low Level Term must be present for nested grade grouping display."
+        )
+      )
+    }
 
     # validate inputs
     validate_standard_inputs(
