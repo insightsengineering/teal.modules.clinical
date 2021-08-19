@@ -876,15 +876,16 @@ srv_t_events_by_grade <- function(input,
     )
     teal.devel::validate_has_elements(
       input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for AET04_PI, \"LOW LEVEL TERM\" cannot be empty" #nolint
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" #nolint
     )
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
     validate(
       need(
-        (min(as.numeric(anl_filtered[[input_grade]])) >= 1) && (max(as.numeric(anl_filtered[[input_grade]])) <= 5),
-        "To support STREAM template AET04_PI, grade variable has to be \"AETOXGR\" for now."
+        (min(as.numeric(as.character(anl_filtered[[input_grade]]))) >= 1) &&
+          (max(as.numeric(as.character(anl_filtered[[input_grade]]))) <= 5),
+        "To support STREAM template AET04_PI, grade variable has to be numberic between 1 and 5."
       )
     )
     validate(
