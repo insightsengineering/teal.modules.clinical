@@ -1,4 +1,5 @@
 test_that("template_events_summary generates minimal table", {
+  test.nest::skip_if_too_deep(0)
 
   result <- template_events_summary(
     anl = "adae",
@@ -76,6 +77,7 @@ test_that("template_events_summary generates minimal table", {
 })
 
 test_that("template_events_summary generates table with multiple flags", {
+  test.nest::skip_if_too_deep(0)
 
   result <- template_events_summary(
     anl = "adae",
@@ -211,6 +213,7 @@ test_that("template_events_summary generates table with multiple flags", {
 })
 
 test_that("h_count_rows works as expected", {
+  test.nest::skip_if_too_deep(0)
 
   vars_anl <- c("A", "B", "C")
   vars_aesi <- c("Y", "Z")

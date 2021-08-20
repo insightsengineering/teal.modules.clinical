@@ -1,4 +1,6 @@
 test_that("template_mult_events generates correct expressions with 1 HLT parameter", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -79,6 +81,8 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
 
 
 test_that("template_mult_events generates correct expressions with 2 HLT parameters and drop_arm_levels = FALSE", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -163,6 +167,8 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
 
 
 test_that("template_mult_events generates correct expressions with 3 HLT parameters", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -272,6 +278,8 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
 })
 
 test_that("template_mult_events generates correct expressions with 4 HLT parameters", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -374,6 +382,8 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
 
 
 test_that("template_mult_events generates correct expressions with no HLT parameters", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -432,6 +442,8 @@ test_that("template_mult_events generates correct expressions with no HLT parame
 })
 
 test_that("template_mult_events generates correct expressions with 1 HLT parameter and without 'All Patients' column", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",

@@ -3,6 +3,8 @@ library(scda)
 library(tern)
 
 test_that("h_concat_expr returns a string for long expression", {
+  test.nest::skip_if_too_deep(0)
+
   expr <- quote(
     basic_table() %>%
       split_cols_by(var = "ARMCD") %>%
@@ -22,6 +24,8 @@ test_that("h_concat_expr returns a string for long expression", {
 
 
 test_that("pipe_expr concatenate expressions into a single pipeline (%>%)", {
+  test.nest::skip_if_too_deep(0)
+
   result <- pipe_expr(
     list(
       expr1 = substitute(df),
@@ -33,6 +37,8 @@ test_that("pipe_expr concatenate expressions into a single pipeline (%>%)", {
 })
 
 test_that("add_expr adds expressions to expression list", {
+  test.nest::skip_if_too_deep(0)
+
   lyt <- list()
   lyt <- add_expr(lyt, substitute(basic_table()))
   lyt <- add_expr(
@@ -60,6 +66,8 @@ test_that("add_expr adds expressions to expression list", {
 })
 
 test_that("add_expr manages expression list which can be used by pipe_expr", {
+  test.nest::skip_if_too_deep(0)
+
   lyt <- list()
   lyt <- add_expr(lyt, substitute(basic_table()))
   lyt <- add_expr(
@@ -99,6 +107,8 @@ expr3 <- substitute(
 )
 
 test_that("bracket_expr concatenates expressions into a single expression", {
+  test.nest::skip_if_too_deep(0)
+
   result <- bracket_expr(list(expr1, expr2, expr3))
   expected <- substitute(
     expr = {
@@ -113,6 +123,8 @@ test_that("bracket_expr concatenates expressions into a single expression", {
 })
 
 test_that("bracket_expr returns a single evaluable expression", {
+  test.nest::skip_if_too_deep(0)
+
   eval(bracket_expr(list(expr1, expr2, expr3)))
   result <- table(anl$rsp_lab, anl$is_rsp)
   expected <- structure(
@@ -137,6 +149,8 @@ test_that("bracket_expr returns a single evaluable expression", {
 
 # prepare_arm ----
 test_that("prepare_arm with standard inputs", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm(
     dataname = "adrs",
     arm_var = "ARMCD",
@@ -155,6 +169,8 @@ test_that("prepare_arm with standard inputs", {
 })
 
 test_that("prepare_arm combine ref arms", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm(
     dataname = "adrs",
     arm_var = "ARMCD",
@@ -174,6 +190,8 @@ test_that("prepare_arm combine ref arms", {
 })
 
 test_that("prepare_arm combine ref arms and use new level", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm(
     dataname = "adrs",
     arm_var = "ARMCD",
@@ -194,6 +212,8 @@ test_that("prepare_arm combine ref arms and use new level", {
 })
 
 test_that("prepare_arm does not do anything when we don't want to compare or drop arms", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm(
     dataname = "adrs",
     arm_var = "ARMCD",
@@ -221,6 +241,8 @@ test_that("prepare_arm does not do anything when we don't want to compare or dro
 
 # prepare_arm_levels ----
 test_that("prepare_arm_levels with standard inputs", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm_levels(
     dataname = "adae",
     parentname = "adsl",
@@ -239,6 +261,8 @@ test_that("prepare_arm_levels with standard inputs", {
 })
 
 test_that("prepare_arm_levels can use parentname arm levels", {
+  test.nest::skip_if_too_deep(0)
+
   result <- prepare_arm_levels(
     dataname = "adae",
     parentname = "adsl",
@@ -256,6 +280,7 @@ test_that("prepare_arm_levels can use parentname arm levels", {
 })
 
 test_that("color_lab_values main", {
+  test.nest::skip_if_too_deep(0)
 
   vals <- c("3 HIGH", "2 NORMAL", "5 HIGH", "4", "0 LOW")
 
@@ -273,6 +298,7 @@ test_that("color_lab_values main", {
 })
 
 test_that("color_lab_values neutral for none characters", {
+  test.nest::skip_if_too_deep(0)
 
   vals <- 1:5
 
@@ -283,6 +309,7 @@ test_that("color_lab_values neutral for none characters", {
 })
 
 test_that("clean_description", {
+  test.nest::skip_if_too_deep(0)
 
   vals <- rownames(mtcars)
 

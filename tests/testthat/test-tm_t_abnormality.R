@@ -1,4 +1,6 @@
 test_that("template_abnormality generates correct expressions with default arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -53,6 +55,8 @@ test_that("template_abnormality generates correct expressions with default argum
 })
 
 test_that("template_abnormality generates correct expressions with custom arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
