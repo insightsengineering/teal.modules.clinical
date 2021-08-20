@@ -7,6 +7,7 @@
 * `tm_t_events` now can have nested column as treatment variables, and same pruning and sorting logic remains the same.
 * Updated license and `README.md` with appropriate information for migration to public Github.
 * Previously package helper functions were never exported. These functions have now been exported so they can be utilized. 
+* `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
 
 # teal.modules.clinical 0.8.9
 ### New features
