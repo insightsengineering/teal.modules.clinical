@@ -1,4 +1,6 @@
 test_that("template_rsp generates standard expressions", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "adrs",
     parentname = "adsl",
@@ -69,6 +71,8 @@ test_that("template_rsp generates standard expressions", {
 })
 
 test_that("template_rsp generates right expressions with non-default", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -134,6 +138,8 @@ test_that("template_rsp generates right expressions with non-default", {
 })
 
 test_that("template_rsp generates expression without arm comparison", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -176,6 +182,8 @@ test_that("template_rsp generates expression without arm comparison", {
 })
 
 test_that("template_rsp generates expression with non-default controls and strata.", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -268,6 +276,8 @@ test_that("template_rsp generates expression with non-default controls and strat
 })
 
 test_that("template_rsp can combine comparison arms", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "adrs",
     parentname = "ADSL",
@@ -341,6 +351,8 @@ test_that("template_rsp can combine comparison arms", {
 })
 
 test_that("split_col_expr prepare the right four possible expressions", {
+  test.nest::skip_if_too_deep(0)
+
   result <- list(
     split_col_expr(compare = TRUE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
     split_col_expr(compare = TRUE, combine = FALSE, arm_var = "ARMCD", ref = "ARM C"),
@@ -357,6 +369,8 @@ test_that("split_col_expr prepare the right four possible expressions", {
 })
 
 test_that("template_rsp can combine refs", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_rsp(
     dataname = "adrs",
     parentname = "adsl",
