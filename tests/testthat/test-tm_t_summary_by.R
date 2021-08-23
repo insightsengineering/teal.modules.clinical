@@ -1,4 +1,6 @@
 test_that("template_summary_by generates correct expressions", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -54,6 +56,8 @@ test_that("template_summary_by generates correct expressions", {
 })
 
 test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -113,6 +117,8 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
 })
 
 test_that("template_summary_by generates correct expressions when `row_groups` is true", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adsl",
@@ -180,6 +186,8 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
 })
 
 test_that("template_summary_by generates correct expressions for customized numeric statistics", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -236,6 +244,8 @@ test_that("template_summary_by generates correct expressions for customized nume
 })
 
 test_that("template_summary_by generates correct expressions for `drop_zero_levels` is true", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",

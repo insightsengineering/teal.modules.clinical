@@ -1,4 +1,6 @@
 test_that("template_g_ipp works as expected with default arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_g_ipp(paramcd = "PARAMCD", arm_var = "ARMCD")
 
   expected <- list(
@@ -43,6 +45,8 @@ test_that("template_g_ipp works as expected with default arguments", {
 
 
 test_that("template_g_ipp works as expected with non-default arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_g_ipp(
     dataname = "adlb",
     paramcd = "PARAM",
