@@ -888,6 +888,13 @@ srv_t_events_by_grade <- function(input,
           "To support displaying grade grouping in nested columns, grade variable has to be a factor with values between 1 and 5." #nolint
         )
       )
+    } else {
+      validate(
+        need(
+          is.factor(anl_filtered[[input_grade]]),
+          "Event grade variable has to be a factor for the module to work properly." #nolint
+        )
+      )
     }
     validate(
       need(
