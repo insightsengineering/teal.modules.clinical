@@ -219,7 +219,7 @@ template_events_by_grade <- function(dataname,
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
-    y$pruned_and_sorted_result <- substitute(
+    y$sorted_result <- substitute(
       expr = {
         result <- result %>%
           trim_rows() %>%
@@ -228,7 +228,6 @@ template_events_by_grade <- function(dataname,
             scorefun = scorefun,
             decreasing = TRUE
           )
-        result
       },
       env = list(
         term_var = term_var,
@@ -236,7 +235,7 @@ template_events_by_grade <- function(dataname,
       )
     )
   } else {
-    y$pruned_and_sorted_result <- substitute(
+    y$sorted_result <- substitute(
       expr = {
         result <- result %>%
           trim_rows() %>%
@@ -250,7 +249,6 @@ template_events_by_grade <- function(dataname,
             scorefun = scorefun,
             decreasing = TRUE
           )
-        result
         },
       env = list(
         hlt = hlt,
@@ -259,6 +257,75 @@ template_events_by_grade <- function(dataname,
       )
     )
   }
+
+  # prune the result based on prune_freq and prune_diff
+  prune_list <- list()
+  prune_list <- add_expr(
+    prune_list,
+    substitute(
+      expr = col_indices <- 1:(ncol(result) - add_total),
+      env = list(add_total = add_total)
+    )
+  )
+
+  if (prune_freq > 0) {
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+        env = list(prune_freq = prune_freq)
+      )
+    )
+  }
+  if (prune_diff > 0) {
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+        env = list(prune_diff = prune_diff)
+      )
+    )
+  }
+
+  prune_pipe <- list()
+  prune_pipe <- add_expr(
+    prune_pipe,
+    quote(
+      result <- result
+    )
+  )
+  if (prune_freq > 0 & prune_diff > 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
+    )
+  } else if (prune_freq > 0 & prune_diff == 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_any)))
+    )
+  } else if (prune_freq == 0 & prune_diff > 0) {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table(keep_rows(at_least_percent_diff)))
+    )
+  } else {
+    prune_pipe <- add_expr(
+      prune_pipe,
+      quote(prune_table())
+    )
+  }
+  prune_pipe <- pipe_expr(prune_pipe)
+  prune_list <- add_expr(
+    prune_list,
+    prune_pipe
+  )
+  prune_list <- add_expr(
+    prune_list,
+    quote(result)
+  )
+  y$pruned_and_sorted_result <- bracket_expr(prune_list)
+
   y
 }
 
@@ -961,6 +1028,8 @@ srv_t_events_by_grade <- function(input,
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         grade = input_grade,
+        prune_freq = input$prune_freq / 100,
+        prune_diff = input$prune_diff / 100,
         add_total = input$add_total,
         drop_arm_levels = input$drop_arm_levels
       )
