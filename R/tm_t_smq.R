@@ -1,4 +1,4 @@
-#' Adverse events table by SMQ/CQ
+#' Adverse events table by Standardized MedRa Query
 #'
 #' @inheritParams template_arguments
 #' @param baskets (`character`)\cr
@@ -119,7 +119,6 @@ template_smq <- function(
         )
       )
   )
-
 
   y$data <- bracket_expr(data_list)
 

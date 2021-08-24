@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Adverse events table by SMQ/CQ}
+\title{Adverse events table by Standardized MedRa Query}
 \usage{
 template_smq(
   parentname,
@@ -49,21 +49,20 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
 
-\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
+created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
 \item{baskets}{(\code{character})\cr
 variable names of the selected Standardized/Customized queries}
 
-\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}} with names of the key variables to be returned.}
+\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}
+with names of the key variables to be returned.}
 
 \item{sort_by_descending}{(\code{flag})\cr whether the table should be
 sorted in descending order (alphabetically sorted otherwise).}
 }
-\value{
-
-}
 \description{
-Adverse events table by SMQ/CQ
+Adverse events table by Standardized MedRa Query
 }
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}

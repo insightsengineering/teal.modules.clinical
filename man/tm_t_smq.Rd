@@ -66,12 +66,14 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
 
-\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
+created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
 \item{baskets}{(\code{character})\cr
 variable names of the selected Standardized/Customized queries}
 
-\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}} with names of the key variables to be returned.}
+\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}
+with names of the key variables to be returned.}
 
 \item{sort_by_descending}{(\code{flag})\cr whether the table should be
 sorted in descending order (alphabetically sorted otherwise).}
@@ -80,10 +82,9 @@ sorted in descending order (alphabetically sorted otherwise).}
 with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{}
-}
-\value{
-
+\item{post_output}{optional, (\code{shiny.tag})\cr
+with text placed after the output to put the output into context. For example
+the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
 Teal Module: SMQ Table
