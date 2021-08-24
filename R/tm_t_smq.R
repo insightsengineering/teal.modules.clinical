@@ -19,7 +19,7 @@ template_smq <- function(
   col_by_var,
   llt = "AEDECOD",
   add_total = TRUE,
-  drop_arm_levels = TRUE,
+  drop_arm_levels,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
@@ -65,11 +65,11 @@ template_smq <- function(
     )
   )
 
-  #merging with ADSL for obtaining ARM and col_by_var (if not NULL)
+  #merging with ANL for obtaining ARM, col_by_var (if not NULL) and LLT
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- inner_join(x = dataname, y = df_stack, by = keys),
+      anl <- inner_join(x = dataname, y = df_stack, by = keys),
       env = list(
         dataname = as.name("anl"),
         keys = keys
@@ -107,7 +107,6 @@ template_smq <- function(
 
   # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
-
   layout_list <- list()
 
   layout_list <- add_expr(
@@ -130,7 +129,7 @@ template_smq <- function(
     }
   )
 
-  if (is.null(col_by_var)) {
+  if (is_empty(col_by_var)) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -206,22 +205,22 @@ template_smq <- function(
     )
   )
 
-layout_list <- add_expr(
-  layout_list,
-  substitute(
-    expr = count_occurrences(vars = llt),
-    env = list(
-      llt = llt
-      )
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = count_occurrences(vars = llt),
+      env = list(
+        llt = llt
+        )
+    )
   )
-)
 
   layout_list <- add_expr(
     layout_list,
     substitute(
       expr = append_varlabels(dataname, llt, indent = 1L),
       env = list(
-        dataname = anl,
+        dataname = as.name("anl"),
         llt = llt
       )
     )
@@ -299,23 +298,23 @@ layout_list <- add_expr(
 #'
 #' cs_scopes <- choices_selected(
 #' choices = variable_choices(adae, subset = names_scopes),
-#' selected = names_scopes
+#' selected = names_scopes,
+#' fixed = TRUE
 #' )
-#'
 #'
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'     code = 'ADSL <- radsl(cached = TRUE)'),
-#'     cdisc_dataset("ADLB", adae,
-#'       code = 'ADAE <- synthetic_cdisc_data("latest")$adae'
-#'       )
+#'     code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
 #'     ),
+#'     cdisc_dataset("ADAE", adae,
+#'       code = "ADAE <- synthetic_cdisc_data('latest')$adae"
+#'       ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
-#'     tm_t_abnormality(
+#'     tm_t_smq(
 #'       label = "Adverse events by SMQ Table",
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(
@@ -325,7 +324,7 @@ layout_list <- add_expr(
 #'       add_total = FALSE,
 #'       col_by_var = choices_selected(
 #'         choices = variable_choices(adae, subset = c("SEX", "STRATA1")),
-#'         selected = NULL
+#'         selected = "SEX"
 #'       ),
 #'       baskets = cs_baskets,
 #'       scopes = cs_scopes,
@@ -358,6 +357,15 @@ tm_t_smq <- function(label,
                      baskets,
                      scopes,
                      keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
+                     astdtm = choices_selected(
+                       variable_choices(dataname, subset = "ASTDTM"), selected = "ASTDTM", fixed = TRUE
+                     ),
+                     aeterm = choices_selected(
+                       variable_choices(dataname, subset = "AETERM"), selected = "AETERM", fixed = TRUE
+                     ),
+                     aeseq = choices_selected(
+                       variable_choices(dataname, subset = "AESEQ"), selected = "AESEQ", fixed = TRUE
+                     ),
                      sort_by_descending = TRUE,
                      pre_output = NULL,
                      post_output = NULL) {
@@ -376,9 +384,12 @@ tm_t_smq <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     col_by_var = cs_to_des_select(col_by_var, dataname = parentname),
-    baskets = cs_to_des_select(baskets, dataname = dataname),
-    scopes = cs_to_des_select(scopes, dataname = dataname),
+    baskets = cs_to_des_select(baskets, dataname = dataname, multiple = TRUE),
+    scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname),
+    astdtm = cs_to_des_select(astdtm, dataname = dataname),
+    aeterm = cs_to_des_select(aeterm, dataname = dataname),
+    aeseq = cs_to_des_select(aeseq, dataname = dataname)
   )
 
   args <- as.list(environment())
@@ -402,7 +413,7 @@ tm_t_smq <- function(label,
 }
 
 #' @noRd
-ui_t_exposure <- function(id, ...) {
+ui_t_smq <- function(id, ...) {
 
   ns <- NS(id)
   a <- list(...) # module args
@@ -414,7 +425,10 @@ ui_t_exposure <- function(id, ...) {
     a$id_var,
     a$baskets,
     a$scopes,
-    a$llt
+    a$llt,
+    a$astdtm,
+    a$aeterm,
+    a$aeseq
   )
 
   standard_layout(
@@ -434,31 +448,23 @@ ui_t_exposure <- function(id, ...) {
       data_extract_input(
         id = ns("col_by_var"),
         label = "Select additional column by variable, if desired",
-        data_extract_spec = a$arm_var,
+        data_extract_spec = a$col_by_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value,
-        multiple = TRUE
-      ),
-      data_extract_input(
-        id = ns("scopes"),
-        label = "Scope variables available",
-        data_extract_spec = a$scopes,
-        is_single_dataset = is_single_dataset_value,
-        multiple = TRUE
+        data_extract_spec = a$baskets,
+        is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
         id = ns("llt"),
         label = "Select the low level term",
-        data_extract_spec = a$arm_var,
+        data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("sort_by_descending"), "Add All Patients column", value = a$sort_by_descending),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      checkboxInput(ns("sort_by_descending"), "Sort by descending order (if not, alphabetically)", value = a$sort_by_descending),
+      checkboxInput(ns("drop_arm_levels"), "Drop arm levels not in filtered analysis dataset", value = a$drop_arm_levels),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -466,6 +472,30 @@ ui_t_exposure <- function(id, ...) {
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("scopes"),
+            label = "Scope variables available",
+            data_extract_spec = a$scopes,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("astdtm"),
+            label = "Analysis Start Datetime",
+            data_extract_spec = a$astdtm,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("aeterm"),
+            label = "Reported Term for the Adverse Event",
+            data_extract_spec = a$aeterm,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("aeseq"),
+            label = "Sponsor-Defined Identifier",
+            data_extract_spec = a$aeseq,
             is_single_dataset = is_single_dataset_value
           )
         )
@@ -477,28 +507,31 @@ ui_t_exposure <- function(id, ...) {
   )
 }
 
-srv_t_exposure <- function(input,
-                           output,
-                           session,
-                           datasets,
-                           dataname,
-                           parentname,
-                           arm_var,
-                           id_var,
-                           col_by_var,
-                           baskets,
-                           scopes,
-                           llt,
-                           na_level,
-                           label) {
+srv_t_smq <- function(input,
+                      output,
+                      session,
+                      datasets,
+                      dataname,
+                      parentname,
+                      arm_var,
+                      id_var,
+                      col_by_var,
+                      baskets,
+                      scopes,
+                      llt,
+                      astdtm,
+                      aeterm,
+                      aeseq,
+                      na_level,
+                      label) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, id_var, col_by_var, baskets, scopes, llt),
-    input_id = c("id_var", "col_by_var", "baskets", "scopes", "llt"),
+    data_extract = list(arm_var, id_var, col_by_var, baskets, scopes, llt, astdtm, aeterm, aeseq),
+    input_id = c("arm_var", "id_var", "col_by_var", "baskets", "scopes", "llt", "astdtm", "aeterm", "aeseq"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -521,6 +554,9 @@ srv_t_exposure <- function(input,
     input_baskets <- as.vector(anl_m$columns_source$baskets)
     input_scopes <- as.vector(anl_m$columns_source$scopes)
     input_llt <- as.vector(anl_m$columns_source$llt)
+    input_astdtm <- as.vector(anl_m$columns_source$astdtm)
+    input_aeterm <- as.vector(anl_m$columns_source$aeterm)
+    input_aeseq <- as.vector(anl_m$columns_source$aeseq)
   })
 
   call_preparation <- reactive({
@@ -541,7 +577,6 @@ srv_t_exposure <- function(input,
       id_var = as.vector(anl_m$columns_source$id_var),
       col_by_var = as.vector(anl_adsl$columns_source$col_by_var),
       baskets = as.vector(anl_m$columns_source$baskets),
-      scopes = as.vector(anl_m$columns_source$scopes),
       llt = as.vector(anl_m$columns_source$llt),
       sort_by_descending = input$sort_by_descending,
       add_total = input$add_total,
@@ -570,7 +605,7 @@ srv_t_exposure <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, id_var, col_by_var, baskets, scopes, llt)
+      list(arm_var, id_var, col_by_var, baskets, scopes, llt, astdtm, aeterm, aeseq)
     ),
     modal_title = "R Code for SMQ tables",
     code_header = label
