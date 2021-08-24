@@ -952,13 +952,21 @@ srv_t_events_by_grade <- function(input,
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
-    validate(
-      need(
-        (min(as.numeric(as.character(anl_filtered[[input_grade]]))) >= 1) &&
-          (max(as.numeric(as.character(anl_filtered[[input_grade]]))) <= 5),
-        "To support displaying grade grouping in nested columns, grade variable has to be numberic between 1 and 5."
+    if (input$col_by_grade) {
+      validate(
+        need(
+          is.factor(anl_filtered[[input_grade]]) && all(levels(anl_filtered[[input_grade]]) %in% as.character(c(1:5))),
+          "To support displaying grade grouping in nested columns, grade variable has to be a factor with values between 1 and 5." #nolint
+        )
       )
-    )
+    } else {
+      validate(
+        need(
+          is.factor(anl_filtered[[input_grade]]),
+          "Event grade variable must be a factor."
+        )
+      )
+    }
     validate(
       need(
         input$prune_freq >= 0 && input$prune_freq <= 100,
