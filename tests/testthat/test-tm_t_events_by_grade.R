@@ -67,7 +67,7 @@ test_that("template_events_by_grade generates standard expressions", {
         alt_counts_df = adsl
       )
     ),
-    pruned_and_sorted_result = quote({
+    sorted_result = quote({
       result <- result %>%
         trim_rows() %>%
         sort_at_path(
@@ -79,6 +79,10 @@ test_that("template_events_by_grade generates standard expressions", {
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
+    }),
+    pruned_and_sorted_result = quote({
+      col_indices <- 1:(ncol(result) - TRUE)
+      result <- result %>% prune_table()
       result
     })
   )
@@ -155,7 +159,7 @@ test_that("template_events_by_grade without adding total column option works as 
         alt_counts_df = adsl
       )
     ),
-    pruned_and_sorted_result = quote({
+    sorted_result = quote({
       result <- result %>%
         trim_rows() %>%
         sort_at_path(
@@ -168,6 +172,10 @@ test_that("template_events_by_grade without adding total column option works as 
           scorefun = cont_n_allcols,
           decreasing = TRUE
         )
+    }),
+    pruned_and_sorted_result = quote({
+      col_indices <- 1:(ncol(result) - FALSE)
+      result <- result %>% prune_table()
       result
     })
   )
@@ -232,7 +240,7 @@ test_that("template_events_by_grade with hlt only works", {
         alt_counts_df = adsl
       )
     ),
-    pruned_and_sorted_result = quote({
+    sorted_result = quote({
       result <- result %>%
         trim_rows() %>%
         sort_at_path(
@@ -240,6 +248,10 @@ test_that("template_events_by_grade with hlt only works", {
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
+    }),
+    pruned_and_sorted_result = quote({
+      col_indices <- 1:(ncol(result) - TRUE)
+      result <- result %>% prune_table()
       result
     })
   )
