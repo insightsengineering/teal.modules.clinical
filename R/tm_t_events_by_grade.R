@@ -885,7 +885,7 @@ srv_t_events_by_grade <- function(input,
       validate(
         need(
           is.factor(anl_filtered[[input_grade]]) && all(levels(anl_filtered[[input_grade]]) %in% as.character(c(1:5))),
-          "To support displaying grade grouping in nested columns, grade variable has to be numberic between 1 and 5."
+          "To support displaying grade grouping in nested columns, grade variable has to be a factor with values between 1 and 5." #nolint
         )
       )
     }
