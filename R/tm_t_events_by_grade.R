@@ -3,6 +3,9 @@
 #' @inheritParams template_arguments
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
 #' @param grade (`character`) \cr name of the severity level variable.
+#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
+#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
+#'   rates between any two columns.
 #'
 #' @seealso [tm_t_events_by_grade()]
 #'
