@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Title}
+\title{Adverse events table by SMQ/CQ}
 \usage{
 template_smq(
   parentname,
@@ -12,7 +12,7 @@ template_smq(
   col_by_var,
   llt = "AEDECOD",
   add_total = TRUE,
-  drop_arm_levels = TRUE,
+  drop_arm_levels,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
@@ -21,11 +21,50 @@ template_smq(
 )
 }
 \arguments{
-\item{drop_arm_levels}{}
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
+\item{dataname}{(\code{character})\cr
+analysis data used in teal module.}
+
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
+
+\item{id_var}{(\code{character})\cr
+the variable name for subject id.}
+
+\item{col_by_var}{(\code{character})\cr
+variable name used to make a second level split of columns.}
+
+\item{llt}{(\code{character})\cr
+name of the variable with low level term for events.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data.}
+
+\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+
+\item{baskets}{(\code{character})\cr
+variable names of the selected Standardized/Customized queries}
+
+\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}} with names of the key variables to be returned.}
+
+\item{sort_by_descending}{(\code{flag})\cr whether the table should be
+sorted in descending order (alphabetically sorted otherwise).}
 }
 \value{
 
 }
 \description{
-Title
+Adverse events table by SMQ/CQ
+}
+\seealso{
+\code{\link[=tm_t_smq]{tm_t_smq()}}
 }

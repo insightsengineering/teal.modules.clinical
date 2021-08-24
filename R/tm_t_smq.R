@@ -1,15 +1,17 @@
-#' Title
+#' Adverse events table by SMQ/CQ
 #'
-#' @param parentname
-#' @param dataname
-#' @param arm_var
-#' @param basket
-#' @param llt
-#' @param add_total
-#' @param drop_arm_levels
-#'
-#' @return
-#' @export
+#' @inheritParams template_arguments
+#' @param baskets (`character`)\cr
+#' variable names of the selected Standardized/Customized queries
+#' @param col_by_var (`character`)\cr
+#' variable name used to make a second level split of columns.
+#' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
+#' with names of the key variables to be returned.
+#' @param sort_by_descending (`flag`)\cr whether the table should be
+#' sorted in descending order (alphabetically sorted otherwise).
+#' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
+#' created by [tern::h_stack_by_baskets()].
+#' @seealso [tm_t_smq()]
 #'
 template_smq <- function(
   parentname,
@@ -26,6 +28,22 @@ template_smq <- function(
   keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
   sort_by_descending = TRUE
 ) {
+
+  assert_that(
+    is.string(parentname),
+    is.string(dataname),
+    is.string(arm_var),
+    is.string(id_var),
+    is.string(col_by_var) || is_empty(col_by_var),
+    is.string(llt),
+    is.flag(add_total),
+    is.flag(drop_arm_levels),
+    is.string(na_level),
+    is.string(smq_varlabel),
+    is.character(baskets),
+    is.character(keys),
+    is.flag(sort_by_descending)
+  )
 
   y <- list()
 
@@ -156,7 +174,7 @@ template_smq <- function(
         .labels = c(
           unique = "Total number of patients with at least one adverse event"
         )
-      ) ,
+      ),
       env = list(
         id_var = id_var
         )
@@ -198,7 +216,7 @@ template_smq <- function(
           unique = "Total number of patients with at least one adverse event",
           nonunique = "Total number of events"
         )
-      ) ,
+      ),
       env = list(
         id_var = id_var
         )
@@ -259,26 +277,21 @@ template_smq <- function(
 
 }
 
-#' Title
+#' Teal Module: SMQ Table
 #'
-#' @param label
-#' @param dataname
-#' @param parentname
-#' @param arm_var
-#' @param id_var
-#' @param col_by_var
-#' @param llt
-#' @param add_total
-#' @param drop_arm_levels
-#' @param na_level
-#' @param smq_varlabel
-#' @param baskets
-#' @param keys
-#' @param sort_by_descending
-#' @param pre_output
-#' @param post_output
+#' @inheritParams module_arguments
+#' @param col_by_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' object with all available choices and preselected option for
+#' variable names that can be used to split columns.
+#' @param baskets (`character`)\cr
+#' variable names of the selected Standardized/Customized queries
+#' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
+#' with names of the key variables to be returned.
+#' @param sort_by_descending (`flag`)\cr whether the table should be
+#'  sorted in descending order (alphabetically sorted otherwise).
+#' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
+#' created by [tern::h_stack_by_baskets()].
 #'
-#' @return
 #' @export
 #'
 #' @examples
@@ -370,6 +383,17 @@ tm_t_smq <- function(label,
                      pre_output = NULL,
                      post_output = NULL) {
   stop_if_not(
+    is.string(dataname),
+    is.choices_selected(arm_var),
+    is.flag(add_total),
+    is.choices_selected(col_by_var),
+    is.flag(drop_arm_levels),
+    is_character_vector(keys),
+    is.choices_selected(id_var),
+    is.choices_selected(astdtm),
+    is.choices_selected(aeterm),
+    is.choices_selected(aeseq),
+    is.flag(sort_by_descending),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -463,8 +487,16 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("sort_by_descending"), "Sort by descending order (if not, alphabetically)", value = a$sort_by_descending),
-      checkboxInput(ns("drop_arm_levels"), "Drop arm levels not in filtered analysis dataset", value = a$drop_arm_levels),
+      checkboxInput(ns(
+        "sort_by_descending"),
+        "Sort by descending order (if not, alphabetically)",
+        value = a$sort_by_descending
+        ),
+      checkboxInput(ns(
+        "drop_arm_levels"),
+        "Drop arm levels not in filtered analysis dataset",
+        value = a$drop_arm_levels
+        ),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -557,6 +589,27 @@ srv_t_smq <- function(input,
     input_astdtm <- as.vector(anl_m$columns_source$astdtm)
     input_aeterm <- as.vector(anl_m$columns_source$aeterm)
     input_aeseq <- as.vector(anl_m$columns_source$aeseq)
+
+    validate(
+      need(input_id_var, "Please select a subject identifier."),
+      need(input_baskets, "Please select the SMQ/CQ baskets."),
+      need(input_llt, "Please select the low level term."),
+      need(input_astdtm, "Please select the analysis start datetime variable"),
+      need(input_aeterm, "Please select the reported term variable for the adverse event."),
+      need(input_aeseq, "Please select the Sponsor-Defined Identifier.")
+    )
+    #validate inputs
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_col_by_var),
+      anl = anl_filtered,
+      anlvars = c(
+        "USUBJID", "STUDYID", input_id_var, input_baskets,
+        input_scopes, input_llt, input_astdtm, input_aeterm, input_aeseq
+        ),
+      arm_var = input_arm_var
+    )
+
   })
 
   call_preparation <- reactive({
@@ -611,5 +664,3 @@ srv_t_smq <- function(input,
     code_header = label
   )
 }
-
-
