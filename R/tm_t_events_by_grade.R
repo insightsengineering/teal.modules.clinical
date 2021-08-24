@@ -892,7 +892,7 @@ srv_t_events_by_grade <- function(input,
       validate(
         need(
           is.factor(anl_filtered[[input_grade]]),
-          "Event grade variable has to be a factor for the module to work properly." #nolint
+          "Event grade variable must be a factor."
         )
       )
     }
