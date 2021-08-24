@@ -28,9 +28,10 @@
 ^Meta$
 ^outputdir$
 ^scratch$
+^staged_dependencies\.yaml$
 ^stubs$
 ^temp$
 ^templates$
 ^test_full_example$
 ^TODO\.md$
-^staged_dependencies.yaml$
+^LICENSE\.md$

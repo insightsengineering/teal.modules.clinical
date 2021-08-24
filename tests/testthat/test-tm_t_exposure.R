@@ -1,4 +1,6 @@
 test_that("template_exposure generates correct expressions with default arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_exposure(
     parentname = "adsl",
     dataname = "adex",
@@ -47,6 +49,8 @@ test_that("template_exposure generates correct expressions with default argument
 })
 
 test_that("template_exposure generates correct expressions with custom arguments", {
+  test.nest::skip_if_too_deep(0)
+
   result <- template_exposure(
     parentname = "myadsl",
     dataname = "myadex",
