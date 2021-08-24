@@ -13,6 +13,8 @@ template_events_by_grade <- function(dataname,
                                      hlt,
                                      llt,
                                      grade,
+                                     prune_freq = 0,
+                                     prune_diff = 0,
                                      add_total = TRUE,
                                      drop_arm_levels = TRUE) {
   assert_that(
@@ -23,6 +25,8 @@ template_events_by_grade <- function(dataname,
     is.string(llt) || is.null(llt),
     !is.null(hlt) || !is.null(llt),
     is.string(grade),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff),
     is.flag(add_total),
     is.flag(drop_arm_levels)
   )
