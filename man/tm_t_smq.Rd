@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{tm_t_smq}
 \alias{tm_t_smq}
-\title{Teal Module: SMQ Table}
+\title{Teal Module: \code{SMQ} Table}
 \usage{
 tm_t_smq(
   label,
@@ -76,7 +76,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-Teal Module: SMQ Table
+Teal Module: \code{SMQ} Table
 }
 \examples{
 library(scda)

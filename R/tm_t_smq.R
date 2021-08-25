@@ -282,7 +282,7 @@ template_smq <- function(
 
 }
 
-#' Teal Module: SMQ Table
+#' Teal Module: `SMQ` Table
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_smq
