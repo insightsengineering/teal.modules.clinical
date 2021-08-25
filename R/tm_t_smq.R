@@ -3,8 +3,6 @@
 #' @inheritParams template_arguments
 #' @param baskets (`character`)\cr
 #' variable names of the selected Standardized/Customized queries
-#' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
-#' with names of the key variables to be returned.
 #' @param sort_by_descending (`flag`)\cr whether the table should be
 #' sorted in descending order (alphabetically sorted otherwise).
 #' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
@@ -22,7 +20,6 @@ template_smq <- function(
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
   sort_criteria = c("freq_desc", "alpha")
 ) {
 
@@ -36,8 +33,7 @@ template_smq <- function(
     is.flag(drop_arm_levels),
     is.string(na_level),
     is.string(smq_varlabel),
-    is.character(baskets),
-    is.character(keys)
+    is.character(baskets)
   )
 
   sort_criteria <- match.arg(sort_criteria)
@@ -81,25 +77,19 @@ template_smq <- function(
   data_list <- add_expr(
     data_list,
     substitute(
-      df_stack <- h_stack_by_baskets(
+      anl <- h_stack_by_baskets(
         df = dataname,
-        baskets = baskets
+        baskets = baskets,
+        smq_varlabel = smq_varlabel,
+        keys = c("STUDYID", id_var, arm_var, llt)
       ),
       env = list(
         dataname = as.name("anl"),
-        baskets = baskets
-      )
-    )
-  )
-
-  #merging with ANL for obtaining LLT
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      anl <- inner_join(x = dataname, y = df_stack, by = keys),
-      env = list(
-        dataname = as.name("anl"),
-        keys = keys
+        baskets = baskets,
+        smq_varlabel = smq_varlabel,
+        id_var = id_var,
+        arm_var = arm_var,
+        llt = llt
       )
     )
   )
@@ -293,8 +283,6 @@ template_smq <- function(
 #' @inheritParams module_arguments
 #' @param baskets (`character`)\cr
 #' variable names of the selected Standardized/Customized queries
-#' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
-#' with names of the key variables to be returned.
 #' @param sort_by_descending (`flag`)\cr whether the table should be
 #'  sorted in descending order (alphabetically sorted otherwise).
 #' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
@@ -304,7 +292,6 @@ template_smq <- function(
 #'
 #' @examples
 #' library(scda)
-#'
 #'
 #' adsl <- synthetic_cdisc_data("latest")$adsl
 #' adae <- synthetic_cdisc_data("latest")$adae
@@ -372,16 +359,6 @@ tm_t_smq <- function(label,
                      smq_varlabel = "Standardized MedDRA Query",
                      baskets,
                      scopes,
-                     keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
-                     astdtm = choices_selected(
-                       variable_choices(dataname, subset = "ASTDTM"), selected = "ASTDTM", fixed = TRUE
-                     ),
-                     aeterm = choices_selected(
-                       variable_choices(dataname, subset = "AETERM"), selected = "AETERM", fixed = TRUE
-                     ),
-                     aeseq = choices_selected(
-                       variable_choices(dataname, subset = "AESEQ"), selected = "AESEQ", fixed = TRUE
-                     ),
                      sort_criteria = c("freq_desc", "alpha"),
                      pre_output = NULL,
                      post_output = NULL) {
@@ -390,11 +367,8 @@ tm_t_smq <- function(label,
     is.choices_selected(arm_var),
     is.flag(add_total),
     is.flag(drop_arm_levels),
-    is_character_vector(keys),
     is.choices_selected(id_var),
-    is.choices_selected(astdtm),
-    is.choices_selected(aeterm),
-    is.choices_selected(aeseq),
+    is.choices_selected(llt),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -412,10 +386,7 @@ tm_t_smq <- function(label,
     id_var = cs_to_des_select(id_var, dataname = dataname),
     baskets = cs_to_des_select(baskets, dataname = dataname, multiple = TRUE),
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
-    llt = cs_to_des_select(llt, dataname = dataname),
-    astdtm = cs_to_des_select(astdtm, dataname = dataname),
-    aeterm = cs_to_des_select(aeterm, dataname = dataname),
-    aeseq = cs_to_des_select(aeseq, dataname = dataname)
+    llt = cs_to_des_select(llt, dataname = dataname)
   )
 
   args <- as.list(environment())
@@ -450,10 +421,7 @@ ui_t_smq <- function(id, ...) {
     a$id_var,
     a$baskets,
     a$scopes,
-    a$llt,
-    a$astdtm,
-    a$aeterm,
-    a$aeseq
+    a$llt
   )
 
   standard_layout(
@@ -461,8 +429,7 @@ ui_t_smq <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
-        "arm_var", "baskets", "llt", "id_var",
-        "scopes", "astdtm", "aeterm", "aeseq"
+        "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -482,15 +449,6 @@ ui_t_smq <- function(id, ...) {
         label = "Select the low level term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
-      ),
-      selectInput(
-        inputId = ns("sort_criteria"),
-        label = "Sort Criteria",
-        choices = c("Decreasing frequency" = "freq_desc",
-                    "Alphabetically" = "alpha"
-        ),
-        selected = a$sort_criteria,
-        multiple = FALSE
       ),
       checkboxInput(ns(
         "drop_arm_levels"),
@@ -512,23 +470,14 @@ ui_t_smq <- function(id, ...) {
             data_extract_spec = a$scopes,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
-            id = ns("astdtm"),
-            label = "Analysis Start Datetime",
-            data_extract_spec = a$astdtm,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("aeterm"),
-            label = "Reported Term for the Adverse Event",
-            data_extract_spec = a$aeterm,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("aeseq"),
-            label = "Sponsor-Defined Identifier",
-            data_extract_spec = a$aeseq,
-            is_single_dataset = is_single_dataset_value
+          selectInput(
+            inputId = ns("sort_criteria"),
+            label = "Sort Criteria",
+            choices = c("Decreasing frequency" = "freq_desc",
+                        "Alphabetically" = "alpha"
+            ),
+            selected = a$sort_criteria,
+            multiple = FALSE
           )
         )
       )
@@ -550,9 +499,6 @@ srv_t_smq <- function(input,
                       baskets,
                       scopes,
                       llt,
-                      astdtm,
-                      aeterm,
-                      aeseq,
                       na_level,
                       label) {
   stopifnot(is_cdisc_data(datasets))
@@ -561,8 +507,8 @@ srv_t_smq <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, id_var, baskets, scopes, llt, astdtm, aeterm, aeseq),
-    input_id = c("arm_var", "id_var", "baskets", "scopes", "llt", "astdtm", "aeterm", "aeseq"),
+    data_extract = list(arm_var, id_var, baskets, scopes, llt),
+    input_id = c("arm_var", "id_var", "baskets", "scopes", "llt"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -587,17 +533,11 @@ srv_t_smq <- function(input,
     input_baskets <- as.vector(anl_m$columns_source$baskets)
     input_scopes <- as.vector(anl_m$columns_source$scopes)
     input_llt <- as.vector(anl_m$columns_source$llt)
-    input_astdtm <- as.vector(anl_m$columns_source$astdtm)
-    input_aeterm <- as.vector(anl_m$columns_source$aeterm)
-    input_aeseq <- as.vector(anl_m$columns_source$aeseq)
 
     validate(
       need(input_id_var, "Please select a subject identifier."),
       need(input_baskets, "Please select the SMQ/CQ baskets."),
-      need(input_llt, "Please select the low level term."),
-      need(input_astdtm, "Please select the analysis start datetime variable"),
-      need(input_aeterm, "Please select the reported term variable for the adverse event."),
-      need(input_aeseq, "Please select the Sponsor-Defined Identifier.")
+      need(input_llt, "Please select the low level term.")
     )
     #validate inputs
     validate_standard_inputs(
@@ -606,7 +546,7 @@ srv_t_smq <- function(input,
       anl = anl_filtered,
       anlvars = c(
         "USUBJID", "STUDYID", input_id_var, input_baskets,
-        input_scopes, input_llt, input_astdtm, input_aeterm, input_aeseq
+        input_scopes, input_llt
         ),
       arm_var = input_arm_var[[1]]
     )
@@ -658,7 +598,7 @@ srv_t_smq <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, id_var, baskets, scopes, llt, astdtm, aeterm, aeseq)
+      list(arm_var, id_var, baskets, scopes, llt)
     ),
     modal_title = "R Code for SMQ tables",
     code_header = label
