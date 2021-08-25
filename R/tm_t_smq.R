@@ -1,10 +1,8 @@
-#' Adverse events table by Standardized MedRa Query
+#' Adverse Events Table by Standardized MedDRA Query
 #'
 #' @inheritParams template_arguments
 #' @param baskets (`character`)\cr
 #' variable names of the selected Standardized/Customized queries
-#' @param col_by_var (`character`)\cr
-#' variable name used to make a second level split of columns.
 #' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
 #' with names of the key variables to be returned.
 #' @param sort_by_descending (`flag`)\cr whether the table should be
@@ -18,7 +16,6 @@ template_smq <- function(
   dataname,
   arm_var,
   id_var = "USUBJID",
-  col_by_var,
   llt = "AEDECOD",
   add_total = TRUE,
   drop_arm_levels,
@@ -26,24 +23,24 @@ template_smq <- function(
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
   keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
-  sort_by_descending = TRUE
+  sort_criteria = c("freq_desc", "alpha")
 ) {
 
   assert_that(
     is.string(parentname),
     is.string(dataname),
-    is.string(arm_var),
+    is.character(arm_var) && length(arm_var) %in% c(1, 2),
     is.string(id_var),
-    is.string(col_by_var) || is_empty(col_by_var),
     is.string(llt),
     is.flag(add_total),
     is.flag(drop_arm_levels),
     is.string(na_level),
     is.string(smq_varlabel),
     is.character(baskets),
-    is.character(keys),
-    is.flag(sort_by_descending)
+    is.character(keys)
   )
+
+  sort_criteria <- match.arg(sort_criteria)
 
   y <- list()
 
@@ -64,10 +61,22 @@ template_smq <- function(
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -83,7 +92,7 @@ template_smq <- function(
     )
   )
 
-  #merging with ANL for obtaining ARM, col_by_var (if not NULL) and LLT
+  #merging with ANL for obtaining LLT
   data_list <- add_expr(
     data_list,
     substitute(
@@ -126,40 +135,43 @@ template_smq <- function(
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   layout_list <- list()
 
+  # Start layout steps.
+  layout_list <- list()
+  layout_list <- add_expr(layout_list, quote(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    if (add_total) {
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(
-            var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
-          ),
-        env = list(arm_var = arm_var)
-      )
-    } else {
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var)
-      )
-    }
+    substitute(
+      expr = split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]])
+    )
+  )
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      if (drop_arm_levels) {
+        substitute(
+          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+
+  layout_list <- add_expr(
+    layout_list,
+    quote(add_colcounts())
   )
 
-  if (is_empty(col_by_var)) {
+  if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      substitute(
-        expr = add_colcounts()
-      )
-    )
-  } else {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr = split_cols_by(var = col_by_var) %>%
-          add_colcounts(),
-        env = list(col_by_var = col_by_var)
+      quote(
+        add_overall_col(label = "All Patients")
       )
     )
   }
@@ -248,7 +260,7 @@ template_smq <- function(
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  if (sort_by_descending) {
+  if (sort_criteria == "freq_desc") {
     y$table <- substitute(
     expr = {
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
@@ -279,9 +291,6 @@ template_smq <- function(
 #' Teal Module: SMQ Table
 #'
 #' @inheritParams module_arguments
-#' @param col_by_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
-#' object with all available choices and preselected option for
-#' variable names that can be used to split columns.
 #' @param baskets (`character`)\cr
 #' variable names of the selected Standardized/Customized queries
 #' @param keys (`character`)\cr argument from [tern::h_stack_by_baskets()]
@@ -330,14 +339,10 @@ template_smq <- function(
 #'       label = "Adverse events by SMQ Table",
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'         choices = variable_choices(adsl, subset = c("ARM", "SEX")),
 #'         selected = "ARM"
 #'       ),
 #'       add_total = FALSE,
-#'       col_by_var = choices_selected(
-#'         choices = variable_choices(adae, subset = c("SEX", "STRATA1")),
-#'         selected = "SEX"
-#'       ),
 #'       baskets = cs_baskets,
 #'       scopes = cs_scopes,
 #'       llt = choices_selected(
@@ -360,7 +365,6 @@ tm_t_smq <- function(label,
                      id_var = choices_selected(
                        variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
                      ),
-                     col_by_var,
                      llt,
                      add_total = TRUE,
                      drop_arm_levels = TRUE,
@@ -378,21 +382,19 @@ tm_t_smq <- function(label,
                      aeseq = choices_selected(
                        variable_choices(dataname, subset = "AESEQ"), selected = "AESEQ", fixed = TRUE
                      ),
-                     sort_by_descending = TRUE,
+                     sort_criteria = c("freq_desc", "alpha"),
                      pre_output = NULL,
                      post_output = NULL) {
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
     is.flag(add_total),
-    is.choices_selected(col_by_var),
     is.flag(drop_arm_levels),
     is_character_vector(keys),
     is.choices_selected(id_var),
     is.choices_selected(astdtm),
     is.choices_selected(aeterm),
     is.choices_selected(aeseq),
-    is.flag(sort_by_descending),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -403,10 +405,11 @@ tm_t_smq <- function(label,
     )
   )
 
+  sort_criteria <- match.arg(sort_criteria)
+
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    col_by_var = cs_to_des_select(col_by_var, dataname = parentname),
     baskets = cs_to_des_select(baskets, dataname = dataname, multiple = TRUE),
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname),
@@ -444,7 +447,6 @@ ui_t_smq <- function(id, ...) {
 
   is_single_dataset_value <- is_single_dataset(
     a$arm_var,
-    a$col_by_var,
     a$id_var,
     a$baskets,
     a$scopes,
@@ -459,7 +461,8 @@ ui_t_smq <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
-        "arm_var", "col_by_var", "id_var", "baskets", "llt"
+        "arm_var", "baskets", "llt", "id_var",
+        "scopes", "astdtm", "aeterm", "aeseq"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -468,12 +471,6 @@ ui_t_smq <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_input(
-        id = ns("col_by_var"),
-        label = "Select additional column by variable, if desired",
-        data_extract_spec = a$col_by_var,
-        is_single_dataset = is_single_dataset_value
-      ),
       data_extract_input(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
@@ -486,11 +483,15 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns(
-        "sort_by_descending"),
-        "Sort by descending order (if not, alphabetically)",
-        value = a$sort_by_descending
+      selectInput(
+        inputId = ns("sort_criteria"),
+        label = "Sort Criteria",
+        choices = c("Decreasing frequency" = "freq_desc",
+                    "Alphabetically" = "alpha"
         ),
+        selected = a$sort_criteria,
+        multiple = FALSE
+      ),
       checkboxInput(ns(
         "drop_arm_levels"),
         "Drop arm levels not in filtered analysis dataset",
@@ -546,7 +547,6 @@ srv_t_smq <- function(input,
                       parentname,
                       arm_var,
                       id_var,
-                      col_by_var,
                       baskets,
                       scopes,
                       llt,
@@ -561,17 +561,20 @@ srv_t_smq <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, id_var, col_by_var, baskets, scopes, llt, astdtm, aeterm, aeseq),
-    input_id = c("arm_var", "id_var", "col_by_var", "baskets", "scopes", "llt", "astdtm", "aeterm", "aeseq"),
+    data_extract = list(arm_var, id_var, baskets, scopes, llt, astdtm, aeterm, aeseq),
+    input_id = c("arm_var", "id_var", "baskets", "scopes", "llt", "astdtm", "aeterm", "aeseq"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(col_by_var, arm_var),
-    input_id = c("col_by_var", "arm_var"),
+    data_extract = list(arm_var),
+    input_id = c("arm_var"),
     anl_name = "ANL_ADSL"
   )
+
+  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
+
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -579,8 +582,7 @@ srv_t_smq <- function(input,
     anl_m <- anl_merged()
     anl_adsl <- adsl_merged()
 
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_col_by_var <- as.vector(anl_adsl$columns_source$col_by_var)
+    input_arm_var <- arm_var_user_input()
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_baskets <- as.vector(anl_m$columns_source$baskets)
     input_scopes <- as.vector(anl_m$columns_source$scopes)
@@ -600,13 +602,13 @@ srv_t_smq <- function(input,
     #validate inputs
     validate_standard_inputs(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_col_by_var),
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c(
         "USUBJID", "STUDYID", input_id_var, input_baskets,
         input_scopes, input_llt, input_astdtm, input_aeterm, input_aeseq
         ),
-      arm_var = input_arm_var
+      arm_var = input_arm_var[[1]]
     )
 
   })
@@ -625,12 +627,11 @@ srv_t_smq <- function(input,
     my_calls <- template_smq(
       parentname = "ANL_ADSL",
       dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
+      arm_var = arm_var_user_input(),
       id_var = as.vector(anl_m$columns_source$id_var),
-      col_by_var = as.vector(anl_adsl$columns_source$col_by_var),
       baskets = as.vector(anl_m$columns_source$baskets),
       llt = as.vector(anl_m$columns_source$llt),
-      sort_by_descending = input$sort_by_descending,
+      sort_criteria = input$sort_criteria,
       add_total = input$add_total,
       drop_arm_levels = input$drop_arm_levels,
       na_level = na_level
@@ -657,7 +658,7 @@ srv_t_smq <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, id_var, col_by_var, baskets, scopes, llt, astdtm, aeterm, aeseq)
+      list(arm_var, id_var, baskets, scopes, llt, astdtm, aeterm, aeseq)
     ),
     modal_title = "R Code for SMQ tables",
     code_header = label
