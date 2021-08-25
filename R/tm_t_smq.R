@@ -10,17 +10,17 @@
 #' @seealso [tm_t_smq()]
 #'
 template_smq <- function(
-  parentname,
   dataname,
+  parentname,
   arm_var,
-  id_var = "USUBJID",
   llt = "AEDECOD",
   add_total = TRUE,
-  drop_arm_levels,
+  sort_criteria = c("freq_desc", "alpha"),
+  drop_arm_levels = TRUE,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  sort_criteria = c("freq_desc", "alpha")
+  id_var = "USUBJID"
 ) {
 
   assert_that(
@@ -310,7 +310,6 @@ template_smq <- function(
 #' fixed = TRUE
 #' )
 #'
-#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
@@ -354,12 +353,19 @@ tm_t_smq <- function(label,
                      ),
                      llt,
                      add_total = TRUE,
+                     sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
                      na_level = "<Missing>",
                      smq_varlabel = "Standardized MedDRA Query",
-                     baskets = ,
-                     scopes,
-                     sort_criteria = c("freq_desc", "alpha"),
+                     baskets = choices_selected(
+                       choices = variable_choices(dataname, subset = grep("^(SMQ|CQ).*NAM$", names(dataname), value = TRUE)),
+                       selected = grep("^(SMQ|CQ).*NAM$", names(dataname), value = TRUE),
+                      ),
+                     scopes = choices_selected(
+                       choices = variable_choices(adae, subset = grep("^SMQ.*SC$", names(dataname), value = TRUE)),
+                       selected = grep("^SMQ.*SC$", names(dataname), value = TRUE),
+                       fixed = TRUE
+                       ),
                      pre_output = NULL,
                      post_output = NULL) {
   stop_if_not(
@@ -495,10 +501,10 @@ srv_t_smq <- function(input,
                       dataname,
                       parentname,
                       arm_var,
+                      llt,
                       id_var,
                       baskets,
                       scopes,
-                      llt,
                       na_level,
                       label) {
   stopifnot(is_cdisc_data(datasets))
@@ -521,7 +527,6 @@ srv_t_smq <- function(input,
 
   arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
 
-
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
@@ -537,6 +542,7 @@ srv_t_smq <- function(input,
     validate(
       need(input_id_var, "Please select a subject identifier."),
       need(input_baskets, "Please select the SMQ/CQ baskets."),
+      need(input_scopes, "Please select the scope variables."),
       need(input_llt, "Please select the low level term.")
     )
     #validate inputs
@@ -568,13 +574,14 @@ srv_t_smq <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = arm_var_user_input(),
-      id_var = as.vector(anl_m$columns_source$id_var),
-      baskets = as.vector(anl_m$columns_source$baskets),
       llt = as.vector(anl_m$columns_source$llt),
-      sort_criteria = input$sort_criteria,
       add_total = input$add_total,
+      sort_criteria = input$sort_criteria,
       drop_arm_levels = input$drop_arm_levels,
-      na_level = na_level
+      baskets = as.vector(anl_m$columns_source$baskets),
+      na_level = na_level,
+      id_var = as.vector(anl_m$columns_source$id_var),
+
     )
     mapply(expression = my_calls, chunks_push)
   })
