@@ -1,6 +1,4 @@
 test_that("template_summary generates correct expressions", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -48,8 +46,6 @@ test_that("template_summary generates correct expressions", {
 })
 
 test_that("template_summary can generate customized table", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -98,8 +94,6 @@ test_that("template_summary can generate customized table", {
 })
 
 test_that("template_summary generates correct expressions for multiple grouping variables", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -152,8 +146,6 @@ test_that("template_summary generates correct expressions for multiple grouping 
 })
 
 test_that("template_summary generates correct expressions for multiple grouping variables and all patientts", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -207,8 +199,6 @@ test_that("template_summary generates correct expressions for multiple grouping 
 })
 
 test_that("template_summary generates correct expressions for customized numeric statistics", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
