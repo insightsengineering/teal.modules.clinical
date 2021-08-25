@@ -357,7 +357,7 @@ tm_t_smq <- function(label,
                      drop_arm_levels = TRUE,
                      na_level = "<Missing>",
                      smq_varlabel = "Standardized MedDRA Query",
-                     baskets,
+                     baskets = ,
                      scopes,
                      sort_criteria = c("freq_desc", "alpha"),
                      pre_output = NULL,
@@ -437,6 +437,12 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
+      data_extract_input(
+        id = ns("llt"),
+        label = "Select the low level term",
+        data_extract_spec = a$llt,
+        is_single_dataset = is_single_dataset_value
+      ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       data_extract_input(
         id = ns("baskets"),
@@ -444,20 +450,14 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$baskets,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("llt"),
-        label = "Select the low level term",
-        data_extract_spec = a$llt,
-        is_single_dataset = is_single_dataset_value
-      ),
-      checkboxInput(ns(
-        "drop_arm_levels"),
-        "Drop arm levels not in filtered analysis dataset",
-        value = a$drop_arm_levels
-        ),
       panel_group(
         panel_item(
           "Additional Variables Info",
+          checkboxInput(ns(
+            "drop_arm_levels"),
+            "Drop arm levels not in filtered analysis dataset",
+            value = a$drop_arm_levels
+          ),
           data_extract_input(
             id = ns("id_var"),
             label = "Subject Identifier",
