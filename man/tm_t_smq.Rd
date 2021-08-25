@@ -110,7 +110,7 @@ app <- init(
   ),
   modules = root_modules(
     tm_t_smq(
-      label = "Adverse events by SMQ Table",
+      label = "Adverse events by `SMQ` Table",
       dataname = "ADAE",
       arm_var = choices_selected(
         choices = variable_choices(adsl, subset = c("ARM", "SEX")),
