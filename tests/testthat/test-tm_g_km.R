@@ -1,6 +1,4 @@
 test_that("template_g_km works as expected with default arguments", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_g_km(comp_arm = c("ARM A", "ARM B"))
   expected <- list(
     data = quote({
@@ -66,8 +64,6 @@ test_that("template_g_km works as expected with default arguments", {
 })
 
 test_that("template_g_km gives correct data expression when we want to compare versus reference arms", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_g_km(
     comp_arm = c("ARM A", "ARM B"),
     ref_arm = c("ARM C", "ARM D"),
@@ -85,8 +81,6 @@ test_that("template_g_km gives correct data expression when we want to compare v
 })
 
 test_that("template_g_km gives correct data expression when we want to combine comparison arms", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_g_km(
     comp_arm = c("ARM A", "ARM B"),
     ref_arm = c("ARM C", "ARM D"),

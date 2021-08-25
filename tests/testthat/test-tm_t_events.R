@@ -1,6 +1,4 @@
 test_that("template_events generates correct expressions", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -76,8 +74,6 @@ test_that("template_events generates correct expressions", {
 })
 
 test_that("template_events generates correct expressions for nested columns", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -158,8 +154,6 @@ test_that("template_events generates correct expressions for nested columns", {
 })
 
 test_that("template_events can generate customized table", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -211,8 +205,6 @@ test_that("template_events can generate customized table", {
 })
 
 test_that("template_events can generate customized table with alphabetical sorting", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -284,8 +276,6 @@ test_that("template_events can generate customized table with alphabetical sorti
 })
 
 test_that("template_events can generate customized table with pruning", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -372,8 +362,6 @@ test_that("template_events can generate customized table with pruning", {
 })
 
 test_that("template_events can generate customized table with pruning for nested column", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",

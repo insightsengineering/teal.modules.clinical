@@ -1,6 +1,4 @@
 test_that("template_shift_by_grade generates correct expressions with default arguments", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_shift_by_grade(
     parentname = "adsl",
     dataname = "adlb",
@@ -103,8 +101,6 @@ test_that("template_shift_by_grade generates correct expressions with default ar
 })
 
 test_that("template_shift_by_grade generates correct expressions with custom arguments", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_shift_by_grade(
     parentname = "adsl",
     dataname = "adlb",
@@ -208,8 +204,6 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
 test_that(
   "template_shift_by_grade throws an error when worst_flag_var
   is not one of “WGRLOVFL”, “WGRLOFL”, “WGRHIVFL”, “WGRHIFL”", {
-  test.nest::skip_if_too_deep(0)
-
   expect_error(
     result <- template_shift_by_grade(
       parentname = "adsl",
