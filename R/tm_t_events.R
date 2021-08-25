@@ -120,13 +120,24 @@ template_events <- function(dataname,
 
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var),
-      env = list(arm_var = arm_var[[1]])
-    )
+    if (add_total) {
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(
+            var = arm_var,
+            split_fun = add_overall_level("All Patients", first = FALSE)
+          ),
+        env = list(arm_var = arm_var[[1]])
+      )
+    } else {
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(var = arm_var),
+        env = list(arm_var = arm_var[[1]])
+      )
+    }
   )
   if (length(arm_var) == 2) {
     layout_list <- add_expr(
@@ -149,15 +160,6 @@ template_events <- function(dataname,
     layout_list,
     quote(add_colcounts())
   )
-
-  if (add_total) {
-    layout_list <- add_expr(
-      layout_list,
-      quote(
-        add_overall_col(label = "All Patients")
-      )
-    )
-  }
 
   unique_label <- paste0("Total number of patients with at least one ", event_type)
   nonunique_label <- paste0("Overall total number of ", event_type, "s")
@@ -449,7 +451,7 @@ template_events <- function(dataname,
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       arm_var = choices_selected(c("ARM", "SEX"), "ARM"),
 #'       llt = choices_selected(
 #'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")

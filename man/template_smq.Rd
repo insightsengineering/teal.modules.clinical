@@ -2,45 +2,41 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Adverse events table by Standardized MedRa Query}
+\title{Adverse Events Table by Standardized MedDRA Query}
 \usage{
 template_smq(
-  parentname,
   dataname,
+  parentname,
   arm_var,
-  id_var = "USUBJID",
-  col_by_var,
   llt = "AEDECOD",
   add_total = TRUE,
-  drop_arm_levels,
+  sort_criteria = c("freq_desc", "alpha"),
+  drop_arm_levels = TRUE,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
-  sort_by_descending = TRUE
+  id_var = "USUBJID"
 )
 }
 \arguments{
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
-
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
+\item{parentname}{(\code{character})\cr
+parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
-
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
-
-\item{col_by_var}{(\code{character})\cr
-variable name used to make a second level split of columns.}
 
 \item{llt}{(\code{character})\cr
 name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
+by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
@@ -55,14 +51,11 @@ created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 \item{baskets}{(\code{character})\cr
 variable names of the selected Standardized/Customized queries}
 
-\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}
-with names of the key variables to be returned.}
-
-\item{sort_by_descending}{(\code{flag})\cr whether the table should be
-sorted in descending order (alphabetically sorted otherwise).}
+\item{id_var}{(\code{character})\cr
+the variable name for subject id.}
 }
 \description{
-Adverse events table by Standardized MedRa Query
+Adverse Events Table by Standardized MedDRA Query
 }
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}

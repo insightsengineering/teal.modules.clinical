@@ -1,12 +1,14 @@
 #' Adverse Events Table by Standardized MedDRA Query
 #'
 #' @inheritParams template_arguments
-#' @param baskets (`character`)\cr
-#' variable names of the selected Standardized/Customized queries
-#' @param sort_by_descending (`flag`)\cr whether the table should be
-#' sorted in descending order (alphabetically sorted otherwise).
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'  by decreasing total number of patients with event. Alternative option `alpha` sorts events
+#'  alphabetically.
 #' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
 #' created by [tern::h_stack_by_baskets()].
+#' @param baskets (`character`)\cr
+#' variable names of the selected Standardized/Customized queries
+#'
 #' @seealso [tm_t_smq()]
 #'
 template_smq <- function(
@@ -151,12 +153,12 @@ template_smq <- function(
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          expr = split_cols_by(var = nested_col, split_fun = drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
         substitute(
-          expr = split_cols_by(nested_col),
+          expr = split_cols_by(var = nested_col),
           env = list(nested_col = arm_var[[2]])
         )
       }
@@ -283,12 +285,11 @@ template_smq <- function(
 #' Teal Module: SMQ Table
 #'
 #' @inheritParams module_arguments
-#' @param baskets (`character`)\cr
-#' variable names of the selected Standardized/Customized queries
-#' @param sort_by_descending (`flag`)\cr whether the table should be
-#'  sorted in descending order (alphabetically sorted otherwise).
-#' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
-#' created by [tern::h_stack_by_baskets()].
+#' @inheritParams template_smq
+#' @param baskets ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' object with all available choices and preselected options for Standardized/Customized queries
+#' @param scopes ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' object with all available choices for the scopes of Standardized queries.
 #'
 #' @export
 #'
@@ -359,15 +360,8 @@ tm_t_smq <- function(label,
                      drop_arm_levels = TRUE,
                      na_level = "<Missing>",
                      smq_varlabel = "Standardized MedDRA Query",
-                     baskets = choices_selected(
-                       choices = variable_choices(dataname, subset = grep("^(SMQ|CQ).*NAM$", names(dataname), value = TRUE)),
-                       selected = grep("^(SMQ|CQ).*NAM$", names(dataname), value = TRUE),
-                      ),
-                     scopes = choices_selected(
-                       choices = variable_choices(adae, subset = grep("^SMQ.*SC$", names(dataname), value = TRUE)),
-                       selected = grep("^SMQ.*SC$", names(dataname), value = TRUE),
-                       fixed = TRUE
-                       ),
+                     baskets,
+                     scopes,
                      pre_output = NULL,
                      post_output = NULL) {
   stop_if_not(

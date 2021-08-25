@@ -2,19 +2,16 @@ test_that("template_smq generates correct expressions with default arguments", {
   result <- template_smq(
     parentname = "adsl",
     dataname = "adae",
-    arm_var = "ARMCD",
+    arm_var = c("ARMCD", "SEX"),
     id_var = "USUBJID",
-    col_by_var = "SEX",
     llt = "AEDECOD",
     add_total = FALSE,
     drop_arm_levels = FALSE,
     na_level = "<Missing>",
     smq_varlabel = "Standardized MedDRA Query",
     baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-    keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
-    sort_by_descending = TRUE
-  )
-
+    sort_criteria = c("freq_desc")
+    )
 
   expected <- list(
     data = quote({
@@ -22,13 +19,13 @@ test_that("template_smq generates correct expressions with default arguments", {
       adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(adsl[["ARMCD"]])
       anl <- anl %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
-      df_stack <- h_stack_by_baskets(
-        df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM")
-        )
-      anl <- inner_join(
-        x = anl,
-        y = df_stack,
-        by = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM")
+      adsl <- adsl %>% mutate(SEX = droplevels(SEX))
+      arm_levels <- levels(adsl[["SEX"]])
+      anl <- anl %>% mutate(SEX = factor(SEX, levels = arm_levels))
+      anl <- h_stack_by_baskets(
+        df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
+        smq_varlabel = "Standardized MedDRA Query",
+        keys = c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD")
         )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
@@ -74,24 +71,20 @@ test_that("template_smq generates correct expressions with default arguments", {
   expect_equal(result, expected)
 })
 
-
 test_that("template_smq generates correct expressions with custom arguments", {
   result <- template_smq(
     parentname = "myadsl",
     dataname = "myadae",
     arm_var = "myARMCD",
     id_var = "myUSUBJID",
-    col_by_var = "mySEX",
     llt = "myAEDECOD",
     add_total = FALSE,
     drop_arm_levels = FALSE,
     na_level = "<Missing>",
     smq_varlabel = "mylabel",
     baskets = c("mybaskets"),
-    keys = c("mykeys"),
-    sort_by_descending = TRUE
+    sort_criteria = c("freq_desc")
   )
-
 
   expected <- list(
     data = quote({
@@ -99,13 +92,10 @@ test_that("template_smq generates correct expressions with custom arguments", {
       myadsl <- myadsl %>% mutate(myARMCD = droplevels(myARMCD))
       arm_levels <- levels(myadsl[["myARMCD"]])
       anl <- anl %>% mutate(myARMCD = factor(myARMCD, levels = arm_levels))
-      df_stack <- h_stack_by_baskets(
-        df = anl, baskets = "mybaskets"
-      )
-      anl <- inner_join(
-        x = anl,
-        y = df_stack,
-        by = "mykeys"
+      anl <- h_stack_by_baskets(
+        df = anl, baskets = "mybaskets",
+        smq_varlabel = "mylabel",
+        keys = c("STUDYID", "myUSUBJID", "myARMCD", "myAEDECOD")
       )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       myadsl <- df_explicit_na(myadsl, na_level = "<Missing>")
@@ -114,7 +104,6 @@ test_that("template_smq generates correct expressions with custom arguments", {
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "myARMCD") %>%
-        split_cols_by(var = "mySEX") %>%
         add_colcounts() %>%
         summarize_num_patients(
           var = "myUSUBJID",

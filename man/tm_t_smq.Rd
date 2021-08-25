@@ -12,22 +12,14 @@ tm_t_smq(
   arm_var,
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
-  col_by_var,
   llt,
   add_total = TRUE,
+  sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets,
   scopes,
-  keys = c("STUDYID", "USUBJID", "ASTDTM", "AESEQ", "AETERM"),
-  astdtm = choices_selected(variable_choices(dataname, subset = "ASTDTM"), selected =
-    "ASTDTM", fixed = TRUE),
-  aeterm = choices_selected(variable_choices(dataname, subset = "AETERM"), selected =
-    "AETERM", fixed = TRUE),
-  aeseq = choices_selected(variable_choices(dataname, subset = "AESEQ"), selected =
-    "AESEQ", fixed = TRUE),
-  sort_by_descending = TRUE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -49,15 +41,15 @@ and preselected option for variable names that can be used as \code{arm_var}.}
 \item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object specifying the variable name for subject id.}
 
-\item{col_by_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
-object with all available choices and preselected option for
-variable names that can be used to split columns.}
-
 \item{llt}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
+by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
@@ -69,14 +61,11 @@ in character or factor variables in the data.}
 \item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
 created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{character})\cr
-variable names of the selected Standardized/Customized queries}
+\item{baskets}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected options for Standardized/Customized queries}
 
-\item{keys}{(\code{character})\cr argument from \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}
-with names of the key variables to be returned.}
-
-\item{sort_by_descending}{(\code{flag})\cr whether the table should be
-sorted in descending order (alphabetically sorted otherwise).}
+\item{scopes}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices for the scopes of Standardized queries.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -91,7 +80,6 @@ Teal Module: SMQ Table
 }
 \examples{
 library(scda)
-
 
 adsl <- synthetic_cdisc_data("latest")$adsl
 adae <- synthetic_cdisc_data("latest")$adae
@@ -110,7 +98,6 @@ selected = names_scopes,
 fixed = TRUE
 )
 
-
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
@@ -126,14 +113,10 @@ app <- init(
       label = "Adverse events by SMQ Table",
       dataname = "ADAE",
       arm_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        choices = variable_choices(adsl, subset = c("ARM", "SEX")),
         selected = "ARM"
       ),
       add_total = FALSE,
-      col_by_var = choices_selected(
-        choices = variable_choices(adae, subset = c("SEX", "STRATA1")),
-        selected = "SEX"
-      ),
       baskets = cs_baskets,
       scopes = cs_scopes,
       llt = choices_selected(
