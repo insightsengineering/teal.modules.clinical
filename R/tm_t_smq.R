@@ -123,18 +123,29 @@ template_smq <- function(
 
   # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
-  layout_list <- list()
 
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var),
-      env = list(arm_var = arm_var[[1]])
-    )
+    if (add_total) {
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(
+            var = arm_var,
+            split_fun = add_overall_level("All Patients", first = FALSE)
+          ),
+        env = list(arm_var = arm_var[[1]])
+      )
+    } else {
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(var = arm_var),
+        env = list(arm_var = arm_var[[1]])
+      )
+    }
   )
+
   if (length(arm_var) == 2) {
     layout_list <- add_expr(
       layout_list,
@@ -156,15 +167,6 @@ template_smq <- function(
     layout_list,
     quote(add_colcounts())
   )
-
-  if (add_total) {
-    layout_list <- add_expr(
-      layout_list,
-      quote(
-        add_overall_col(label = "All Patients")
-      )
-    )
-  }
 
   layout_list <- add_expr(
     layout_list,
