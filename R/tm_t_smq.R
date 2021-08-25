@@ -1,4 +1,4 @@
-#' Adverse Events Table by Standardized MedDRA Query
+#' Adverse Events Table by Standardized `MedDRA` Query
 #'
 #' @inheritParams template_arguments
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts

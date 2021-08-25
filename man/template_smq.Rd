@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Adverse Events Table by Standardized MedDRA Query}
+\title{Adverse Events Table by Standardized \code{MedDRA} Query}
 \usage{
 template_smq(
   dataname,
@@ -55,7 +55,7 @@ variable names of the selected Standardized/Customized queries}
 the variable name for subject id.}
 }
 \description{
-Adverse Events Table by Standardized MedDRA Query
+Adverse Events Table by Standardized \code{MedDRA} Query
 }
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}

@@ -88,7 +88,7 @@ app <- teal::init(
     tm_t_events(
       label = "Adverse Event Table",
       dataname = "ADAE",
-      arm_var = choices_selected(c("ARM", "SEX"), "ARM"),
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
