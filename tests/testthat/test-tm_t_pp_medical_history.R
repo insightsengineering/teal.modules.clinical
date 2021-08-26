@@ -1,6 +1,4 @@
 testthat::test_that("template_medical_history outputs a list with one named element", {
-  test.nest::skip_if_too_deep(0)
-
   testthat::expect_silent(res <- template_medical_history("ANL", "mhterm", "mhbodsys", "mhdistat"))
   testthat::expect_true(is.list(res))
   testthat::expect_length(res, 1)
@@ -8,15 +6,11 @@ testthat::test_that("template_medical_history outputs a list with one named elem
 })
 
 testthat::test_that("template_medical_history's output has element table, which is of class call", {
-  test.nest::skip_if_too_deep(0)
-
   testthat::expect_silent(res <- template_medical_history("ANL", "mhterm", "mhbodsys", "mhdistat"))
   testthat::expect_true(is.call(res$table))
 })
 
 testthat::test_that("template_medical_history - non-default parameters", {
-  test.nest::skip_if_too_deep(0)
-
   testthat::expect_silent(res <- template_medical_history("anl", "mhterm", "mhbodsys", "mhdistat"))
   expected <- list(
     table = quote({

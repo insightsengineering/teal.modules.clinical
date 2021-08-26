@@ -704,7 +704,8 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI
+#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`character`) \cr list of grading groups used when col_by_grade = TRUE.
 #'
 #' @export
 #' @examples
@@ -1015,6 +1016,7 @@ srv_t_events_by_grade <- function(input,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         add_total = input$add_total,
+        grading_groups = grading_groups,
         arm_var = as.vector(anl_m$columns_source$arm_var),
         id = datasets$get_keys(parentname)[2],
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
