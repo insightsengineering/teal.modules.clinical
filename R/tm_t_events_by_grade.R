@@ -260,13 +260,15 @@ template_events_by_grade <- function(dataname,
 
   # prune the result based on prune_freq and prune_diff
   prune_list <- list()
+if (prune_freq > 0 || prune_diff > 0) {
   prune_list <- add_expr(
     prune_list,
     substitute(
-      expr = col_indices <- 1:(ncol(result) - add_total),
+      expr = col_indices <- 1:(ncol(sorted_result) - add_total),
       env = list(add_total = add_total)
     )
   )
+}
 
   if (prune_freq > 0) {
     prune_list <- add_expr(
