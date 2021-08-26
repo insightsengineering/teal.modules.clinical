@@ -130,22 +130,11 @@ template_smq <- function(
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-    if (add_total) {
-      substitute(
-        expr = basic_table() %>%
-          split_cols_by(
-            var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
-          ),
-        env = list(arm_var = arm_var[[1]])
-      )
-    } else {
       substitute(
         expr = basic_table() %>%
           split_cols_by(var = arm_var),
         env = list(arm_var = arm_var[[1]])
       )
-    }
   )
 
   if (length(arm_var) == 2) {
@@ -169,6 +158,15 @@ template_smq <- function(
     layout_list,
     quote(add_colcounts())
   )
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      quote(
+        add_overall_col(label = "All Patients")
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
@@ -539,7 +537,8 @@ srv_t_smq <- function(input,
       need(input_id_var, "Please select a subject identifier."),
       need(input_baskets, "Please select the SMQ/CQ baskets."),
       need(input_scopes, "Please select the scope variables."),
-      need(input_llt, "Please select the low level term.")
+      need(input_llt, "Please select the low level term."),
+      need(input_arm_var, "Please select the treatment variable.")
     )
     #validate inputs
     validate_standard_inputs(
