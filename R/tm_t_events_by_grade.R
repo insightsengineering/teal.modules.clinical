@@ -636,7 +636,8 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI
+#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`character`) \cr list of grading groups used when col_by_grade = TRUE.
 #'
 #' @export
 #' @examples
