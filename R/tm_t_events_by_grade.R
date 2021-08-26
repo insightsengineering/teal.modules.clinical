@@ -201,11 +201,78 @@ template_events_by_grade <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
+  # Full table.
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
+  # Start pruning table.
+  prune_list <- list()
+  prune_list <- add_expr(
+    prune_list,
+    quote(
+      pruned_result <- result %>% prune_table()
+    )
+  )
+
+  if (prune_freq > 0 || prune_diff > 0) {
+
+    # Do not use "All Patients" column for pruning conditions.
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = col_indices <- 1:(ncol(result) - add_total),
+        env = list(add_total = add_total)
+      )
+    )
+
+    if (prune_freq > 0 && prune_diff == 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+          env = list(prune_freq = prune_freq)
+        )
+      )
+
+    } else if (prune_freq == 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_diff = prune_diff)
+        )
+      )
+
+    } else if (prune_freq > 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices) &
+            has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_freq = prune_freq, prune_diff = prune_diff)
+        )
+      )
+    }
+
+    # Apply pruning conditions.
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      )
+    )
+  }
+
+  y$prune <- bracket_expr(prune_list)
+
+
+  # Start sort the pruned table.
+  sort_list <- list()
   scorefun <- if (add_total) {
     substitute(
       expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
@@ -219,114 +286,62 @@ template_events_by_grade <- function(dataname,
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
-    y$sorted_result <- substitute(
-      expr = {
-        result <- result %>%
-          trim_rows() %>%
-          sort_at_path(
-            path = term_var,
-            scorefun = scorefun,
-            decreasing = TRUE
-          )
-      },
-      env = list(
-        term_var = term_var,
-        scorefun = scorefun
-      )
-    )
-  } else {
-    y$sorted_result <- substitute(
-      expr = {
-        result <- result %>%
-          trim_rows() %>%
-          sort_at_path(
-            path = hlt,
-            scorefun = scorefun,
-            decreasing = TRUE
-          ) %>%
-          sort_at_path(
-            path = c(hlt, "*", llt),
-            scorefun = scorefun,
-            decreasing = TRUE
-          )
+
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path =  term_var, scorefun = scorefun, decreasing = TRUE)
+          pruned_and_sorted_result
         },
-      env = list(
-        hlt = hlt,
-        llt = llt,
-        scorefun = scorefun
+        env = list(
+          term_var = term_var,
+          scorefun = scorefun
+        )
       )
-    )
-  }
-
-  # prune the result based on prune_freq and prune_diff
-  prune_list <- list()
-if (prune_freq > 0 || prune_diff > 0) {
-  prune_list <- add_expr(
-    prune_list,
-    substitute(
-      expr = col_indices <- 1:(ncol(sorted_result) - add_total),
-      env = list(add_total = add_total)
-    )
-  )
-}
-
-  if (prune_freq > 0) {
-    prune_list <- add_expr(
-      prune_list,
-      substitute(
-        expr = at_least_percent_any <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
-        env = list(prune_freq = prune_freq)
-      )
-    )
-  }
-  if (prune_diff > 0) {
-    prune_list <- add_expr(
-      prune_list,
-      substitute(
-        expr = at_least_percent_diff <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
-        env = list(prune_diff = prune_diff)
-      )
-    )
-  }
-
-  prune_pipe <- list()
-  prune_pipe <- add_expr(
-    prune_pipe,
-    quote(
-      pruned_and_sorted_result <- sorted_result
-    )
-  )
-  if (prune_freq > 0 & prune_diff > 0) {
-    prune_pipe <- add_expr(
-      prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
-    )
-  } else if (prune_freq > 0 & prune_diff == 0) {
-    prune_pipe <- add_expr(
-      prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any)))
-    )
-  } else if (prune_freq == 0 & prune_diff > 0) {
-    prune_pipe <- add_expr(
-      prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_diff)))
     )
   } else {
-    prune_pipe <- add_expr(
-      prune_pipe,
-      quote(prune_table())
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path = c(hlt), scorefun = scorefun) %>%
+            sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun)
+        },
+        env = list(
+          llt = llt,
+          hlt = hlt,
+          scorefun = scorefun
+        )
+      )
+    )
+
+    if (prune_freq > 0 || prune_diff > 0) {
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          criteria_fun <- function(tr) {
+            is(tr, "ContentRow")
+          }
+        )
+      )
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+        )
+      )
+    }
+    sort_list <- add_expr(
+      sort_list,
+      quote(pruned_and_sorted_result)
     )
   }
-  prune_pipe <- pipe_expr(prune_pipe)
-  prune_list <- add_expr(
-    prune_list,
-    prune_pipe
-  )
-  prune_list <- add_expr(
-    prune_list,
-    quote(pruned_and_sorted_result)
-  )
-  y$pruned_and_sorted_result <- bracket_expr(prune_list)
+  y$sort <- bracket_expr(sort_list)
 
   y
 }
@@ -689,11 +704,7 @@ template_events_col_by_grade <- function(dataname,
   )
   prune_list <- add_expr(
     prune_list,
-    quote(result <- pruned_and_sorted_result)
-  )
-  prune_list <- add_expr(
-    prune_list,
-    quote(result)
+    quote(pruned_and_sorted_result)
   )
 
   y$prune <- bracket_expr(prune_list)
@@ -1050,7 +1061,7 @@ srv_t_events_by_grade <- function(input,
   table <- reactive({
     call_preparation()
     chunks_safe_eval()
-    chunks_get_var("result")
+    chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
