@@ -91,7 +91,6 @@ test_that("template_events_by_grade generates standard expressions", {
 })
 
 test_that("template_events_by_grade generates standard expressions with pruning conditions", {
-  test.nest::skip_if_too_deep(0)
 
   result <- template_events_by_grade(
     dataname = "adae",
