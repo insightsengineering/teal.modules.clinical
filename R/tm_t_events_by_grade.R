@@ -820,7 +820,8 @@ tm_t_events_by_grade <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        grading_groups = grading_groups
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -920,6 +921,7 @@ srv_t_events_by_grade <- function(input,
                                   llt,
                                   grade,
                                   col_by_grade,
+                                  grading_groups,
                                   drop_arm_levels) {
   stopifnot(is_cdisc_data(datasets))
 
