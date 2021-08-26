@@ -1,6 +1,4 @@
 test_that("template_coxreg generates correct univariate cox regression expressions", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_coxreg(
     dataname = "adrs",
     cov_var = NULL,
@@ -61,8 +59,6 @@ test_that("template_coxreg generates correct univariate cox regression expressio
 
 
 test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_coxreg(
     dataname = "adrs",
     cov_var = NULL,
@@ -123,8 +119,6 @@ test_that("template_coxreg generates correct univariate cox regression expressio
 })
 
 test_that("template_coxreg generates correct multivariate cox regression expressions", {
-  test.nest::skip_if_too_deep(0)
-
   result <- template_coxreg(
     dataname = "adrs",
     cov_var = c("AGE", "SEX"),
