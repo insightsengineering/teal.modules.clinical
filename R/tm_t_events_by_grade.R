@@ -293,7 +293,7 @@ if (prune_freq > 0 || prune_diff > 0) {
   prune_pipe <- add_expr(
     prune_pipe,
     quote(
-      result <- result
+      pruned_and_sorted_result <- sorted_result
     )
   )
   if (prune_freq > 0 & prune_diff > 0) {
