@@ -75,6 +75,9 @@
 #'   names of the variables for stratified analysis.
 #' @param title (`character`)\cr
 #'   title of the output.
+#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
+#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
+#'   rates between any two columns.
 #' @name template_arguments
 #'
 NULL
