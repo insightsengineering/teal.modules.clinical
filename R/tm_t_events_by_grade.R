@@ -324,7 +324,7 @@ if (prune_freq > 0 || prune_diff > 0) {
   )
   prune_list <- add_expr(
     prune_list,
-    quote(result)
+    quote(pruned_and_sorted_result)
   )
   y$pruned_and_sorted_result <- bracket_expr(prune_list)
 
