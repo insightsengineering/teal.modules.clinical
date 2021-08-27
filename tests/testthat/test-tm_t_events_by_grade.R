@@ -65,9 +65,11 @@ test_that("template_events_by_grade generates standard expressions", {
         alt_counts_df = adsl
       )
     ),
-    sorted_result = quote({
-      result <- result %>%
-        trim_rows() %>%
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
@@ -77,11 +79,7 @@ test_that("template_events_by_grade generates standard expressions", {
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
-    }),
-    pruned_and_sorted_result = quote({
-      col_indices <- 1:(ncol(result) - TRUE)
-      result <- result %>% prune_table()
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -158,9 +156,15 @@ test_that("template_events_by_grade generates standard expressions with pruning 
         alt_counts_df = adsl
       )
     ),
-    sorted_result = quote({
-      result <- result %>%
-        trim_rows() %>%
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+      col_indices <- 1:(ncol(result) - TRUE)
+      row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
+        has_fractions_difference(atleast = 0.1, col_indices = col_indices)
+      pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
@@ -170,13 +174,11 @@ test_that("template_events_by_grade generates standard expressions with pruning 
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
-    }),
-    pruned_and_sorted_result = quote({
-      col_indices <- 1:(ncol(result) - TRUE)
-      at_least_percent_any <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices)
-      at_least_percent_diff <- has_fractions_difference(atleast = 0.1, col_indices = col_indices)
-      result <- result %>% prune_table(keep_rows(at_least_percent_any & at_least_percent_diff))
-      result
+      criteria_fun <- function(tr) {
+        is(tr, "ContentRow")
+      }
+      pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+      pruned_and_sorted_result
     })
   )
 
@@ -250,9 +252,11 @@ test_that("template_events_by_grade without adding total column option works as 
         alt_counts_df = adsl
       )
     ),
-    sorted_result = quote({
-      result <- result %>%
-        trim_rows() %>%
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_allcols,
@@ -263,11 +267,7 @@ test_that("template_events_by_grade without adding total column option works as 
           scorefun = cont_n_allcols,
           decreasing = TRUE
         )
-    }),
-    pruned_and_sorted_result = quote({
-      col_indices <- 1:(ncol(result) - FALSE)
-      result <- result %>% prune_table()
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -329,19 +329,17 @@ test_that("template_events_by_grade with hlt only works", {
         alt_counts_df = adsl
       )
     ),
-    sorted_result = quote({
-      result <- result %>%
-        trim_rows() %>%
+    prune = quote({
+      pruned_result <- result %>% prune_table()
+    }),
+    sort = quote({
+      pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
-    }),
-    pruned_and_sorted_result = quote({
-      col_indices <- 1:(ncol(result) - TRUE)
-      result <- result %>% prune_table()
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -452,8 +450,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
       pruned_and_sorted_result <- sorted_result %>%
         trim_rows(criteria = criteria_fun) %>%
         prune_table(keep_rows(at_least_percent_any))
-      result <- pruned_and_sorted_result
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -555,8 +552,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
       pruned_and_sorted_result <- sorted_result %>%
         trim_rows(criteria = criteria_fun) %>%
         prune_table(keep_rows(at_least_percent_any))
-      result <- pruned_and_sorted_result
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -658,8 +654,7 @@ test_that("template_events_col_by_grade without adding total column option works
       pruned_and_sorted_result <- sorted_result %>%
         trim_rows(criteria = criteria_fun) %>%
         prune_table(keep_rows(at_least_percent_any))
-      result <- pruned_and_sorted_result
-      result
+      pruned_and_sorted_result
     })
   )
 
@@ -760,8 +755,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
       pruned_and_sorted_result <- sorted_result %>%
         trim_rows(criteria = criteria_fun) %>%
         prune_table(keep_rows(at_least_percent_any))
-      result <- pruned_and_sorted_result
-      result
+      pruned_and_sorted_result
     })
   )
 
