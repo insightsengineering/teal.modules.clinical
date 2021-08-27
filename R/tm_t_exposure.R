@@ -525,18 +525,24 @@ srv_t_exposure <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
+    input_avalu_var <- as.character(
+      unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
+      )
+    input_paramcd <- as.character(
+      unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
+      )
     my_calls <- template_exposure(
       parentname = "ANL_ADSL",
       dataname = "ANL",
       id_var <- as.vector(anl_m$columns_source$id_var),
-      paramcd <- unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]),
+      paramcd <- input_paramcd,
       row_by_var <- as.vector(anl_m$columns_source$row_by_var),
       col_by_var <- as.vector(anl_m$columns_source$col_by_var),
       add_total = input$add_total,
       drop_levels = TRUE,
       na_level = na_level,
       aval_var <- as.vector(anl_m$columns_source$aval_var),
-      avalu_var <- unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
+      avalu_var <- input_avalu_var
     )
     mapply(expression = my_calls, chunks_push)
   })
