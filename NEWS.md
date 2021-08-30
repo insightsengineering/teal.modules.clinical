@@ -1,14 +1,17 @@
 # teal.modules.clinical 0.8.9.9000
-* New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query. 
-* New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan. 
-* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions. 
-* New module `tm_t_shift_by_grade` was added for the analysis of grade laboratory abnormalities. 
+* New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query.
+* New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
+* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
+* New module `tm_t_shift_by_grade` was added for the analysis of grade laboratory abnormalities.
 * Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
-* Enhanced `tm_g_km` to add the selected `paramcd` in the plot title. 
+* Enhanced `tm_g_km` to add the selected `paramcd` in the plot title.
 * `tm_t_events` now can have nested column as treatment variables, and same pruning and sorting logic remains the same.
 * Updated license and `README.md` with appropriate information for migration to public Github.
-* Previously package helper functions were never exported. These functions have now been exported so they can be utilized. 
+* Previously package helper functions were never exported. These functions have now been exported so they can be utilized.
 * `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
+
+### Miscellaneous
+* Added `error_on_lint: TRUE` to `.lintr`.
 
 # teal.modules.clinical 0.8.9
 ### New features
@@ -21,32 +24,32 @@ table.
 * Split `tm_g_patient_profile` tabs into 8 separate new modules.
 * Added the option to select patient ID from the filter panel for all the modules of patient profile.
 * Added an additional validation for `tm_g_patient_timeline` when the plot is empty.
-* Enhanced `tm_a_mmrm` to work without the treatment variable. 
+* Enhanced `tm_a_mmrm` to work without the treatment variable.
 * Added the option to choose the number of decimal places for rounding in `tm_t_pp_laboratory`.
 * Added a check box to `tm_g_pp_patient_timeline` hiding/showing relative study days on the x-axis.
 * Added a title with patient's id to plots in patient profile modules.
 * Made the grey error message in `tm_g_forest_tte` more informative when the `Endpoint` column was deselected in the left-hand encoding panel.
 * Added the twenty-fifth and seventy-fifth quantile to summary statistics in `tm_t_summary`.
 * Added an interaction p-value column for `tm_t_coxreg`.
-* Added an additional validation for `tm_t_ancova` when selected covariate variables contain just one level. 
+* Added an additional validation for `tm_t_ancova` when selected covariate variables contain just one level.
 * Added an additional validation for `tm_t_events_patyear` when the events variable is empty.
 * Changed the description of the font size input in `Additional plot settings` (`tm_g_km`) to more precisely represent what it controls.
-* Enhanced `tm_t_logistic` so that interaction choices depend on the selected covariates. 
-* Enhanced `tm_t_rsp` so that strata input is only visible when treatments are compared. 
+* Enhanced `tm_t_logistic` so that interaction choices depend on the selected covariates.
+* Enhanced `tm_t_rsp` so that strata input is only visible when treatments are compared.
 
 ### Bug fixes
 * Fixed Get R Code output of `tm_t_pp_laboratory` to return identical HTML formatted table as displayed in the app.
-* Added an additional validation for `tm_t_coxreg` to ensure treatment, strata and covariate variables do not overlap. 
+* Added an additional validation for `tm_t_coxreg` to ensure treatment, strata and covariate variables do not overlap.
 * Limited the label repel feature in `tm_g_pp_patient_timeline` to X-axis for a more consistent look.
-* Updated `tm_t_summary_by` so that `paramcd` is not required when analyzing `ADSL` variables. 
-* Updated `tm_t_coxreg` so that it can work when there is no covariate selected. 
+* Updated `tm_t_summary_by` so that `paramcd` is not required when analyzing `ADSL` variables.
+* Updated `tm_t_coxreg` so that it can work when there is no covariate selected.
 * Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
-* Updated `tm_g_forest_tte` so that total number of events are also shown in the table. 
+* Updated `tm_g_forest_tte` so that total number of events are also shown in the table.
 * Updated `tm_t_events_summary` to work with pooled studies.
 * Updated `tm_t_coxreg` to validate the `at` level.
 * Updated `tm_t_logistic` to validate the `at` level.
 * Added an additional validation for `tm_t_binary_outcome` and `tm_t_rsp` to ensure strata variable
-contains more than one level when just one strata variable is selected. 
+contains more than one level when just one strata variable is selected.
 * Updated the warning message when all statistics are deselected in `tm_t_summary` and `tm_t_summary_by` explaining at least one statistic has to be selected.
 
 # teal.modules.clinical 0.8.8
@@ -61,7 +64,7 @@ contains more than one level when just one strata variable is selected.
   * Updated adverse events tab to show a warning message instead of an empty plot when data is empty.
   * Fixed PARAMCD selected levels for current patient.
 * For `tm_t_tte`:
-  * Updated the pre-processing code inside `template_tte` so that a dataset without any events still produces a table. 
+  * Updated the pre-processing code inside `template_tte` so that a dataset without any events still produces a table.
   * Updated code to use correct denominator for duration of response endpoints.
 * For `tm_t_summary`:
   * Modified the parameter `arm_var` to accept more than one column. When two columns are selected for `arm_var`, then the second variable will be nested under the first one.
@@ -103,7 +106,7 @@ contains more than one level when just one strata variable is selected.
 ### Miscellaneous
 * Removed redundant `Analysis Data:` label from Encodings Panel.
 * Removed limit requiring 15 or fewer columns for tabulation modules. New maximum threshold is 100 columns.
-* Lowered limit for minimum number of observations required by modules. Safety tables require at least one record. For efficacy outputs the requirement is per treatment group: `tm_a_mmrm` requires five records, `tm_t_logistic` and `tm_t_coxreg` require two records and the remaining modules require at least one record per treatment group. For graphs, the minimum threshold is two records. 
+* Lowered limit for minimum number of observations required by modules. Safety tables require at least one record. For efficacy outputs the requirement is per treatment group: `tm_a_mmrm` requires five records, `tm_t_logistic` and `tm_t_coxreg` require two records and the remaining modules require at least one record per treatment group. For graphs, the minimum threshold is two records.
 * Removed argument `cnsr_val` from `tm_t_events_patyear` and added new argument `events_var`.
 * `arm_ref_comp_observer` to include `parentname` argument.
 * Show R code to include datasets retrieved from `data_extract_spec` objects.
@@ -139,7 +142,7 @@ contains more than one level when just one strata variable is selected.
 # teal.modules.clinical 0.8.4
 
 * Extend `tm_t_coxreg` to optionally produce univariate Cox regressions.
-* Updated `tm_t_binary_outcome` to display Odds Ratio estimates, include new methods for CIs and p-values and 
+* Updated `tm_t_binary_outcome` to display Odds Ratio estimates, include new methods for CIs and p-values and
 display a summary for individual response categories.
 * Updated `tm_t_tte` to optionally compare between arms, removed `conf_level` argument.
 * Updated `tm_g_km` to optionally compare between arms.
