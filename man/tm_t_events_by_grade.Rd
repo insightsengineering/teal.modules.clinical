@@ -46,9 +46,9 @@ name of the variable with low level term for events.}
 
 \item{grade}{(\code{character}) \cr name of the severity level variable.}
 
-\item{grading_groups}{(\code{character}) \cr list of grading groups.}
+\item{grading_groups}{(\code{character}) \cr list of grading groups used when col_by_grade = TRUE.}
 
-\item{col_by_grade}{(\code{flag}) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI}
+\item{col_by_grade}{(\code{flag}) \cr whether to display the grading groups in nested columns.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 

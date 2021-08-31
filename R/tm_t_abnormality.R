@@ -25,6 +25,7 @@ template_abnormality <- function(parentname,
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE) {
+
   y <- list()
 
   data_list <- list()

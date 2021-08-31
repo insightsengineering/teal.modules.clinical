@@ -636,7 +636,8 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns as in STREAM AET04_PI
+#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`character`) \cr list of grading groups used when col_by_grade = TRUE.
 #'
 #' @export
 #' @examples
@@ -881,13 +882,21 @@ srv_t_events_by_grade <- function(input,
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
     )
-    validate(
-      need(
-        (min(as.numeric(as.character(anl_filtered[[input_grade]]))) >= 1) &&
-          (max(as.numeric(as.character(anl_filtered[[input_grade]]))) <= 5),
-        "To support displaying grade grouping in nested columns, grade variable has to be numberic between 1 and 5."
+    if (input$col_by_grade) {
+      validate(
+        need(
+          is.factor(anl_filtered[[input_grade]]) && all(levels(anl_filtered[[input_grade]]) %in% as.character(c(1:5))),
+          "To support displaying grade grouping in nested columns, grade variable has to be a factor with values between 1 and 5." #nolint
+        )
       )
-    )
+    } else {
+      validate(
+        need(
+          is.factor(anl_filtered[[input_grade]]),
+          "Event grade variable must be a factor."
+        )
+      )
+    }
     validate(
       need(
         input$prune_freq >= 0 && input$prune_freq <= 100,
@@ -939,6 +948,7 @@ srv_t_events_by_grade <- function(input,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         add_total = input$add_total,
+        grading_groups = grading_groups,
         arm_var = as.vector(anl_m$columns_source$arm_var),
         id = datasets$get_keys(parentname)[2],
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
