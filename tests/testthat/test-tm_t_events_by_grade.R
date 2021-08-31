@@ -66,7 +66,7 @@ test_that("template_events_by_grade generates standard expressions", {
       )
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% trim_rows()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -157,7 +157,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
       )
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% trim_rows()
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
@@ -253,7 +253,7 @@ test_that("template_events_by_grade without adding total column option works as 
       )
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% trim_rows()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -330,7 +330,7 @@ test_that("template_events_by_grade with hlt only works", {
       )
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% trim_rows()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
