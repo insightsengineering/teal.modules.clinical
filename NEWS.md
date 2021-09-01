@@ -9,6 +9,7 @@
 * Updated license and `README.md` with appropriate information for migration to public Github.
 * Previously package helper functions were never exported. These functions have now been exported so they can be utilized.
 * `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
+* `tm_t_events_by_grade` now can prune the adverse event by grade when `col_by_grade` is FALSE.
 * Added `error_on_lint: TRUE` to `.lintr`.
 
 ### Miscellaneous

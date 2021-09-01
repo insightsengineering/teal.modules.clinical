@@ -6,9 +6,6 @@
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
 #'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
 #'   alphabetically.
-#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
-#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
-#'   rates between any two columns.
 #'
 #' @seealso [tm_t_events()]
 #'

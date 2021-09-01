@@ -13,6 +13,8 @@ template_events_by_grade <- function(dataname,
                                      hlt,
                                      llt,
                                      grade,
+                                     prune_freq = 0,
+                                     prune_diff = 0,
                                      add_total = TRUE,
                                      drop_arm_levels = TRUE) {
   assert_that(
@@ -23,6 +25,8 @@ template_events_by_grade <- function(dataname,
     is.string(llt) || is.null(llt),
     !is.null(hlt) || !is.null(llt),
     is.string(grade),
+    is_numeric_single(prune_freq),
+    is_numeric_single(prune_diff),
     is.flag(add_total),
     is.flag(drop_arm_levels)
   )
@@ -197,11 +201,78 @@ template_events_by_grade <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
+  # Full table.
   y$table <- substitute(
     expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
+  # Start pruning table.
+  prune_list <- list()
+  prune_list <- add_expr(
+    prune_list,
+    quote(
+      pruned_result <- result %>% trim_rows()
+    )
+  )
+
+  if (prune_freq > 0 || prune_diff > 0) {
+
+    # Do not use "All Patients" column for pruning conditions.
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = col_indices <- 1:(ncol(result) - add_total),
+        env = list(add_total = add_total)
+      )
+    )
+
+    if (prune_freq > 0 && prune_diff == 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices),
+          env = list(prune_freq = prune_freq)
+        )
+      )
+
+    } else if (prune_freq == 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_diff = prune_diff)
+        )
+      )
+
+    } else if (prune_freq > 0 && prune_diff > 0) {
+
+      prune_list <- add_expr(
+        prune_list,
+        substitute(
+          expr = row_condition <- has_fraction_in_any_col(atleast = prune_freq, col_indices = col_indices) &
+            has_fractions_difference(atleast = prune_diff, col_indices = col_indices),
+          env = list(prune_freq = prune_freq, prune_diff = prune_diff)
+        )
+      )
+    }
+
+    # Apply pruning conditions.
+    prune_list <- add_expr(
+      prune_list,
+      substitute(
+        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      )
+    )
+  }
+
+  y$prune <- bracket_expr(prune_list)
+
+
+  # Start sort the pruned table.
+  sort_list <- list()
   scorefun <- if (add_total) {
     substitute(
       expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
@@ -215,46 +286,63 @@ template_events_by_grade <- function(dataname,
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
-    y$pruned_and_sorted_result <- substitute(
-      expr = {
-        result <- result %>%
-          trim_rows() %>%
-          sort_at_path(
-            path = term_var,
-            scorefun = scorefun,
-            decreasing = TRUE
-          )
-        result
-      },
-      env = list(
-        term_var = term_var,
-        scorefun = scorefun
+
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path =  term_var, scorefun = scorefun, decreasing = TRUE)
+          pruned_and_sorted_result
+        },
+        env = list(
+          term_var = term_var,
+          scorefun = scorefun
+        )
       )
     )
   } else {
-    y$pruned_and_sorted_result <- substitute(
-      expr = {
-        result <- result %>%
-          trim_rows() %>%
-          sort_at_path(
-            path = hlt,
-            scorefun = scorefun,
-            decreasing = TRUE
-          ) %>%
-          sort_at_path(
-            path = c(hlt, "*", llt),
-            scorefun = scorefun,
-            decreasing = TRUE
-          )
-        result
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = {
+          pruned_and_sorted_result <- pruned_result %>%
+            sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
+            sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
         },
-      env = list(
-        hlt = hlt,
-        llt = llt,
-        scorefun = scorefun
+        env = list(
+          llt = llt,
+          hlt = hlt,
+          scorefun = scorefun
+        )
       )
     )
+
+    if (prune_freq > 0 || prune_diff > 0) {
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          criteria_fun <- function(tr) {
+            is(tr, "ContentRow")
+          }
+        )
+      )
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(
+          pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+        )
+      )
+    }
+    sort_list <- add_expr(
+      sort_list,
+      quote(pruned_and_sorted_result)
+    )
   }
+  y$sort <- bracket_expr(sort_list)
+
   y
 }
 
@@ -264,9 +352,6 @@ template_events_by_grade <- function(dataname,
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
 #' @param grade (`character`) \cr grade term which grading_groups is based on, default to "AETOXGR".
 #' @param grading_groups (`character`) \cr list of grading groups.
-#' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
-#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
-#'   rates between any two columns.
 #'
 #' @seealso [tm_t_events_by_grade()]
 #'
@@ -619,11 +704,7 @@ template_events_col_by_grade <- function(dataname,
   )
   prune_list <- add_expr(
     prune_list,
-    quote(result <- pruned_and_sorted_result)
-  )
-  prune_list <- add_expr(
-    prune_list,
-    quote(result)
+    quote(pruned_and_sorted_result)
   )
 
   y$prune <- bracket_expr(prune_list)
@@ -739,7 +820,8 @@ tm_t_events_by_grade <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        grading_groups = grading_groups
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -839,6 +921,7 @@ srv_t_events_by_grade <- function(input,
                                   llt,
                                   grade,
                                   col_by_grade,
+                                  grading_groups,
                                   drop_arm_levels) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -967,6 +1050,8 @@ srv_t_events_by_grade <- function(input,
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         grade = input_grade,
+        prune_freq = input$prune_freq / 100,
+        prune_diff = input$prune_diff / 100,
         add_total = input$add_total,
         drop_arm_levels = input$drop_arm_levels
       )
@@ -978,7 +1063,7 @@ srv_t_events_by_grade <- function(input,
   table <- reactive({
     call_preparation()
     chunks_safe_eval()
-    chunks_get_var("result")
+    chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
