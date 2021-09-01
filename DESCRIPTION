@@ -48,7 +48,7 @@ Suggests:
   scda.2021(>= 0.1.0),
   test.nest (>= 0.2.9),
   testthat (>= 2.0)
-License: MIT + file LICENSE
+License: Apache 2.0 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
