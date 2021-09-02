@@ -505,8 +505,8 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE),
-        env = list(hlt = hlt)
+        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group(llt)),
+        env = list(hlt = hlt, llt = llt)
       )
     )
 
