@@ -392,7 +392,9 @@ test_that("template_events_col_by_grade generates standard expressions", {
             "Grade 5 (%)" = "5"
           )
         ) %>%
-        split_rows_by("AEBODSYS", child_labels = "visible", nested = FALSE) %>%
+        split_rows_by(
+          "AEBODSYS", child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group("AEDECOD")
+        ) %>%
         append_varlabels(df = anl, vars = "AEBODSYS") %>%
         summarize_num_patients(
           var = "USUBJID",
