@@ -12,6 +12,8 @@ template_events_by_grade(
   hlt,
   llt,
   grade,
+  prune_freq = 0,
+  prune_diff = 0,
   add_total = TRUE,
   drop_arm_levels = TRUE
 )
@@ -35,6 +37,11 @@ name of the variable with high level term for events.}
 name of the variable with low level term for events.}
 
 \item{grade}{(\code{character}) \cr name of the severity level variable.}
+
+\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+
+\item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
+rates between any two columns.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

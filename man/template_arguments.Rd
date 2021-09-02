@@ -100,6 +100,11 @@ names of the variables for stratified analysis.}
 
 \item{title}{(\code{character})\cr
 title of the output.}
+
+\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+
+\item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
+rates between any two columns.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module
