@@ -196,7 +196,6 @@ template_shift_by_arm <- function(dataname,
 #'       visit_var = choices_selected(variable_choices(adeg), "AVISIT"),
 #'       anrind_var = choices_selected(variable_choices(adeg), "ANRIND"),
 #'       bnrind_var = choices_selected(variable_choices(adeg), "BNRIND"),
-#'       visit = "POST-BASELINE MINIMUM",
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -208,20 +207,20 @@ template_shift_by_arm <- function(dataname,
 #'
 tm_t_shift_by_arm <- function(label,
                               dataname,
-                              parentname = ifelse(
-                                is(arm_var, "data_extract_spec"),
-                                datanames_input(arm_var),
-                                "ADSL"
-                              ),
-                              arm_var = "ARM",
+                              parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                              arm_var,
                               paramcd_var = choices_selected(
                                 variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE
                               ),
-                              paramcd = "HR", # Heart Rate
+                              paramcd = choices_selected(
+                                value_choices(dataname, "PARAMCD"), selected = "HR"
+                              ),
                               visit_var = choices_selected(
                                 variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE
                               ),
-                              visit = "POST-BASELINE MINIMUM",
+                              visit = choices_selected(
+                                value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+                              ),
                               anrind_var = choices_selected(
                                 variable_choices(dataname, "ANRIND"), "ANRIND", fixed = TRUE
                               ),
