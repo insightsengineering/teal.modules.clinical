@@ -47,8 +47,10 @@ template_shift_by_arm <- function(dataname,
   y <- list()
 
   # Start data steps.
+  data_list <- list()
+
   data_list <- add_expr(
-    list(),
+    data_list,
     substitute(
       expr = anl <- df %>%
         filter(
@@ -56,7 +58,7 @@ template_shift_by_arm <- function(dataname,
           visit_var == visit
         ) %>%
         mutate(col_label = visit) %>%
-        df_explicit_na(na_level = ""),
+        df_explicit_na(),
       env = list(
         df = as.name(dataname),
         paramcd_var = as.name(paramcd_var),
@@ -80,16 +82,41 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = ""),
+      expr = parentname <- df_explicit_na(parentname),
       env = list(parentname = as.name(parentname))
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname$bnrind_var <- factor(
+        dataname$bnrind_var,
+        levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+        labels = c("LOW", "NORMAL", "HIGH", "Missing")
+      ),
+      env = list(dataname = as.name(dataname), bnrind_var = bnrind_var)
+    )
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname$anrind_var <- factor(
+        dataname$anrind_var,
+        levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+        labels = c("LOW", "NORMAL", "HIGH", "Missing")
+      ),
+      env = list(dataname = as.name(dataname), anrind_var = anrind_var)
     )
   )
 
   y$data <- bracket_expr(data_list)
 
   # Start layout steps.
+  layout_list <- list()
+
   layout_list <- add_expr(
-    list(),
+    layout_list,
     substitute(
       expr = basic_table() %>%
         split_cols_by("col_label") %>% # temprary solution for over arching column
@@ -118,7 +145,10 @@ template_shift_by_arm <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl)
+    expr = {
+      result <- build_table(lyt = lyt, df = anl)
+      result
+    }
   )
 
   y
