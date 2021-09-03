@@ -191,12 +191,14 @@ template_shift_by_arm <- function(dataname,
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = choices_selected(variable_choices(adsl), "ARM"),
-#'       paramcd_var = choices_selected(variable_choices(adeg), "PARAMCD"),
-#'       visit_var = choices_selected(variable_choices(adeg), "AVISIT"),
-#'       anrind_var = choices_selected(variable_choices(adeg), "ANRIND"),
-#'       bnrind_var = choices_selected(variable_choices(adeg), "BNRIND"),
-#'       useNA = "ifany"
+#'       arm_var = choices_selected(variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"),
+#'       paramcd_var = choices_selected(variable_choices(adeg, subset = c("PARAMCD", "PARAM")), selected = "PARAMCD", fixed = TRUE),
+#'       anrind_var = choices_selected(
+#'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+#'       ),
+#'       bnrind_var = choices_selected(
+#'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+#'         ),
 #'     )
 #'   )
 #' )
@@ -210,22 +212,22 @@ tm_t_shift_by_arm <- function(label,
                               parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                               arm_var,
                               paramcd_var = choices_selected(
-                                variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE
+                                variable_choices(dataname, subset = "PARAMCD"), selected = "PARAMCD", fixed = TRUE
                               ),
                               paramcd = choices_selected(
                                 value_choices(dataname, "PARAMCD"), selected = "HR"
                               ),
                               visit_var = choices_selected(
-                                variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE
+                                variable_choices(dataname, subset = "AVISIT"), selected = "AVISIT", fixed = TRUE
                               ),
                               visit = choices_selected(
                                 value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
                               ),
                               anrind_var = choices_selected(
-                                variable_choices(dataname, "ANRIND"), "ANRIND", fixed = TRUE
+                                variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
                               ),
                               bnrind_var = choices_selected(
-                                variable_choices(dataname, "BNRIND"), "BNRIND", fixed = TRUE
+                                variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
                               #ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
                               #ontrtfl = "Y",
