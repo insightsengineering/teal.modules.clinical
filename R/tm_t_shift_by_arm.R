@@ -257,33 +257,35 @@ tm_t_shift_by_arm <- function(label,
   )
   useNA <- match.arg(useNA) # nolint
 
-  args <- as.list(environment())
-
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
-    paramcd_var = cs_to_des_select(paramcd_var, dataname = dataname, multiple = TRUE),
-    visit_var = cs_to_des_select(visit_var, dataname = dataname, multiple = TRUE),
-    anrind_var = cs_to_des_select(anrind_var, dataname = dataname, multiple = TRUE),
-    bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname, multiple = TRUE)
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd_var = cs_to_des_select(paramcd_var, dataname = dataname),
+    paramcd = cs_to_des_select(paramcd, dataname = dataname),
+    visit_var = cs_to_des_select(visit_var, dataname = dataname),
+    visit = cs_to_des_select(visit, dataname = dataname),
+    anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
+    bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
     #ontrtfl_var = cs_to_des_select(ontrtfl_var, dataname = dataname, multiple = TRUE),
     #saffl_var = cs_to_des_select(saffl_var, dataname = dataname, multiple = TRUE)
   )
 
+  args <- as.list(environment())
+
   module(
     label = label,
-    server = srv_summary,
-    ui = ui_summary,
+    server = srv_shift_by_arm,
+    ui = ui_shift_by_arm,
     ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
       list(
         dataname = dataname,
-        parentname = parentname,
-        label = label,
-        na_level = na_level
+        parentname = parentname
+        # label = label,
+        # na_level = na_level
       )
     ),
-    filters = dataname
+    filters = get_extract_datanames(data_extract_list)
   )
 
 }
@@ -314,8 +316,7 @@ ui_shift_by_arm <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
-        "id_var", "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var",
-        "visit_var", "visit" #, "ontrtfl_var", "ontrtfl", "saffl_var", "saffl"
+         "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -347,54 +348,19 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$bnrind_var,
         is_single_dataset = is_single_dataset_value
       ),
-      # data_extract_input(
-      #   id = ns("ontrtfl_var"),
-      #   label = "Select Treatment Record Flag Variable",
-      #   data_extract_spec = a$ontrtfl_var,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
-      # data_extract_input(
-      #   id = ns("saffl_var"),
-      #   label = "Select Safety Population Flag Variable",
-      #   data_extract_spec = a$saffl_var,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
-      if_not_null(
-        a$paramcd,
-        data_extract_input(
-          id = ns("paramcd"),
-          label = "Select Endpoint",
-          data_extract_spec = a$paramcd,
-          is_single_dataset = is_single_dataset_value
-        )
+      data_extract_input(
+        id = ns("paramcd"),
+        label = "Select Endpoint",
+        data_extract_spec = a$paramcd,
+        is_single_dataset = is_single_dataset_value
       ),
-      if_not_null(
-        a$visit,
-        data_extract_input(
-          id = ns("visit"),
-          label = "Select Visit",
-          data_extract_spec = a$visit,
-          is_single_dataset = is_single_dataset_value
-        )
+      data_extract_input(
+        id = ns("visit"),
+        label = "Select Visit",
+        data_extract_spec = a$visit,
+        is_single_dataset = is_single_dataset_value
       ),
-      # if_not_null(
-      #   a$ontrtfl,
-      #   data_extract_input(
-      #     id = ns("ontrtfl"),
-      #     label = "Select Treatment Record Flag",
-      #     data_extract_spec = a$ontrtfl,
-      #     is_single_dataset = is_single_dataset_value
-      #   )
-      # ),
-      # if_not_null(
-      #   a$saffl,
-      #   data_extract_input(
-      #     id = ns("saffl"),
-      #     label = "Select Safety Population Flag",
-      #     data_extract_spec = a$saffl,
-      #     is_single_dataset = is_single_dataset_value
-      #   )
-      # ),
+
       panel_group(
         panel_item(
           "Additional table settings",
@@ -423,15 +389,15 @@ ui_shift_by_arm <- function(id, ...) {
         )
       ),
       panel_group(
-        panel_item(
-          "Additional Variables Info",
-          data_extract_input(
-            id = ns("id_var"),
-            label = "Subject Identifier",
-            data_extract_spec = a$id_var,
-            is_single_dataset = is_single_dataset_value
-          )
-        )
+        # panel_item(
+        #   "Additional Variables Info",
+        #   data_extract_input(
+        #     id = ns("id_var"),
+        #     label = "Subject Identifier",
+        #     data_extract_spec = a$id_var,
+        #     is_single_dataset = is_single_dataset_value
+        #   )
+        # )
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -447,6 +413,7 @@ srv_shift_by_arm <- function(input,
                              datasets,
                              dataname,
                              parentname,
+                             arm_var,
                              paramcd_var,
                              paramcd,
                              visit_var,
@@ -465,8 +432,8 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, anrind_var, ),
-    input_id = c("arm_var", "paramcd_var", "visit_var", "anrind_var", "bnrind_var"), # "ontrtfl_var", "saffl_var"),
+    data_extract = list(arm_var, paramcd_var, paramcd, visit_var,  visit, anrind_var, bnrind_var),
+    input_id = c("arm_var", "paramcd_var", "paramcd", "visit_var", "visit", "anrind_var", "bnrind_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -477,11 +444,11 @@ srv_shift_by_arm <- function(input,
     anl_name = "ANL_ADSL"
   )
 
-  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
-  paramcd_var_user_input <- get_input_order("paramcd_var", paramcd_var$dataname)
-  visit_var_user_input <- get_input_order("visit_var", visit_var$dataname)
-  anrind_var_user_input <- get_input_order("anrind_var", anrind_var$dataname)
-  bnrind_var_user_input <- get_input_order("bnrind_var", bnrind_var$dataname)
+  # arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
+  # paramcd_var_user_input <- get_input_order("paramcd_var", paramcd_var$dataname)
+  # visit_var_user_input <- get_input_order("visit_var", visit_var$dataname)
+  # anrind_var_user_input <- get_input_order("anrind_var", anrind_var$dataname)
+  # bnrind_var_user_input <- get_input_order("bnrind_var", bnrind_var$dataname)
   #ontrtfl_var_user_input <- get_input_order("ontrtfl_var", ontrtfl_var$dataname)
   #saffl_var_var_user_input <- get_input_order("saffl_var", saffl_var$dataname)
 
@@ -544,13 +511,18 @@ srv_shift_by_arm <- function(input,
     my_calls <- template_shift_by_arm(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = arm_var_user_input(),
-      paramcd_var = paramcd_var_user_input(),
+      # arm_var = arm_var_user_input(),
+      arm_var = as.vector(anl_m$columns_source$arm_var),
+      # paramcd_var = paramcd_var_user_input(),
+      paramcd_var = as.vector(anl_m$columns_source$paramcd_var),
       paramcd = input$paramcd,
-      visit_var = visit_var_user_input(),
+      # visit_var = visit_var_user_input(),
+      visit_var = as.vector(anl_m$columns_source$visit_var),
       visit = input$visit,
-      anrind_var = anrind_var_user_input(),
-      bnrind_var = bnrind_var_user_input(),
+      # anrind_var = anrind_var_user_input(),
+      # bnrind_var = bnrind_var_user_input(),
+      anrind_var = as.vector(anl_m$columns_source$anrind_var),
+      bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
       #ontrtfl_var = ontrtfl_var_user_input(),
       #ontrtfl = input$ontrtfl,
       #saffl_var = saffl_var_var_user_input(),
