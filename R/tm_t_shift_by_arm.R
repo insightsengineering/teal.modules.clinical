@@ -7,10 +7,10 @@
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
 #' @param anrind_levels (`character`)\cr the factor levels of `anrind_var`, determine the orders of display in the final
 #' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#' "<Missing>".
+#' "<Missing>". The missing level should match `na_level`.
 #' @param bnrind_levels (`character`)\cr the factor levels of `bnrind_var`, determine the orders of display in the final
 #' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#' "<Missing>".
+#' "<Missing>". The missing level should match `na_level`.
 #' @param anrind_labels (`character`)\cr the factor level labels of `anrind_var`, determine the orders of display in the
 #' final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
 #' @param bnrind_labels (`character`)\cr the factor level labels of `bnrind_var`, determine the orders of display in the
@@ -417,7 +417,9 @@ srv_shift_by_arm <- function(input,
     input_visit <- unlist(visit$filter)["vars_selected"]
 
     validate(
-      need(input_arm_var, "Please select a treatment variable")
+      need(input_arm_var, "Please select a treatment variable"),
+      need(input_paramcd, "Please select a endpoint parameter"),
+      need(input_visit, "Please select an analysis visit")
     )
 
     validate_standard_inputs(
@@ -425,7 +427,7 @@ srv_shift_by_arm <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_anrind_var, input_bnrind_var),
-      arm_var = input_arm_var[[1]]
+      arm_var = input_arm_var
     )
   })
 
