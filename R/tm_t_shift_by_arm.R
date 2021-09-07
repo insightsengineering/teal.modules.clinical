@@ -29,16 +29,21 @@ template_shift_by_arm <- function(dataname,
                                   bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
                                   anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                                   bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-                                  drop_arm_levels = TRUE) {
+                                  drop_arm_levels = TRUE,
+                                  na_level = "<Missing>") {
 
   assert_that(
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
+    is.string(visit),
     is.string(paramcd),
     is.string(anrind_var),
     is.string(bnrind_var),
-    is.string(visit),
+    is.character(anrind_levels),
+    is.character(bnrind_levels),
+    is.character(anrind_labels),
+    is.character(bnrind_labels),
     is.flag(drop_arm_levels)
   )
 
@@ -197,9 +202,10 @@ template_shift_by_arm <- function(dataname,
 #'       ),
 #'       bnrind_var = choices_selected(
 #'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
-#'         ),
+#'       )
 #'     )
-#'   )
+#'   ),
+#'   filter = list(ADSL = list(SAFFL = "Y"), ADEG = list(ONTRTFL = "Y"))
 #' )
 #'
 #' \dontrun{
