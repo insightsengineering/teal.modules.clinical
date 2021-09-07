@@ -298,9 +298,7 @@ ui_shift_by_arm <- function(id, ...) {
     output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c(
-         "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit"
-      )]),
+      datanames_input(a[c("arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit")]),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
