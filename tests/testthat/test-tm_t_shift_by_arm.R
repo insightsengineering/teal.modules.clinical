@@ -1,24 +1,28 @@
-test_that("template_shift_by_grade generates correct expressions with default arguments", {
-  result <- template_shift_by_grade(
+test_that("template_shift_by_arm generates correct expressions with default arguments", {
+  result <- template_shift_by_arm(
     parentname = "adsl",
-    dataname = "adlb",
+    dataname = "adeg",
     arm_var = "ARM",
-    id_var = "USUBJID",
-    visit_var = "AVISIT",
-    worst_flag_var = c("WGRLOVFL"),
-    worst_flag_indicator = "Y",
-    anl_toxgrade_var = "ATOXGR",
-    base_toxgrade_var = "BTOXGR",
     paramcd = "PARAMCD",
+    visit = "AVISIT",
+    anrind_var = "ANRIND",
+    bnrind_var = "BNRIND",
+    anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+    bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+    anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
+    bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
     drop_arm_levels = TRUE,
-    add_total = FALSE,
-    na_level = "<Missing>",
-    code_missing_baseline = FALSE
+    na_level = "<Missing>"
     )
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% filter(WGRLOVFL == "Y")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+      adeg$BNRIND <- factor(
+        adeg$BNRIND,
+        levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+        labels = c("LOW", "NORMAL", "HIGH", "Missing")
+      )
       anl <- anl %>% mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)

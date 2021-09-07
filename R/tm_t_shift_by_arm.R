@@ -58,6 +58,13 @@ template_shift_by_arm <- function(dataname,
       env = list(parentname = as.name(parentname), na_level = na_level)
     )
   )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname <- df_explicit_na(dataname, na_level = na_level),
+      env = list(dataname = as.name(dataname), na_level = na_level)
+    )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -96,12 +103,10 @@ template_shift_by_arm <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        mutate(col_label = visit) %>%
-        df_explicit_na(na_level = na_level),
+        mutate(col_label = visit),
       env = list(
         df = as.name(dataname),
-        visit = visit,
-        na_level = na_level
+        visit = visit
       )
     )
   )
