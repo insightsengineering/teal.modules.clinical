@@ -36,11 +36,11 @@ template_shift_by_arm <- function(dataname,
     is.string(parentname),
     is.string(arm_var),
     is.string(paramcd_var),
-    is.string(paramcd),
+    # is.string(paramcd),
     is.string(anrind_var),
     is.string(bnrind_var),
     is.string(visit_var),
-    is.string(visit),
+    # is.string(visit),
     is.flag(drop_arm_levels)
   )
 
@@ -260,9 +260,9 @@ tm_t_shift_by_arm <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd_var = cs_to_des_select(paramcd_var, dataname = dataname),
-    paramcd = cs_to_des_select(paramcd, dataname = dataname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     visit_var = cs_to_des_select(visit_var, dataname = dataname),
-    visit = cs_to_des_select(visit, dataname = dataname),
+    visit = cs_to_des_filter(visit, dataname = dataname),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
     #ontrtfl_var = cs_to_des_select(ontrtfl_var, dataname = dataname, multiple = TRUE),
@@ -458,21 +458,23 @@ srv_shift_by_arm <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- arm_var_user_input()
-    input_paramcd_var <- paramcd_var_user_input()
-    input_visit_var <- visit_var_user_input()
-    input_anrind_var <- anrind_var_user_input()
-    input_bnrind_var <- bnrind_var_user_input()
+    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    input_paramcd_var <- as.vector(anl_m$columns_source$input_paramcd_var)
+    input_visit_var <- as.vector(anl_m$columns_source$input_visit_var)
+    input_anrind_var <- as.vector(anl_m$columns_source$input_anrind_var)
+    input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
+    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+    input_visit <- unlist(visit$filter)["vars_selected"]
     #input_ontrtfl_var <- ontrtfl_var_user_input()
     #input_saffl_var <- saffl_var_var_user_input()
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
-      need(input_paramcd_var, "Please select parameter variable"),
-      need(input_visit_var, "Please select visit variable"),
-      need(input_anrind_var, "Please select analysis range indicator variable"),
-      need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
-      #need(input_ontrtfl_var, "Please select treatment record flag variable"),
+      # need(input_paramcd_var, "Please select parameter variable"),
+      # need(input_visit_var, "Please select visit variable"),
+      # need(input_anrind_var, "Please select analysis range indicator variable"),
+      # need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
+      # #need(input_ontrtfl_var, "Please select treatment record flag variable"),
       #need(input_saffl_var, "Please select safety population flag variable"),
 
       need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
