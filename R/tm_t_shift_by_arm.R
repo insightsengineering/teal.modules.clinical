@@ -234,7 +234,6 @@ tm_t_shift_by_arm <- function(label,
                               anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                               bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                               drop_arm_levels = TRUE,
-                              useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
                               pre_output = NULL,
                               post_output = NULL) {
@@ -242,7 +241,6 @@ tm_t_shift_by_arm <- function(label,
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),
-    useNA %in% c("ifany", "no"), # nolint,
     is_character_single(na_level),
     is_logical_single(drop_arm_levels),
     list(
@@ -254,7 +252,6 @@ tm_t_shift_by_arm <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
-  useNA <- match.arg(useNA) # nolint
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -345,13 +342,6 @@ ui_shift_by_arm <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional table settings",
-          checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
-          radioButtons(
-            ns("useNA"),
-            label = "Display NA counts",
-            choices = c("ifany", "no"),
-            selected = a$useNA
-          ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
               checkboxInput(
