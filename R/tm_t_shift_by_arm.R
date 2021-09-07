@@ -258,8 +258,8 @@ tm_t_shift_by_arm <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
-        parentname = parentname
-        # label = label,
+        parentname = parentname,
+        label = label
         # na_level = na_level
       )
     ),
@@ -386,6 +386,7 @@ srv_shift_by_arm <- function(input,
                              #ontrtfl,
                              #saffl_var,
                              #saffl,
+                             label,
                              drop_arm_levels = TRUE) {
 
   stopifnot(is_cdisc_data(datasets))
@@ -495,7 +496,7 @@ srv_shift_by_arm <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(list(arm_var, paramcd, visit, anrind_var, bnrind_var)),
-    modal_title = "R Code for Shift Table by Arm"
-    # code_header = label
+    modal_title = "R Code for Shift Table by Arm",
+    code_header = label
   )
 }
