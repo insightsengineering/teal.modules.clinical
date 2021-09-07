@@ -1,18 +1,22 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param visit (`character`)\cr variable value designating the analysis visit.
+#' @param visit (`character`)\cr variable designating the analysis visit.
+#' @param paramcd (`character`)\cr variable designating the parameter code.
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
+#' @param anrind_levels (`character`)\cr the factor levels of `anrind_var`, determine the orders of display in the final
+#' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
+#' "<Missing>".
+#' @param bnrind_levels (`character`)\cr the factor levels of `bnrind_var`, determine the orders of display in the final
+#' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
+#' "<Missing>".
+#' @param anrind_labels (`character`)\cr the factor level labels of `anrind_var`, determine the orders of display in the
+#' final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
+#' @param bnrind_labels (`character`)\cr the factor level labels of `bnrind_var`, determine the orders of display in the
+#' final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
 #'
-#' @examples
-#'
-#' adsl <- df_explicit_na(scda::synthetic_cdisc_data("latest")$adsl)
-#' adeg <- df_explicit_na(scda::synthetic_cdisc_data("latest")$adeg)
-#'
-#' tbl_code <- template_shift_by_arm("adeg", parentname = "adsl")
-#' lapply(tbl_code, eval)
-#'
+#' @seealso [tm_t_shift_by_arm()]
 #'
 template_shift_by_arm <- function(dataname,
                                   parentname,
