@@ -21,6 +21,10 @@ template_shift_by_arm <- function(dataname,
                                   visit = "AVISIT",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
+                                  anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+                                  bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+                                  anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
+                                  bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                                   drop_arm_levels = TRUE) {
 
   assert_that(
@@ -51,10 +55,15 @@ template_shift_by_arm <- function(dataname,
     substitute(
       expr = dataname$bnrind_var <- factor(
         dataname$bnrind_var,
-        levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-        labels = c("LOW", "NORMAL", "HIGH", "Missing")
+        levels = bnrind_levels,
+        labels = bnrind_labels
       ),
-      env = list(dataname = as.name(dataname), bnrind_var = bnrind_var)
+      env = list(
+        dataname = as.name(dataname),
+        bnrind_var = bnrind_var,
+        bnrind_levels = bnrind_levels,
+        bnrind_labels = bnrind_labels
+      )
     )
   )
   data_list <- add_expr(
@@ -62,10 +71,15 @@ template_shift_by_arm <- function(dataname,
     substitute(
       expr = dataname$anrind_var <- factor(
         dataname$anrind_var,
-        levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-        labels = c("LOW", "NORMAL", "HIGH", "Missing")
+        levels = anrind_levels,
+        labels = anrind_labels
       ),
-      env = list(dataname = as.name(dataname), anrind_var = anrind_var)
+      env = list(
+        dataname = as.name(dataname),
+        anrind_var = anrind_var,
+        anrind_levels = anrind_levels,
+        anrind_labels = anrind_labels
+      )
     )
   )
 
@@ -204,7 +218,10 @@ tm_t_shift_by_arm <- function(label,
                               bnrind_var = choices_selected(
                                 variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
-
+                              anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+                              bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
+                              anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
+                              bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                               drop_arm_levels = TRUE,
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
@@ -250,7 +267,11 @@ tm_t_shift_by_arm <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        anrind_levels = anrind_levels,
+        anrind_labels = anrind_labels,
+        bnrind_levels = bnrind_levels,
+        bnrind_labels = bnrind_labels
         # na_level = na_level
       )
     ),
@@ -369,10 +390,10 @@ srv_shift_by_arm <- function(input,
                              visit,
                              anrind_var,
                              bnrind_var,
-                             #ontrtfl_var,
-                             #ontrtfl,
-                             #saffl_var,
-                             #saffl,
+                             anrind_levels,
+                             bnrind_levels,
+                             anrind_labels,
+                             bnrind_labels,
                              label,
                              drop_arm_levels = TRUE) {
 
@@ -451,10 +472,10 @@ srv_shift_by_arm <- function(input,
       paramcd = unlist(paramcd$filter)["vars_selected"],
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
-      #ontrtfl_var = ontrtfl_var_user_input(),
-      #ontrtfl = input$ontrtfl,
-      #saffl_var = saffl_var_var_user_input(),
-      #saffl = saffl$saffl,
+      anrind_levels = anrind_levels,
+      anrind_labels = anrind_labels,
+      bnrind_levels = bnrind_levels,
+      bnrind_labels = bnrind_labels,
       drop_arm_levels = input$drop_arm_levels
     )
     mapply(expression = my_calls, chunks_push)
