@@ -21,11 +21,6 @@ template_shift_by_arm <- function(dataname,
                                   visit = "AVISIT",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
-                                  #ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
-                                  #ontrtfl = "Y",
-                                  #saffl_var = "SAFFL",
-                                  #saffl = "Y",
-                                  #sort_criteria = c("freq_desc", "alpha"),
                                   drop_arm_levels = TRUE) {
 
   assert_that(
@@ -209,11 +204,7 @@ tm_t_shift_by_arm <- function(label,
                               bnrind_var = choices_selected(
                                 variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
-                              #ontrtfl_var = "ONTRTFL",  # "On Treatment Record Flag"
-                              #ontrtfl = "Y",
-                              #saffl_var = "SAFFL",
-                              #saffl = "Y",
-                              #sort_criteria = c("freq_desc", "alpha"),
+
                               drop_arm_levels = TRUE,
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
@@ -281,10 +272,6 @@ ui_shift_by_arm <- function(id, ...) {
     a$visit,
     a$anrind_var,
     a$bnrind_var
-    #a$ontrtfl_var,
-    #a$ontrtfl,
-    #a$saffl_var,
-    #a$saffl
   )
 
   standard_layout(
@@ -418,15 +405,11 @@ srv_shift_by_arm <- function(input,
     input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_visit <- unlist(visit$filter)["vars_selected"]
-    #input_ontrtfl_var <- ontrtfl_var_user_input()
-    #input_saffl_var <- saffl_var_var_user_input()
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
       # need(input_anrind_var, "Please select analysis range indicator variable"),
       # need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
-      # #need(input_ontrtfl_var, "Please select treatment record flag variable"),
-      #need(input_saffl_var, "Please select safety population flag variable"),
 
       need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
       if (length(input_arm_var) == 2) {
