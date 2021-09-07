@@ -194,7 +194,6 @@ template_shift_by_arm <- function(dataname,
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
 #'       arm_var = choices_selected(variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"),
-#'       # paramcd_var = choices_selected(variable_choices(adeg, subset = c("PARAMCD", "PARAM")), selected = "PARAMCD", fixed = TRUE),
 #'       anrind_var = choices_selected(
 #'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
 #'       ),
@@ -553,8 +552,8 @@ srv_shift_by_arm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, summarize_vars)),
-    modal_title = "R Code for the current Summary Table",
-    code_header = label
+    datanames = get_extract_datanames(list(arm_var, paramcd, visit, anrind_var, bnrind_var)),
+    modal_title = "R Code for Shift Table by Arm"
+    # code_header = label
   )
 }
