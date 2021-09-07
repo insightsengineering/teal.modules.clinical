@@ -261,8 +261,6 @@ tm_t_shift_by_arm <- function(label,
     visit = cs_to_des_filter(visit, dataname = dataname),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
-    #ontrtfl_var = cs_to_des_select(ontrtfl_var, dataname = dataname, multiple = TRUE),
-    #saffl_var = cs_to_des_select(saffl_var, dataname = dataname, multiple = TRUE)
   )
 
   args <- as.list(environment())
@@ -369,17 +367,6 @@ ui_shift_by_arm <- function(id, ...) {
             )
           }
         )
-      ),
-      panel_group(
-        # panel_item(
-        #   "Additional Variables Info",
-        #   data_extract_input(
-        #     id = ns("id_var"),
-        #     label = "Subject Identifier",
-        #     data_extract_spec = a$id_var,
-        #     is_single_dataset = is_single_dataset_value
-        #   )
-        # )
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -438,19 +425,7 @@ srv_shift_by_arm <- function(input,
     input_visit <- unlist(visit$filter)["vars_selected"]
 
     validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      # need(input_anrind_var, "Please select analysis range indicator variable"),
-      # need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
-
-      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
-      if (length(input_arm_var) == 2) {
-        need(
-          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-            "", NA
-          )),
-          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
-        )
-      }
+      need(input_arm_var, "Please select a treatment variable")
     )
 
     validate_standard_inputs(
