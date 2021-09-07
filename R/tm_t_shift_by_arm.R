@@ -43,30 +43,6 @@ template_shift_by_arm <- function(dataname,
 
   # Start data steps.
   data_list <- list()
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- df %>%
-        mutate(col_label = visit) %>%
-        df_explicit_na(),
-      env = list(
-        df = as.name(dataname),
-        visit = visit
-      )
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    prepare_arm_levels(
-      dataname = "anl",
-      parentname = parentname,
-      arm_var = arm_var,
-      drop_arm_levels = drop_arm_levels
-    )
-  )
-
   data_list <- add_expr(
     data_list,
     substitute(
@@ -95,6 +71,29 @@ template_shift_by_arm <- function(dataname,
         labels = c("LOW", "NORMAL", "HIGH", "Missing")
       ),
       env = list(dataname = as.name(dataname), anrind_var = anrind_var)
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- df %>%
+        mutate(col_label = visit) %>%
+        df_explicit_na(),
+      env = list(
+        df = as.name(dataname),
+        visit = visit
+      )
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm_levels(
+      dataname = "anl",
+      parentname = parentname,
+      arm_var = arm_var,
+      drop_arm_levels = drop_arm_levels
     )
   )
 
