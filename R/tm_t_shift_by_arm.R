@@ -1,7 +1,6 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param paramcd_var (`character`)\cr the variable name for the parameter.
 #' @param visit (`character`)\cr variable value designating the analysis visit.
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
@@ -18,11 +17,7 @@
 template_shift_by_arm <- function(dataname,
                                   parentname,
                                   arm_var = "ARM",
-                                  # paramcd_var = "PARAMCD",
-                                  # paramcd = "HR", # Heart Rate
                                   paramcd = "PARAMCD",
-                                  # visit_var = "AVISIT",
-                                  # visit = "POST-BASELINE MINIMUM",
                                   visit = "AVISIT",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
@@ -37,11 +32,9 @@ template_shift_by_arm <- function(dataname,
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
-    # is.string(paramcd_var),
     is.string(paramcd),
     is.string(anrind_var),
     is.string(bnrind_var),
-    # is.string(visit_var),
     is.string(visit),
     is.flag(drop_arm_levels)
   )
@@ -55,17 +48,10 @@ template_shift_by_arm <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        # filter(
-        #   paramcd_var == paramcd,
-        #   visit_var == visit
-        # ) %>%
         mutate(col_label = visit) %>%
         df_explicit_na(),
       env = list(
         df = as.name(dataname),
-        # paramcd_var = as.name(paramcd_var),
-        # visit_var = as.name(visit_var),
-        # paramcd = paramcd,
         visit = visit
       )
     )
@@ -212,15 +198,9 @@ tm_t_shift_by_arm <- function(label,
                               dataname,
                               parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                               arm_var,
-                              # paramcd_var = choices_selected(
-                              #   variable_choices(dataname, subset = "PARAMCD"), selected = "PARAMCD", fixed = TRUE
-                              # ),
                               paramcd = choices_selected(
                                 value_choices(dataname, "PARAMCD"), selected = "HR"
                               ),
-                              # visit_var = choices_selected(
-                              #   variable_choices(dataname, subset = "AVISIT"), selected = "AVISIT", fixed = TRUE
-                              # ),
                               visit = choices_selected(
                                 value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
                               ),
@@ -260,9 +240,7 @@ tm_t_shift_by_arm <- function(label,
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    # paramcd_var = cs_to_des_select(paramcd_var, dataname = dataname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    # visit_var = cs_to_des_select(visit_var, dataname = dataname),
     visit = cs_to_des_filter(visit, dataname = dataname),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
@@ -300,9 +278,7 @@ ui_shift_by_arm <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(
     a$id_var,
     a$arm_var,
-    # a$paramcd_var,
     a$paramcd,
-    # a$visit_var,
     a$visit,
     a$anrind_var,
     a$bnrind_var
@@ -325,18 +301,6 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      # data_extract_input(
-      #   id = ns("paramcd_var"),
-      #   label = "Select Parameter Variable",
-      #   data_extract_spec = a$paramcd_var,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
-      # data_extract_input(
-      #   id = ns("visit_var"),
-      #   label = "Select Visit Variable",
-      #   data_extract_spec = a$visit_var,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
       data_extract_input(
         id = ns("anrind_var"),
         label = "Select Analysis Range Indicator Variable",
@@ -415,9 +379,7 @@ srv_shift_by_arm <- function(input,
                              dataname,
                              parentname,
                              arm_var,
-                             # paramcd_var,
                              paramcd,
-                             # visit_var,
                              visit,
                              anrind_var,
                              bnrind_var,
@@ -445,14 +407,6 @@ srv_shift_by_arm <- function(input,
     anl_name = "ANL_ADSL"
   )
 
-  # arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
-  # paramcd_var_user_input <- get_input_order("paramcd_var", paramcd_var$dataname)
-  # visit_var_user_input <- get_input_order("visit_var", visit_var$dataname)
-  # anrind_var_user_input <- get_input_order("anrind_var", anrind_var$dataname)
-  # bnrind_var_user_input <- get_input_order("bnrind_var", bnrind_var$dataname)
-  #ontrtfl_var_user_input <- get_input_order("ontrtfl_var", ontrtfl_var$dataname)
-  #saffl_var_var_user_input <- get_input_order("saffl_var", saffl_var$dataname)
-
   # validate inputs
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -460,8 +414,6 @@ srv_shift_by_arm <- function(input,
 
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    # input_paramcd_var <- as.vector(anl_m$columns_source$input_paramcd_var)
-    # input_visit_var <- as.vector(anl_m$columns_source$input_visit_var)
     input_anrind_var <- as.vector(anl_m$columns_source$input_anrind_var)
     input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
@@ -471,8 +423,6 @@ srv_shift_by_arm <- function(input,
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
-      # need(input_paramcd_var, "Please select parameter variable"),
-      # need(input_visit_var, "Please select visit variable"),
       # need(input_anrind_var, "Please select analysis range indicator variable"),
       # need(input_bnrind_var,  "Please select baseline reference range indicator variable"),
       # #need(input_ontrtfl_var, "Please select treatment record flag variable"),
@@ -514,15 +464,8 @@ srv_shift_by_arm <- function(input,
     my_calls <- template_shift_by_arm(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      # arm_var = arm_var_user_input(),
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      # paramcd_var = paramcd_var_user_input(),
-      # paramcd_var = as.vector(anl_m$columns_source$paramcd_var),
       paramcd = unlist(paramcd$filter)["vars_selected"],
-      # visit_var = visit_var_user_input(),
-      # visit_var = as.vector(anl_m$columns_source$visit_var),
-      # anrind_var = anrind_var_user_input(),
-      # bnrind_var = bnrind_var_user_input(),
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
       #ontrtfl_var = ontrtfl_var_user_input(),
