@@ -6,15 +6,15 @@
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
 #' @param anrind_levels (`character`)\cr the factor levels of `anrind_var`, determine the orders of display in the final
-#' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#' "<Missing>". The missing level should match `na_level`.
+#'   table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
+#'   "<Missing>". The missing level should match `na_level`.
 #' @param bnrind_levels (`character`)\cr the factor levels of `bnrind_var`, determine the orders of display in the final
-#' table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#' "<Missing>". The missing level should match `na_level`.
+#'   table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
+#'   "<Missing>". The missing level should match `na_level`.
 #' @param anrind_labels (`character`)\cr the factor level labels of `anrind_var`, determine the orders of display in the
-#' final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
+#'   final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
 #' @param bnrind_labels (`character`)\cr the factor level labels of `bnrind_var`, determine the orders of display in the
-#' final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
+#'   final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
 #'
 #' @seealso [tm_t_shift_by_arm()]
 #'
@@ -163,19 +163,12 @@ template_shift_by_arm <- function(dataname,
 
 #' Teal Module: Shift by Arm
 #'
+#' @inheritParams module_arguments
+#' @inheritParams template_shift_by_arm
 #' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
-#'   TRUE regardless of the user choice when `tm_t_summary` is called.
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
-#' @inheritParams module_arguments
 #'
 #' @export
 #' @examples
