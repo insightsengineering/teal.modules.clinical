@@ -54,8 +54,8 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_level),
+      env = list(parentname = as.name(parentname), na_level = na_level)
     )
   )
 
@@ -97,10 +97,11 @@ template_shift_by_arm <- function(dataname,
     substitute(
       expr = anl <- df %>%
         mutate(col_label = visit) %>%
-        df_explicit_na(),
+        df_explicit_na(na_level = na_level),
       env = list(
         df = as.name(dataname),
-        visit = visit
+        visit = visit,
+        na_level = na_level
       )
     )
   )
@@ -279,8 +280,8 @@ tm_t_shift_by_arm <- function(label,
         anrind_levels = anrind_levels,
         anrind_labels = anrind_labels,
         bnrind_levels = bnrind_levels,
-        bnrind_labels = bnrind_labels
-        # na_level = na_level
+        bnrind_labels = bnrind_labels,
+        na_level = na_level
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -392,7 +393,8 @@ srv_shift_by_arm <- function(input,
                              anrind_labels,
                              bnrind_labels,
                              label,
-                             drop_arm_levels = TRUE) {
+                             drop_arm_levels = TRUE,
+                             na_level) {
 
   stopifnot(is_cdisc_data(datasets))
 
@@ -461,7 +463,8 @@ srv_shift_by_arm <- function(input,
       anrind_labels = anrind_labels,
       bnrind_levels = bnrind_levels,
       bnrind_labels = bnrind_labels,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      na_level = na_level
     )
     mapply(expression = my_calls, chunks_push)
   })
