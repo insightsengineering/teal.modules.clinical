@@ -535,10 +535,11 @@ srv_t_smq <- function(input,
 
     validate(
       need(input_id_var, "Please select a subject identifier."),
+      need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
       need(input_baskets, "Please select the SMQ/CQ baskets."),
       need(input_scopes, "Please select the scope variables."),
       need(input_llt, "Please select the low level term."),
-      need(input_arm_var, "Please select the treatment variable.")
+      need(input_arm_var, "Please select the arm variable.")
     )
     #validate inputs
     validate_standard_inputs(
