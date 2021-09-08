@@ -264,23 +264,12 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_subj_", flag_var_anl),
-          .indent_mods = 1L
+          table_names = "count_subj_anl",
+          denom = "N_col",
+          var_labels = "Total number of patients with at least one",
+          show_labels = "visible"
         ),
         env = list(flag_var_anl = flag_var_anl)
-      )
-    )
-
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Total number of patients with at least one"),
-          at = position
-        ),
-        env = list(
-          position = sum(2, h_count_rows(count_flags[1], vars_anl = flag_var_anl))
-        )
       )
     )
   }
@@ -293,25 +282,14 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = llt,
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_pt_", flag_var_anl),
+          table_names = "count_pt_anl",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Total number of unique preferred terms which are",
+          show_labels = "visible"
         ),
         env = list(flag_var_anl = flag_var_anl, llt = llt)
-      )
-    )
-
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Total number of unique preferred terms which are"),
-          at = position
-        ),
-        env = list(
-          position = sum(2, h_count_rows(count_flags[1:2], vars_anl = flag_var_anl))
-        )
       )
     )
   }
@@ -324,25 +302,14 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_events_", flag_var_anl),
+          table_names = "count_events_anl",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Total number of adverse events which are",
+          show_labels = "visible"
         ),
         env = list(flag_var_anl = flag_var_anl)
-      )
-    )
-
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Total number of adverse events which are"),
-          at = position
-        ),
-        env = list(
-          position = sum(2, h_count_rows(count_flags, vars_anl = flag_var_anl))
-        )
       )
     )
   }
@@ -355,30 +322,12 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_subj_", flag_var_aesi),
-          .indent_mods = 1L
+          table_names = "count_subj_aesi",
+          denom = "N_col",
+          var_labels = "Medical concepts: number of patients with",
+          show_labels = "visible"
         ),
         env = list(flag_var_aesi = flag_var_aesi)
-      )
-    )
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Medical concepts: number of patients with"),
-          at = position
-        ),
-        env = list(
-          position = sum(
-            2,
-            h_count_rows(
-              x_anl = count_flags,
-              vars_anl = flag_var_anl,
-              x_aesi = count_flags[1],
-              vars_aesi = flag_var_aesi
-            )
-          )
-        )
       )
     )
   }
@@ -391,32 +340,14 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = llt,
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_pt_", flag_var_aesi),
+          table_names = "count_pt_aesi",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Medical concepts: number of unique preferred terms which are part of",
+          show_labels = "visible"
         ),
         env = list(flag_var_aesi = flag_var_aesi, llt = llt)
-      )
-    )
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Medical concepts: number of unique preferred terms which are part of"), #nolint
-          at = position
-        ),
-        env = list(
-          position = sum(
-            2,
-            h_count_rows(
-              x_anl = count_flags,
-              vars_anl = flag_var_anl,
-              x_aesi = count_flags[1:2],
-              vars_aesi = flag_var_aesi
-            )
-          )
-        )
       )
     )
   }
@@ -429,33 +360,14 @@ template_events_summary <- function(anl_name,
         expr = count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_events_", flag_var_aesi),
+          table_names = "count_events_aesi",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Medical concepts: number of adverse events which are part of",
+          show_labels = "visible"
         ),
         env = list(flag_var_aesi = flag_var_aesi)
-      )
-    )
-
-    table_anl_list <- add_expr(
-      table_anl_list,
-      substitute(
-        expr = insert_rrow(
-          rrow("Medical concepts: number of adverse events which are part of"),
-          at = position
-        ),
-        env = list(
-          position = sum(
-            2,
-            h_count_rows(
-              x_anl = count_flags,
-              vars_anl = flag_var_anl,
-              x_aesi = count_flags,
-              vars_aesi = flag_var_aesi
-            )
-          )
-        )
       )
     )
   }
