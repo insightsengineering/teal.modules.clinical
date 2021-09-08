@@ -34,5 +34,4 @@ Collection of teal modules intended to eventually cover many of the standard out
    Here is an example of a real command (with name_of_the_archive substituted by the output of the build command):
    ```
    $ Rscript -e 'install.packages("teal.modules.clinical_0.9.5.9000.tar.gz")'
-
-```
+   ```
