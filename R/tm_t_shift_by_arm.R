@@ -66,15 +66,6 @@ template_shift_by_arm <- function(dataname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    prepare_arm_levels(
-      dataname = "anl",
-      parentname = parentname,
-      arm_var = arm_var
-    )
-  )
-
   y$data <- bracket_expr(data_list)
 
   # Start layout steps.
