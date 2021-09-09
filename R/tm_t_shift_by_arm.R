@@ -154,7 +154,9 @@ template_shift_by_arm <- function(dataname,
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = choices_selected(variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"),
+#'       arm_var = choices_selected(
+#'         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+#'       ),
 #'       anrind_var = choices_selected(
 #'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
 #'       ),
