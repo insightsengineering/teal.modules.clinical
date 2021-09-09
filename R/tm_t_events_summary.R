@@ -876,34 +876,3 @@ srv_t_events_summary <- function(input,
   )
 
 }
-
-
-#' @noRd
-h_count_rows <- function(x_anl = NULL, x_aesi = NULL, vars_anl = NULL, vars_aesi = NULL) {
-
-  assert_that(
-    is_logical_vector(x_anl) || is.null(x_anl),
-    is_character_vector(vars_anl) || is.null(vars_anl),
-    is_logical_vector(x_aesi) || is.null(x_aesi),
-    is_character_vector(vars_aesi) || is.null(vars_aesi)
-  )
-
-  n_anl <- sum(as.numeric(x_anl))
-  n_aesi <- sum(as.numeric(x_aesi))
-
-  n_anl_vars <- length(vars_anl)
-  n_aesi_vars <- length(vars_aesi)
-
-  result <- 0
-
-  if (n_anl_vars > 0) {
-    result <- result + ((n_anl - 1) * n_anl_vars) + n_anl
-  }
-
-  if (n_aesi_vars > 0) {
-    result <- result + ((n_aesi - 1) * n_aesi_vars) + n_aesi + n_anl_vars
-  }
-
-  result
-
-}
