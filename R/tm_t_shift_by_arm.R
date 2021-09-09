@@ -106,7 +106,7 @@ template_shift_by_arm <- function(dataname,
         mutate(col_label = visit),
       env = list(
         df = as.name(dataname),
-        visit = visit
+        visit = as.name(visit)
       )
     )
   )
@@ -130,7 +130,7 @@ template_shift_by_arm <- function(dataname,
     layout_list,
     substitute(
       expr = basic_table() %>%
-        split_cols_by("col_label") %>% # temprary solution for over arching column
+        split_cols_by("col_label", split_fun = drop_split_levels) %>% # temprary solution for over arching column
         split_cols_by(anrind_var) %>%
         split_rows_by(
           arm_var,
