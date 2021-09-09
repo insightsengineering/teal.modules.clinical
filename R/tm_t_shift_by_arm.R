@@ -283,31 +283,36 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$visit,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("treatment_flag_var"),
-        label = "On Treatment Flag Variable",
-        data_extract_spec = a$treatment_flag_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      optionalSelectInput(
-        ns("treatment_flag"),
-        "Value Indicating On Treatment",
-        a$treatment_flag$choices,
-        a$treatment_flag$selected,
-        multiple = FALSE,
-        fixed = a$treatment_flag$fixed
-      ),
-      data_extract_input(
-        id = ns("anrind_var"),
-        label = "Select Analysis Range Indicator Variable",
-        data_extract_spec = a$anrind_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
-        id = ns("bnrind_var"),
-        label = "Select Baseline Reference Range Indicator Variable",
-        data_extract_spec = a$bnrind_var,
-        is_single_dataset = is_single_dataset_value
+      panel_group(
+        panel_item(
+          "Additional Variables Info",
+          data_extract_input(
+            id = ns("treatment_flag_var"),
+            label = "On Treatment Flag Variable",
+            data_extract_spec = a$treatment_flag_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          optionalSelectInput(
+            ns("treatment_flag"),
+            "Value Indicating On Treatment",
+            a$treatment_flag$choices,
+            a$treatment_flag$selected,
+            multiple = FALSE,
+            fixed = a$treatment_flag$fixed
+          ),
+          data_extract_input(
+            id = ns("anrind_var"),
+            label = "Select Analysis Range Indicator Variable",
+            data_extract_spec = a$anrind_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("bnrind_var"),
+            label = "Select Baseline Reference Range Indicator Variable",
+            data_extract_spec = a$bnrind_var,
+            is_single_dataset = is_single_dataset_value
+          )
+        )
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
