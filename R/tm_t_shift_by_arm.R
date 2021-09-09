@@ -15,7 +15,6 @@ template_shift_by_arm <- function(dataname,
                                   visit = "AVISIT",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
-                                  drop_arm_levels = TRUE,
                                   na_level = "<Missing>") {
 
   assert_that(
@@ -25,8 +24,7 @@ template_shift_by_arm <- function(dataname,
     is.string(visit),
     is.string(paramcd),
     is.string(anrind_var),
-    is.string(bnrind_var),
-    is.flag(drop_arm_levels)
+    is.string(bnrind_var)
   )
 
   y <- list()
@@ -73,8 +71,7 @@ template_shift_by_arm <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
-      drop_arm_levels = drop_arm_levels
+      arm_var = arm_var
     )
   )
 
@@ -184,7 +181,6 @@ tm_t_shift_by_arm <- function(label,
                               bnrind_var = choices_selected(
                                 variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
-                              drop_arm_levels = TRUE,
                               na_level = "<Missing>",
                               pre_output = NULL,
                               post_output = NULL) {
@@ -193,7 +189,6 @@ tm_t_shift_by_arm <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is_character_single(na_level),
-    is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -282,27 +277,6 @@ ui_shift_by_arm <- function(id, ...) {
         label = "Select Baseline Reference Range Indicator Variable",
         data_extract_spec = a$bnrind_var,
         is_single_dataset = is_single_dataset_value
-      ),
-
-      panel_group(
-        panel_item(
-          "Additional table settings",
-          if (a$dataname == a$parentname) {
-            shinyjs::hidden(
-              checkboxInput(
-                ns("drop_arm_levels"),
-                label = "it's a BUG if you see this",
-                value = TRUE
-              )
-            )
-          } else {
-            checkboxInput(
-              ns("drop_arm_levels"),
-              label = sprintf("Drop columns not in filtered %s", a$dataname),
-              value = a$drop_arm_levels
-            )
-          }
-        )
       )
     ),
     forms = get_rcode_ui(ns("rcode")),
@@ -324,7 +298,6 @@ srv_shift_by_arm <- function(input,
                              anrind_var,
                              bnrind_var,
                              label,
-                             drop_arm_levels = TRUE,
                              na_level) {
 
   stopifnot(is_cdisc_data(datasets))
@@ -392,7 +365,6 @@ srv_shift_by_arm <- function(input,
       paramcd = unlist(paramcd$filter)["vars_selected"],
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
-      drop_arm_levels = input$drop_arm_levels,
       na_level = na_level
     )
     mapply(expression = my_calls, chunks_push)
