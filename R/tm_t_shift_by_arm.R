@@ -5,16 +5,6 @@
 #' @param paramcd (`character`)\cr variable designating the parameter code.
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
-#' @param anrind_levels (`character`)\cr the factor levels of `anrind_var`, determine the orders of display in the final
-#'   table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#'   "<Missing>". The missing level should match `na_level`.
-#' @param bnrind_levels (`character`)\cr the factor levels of `bnrind_var`, determine the orders of display in the final
-#'   table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after `df_explicit_na()` call is
-#'   "<Missing>". The missing level should match `na_level`.
-#' @param anrind_labels (`character`)\cr the factor level labels of `anrind_var`, determine the orders of display in the
-#'   final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
-#' @param bnrind_labels (`character`)\cr the factor level labels of `bnrind_var`, determine the orders of display in the
-#'   final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").
 #'
 #' @seealso [tm_t_shift_by_arm()]
 #'
@@ -25,10 +15,6 @@ template_shift_by_arm <- function(dataname,
                                   visit = "AVISIT",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
-                                  anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-                                  bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-                                  anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-                                  bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                                   drop_arm_levels = TRUE,
                                   na_level = "<Missing>") {
 
@@ -40,10 +26,6 @@ template_shift_by_arm <- function(dataname,
     is.string(paramcd),
     is.string(anrind_var),
     is.string(bnrind_var),
-    is.character(anrind_levels),
-    is.character(bnrind_levels),
-    is.character(anrind_labels),
-    is.character(bnrind_labels),
     is.flag(drop_arm_levels)
   )
 
@@ -63,39 +45,6 @@ template_shift_by_arm <- function(dataname,
     substitute(
       expr = dataname <- df_explicit_na(dataname, na_level = na_level),
       env = list(dataname = as.name(dataname), na_level = na_level)
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = dataname$bnrind_var <- factor(
-        dataname$bnrind_var,
-        levels = bnrind_levels,
-        labels = bnrind_labels
-      ),
-      env = list(
-        dataname = as.name(dataname),
-        bnrind_var = bnrind_var,
-        bnrind_levels = bnrind_levels,
-        bnrind_labels = bnrind_labels
-      )
-    )
-  )
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = dataname$anrind_var <- factor(
-        dataname$anrind_var,
-        levels = anrind_levels,
-        labels = anrind_labels
-      ),
-      env = list(
-        dataname = as.name(dataname),
-        anrind_var = anrind_var,
-        anrind_levels = anrind_levels,
-        anrind_labels = anrind_labels
-      )
     )
   )
 
@@ -235,10 +184,6 @@ tm_t_shift_by_arm <- function(label,
                               bnrind_var = choices_selected(
                                 variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
-                              anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-                              bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-                              anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-                              bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
                               drop_arm_levels = TRUE,
                               na_level = "<Missing>",
                               pre_output = NULL,
@@ -280,10 +225,6 @@ tm_t_shift_by_arm <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        anrind_levels = anrind_levels,
-        anrind_labels = anrind_labels,
-        bnrind_levels = bnrind_levels,
-        bnrind_labels = bnrind_labels,
         na_level = na_level
       )
     ),
@@ -382,10 +323,6 @@ srv_shift_by_arm <- function(input,
                              visit,
                              anrind_var,
                              bnrind_var,
-                             anrind_levels,
-                             bnrind_levels,
-                             anrind_labels,
-                             bnrind_labels,
                              label,
                              drop_arm_levels = TRUE,
                              na_level) {
@@ -455,10 +392,6 @@ srv_shift_by_arm <- function(input,
       paramcd = unlist(paramcd$filter)["vars_selected"],
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
-      anrind_levels = anrind_levels,
-      anrind_labels = anrind_labels,
-      bnrind_levels = bnrind_levels,
-      bnrind_labels = bnrind_labels,
       drop_arm_levels = input$drop_arm_levels,
       na_level = na_level
     )
