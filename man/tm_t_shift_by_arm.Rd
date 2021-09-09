@@ -13,15 +13,14 @@ tm_t_shift_by_arm(
   paramcd = choices_selected(value_choices(dataname, "PARAMCD"), selected = "HR"),
   visit = choices_selected(value_choices(dataname, "AVISIT"), selected =
     "POST-BASELINE MINIMUM"),
+  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
+    selected = "ONTRTFL", fixed = TRUE),
+  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
+    fixed = TRUE),
   anrind_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected
     = "ANRIND", fixed = TRUE),
   bnrind_var = choices_selected(variable_choices(dataname, subset = "BNRIND"), selected
     = "BNRIND", fixed = TRUE),
-  anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-  bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-  anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-  bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-  drop_arm_levels = TRUE,
   na_level = "<Missing>",
   pre_output = NULL,
   post_output = NULL
@@ -47,27 +46,14 @@ variable value designating the studied parameter.}
 
 \item{visit}{(\code{character})\cr variable designating the analysis visit.}
 
+\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
+
+\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
+records in \code{treatment_flag_var}.}
+
 \item{anrind_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
 
 \item{bnrind_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
-
-\item{anrind_levels}{(\code{character})\cr the factor levels of \code{anrind_var}, determine the orders of display in the final
-table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after \code{df_explicit_na()} call is
-"<Missing>". The missing level should match \code{na_level}.}
-
-\item{bnrind_levels}{(\code{character})\cr the factor levels of \code{bnrind_var}, determine the orders of display in the final
-table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after \code{df_explicit_na()} call is
-"<Missing>". The missing level should match \code{na_level}.}
-
-\item{anrind_labels}{(\code{character})\cr the factor level labels of \code{anrind_var}, determine the orders of display in the
-final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").}
-
-\item{bnrind_labels}{(\code{character})\cr the factor level labels of \code{bnrind_var}, determine the orders of display in the
-final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").}
-
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
@@ -110,8 +96,7 @@ app <- init(
         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
       )
     )
-  ),
-  filter = list(ADSL = list(SAFFL = "Y"), ADEG = list(ONTRTFL = "Y"))
+  )
 )
 
 \dontrun{

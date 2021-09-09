@@ -10,13 +10,10 @@ template_shift_by_arm(
   arm_var = "ARM",
   paramcd = "PARAMCD",
   visit = "AVISIT",
+  treatment_flag_var = "ONTRTFL",
+  treatment_flag = "Y",
   anrind_var = "ANRIND",
   bnrind_var = "BNRIND",
-  anrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-  bnrind_levels = c("LOW", "NORMAL", "HIGH", "<Missing>"),
-  anrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-  bnrind_labels = c("LOW", "NORMAL", "HIGH", "Missing"),
-  drop_arm_levels = TRUE,
   na_level = "<Missing>"
 )
 }
@@ -34,27 +31,14 @@ variable names that can be used as \code{arm_var}.}
 
 \item{visit}{(\code{character})\cr variable designating the analysis visit.}
 
+\item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
+
+\item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
+records in \code{treatment_flag_var}.}
+
 \item{anrind_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
 
 \item{bnrind_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
-
-\item{anrind_levels}{(\code{character})\cr the factor levels of \code{anrind_var}, determine the orders of display in the final
-table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after \code{df_explicit_na()} call is
-"<Missing>". The missing level should match \code{na_level}.}
-
-\item{bnrind_levels}{(\code{character})\cr the factor levels of \code{bnrind_var}, determine the orders of display in the final
-table. Default to c("LOW", "NORMAL", "HIGH", "<Missing>") as the missing level after \code{df_explicit_na()} call is
-"<Missing>". The missing level should match \code{na_level}.}
-
-\item{anrind_labels}{(\code{character})\cr the factor level labels of \code{anrind_var}, determine the orders of display in the
-final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").}
-
-\item{bnrind_labels}{(\code{character})\cr the factor level labels of \code{bnrind_var}, determine the orders of display in the
-final table. Default to c("LOW", "NORMAL", "HIGH", "Missing").}
-
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
