@@ -319,18 +319,6 @@ ui_shift_by_arm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("anrind_var"),
-        label = "Select Analysis Range Indicator Variable",
-        data_extract_spec = a$anrind_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
-        id = ns("bnrind_var"),
-        label = "Select Baseline Reference Range Indicator Variable",
-        data_extract_spec = a$bnrind_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
@@ -340,6 +328,18 @@ ui_shift_by_arm <- function(id, ...) {
         id = ns("visit"),
         label = "Select Visit",
         data_extract_spec = a$visit,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("anrind_var"),
+        label = "Select Analysis Range Indicator Variable",
+        data_extract_spec = a$anrind_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("bnrind_var"),
+        label = "Select Baseline Reference Range Indicator Variable",
+        data_extract_spec = a$bnrind_var,
         is_single_dataset = is_single_dataset_value
       ),
 
