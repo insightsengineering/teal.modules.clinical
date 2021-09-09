@@ -3,6 +3,9 @@
 #' @inheritParams template_arguments
 #' @param visit (`character`)\cr variable designating the analysis visit.
 #' @param paramcd (`character`)\cr variable designating the parameter code.
+#' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
+#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
+#'   records in `treatment_flag_var`.
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
 #'
@@ -13,6 +16,8 @@ template_shift_by_arm <- function(dataname,
                                   arm_var = "ARM",
                                   paramcd = "PARAMCD",
                                   visit = "AVISIT",
+                                  treatment_flag_var = "ONTRTFL",
+                                  treatment_flag = "Y",
                                   anrind_var = "ANRIND",
                                   bnrind_var = "BNRIND",
                                   na_level = "<Missing>") {
@@ -41,8 +46,14 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_level),
-      env = list(dataname = as.name(dataname), na_level = na_level)
+      expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
+        filter(treatment_flag_var == treatment_flag),
+      env = list(
+        dataname = as.name(dataname),
+        na_level = na_level,
+        treatment_flag_var = as.name(treatment_flag_var),
+        treatment_flag = treatment_flag
+      )
     )
   )
 
@@ -119,6 +130,9 @@ template_shift_by_arm <- function(dataname,
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
+#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
+#'   records in `treatment_flag_var`.
 #'
 #' @export
 #' @examples
@@ -148,8 +162,7 @@ template_shift_by_arm <- function(dataname,
 #'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
 #'       )
 #'     )
-#'   ),
-#'   filter = list(ADSL = list(SAFFL = "Y"), ADEG = list(ONTRTFL = "Y"))
+#'   )
 #' )
 #'
 #' \dontrun{
@@ -166,6 +179,12 @@ tm_t_shift_by_arm <- function(label,
                               visit = choices_selected(
                                 value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
                               ),
+                              treatment_flag_var = choices_selected(
+                                variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE
+                              ),
+                              treatment_flag = choices_selected(
+                                value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
+                              ),
                               anrind_var = choices_selected(
                                 variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
                               ),
@@ -179,6 +198,8 @@ tm_t_shift_by_arm <- function(label,
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),
+    is.choices_selected(treatment_flag),
+    is.choices_selected(treatment_flag_var),
     is_character_single(na_level),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
@@ -194,6 +215,7 @@ tm_t_shift_by_arm <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     visit = cs_to_des_filter(visit, dataname = dataname),
+    treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
   )
@@ -230,6 +252,8 @@ ui_shift_by_arm <- function(id, ...) {
     a$arm_var,
     a$paramcd,
     a$visit,
+    a$treatment_flag_var,
+    a$treatment_flag,
     a$anrind_var,
     a$bnrind_var
   )
@@ -238,7 +262,9 @@ ui_shift_by_arm <- function(id, ...) {
     output = white_small_well(table_with_settings_ui(ns("table"))),
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit")]),
+      datanames_input(a[c(
+        "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit", "treamtment_flag_var"
+      )]),
       data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -256,6 +282,20 @@ ui_shift_by_arm <- function(id, ...) {
         label = "Select Visit",
         data_extract_spec = a$visit,
         is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("treatment_flag_var"),
+        label = "On Treatment Flag Variable",
+        data_extract_spec = a$treatment_flag_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      optionalSelectInput(
+        ns("treatment_flag"),
+        "Value Indicating On Treatment",
+        a$treatment_flag$choices,
+        a$treatment_flag$selected,
+        multiple = FALSE,
+        fixed = a$treatment_flag$fixed
       ),
       data_extract_input(
         id = ns("anrind_var"),
@@ -286,6 +326,7 @@ srv_shift_by_arm <- function(input,
                              arm_var,
                              paramcd,
                              visit,
+                             treatment_flag_var,
                              anrind_var,
                              bnrind_var,
                              label,
@@ -297,8 +338,8 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, visit, anrind_var, bnrind_var),
-    input_id = c("arm_var", "paramcd", "visit", "anrind_var", "bnrind_var"),
+    data_extract = list(arm_var, paramcd, visit, anrind_var, bnrind_var, treatment_flag_var),
+    input_id = c("arm_var", "paramcd", "visit", "anrind_var", "bnrind_var", "treatment_flag_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -320,11 +361,14 @@ srv_shift_by_arm <- function(input,
     input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_visit <- unlist(visit$filter)["vars_selected"]
+    input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
       need(input_paramcd, "Please select a endpoint parameter"),
-      need(input_visit, "Please select an analysis visit")
+      need(input_visit, "Please select an analysis visit"),
+      need(input_treatment_flag_var, "Please select an on treatment flag variable."),
+      need(input$treatment_flag, "Please select indicator value for on treatment records.")
     )
 
     validate_standard_inputs(
@@ -354,6 +398,8 @@ srv_shift_by_arm <- function(input,
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       paramcd = unlist(paramcd$filter)["vars_selected"],
+      treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
+      treatment_flag = input$treatment_flag,
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
       na_level = na_level
