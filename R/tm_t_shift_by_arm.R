@@ -80,7 +80,7 @@ template_shift_by_arm <- function(dataname,
           label_pos = "topleft",
           split_label = obj_label(dataname$arm_var)) %>%
         add_rowcounts() %>%
-        summarize_vars(base_var, denom = "N_row") %>%
+        summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
         append_varlabels(dataname, base_var, indent = 1L),
       env = list(
         aval_var = aval_var,
