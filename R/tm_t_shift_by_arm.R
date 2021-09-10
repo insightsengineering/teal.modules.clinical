@@ -27,7 +27,10 @@ template_shift_by_arm <- function(dataname,
     is.string(visit_var),
     is.string(paramcd),
     is.string(anrind_var),
-    is.string(bnrind_var)
+    is.string(bnrind_var),
+    is.string(na_level),
+    is.string(treatment_flag_var),
+    is.flag(treatment_flag)
   )
 
   y <- list()

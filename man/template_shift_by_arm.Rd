@@ -27,7 +27,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
-\item{paramcd}{(\code{character})\cr variable designating the parameter code.}
+\item{paramcd}{(\code{character})\cr
+variable value designating the studied parameter.}
 
 \item{visit_var}{(\code{character})\cr
 variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
