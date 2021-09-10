@@ -15,7 +15,7 @@ test_that("template_shift_by_arm generates correct expressions with default argu
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       adeg <- df_explicit_na(adeg, na_level = "<Missing>") %>%
         filter(ONTRTFL == "Y")
-      attr(adeg$BNRIND, "label") <- "Baseline Reference Range Indicator"
+      attr(adeg$BNRIND, "label") <- "Baseline Assessment"
       anl <- adeg %>% mutate(col_label = AVISIT)
     }),
 
