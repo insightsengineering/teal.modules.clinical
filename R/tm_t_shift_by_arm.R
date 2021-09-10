@@ -1,8 +1,8 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
-#' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
+#' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
+#' @param base_var (`character`)\cr the variable name for the baseline reference range indicator.
 #'
 #' @seealso [tm_t_shift_by_arm()]
 #'
@@ -13,8 +13,8 @@ template_shift_by_arm <- function(dataname,
                                   visit_var = "AVISIT",
                                   treatment_flag_var = "ONTRTFL",
                                   treatment_flag = "Y",
-                                  anrind_var = "ANRIND",
-                                  bnrind_var = "BNRIND",
+                                  aval_var = "ANRIND",
+                                  base_var = "BNRIND",
                                   na_level = "<Missing>") {
 
   assert_that(
@@ -23,8 +23,8 @@ template_shift_by_arm <- function(dataname,
     is.string(arm_var),
     is.string(visit_var),
     is.string(paramcd),
-    is.string(anrind_var),
-    is.string(bnrind_var),
+    is.string(aval_var),
+    is.string(base_var),
     is.string(na_level),
     is.string(treatment_flag_var),
     is.string(treatment_flag)
@@ -58,8 +58,8 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = attr(dataname$bnrind_var, "label") <- "Baseline Assessment",
-      env = list(dataname = as.name(dataname), bnrind_var = bnrind_var)
+      expr = attr(dataname$base_var, "label") <- "Baseline Assessment",
+      env = list(dataname = as.name(dataname), base_var = base_var)
     )
   )
 
@@ -73,19 +73,19 @@ template_shift_by_arm <- function(dataname,
     substitute(
       expr = basic_table() %>%
         split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
-        split_cols_by(anrind_var) %>%
+        split_cols_by(aval_var) %>%
         split_rows_by(
           arm_var,
           split_fun = drop_split_levels,
           label_pos = "topleft",
           split_label = obj_label(dataname$arm_var)) %>%
         add_rowcounts() %>%
-        summarize_vars(bnrind_var, denom = "N_row") %>%
-        append_varlabels(dataname, bnrind_var, indent = 1L),
+        summarize_vars(base_var, denom = "N_row") %>%
+        append_varlabels(dataname, base_var, indent = 1L),
       env = list(
-        anrind_var = anrind_var,
+        aval_var = aval_var,
         arm_var = arm_var,
-        bnrind_var = bnrind_var,
+        base_var = base_var,
         dataname = as.name(dataname),
         visit_var = visit_var
       )
@@ -138,10 +138,10 @@ template_shift_by_arm <- function(dataname,
 #'       arm_var = choices_selected(
 #'         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
 #'       ),
-#'       anrind_var = choices_selected(
+#'       aval_var = choices_selected(
 #'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
 #'       ),
-#'       bnrind_var = choices_selected(
+#'       base_var = choices_selected(
 #'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
 #'       )
 #'     )
@@ -168,10 +168,10 @@ tm_t_shift_by_arm <- function(label,
                               treatment_flag = choices_selected(
                                 value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
                               ),
-                              anrind_var = choices_selected(
+                              aval_var = choices_selected(
                                 variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
                               ),
-                              bnrind_var = choices_selected(
+                              base_var = choices_selected(
                                 variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
                               na_level = "<Missing>",
@@ -199,8 +199,8 @@ tm_t_shift_by_arm <- function(label,
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     visit_var = cs_to_des_filter(visit_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
-    anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
-    bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    base_var = cs_to_des_select(base_var, dataname = dataname)
   )
 
   args <- as.list(environment())
@@ -237,8 +237,8 @@ ui_shift_by_arm <- function(id, ...) {
     a$visit_var,
     a$treatment_flag_var,
     a$treatment_flag,
-    a$anrind_var,
-    a$bnrind_var
+    a$aval_var,
+    a$base_var
   )
 
   standard_layout(
@@ -246,7 +246,7 @@ ui_shift_by_arm <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
-        "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "treamtment_flag_var"
+        "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -284,15 +284,15 @@ ui_shift_by_arm <- function(id, ...) {
             fixed = a$treatment_flag$fixed
           ),
           data_extract_input(
-            id = ns("anrind_var"),
+            id = ns("aval_var"),
             label = "Select Analysis Range Indicator Variable",
-            data_extract_spec = a$anrind_var,
+            data_extract_spec = a$aval_var,
             is_single_dataset = is_single_dataset_value
           ),
           data_extract_input(
-            id = ns("bnrind_var"),
+            id = ns("base_var"),
             label = "Select Baseline Reference Range Indicator Variable",
-            data_extract_spec = a$bnrind_var,
+            data_extract_spec = a$base_var,
             is_single_dataset = is_single_dataset_value
           )
         )
@@ -315,8 +315,8 @@ srv_shift_by_arm <- function(input,
                              paramcd,
                              visit_var,
                              treatment_flag_var,
-                             anrind_var,
-                             bnrind_var,
+                             aval_var,
+                             base_var,
                              label,
                              na_level) {
 
@@ -326,8 +326,8 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, visit_var, anrind_var, bnrind_var, treatment_flag_var),
-    input_id = c("arm_var", "paramcd", "visit_var", "anrind_var", "bnrind_var", "treatment_flag_var"),
+    data_extract = list(arm_var, paramcd, visit_var, aval_var, base_var, treatment_flag_var),
+    input_id = c("arm_var", "paramcd", "visit_var", "aval_var", "base_var", "treatment_flag_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -346,8 +346,8 @@ srv_shift_by_arm <- function(input,
     anl_m <- anl_merged()
     anl_m_rowcount <- NROW(anl_m$data())
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_anrind_var <- as.vector(anl_m$columns_source$input_anrind_var)
-    input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
+    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+    input_base_var <- as.vector(anl_m$columns_source$base_var)
     input_paramcd <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
     input_visit <- unlist(visit_var$filter)["vars_selected"]
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
@@ -365,7 +365,7 @@ srv_shift_by_arm <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_anrind_var, input_bnrind_var),
+      anlvars = c("USUBJID", "STUDYID", input_aval_var, input_base_var),
       arm_var = input_arm_var
     )
   })
@@ -390,8 +390,8 @@ srv_shift_by_arm <- function(input,
       paramcd = unlist(paramcd$filter)["vars_selected"],
       treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
       treatment_flag = input$treatment_flag,
-      anrind_var = as.vector(anl_m$columns_source$anrind_var),
-      bnrind_var = as.vector(anl_m$columns_source$bnrind_var),
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      base_var = as.vector(anl_m$columns_source$base_var),
       na_level = na_level
     )
     mapply(expression = my_calls, chunks_push)
@@ -415,7 +415,7 @@ srv_shift_by_arm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, paramcd, visit_var, anrind_var, bnrind_var)),
+    datanames = get_extract_datanames(list(arm_var, paramcd, visit_var, aval_var, base_var)),
     modal_title = "R Code for Shift Table by Arm",
     code_header = label
   )

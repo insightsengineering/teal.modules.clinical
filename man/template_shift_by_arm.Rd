@@ -12,8 +12,8 @@ template_shift_by_arm(
   visit_var = "AVISIT",
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
-  anrind_var = "ANRIND",
-  bnrind_var = "BNRIND",
+  aval_var = "ANRIND",
+  base_var = "BNRIND",
   na_level = "<Missing>"
 )
 }
@@ -38,9 +38,9 @@ variable names that can be used as \code{visit} variable. Must be a factor in \c
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{anrind_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
+\item{aval_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
 
-\item{bnrind_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}

@@ -17,10 +17,10 @@ tm_t_shift_by_arm(
     selected = "ONTRTFL", fixed = TRUE),
   treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
     fixed = TRUE),
-  anrind_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected
-    = "ANRIND", fixed = TRUE),
-  bnrind_var = choices_selected(variable_choices(dataname, subset = "BNRIND"), selected
-    = "BNRIND", fixed = TRUE),
+  aval_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected =
+    "ANRIND", fixed = TRUE),
+  base_var = choices_selected(variable_choices(dataname, subset = "BNRIND"), selected =
+    "BNRIND", fixed = TRUE),
   na_level = "<Missing>",
   pre_output = NULL,
   post_output = NULL
@@ -55,9 +55,11 @@ in \code{dataname}.}
 \item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{anrind_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
+\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
-\item{bnrind_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
@@ -95,10 +97,10 @@ app <- init(
       arm_var = choices_selected(
         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
       ),
-      anrind_var = choices_selected(
+      aval_var = choices_selected(
       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
       ),
-      bnrind_var = choices_selected(
+      base_var = choices_selected(
         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
       )
     )
