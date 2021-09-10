@@ -63,18 +63,6 @@ template_shift_by_arm <- function(dataname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- df %>%
-        mutate(col_label = visit_var),
-      env = list(
-        df = as.name(dataname),
-        visit_var = as.name(visit_var)
-      )
-    )
-  )
-
   y$data <- bracket_expr(data_list)
 
   # Start layout steps.
@@ -84,7 +72,7 @@ template_shift_by_arm <- function(dataname,
     layout_list,
     substitute(
       expr = basic_table() %>%
-        split_cols_by("col_label", split_fun = drop_split_levels) %>% # temprary solution for over arching column
+        split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
         split_cols_by(anrind_var) %>%
         split_rows_by(
           arm_var,
@@ -98,7 +86,8 @@ template_shift_by_arm <- function(dataname,
         anrind_var = anrind_var,
         arm_var = arm_var,
         bnrind_var = bnrind_var,
-        dataname = as.name(dataname)
+        dataname = as.name(dataname),
+        visit_var = visit_var
       )
     )
   )
@@ -111,9 +100,10 @@ template_shift_by_arm <- function(dataname,
   # Full table.
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl)
+      result <- build_table(lyt = lyt, df = dataname)
       result
-    }
+    },
+    env = list(dataname = as.name(dataname))
   )
 
   y
