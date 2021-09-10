@@ -29,7 +29,7 @@ test_that("template_shift_by_arm generates correct expressions with default argu
           split_label = obj_label(adeg$ARM)
         ) %>%
         add_rowcounts() %>%
-        summarize_vars("BNRIND", denom = "N_row") %>%
+        summarize_vars("BNRIND", denom = "N_row", na_level = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>%
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
