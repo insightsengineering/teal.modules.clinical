@@ -12,10 +12,8 @@ tm_t_shift_by_arm(
   arm_var,
   paramcd,
   visit_var,
-  aval_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected =
-    "ANRIND", fixed = TRUE),
-  base_var = choices_selected(variable_choices(dataname, subset = "BNRIND"), selected =
-    "BNRIND", fixed = TRUE),
+  aval_var,
+  base_var,
   treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
     selected = "ONTRTFL", fixed = TRUE),
   treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
