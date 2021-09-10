@@ -264,6 +264,18 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
+      data_extract_input(
+        id = ns("aval_var"),
+        label = "Select Analysis Range Indicator Variable",
+        data_extract_spec = a$aval_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("base_var"),
+        label = "Select Baseline Reference Range Indicator Variable",
+        data_extract_spec = a$base_var,
+        is_single_dataset = is_single_dataset_value
+      ),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -280,18 +292,6 @@ ui_shift_by_arm <- function(id, ...) {
             a$treatment_flag$selected,
             multiple = FALSE,
             fixed = a$treatment_flag$fixed
-          ),
-          data_extract_input(
-            id = ns("aval_var"),
-            label = "Select Analysis Range Indicator Variable",
-            data_extract_spec = a$aval_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          data_extract_input(
-            id = ns("base_var"),
-            label = "Select Baseline Reference Range Indicator Variable",
-            data_extract_spec = a$base_var,
-            is_single_dataset = is_single_dataset_value
           )
         )
       )
