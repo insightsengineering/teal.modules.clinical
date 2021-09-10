@@ -138,6 +138,12 @@ template_shift_by_arm <- function(dataname,
 #'       arm_var = choices_selected(
 #'         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
 #'       ),
+#'       paramcd = choices_selected(
+#'       value_choices(adeg, "PARAMCD"), selected = "HR"
+#'       ),
+#'       visit_var = choices_selected(
+#'       value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+#'       ),
 #'       aval_var = choices_selected(
 #'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
 #'       ),
@@ -156,23 +162,19 @@ tm_t_shift_by_arm <- function(label,
                               dataname,
                               parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                               arm_var,
-                              paramcd = choices_selected(
-                                value_choices(dataname, "PARAMCD"), selected = "HR"
+                              paramcd,
+                              visit_var,
+                              aval_var = choices_selected(
+                                variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
                               ),
-                              visit_var = choices_selected(
-                                value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+                              base_var = choices_selected(
+                                variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
                               treatment_flag_var = choices_selected(
                                 variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE
                               ),
                               treatment_flag = choices_selected(
                                 value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
-                              ),
-                              aval_var = choices_selected(
-                                variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
-                              ),
-                              base_var = choices_selected(
-                                variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
                               ),
                               na_level = "<Missing>",
                               pre_output = NULL,

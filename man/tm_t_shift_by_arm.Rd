@@ -10,17 +10,16 @@ tm_t_shift_by_arm(
   parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
   arm_var,
-  paramcd = choices_selected(value_choices(dataname, "PARAMCD"), selected = "HR"),
-  visit_var = choices_selected(value_choices(dataname, "AVISIT"), selected =
-    "POST-BASELINE MINIMUM"),
-  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
-    selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
-    fixed = TRUE),
+  paramcd,
+  visit_var,
   aval_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected =
     "ANRIND", fixed = TRUE),
   base_var = choices_selected(variable_choices(dataname, subset = "BNRIND"), selected =
     "BNRIND", fixed = TRUE),
+  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
+    selected = "ONTRTFL", fixed = TRUE),
+  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
+    fixed = TRUE),
   na_level = "<Missing>",
   pre_output = NULL,
   post_output = NULL
@@ -50,16 +49,16 @@ object with all available choices and preselected option
 for variable names that can be used as \code{visit} variable. Must be a factor
 in \code{dataname}.}
 
-\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
-
-\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
-records in \code{treatment_flag_var}.}
-
 \item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
 \item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+
+\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
+
+\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
+records in \code{treatment_flag_var}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
@@ -96,6 +95,12 @@ app <- init(
       dataname = "ADEG",
       arm_var = choices_selected(
         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+      ),
+      paramcd = choices_selected(
+      value_choices(adeg, "PARAMCD"), selected = "HR"
+      ),
+      visit_var = choices_selected(
+      value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
       ),
       aval_var = choices_selected(
       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
