@@ -279,7 +279,7 @@ template_ancova <- function(dataname = "ANL",
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, c("ARM", "ACTARMCD")),
+#'         choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
 #'         selected = "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
