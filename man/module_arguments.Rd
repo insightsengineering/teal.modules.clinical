@@ -6,7 +6,9 @@
 \arguments{
 \item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
@@ -118,6 +120,11 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for variable names that can be used
 as the default subgroups.}
+
+\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
+
+\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
+records in \code{treatment_flag_var}.}
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

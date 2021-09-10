@@ -78,6 +78,9 @@
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
+#' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
+#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
+#'   records in `treatment_flag_var`.
 #' @name template_arguments
 #'
 NULL
@@ -97,6 +100,8 @@ NULL
 #' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @param arm_ref_comp optional, (`list`)\cr
 #'   If specified it must be a named list with each element corresponding to
 #'   an arm variable in `ADSL` and the element must be another list (possibly
@@ -179,6 +184,9 @@ NULL
 #' @param subgroup_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for variable names that can be used
 #'   as the default subgroups.
+#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
+#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
+#'   records in `treatment_flag_var`.
 #' @name module_arguments
 #'
 NULL
