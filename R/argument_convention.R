@@ -78,6 +78,9 @@
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
+#' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
+#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
+#'   records in `treatment_flag_var`.
 #' @name template_arguments
 #'
 NULL

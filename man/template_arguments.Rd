@@ -105,6 +105,11 @@ title of the output.}
 
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
+
+\item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
+
+\item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
+records in \code{treatment_flag_var}.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

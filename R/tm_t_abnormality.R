@@ -7,9 +7,6 @@
 #' @param abnormal (`character`)\cr indicating abnormality grade.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
-#' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
-#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
-#'   records in `treatment_flag_var`.
 #'
 #' @seealso [tm_t_abnormality()]
 #'

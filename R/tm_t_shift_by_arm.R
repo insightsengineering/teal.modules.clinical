@@ -1,9 +1,6 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
-#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
-#'   records in `treatment_flag_var`.
 #' @param anrind_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param bnrind_var (`character`)\cr the variable name for the baseline reference range indicator.
 #'
