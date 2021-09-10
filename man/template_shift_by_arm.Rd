@@ -9,7 +9,7 @@ template_shift_by_arm(
   parentname,
   arm_var = "ARM",
   paramcd = "PARAMCD",
-  visit = "AVISIT",
+  visit_var = "AVISIT",
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   anrind_var = "ANRIND",
@@ -29,7 +29,8 @@ variable names that can be used as \code{arm_var}.}
 
 \item{paramcd}{(\code{character})\cr variable designating the parameter code.}
 
-\item{visit}{(\code{character})\cr variable designating the analysis visit.}
+\item{visit_var}{(\code{character})\cr
+variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
 \item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 

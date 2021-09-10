@@ -1,7 +1,6 @@
 #' Template: Shift by Arm
 #'
 #' @inheritParams template_arguments
-#' @param visit (`character`)\cr variable designating the analysis visit.
 #' @param paramcd (`character`)\cr variable designating the parameter code.
 #' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
 #' @param treatment_flag (`character`)\cr name of the value indicating on treatment
@@ -15,7 +14,7 @@ template_shift_by_arm <- function(dataname,
                                   parentname,
                                   arm_var = "ARM",
                                   paramcd = "PARAMCD",
-                                  visit = "AVISIT",
+                                  visit_var = "AVISIT",
                                   treatment_flag_var = "ONTRTFL",
                                   treatment_flag = "Y",
                                   anrind_var = "ANRIND",
@@ -26,7 +25,7 @@ template_shift_by_arm <- function(dataname,
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
-    is.string(visit),
+    is.string(visit_var),
     is.string(paramcd),
     is.string(anrind_var),
     is.string(bnrind_var)
@@ -69,10 +68,10 @@ template_shift_by_arm <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        mutate(col_label = visit),
+        mutate(col_label = visit_var),
       env = list(
         df = as.name(dataname),
-        visit = as.name(visit)
+        visit_var = as.name(visit_var)
       )
     )
   )
@@ -178,7 +177,7 @@ tm_t_shift_by_arm <- function(label,
                               paramcd = choices_selected(
                                 value_choices(dataname, "PARAMCD"), selected = "HR"
                               ),
-                              visit = choices_selected(
+                              visit_var = choices_selected(
                                 value_choices(dataname, "AVISIT"), selected = "POST-BASELINE MINIMUM"
                               ),
                               treatment_flag_var = choices_selected(
@@ -216,7 +215,7 @@ tm_t_shift_by_arm <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    visit = cs_to_des_filter(visit, dataname = dataname),
+    visit_var = cs_to_des_filter(visit_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     bnrind_var = cs_to_des_select(bnrind_var, dataname = dataname)
@@ -253,7 +252,7 @@ ui_shift_by_arm <- function(id, ...) {
     a$id_var,
     a$arm_var,
     a$paramcd,
-    a$visit,
+    a$visit_var,
     a$treatment_flag_var,
     a$treatment_flag,
     a$anrind_var,
@@ -265,7 +264,7 @@ ui_shift_by_arm <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c(
-        "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "visit", "treamtment_flag_var"
+        "arm_var", "paramcd_var", "paramcd", "anrind_var", "bnrind_var", "visit_var", "treamtment_flag_var"
       )]),
       data_extract_input(
         id = ns("arm_var"),
@@ -280,9 +279,9 @@ ui_shift_by_arm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("visit"),
+        id = ns("visit_var"),
         label = "Select Visit",
-        data_extract_spec = a$visit,
+        data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
       panel_group(
@@ -332,7 +331,7 @@ srv_shift_by_arm <- function(input,
                              parentname,
                              arm_var,
                              paramcd,
-                             visit,
+                             visit_var,
                              treatment_flag_var,
                              anrind_var,
                              bnrind_var,
@@ -345,8 +344,8 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, visit, anrind_var, bnrind_var, treatment_flag_var),
-    input_id = c("arm_var", "paramcd", "visit", "anrind_var", "bnrind_var", "treatment_flag_var"),
+    data_extract = list(arm_var, paramcd, visit_var, anrind_var, bnrind_var, treatment_flag_var),
+    input_id = c("arm_var", "paramcd", "visit_var", "anrind_var", "bnrind_var", "treatment_flag_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -368,7 +367,7 @@ srv_shift_by_arm <- function(input,
     input_anrind_var <- as.vector(anl_m$columns_source$input_anrind_var)
     input_bnrind_var <- as.vector(anl_m$columns_source$input_bnrind_var)
     input_paramcd <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
-    input_visit <- unlist(visit$filter)["vars_selected"]
+    input_visit <- unlist(visit_var$filter)["vars_selected"]
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
     validate(
@@ -434,7 +433,7 @@ srv_shift_by_arm <- function(input,
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, paramcd, visit, anrind_var, bnrind_var)),
+    datanames = get_extract_datanames(list(arm_var, paramcd, visit_var, anrind_var, bnrind_var)),
     modal_title = "R Code for Shift Table by Arm",
     code_header = label
   )

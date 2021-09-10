@@ -11,7 +11,7 @@ tm_t_shift_by_arm(
     "ADSL"),
   arm_var,
   paramcd = choices_selected(value_choices(dataname, "PARAMCD"), selected = "HR"),
-  visit = choices_selected(value_choices(dataname, "AVISIT"), selected =
+  visit_var = choices_selected(value_choices(dataname, "AVISIT"), selected =
     "POST-BASELINE MINIMUM"),
   treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
     selected = "ONTRTFL", fixed = TRUE),
@@ -44,7 +44,10 @@ second variable will be nested under the first variable.}
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
-\item{visit}{(\code{character})\cr variable designating the analysis visit.}
+\item{visit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+object with all available choices and preselected option
+for variable names that can be used as \code{visit} variable. Must be a factor
+in \code{dataname}.}
 
 \item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
 

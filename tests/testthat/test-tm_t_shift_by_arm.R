@@ -4,7 +4,7 @@ test_that("template_shift_by_arm generates correct expressions with default argu
     dataname = "adeg",
     arm_var = "ARM",
     paramcd = "PARAMCD",
-    visit = "AVISIT",
+    visit_var = "AVISIT",
     anrind_var = "ANRIND",
     bnrind_var = "BNRIND",
     na_level = "<Missing>"
