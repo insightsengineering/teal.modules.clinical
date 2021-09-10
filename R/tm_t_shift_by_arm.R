@@ -61,7 +61,7 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = attr(dataname$bnrind_var, "label") <- "Baseline Reference Range Indicator",
+      expr = attr(dataname$bnrind_var, "label") <- "Baseline Assessment",
       env = list(dataname = as.name(dataname), bnrind_var = bnrind_var)
     )
   )
