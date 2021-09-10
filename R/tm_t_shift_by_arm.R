@@ -87,7 +87,8 @@ template_shift_by_arm <- function(dataname,
         arm_var = arm_var,
         base_var = base_var,
         dataname = as.name(dataname),
-        visit_var = visit_var
+        visit_var = visit_var,
+        na_level = na_level
       )
     )
   )
