@@ -354,7 +354,7 @@ srv_shift_by_arm <- function(input,
     validate(
       need(input_arm_var, "Please select a treatment variable"),
       need(anl_m_rowcount > 0, "Please make sure the analysis dataset is not empty"),
-      need(input_paramcd, "Please select a endpoint parameter"),
+      need(input_paramcd, "Please select an endpoint parameter"),
       need(input_visit, "Please select an analysis visit"),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),
       need(input$treatment_flag, "Please select indicator value for on treatment records.")
