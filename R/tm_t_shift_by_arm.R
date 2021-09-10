@@ -128,9 +128,6 @@ template_shift_by_arm <- function(dataname,
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
-#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
-#'   records in `treatment_flag_var`.
 #'
 #' @export
 #' @examples

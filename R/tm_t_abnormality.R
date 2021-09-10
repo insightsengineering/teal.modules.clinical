@@ -168,9 +168,6 @@ template_abnormality <- function(parentname,
 #' @param abnormal ([teal::choices_selected()] or [teal::data_extract_spec])\cr indicating abnormality grade.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
-#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
-#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
-#'   records in `treatment_flag_var`.
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
 #'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
