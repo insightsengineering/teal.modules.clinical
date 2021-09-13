@@ -342,15 +342,11 @@ srv_shift_by_arm <- function(input,
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    browser()
-
     anl_m <- anl_merged()
     anl_m_rowcount <- NROW(anl_m$data())
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_base_var <- as.vector(anl_m$columns_source$base_var)
-    input_paramcd <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
-    input_visit <- unlist(visit_var$filter)["vars_selected"]
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
     validate(
