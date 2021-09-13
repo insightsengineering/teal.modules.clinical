@@ -148,56 +148,62 @@ test_that("template_events_summary generates table with multiple flags", {
         count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_subj_", c("A", "B", "C")),
-          .indent_mods = 1L
+          table_names = "count_subj_anl",
+          denom = "N_col",
+          var_labels = "Total number of patients with at least one",
+          show_labels = "visible"
         ) %>%
         count_patients_with_flags(
           var = "AEDECOD",
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_pt_", c("A", "B", "C")),
+          table_names = "count_pt_anl",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Total number of unique preferred terms which are",
+          show_labels = "visible"
         ) %>%
         count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_anl_label,
-          table_names = paste0("count_events_", c("A", "B", "C")),
+          table_names = "count_events_anl",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Total number of adverse events which are",
+          show_labels = "visible"
         ) %>%
         count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_subj_", c("X", "Y")),
-          .indent_mods = 1L
+          table_names = "count_subj_aesi",
+          denom = "N_col",
+          var_labels = "Medical concepts: number of patients with",
+          show_labels = "visible"
         ) %>%
         count_patients_with_flags(
           var = "AEDECOD",
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_pt_", c("X", "Y")),
+          table_names = "count_pt_aesi",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Medical concepts: number of unique preferred terms which are part of",
+          show_labels = "visible"
         ) %>%
         count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_aesi_label,
-          table_names = paste0("count_events_", c("X", "Y")),
+          table_names = "count_events_aesi",
           .stats = "count",
           .formats = c(count = "xx"),
-          .indent_mods = 1L
+          denom = "N_col",
+          var_labels = "Medical concepts: number of adverse events which are part of",
+          show_labels = "visible"
         )
     ),
     table_anl = quote(
-      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl) %>%
-        insert_rrow(rrow("Total number of patients with at least one"), at = 3) %>%
-        insert_rrow(rrow("Total number of unique preferred terms which are"), at = 7) %>%
-        insert_rrow(rrow("Total number of adverse events which are"), at = 11) %>%
-        insert_rrow(rrow("Medical concepts: number of patients with"), at = 15) %>%
-        insert_rrow(rrow("Medical concepts: number of unique preferred terms which are part of"), at = 18) %>%
-        insert_rrow(rrow("Medical concepts: number of adverse events which are part of"), at = 21)
+      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
     ),
     table = quote({
       col_info(result_parent) <- col_info(result_anl)
@@ -206,62 +212,4 @@ test_that("template_events_summary generates table with multiple flags", {
     })
   )
   expect_equal(result, expected)
-})
-
-test_that("h_count_rows works as expected", {
-  vars_anl <- c("A", "B", "C")
-  vars_aesi <- c("Y", "Z")
-
-  # Only analysis flag.
-  expect_identical(
-    h_count_rows(x_anl = TRUE, vars_anl = vars_anl),
-    1
-  )
-
-  expect_identical(
-    h_count_rows(x_anl = c(TRUE, TRUE), vars_anl = vars_anl),
-    5
-  )
-
-  expect_identical(
-    h_count_rows(x_anl = c(TRUE, TRUE, TRUE), vars_anl = vars_anl),
-    9
-  )
-
-  # Only AESI flag.
-  expect_identical(
-    h_count_rows(x_aesi = TRUE, vars_aesi = vars_aesi),
-    1
-  )
-
-  expect_identical(
-    h_count_rows(x_aesi = c(TRUE, TRUE), vars_aesi = vars_aesi),
-    4
-  )
-
-  expect_identical(
-    h_count_rows(x_aesi = c(TRUE, TRUE, TRUE), vars_aesi = vars_aesi),
-    7
-  )
-
-  # Both flags.
-  expect_identical(
-    h_count_rows(x_anl = TRUE, x_aesi = TRUE, vars_anl = vars_anl, vars_aesi = vars_aesi),
-    5
-  )
-
-  expect_identical(
-    h_count_rows(x_anl = c(TRUE, TRUE), x_aesi = TRUE, vars_anl = vars_anl, vars_aesi = vars_aesi),
-    9
-  )
-
-  expect_identical(
-    h_count_rows(
-      x_anl = c(TRUE, TRUE),
-      x_aesi = c(TRUE, TRUE),
-      vars_anl = vars_anl,
-      vars_aesi = vars_aesi
-    ),
-    12
-  )
 })

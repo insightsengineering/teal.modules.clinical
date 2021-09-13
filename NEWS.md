@@ -11,6 +11,8 @@
 * `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
 * `tm_t_events_by_grade` now can prune the adverse event by grade when `col_by_grade` is FALSE.
 * Added `error_on_lint: TRUE` to `.lintr`.
+* Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
+* Added a new module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
 
 ### Miscellaneous
 * Added `error_on_lint: TRUE` to `.lintr`.

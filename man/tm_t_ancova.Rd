@@ -32,7 +32,9 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.}
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
@@ -122,7 +124,7 @@ app <- init(
         selected = "WEEK 1 DAY 8"
       ),
       arm_var = choices_selected(
-        choices = variable_choices(adsl, c("ARM", "ACTARMCD")),
+        choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
         selected = "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,

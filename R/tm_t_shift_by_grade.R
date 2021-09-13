@@ -745,13 +745,14 @@ srv_t_shift_by_grade <- function(input,
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_visit_var <- as.vector(anl_m$columns_source$visit_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+    input_paramcd_var <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
     input_worst_flag_var <- as.vector(anl_m$columns_source$worst_flag_var)
     input_anl_toxgrade_var <- as.vector(anl_m$columns_source$anl_toxgrade_var)
     input_base_toxgrade_var <- as.vector(anl_m$columns_source$base_toxgrade_var)
 
     validate(
       need(input_worst_flag_var, "Please select the worst flag variable."),
-      need(input_paramcd, "Please select Laboratory parameter."),
+      need(input_paramcd_var, "Please select Laboratory parameter."),
       need(input_id_var, "Please select a subject identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
     )
