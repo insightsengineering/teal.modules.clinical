@@ -406,7 +406,7 @@ template_shift_by_grade <- function(parentname,
     layout_list,
     substitute(
       expr = count_occurrences(
-        var = count_var,
+        vars = count_var,
         denom = "n",
         drop = TRUE
       ) %>%
