@@ -13,6 +13,7 @@
 * Added `error_on_lint: TRUE` to `.lintr`.
 * Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
 * Added a new module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
+* Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 
 ### Miscellaneous
 * Added `error_on_lint: TRUE` to `.lintr`.

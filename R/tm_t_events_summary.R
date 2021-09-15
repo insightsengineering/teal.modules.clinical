@@ -172,12 +172,14 @@ template_events_summary <- function(anl_name,
         dthfl_var,
         values = "Y",
         .labels = c(count_fraction = "Total number of deaths"),
+        .formats = c(count_fraction = format_count_fraction),
         denom = "N_col"
       ) %>%
         count_values(
           dcsreas_var,
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         ),
       env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
