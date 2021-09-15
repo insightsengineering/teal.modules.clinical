@@ -146,6 +146,8 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm
+#' @param add_total (`logical`)\cr
+#'   whether to include row with total number of patients.
 #'
 #' @export
 #' @examples
@@ -205,6 +207,7 @@ tm_t_shift_by_arm <- function(label,
                                 value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
                               ),
                               na_level = "<Missing>",
+                              add_total = FALSE,
                               pre_output = NULL,
                               post_output = NULL) {
 
@@ -308,6 +311,7 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$base_var,
         is_single_dataset = is_single_dataset_value
       ),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -348,7 +352,8 @@ srv_shift_by_arm <- function(input,
                              aval_var,
                              base_var,
                              label,
-                             na_level) {
+                             na_level,
+                             add_total) {
 
   stopifnot(is_cdisc_data(datasets))
 
@@ -422,7 +427,8 @@ srv_shift_by_arm <- function(input,
       treatment_flag = input$treatment_flag,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       base_var = as.vector(anl_m$columns_source$base_var),
-      na_level = na_level
+      na_level = na_level,
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })
