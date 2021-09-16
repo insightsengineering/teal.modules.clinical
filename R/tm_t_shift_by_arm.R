@@ -3,6 +3,8 @@
 #' @inheritParams template_arguments
 #' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param base_var (`character`)\cr the variable name for the baseline reference range indicator.
+#' @param add_total (`logical`)\cr
+#'   whether to include row with total number of patients.
 #'
 #' @seealso [tm_t_shift_by_arm()]
 #'
@@ -15,7 +17,8 @@ template_shift_by_arm <- function(dataname,
                                   treatment_flag = "Y",
                                   aval_var = "ANRIND",
                                   base_var = "BNRIND",
-                                  na_level = "<Missing>") {
+                                  na_level = "<Missing>",
+                                  add_total = FALSE) {
 
   assert_that(
     is.string(dataname),
@@ -27,7 +30,8 @@ template_shift_by_arm <- function(dataname,
     is.string(base_var),
     is.string(na_level),
     is.string(treatment_flag_var),
-    is.string(treatment_flag)
+    is.string(treatment_flag),
+    is.flag(add_total)
   )
 
   y <- list()
@@ -68,30 +72,57 @@ template_shift_by_arm <- function(dataname,
   # Start layout steps.
   layout_list <- list()
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = basic_table() %>%
-        split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
-        split_cols_by(aval_var) %>%
-        split_rows_by(
-          arm_var,
-          split_fun = drop_split_levels,
-          label_pos = "topleft",
-          split_label = obj_label(dataname$arm_var)) %>%
-        add_rowcounts() %>%
-        summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
-        append_varlabels(dataname, base_var, indent = 1L),
-      env = list(
-        aval_var = aval_var,
-        arm_var = arm_var,
-        base_var = base_var,
-        dataname = as.name(dataname),
-        visit_var = visit_var,
-        na_level = na_level
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          split_cols_by(aval_var) %>%
+          split_rows_by(
+            arm_var,
+            split_fun = add_overall_level("All Patients", first = FALSE),
+            label_pos = "topleft",
+            split_label = obj_label(dataname$arm_var)) %>%
+          add_rowcounts() %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
+          append_varlabels(dataname, base_var, indent = 1L),
+        env = list(
+          aval_var = aval_var,
+          arm_var = arm_var,
+          base_var = base_var,
+          dataname = as.name(dataname),
+          visit_var = visit_var,
+          na_level = na_level
+        )
       )
     )
-  )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = basic_table() %>%
+          split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          split_cols_by(aval_var) %>%
+          split_rows_by(
+            arm_var,
+            split_fun = drop_split_levels,
+            label_pos = "topleft",
+            split_label = obj_label(dataname$arm_var)) %>%
+          add_rowcounts() %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
+          append_varlabels(dataname, base_var, indent = 1L),
+        env = list(
+          aval_var = aval_var,
+          arm_var = arm_var,
+          base_var = base_var,
+          dataname = as.name(dataname),
+          visit_var = visit_var,
+          na_level = na_level
+        )
+      )
+    )
+  }
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
@@ -115,6 +146,8 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm
+#' @param add_total (`logical`)\cr
+#'   whether to include row with total number of patients.
 #'
 #' @export
 #' @examples
@@ -174,6 +207,7 @@ tm_t_shift_by_arm <- function(label,
                                 value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
                               ),
                               na_level = "<Missing>",
+                              add_total = FALSE,
                               pre_output = NULL,
                               post_output = NULL) {
 
@@ -277,6 +311,7 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$base_var,
         is_single_dataset = is_single_dataset_value
       ),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -317,7 +352,8 @@ srv_shift_by_arm <- function(input,
                              aval_var,
                              base_var,
                              label,
-                             na_level) {
+                             na_level,
+                             add_total) {
 
   stopifnot(is_cdisc_data(datasets))
 
@@ -393,7 +429,8 @@ srv_shift_by_arm <- function(input,
       treatment_flag = input$treatment_flag,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       base_var = as.vector(anl_m$columns_source$base_var),
-      na_level = na_level
+      na_level = na_level,
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })

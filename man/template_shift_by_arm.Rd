@@ -14,7 +14,8 @@ template_shift_by_arm(
   treatment_flag = "Y",
   aval_var = "ANRIND",
   base_var = "BNRIND",
-  na_level = "<Missing>"
+  na_level = "<Missing>",
+  add_total = FALSE
 )
 }
 \arguments{
@@ -44,6 +45,9 @@ records in \code{treatment_flag_var}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include row with total number of patients.}
 }
 \description{
 Template: Shift by Arm
