@@ -19,6 +19,7 @@ tm_t_shift_by_arm(
   treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
     fixed = TRUE),
   na_level = "<Missing>",
+  add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -60,6 +61,9 @@ records in \code{treatment_flag_var}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include row with total number of patients.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

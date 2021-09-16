@@ -30,12 +30,14 @@ test_that("template_events_summary generates minimal table", {
           "DTHFL",
           values = "Y",
           .labels = c(count_fraction = "Total number of deaths"),
+          .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         ) %>%
         count_values(
           "DCSREAS",
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         )
     ),
@@ -114,12 +116,14 @@ test_that("template_events_summary generates table with multiple flags", {
           "DTHFL",
           values = "Y",
           .labels = c(count_fraction = "Total number of deaths"),
+          .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         ) %>%
         count_values(
           "DCSREAS",
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
+          .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         )
     ),
