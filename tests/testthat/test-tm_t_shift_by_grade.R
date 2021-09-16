@@ -88,7 +88,7 @@ test_that("template_shift_by_grade generates correct expressions with default ar
           split_label = var_labels(anl)[["ATOXGR_GP"]]
           ) %>%
         summarize_num_patients(var = "USUBJID", .stats = c("unique_count")) %>%
-        count_occurrences(var = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
+        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({
@@ -189,7 +189,7 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
           split_label = var_labels(anl)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "MYUSUBJID", .stats = c("unique_count")) %>%
-        count_occurrences(var = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
+        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({
