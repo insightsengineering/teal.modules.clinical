@@ -383,15 +383,17 @@ srv_shift_by_arm <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_base_var <- as.vector(anl_m$columns_source$base_var)
-    input_paramcd <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
-    input_visit <- unlist(visit_var$filter)["vars_selected"]
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
-      need(anl_m_rowcount > 0, "Please make sure the analysis dataset is not empty"),
-      need(input_paramcd, "Please select an endpoint parameter"),
-      need(input_visit, "Please select an analysis visit"),
+      need(
+        anl_m_rowcount > 0,
+        paste0(
+          "Please make sure the analysis dataset is not empty or\n",
+          "endpoint parameter and analysis visit are selected."
+          )
+        ),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),
       need(input$treatment_flag, "Please select indicator value for on treatment records.")
     )
