@@ -206,7 +206,7 @@ display a summary for individual response categories.
 
 # teal.oncology 0.0.2
 
-* `teal.oncology` was split into two packages: `tern` and `teal.oncology` where `tern` contains all the analysis code and `teal.oncology` contains the the teal modules that make the analysis function interactive with encodings and filtering. The `tern` package can be found here: [https://github.roche.com/NEST/tern](https://github.roche.com/NEST/tern).
+* `teal.oncology` was split into two packages: `tern` and `teal.oncology` where `tern` contains all the analysis code and `teal.oncology` contains the the teal modules that make the analysis function interactive with encodings and filtering. The `tern` package can be found here: [https://github.com/insightsengineering/tern](https://github.com/insightsengineering/tern).
 
 # teal.oncology 0.0.1
 

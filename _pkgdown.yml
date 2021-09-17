@@ -1,4 +1,4 @@
-url: https://go.roche.com/nest-docs/releases/latest/api-reference/teal.modules.clinical
+url: https://insightsengineering.github.io/teal.modules.clinical
 
 template:
   params:
@@ -7,7 +7,7 @@ template:
 navbar:
   right:
     - icon: fa-github
-      href: https://github.roche.com/NEST/teal.modules.clinical
+      href: https://github.com/insightsengineering/teal.modules.clinical
 
 reference:
   - title:
