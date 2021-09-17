@@ -5,7 +5,7 @@ Please also provide the output of `utils::sessionInfo()` or
 `devtools::session_info()` at the end of your post.
 
 If at all possible, please include a [minimal, reproducible
-example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). If the data is restricted for your example then try to generate random data that re-creates the problem, the [scda](https://github.roche.com/NEST/scda) R package might be useful for that.
+example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). If the data is restricted for your example then try to generate random data that re-creates the problem, the [scda](https://github.com/insightsengineering/scda) R package might be useful for that.
 The `teal.modules.clinical` team will be much more likely to resolve your issue if they are
 able to reproduce it themselves locally.
 
@@ -31,8 +31,8 @@ app <- init(
   ),
   modules = root_modules(
     tm_t_summary(
-    	label = "Demographic Table",
-    	dataname = "ADSL",
+      label = "Demographic Table",
+      dataname = "ADSL",
         arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
         summarize_vars = choices_selected(c("SEX", "RACE"), "SEX")
     )
