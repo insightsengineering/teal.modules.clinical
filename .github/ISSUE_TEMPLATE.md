@@ -31,8 +31,8 @@ app <- init(
   ),
   modules = root_modules(
     tm_t_summary(
-    	label = "Demographic Table",
-    	dataname = "ADSL",
+      label = "Demographic Table",
+      dataname = "ADSL",
         arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
         summarize_vars = choices_selected(c("SEX", "RACE"), "SEX")
     )
