@@ -756,7 +756,10 @@ srv_t_shift_by_grade <- function(input,
       need(input_paramcd_var, "Please select Laboratory parameter."),
       need(input_id_var, "Please select a subject identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-      need(any(input_worst_flag == "Y"), "There's no positive flag, please change another flag or change another paramcd.")
+      need(
+        any(input_worst_flag == "Y"),
+        "There's no positive flag, please change another flag or change another paramcd."
+      )
     )
 
     # validate inputs
