@@ -974,7 +974,8 @@ srv_t_events_by_grade <- function(input,
     if (input$col_by_grade) {
       validate(
         need(
-          is.factor(anl_filtered[[input_grade]]) && all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
+          is.factor(anl_filtered[[input_grade]]) &&
+            all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
           "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." #nolint
         )
       )
