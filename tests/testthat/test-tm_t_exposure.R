@@ -34,7 +34,7 @@ test_that("template_exposure generates correct expressions with default argument
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(adex["RACE"]),
+          split_label = var_labels(adex["RACE"], fill = TRUE),
           nested = FALSE) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
     ),
@@ -82,7 +82,7 @@ test_that("template_exposure generates correct expressions with custom arguments
           "myRACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(myadex["myRACE"]),
+          split_label = var_labels(myadex["myRACE"], fill = TRUE),
           nested = FALSE) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
     ),
