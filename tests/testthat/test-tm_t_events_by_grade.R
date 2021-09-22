@@ -17,8 +17,9 @@ test_that("template_events_by_grade generates standard expressions", {
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      ANL <- df_explicit_na(ANL)
+      anl <- df_explicit_na(anl)
+      adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -108,8 +109,9 @@ test_that("template_events_by_grade generates standard expressions with pruning 
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      ANL <- df_explicit_na(ANL)
+      anl <- df_explicit_na(anl)
+      adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -203,8 +205,9 @@ test_that("template_events_by_grade without adding total column option works as 
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(adsl[["ACTARM"]])
       anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      ANL <- df_explicit_na(ANL)
+      anl <- df_explicit_na(anl)
+      adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -293,8 +296,9 @@ test_that("template_events_by_grade with hlt only works", {
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      ANL <- df_explicit_na(ANL)
+      anl <- df_explicit_na(anl)
+      adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
