@@ -248,8 +248,7 @@ template_shift_by_grade <- function(parentname,
       ),
       env = list(
         dataname = as.name("anl"),
-        worst_flag_var = worst_flag_var,
-        na_level = na_level
+        worst_flag_var = worst_flag_var
       )
     )
   )
