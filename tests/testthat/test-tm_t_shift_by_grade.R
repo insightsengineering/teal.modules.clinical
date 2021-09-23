@@ -227,7 +227,7 @@ test_that(
 
 
 test_that(
-  "template template_shift_by_grade is keeping the same number of missing data
+  "template_shift_by_grade is keeping the same number of missing data
   (as 'Missing') at the end of preprocessing steps", {
     adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
     adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
@@ -252,9 +252,10 @@ test_that(
       code_missing_baseline = FALSE
     )
 
-  data <- mapply(eval, template)$data
-  result_missing_n <- sum(data$ATOXGR_GP == "Missing")
+   template_data <- template$data
+   data <- eval(template_data)
+   result_missing_n <- sum(data$ATOXGR_GP == "Missing")
 
-  expect_equal(expected_missing_n, result_missing_n)
+   expect_equal(expected_missing_n, result_missing_n)
   }
 )
