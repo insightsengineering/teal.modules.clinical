@@ -252,7 +252,7 @@ test_that(
       code_missing_baseline = FALSE
     )
 
-   template_data <- template[["data"]]
+   template_data <- template$data
    data <- eval(template_data)
    result_missing_n <- sum(data$ATOXGR_GP == "Missing")
 
