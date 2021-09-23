@@ -59,7 +59,7 @@ template_events_by_grade <- function(dataname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name("ANL")))
+      env = list(dataname = as.name(dataname)))
   )
   data_list <- add_expr(
     data_list,
