@@ -1,3 +1,4 @@
+library(scda)
 test_that("template_shift_by_grade generates correct expressions with default arguments", {
   result <- template_shift_by_grade(
     parentname = "adsl",
@@ -52,13 +53,13 @@ test_that("template_shift_by_grade generates correct expressions with default ar
           ATOXGR_GP,
           levels = c(
             if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "<Missing>")
+            "1", "2", "3", "4", "Missing")
           ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
             if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "<Missing>")
+            "1", "2", "3", "4", "Missing")
           )
         )
       anl <- var_relabel(
@@ -153,13 +154,13 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
           ATOXGR_GP,
           levels = c(
             if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "<MYMissing>")
+            "1", "2", "3", "4", "Missing")
         ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
             if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "<MYMissing>")
+            "1", "2", "3", "4", "Missing")
         )
       )
       anl <- var_relabel(
@@ -223,3 +224,38 @@ test_that(
     )
   )
 })
+
+
+test_that(
+  "template_shift_by_grade is keeping the same number of missing data
+  (as 'Missing') at the end of preprocessing steps", {
+    adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
+    adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
+    adlb <- adlb %>% filter(WGRLOVFL == "Y")
+    adlb$ATOXGR[1] <- NA
+    adlb <- df_explicit_na(adlb)
+    expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")
+    template <- template_shift_by_grade(
+      parentname = "adsl",
+      dataname = "adlb",
+      arm_var = "ARM",
+      id_var = "USUBJID",
+      visit_var = "AVISIT",
+      worst_flag_var = c(c("WGRLOVFL")),
+      worst_flag_indicator = "Y",
+      anl_toxgrade_var = "ATOXGR",
+      base_toxgrade_var = "BTOXGR",
+      paramcd = "PARAMCD",
+      drop_arm_levels = TRUE,
+      add_total = FALSE,
+      na_level = "<Missing>",
+      code_missing_baseline = FALSE
+    )
+
+    template_data <- template$data
+    data <- eval(template_data)
+    result_missing_n <- sum(data$ATOXGR_GP == "Missing")
+
+    expect_equal(expected_missing_n, result_missing_n)
+  }
+)
