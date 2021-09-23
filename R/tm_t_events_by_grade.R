@@ -58,13 +58,19 @@ template_events_by_grade <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
+      dataname <- df_explicit_na(dataname),
+      env = list(dataname = as.name(dataname)))
+  )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      dataname <- df_explicit_na(dataname),
       env = list(dataname = as.name("anl")))
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
+      parentname <- df_explicit_na(parentname),
       env = list(parentname = as.name(parentname)))
   )
 
@@ -968,8 +974,9 @@ srv_t_events_by_grade <- function(input,
     if (input$col_by_grade) {
       validate(
         need(
-          is.factor(anl_filtered[[input_grade]]) && all(levels(anl_filtered[[input_grade]]) %in% as.character(c(1:5))),
-          "To support displaying grade grouping in nested columns, grade variable has to be a factor with values between 1 and 5." #nolint
+          is.factor(anl_filtered[[input_grade]]) &&
+            all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
+          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." #nolint
         )
       )
     } else {
