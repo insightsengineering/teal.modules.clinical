@@ -757,7 +757,7 @@ srv_t_shift_by_grade <- function(input,
       need(input_id_var, "Please select a subject identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
       need(
-        any(input_worst_flag == "Y"),
+        any(input_worst_flag == input$worst_flag_indicator),
         "There's no positive flag, please select another flag parameter."
       )
     )
