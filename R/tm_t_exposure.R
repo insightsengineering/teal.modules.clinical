@@ -121,7 +121,7 @@ template_exposure <- function(parentname,
   )
 
     split_label <- substitute(
-      expr = var_labels(dataname[row_by_var]),
+      expr = var_labels(dataname[row_by_var], fill = TRUE),
       env = list(
         dataname = as.name(dataname),
         row_by_var = row_by_var
