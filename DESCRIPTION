@@ -16,14 +16,14 @@ Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encodings within teal.
 Depends:
   R (>= 3.3),
-  dplyr,
-  shiny,
   ggplot2,
+  shiny,
   teal (>= 0.10.0),
   tern (>= 0.7.5)
 Imports:
   assertthat,
   broom,
+  dplyr,
   grid,
   magrittr,
   methods,
