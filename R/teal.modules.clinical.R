@@ -4,15 +4,14 @@
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
 #' @import assertthat
-#' @import dplyr
 #' @import ggplot2
-#' @import magrittr
 #' @import shiny
 #' @import rtables
 #' @import teal
 #' @import teal.devel
 #' @import tern
 #' @import utils.nest
+#' @importFrom magrittr %>%
 #' @importFrom methods is
 #'
 #' @docType package
@@ -27,3 +26,7 @@ if (getRversion() >= "2.15.1") {
     "usubjid"
   ))
 }
+
+# Avoiding R CMD check notes
+#' @importFrom dplyr arrange
+NULL

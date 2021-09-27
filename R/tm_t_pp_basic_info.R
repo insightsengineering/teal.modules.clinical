@@ -19,7 +19,7 @@ template_basic_info <- function(dataname = "ANL",
     substitute(
       expr = {
         values <- dataname %>%
-          select(vars) %>%
+          dplyr::select(vars) %>%
           # we are sure that only one row
           head(1) %>%
           t()
@@ -28,8 +28,8 @@ template_basic_info <- function(dataname = "ANL",
 
         result <-
           data.frame(key = key, value = values) %>%
-          select(key, value) %>%
-          rename(`   ` = key, ` ` = value)
+          dplyr::select(key, value) %>%
+          dplyr::rename(`   ` = key, ` ` = value)
         result
       }, env = list(
         dataname = as.name(dataname),

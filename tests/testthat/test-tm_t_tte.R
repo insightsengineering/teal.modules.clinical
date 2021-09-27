@@ -23,8 +23,8 @@ test_that("template_tte produces healthy standard output", {
   expected <- list(
     data = quote({
       anl <- ANL %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(
           is_event = CNSR == 0,
           is_not_event = CNSR == 1,
           EVNT1 = factor(
@@ -38,7 +38,7 @@ test_that("template_tte produces healthy standard output", {
         ) %>%
         df_explicit_na(na_level = "")
       ANL_ADSL <- ANL_ADSL %>%# nolint
-        mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(
@@ -128,8 +128,8 @@ test_that("template_tte produces correct data expression when not comparing arms
 
   expected_data <- quote({
     anl <- ANL %>%
-      mutate(ARM = droplevels(ARM)) %>%
-      mutate(
+      dplyr::mutate(ARM = droplevels(ARM)) %>%
+      dplyr::mutate(
         is_event = CNSR == 0,
         is_not_event = CNSR == 1,
         EVNT1 = factor(case_when(
@@ -141,7 +141,7 @@ test_that("template_tte produces correct data expression when not comparing arms
       ) %>%
       df_explicit_na(na_level = "")
     ANL_ADSL <- ANL_ADSL %>% #nolint
-      mutate(ARM = droplevels(ARM)) %>%
+      dplyr::mutate(ARM = droplevels(ARM)) %>%
       df_explicit_na(na_level = "")
   })
   expect_equal(result$data, expected_data)

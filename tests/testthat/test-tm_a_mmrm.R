@@ -14,14 +14,14 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
   expected <- list(
     data = quote({
       anl <- adqs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
     }),
     fit = quote(
@@ -58,16 +58,16 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
   expected <- list(
     data = quote({
       anl <- adqs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")
     }),
     fit = substitute(

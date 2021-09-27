@@ -18,10 +18,10 @@ test_that("template_summary generates correct expressions", {
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
@@ -65,9 +65,9 @@ test_that("template_summary can generate customized table", {
           omit_columns = setdiff(names(adrs), c("RACE")),
           na_level = "<Missing>"
         )
-      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+      adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(adsl[["ARMCD"]])
-      anl <- anl %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
@@ -113,14 +113,14 @@ test_that("template_summary generates correct expressions for multiple grouping 
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      anl <- anl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       arm_levels <- levels(anl[["STRATA1"]])
-      adsl <- adsl %>% filter(STRATA1 %in% arm_levels)
-      adsl <- adsl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
@@ -165,14 +165,14 @@ test_that("template_summary generates correct expressions for multiple grouping 
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      anl <- anl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       arm_levels <- levels(anl[["STRATA1"]])
-      adsl <- adsl %>% filter(STRATA1 %in% arm_levels)
-      adsl <- adsl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
@@ -219,14 +219,14 @@ test_that("template_summary generates correct expressions for customized numeric
           omit_columns = setdiff(names(adrs), c(c("RACE", "COUNTRY", "AGE"))),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      anl <- anl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       arm_levels <- levels(anl[["STRATA1"]])
-      adsl <- adsl %>% filter(STRATA1 %in% arm_levels)
-      adsl <- adsl %>% mutate(STRATA1 = droplevels(STRATA1))
+      adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(

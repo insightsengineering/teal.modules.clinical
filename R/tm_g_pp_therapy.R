@@ -69,19 +69,19 @@ template_therapy <- function(dataname = "ANL",
 
       therapy_table <-
         dataname %>%
-        filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
-        select(all_of(cols_to_include)) %>%
-        filter(!is.na(cmdecod)) %>%
-        mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
-        select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
-        select(cmindc, cmdecod, Dosage, everything()) %>%
-        mutate(CMDECOD = case_when(
+        dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
+        dplyr::select(all_of(cols_to_include)) %>%
+        dplyr::filter(!is.na(cmdecod)) %>%
+        dplyr::mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
+        dplyr::select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
+        dplyr::select(cmindc, cmdecod, Dosage, everything()) %>%
+        dplyr::mutate(CMDECOD = case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
         )) %>%
-        select(-cmtrt) %>%
-        arrange(cmindc, cmdecod, cmstdy) %>%
-        distinct() %>%
+        dplyr::select(-cmtrt) %>%
+        dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
+        dplyr::distinct() %>%
         `colnames<-`(c(
           get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char)], "Dosage",
           get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
@@ -116,24 +116,24 @@ template_therapy <- function(dataname = "ANL",
     substitute(expr = {
       max_day <- max(dataname[[cmendy_char]], na.rm = T)
       data <- dataname %>%
-        filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
-        select_at(cols_to_include) %>%
-        filter(!is.na(cmdecod)) %>%
-        mutate(DOSE = paste(cmdose, cmdosu, cmdosfrq)) %>%
-        select(-cmdose, -cmdosu, -cmdosfrq) %>%
-        select(cmindc, cmdecod, DOSE, everything()) %>%
-        arrange(cmindc, cmdecod, cmstdy) %>%
-        distinct() %>%
-        mutate(CMSTDY = case_when(
+        dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
+        dplyr::select_at(cols_to_include) %>%
+        dplyr::filter(!is.na(cmdecod)) %>%
+        dplyr::mutate(DOSE = paste(cmdose, cmdosu, cmdosfrq)) %>%
+        dplyr::select(-cmdose, -cmdosu, -cmdosfrq) %>%
+        dplyr::select(cmindc, cmdecod, DOSE, everything()) %>%
+        dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
+        dplyr::distinct() %>%
+        dplyr::mutate(CMSTDY = case_when(
           is.na(cmstdy) ~ 1,
           TRUE ~ cmstdy
         )) %>%
-        mutate(CMENDY = case_when(
+        dplyr::mutate(CMENDY = case_when(
           is.na(cmendy) ~ max_day,
           TRUE ~ cmendy
         )) %>%
-        arrange(CMSTDY, desc(CMSTDY)) %>%
-        mutate(CMDECOD = case_when(
+        dplyr::arrange(CMSTDY, desc(CMSTDY)) %>%
+        dplyr::mutate(CMDECOD = case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
         ))
@@ -144,8 +144,8 @@ template_therapy <- function(dataname = "ANL",
         geom_text(
           data =
             data %>%
-              select(CMDECOD, cmindc, CMSTDY) %>%
-              distinct(),
+              dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
+              dplyr::distinct(),
             aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",

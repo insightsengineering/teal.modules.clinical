@@ -14,15 +14,15 @@ test_that("template_rsp generates standard expressions", {
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(
@@ -84,15 +84,15 @@ test_that("template_rsp generates right expressions with non-default", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        dplyr::mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        dplyr::mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(
@@ -148,11 +148,11 @@ test_that("template_rsp generates expression without arm comparison", {
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       ADSL <- ADSL %>%  # nolint
-        mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(
@@ -197,15 +197,15 @@ test_that("template_rsp generates expression with non-default controls and strat
   expected <- list(
     data = quote({
       anl <- ADRS %>%
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
+        dplyr::mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
-        filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
-        mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
+        dplyr::mutate(ARM = relevel(ARM, ref = "B: Placebo")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(
@@ -283,15 +283,15 @@ test_that("template_rsp can combine comparison arms", {
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       ADSL <- ADSL %>% # nolint
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
     }),
     combine_comp_arms = quote(
@@ -371,17 +371,17 @@ test_that("template_rsp can combine refs", {
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
     }),
     layout = quote(

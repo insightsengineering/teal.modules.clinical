@@ -19,15 +19,15 @@ test_that("template_shift_by_grade generates correct expressions with default ar
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% filter(WGRLOVFL == "Y")
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- adlb %>% dplyr::filter(WGRLOVFL == "Y")
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       by_visit <- TRUE
-      anl <- mutate(
+      anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
           case_when(
@@ -47,18 +47,18 @@ test_that("template_shift_by_grade generates correct expressions with default ar
           )
         )
 
-      anl <- mutate(
+      anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
           ATOXGR_GP,
           levels = c(
-            if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
             "1", "2", "3", "4", "Missing")
           ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
-            if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
             "1", "2", "3", "4", "Missing")
           )
         )
@@ -66,7 +66,7 @@ test_that("template_shift_by_grade generates correct expressions with default ar
         anl,
         PARAMCD = var_labels(anl)[["PARAMCD"]],
         AVISIT = var_labels(anl)[["AVISIT"]],
-        ATOXGR_GP = if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
+        ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
     }),
@@ -121,15 +121,15 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% filter(WGRLOVFL == "YY")
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- adlb %>% dplyr::filter(WGRLOVFL == "YY")
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       anl <- df_explicit_na(anl, na_level = "<MYMissing>")
       adsl <- df_explicit_na(adsl, na_level = "<MYMissing>")
       by_visit <- TRUE
-      anl <- mutate(
+      anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
           case_when(
@@ -148,18 +148,18 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
             )
           )
       )
-      anl <- mutate(
+      anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
           ATOXGR_GP,
           levels = c(
-            if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
             "1", "2", "3", "4", "Missing")
         ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
-            if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
             "1", "2", "3", "4", "Missing")
         )
       )
@@ -167,7 +167,7 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
         anl,
         PARAMCD = var_labels(anl)[["PARAMCD"]],
         AVISIT = var_labels(anl)[["AVISIT"]],
-        ATOXGR_GP = if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
+        ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
     }),
@@ -231,7 +231,7 @@ test_that(
   (as 'Missing') at the end of preprocessing steps", {
     adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
     adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
-    adlb <- adlb %>% filter(WGRLOVFL == "Y")
+    adlb <- adlb %>% dplyr::filter(WGRLOVFL == "Y")
     adlb$ATOXGR[1] <- NA
     adlb <- df_explicit_na(adlb)
     expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")

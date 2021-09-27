@@ -89,7 +89,7 @@ template_tte <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(
+      expr = dplyr::mutate(
         is_event = cnsr_var == 0,
         is_not_event = cnsr_var == 1,
         EVNT1 = factor(

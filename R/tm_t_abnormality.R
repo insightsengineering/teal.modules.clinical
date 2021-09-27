@@ -31,7 +31,7 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        filter(treatment_flag_var == treatment_flag & !is.na(grade)),
+        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade)),
       env = list(
         df = as.name(dataname),
         grade = as.name(grade),

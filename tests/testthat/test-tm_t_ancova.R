@@ -15,13 +15,13 @@ test_that("template_ancova generates expressions with multiple endpoints", {
   expected <- list(
     data = quote({
       adqs <- adqs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
     }),
@@ -74,16 +74,16 @@ test_that("template_ancova generates expressions with multiple endpoints with co
   expected <- list(
     data = quote({
       adqs <- adqs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
@@ -136,15 +136,15 @@ test_that("template_ancova generates expressions with multiple endpoints with co
   expected <- list(
     data = quote({
       adqs <- adqs %>%
-        filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
+        dplyr::filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
+        dplyr::filter(ARMCD %in% c("ARM B", "ARM C", "ARM A")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM B/ARM C")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
     }),
@@ -198,13 +198,13 @@ test_that("template_ancova generates expressions with single endpoint", {
   expected <- list(
     data = quote({
       adqs <- adqs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
         droplevels() %>%
         df_explicit_na(na_level = "")
     }),

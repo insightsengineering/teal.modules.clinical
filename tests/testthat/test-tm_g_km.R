@@ -3,8 +3,8 @@ test_that("template_g_km works as expected with default arguments", {
   expected <- list(
     data = quote({
       anl <- ANL %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(is_event = CNSR == 0)
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(is_event = CNSR == 0)
     }),
     variables = quote(
       variables <- list(tte = "AVAL", is_event = "is_event", arm = "ARM")
@@ -71,11 +71,11 @@ test_that("template_g_km gives correct data expression when we want to compare v
   )
   expected_data <- quote({
     anl <- ANL %>%
-      filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
-      mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
-      mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
-      mutate(ARM = droplevels(ARM)) %>%
-      mutate(is_event = CNSR == 0)
+      dplyr::filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
+      dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = droplevels(ARM)) %>%
+      dplyr::mutate(is_event = CNSR == 0)
   })
   expect_equal(result$data, expected_data)
 })
@@ -89,12 +89,12 @@ test_that("template_g_km gives correct data expression when we want to combine c
   )
   expected_data <- quote({
     anl <- ANL %>%
-      filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
-      mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
-      mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
-      mutate(ARM = droplevels(ARM)) %>%
-      mutate(is_event = CNSR == 0) %>%
-      mutate(ARM = combine_levels(ARM, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B"))
+      dplyr::filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
+      dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = droplevels(ARM)) %>%
+      dplyr::mutate(is_event = CNSR == 0) %>%
+      dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B"))
   })
   expect_equal(result$data, expected_data)
 })
