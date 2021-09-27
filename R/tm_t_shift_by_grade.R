@@ -236,15 +236,21 @@ template_shift_by_grade <- function(parentname,
         ATOXGR_GP = factor(
           ATOXGR_GP,
           levels = c(
-            dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
+            dplyr::if_else(
+              worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
             )
           ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
-            dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
-            )
+            dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            "1",
+            "2",
+            "3",
+            "4",
+            "Missing"
           )
+        )
       ),
       env = list(
         dataname = as.name("anl"),
