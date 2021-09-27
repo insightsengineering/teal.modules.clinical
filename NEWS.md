@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.9.9000
+# teal.modules.clinical 0.8.10
 * New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query.
 * New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
 * Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
