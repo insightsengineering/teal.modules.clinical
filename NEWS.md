@@ -16,7 +16,6 @@
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
-* Updated `tm_t_shift_by_arm` encoding panel label to use row instead of column.
 
 ### Miscellaneous
 * Added `error_on_lint: TRUE` to `.lintr`.
