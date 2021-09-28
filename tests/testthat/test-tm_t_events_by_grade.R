@@ -382,7 +382,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
       anl <- anl %>%
         dplyr::group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
         dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -495,7 +495,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
       anl <- anl %>%
         dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
         dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -597,7 +597,7 @@ test_that("template_events_col_by_grade without adding total column option works
       anl <- anl %>%
         dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
         dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -698,7 +698,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
       anl <- anl %>%
         dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
         dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
