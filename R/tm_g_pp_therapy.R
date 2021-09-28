@@ -75,7 +75,7 @@ template_therapy <- function(dataname = "ANL",
         dplyr::mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
         dplyr::select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
         dplyr::select(cmindc, cmdecod, Dosage, everything()) %>%
-        dplyr::mutate(CMDECOD = case_when(
+        dplyr::mutate(CMDECOD = dplyr::case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
         )) %>%

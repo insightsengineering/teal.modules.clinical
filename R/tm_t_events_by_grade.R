@@ -463,7 +463,7 @@ template_events_col_by_grade <- function(dataname,
   )
   data_pipe <- add_expr(
     data_pipe,
-    quote(ungroup())
+    quote(dplyr::ungroup())
   )
   data_pipe <- add_expr(
     data_pipe,

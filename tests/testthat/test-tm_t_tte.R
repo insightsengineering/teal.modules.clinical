@@ -28,7 +28,7 @@ test_that("template_tte produces healthy standard output", {
           is_event = CNSR == 0,
           is_not_event = CNSR == 1,
           EVNT1 = factor(
-            case_when(
+            dplyr::case_when(
               is_event == TRUE ~ "Patients with event (%)",
               is_event == FALSE ~ "Patients without event (%)"
             ),
@@ -132,7 +132,7 @@ test_that("template_tte produces correct data expression when not comparing arms
       dplyr::mutate(
         is_event = CNSR == 0,
         is_not_event = CNSR == 1,
-        EVNT1 = factor(case_when(
+        EVNT1 = factor(dplyr::case_when(
           is_event == TRUE ~ "Patients with event (%)",
           is_event == FALSE ~ "Patients without event (%)"),
           levels = c("Patients with event (%)", "Patients without event (%)")
