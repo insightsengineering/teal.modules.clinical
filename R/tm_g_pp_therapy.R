@@ -74,7 +74,7 @@ template_therapy <- function(dataname = "ANL",
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
         dplyr::select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
-        dplyr::select(cmindc, cmdecod, Dosage, everything()) %>%
+        dplyr::select(cmindc, cmdecod, Dosage, dplyr::everything()) %>%
         dplyr::mutate(CMDECOD = dplyr::case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
@@ -121,7 +121,7 @@ template_therapy <- function(dataname = "ANL",
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::mutate(DOSE = paste(cmdose, cmdosu, cmdosfrq)) %>%
         dplyr::select(-cmdose, -cmdosu, -cmdosfrq) %>%
-        dplyr::select(cmindc, cmdecod, DOSE, everything()) %>%
+        dplyr::select(cmindc, cmdecod, DOSE, dplyr::everything()) %>%
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
         dplyr::mutate(CMSTDY = dplyr::case_when(
