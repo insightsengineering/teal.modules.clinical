@@ -14,7 +14,7 @@ test_that("template_forest_tte generates correct expressions", {
     data = quote({
       anl <- adtte %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(ARMCD = combine_levels(ARMCD, c("ARM B", "ARM C"))) %>%
         dplyr::mutate(is_event = CNSR == 0)
@@ -23,7 +23,7 @@ test_that("template_forest_tte generates correct expressions", {
           "ARM A", "ARM B",
           "ARM C"
         )) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(ARMCD = combine_levels(
           ARMCD,

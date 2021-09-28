@@ -110,7 +110,7 @@ template_shift_by_grade <- function(parentname,
         data_list,
         substitute(
           dataname <- dplyr::mutate(dataname,
-            ATOXGR_GP = factor(case_when(
+            ATOXGR_GP = factor(dplyr::case_when(
               ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
               ATOXGR == -1 ~ "1",
               ATOXGR == -2 ~ "2",
@@ -118,7 +118,7 @@ template_shift_by_grade <- function(parentname,
               ATOXGR == -4 ~ "4",
               ATOXGR == na_level ~ "Missing"
             )),
-            BTOXGR_GP = factor(case_when(
+            BTOXGR_GP = factor(dplyr::case_when(
               BTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
               BTOXGR == -1 ~ "1",
               BTOXGR == -2 ~ "2",
@@ -140,7 +140,7 @@ template_shift_by_grade <- function(parentname,
         data_list,
         substitute(
           dataname <- dplyr::mutate(dataname,
-            ATOXGR_GP = factor(case_when(
+            ATOXGR_GP = factor(dplyr::case_when(
               ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
               ATOXGR == 1 ~ "1",
               ATOXGR == 2 ~ "2",
@@ -148,7 +148,7 @@ template_shift_by_grade <- function(parentname,
               ATOXGR == 4 ~ "4",
               ATOXGR == na_level ~ "Missing"
             )),
-            BTOXGR_GP = factor(case_when(
+            BTOXGR_GP = factor(dplyr::case_when(
               BTOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
               BTOXGR == 1 ~ "1",
               BTOXGR == 2 ~ "2",
@@ -172,7 +172,7 @@ template_shift_by_grade <- function(parentname,
         data_list,
         substitute(
           dataname <- dplyr::mutate(dataname,
-            ATOXGR_GP = factor(case_when(
+            ATOXGR_GP = factor(dplyr::case_when(
               ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
               ATOXGR == -1 ~ "1",
               ATOXGR == -2 ~ "2",
@@ -180,7 +180,7 @@ template_shift_by_grade <- function(parentname,
               ATOXGR == -4 ~ "4",
               ATOXGR == na_level ~ "Missing"
             )),
-            BTOXGR_GP = factor(case_when(
+            BTOXGR_GP = factor(dplyr::case_when(
               BTOXGR %in% c(0, 1, 2, 3, 4, na_level) ~ "Not Low",
               BTOXGR == -1 ~ "1",
               BTOXGR == -2 ~ "2",
@@ -201,7 +201,7 @@ template_shift_by_grade <- function(parentname,
         data_list,
         substitute(
           dataname <- dplyr::mutate(dataname,
-            ATOXGR_GP = factor(case_when(
+            ATOXGR_GP = factor(dplyr::case_when(
               ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
               ATOXGR == 1 ~ "1",
               ATOXGR == 2 ~ "2",
@@ -209,7 +209,7 @@ template_shift_by_grade <- function(parentname,
               ATOXGR == 4 ~ "4",
               ATOXGR == na_level ~ "Missing"
             )),
-            BTOXGR_GP = factor(case_when(
+            BTOXGR_GP = factor(dplyr::case_when(
               BTOXGR %in% c(0, -1, -2, -3, -4, na_level) ~ "Not High",
               BTOXGR == 1 ~ "1",
               BTOXGR == 2 ~ "2",

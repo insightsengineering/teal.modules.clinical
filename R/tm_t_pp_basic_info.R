@@ -21,7 +21,7 @@ template_basic_info <- function(dataname = "ANL",
         values <- dataname %>%
           dplyr::select(vars) %>%
           # we are sure that only one row
-          head(1) %>%
+          utils::head(1) %>%
           t()
 
         key <- get_labels(dataname)$column_labels[rownames(values)]

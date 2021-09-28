@@ -14,7 +14,6 @@
 #'  effect should be estimated.
 #'
 #' @importFrom broom tidy
-#' @importFrom stats relevel
 #'
 #' @seealso [tm_t_coxreg()]
 #'

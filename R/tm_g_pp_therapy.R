@@ -70,7 +70,7 @@ template_therapy <- function(dataname = "ANL",
       therapy_table <-
         dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
-        dplyr::select(all_of(cols_to_include)) %>%
+        dplyr::select(dplyr::all_of(cols_to_include)) %>%
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
         dplyr::select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
@@ -124,16 +124,16 @@ template_therapy <- function(dataname = "ANL",
         dplyr::select(cmindc, cmdecod, DOSE, everything()) %>%
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
-        dplyr::mutate(CMSTDY = case_when(
+        dplyr::mutate(CMSTDY = dplyr::case_when(
           is.na(cmstdy) ~ 1,
           TRUE ~ cmstdy
         )) %>%
-        dplyr::mutate(CMENDY = case_when(
+        dplyr::mutate(CMENDY = dplyr::case_when(
           is.na(cmendy) ~ max_day,
           TRUE ~ cmendy
         )) %>%
-        dplyr::arrange(CMSTDY, desc(CMSTDY)) %>%
-        dplyr::mutate(CMDECOD = case_when(
+        dplyr::arrange(CMSTDY, dplyr::desc(CMSTDY)) %>%
+        dplyr::mutate(CMDECOD = dplyr::case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
         ))

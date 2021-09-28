@@ -15,12 +15,12 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
     data = quote({
       anl <- adqs %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na(na_level = "")
     }),
@@ -59,13 +59,13 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
     data = quote({
       anl <- adqs %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")
       adsl <- adsl %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))) %>%
         df_explicit_na(na_level = "")

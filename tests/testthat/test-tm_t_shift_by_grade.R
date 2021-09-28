@@ -30,7 +30,7 @@ test_that("template_shift_by_grade generates correct expressions with default ar
       anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
-          case_when(
+          dplyr::case_when(
             ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
             ATOXGR == -1 ~ "1", ATOXGR == -2 ~ "2",
             ATOXGR == -3 ~ "3", ATOXGR == -4 ~ "4",
@@ -38,7 +38,7 @@ test_that("template_shift_by_grade generates correct expressions with default ar
             )
           ),
         BTOXGR_GP = factor(
-          case_when(
+          dplyr::case_when(
             BTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
             BTOXGR == -1 ~ "1", BTOXGR == -2 ~ "2",
             BTOXGR == -3 ~ "3", BTOXGR == -4 ~ "4",
@@ -132,7 +132,7 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
       anl <- dplyr::mutate(
         anl,
         ATOXGR_GP = factor(
-          case_when(
+          dplyr::case_when(
             MYATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
             MYATOXGR == -1 ~ "1", MYATOXGR == -2 ~ "2",
             MYATOXGR == -3 ~ "3", MYATOXGR == -4 ~ "4",
@@ -140,7 +140,7 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
           )
         ),
         BTOXGR_GP = factor(
-          case_when(
+          dplyr::case_when(
             MYBTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
             MYBTOXGR == -1 ~ "1", MYBTOXGR == -2 ~ "2",
             MYBTOXGR == -3 ~ "3", MYBTOXGR == -4 ~ "4",

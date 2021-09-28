@@ -42,7 +42,7 @@ template_laboratory <- function(dataname = "ANL",
         dplyr::arrange(timepoints) %>%
         dplyr::select(-timepoints) %>%
         dplyr::group_by(paramcd, param) %>%
-        dplyr::mutate(INDEX = row_number()) %>%
+        dplyr::mutate(INDEX = dplyr::row_number()) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
         dplyr::select(-c(aval, anrind))

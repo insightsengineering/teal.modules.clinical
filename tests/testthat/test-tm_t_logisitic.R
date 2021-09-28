@@ -20,7 +20,7 @@ test_that("template_logistic generates correct expressions", {
     anl <- ANL %>%
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
       dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
       dplyr::mutate(Response = AVALC %in% c("CR", "PR")) %>%
       df_explicit_na(na_level = "")

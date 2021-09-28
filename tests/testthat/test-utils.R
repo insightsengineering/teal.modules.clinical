@@ -147,7 +147,7 @@ test_that("prepare_arm with standard inputs", {
   expected <- quote(
     adrs %>%
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 
@@ -166,7 +166,7 @@ test_that("prepare_arm combine ref arms", {
     adrs %>%
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
       dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 
@@ -186,7 +186,7 @@ test_that("prepare_arm combine ref arms and use new level", {
     adrs %>%
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
       dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "Control")) %>%
-      dplyr::mutate(ARMCD = relevel(ARMCD, ref = "Control")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "Control")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 

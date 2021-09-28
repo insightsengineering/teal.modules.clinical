@@ -23,7 +23,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     data = quote({
       anl <- adrs %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(event = 1 - CNSR) %>%
         df_explicit_na(na_level = "")
@@ -84,7 +84,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     data = quote({
       anl <- adrs %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(event = 1 - CNSR) %>%
         df_explicit_na(na_level = "")
@@ -137,7 +137,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
     data = quote({
       anl <- adrs %>%
         dplyr::filter(ARM %in% c("A: Drug X", "B: Placebo", "C: Combination")) %>%
-        dplyr::mutate(ARM = relevel(ARM, ref = "A: Drug X")) %>%
+        dplyr::mutate(ARM = stats::relevel(ARM, ref = "A: Drug X")) %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         dplyr::mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", "C: Combination"))) %>%
         dplyr::mutate(event = 1 - CNSR) %>%

@@ -17,14 +17,14 @@ test_that("template_forest_rsp generates correct expressions", {
     data = quote({
       adrs <- adrs %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
         dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
         )
       parent <- adsl %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        dplyr::mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
         )

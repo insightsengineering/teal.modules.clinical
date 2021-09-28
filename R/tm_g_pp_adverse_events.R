@@ -73,8 +73,8 @@ template_adverse_events <- function(dataname = "ANL",
       expr = chart <- dataname %>%
         dplyr::select(aeterm, time, tox_grade, causality) %>%
         dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
-        dplyr::arrange(desc(ATOXGR)) %>%
-        dplyr::mutate(ATOXGR = case_when(
+        dplyr::arrange(dplyr::desc(ATOXGR)) %>%
+        dplyr::mutate(ATOXGR = dplyr::case_when(
           ATOXGR == "." ~ "UNKNOWN",
           TRUE ~ ATOXGR
         )) %>%

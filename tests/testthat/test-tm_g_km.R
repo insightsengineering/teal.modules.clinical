@@ -73,7 +73,7 @@ test_that("template_g_km gives correct data expression when we want to compare v
     anl <- ANL %>%
       dplyr::filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
       dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
-      dplyr::mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = stats::relevel(ARM, ref = "ARM C/ARM D")) %>%
       dplyr::mutate(ARM = droplevels(ARM)) %>%
       dplyr::mutate(is_event = CNSR == 0)
   })
@@ -91,7 +91,7 @@ test_that("template_g_km gives correct data expression when we want to combine c
     anl <- ANL %>%
       dplyr::filter(ARM %in% c("ARM C", "ARM D", "ARM A", "ARM B")) %>%
       dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM C", "ARM D"), new_level = "ARM C/ARM D")) %>%
-      dplyr::mutate(ARM = relevel(ARM, ref = "ARM C/ARM D")) %>%
+      dplyr::mutate(ARM = stats::relevel(ARM, ref = "ARM C/ARM D")) %>%
       dplyr::mutate(ARM = droplevels(ARM)) %>%
       dplyr::mutate(is_event = CNSR == 0) %>%
       dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B"))
