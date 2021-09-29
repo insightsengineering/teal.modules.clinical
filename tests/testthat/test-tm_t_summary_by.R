@@ -24,7 +24,7 @@ test_that("template_summary_by generates correct expressions", {
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -79,7 +79,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
       anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -140,7 +140,7 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout_cfun = quote(
@@ -206,7 +206,7 @@ test_that("template_summary_by generates correct expressions for customized nume
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -261,7 +261,7 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% filter(ARM %in% arm_levels)
       adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
