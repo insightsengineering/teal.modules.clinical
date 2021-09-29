@@ -17,6 +17,7 @@ template_shift_by_arm <- function(dataname,
                                   treatment_flag = "Y",
                                   aval_var = "ANRIND",
                                   base_var = "BNRIND",
+                                  na.rm = FALSE, #nolint
                                   na_level = "<Missing>",
                                   add_total = FALSE) {
 
@@ -28,6 +29,7 @@ template_shift_by_arm <- function(dataname,
     is.string(paramcd),
     is.string(aval_var),
     is.string(base_var),
+    is.flag(na.rm),
     is.string(na_level),
     is.string(treatment_flag_var),
     is.string(treatment_flag),
@@ -85,7 +87,7 @@ template_shift_by_arm <- function(dataname,
             label_pos = "topleft",
             split_label = obj_label(dataname$arm_var)) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
         env = list(
           aval_var = aval_var,
@@ -93,6 +95,7 @@ template_shift_by_arm <- function(dataname,
           base_var = base_var,
           dataname = as.name(dataname),
           visit_var = visit_var,
+          na.rm = na.rm,
           na_level = na_level
         )
       )
@@ -110,7 +113,7 @@ template_shift_by_arm <- function(dataname,
             label_pos = "topleft",
             split_label = obj_label(dataname$arm_var)) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = FALSE, .stats = "count_fraction") %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
         env = list(
           aval_var = aval_var,
@@ -118,6 +121,7 @@ template_shift_by_arm <- function(dataname,
           base_var = base_var,
           dataname = as.name(dataname),
           visit_var = visit_var,
+          na.rm = na.rm,
           na_level = na_level
         )
       )
