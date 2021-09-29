@@ -186,7 +186,7 @@ template_shift_by_grade <- function(parentname,
               BTOXGR == -2 ~ "2",
               BTOXGR == -3 ~ "3",
               BTOXGR == -4 ~ "4"
-              ))
+            ))
           ),
           env = list(
             dataname = as.name("anl"),
@@ -215,7 +215,7 @@ template_shift_by_grade <- function(parentname,
               BTOXGR == 2 ~ "2",
               BTOXGR == 3 ~ "3",
               BTOXGR == 4 ~ "4"
-              ))
+            ))
           ),
           env = list(
             dataname = as.name("anl"),

@@ -154,7 +154,12 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
           ATOXGR_GP,
           levels = c(
             dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "Missing")
+            "1",
+            "2",
+            "3",
+            "4",
+            "Missing"
+          )
         ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
