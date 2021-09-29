@@ -311,7 +311,7 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$base_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
       panel_group(
         panel_item(
           "Additional Variables Info",

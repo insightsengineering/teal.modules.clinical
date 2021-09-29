@@ -15,7 +15,7 @@
 * Added a new module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
-* Update `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
+* Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
 
 ### Miscellaneous
 * Added `error_on_lint: TRUE` to `.lintr`.
