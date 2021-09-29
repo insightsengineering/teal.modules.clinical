@@ -18,6 +18,7 @@ tm_t_shift_by_arm(
     selected = "ONTRTFL", fixed = TRUE),
   treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
     fixed = TRUE),
+  useNA = c("ifany", "no"),
   na_level = "<Missing>",
   add_total = FALSE,
   pre_output = NULL,
@@ -58,6 +59,9 @@ variable.}
 
 \item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
 records in \code{treatment_flag_var}.}
+
+\item{useNA}{(\code{character})\cr
+whether missing data (\code{NA}) should be displayed as a level.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
@@ -109,7 +113,8 @@ app <- init(
       ),
       base_var = choices_selected(
         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
-      )
+      ),
+      useNA = "ifany"
     )
   )
 )
