@@ -187,7 +187,8 @@ template_shift_by_arm <- function(dataname,
 #'       ),
 #'       base_var = choices_selected(
 #'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
-#'       )
+#'       ),
+#'       useNA = "ifany"
 #'     )
 #'   )
 #' )
@@ -210,6 +211,7 @@ tm_t_shift_by_arm <- function(label,
                               treatment_flag = choices_selected(
                                 value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
                               ),
+                              useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
                               add_total = FALSE,
                               pre_output = NULL,
@@ -221,6 +223,7 @@ tm_t_shift_by_arm <- function(label,
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
     is_character_single(na_level),
+    useNA %in% c("ifany", "no"), # nolint,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -230,6 +233,8 @@ tm_t_shift_by_arm <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
+
+  useNA <- match.arg(useNA) # nolint
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -316,6 +321,12 @@ ui_shift_by_arm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
+      radioButtons(
+        ns("useNA"),
+        label = "Display NA counts",
+        choices = c("ifany", "no"),
+        selected = a$useNA
+      ),
       panel_group(
         panel_item(
           "Additional Variables Info",
@@ -433,6 +444,7 @@ srv_shift_by_arm <- function(input,
       treatment_flag = input$treatment_flag,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       base_var = as.vector(anl_m$columns_source$base_var),
+      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,
       add_total = input$add_total
     )
