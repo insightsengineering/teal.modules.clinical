@@ -275,10 +275,10 @@ template_summary_by <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  all_zero <- function (tr) {
+  all_zero <- function(tr) {
     if (!is(tr, "TableRow") || is(tr, "LabelRow"))
       return(FALSE)
-    rvs = unlist(unname(row_values(tr)))
+    rvs <- unlist(unname(row_values(tr)))
     all(rvs == 0)
   }
 
