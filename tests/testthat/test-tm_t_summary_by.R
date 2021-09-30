@@ -287,7 +287,7 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
         trim_rows(criteria = function(tr) {
           if (!is(tr, "TableRow") || is(tr, "LabelRow"))
             return(FALSE)
-          rvs = unlist(unname(row_values(tr)))
+          rvs <- unlist(unname(row_values(tr)))
           all(rvs == 0)
         })
       result
