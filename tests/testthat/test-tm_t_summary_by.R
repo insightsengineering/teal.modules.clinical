@@ -283,13 +283,14 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
         )
     ),
     table = quote({
+      all_zero <- function(tr) {
+        if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+          return(FALSE)
+        rvs <- unlist(unname(row_values(tr)))
+        all(rvs == 0)
+      }
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        trim_rows(criteria = function(tr) {
-          if (!is(tr, "TableRow") || is(tr, "LabelRow"))
-            return(FALSE)
-          rvs <- unlist(unname(row_values(tr)))
-          all(rvs == 0)
-        })
+        trim_rows(criteria = all_zero)
       result
     })
   )
