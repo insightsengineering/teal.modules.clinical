@@ -275,13 +275,20 @@ template_summary_by <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
+  all_zero <- function (tr) {
+    if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+      return(FALSE)
+    rvs = unlist(unname(row_values(tr)))
+    all(rvs == 0)
+  }
+
   if (drop_zero_levels) {
     y$table <- substitute(
       expr = {
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows()
+        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows(criteria = all_zero)
         result
       },
-      env = list(parent = as.name(parentname))
+      env = list(parent = as.name(parentname), all_zero = all_zero)
     )
   } else {
     y$table <- substitute(
