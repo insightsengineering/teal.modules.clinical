@@ -197,15 +197,15 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = paste0(
-                "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-              ),
-              table_names = "adjusted_comparison"
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = paste0(
+              "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
             ),
+            table_names = "adjusted_comparison"
+          ),
           env = list(
             aval_var = aval_var,
             arm_var = arm_var,
