@@ -17,6 +17,7 @@
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
+* Updated `tm_t_pp_laboratory` to display 4 decimals by default.
 
 ### Miscellaneous
 * Updated `LICENCE` and `README` with new package references.
