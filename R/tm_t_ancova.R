@@ -140,7 +140,7 @@ template_ancova <- function(dataname = "ANL",
     )
   )
 
-  if (length(paramcd_levels) > 1) {
+  if (length(paramcd_levels) > 1 & length(cov_var) > 0) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -156,6 +156,34 @@ template_ancova <- function(dataname = "ANL",
             conf_level = conf_level,
             var_labels = "Adjusted mean",
             show_labels = "hidden"
+          ),
+        env = list(
+          paramcd_var = paramcd_var,
+          aval_var = aval_var,
+          arm_var = arm_var,
+          cov_var = cov_var,
+          conf_level = conf_level,
+          dataname = as.name(dataname)
+        )
+      )
+    )
+  } else if (length(paramcd_levels) > 1 & length(cov_var) == 0) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        split_rows_by(
+          paramcd_var,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+        ) %>%
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = "Unadjusted mean",
+            show_labels = "hidden",
+            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means")
           ),
         env = list(
           paramcd_var = paramcd_var,
