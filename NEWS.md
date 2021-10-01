@@ -1,4 +1,5 @@
 # teal.modules.clinical 0.8.10
+* Added `tm_g_km` validation check for plot tables font size.
 * New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query.
 * New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
 * Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
@@ -18,6 +19,7 @@
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
 
 ### Miscellaneous
+* Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
 
 # teal.modules.clinical 0.8.9
