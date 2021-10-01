@@ -19,7 +19,7 @@
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
 
 ### Miscellaneous
-* Updated `LICENCE` and `README` with new package reference.
+* Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
 
 # teal.modules.clinical 0.8.9
