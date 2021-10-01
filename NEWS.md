@@ -1,26 +1,30 @@
 # teal.modules.clinical 0.8.10
-* Added `tm_g_km` validation check for plot tables font size.
+### New features
 * New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query.
-* New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
-* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
 * New module `tm_t_shift_by_grade` was added for the analysis of grade laboratory abnormalities.
-* Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
+* New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
+* New module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
+
+### Enhancements
+* Added `tm_g_km` validation check for plot tables font size.
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title.
 * `tm_t_events` now can have nested column as treatment variables, and same pruning and sorting logic remains the same.
-* Updated license and `README.md` with appropriate information for migration to public Github.
 * Previously package helper functions were never exported. These functions have now been exported so they can be utilized.
 * `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
 * `tm_t_events_by_grade` now can prune the adverse event by grade when `col_by_grade` is FALSE.
-* Added `error_on_lint: TRUE` to `.lintr`.
-* Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
-* Added a new module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
 
 ### Miscellaneous
+* Updated `README.md` with appropriate information for migration to public Github.
 * Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
+* Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
+
+### Bug fixes
+* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
+* Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
 
 # teal.modules.clinical 0.8.9
 ### New features
