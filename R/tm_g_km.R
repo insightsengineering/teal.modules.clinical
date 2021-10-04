@@ -677,6 +677,9 @@ srv_g_km <- function(input,
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
+    # validate font size
+    validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
+
     NULL
   })
 

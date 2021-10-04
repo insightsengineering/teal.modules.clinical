@@ -168,6 +168,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
   } else {
+
     # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
@@ -180,7 +181,22 @@ template_ancova <- function(dataname = "ANL",
           var_labels = "Unadjusted comparison",
           .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
           table_names = "unadjusted_comparison"
-        ) %>%
+        ),
+        env = list(
+          paramcd_levels = paramcd_levels,
+          aval_var = aval_var,
+          arm_var = arm_var,
+          conf_level = conf_level,
+          dataname = as.name(dataname)
+        )
+      )
+    )
+
+    if (!is_empty(cov_var)) {
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -190,16 +206,18 @@ template_ancova <- function(dataname = "ANL",
             ),
             table_names = "adjusted_comparison"
           ),
-        env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          env = list(
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
         )
       )
-    )
+
+    }
+
   }
 
   y$layout <- substitute(
