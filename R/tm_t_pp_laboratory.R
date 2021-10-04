@@ -322,7 +322,7 @@ srv_g_laboratory <- function(input,
     session,
     "round_value",
     choices = seq(0, max_decimal),
-    selected = max_decimal
+    selected = min(4, max_decimal)
   )
 
   # Laboratory values tab ----
