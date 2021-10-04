@@ -95,7 +95,7 @@ template_rsp <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(is_rsp = aval_var %in% responder_val),
+      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val),
       env = list(
         responder_val = responder_val,
         aval_var = as.name(aval_var)

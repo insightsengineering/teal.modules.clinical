@@ -71,7 +71,7 @@ template_ancova <- function(dataname = "ANL",
     anl_list <- add_expr(
       anl_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -79,7 +79,7 @@ template_ancova <- function(dataname = "ANL",
     parent_list <- add_expr(
       parent_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -542,8 +542,8 @@ srv_ancova <- function(input,
     ))
     # check that for each visit there is at least one record with no missing data
     all_NA_dataset <- anl_m$data() %>% # nolint
-      group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
-      summarize(all_NA = all(is.na(!!sym(input_aval_var))))
+      dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
+      dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
     validate(need(
       !any(all_NA_dataset$all_NA),
       "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."

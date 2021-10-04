@@ -440,7 +440,7 @@ template_events_col_by_grade <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute(
-        expr = anl <- anl %>% group_by(id, arm_var, hlt, llt),
+        expr = anl <- anl %>% dplyr::group_by(id, arm_var, hlt, llt),
         env = list(id = as.name(id), arm_var = as.name(arm_var), hlt = as.name(hlt), llt = as.name(llt))
       )
     )
@@ -448,7 +448,7 @@ template_events_col_by_grade <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute(
-        expr = anl <- anl %>% group_by(id, arm_var, llt),
+        expr = anl <- anl %>% dplyr::group_by(id, arm_var, llt),
         env = list(id = as.name(id), arm_var = as.name(arm_var), llt = as.name(llt))
       )
     )
@@ -457,13 +457,13 @@ template_events_col_by_grade <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = summarize(MAXAETOXGR = factor(max(as.numeric(grade)))),
+      expr = dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(grade)))),
       env = list(grade = as.name(grade))
     )
   )
   data_pipe <- add_expr(
     data_pipe,
-    quote(ungroup())
+    quote(dplyr::ungroup())
   )
   data_pipe <- add_expr(
     data_pipe,

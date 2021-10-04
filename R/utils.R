@@ -40,7 +40,7 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
   )
 
   chunk$push(bquote({
-    counts <- counts %>% mutate(
+    counts <- counts %>% dplyr::mutate(
       .(as.symbol(column)) := paste0(.(as.symbol(column)), " (n = ", .(as.symbol(n_column)), ")")
     )
   }))
@@ -592,7 +592,7 @@ prepare_arm <- function(dataname,
       data_list,
       substitute(
         expr = dataname %>%
-          filter(arm_var %in% arm_val),
+          dplyr::filter(arm_var %in% arm_val),
         env = list(
           dataname = as.name(dataname),
           arm_var = as.name(arm_var),
@@ -606,7 +606,7 @@ prepare_arm <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute_names(
-          expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
         )
@@ -617,7 +617,7 @@ prepare_arm <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
+        expr = dplyr::mutate(arm_var = stats::relevel(arm_var, ref = ref_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(ref_arm_val = ref_arm_val)
       )
@@ -637,7 +637,7 @@ prepare_arm <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = droplevels(arm_var)),
+        expr = dplyr::mutate(arm_var = droplevels(arm_var)),
         names = list(arm_var = as.name(arm_var))
       )
     )
@@ -691,7 +691,7 @@ prepare_arm_levels <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = dataname <- dataname %>% mutate(
+        expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
         names = list(
@@ -717,7 +717,7 @@ prepare_arm_levels <- function(dataname,
       data_list,
       substitute(
         expr = parentname <- parentname %>%
-          filter(arm_var %in% arm_levels),
+          dplyr::filter(arm_var %in% arm_levels),
         env = list(
           parentname = as.name(parentname),
           arm_var = as.name(arm_var)
@@ -728,7 +728,7 @@ prepare_arm_levels <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = parentname <- parentname %>% mutate(
+        expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
         names = list(
@@ -744,7 +744,7 @@ prepare_arm_levels <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = parentname <- parentname %>% mutate(
+        expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
         names = list(
@@ -768,7 +768,7 @@ prepare_arm_levels <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = dataname <- dataname %>% mutate(
+        expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = factor(arm_var, levels = arm_levels)
         ),
         names = list(

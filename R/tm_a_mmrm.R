@@ -64,7 +64,7 @@ if (!is.null(arm_var)) {
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -72,7 +72,7 @@ if (!is.null(arm_var)) {
     parent_list <- add_expr(
       parent_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -1016,8 +1016,8 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
   state_has_changed <- reactive({
     req(state$input)
     displayed_state <- mmrm_inputs_reactive()
-    equal_ADSL <- all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
-    equal_dataname <- all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
+    equal_ADSL <- dplyr::all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+    equal_dataname <- dplyr::all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
     true_means_change <- vapply(
       sync_inputs,
       FUN = function(x) {

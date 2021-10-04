@@ -38,10 +38,10 @@ template_vitals <- function(dataname = "ANL",
     substitute(expr = {
       vitals <-
         dataname %>%
-        group_by(paramcd, xaxis) %>%
-        filter(paramcd %in% paramcd_levels_chars) %>%
-        summarise(AVAL = max(aval, na.rm = T)) %>%
-        mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
+        dplyr::group_by(paramcd, xaxis) %>%
+        dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
+        dplyr::summarise(AVAL = max(aval, na.rm = T)) %>%
+        dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
       max_day <- max(vitals[[xaxis_char]], na.rm = T)
       max_aval <- max(vitals[[aval_char]], na.rm = T)

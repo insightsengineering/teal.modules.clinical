@@ -63,16 +63,16 @@ template_patient_timeline <- function(dataname = "ANL",
 
           if (all(vapply(list(cmtrt_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
             med_chart <- dataname %>%
-              select(dstime_start, dstime_end, cmtrt) %>%
-              distinct()
+              dplyr::select(dstime_start, dstime_end, cmtrt) %>%
+              dplyr::distinct()
 
             colnames(med_chart) <- c("start", "end", "event")
             med_chart$group <- "Medication"
           }
           if (all(vapply(list(aeterm_var, aetime_start_var, aetime_end_var), Negate(is.null), logical(1)))) {
             ae_chart <- dataname %>%
-              select(aetime_start, aetime_end, aeterm) %>%
-              distinct()
+              dplyr::select(aetime_start, aetime_end, aeterm) %>%
+              dplyr::distinct()
             colnames(ae_chart) <- c("start", "end", "event")
             ae_chart$group <- "Adverse Events"
           }
@@ -84,9 +84,9 @@ template_patient_timeline <- function(dataname = "ANL",
 
 
           vistime_data <- vistime_data %>%
-            filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
-            filter(!is.na(format(.data$start))) %>%
-            filter(!is.na(format(.data$end)))
+            dplyr::filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
+            dplyr::filter(!is.na(format(.data$start))) %>%
+            dplyr::filter(!is.na(format(.data$end)))
 
           if (nrow(vistime_data) == 0 || all(is.na(format(c(vistime_data$start, vistime_data$end))))) {
             empty_plot_label <- "Empty Plot (either due to filtering or missing values).\n Consider relaxing filters."

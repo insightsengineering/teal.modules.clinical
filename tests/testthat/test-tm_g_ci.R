@@ -1,6 +1,6 @@
 library(scda)
 adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
-ANL <- adlb %>% filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
+ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
 
 # Test correspond to sections in the TLG catalog.
 test_that("1. and 2. Mean and 95% CIs for mean", {

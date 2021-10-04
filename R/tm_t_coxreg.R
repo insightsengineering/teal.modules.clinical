@@ -14,7 +14,6 @@
 #'  effect should be estimated.
 #'
 #' @importFrom broom tidy
-#' @importFrom stats relevel
 #'
 #' @seealso [tm_t_coxreg()]
 #'
@@ -53,7 +52,7 @@ template_coxreg <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -63,7 +62,7 @@ template_coxreg <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = mutate(event = 1 - cnsr_var),
+      expr = dplyr::mutate(event = 1 - cnsr_var),
       env = list(cnsr_var = as.name(cnsr_var))
     )
   )
@@ -438,7 +437,7 @@ ui_t_coxreg <- function(id, ...) {
           "Separate models for comparison groups with one covariate at a time" = "Univariate",
           "One model with all comparison groups and covariates" = "Multivariate"
         ),
-        selected = if_else(a$multivariate, "Multivariate", "Univariate")
+        selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
