@@ -267,7 +267,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Reponse Categories"),
+        tags$label("Show All Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = a$show_rsp_categories,
