@@ -17,7 +17,6 @@
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
 
 ### Miscellaneous
-* Updated `README.md` with appropriate information for migration to public Github.
 * Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
 * Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
