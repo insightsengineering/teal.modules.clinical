@@ -21,6 +21,7 @@
 ### Miscellaneous
 * Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
+* Changed how the package calls functions from the `dplyr` package. The functions should be now fully specified (e.g. `dplyr::filter`).
 
 # teal.modules.clinical 0.8.9
 ### New features

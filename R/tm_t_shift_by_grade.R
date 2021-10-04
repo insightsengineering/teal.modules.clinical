@@ -51,7 +51,7 @@ template_shift_by_grade <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        filter(worst_flag_var == worst_flag_indicator),
+        dplyr::filter(worst_flag_var == worst_flag_indicator),
       env = list(
         df = as.name(dataname),
         worst_flag_var = as.name(worst_flag_var),
@@ -90,7 +90,7 @@ template_shift_by_grade <- function(parentname,
       )
   )
 
-  by_visit_fl <- if_else(worst_flag_var %in% c("WGRLOVFL", "WGRHIVFL"), TRUE, FALSE)
+  by_visit_fl <- dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRHIVFL"), TRUE, FALSE)
 
   data_list <- add_expr(
     data_list,
@@ -109,53 +109,53 @@ template_shift_by_grade <- function(parentname,
       data_list <- add_expr(
         data_list,
         substitute(
-          dataname <- mutate(dataname,
-                             ATOXGR_GP = factor(case_when(
-                               ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
-                               ATOXGR == -1 ~ "1",
-                               ATOXGR == -2 ~ "2",
-                               ATOXGR == -3 ~ "3",
-                               ATOXGR == -4 ~ "4",
-                               ATOXGR == na_level ~ "Missing"
-                             )),
-                             BTOXGR_GP = factor(case_when(
-                               BTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
-                               BTOXGR == -1 ~ "1",
-                               BTOXGR == -2 ~ "2",
-                               BTOXGR == -3 ~ "3",
-                               BTOXGR == -4 ~ "4",
-                               BTOXGR == na_level ~ "Missing"
-                              ))
-                      ),
-                      env = list(
-                        dataname = as.name("anl"),
-                        ATOXGR = as.name(anl_toxgrade_var),
-                        BTOXGR = as.name(base_toxgrade_var),
-                        na_level = na_level
-                      )
+          dataname <- dplyr::mutate(dataname,
+            ATOXGR_GP = factor(dplyr::case_when(
+              ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
+              ATOXGR == -1 ~ "1",
+              ATOXGR == -2 ~ "2",
+              ATOXGR == -3 ~ "3",
+              ATOXGR == -4 ~ "4",
+              ATOXGR == na_level ~ "Missing"
+            )),
+            BTOXGR_GP = factor(dplyr::case_when(
+              BTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
+              BTOXGR == -1 ~ "1",
+              BTOXGR == -2 ~ "2",
+              BTOXGR == -3 ~ "3",
+              BTOXGR == -4 ~ "4",
+              BTOXGR == na_level ~ "Missing"
+            ))
+          ),
+          env = list(
+            dataname = as.name("anl"),
+            ATOXGR = as.name(anl_toxgrade_var),
+            BTOXGR = as.name(base_toxgrade_var),
+            na_level = na_level
+          )
         )
       )
     } else {
       data_list <- add_expr(
         data_list,
         substitute(
-          dataname <- mutate(dataname,
-                             ATOXGR_GP = factor(case_when(
-                               ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
-                               ATOXGR == 1 ~ "1",
-                               ATOXGR == 2 ~ "2",
-                               ATOXGR == 3 ~ "3",
-                               ATOXGR == 4 ~ "4",
-                               ATOXGR == na_level ~ "Missing"
-                             )),
-                             BTOXGR_GP = factor(case_when(
-                               BTOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
-                               BTOXGR == 1 ~ "1",
-                               BTOXGR == 2 ~ "2",
-                               BTOXGR == 3 ~ "3",
-                               BTOXGR == 4 ~ "4",
-                               BTOXGR == na_level ~ "Missing"
-                               ))
+          dataname <- dplyr::mutate(dataname,
+            ATOXGR_GP = factor(dplyr::case_when(
+              ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
+              ATOXGR == 1 ~ "1",
+              ATOXGR == 2 ~ "2",
+              ATOXGR == 3 ~ "3",
+              ATOXGR == 4 ~ "4",
+              ATOXGR == na_level ~ "Missing"
+            )),
+            BTOXGR_GP = factor(dplyr::case_when(
+              BTOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
+              BTOXGR == 1 ~ "1",
+              BTOXGR == 2 ~ "2",
+              BTOXGR == 3 ~ "3",
+              BTOXGR == 4 ~ "4",
+              BTOXGR == na_level ~ "Missing"
+              ))
           ),
           env = list(
             dataname = as.name("anl"),
@@ -171,22 +171,22 @@ template_shift_by_grade <- function(parentname,
       data_list <- add_expr(
         data_list,
         substitute(
-          dataname <- mutate(dataname,
-                             ATOXGR_GP = factor(case_when(
-                               ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
-                               ATOXGR == -1 ~ "1",
-                               ATOXGR == -2 ~ "2",
-                               ATOXGR == -3 ~ "3",
-                               ATOXGR == -4 ~ "4",
-                               ATOXGR == na_level ~ "Missing"
-                             )),
-                             BTOXGR_GP = factor(case_when(
-                               BTOXGR %in% c(0, 1, 2, 3, 4, na_level) ~ "Not Low",
-                               BTOXGR == -1 ~ "1",
-                               BTOXGR == -2 ~ "2",
-                               BTOXGR == -3 ~ "3",
-                               BTOXGR == -4 ~ "4"
-                               ))
+          dataname <- dplyr::mutate(dataname,
+            ATOXGR_GP = factor(dplyr::case_when(
+              ATOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
+              ATOXGR == -1 ~ "1",
+              ATOXGR == -2 ~ "2",
+              ATOXGR == -3 ~ "3",
+              ATOXGR == -4 ~ "4",
+              ATOXGR == na_level ~ "Missing"
+            )),
+            BTOXGR_GP = factor(dplyr::case_when(
+              BTOXGR %in% c(0, 1, 2, 3, 4, na_level) ~ "Not Low",
+              BTOXGR == -1 ~ "1",
+              BTOXGR == -2 ~ "2",
+              BTOXGR == -3 ~ "3",
+              BTOXGR == -4 ~ "4"
+            ))
           ),
           env = list(
             dataname = as.name("anl"),
@@ -200,22 +200,22 @@ template_shift_by_grade <- function(parentname,
       data_list <- add_expr(
         data_list,
         substitute(
-          dataname <- mutate(dataname,
-                             ATOXGR_GP = factor(case_when(
-                               ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
-                               ATOXGR == 1 ~ "1",
-                               ATOXGR == 2 ~ "2",
-                               ATOXGR == 3 ~ "3",
-                               ATOXGR == 4 ~ "4",
-                               ATOXGR == na_level ~ "Missing"
-                             )),
-                             BTOXGR_GP = factor(case_when(
-                               BTOXGR %in% c(0, -1, -2, -3, -4, na_level) ~ "Not High",
-                               BTOXGR == 1 ~ "1",
-                               BTOXGR == 2 ~ "2",
-                               BTOXGR == 3 ~ "3",
-                               BTOXGR == 4 ~ "4"
-                               ))
+          dataname <- dplyr::mutate(dataname,
+            ATOXGR_GP = factor(dplyr::case_when(
+              ATOXGR %in% c(0, -1, -2, -3, -4) ~ "Not High",
+              ATOXGR == 1 ~ "1",
+              ATOXGR == 2 ~ "2",
+              ATOXGR == 3 ~ "3",
+              ATOXGR == 4 ~ "4",
+              ATOXGR == na_level ~ "Missing"
+            )),
+            BTOXGR_GP = factor(dplyr::case_when(
+              BTOXGR %in% c(0, -1, -2, -3, -4, na_level) ~ "Not High",
+              BTOXGR == 1 ~ "1",
+              BTOXGR == 2 ~ "2",
+              BTOXGR == 3 ~ "3",
+              BTOXGR == 4 ~ "4"
+            ))
           ),
           env = list(
             dataname = as.name("anl"),
@@ -231,20 +231,26 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- mutate(
+      dataname <- dplyr::mutate(
         dataname,
         ATOXGR_GP = factor(
           ATOXGR_GP,
           levels = c(
-            if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
+            dplyr::if_else(
+              worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
             )
           ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
-            if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
-            )
+            dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
+            "1",
+            "2",
+            "3",
+            "4",
+            "Missing"
           )
+        )
       ),
       env = list(
         dataname = as.name("anl"),
@@ -260,7 +266,7 @@ template_shift_by_grade <- function(parentname,
         dataname,
         PARAMCD = var_labels(dataname)[[paramcd]],
         AVISIT = var_labels(dataname)[[visit_var]],
-        ATOXGR_GP = if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
+        ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       ),
       env = list(
