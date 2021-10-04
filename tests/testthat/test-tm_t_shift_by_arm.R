@@ -100,7 +100,7 @@ test_that("template_shift_by_arm generates correct expressions with na.rm being 
     data = quote({
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       adeg <- df_explicit_na(adeg, na_level = "<Missing>") %>%
-        filter(ONTRTFL == "Y")
+        dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
 
