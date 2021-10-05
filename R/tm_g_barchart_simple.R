@@ -660,7 +660,7 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
       dplyr::group_by_at(.(groupby_vars)) %>%
-      dplyr::mutate(.(as.symbol(n_name)) := n()) %>%
+      dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
       dplyr::ungroup()
   }))
 }
