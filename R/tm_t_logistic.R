@@ -60,7 +60,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -70,7 +70,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(Response = aval_var %in% responder_val),
+      expr = dplyr::mutate(Response = aval_var %in% responder_val),
       env = list(aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )

@@ -51,7 +51,7 @@ template_shift_by_arm <- function(dataname,
     data_list,
     substitute(
       expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
-        filter(treatment_flag_var == treatment_flag),
+        dplyr::filter(treatment_flag_var == treatment_flag),
       env = list(
         dataname = as.name(dataname),
         na_level = na_level,

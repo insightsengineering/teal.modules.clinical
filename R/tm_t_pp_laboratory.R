@@ -38,24 +38,24 @@ template_laboratory <- function(dataname = "ANL",
     substitute({
       dataname[, aval_char] <- round(dataname[, aval_char], round_value)
       labor_table_base <- dataname %>%
-        select(timepoints, paramcd, param, aval, avalu, anrind) %>%
-        arrange(timepoints) %>%
-        select(-timepoints) %>%
-        group_by(paramcd, param) %>%
-        mutate(INDEX = row_number()) %>%
-        ungroup() %>%
-        mutate(aval_anrind = paste(aval, anrind)) %>%
-        select(-c(aval, anrind))
+        dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
+        dplyr::arrange(timepoints) %>%
+        dplyr::select(-timepoints) %>%
+        dplyr::group_by(paramcd, param) %>%
+        dplyr::mutate(INDEX = dplyr::row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
+        dplyr::select(-c(aval, anrind))
 
       labor_table_html <- labor_table_base %>%
-        mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
-        select(-aval_anrind) %>%
+        dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
+        dplyr::select(-aval_anrind) %>%
         tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
-        mutate(param_char := clean_description(.data[[param_char]]))
+        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
       labor_table_raw <- labor_table_base %>%
         tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
-        mutate(param_char := clean_description(.data[[param_char]]))
+        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
       labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
       labor_table_html_dt$dependencies <- c(
@@ -322,7 +322,7 @@ srv_g_laboratory <- function(input,
     session,
     "round_value",
     choices = seq(0, max_decimal),
-    selected = max_decimal
+    selected = min(4, max_decimal)
   )
 
   # Laboratory values tab ----

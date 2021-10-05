@@ -13,10 +13,10 @@ test_that("template_events_patyear generates standard expressions", {
   expected <- list(
     data = quote({
       anl <- adaette
-      anl <- anl %>% mutate(ARMCD = droplevels(ARMCD))
+      anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
-      adsl <- adsl %>% filter(ARMCD %in% arm_levels)
-      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+      adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       anl <- df_explicit_na(anl, na_level = "")
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
@@ -64,9 +64,9 @@ test_that("template_events_patyear generates right expressions with non-default"
   expected <- list(
     data = quote({
       anl <- adaette
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
-      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
       anl <- df_explicit_na(anl, na_level = "")
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
@@ -118,10 +118,10 @@ test_that("template_events_patyear generates right expressions with non-default 
   expected <- list(
     data = quote({
       anl <- adaette
-      anl <- anl %>% mutate(ARMCD = droplevels(ARMCD))
+      anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
-      adsl <- adsl %>% filter(ARMCD %in% arm_levels)
-      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+      adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       anl <- df_explicit_na(anl, na_level = "")
       adsl <- df_explicit_na(adsl, na_level = "")
     }),

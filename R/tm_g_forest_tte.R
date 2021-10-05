@@ -49,8 +49,8 @@ template_forest_tte <- function(dataname = "ANL",
     anl_list,
     substitute_names(
       expr = {
-        mutate(arm_var = combine_levels(arm_var, comp_arm)) %>%
-          mutate(is_event = cnsr_var == 0)
+        dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)) %>%
+          dplyr::mutate(is_event = cnsr_var == 0)
       },
       names = list(arm_var = as.name(arm_var)),
       others = list(
@@ -84,7 +84,7 @@ template_forest_tte <- function(dataname = "ANL",
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = mutate(arm_var = combine_levels(arm_var, comp_arm)),
+      expr = dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(
         ref_arm = ref_arm,

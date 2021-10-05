@@ -16,12 +16,12 @@ test_that("template_smq generates correct expressions with default arguments", {
   expected <- list(
     data = quote({
       anl <- adae
-      adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+      adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(adsl[["ARMCD"]])
-      anl <- anl %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
-      adsl <- adsl %>% mutate(SEX = droplevels(SEX))
+      anl <- anl %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
+      adsl <- adsl %>% dplyr::mutate(SEX = droplevels(SEX))
       arm_levels <- levels(adsl[["SEX"]])
-      anl <- anl %>% mutate(SEX = factor(SEX, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(SEX = factor(SEX, levels = arm_levels))
       anl <- h_stack_by_baskets(
         df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
         smq_varlabel = "Standardized MedDRA Query",
@@ -89,9 +89,9 @@ test_that("template_smq generates correct expressions with custom arguments", {
   expected <- list(
     data = quote({
       anl <- myadae
-      myadsl <- myadsl %>% mutate(myARMCD = droplevels(myARMCD))
+      myadsl <- myadsl %>% dplyr::mutate(myARMCD = droplevels(myARMCD))
       arm_levels <- levels(myadsl[["myARMCD"]])
-      anl <- anl %>% mutate(myARMCD = factor(myARMCD, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(myARMCD = factor(myARMCD, levels = arm_levels))
       anl <- h_stack_by_baskets(
         df = anl, baskets = "mybaskets",
         smq_varlabel = "mylabel",

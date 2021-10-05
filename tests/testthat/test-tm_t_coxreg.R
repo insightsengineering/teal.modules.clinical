@@ -22,10 +22,10 @@ test_that("template_coxreg generates correct univariate cox regression expressio
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(event = 1 - CNSR) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(event = 1 - CNSR) %>%
         df_explicit_na(na_level = "")
       variables <- list(time = "AVAL", event = "event", arm = "ARMCD", covariates = NULL)
       variables$strata <- "STRATA1"
@@ -83,10 +83,10 @@ test_that("template_coxreg generates correct univariate cox regression expressio
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(event = 1 - CNSR) %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(event = 1 - CNSR) %>%
         df_explicit_na(na_level = "")
       variables <- list(time = "AVAL", event = "event", arm = "ARMCD", covariates = NULL)
       variables$strata <- "STRATA1"
@@ -136,11 +136,11 @@ test_that("template_coxreg generates correct multivariate cox regression express
   expected <- list(
     data = quote({
       anl <- adrs %>%
-        filter(ARM %in% c("A: Drug X", "B: Placebo", "C: Combination")) %>%
-        mutate(ARM = relevel(ARM, ref = "A: Drug X")) %>%
-        mutate(ARM = droplevels(ARM)) %>%
-        mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", "C: Combination"))) %>%
-        mutate(event = 1 - CNSR) %>%
+        dplyr::filter(ARM %in% c("A: Drug X", "B: Placebo", "C: Combination")) %>%
+        dplyr::mutate(ARM = stats::relevel(ARM, ref = "A: Drug X")) %>%
+        dplyr::mutate(ARM = droplevels(ARM)) %>%
+        dplyr::mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", "C: Combination"))) %>%
+        dplyr::mutate(event = 1 - CNSR) %>%
         df_explicit_na(na_level = "")
       variables <- list(time = "AVAL", event = "event", arm = "ARM", covariates = c("AGE", "SEX"))
       model <- fit_coxreg_multivar(
