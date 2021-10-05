@@ -10,8 +10,7 @@
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title.
 * `tm_t_events` now can display layouts with two nested column as treatment variables. The same pruning and sorting options can be applied.
 * Previously package helper functions were never exported. These functions have now been exported so they can be utilized.
-* `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
-* `tm_t_events_by_grade` now can prune the adverse event by grade when `col_by_grade` is FALSE.
+* `tm_t_events_by_grade` now can display grading groups in nested columns with `col_by_grade` option. In addition, module now supports pruning and sorting options similar to `tm_t_events`.
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
 * Updated `tm_t_events_by_grade` validation check to use grades as columns when missing grade values are present.
