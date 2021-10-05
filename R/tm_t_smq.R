@@ -277,6 +277,7 @@ template_smq <- function(
         !is(tr, "ContentRow")  && all_zero_or_na(tr)
       }
       pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result
     }
   )
 
