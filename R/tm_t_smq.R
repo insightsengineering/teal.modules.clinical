@@ -261,8 +261,8 @@ template_smq <- function(
     y$sort <- substitute(
     expr = {
       sorted_result <- result %>%
-          sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+        sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+        sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
     },
     env = list(llt = llt)
     )} else {
