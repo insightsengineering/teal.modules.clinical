@@ -12,10 +12,10 @@ test_that("template_events generates correct expressions", {
   expected <- list(
     data = quote({
       anl <- adae
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
@@ -87,14 +87,14 @@ test_that("template_events generates correct expressions for nested columns", {
   expected <- list(
     data = quote({
       anl <- adae
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
-      anl <- anl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
       arm_levels <- levels(anl[["ACTARMCD"]])
-      adsl <- adsl %>% filter(ACTARMCD %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- adsl %>% dplyr::filter(ACTARMCD %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
@@ -168,9 +168,9 @@ test_that("template_events can generate customized table", {
   expected <- list(
     data = quote({
       anl <- adcm
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(adsl[["ACTARM"]])
-      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ACTARM = factor(ACTARM, levels = arm_levels))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), "CMDECOD")
@@ -220,10 +220,10 @@ test_that("template_events can generate customized table with alphabetical sorti
   expected <- list(
     data = quote({
       anl <- adae
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% dplyr::mutate(AEBODSYS = as.character(AEBODSYS))
       anl <- anl %>% dplyr::mutate(AEDECOD = as.character(AEDECOD))
@@ -292,10 +292,10 @@ test_that("template_events can generate customized table with pruning", {
   expected <- list(
     data = quote({
       anl <- adae
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
@@ -378,14 +378,14 @@ test_that("template_events can generate customized table with pruning for nested
   expected <- list(
     data = quote({
       anl <- adae
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
-      anl <- anl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
       arm_levels <- levels(anl[["ACTARMCD"]])
-      adsl <- adsl %>% filter(ACTARMCD %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARMCD = droplevels(ACTARMCD))
+      adsl <- adsl %>% dplyr::filter(ACTARMCD %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
       adsl <- df_explicit_na(adsl, na_level = "")
       anl <- anl %>% df_explicit_na(
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))

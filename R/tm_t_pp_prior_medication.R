@@ -29,10 +29,10 @@ template_prior_medication <- function(dataname = "ANL",
     substitute(expr = {
       result <-
         dataname %>%
-        filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
-        select(cmindc, cmdecod, cmstdy) %>%
-        filter(!is.na(cmdecod)) %>%
-        distinct() %>%
+        dplyr::filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
+        dplyr::select(cmindc, cmdecod, cmstdy) %>%
+        dplyr::filter(!is.na(cmdecod)) %>%
+        dplyr::distinct() %>%
         `colnames<-`(get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char, cmstdy_char)])
       result
     }, env = list(

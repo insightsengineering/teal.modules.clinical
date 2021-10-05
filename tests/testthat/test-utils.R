@@ -146,9 +146,9 @@ test_that("prepare_arm with standard inputs", {
 
   expected <- quote(
     adrs %>%
-      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-      mutate(ARMCD = droplevels(ARMCD))
+      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
+      dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 
   expect_equal(result, expected)
@@ -164,10 +164,10 @@ test_that("prepare_arm combine ref arms", {
 
   expected <- quote(
     adrs %>%
-      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-      mutate(ARMCD = droplevels(ARMCD))
+      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 
   expect_equal(result, expected)
@@ -184,10 +184,10 @@ test_that("prepare_arm combine ref arms and use new level", {
 
   expected <- quote(
     adrs %>%
-      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "Control")) %>%
-      mutate(ARMCD = relevel(ARMCD, ref = "Control")) %>%
-      mutate(ARMCD = droplevels(ARMCD))
+      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "Control")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "Control")) %>%
+      dplyr::mutate(ARMCD = droplevels(ARMCD))
   )
 
   expect_equal(result, expected)
@@ -229,10 +229,10 @@ test_that("prepare_arm_levels with standard inputs", {
   )
 
   expected <- quote({
-    adae <- adae %>% mutate(ARMCD = droplevels(ARMCD))
+    adae <- adae %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
     arm_levels <- levels(adae[["ARMCD"]])
-    adsl <- adsl %>% filter(ARMCD %in% arm_levels)
-    adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+    adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
+    adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
   })
 
   expect_equal(result, expected)
@@ -247,9 +247,9 @@ test_that("prepare_arm_levels can use parentname arm levels", {
   )
 
   expected <- quote({
-    adsl <- adsl %>% mutate(ARMCD = droplevels(ARMCD))
+    adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
     arm_levels <- levels(adsl[["ARMCD"]])
-    adae <- adae %>% mutate(ARMCD = factor(ARMCD, levels = arm_levels))
+    adae <- adae %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
   })
 
   expect_equal(result, expected)

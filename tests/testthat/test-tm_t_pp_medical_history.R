@@ -17,11 +17,11 @@ testthat::test_that("template_medical_history - non-default parameters", {
       labels <- rtables::var_labels(anl)[c("mhbodsys", "mhterm", "mhdistat")]
       mhbodsys_label <- labels["mhbodsys"]
       result <- anl %>%
-        select(mhbodsys, mhterm, mhdistat) %>%
-        arrange(mhbodsys) %>%
-        mutate_if(is.character, as.factor) %>%
-        mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
-        distinct() %>%
+        dplyr::select(mhbodsys, mhterm, mhdistat) %>%
+        dplyr::arrange(mhbodsys) %>%
+        dplyr::mutate_if(is.character, as.factor) %>%
+        dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
+        dplyr::distinct() %>%
         `colnames<-`(labels)
       result_without_mhbodsys <- result[, -1]
       result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
