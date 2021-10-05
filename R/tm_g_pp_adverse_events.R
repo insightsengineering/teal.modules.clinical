@@ -46,10 +46,10 @@ template_adverse_events <- function(dataname = "ANL",
     substitute(
       expr = {
         table <- dataname %>%
-          select(
+          dplyr::select(
             aeterm, tox_grade, causality, outcome, action, time, decod
           ) %>%
-          arrange(desc(tox_grade)) %>%
+          dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(get_labels(dataname)$column_labels[vars])
         table
       },
@@ -71,10 +71,10 @@ template_adverse_events <- function(dataname = "ANL",
     list(),
     substitute(
       expr = chart <- dataname %>%
-        select(aeterm, time, tox_grade, causality) %>%
-        mutate(ATOXGR = as.character(tox_grade)) %>%
-        arrange(desc(ATOXGR)) %>%
-        mutate(ATOXGR = case_when(
+        dplyr::select(aeterm, time, tox_grade, causality) %>%
+        dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
+        dplyr::arrange(dplyr::desc(ATOXGR)) %>%
+        dplyr::mutate(ATOXGR = dplyr::case_when(
           ATOXGR == "." ~ "UNKNOWN",
           TRUE ~ ATOXGR
         )) %>%
@@ -225,7 +225,7 @@ tm_g_pp_adverse_events <- function(label,
                                    decod = NULL,
                                    font_size = c(12L, 12L, 25L),
                                    plot_height = c(700L, 200L, 2000L),
-                                   plot_width = c(900L, 200L, 2000L),
+                                   plot_width = NULL,
                                    pre_output = NULL,
                                    post_output = NULL) {
   assert_that(is_character_single(label))

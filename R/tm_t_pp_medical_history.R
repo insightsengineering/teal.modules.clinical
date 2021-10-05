@@ -29,11 +29,11 @@ template_medical_history <- function(dataname = "ANL",
 
       result <-
         dataname %>%
-        select(mhbodsys, mhterm, mhdistat) %>%
-        arrange(mhbodsys) %>%
-        mutate_if(is.character, as.factor) %>%
-        mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
-        distinct() %>%
+        dplyr::select(mhbodsys, mhterm, mhdistat) %>%
+        dplyr::arrange(mhbodsys) %>%
+        dplyr::mutate_if(is.character, as.factor) %>%
+        dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
+        dplyr::distinct() %>%
         `colnames<-`(labels)
 
       result_without_mhbodsys <- result[, -1]

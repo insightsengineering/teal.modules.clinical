@@ -8,9 +8,9 @@ test_that("template_events_summary generates minimal table", {
   expected <- list(
     data = quote({
       anl <- adae
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
-      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
       anl$tmp_aefl <- "Y"
       anl <- anl %>%
@@ -92,9 +92,9 @@ test_that("template_events_summary generates table with multiple flags", {
   expected <- list(
     data = quote({
       anl <- adae
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
-      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
       anl$tmp_aefl <- "Y"
       anl <- anl %>%

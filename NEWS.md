@@ -13,11 +13,13 @@
 * `tm_t_events_by_grade` now can display grading groups in nested columns with `col_by_grade` option. In addition, module now supports pruning and sorting options similar to `tm_t_events`.
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
+* Updated `tm_t_pp_laboratory` to display 4 decimals by default.
 
 ### Miscellaneous
 * Updated `LICENCE` and `README` with new package references.
 * Added `error_on_lint: TRUE` to `.lintr`.
 * Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
+* Changed how the package calls functions from the `dplyr` package. The functions should be now fully specified (e.g. `dplyr::filter`).
 
 ### Bug fixes
 * Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.

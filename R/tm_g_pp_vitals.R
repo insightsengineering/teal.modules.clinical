@@ -38,10 +38,10 @@ template_vitals <- function(dataname = "ANL",
     substitute(expr = {
       vitals <-
         dataname %>%
-        group_by(paramcd, xaxis) %>%
-        filter(paramcd %in% paramcd_levels_chars) %>%
-        summarise(AVAL = max(aval, na.rm = T)) %>%
-        mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
+        dplyr::group_by(paramcd, xaxis) %>%
+        dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
+        dplyr::summarise(AVAL = max(aval, na.rm = T)) %>%
+        dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
       max_day <- max(vitals[[xaxis_char]], na.rm = T)
       max_aval <- max(vitals[[aval_char]], na.rm = T)
@@ -224,7 +224,7 @@ tm_g_pp_vitals <- function(label,
                            xaxis = NULL,
                            font_size = c(12L, 12L, 25L),
                            plot_height = c(700L, 200L, 2000L),
-                           plot_width = c(900L, 200L, 2000L),
+                           plot_width = NULL,
                            pre_output = NULL,
                            post_output = NULL) {
   assert_that(is_character_single(label))

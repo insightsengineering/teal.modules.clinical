@@ -71,7 +71,7 @@ template_ancova <- function(dataname = "ANL",
     anl_list <- add_expr(
       anl_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -79,7 +79,7 @@ template_ancova <- function(dataname = "ANL",
     parent_list <- add_expr(
       parent_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -168,6 +168,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
   } else {
+
     # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
@@ -180,7 +181,22 @@ template_ancova <- function(dataname = "ANL",
           var_labels = "Unadjusted comparison",
           .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
           table_names = "unadjusted_comparison"
-        ) %>%
+        ),
+        env = list(
+          paramcd_levels = paramcd_levels,
+          aval_var = aval_var,
+          arm_var = arm_var,
+          conf_level = conf_level,
+          dataname = as.name(dataname)
+        )
+      )
+    )
+
+    if (!is_empty(cov_var)) {
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -190,16 +206,18 @@ template_ancova <- function(dataname = "ANL",
             ),
             table_names = "adjusted_comparison"
           ),
-        env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          env = list(
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
         )
       )
-    )
+
+    }
+
   }
 
   y$layout <- substitute(
@@ -524,8 +542,8 @@ srv_ancova <- function(input,
     ))
     # check that for each visit there is at least one record with no missing data
     all_NA_dataset <- anl_m$data() %>% # nolint
-      group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
-      summarize(all_NA = all(is.na(!!sym(input_aval_var))))
+      dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
+      dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
     validate(need(
       !any(all_NA_dataset$all_NA),
       "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
