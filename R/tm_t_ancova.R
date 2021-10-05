@@ -169,8 +169,7 @@ template_ancova <- function(dataname = "ANL",
           )
         )
       )
-    }
-    else {
+    } else {
       layout_list <- add_expr(
         layout_list,
         substitute(
