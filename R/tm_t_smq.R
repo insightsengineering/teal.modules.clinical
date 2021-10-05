@@ -111,6 +111,14 @@ template_smq <- function(
   data_list <- add_expr(
     data_list,
     substitute(
+      anl[[llt]] <- droplevels(anl[[llt]]),
+      env = list(llt = llt)
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
       parentname <- df_explicit_na(
         parentname,
         na_level = na_level),
@@ -122,9 +130,6 @@ template_smq <- function(
   )
 
   y$data <- bracket_expr(data_list)
-
-  # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
 
   # Start layout steps.
   layout_list <- list()
@@ -199,7 +204,6 @@ template_smq <- function(
         child_labels = "visible",
         nested = FALSE,
         indent_mod = -1L,
-        split_fun = split_fun,
         label_pos = "topleft",
         split_label = split_label
       ),
@@ -229,7 +233,7 @@ template_smq <- function(
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(vars = llt),
+      expr = count_occurrences(vars = llt, drop = FALSE),
       env = list(
         llt = llt
         )
@@ -252,29 +256,39 @@ template_smq <- function(
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  if (sort_criteria == "freq_desc") {
-    y$table <- substitute(
+  y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
-        sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-        sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences)
-      result
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
-    env = list(
-      parent = as.name(parentname),
-      llt = llt
-      )
+    env = list(parent = as.name(parentname))
+  )
+
+  if (sort_criteria == "freq_desc") {
+    y$sort <- substitute(
+    expr = {
+      sorted_result <- if (nrow(anl) > 0) {
+        result %>%
+          sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences)
+      } else {
+        result
+      }
+    },
+    env = list(llt = llt)
     )} else {
-      y$table <- substitute(
-        expr = {
-          result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-          result
-        },
-        env = list(
-          parent = as.name(parentname)
-        )
+      y$sort <- quote(
+        sorted_result <- result
       )
     }
+
+  y$sort_and_prune <- quote(
+    expr = {
+      all_zero <- function(tr) {
+        !is(tr, "ContentRow")  && all_zero_or_na(tr)
+      }
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+    }
+  )
 
   y
 
@@ -586,7 +600,7 @@ srv_t_smq <- function(input,
   table <- reactive({
     call_preparation()
     chunks_safe_eval()
-    chunks_get_var("result")
+    chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
