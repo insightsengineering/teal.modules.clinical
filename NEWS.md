@@ -8,7 +8,7 @@
 ### Enhancements
 * Added `tm_g_km` validation check for plot tables font size.
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title.
-* `tm_t_events` now can have nested column as treatment variables, and same pruning and sorting logic remains the same.
+* `tm_t_events` now can display layouts with two nested column as treatment variables. The same pruning and sorting options can be applied.
 * Previously package helper functions were never exported. These functions have now been exported so they can be utilized.
 * `tm_t_events_by_grade` now can display grading groups in nested columns as STREAM template `AET04_PI`.
 * `tm_t_events_by_grade` now can prune the adverse event by grade when `col_by_grade` is FALSE.
