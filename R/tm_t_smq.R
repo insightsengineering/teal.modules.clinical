@@ -111,14 +111,6 @@ template_smq <- function(
   data_list <- add_expr(
     data_list,
     substitute(
-      anl[[llt]] <- droplevels(anl[[llt]]),
-      env = list(llt = llt)
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
       parentname <- df_explicit_na(
         parentname,
         na_level = na_level),
@@ -203,11 +195,13 @@ template_smq <- function(
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
+        split_fun = trim_levels_in_group(llt, drop_outlevs = FALSE),
         indent_mod = -1L,
         label_pos = "topleft",
         split_label = split_label
       ),
       env = list(
+        llt = llt,
         split_label = split_label
        )
     )
@@ -266,13 +260,9 @@ template_smq <- function(
   if (sort_criteria == "freq_desc") {
     y$sort <- substitute(
     expr = {
-      sorted_result <- if (nrow(anl) > 0) {
-        result %>%
+      sorted_result <- result %>%
           sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences)
-      } else {
-        result
-      }
+          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
     },
     env = list(llt = llt)
     )} else {
