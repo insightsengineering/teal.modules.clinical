@@ -518,7 +518,18 @@ srv_t_logistic <- function(input,
 
     # validate covariate has at least two levels
     validate(
-      need(length(unique(anl_m$data()[[input_cov_var]])) > 1, "Covariate needs to have at least two levels")
+      need(
+        all(
+          vapply(
+            anl_m$data()[input_cov_var],
+            FUN = function(x) {
+              length(unique(x)) > 1
+            },
+            TRUE
+          )
+        ),
+        "All covariates need to have at least two levels"
+      )
     )
   })
 
