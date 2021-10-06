@@ -141,7 +141,7 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (length(cov_var) == 0) {
+    if (is_empty(cov_var)) {
       layout_list <- add_expr(
         layout_list,
         substitute(
