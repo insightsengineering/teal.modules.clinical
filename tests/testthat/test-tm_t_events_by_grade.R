@@ -374,6 +374,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -392,6 +393,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -425,6 +427,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -437,6 +440,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -487,6 +491,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -505,6 +510,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -529,6 +535,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -541,6 +548,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -589,6 +597,7 @@ test_that("template_events_col_by_grade without adding total column option works
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -607,6 +616,7 @@ test_that("template_events_col_by_grade without adding total column option works
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -631,6 +641,7 @@ test_that("template_events_col_by_grade without adding total column option works
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -643,6 +654,7 @@ test_that("template_events_col_by_grade without adding total column option works
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -690,6 +702,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -708,6 +721,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -732,6 +746,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -744,6 +759,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
