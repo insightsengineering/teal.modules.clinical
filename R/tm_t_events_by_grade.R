@@ -324,24 +324,6 @@ template_events_by_grade <- function(dataname,
       )
     )
 
-    if (prune_freq > 0 || prune_diff > 0) {
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(
-          criteria_fun <- function(tr) {
-            is(tr, "ContentRow")
-          }
-        )
-      )
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(
-          pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
-        )
-      )
-    }
     sort_list <- add_expr(
       sort_list,
       quote(pruned_and_sorted_result)
