@@ -274,7 +274,7 @@ template_coxreg <- function(dataname,
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
 #'       ),
 #'       cov_var    = choices_selected(
-#'         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
+#'         c("AGE", "BMRKR1", "BMRKR2", "REGION1", "SEX"), c("AGE", "SEX")
 #'       ),
 #'       multivariate = TRUE
 #'     )
@@ -725,7 +725,12 @@ srv_t_coxreg <- function(input,
 
     # validate covariate has at least two levels
     validate(
-      need(length(unique(anl_m$data()[[input_cov_var]])) > 1, "Covariate needs to have at least two levels")
+      need(
+        all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
+          length(unique(x)) > 1
+        }, logical(1))),
+        "All covariate needs to have at least two levels"
+      )
     )
 
     NULL

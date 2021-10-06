@@ -155,7 +155,7 @@ app <- init(
         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
       ),
       cov_var    = choices_selected(
-        c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
+        c("AGE", "BMRKR1", "BMRKR2", "REGION1", "SEX"), c("AGE", "SEX")
       ),
       multivariate = TRUE
     )
