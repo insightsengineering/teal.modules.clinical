@@ -219,7 +219,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
 #'         value_choices(ADRS, "PARAMCD", "PARAM"),
-#'         "BESRSPI"
+#'         "INVET"
 #'       ),
 #'       subgroup_var = choices_selected(
 #'         variable_choices(ADSL, names(ADSL)),
