@@ -269,7 +269,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
       )
     )
   }
