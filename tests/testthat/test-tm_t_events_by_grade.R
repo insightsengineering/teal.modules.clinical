@@ -163,7 +163,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
-      pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -176,10 +176,6 @@ test_that("template_events_by_grade generates standard expressions with pruning 
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
           decreasing = TRUE
         )
-      criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
-      }
-      pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
       pruned_and_sorted_result
     })
   )
