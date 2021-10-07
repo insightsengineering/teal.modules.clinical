@@ -515,7 +515,22 @@ srv_t_logistic <- function(input,
         "If interaction is specified the level should be entered."
       ))
     }
-    NULL
+
+    # validate covariate has at least two levels
+    validate(
+      need(
+        all(
+          vapply(
+            anl_m$data()[input_cov_var],
+            FUN = function(x) {
+              length(unique(x)) > 1
+            },
+            logical(1)
+          )
+        ),
+        "All covariates need to have at least two levels"
+      )
+    )
   })
 
   call_preparation <- reactive({
