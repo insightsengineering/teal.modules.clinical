@@ -662,7 +662,7 @@ srv_t_rsp <- function(input,
         need(length(unique(anl_filtered[input_strata_var])) > 1L,
              "")
         need(length(unique(anl_merged()$data()[[input_strata_var[1]]])) *
-               length(unique(anl_merged()$data()[[input_strata_var[2]]])) > 1L,
+             length(unique(anl_merged()$data()[[input_strata_var[2]]])) > 1L,
              "At least one strata variable must have more than one non-empty level after filtering.")
       }
     )
