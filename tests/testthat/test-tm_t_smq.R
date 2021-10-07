@@ -30,7 +30,6 @@ test_that("template_smq generates correct expressions with default arguments", {
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "ARMCD") %>%
@@ -47,8 +46,8 @@ test_that("template_smq generates correct expressions with default arguments", {
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
+          split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
-          split_fun = split_fun,
           label_pos = "topleft",
           split_label = var_labels(anl)[["SMQ"]]) %>%
         summarize_num_patients(
@@ -58,14 +57,23 @@ test_that("template_smq generates correct expressions with default arguments", {
             unique = "Total number of patients with at least one adverse event",
             nonunique = "Total number of events")
           ) %>%
-        count_occurrences(vars = "AEDECOD") %>%
+        count_occurrences(vars = "AEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "AEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+    }),
+    sort = quote({
+      sorted_result <- result %>%
         sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-        sort_at_path(path = c("SMQ", "*", "AEDECOD"), scorefun = score_occurrences)
-      result
+        sort_at_path(path = c("SMQ", "*", "AEDECOD"), scorefun = score_occurrences, na.pos = "last")
+    }),
+    sort_and_prune = quote({
+      all_zero <- function(tr) {
+        !is(tr, "ContentRow") && all_zero_or_na(tr)
+      }
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result
     })
   )
   expect_equal(result, expected)
@@ -100,7 +108,6 @@ test_that("template_smq generates correct expressions with custom arguments", {
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       myadsl <- df_explicit_na(myadsl, na_level = "<Missing>")
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by(var = "myARMCD") %>%
@@ -116,8 +123,8 @@ test_that("template_smq generates correct expressions with custom arguments", {
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
+          split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
-          split_fun = split_fun,
           label_pos = "topleft",
           split_label = var_labels(anl)[["SMQ"]]) %>%
         summarize_num_patients(
@@ -127,14 +134,23 @@ test_that("template_smq generates correct expressions with custom arguments", {
             unique = "Total number of patients with at least one adverse event",
             nonunique = "Total number of events")
         ) %>%
-        count_occurrences(vars = "myAEDECOD") %>%
+        count_occurrences(vars = "myAEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "myAEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl) %>%
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+    }),
+    sort = quote({
+      sorted_result <- result %>%
         sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-        sort_at_path(path = c("SMQ", "*", "myAEDECOD"), scorefun = score_occurrences)
-      result
+        sort_at_path(path = c("SMQ", "*", "myAEDECOD"), scorefun = score_occurrences, na.pos = "last")
+    }),
+    sort_and_prune = quote({
+      all_zero <- function(tr) {
+        !is(tr, "ContentRow") && all_zero_or_na(tr)
+      }
+      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result
     })
   )
   expect_equal(result, expected)
