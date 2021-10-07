@@ -394,7 +394,8 @@ srv_t_binary_outcome <- function(input,
       if (length(input_strata_var) > 1L) {
         need(length(unique(anl_filtered[input_strata_var])) > 1L,
              "")
-        need(length(unique(anl_merged()$data()[[input_strata_var[1]]])) * length(unique(anl_merged()$data()[[input_strata_var[2]]])) > 1L,
+        need(length(unique(anl_merged()$data()[[input_strata_var[1]]])) *
+               length(unique(anl_merged()$data()[[input_strata_var[2]]])) > 1L,
              "At least one strata variable must have more than one non-empty level after filtering.")
       }
     )
@@ -403,8 +404,12 @@ srv_t_binary_outcome <- function(input,
       if (length(input_strata_var) > 1L) {
         need(length(unique(anl_filtered[input_strata_var])) > 1L,
              "")
-        need(sum(summary(anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]) > 0) > 1L,
-             "After filtering at least one combination of strata variable levels has too few observations to calculate the odds ratio.")
+        need(
+          sum(summary(
+            anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
+            ) > 0) > 1L,
+            "After filtering at least one combination of strata variable levels
+            has too few observations to calculate the odds ratio.")
       }
     )
 

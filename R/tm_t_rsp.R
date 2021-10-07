@@ -672,8 +672,11 @@ srv_t_rsp <- function(input,
         need(length(unique(anl_filtered[input_strata_var])) > 1L,
              "")
         need(
-          sum(summary(anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]) > 0) > 1L,
-             "After filtering at least one combination of strata variable levels has too few observations to calculate the odds ratio.")
+          sum(summary(
+            anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
+            ) > 0) > 1L,
+            "After filtering at least one combination of strata variable levels
+            has too few observations to calculate the odds ratio.")
       }
     )
 
