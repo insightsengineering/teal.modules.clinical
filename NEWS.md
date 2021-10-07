@@ -6,6 +6,7 @@
 * New module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
 
 ### Enhancements
+* Added validation checks to `tm_t_rsp` and `tm_t_binary_outcome` for stratification errors when filters are applied.
 * Added `tm_g_km` validation check for plot tables font size.
 * Enhanced `tm_g_km` to add the selected `paramcd` in the plot title.
 * `tm_t_events` now can display layouts with two nested column as treatment variables. The same pruning and sorting options can be applied.
