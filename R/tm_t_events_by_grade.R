@@ -269,7 +269,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -324,24 +324,6 @@ template_events_by_grade <- function(dataname,
       )
     )
 
-    if (prune_freq > 0 || prune_diff > 0) {
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(
-          criteria_fun <- function(tr) {
-            is(tr, "ContentRow")
-          }
-        )
-      )
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(
-          pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
-        )
-      )
-    }
     sort_list <- add_expr(
       sort_list,
       quote(pruned_and_sorted_result)
