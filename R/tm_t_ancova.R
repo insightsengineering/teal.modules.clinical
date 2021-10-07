@@ -141,15 +141,44 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        split_rows_by(
-          paramcd_var,
-          split_fun = split_fun,
-          label_pos = "topleft",
-          split_label = var_labels(dataname[paramcd_var], fill = TRUE)
-        ) %>%
+    if (is_empty(cov_var)) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          split_rows_by(
+            paramcd_var,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+          ) %>%
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = "Unadjusted mean",
+            show_labels = "hidden",
+            .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+          ),
+          env = list(
+            paramcd_var = paramcd_var,
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
+        )
+      )
+    } else {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          split_rows_by(
+            paramcd_var,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+          ) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -157,16 +186,17 @@ template_ancova <- function(dataname = "ANL",
             var_labels = "Adjusted mean",
             show_labels = "hidden"
           ),
-        env = list(
-          paramcd_var = paramcd_var,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          env = list(
+            paramcd_var = paramcd_var,
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
         )
       )
-    )
+    }
   } else {
 
     # Only one entry in `paramcd_levels` here.
@@ -215,9 +245,7 @@ template_ancova <- function(dataname = "ANL",
           )
         )
       )
-
     }
-
   }
 
   y$layout <- substitute(
@@ -342,12 +370,12 @@ tm_t_ancova <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   args <- c(as.list(environment()))
 
@@ -561,8 +589,7 @@ srv_ancova <- function(input,
     validate(need(
       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
       "`Select Endpoint` is not selected."
-    )
-  )
+    ))
 
     if (length(input_cov_var >= 1L)) {
       input_cov_var_dataset <- anl_filtered[input_cov_var]
