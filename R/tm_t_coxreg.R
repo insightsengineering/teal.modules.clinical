@@ -274,7 +274,7 @@ template_coxreg <- function(dataname,
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
 #'       ),
 #'       cov_var    = choices_selected(
-#'         c("AGE", "BMRKR1", "BMRKR2", "REGION1", "SEX"), c("AGE", "SEX")
+#'         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
 #'       ),
 #'       multivariate = TRUE
 #'     )
