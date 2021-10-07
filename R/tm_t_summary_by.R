@@ -82,8 +82,8 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      parentname <- df_explicit_na(parentname, na_level = na_level),
+      env = list(parentname = as.name(parentname), na_level = na_level))
   )
 
   y$data <- bracket_expr(data_list)
@@ -278,7 +278,13 @@ template_summary_by <- function(parentname,
   if (drop_zero_levels) {
     y$table <- substitute(
       expr = {
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows()
+        all_zero <- function(tr) {
+          if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+            return(FALSE)
+          rvs <- unlist(unname(row_values(tr)))
+          all(rvs == 0)
+        }
+        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows(criteria = all_zero)
         result
       },
       env = list(parent = as.name(parentname))

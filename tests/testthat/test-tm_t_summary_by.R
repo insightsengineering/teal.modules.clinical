@@ -20,11 +20,11 @@ test_that("template_summary_by generates correct expressions", {
           omit_columns = setdiff(names(adlb), c("AVISIT", "AVAL")),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -76,10 +76,10 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
           omit_columns = setdiff(names(adlb), c("AVISIT", c("AVAL", "CHG"))),
           na_level = "<Missing>"
         )
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
-      anl <- anl %>% mutate(ARM = factor(ARM, levels = arm_levels))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -136,11 +136,11 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
           omit_columns = setdiff(names(adsl), c(c("SEX", "COUNTRY"), "AVAL")),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout_cfun = quote(
@@ -202,11 +202,11 @@ test_that("template_summary_by generates correct expressions for customized nume
           omit_columns = setdiff(names(adlb), c("AVISIT", "AVAL")),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -257,11 +257,11 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
           omit_columns = setdiff(names(adlb), c("AVISIT", "AVAL")),
           na_level = "<Missing>"
         )
-      anl <- anl %>% mutate(ARM = droplevels(ARM))
+      anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
-      adsl <- adsl %>% filter(ARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ARM = droplevels(ARM))
-      adsl <- df_explicit_na(adsl, na_level = "")
+      adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -283,7 +283,14 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% trim_rows()
+      all_zero <- function(tr) {
+        if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+          return(FALSE)
+        rvs <- unlist(unname(row_values(tr)))
+        all(rvs == 0)
+      }
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        trim_rows(criteria = all_zero)
       result
     })
   )

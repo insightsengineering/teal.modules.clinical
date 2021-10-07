@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Date: 2021-07-07
-Version: 0.8.9.9000
+Date: 2021-10-13
+Version: 0.8.10
 Authors@R: c(
   person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre")),
   person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = "aut"),
@@ -16,17 +16,18 @@ Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encodings within teal.
 Depends:
   R (>= 3.3),
-  dplyr,
-  shiny,
   ggplot2,
-  teal (>= 0.9.5),
-  tern (>= 0.7.4)
+  shiny,
+  teal (>= 0.10.0),
+  tern (>= 0.7.5)
 Imports:
   assertthat,
   broom,
+  dplyr,
   grid,
   magrittr,
   methods,
+  rlang,
   rmarkdown,
   rtables (>= 0.3.8),
   scales,
@@ -34,9 +35,9 @@ Imports:
   shinyWidgets,
   stats,
   styler,
-  teal.devel (>= 0.2.11),
+  teal.devel (>= 0.2.12),
   utils,
-  utils.nest (>= 0.2.9),
+  utils.nest (>= 0.2.11),
   DT,
   tidyr,
   vistime,
@@ -44,9 +45,9 @@ Imports:
   kableExtra
 Suggests:
   knitr,
-  scda(>= 0.1.0),
-  scda.2021(>= 0.1.0),
-  test.nest (>= 0.2.9),
+  scda(>= 0.1.1),
+  scda.2021(>= 0.1.1),
+  test.nest (>= 0.2.11),
   testthat (>= 2.0)
 License: Apache License 2.0 | file LICENSE
 Encoding: UTF-8

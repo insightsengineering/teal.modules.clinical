@@ -13,8 +13,8 @@ tm_t_events_by_grade(
   hlt,
   llt,
   grade,
-  grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 3-4 (\%)`
-    = c("3", "4"), `Grade 5 (\%)` = "5"),
+  grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 1-2 (\%)`
+    = c("1", "2"), `Grade 3-4 (\%)` = c("3", "4"), `Grade 5 (\%)` = "5"),
   col_by_grade = FALSE,
   prune_freq = 0,
   prune_diff = 0,

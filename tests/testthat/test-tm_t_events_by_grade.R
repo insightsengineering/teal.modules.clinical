@@ -13,10 +13,10 @@ test_that("template_events_by_grade generates standard expressions", {
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adae <- df_explicit_na(adae)
       anl <- df_explicit_na(anl)
       adsl <- df_explicit_na(adsl)
@@ -105,10 +105,10 @@ test_that("template_events_by_grade generates standard expressions with pruning 
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adae <- df_explicit_na(adae)
       anl <- df_explicit_na(anl)
       adsl <- df_explicit_na(adsl)
@@ -202,9 +202,9 @@ test_that("template_events_by_grade without adding total column option works as 
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(adsl[["ACTARM"]])
-      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ACTARM = factor(ACTARM, levels = arm_levels))
       adae <- df_explicit_na(adae)
       anl <- df_explicit_na(anl)
       adsl <- df_explicit_na(adsl)
@@ -292,10 +292,10 @@ test_that("template_events_by_grade with hlt only works", {
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adae <- df_explicit_na(adae)
       anl <- df_explicit_na(anl)
       adsl <- df_explicit_na(adsl)
@@ -365,24 +365,25 @@ test_that("template_events_col_by_grade generates standard expressions", {
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       col_counts <- rep(
         c(table(adsl[["ACTARM"]]), nrow(adsl)),
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
         )
       )
       anl <- anl %>%
-        group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
-        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::group_by(USUBJID, ACTARM, AEBODSYS, AEDECOD) %>%
+        dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -392,6 +393,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -425,6 +427,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -437,6 +440,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -478,24 +482,25 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       col_counts <- rep(
         c(table(adsl[["ACTARM"]]), nrow(adsl)),
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
         )
       )
       anl <- anl %>%
-        group_by(USUBJID, ACTARM, AEDECOD) %>%
-        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
+        dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -505,6 +510,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -529,6 +535,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -541,6 +548,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -580,24 +588,25 @@ test_that("template_events_col_by_grade without adding total column option works
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      anl <- anl %>% mutate(ACTARM = droplevels(ACTARM))
+      anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
-      adsl <- adsl %>% filter(ACTARM %in% arm_levels)
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       col_counts <- rep(
         table(adsl[["ACTARM"]]),
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
         )
       )
       anl <- anl %>%
-        group_by(USUBJID, ACTARM, AEDECOD) %>%
-        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
+        dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -607,6 +616,7 @@ test_that("template_events_col_by_grade without adding total column option works
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -631,6 +641,7 @@ test_that("template_events_col_by_grade without adding total column option works
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -643,6 +654,7 @@ test_that("template_events_col_by_grade without adding total column option works
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -682,23 +694,24 @@ test_that("template_events_col_by_grade without dropping arm levels option works
   expected <- list(
     data = quote({
       anl <- adae # nolintr
-      adsl <- adsl %>% mutate(ACTARM = droplevels(ACTARM))
+      adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(adsl[["ACTARM"]])
-      anl <- anl %>% mutate(ACTARM = factor(ACTARM, levels = arm_levels))
+      anl <- anl %>% dplyr::mutate(ACTARM = factor(ACTARM, levels = arm_levels))
       col_counts <- rep(
         table(adsl[["ACTARM"]]),
         each = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
         )
       )
       anl <- anl %>%
-        group_by(USUBJID, ACTARM, AEDECOD) %>%
-        summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
-        ungroup() %>%
+        dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>%
+        dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>%
+        dplyr::ungroup() %>%
         df_explicit_na()
     }),
     layout = quote(
@@ -708,6 +721,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
           "MAXAETOXGR",
           groups = list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )
@@ -732,6 +746,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
       lengths <- lapply(
         list(
           "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+          "Grade 1-2 (%)" = c("1", "2"),
           "Grade 3-4 (%)" = c("3", "4"),
           "Grade 5 (%)" = "5"
         ),
@@ -744,6 +759,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
         by = length(
           list(
             "Any Grade (%)" = c("1", "2", "3", "4", "5"),
+            "Grade 1-2 (%)" = c("1", "2"),
             "Grade 3-4 (%)" = c("3", "4"),
             "Grade 5 (%)" = "5"
           )

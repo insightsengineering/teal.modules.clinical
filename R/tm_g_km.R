@@ -64,7 +64,7 @@ template_g_km <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(
+      expr = dplyr::mutate(
         is_event = cnsr_var == 0
       ),
       env = list(
@@ -79,7 +79,7 @@ template_g_km <- function(dataname = "ANL",
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
       )
@@ -676,6 +676,9 @@ srv_g_km <- function(input,
 
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+
+    # validate font size
+    validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
 
     NULL
   })

@@ -56,7 +56,7 @@ template_forest_rsp <- function(dataname = "ANL",
   anl_list <- add_expr(
     anl_list,
     substitute(
-      expr = mutate(is_rsp = aval_var %in% responders),
+      expr = dplyr::mutate(is_rsp = aval_var %in% responders),
       env = list(
         aval_var = as.name(aval_var),
         responders = responders
@@ -67,7 +67,7 @@ template_forest_rsp <- function(dataname = "ANL",
   anl_list <- add_expr(
     anl_list,
     substitute_names(
-      expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
     )
@@ -98,7 +98,7 @@ template_forest_rsp <- function(dataname = "ANL",
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
     )

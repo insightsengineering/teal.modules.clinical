@@ -71,7 +71,7 @@ template_ancova <- function(dataname = "ANL",
     anl_list <- add_expr(
       anl_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -79,7 +79,7 @@ template_ancova <- function(dataname = "ANL",
     parent_list <- add_expr(
       parent_list,
       substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -141,15 +141,44 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        split_rows_by(
-          paramcd_var,
-          split_fun = split_fun,
-          label_pos = "topleft",
-          split_label = var_labels(dataname[paramcd_var], fill = TRUE)
-        ) %>%
+    if (is_empty(cov_var)) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          split_rows_by(
+            paramcd_var,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+          ) %>%
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = "Unadjusted mean",
+            show_labels = "hidden",
+            .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+          ),
+          env = list(
+            paramcd_var = paramcd_var,
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
+        )
+      )
+    } else {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          split_rows_by(
+            paramcd_var,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+          ) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -157,17 +186,19 @@ template_ancova <- function(dataname = "ANL",
             var_labels = "Adjusted mean",
             show_labels = "hidden"
           ),
-        env = list(
-          paramcd_var = paramcd_var,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          env = list(
+            paramcd_var = paramcd_var,
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
         )
       )
-    )
+    }
   } else {
+
     # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
@@ -180,7 +211,22 @@ template_ancova <- function(dataname = "ANL",
           var_labels = "Unadjusted comparison",
           .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
           table_names = "unadjusted_comparison"
-        ) %>%
+        ),
+        env = list(
+          paramcd_levels = paramcd_levels,
+          aval_var = aval_var,
+          arm_var = arm_var,
+          conf_level = conf_level,
+          dataname = as.name(dataname)
+        )
+      )
+    )
+
+    if (!is_empty(cov_var)) {
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
@@ -190,16 +236,16 @@ template_ancova <- function(dataname = "ANL",
             ),
             table_names = "adjusted_comparison"
           ),
-        env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          env = list(
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
         )
       )
-    )
+    }
   }
 
   y$layout <- substitute(
@@ -324,12 +370,12 @@ tm_t_ancova <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   args <- c(as.list(environment()))
 
@@ -524,8 +570,8 @@ srv_ancova <- function(input,
     ))
     # check that for each visit there is at least one record with no missing data
     all_NA_dataset <- anl_m$data() %>% # nolint
-      group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
-      summarize(all_NA = all(is.na(!!sym(input_aval_var))))
+      dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
+      dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
     validate(need(
       !any(all_NA_dataset$all_NA),
       "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
@@ -543,8 +589,7 @@ srv_ancova <- function(input,
     validate(need(
       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
       "`Select Endpoint` is not selected."
-    )
-  )
+    ))
 
     if (length(input_cov_var >= 1L)) {
       input_cov_var_dataset <- anl_filtered[input_cov_var]

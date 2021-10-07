@@ -21,7 +21,7 @@ tm_g_pp_therapy(
   cmendy = NULL,
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
-  plot_width = c(900L, 200L, 2000L),
+  plot_width = NULL,
   pre_output = NULL,
   post_output = NULL
 )

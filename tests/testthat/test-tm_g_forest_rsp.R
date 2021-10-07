@@ -16,17 +16,17 @@ test_that("template_forest_rsp generates correct expressions", {
   expected <- list(
     data = quote({
       adrs <- adrs %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
         )
       parent <- adsl %>%
-        filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-        mutate(ARMCD = relevel(ARMCD, ref = "ARM A")) %>%
-        mutate(ARMCD = droplevels(ARMCD)) %>%
-        mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
         )
     }),
     summary = quote({

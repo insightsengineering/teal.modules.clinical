@@ -351,10 +351,10 @@ srv_g_barchart_simple <- function(input,
     chunk$push(bquote({
       attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
       counts <- counts %>%
-        group_by_at(.(as.vector(groupby_vars))) %>%
-        slice(1) %>%
-        ungroup() %>%
-        select(.(as.vector(groupby_vars)), starts_with("n_"))
+        dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+        dplyr::slice(1) %>%
+        dplyr::ungroup() %>%
+        dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
     }))
 
     # dplyr::select loses labels
@@ -659,8 +659,8 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
   n_name <- if_null(n_name, get_n_name(groupby_vars))
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
-      group_by_at(.(groupby_vars)) %>%
-      mutate(.(as.symbol(n_name)) := n()) %>%
-      ungroup()
+      dplyr::group_by_at(.(groupby_vars)) %>%
+      dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
+      dplyr::ungroup()
   }))
 }

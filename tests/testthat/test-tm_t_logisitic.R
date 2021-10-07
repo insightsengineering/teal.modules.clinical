@@ -18,11 +18,11 @@ test_that("template_logistic generates correct expressions", {
     arm_lab = quote(arm_var_lab <- var_labels(ANL["ARMCD"])),
     data = quote(
     anl <- ANL %>%
-      filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      mutate(ARMCD = relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-      mutate(ARMCD = droplevels(ARMCD)) %>%
-      mutate(Response = AVALC %in% c("CR", "PR")) %>%
+      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+      dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+      dplyr::mutate(Response = AVALC %in% c("CR", "PR")) %>%
       df_explicit_na(na_level = "")
     ),
     relabel = quote(rtables::var_labels(anl["ARMCD"]) <- arm_var_lab),
