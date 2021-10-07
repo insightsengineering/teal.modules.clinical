@@ -650,27 +650,40 @@ srv_t_rsp <- function(input,
 
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty"),
-      if (length(input_strata_var) == 1L && input$compare_arms) {
-        need(length(unique(anl_merged()$data()[[input_strata_var]])) > 1L,
-             "Strata variable must have more than one non-empty level after filtering.")
-        }
-      )
+      need(input$responders, "`Responders` field is empty")
+    )
 
     validate(
-      if (length(input_strata_var) > 1L) {
-        need(length(unique(anl_filtered[input_strata_var])) > 1L,
-             "")
-        need(length(unique(anl_merged()$data()[[input_strata_var[1]]])) *
-             length(unique(anl_merged()$data()[[input_strata_var[2]]])) > 1L,
-             "At least one strata variable must have more than one non-empty level after filtering.")
+      if (length(input_strata_var) >= 1L) {
+        need(
+          all(
+            vapply(
+              anl_filtered[input_strata_var],
+              FUN = function(x) {
+                length(unique(x)) > 1L
+              },
+              logical(1)
+            )
+          ),
+          ""
+        )
+        need(
+          sum(
+            vapply(
+              anl_m$data()[input_strata_var],
+              FUN = function(x) {
+                length(unique(x)) > 1
+              },
+              logical(1)
+            )
+          ) > 0,
+          "At least one strata variable must have more than one non-empty level after filtering."
+        )
       }
     )
 
     validate(
-      if (length(input_strata_var) > 1L) {
-        need(length(unique(anl_filtered[input_strata_var])) > 1L,
-             "")
+      if (length(input_strata_var) >= 1L) {
         need(
           sum(summary(
             anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
