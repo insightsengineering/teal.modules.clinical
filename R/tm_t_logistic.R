@@ -525,7 +525,7 @@ srv_t_logistic <- function(input,
             FUN = function(x) {
               length(unique(x)) > 1
             },
-            TRUE
+            logical(1)
           )
         ),
         "All covariates need to have at least two levels"
