@@ -723,6 +723,16 @@ srv_t_coxreg <- function(input,
     validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
+    # validate covariate has at least two levels
+    validate(
+      need(
+        all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
+          length(unique(x)) > 1
+        }, logical(1))),
+        "All covariate needs to have at least two levels"
+      )
+    )
+
     NULL
   })
 
