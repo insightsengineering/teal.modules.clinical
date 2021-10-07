@@ -656,18 +656,6 @@ srv_t_rsp <- function(input,
     validate(
       if (length(input_strata_var) >= 1L) {
         need(
-          all(
-            vapply(
-              anl_filtered[input_strata_var],
-              FUN = function(x) {
-                length(unique(x)) > 1L
-              },
-              logical(1)
-            )
-          ),
-          ""
-        )
-        need(
           sum(
             vapply(
               anl_m$data()[input_strata_var],
