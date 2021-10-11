@@ -5,6 +5,10 @@
 * New module `tm_t_exposure` was added for the analysis of duration of exposure for risk management plan.
 * New module `tm_t_shift_by_arm` that can display shift table of ECG interval data.
 
+### Bug fixes
+* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
+* Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
+
 ### Enhancements
 * Added validation checks to `tm_t_rsp` and `tm_t_binary_outcome` for stratification errors when filters are applied.
 * Added `tm_g_km` validation check for plot tables font size.
@@ -21,10 +25,6 @@
 * Added `error_on_lint: TRUE` to `.lintr`.
 * Removed `insert_rrow` and updated usage of `count_patients_by_flags` in `tm_t_events_summary`.
 * Changed how the package calls functions from the `dplyr` package. The functions should be now fully specified (e.g. `dplyr::filter`).
-
-### Bug fixes
-* Corrected `tm_a_mmrm` to be able to consider the treatment variable in additional interactions.
-* Fixed `tm_t_binary_outcome` and `tm_t_rsp` so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).
 
 # teal.modules.clinical 0.8.9
 ### New features
