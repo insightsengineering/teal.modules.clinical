@@ -1,3 +1,5 @@
+# teal.modules.clinical 0.8.10.9000
+
 # teal.modules.clinical 0.8.10
 ### New features
 * New module `tm_t_smq` was added for the analysis of adverse events by Standardized `MedDRA` Query.
