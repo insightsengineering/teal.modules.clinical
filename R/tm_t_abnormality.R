@@ -143,7 +143,7 @@ template_abnormality <- function(parentname,
         append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
-        abnormal = setNames(abnormal, tolower(abnormal)),
+        abnormal = abnormal,
         usubjid = "USUBJID",
         baseline_var = baseline_var,
         exclude_base_abn = exclude_base_abn,
@@ -179,7 +179,7 @@ template_abnormality <- function(parentname,
 #' @param grade ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
 #'   choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal ([teal::choices_selected()] or [teal::data_extract_spec])\cr indicating abnormality grade.
+#' @param abnormal (`named list`)\cr defined by user to inidcate what abnormalities are to be displayed.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
 #'
@@ -239,7 +239,7 @@ template_abnormality <- function(parentname,
 #'         selected = "ANRIND",
 #'         fixed = TRUE
 #'       ),
-#'       abnormal = c("LOW", "HIGH"),
+#'       abnormal = list(low = "LOW", high = "HIGH"),
 #'       exclude_base_abn = FALSE
 #'     )
 #'   )
@@ -255,7 +255,7 @@ tm_t_abnormality <- function(label,
                              arm_var,
                              by_vars,
                              grade,
-                             abnormal,
+                             abnormal = list(low = "LOW", high = "HIGH"),
                              id_var = choices_selected(
                                variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
                              ),
@@ -279,7 +279,7 @@ tm_t_abnormality <- function(label,
     is.flag(add_total),
     is.choices_selected(by_vars),
     is.choices_selected(grade),
-    is_character_vector(abnormal),
+    is_character_list(abnormal, min_length = 2, max_length = 2),
     is.choices_selected(id_var),
     is.choices_selected(baseline_var),
     is.choices_selected(treatment_flag),
