@@ -15,8 +15,8 @@ Authors@R: c(
 Description: Provides teal modules for the standard clinical trials outputs.
   The teal modules add an encoding panel to interactively change the encodings within teal.
 Depends:
-  R (>= 3.3),
   ggplot2,
+  R (>= 3.6),
   shiny,
   teal (>= 0.10.0),
   tern (>= 0.7.5)
