@@ -4,7 +4,7 @@
 #' @param exclude_base_abn (`logical`)\cr whether to exclude patients who had abnormal values at baseline.
 #' @param grade (`character`)\cr name of the variable that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal (`character`)\cr indicating abnormality grade.
+#' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
 #'
@@ -14,7 +14,7 @@ template_abnormality <- function(parentname,
                                  dataname,
                                  arm_var,
                                  by_vars,
-                                 abnormal,
+                                 abnormal = list(low = "LOW", high = "HIGH"),
                                  grade = "ANRIND",
                                  baseline_var = "BNRIND",
                                  treatment_flag_var = "ONTRTFL",
@@ -22,6 +22,20 @@ template_abnormality <- function(parentname,
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE) {
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.string(by_vars),
+    is.list(abnormal),
+    is.string(grade),
+    is.string(baseline_var),
+    is.string(treatment_flag_var),
+    is.string(treatment_flag),
+    is.flag(add_total),
+    is.flag(exclude_base_abn),
+    is.flag(drop_arm_levels)
+  )
 
   y <- list()
 

@@ -9,7 +9,7 @@ template_abnormality(
   dataname,
   arm_var,
   by_vars,
-  abnormal,
+  abnormal = list(low = "LOW", high = "HIGH"),
   grade = "ANRIND",
   baseline_var = "BNRIND",
   treatment_flag_var = "ONTRTFL",
@@ -32,7 +32,7 @@ variable names that can be used as \code{arm_var}.}
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}
 
-\item{abnormal}{(\code{character})\cr indicating abnormality grade.}
+\item{abnormal}{(\verb{named list})\cr indicating abnormality direction and grades.}
 
 \item{grade}{(\code{character})\cr name of the variable that can be used to
 specify the abnormality grade. Variable must be factor.}
