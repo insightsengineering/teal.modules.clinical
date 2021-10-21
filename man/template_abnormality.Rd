@@ -9,7 +9,7 @@ template_abnormality(
   dataname,
   arm_var,
   by_vars,
-  abnormal = list(low = "LOW", high = "HIGH"),
+  abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
   grade = "ANRIND",
   baseline_var = "BNRIND",
   treatment_flag_var = "ONTRTFL",

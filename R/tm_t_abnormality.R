@@ -14,7 +14,7 @@ template_abnormality <- function(parentname,
                                  dataname,
                                  arm_var,
                                  by_vars,
-                                 abnormal = list(low = "LOW", high = "HIGH"),
+                                 abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                                  grade = "ANRIND",
                                  baseline_var = "BNRIND",
                                  treatment_flag_var = "ONTRTFL",
@@ -26,7 +26,7 @@ template_abnormality <- function(parentname,
     is.string(dataname),
     is.string(parentname),
     is.string(arm_var),
-    # is.string(by_vars),
+    is.character(by_vars),
     is.list(abnormal),
     is.string(grade),
     is.string(baseline_var),
@@ -286,7 +286,7 @@ tm_t_abnormality <- function(label,
                              arm_var,
                              by_vars,
                              grade,
-                             abnormal = list(low = "LOW", high = "HIGH"),
+                             abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                              id_var = choices_selected(
                                variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
                              ),
@@ -396,13 +396,6 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$grade,
         is_single_dataset = is_single_dataset_value
       ),
-      # selectInput(
-      #   ns("abnormal_values"),
-      #   "Abnormality Indicator",
-      #   choices = c("LOW", "HIGH"),
-      #   selected = c("LOW", "HIGH"),
-      #   multiple = TRUE
-      # ),
       checkboxInput(
         ns("exclude_base_abn"),
         "Exclude subjects whose baseline grade is the same as abnormal grade",
@@ -483,18 +476,6 @@ srv_t_abnormality <- function(input,
 
     validate_has_elements(input$grade, "Please select a grade variable")
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
-
-    # updateSelectInput(
-    #   session,
-    #   "abnormal_values",
-    #   choices = choices,
-    #   selected = if (is.null(abnormal) |
-    #                  length(intersect(abnormal, choices)) <= 0) {
-    #     choices[1]
-    #   } else {
-    #     intersect(abnormal, choices)
-    #   }
-    # )
   })
 
   anl_merged <- data_merge_module(
@@ -528,7 +509,6 @@ srv_t_abnormality <- function(input,
     validate(
       need(input_arm_var, "Please select a treatment variable."),
       need(input_grade, "Please select a grade variable."),
-      # need(input$abnormal_values, "Please select an abnormality indicator."),
       need(input_id_var, "Please select a subject identifier."),
       need(input_baseline_var, "Please select a baseline grade variable."),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),
