@@ -106,7 +106,7 @@ template_abnormality <- function(parentname,
         group_by(across(all_of(by_vars))) %>%
         filter(n() > 1 || anl[grade] %in% abnormal) %>%
         ungroup(),
-      env = list(map = as.name("map"), by_vars = by_vars)
+      env = list(map = as.name("map"), by_vars = by_vars, grade = grade, abnormal = abnormal)
     )
   )
 
