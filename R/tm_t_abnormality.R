@@ -94,7 +94,7 @@ template_abnormality <- function(parentname,
     prep_list,
     substitute(
       # change all factors to characters for the map
-      map <- data.frame(lapply(map, as.character), stringsAsFactors=FALSE),
+      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE),
       env = list(map = as.name("map"))
     )
   )
