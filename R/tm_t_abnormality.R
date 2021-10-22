@@ -210,7 +210,7 @@ template_abnormality <- function(parentname,
 #' @param grade ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
 #'   choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal (`named list`)\cr defined by user to inidcate what abnormalities are to be displayed.
+#' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
 #'

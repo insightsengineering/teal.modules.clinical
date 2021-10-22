@@ -52,7 +52,7 @@ used to split the summary by rows.}
 choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
 
-\item{abnormal}{(\verb{named list})\cr defined by user to inidcate what abnormalities are to be displayed.}
+\item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
 
 \item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object specifying the variable name for subject id.}
