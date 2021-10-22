@@ -22,7 +22,7 @@ test_that("template_events_by_grade generates standard expressions", {
       adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
+    layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -36,7 +36,7 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
@@ -48,7 +48,7 @@ test_that("template_events_by_grade generates standard expressions", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
@@ -67,7 +67,7 @@ test_that("template_events_by_grade generates standard expressions", {
       )
     ),
     prune = quote({
-      pruned_result <- result %>% trim_rows()
+      pruned_result <- result
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -114,7 +114,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
       adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
+    layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -128,7 +128,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
@@ -140,7 +140,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
@@ -159,7 +159,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
       )
     ),
     prune = quote({
-      pruned_result <- result %>% trim_rows()
+      pruned_result <- result
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
@@ -206,7 +206,7 @@ test_that("template_events_by_grade without adding total column option works as 
       adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
+    layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -220,7 +220,7 @@ test_that("template_events_by_grade without adding total column option works as 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
@@ -233,7 +233,7 @@ test_that("template_events_by_grade without adding total column option works as 
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
@@ -252,7 +252,7 @@ test_that("template_events_by_grade without adding total column option works as 
       )
     ),
     prune = quote({
-      pruned_result <- result %>% trim_rows()
+      pruned_result <- result
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -297,7 +297,7 @@ test_that("template_events_by_grade with hlt only works", {
       adsl <- df_explicit_na(adsl)
       grade_groups <- list("- Any Intensity -" = levels(adae$AESEV))
     }),
-    layout_prep = quote(split_fun <- drop_split_levels),
+    layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- basic_table() %>%
         split_cols_by("ACTARM") %>%
@@ -311,7 +311,7 @@ test_that("template_events_by_grade with hlt only works", {
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
-          split_fun = split_fun,
+          split_fun = split_fun("AESEV"),
           label_pos = "topleft",
           split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
@@ -330,7 +330,7 @@ test_that("template_events_by_grade with hlt only works", {
       )
     ),
     prune = quote({
-      pruned_result <- result %>% trim_rows()
+      pruned_result <- result
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
