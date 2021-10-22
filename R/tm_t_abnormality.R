@@ -4,7 +4,7 @@
 #' @param exclude_base_abn (`logical`)\cr whether to exclude patients who had abnormal values at baseline.
 #' @param grade (`character`)\cr name of the variable that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal (`character`)\cr indicating abnormality grade.
+#' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
 #'
@@ -14,7 +14,7 @@ template_abnormality <- function(parentname,
                                  dataname,
                                  arm_var,
                                  by_vars,
-                                 abnormal,
+                                 abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                                  grade = "ANRIND",
                                  baseline_var = "BNRIND",
                                  treatment_flag_var = "ONTRTFL",
@@ -22,6 +22,20 @@ template_abnormality <- function(parentname,
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE) {
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.character(by_vars),
+    is.list(abnormal),
+    is.string(grade),
+    is.string(baseline_var),
+    is.string(treatment_flag_var),
+    is.string(treatment_flag),
+    is.flag(add_total),
+    is.flag(exclude_base_abn),
+    is.flag(drop_arm_levels)
+  )
 
   y <- list()
 
@@ -67,14 +81,44 @@ template_abnormality <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  prep_list <- list()
+  prep_list <- add_expr(
+    prep_list,
+    substitute(
+      # Define the map that will be displayed
+      map <- unique(dataname[c(by_vars, grade)]),
+      env = list(dataname = as.name("anl"), by_vars = by_vars, grade = grade)
+    )
+  )
+  prep_list <- add_expr(
+    prep_list,
+    substitute(
+      # change all factors to characters for the map
+      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE),
+      env = list(map = as.name("map"))
+    )
+  )
+  prep_list <- add_expr(
+    prep_list,
+    substitute(
+      # remove the record where only normals exit
+      map <- map %>%
+        group_by(across(all_of(by_vars))) %>%
+        filter(n() > 1 || anl[grade] %in% abnormal) %>%
+        ungroup(),
+      env = list(map = as.name("map"), by_vars = by_vars, grade = grade, abnormal = abnormal)
+    )
+  )
+
+  y$layout_prep <- bracket_expr(prep_list)
+
   layout_list <- list()
 
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
       substitute(
-        expr = basic_table() %>%
+        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
           split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
@@ -84,7 +128,7 @@ template_abnormality <- function(parentname,
       )
     } else {
       substitute(
-        expr = basic_table() %>%
+        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
           split_cols_by(var = arm_var) %>%
           add_colcounts(),
         env = list(arm_var = arm_var)
@@ -107,11 +151,12 @@ template_abnormality <- function(parentname,
           by_var,
           split_label = split_label,
           label_pos = "topleft",
-          split_fun = split_fun
+          split_fun = trim_levels_to_map(map = map)
         ),
         env = list(
           by_var = by_var,
-          split_label = split_label
+          split_label = split_label,
+          map = as.name("map")
         )
       )
     )
@@ -129,7 +174,7 @@ template_abnormality <- function(parentname,
         append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
-        abnormal = setNames(abnormal, tolower(abnormal)),
+        abnormal = abnormal,
         usubjid = "USUBJID",
         baseline_var = baseline_var,
         exclude_base_abn = exclude_base_abn,
@@ -165,7 +210,7 @@ template_abnormality <- function(parentname,
 #' @param grade ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
 #'   choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
-#' @param abnormal ([teal::choices_selected()] or [teal::data_extract_spec])\cr indicating abnormality grade.
+#' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
 #'
@@ -225,7 +270,7 @@ template_abnormality <- function(parentname,
 #'         selected = "ANRIND",
 #'         fixed = TRUE
 #'       ),
-#'       abnormal = c("LOW", "HIGH"),
+#'       abnormal = list(low = "LOW", high = "HIGH"),
 #'       exclude_base_abn = FALSE
 #'     )
 #'   )
@@ -241,7 +286,7 @@ tm_t_abnormality <- function(label,
                              arm_var,
                              by_vars,
                              grade,
-                             abnormal,
+                             abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                              id_var = choices_selected(
                                variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
                              ),
@@ -265,7 +310,7 @@ tm_t_abnormality <- function(label,
     is.flag(add_total),
     is.choices_selected(by_vars),
     is.choices_selected(grade),
-    is_character_vector(abnormal),
+    is_character_list(abnormal, min_length = 2, max_length = 2),
     is.choices_selected(id_var),
     is.choices_selected(baseline_var),
     is.choices_selected(treatment_flag),
@@ -351,13 +396,6 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$grade,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
-        ns("abnormal_values"),
-        "Abnormality Indicator",
-        choices = c("LOW", "HIGH"),
-        selected = c("LOW", "HIGH"),
-        multiple = TRUE
-      ),
       checkboxInput(
         ns("exclude_base_abn"),
         "Exclude subjects whose baseline grade is the same as abnormal grade",
@@ -438,18 +476,6 @@ srv_t_abnormality <- function(input,
 
     validate_has_elements(input$grade, "Please select a grade variable")
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
-
-    updateSelectInput(
-      session,
-      "abnormal_values",
-      choices = choices,
-      selected = if (is.null(abnormal) |
-                     length(intersect(abnormal, choices)) <= 0) {
-        choices[1]
-      } else {
-        intersect(abnormal, choices)
-      }
-    )
   })
 
   anl_merged <- data_merge_module(
@@ -483,7 +509,6 @@ srv_t_abnormality <- function(input,
     validate(
       need(input_arm_var, "Please select a treatment variable."),
       need(input_grade, "Please select a grade variable."),
-      need(input$abnormal_values, "Please select an abnormality indicator."),
       need(input_id_var, "Please select a subject identifier."),
       need(input_baseline_var, "Please select a baseline grade variable."),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),
@@ -516,7 +541,7 @@ srv_t_abnormality <- function(input,
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       by_vars = by_vars_ordered(),
-      abnormal = input$abnormal_values,
+      abnormal = abnormal,
       grade = as.vector(anl_m$columns_source$grade),
       baseline_var = as.vector(anl_m$columns_source$baseline_var),
       treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),

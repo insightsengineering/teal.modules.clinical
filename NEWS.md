@@ -1,6 +1,7 @@
 # teal.modules.clinical 0.8.10.9000
 
 * Updated R version requirement to >= 3.6.
+* Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
 
 # teal.modules.clinical 0.8.10
 ### New features
