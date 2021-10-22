@@ -1,7 +1,7 @@
 # teal.modules.clinical 0.8.10.9000
 
 * Updated R version requirement to >= 3.6.
-* Updated `tm_t_abnormality` due to vectorized change in `count_abnormal`.
+* Updated `tm_t_abnormality` due to vectorization changes in `count_abnormal`.
 
 # teal.modules.clinical 0.8.10
 ### New features
