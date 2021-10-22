@@ -30,7 +30,9 @@ test_that("template_abnormality generates correct expressions with default argum
         ungroup()
     }),
     layout = quote(
-      lyt <- basic_table() %>% split_cols_by(var = "ARM") %>% add_colcounts() %>% # nolint
+      lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+        split_cols_by(var = "ARM") %>%
+        add_colcounts() %>%
         split_rows_by(
           "AVISIT",
           split_label = var_labels(adlb)[["AVISIT"]],
@@ -93,7 +95,7 @@ test_that("template_abnormality generates correct expressions with custom argume
         ungroup()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
         split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(

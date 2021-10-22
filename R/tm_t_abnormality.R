@@ -118,7 +118,7 @@ template_abnormality <- function(parentname,
     layout_list,
     if (add_total) {
       substitute(
-        expr = basic_table() %>%
+        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
           split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
@@ -128,7 +128,7 @@ template_abnormality <- function(parentname,
       )
     } else {
       substitute(
-        expr = basic_table() %>%
+        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
           split_cols_by(var = arm_var) %>%
           add_colcounts(),
         env = list(arm_var = arm_var)
