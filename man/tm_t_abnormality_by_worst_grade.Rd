@@ -13,8 +13,8 @@ tm_t_abnormality_by_worst_grade(
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
   paramcd,
-  anrind_var = choices_selected(variable_choices(dataname, subset = "ANRIND"), selected
-    = "ANRIND", fixed = TRUE),
+  grade_dir_var = choices_selected(variable_choices(dataname, subset = "ANRIND"),
+    selected = "ANRIND", fixed = TRUE),
   atoxgr_var = choices_selected(variable_choices(dataname, subset = "ATOXGR"), selected
     = "ATOXGR", fixed = TRUE),
   worst_high_flag_var = choices_selected(variable_choices(dataname, subset =
@@ -52,7 +52,7 @@ object specifying the variable name for subject id.}
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
-\item{anrind_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{grade_dir_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
 object with all available choices and preselected option
 for variable names that can be used as Analysis Reference Range Indicator.}
 
@@ -133,7 +133,6 @@ filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
  \dontrun{
 shinyApp(app$ui, app$server)
 }
-
 
 }
 \seealso{
