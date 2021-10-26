@@ -7,7 +7,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
     arm_var = "ARMCD",
     id_var = "USUBJID",
     paramcd = "PARAMCD",
-    anrind_var = "ANRIND",
+    grade_dir_var = "ANRIND",
     atoxgr_var = "ATOXGR",
     worst_high_flag_var = "WGRHIFL",
     worst_low_flag_var = "WGRLOFL",
@@ -70,7 +70,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           split_label = "Direction of Abnormality") %>%
         count_abnormal_by_worst_grade(
         var = "GRADE_ANL",
-        variables = list(id = "USUBJID", param = "PARAMCD", anrind = "GRADE_DIR")
+        variables = list(id = "USUBJID", param = "PARAMCD", grade_dir = "GRADE_DIR")
       ) %>%
       append_topleft("    Highest NCI CTCAE Grade")),
     table = quote({
@@ -88,7 +88,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
     arm_var = "ARMCD",
     id_var = "USUBJID",
     paramcd = "myPARAMCD",
-    anrind_var = "ANRIND",
+    grade_dir_var = "ANRIND",
     atoxgr_var = "ATOXGR",
     worst_high_flag_var = "WGRHIFL",
     worst_low_flag_var = "WGRLOFL",
@@ -151,7 +151,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
                      ) %>%
                      count_abnormal_by_worst_grade(
                        var = "GRADE_ANL",
-                       variables = list(id = "USUBJID", param = "myPARAMCD", anrind = "GRADE_DIR")
+                       variables = list(id = "USUBJID", param = "myPARAMCD", grade_dir = "GRADE_DIR")
                      ) %>%
                      append_topleft("    Highest NCI CTCAE Grade")),
     table = quote({
@@ -174,7 +174,7 @@ test_that("template_abnormality_by_worst_grade throws an error when ATOXGR conta
     arm_var = "ARMCD",
     id_var = "USUBJID",
     paramcd = "PARAMCD",
-    anrind_var = "ANRIND",
+    grade_dir_var = "ANRIND",
     atoxgr_var = "ATOXGR",
     worst_high_flag_var = "WGRHIFL",
     worst_low_flag_var = "WGRLOFL",
