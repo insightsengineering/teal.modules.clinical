@@ -11,7 +11,7 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
-template_abnormality_by_worst_grade <- function(parentname,
+template_abnormality_by_worst_grade <- function(parentname, #nolint
                                                 dataname,
                                                 arm_var,
                                                 id_var = "USUBJID",
@@ -165,7 +165,6 @@ template_abnormality_by_worst_grade <- function(parentname,
       env = list(
         paramcd = paramcd,
         id_var = id_var
-        #map = map
       )
     )
   )
@@ -253,28 +252,55 @@ template_abnormality_by_worst_grade <- function(parentname,
 #' }
 #'
 #'
-tm_t_abnormality_by_worst_grade <- function(label,
+tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             dataname,
-                                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                                            parentname = ifelse(
+                                              is(arm_var, "data_extract_spec"),
+                                              datanames_input(arm_var),
+                                              "ADSL"
+                                            ),
                                             arm_var,
                                             id_var = choices_selected(
-                                              variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
+                                              variable_choices(
+                                                dataname, subset = "USUBJID"
+                                              ),
+                                              selected = "USUBJID", fixed = TRUE
                                             ),
                                             paramcd,
                                             anrind_var = choices_selected(
-                                              variable_choices(dataname, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+                                              variable_choices(
+                                                dataname, 
+                                                subset = "ANRIND"
+                                              ),
+                                              selected = "ANRIND", fixed = TRUE
                                             ),
                                             atoxgr_var = choices_selected(
-                                              variable_choices(dataname, subset = "ATOXGR"), selected = "ATOXGR", fixed = TRUE
+                                              variable_choices(
+                                                dataname, 
+                                                subset = "ATOXGR"
+                                              ),
+                                              selected = "ATOXGR", fixed = TRUE
                                             ),
                                             worst_high_flag_var = choices_selected(
-                                              variable_choices(dataname, subset = "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE
+                                              variable_choices(
+                                                dataname, 
+                                                subset = "WGRHIFL"
+                                              ), 
+                                              selected = "WGRHIFL", fixed = TRUE
                                             ),
                                             worst_low_flag_var = choices_selected(
-                                              variable_choices(dataname, subset = "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE
+                                              variable_choices(
+                                                dataname,
+                                                subset = "WGRLOFL"
+                                              ), 
+                                              selected = "WGRLOFL", fixed = TRUE
                                             ),
                                             worst_flag_indicator = choices_selected(
-                                              value_choices(dataname, "WGRLOFL"), selected = "Y", fixed = TRUE
+                                              value_choices(
+                                                dataname, 
+                                                subset = "WGRLOFL"
+                                              ), 
+                                              selected = "Y", fixed = TRUE
                                             ),
                                             add_total = TRUE,
                                             exclude_base_abn = FALSE,
@@ -334,7 +360,7 @@ tm_t_abnormality_by_worst_grade <- function(label,
 }
 
 #' @noRd
-ui_t_abnormality_by_worst_grade <- function(id, ...) {
+ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
 
   ns <- NS(id)
   a <- list(...) # module args
