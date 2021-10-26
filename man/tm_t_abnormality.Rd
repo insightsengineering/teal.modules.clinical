@@ -83,7 +83,7 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{na_level}{(\code{character})\cr the na level in the input dataset, default to "<Missing>".}
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to "<Missing>".}
 }
 \description{
 Teal Module: Abnormality Summary Table
