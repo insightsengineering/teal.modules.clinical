@@ -21,7 +21,8 @@ template_abnormality <- function(parentname,
                                  treatment_flag = "Y",
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
-                                 drop_arm_levels = TRUE) {
+                                 drop_arm_levels = TRUE,
+                                 na_level = "<Missing>") {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -45,12 +46,13 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade)),
+        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade) & grade != na_level),
       env = list(
         df = as.name(dataname),
         grade = as.name(grade),
         treatment_flag_var = as.name(treatment_flag_var),
-        treatment_flag = treatment_flag
+        treatment_flag = treatment_flag,
+        na_level = na_level
       )
     )
   )
@@ -68,14 +70,14 @@ template_abnormality <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      dataname <- df_explicit_na(dataname, na_level = na_level),
+      env = list(dataname = as.name("anl"), na_level = na_level))
     )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      parentname <- df_explicit_na(parentname, na_level = na_level),
+      env = list(parentname = as.name(parentname), na_level = na_level))
     )
 
   y$data <- bracket_expr(data_list)
@@ -303,7 +305,8 @@ tm_t_abnormality <- function(label,
                              exclude_base_abn = FALSE,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
-                             post_output = NULL) {
+                             post_output = NULL,
+                             na_level = "<Missing>") {
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
@@ -548,7 +551,8 @@ srv_t_abnormality <- function(input,
       treatment_flag = input$treatment_flag,
       add_total = input$add_total,
       exclude_base_abn = input$exclude_base_abn,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      na_level = na_level
     )
     mapply(expression = my_calls, chunks_push)
   })
