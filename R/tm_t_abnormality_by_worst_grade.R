@@ -39,7 +39,6 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     )
   )
 
-
   data_list <- add_expr(data_list,
                         substitute(
                           expr = anl <- df %>%
@@ -71,7 +70,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                           )
                         )
                       )
-
+  
   data_list <- add_expr(
     data_list,
     quote(
