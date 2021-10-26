@@ -49,22 +49,15 @@ template_abnormality_by_worst_grade <- function(parentname,
                               WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
                               GRADE_DIR = factor(
                                 case_when(
-                                  atoxgr_var %in% c("-1", "-2", "-3", "-4") ~ "LOW",
+                                  as.numeric(as.character(atoxgr_var)) < 0 ~ "LOW",
                                   atoxgr_var == "0" ~ "ZERO",
-                                  atoxgr_var %in% c("1", "2", "3", "4") ~ "HIGH"
+                                  as.numeric(as.character(atoxgr_var)) > 0 ~ "HIGH"
                                 ),
                                 levels = c("LOW", "ZERO", "HIGH")
                               ),
-                              GRADE_ANL = fct_relevel(
-                                fct_recode(
-                                  atoxgr_var,
-                                  `1` = "-1",
-                                  `2` = "-2",
-                                  `3` = "-3",
-                                  `4` = "-4"
-                                ),
-                                c("0", "1", "2", "3", "4")
-                              )
+                              #Changed the following prepo step methodology as not
+                              #all cases have grade = 4 (realized with nsdl real data)
+                              GRADE_ANL = factor(abs(as.numeric(as.character(atoxgr_var))))
                             ) %>%
                             filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
                             droplevels(),
@@ -240,7 +233,7 @@ template_abnormality_by_worst_grade <- function(parentname,
 #'       ),
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
-#'         selected = NULL
+#'         selected = c("ALT", "CRP", "IGA")
 #'       ),
 #'       add_total = FALSE
 #'    )
