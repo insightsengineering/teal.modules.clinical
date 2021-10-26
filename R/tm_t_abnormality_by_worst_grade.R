@@ -1,24 +1,16 @@
-
-#' Title
+#' Template: Laboratory test results with highest grade post-baseline
+#' @inheritParams template_arguments
+#' @param anrind_var (`character`)\cr the variable name indicating
+#' Analysis Reference Range Indicator.
+#' @param atoxgr_var (`character`)\cr the variable name indicating
+#' Analysis Toxicity Grade.
+#' @param worst_high_flag_var (`character`)\cr the variable name indicating
+#' Worst High Grade flag
+#' @param worst_low_flag_var (`character`)\cr the variable name indicating
+#' Worst Low Grade flag
+#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
-#' @param parentname
-#' @param dataname
-#' @param arm_var
-#' @param id_var
-#' @param paramcd
-#' @param anrind_var
-#' @param atoxgr_var
-#' @param worst_high_flag_var
-#' @param worst_low_flag_var
-#' @param worst_flag_indicator
-#' @param add_total
-#' @param exclude_base_abn
-#' @param drop_arm_levels
-#'
-#' @return
-#' @export
-#'
-#' @examples
+#' @seealso [tm_t_abnormality_by_worst_grade()]
 template_abnormality_by_worst_grade <- function(parentname,
                                                 dataname,
                                                 arm_var,
@@ -26,14 +18,10 @@ template_abnormality_by_worst_grade <- function(parentname,
                                                 paramcd = "PARAMCD",
                                                 anrind_var = "ANRIND",
                                                 atoxgr_var = "ATOXGR",
-                                                #visit_var = "AVISIT",
-                                                #treatment_flag_var = "ONTRTFL",
-                                                #treatment_flag = "Y",
                                                 worst_high_flag_var = "WGRHIFL",
                                                 worst_low_flag_var = "WGRLOFL",
                                                 worst_flag_indicator = "Y",
                                                 add_total = FALSE,
-                                                exclude_base_abn = FALSE,
                                                 drop_arm_levels = TRUE) {
 
 
@@ -51,43 +39,50 @@ template_abnormality_by_worst_grade <- function(parentname,
     )
   )
 
+
+  data_list <- add_expr(data_list,
+                        substitute(
+                          expr = anl <- df %>%
+                            # filter(visit_var %in% c("SCREENING", "BASELINE")) %>%
+                            mutate(
+                              WGRLOFL = case_when(worst_low_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
+                              WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
+                              GRADE_DIR = factor(
+                                case_when(
+                                  atoxgr_var %in% c("-1", "-2", "-3", "-4") ~ "LOW",
+                                  atoxgr_var == "0" ~ "ZERO",
+                                  atoxgr_var %in% c("1", "2", "3", "4") ~ "HIGH"
+                                ),
+                                levels = c("LOW", "ZERO", "HIGH")
+                              ),
+                              GRADE_ANL = fct_relevel(
+                                fct_recode(
+                                  atoxgr_var,
+                                  `1` = "-1",
+                                  `2` = "-2",
+                                  `3` = "-3",
+                                  `4` = "-4"
+                                ),
+                                c("0", "1", "2", "3", "4")
+                              )
+                            ) %>%
+                            filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
+                            droplevels(),
+                          env  = list(
+                            df = as.name(dataname),
+                            worst_low_flag_var = as.name(worst_low_flag_var),
+                            worst_high_flag_var = as.name(worst_high_flag_var),
+                            worst_flag_indicator = worst_flag_indicator,
+                            atoxgr_var = as.name(atoxgr_var)
+                          )
+                        ))
+
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = anl <- df %>%
-        # filter(visit_var %in% c("SCREENING", "BASELINE")) %>%
-        mutate(
-          WGRLOFL = case_when(worst_low_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
-          WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
-          GRADE_DIR = factor(case_when(
-           atoxgr_var %in% c("-1", "-2", "-3", "-4") ~ "LOW",
-           atoxgr_var == "0" ~ "ZERO",
-           atoxgr_var %in% c("1", "2", "3", "4") ~ "HIGH"),
-           levels = c("LOW", "ZERO", "HIGH")),
-          GRADE_ANL = fct_relevel(
-           fct_recode(atoxgr_var,
-            `1` = "-1", `2` = "-2", `3` = "-3", `4` = "-4"),
-             c("0", "1", "2", "3", "4")
-           )
-         ) %>%
-        filter(WGRLOFL == TRUE | WGRHIFL == TRUE),
-      env  = list(
-        df = as.name(dataname),
-        #visit_var = as.name(visit_var),
-        worst_low_flag_var = as.name(worst_low_flag_var),
-        worst_high_flag_var = as.name(worst_high_flag_var),
-        worst_flag_indicator = worst_flag_indicator,
-        atoxgr_var = as.name(atoxgr_var)
-      )
+    quote(
+      expr = var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL")
     )
   )
-
-  # data_list <- add_expr(
-  #   data_list,
-  #   quote(
-  #     expr = var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL")
-  #   )
-  # )
 
   data_list <- add_expr(
     data_list,
@@ -197,27 +192,23 @@ template_abnormality_by_worst_grade <- function(parentname,
 
 }
 
-
-
-
-#' Title
+#' Teal Module: Laboratory test results with highest grade post-baseline
 #'
-#' @param label
-#' @param dataname
-#' @param parentname
-#' @param arm_var
-#' @param id_var
-#' @param paramcd
-#' @param anrind_var
-#' @param atoxgr_var
-#' @param worst_high_flag_var
-#' @param worst_low_flag_var
-#' @param worst_flag_indicator
-#' @param add_total
-#' @param exclude_base_abn
-#' @param drop_arm_levels
-#' @param pre_output
-#' @param post_output
+#' @inheritParams module_arguments
+#' @inheritParams template_abnormality_by_worst_grade
+#' @param anrind_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' object with all available choices and preselected option
+#' for variable names that can be used as Analysis Reference Range Indicator.
+#' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' object with all available choices and preselected option
+#' for variable names that can be used as Analysis Toxicity Grade.
+#' @param worst_high_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
+#' choices and preselected option for variable names that can be used as Worst High Grade flag.
+#' @param worst_low_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
+#' choices and preselected option for variable names that can be used as Worst Low Grade flag.
+#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating
+#' worst grade.
+#' @seealso [template_abnormality_by_worst_grade()]
 #'
 #' @return
 #' @export
@@ -248,11 +239,17 @@ template_abnormality_by_worst_grade <- function(parentname,
 #'         selected = "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(adlb, subset = c("PARAMCD", "PARAM")),
-#'         selected = "PARAMCD"
+#'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
+#'         selected = NULL
 #'       ),
 #'       add_total = FALSE
 #'    )
+#'  ),
+#'  filter = (
+#'  list(
+#'  ADSL = list(SAFFL = "Y"),
+#'  ADLB = list(ONTRTFL = "Y")
+#'  )
 #'  )
 #' )
 #'
@@ -294,18 +291,15 @@ tm_t_abnormality_by_worst_grade <- function(label,
 
 
   stop_if_not(
-    # is.string(dataname),
-    # is.choices_selected(arm_var),
-    # is.choices_selected(paramcd),
-    # is.choices_selected(worst_flag_var),
-    # is.choices_selected(worst_flag_indicator),
-    # is.choices_selected(anl_toxgrade_var),
-    # is.choices_selected(base_toxgrade_var),
-    # is.choices_selected(id_var),
-    # is.flag(add_total),
-    # is.flag(drop_arm_levels),
-    # is.string(na_level),
-    # is.flag(code_missing_baseline),
+     is.string(dataname),
+     is.choices_selected(id_var),
+     is.choices_selected(arm_var),
+     is.choices_selected(paramcd),
+     is.choices_selected(anrind_var),
+     is.choices_selected(atoxgr_var),
+     is.choices_selected(worst_high_flag_var),
+     is.choices_selected(worst_low_flag_var),
+     is.choices_selected(worst_flag_indicator),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -316,17 +310,14 @@ tm_t_abnormality_by_worst_grade <- function(label,
     )
   )
 
-
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    #visit_var = cs_to_des_select(visit_var, dataname = dataname),
-    paramcd = cs_to_des_select(paramcd, dataname = dataname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
     anrind_var = cs_to_des_select(anrind_var, dataname = dataname),
     atoxgr_var = cs_to_des_select(atoxgr_var, dataname = dataname),
     worst_high_flag_var = cs_to_des_select(worst_high_flag_var, dataname = dataname),
     worst_low_flag_var = cs_to_des_select(worst_low_flag_var, dataname = dataname)
-    #worst_flag_indicator = cs_to_des_filter(worst_flag_indicator, dataname = dataname, multiple = FALSE)
   )
 
   args <- as.list(environment())
@@ -349,7 +340,6 @@ tm_t_abnormality_by_worst_grade <- function(label,
 
 }
 
-
 #' @noRd
 ui_t_abnormality_by_worst_grade <- function(id, ...) {
 
@@ -359,7 +349,6 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) {
   is_single_dataset_value <- is_single_dataset(
     a$arm_var,
     a$id_var,
-    #a$visit_var,
     a$paramcd,
     a$anrind_var,
     a$atoxgr_var,
@@ -400,12 +389,6 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) {
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      # data_extract_input(
-      #   id = ns("visit_var"),
-      #   label = "Analysis Visit",
-      #   data_extract_spec = a$visit_var,
-      #   is_single_dataset = is_single_dataset_value
-      # )
       data_extract_input(
         id = ns("anrind_var"),
         label = "Analysis Reference Range Indicator",
@@ -458,7 +441,6 @@ srv_t_abnormality_by_worst_grade <- function(input,
                                  parentname,
                                  id_var,
                                  arm_var,
-                                 #visit_var,
                                  paramcd,
                                  anrind_var,
                                  atoxgr_var,
@@ -495,43 +477,39 @@ srv_t_abnormality_by_worst_grade <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    #input_visit_var <- as.vector(anl_m$columns_source$visit_var)
-    #input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
     input_anrind <- as.vector(anl_m$columns_source$anrind_var)
     input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
     input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
     input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
 
-    # validate(
-    #   need(input_worst_flag_var, "Please select the worst flag variable."),
-    #   need(input_paramcd_var, "Please select Laboratory parameter."),
-    #   need(input_id_var, "Please select a subject identifier."),
-    #   need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-    #   need(
-    #     any(input_worst_flag == input$worst_flag_indicator),
-    #     "There's no positive flag, please select another flag parameter."
-    #   )
-    # )
+    validate(
+      need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
+      need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
+      need(!is_empty(anl_m$data()[[input_paramcd_var]]), "Please select at least one Laboratory parameter."),
+      need(input_anrind, "Please select Analysis Reference Range Indicator variable."),
+      need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
+      need(input_id_var, "Please select a Subject Identifier."),
+      need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
+    )
 
     # validate inputs
-    # validate_standard_inputs(
-    #   adsl = adsl_filtered,
-    #   adslvars = c("USUBJID", "STUDYID", input_arm_var),
-    #   anl = anl_filtered,
-    #   anlvars = c(
-    #     "USUBJID", "STUDYID", input_visit_var, input_paramcd, input_worst_flag_var,
-    #     input_anl_toxgrade_var, input_base_toxgrade_var
-    #   ),
-    #   arm_var = input_arm_var
-    # )
+    validate_standard_inputs(
+      adsl = adsl_filtered,
+      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      anl = anl_filtered,
+      anlvars = c(
+        "USUBJID", "STUDYID", input_paramcd_var,
+        input_anrind, input_anrind, input_worst_high_flag_var,
+        input_worst_low_flag_var
+      ),
+      arm_var = input_arm_var
+    )
 
   })
 
   call_preparation <- reactive({
     validate_checks()
-
-    #browser()
     chunks_reset()
     anl_m <- anl_merged()
     chunks_push_data_merge(anl_m)
@@ -548,12 +526,9 @@ srv_t_abnormality_by_worst_grade <- function(input,
       paramcd = as.vector(anl_m$columns_source$paramcd),
       anrind_var = as.vector(anl_m$columns_source$anrind_var),
       atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
-      #visit_var = "AVISIT",
-      #treatment_flag_var = "ONTRTFL",
-      #treatment_flag = "Y",
       worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
       worst_low_flag_var =  as.vector(anl_m$columns_source$worst_low_flag_var),
-      worst_flag_indicator = "Y",
+      worst_flag_indicator = input$worst_flag_indicator,
       add_total = input$add_total,
       drop_arm_levels = input$drop_arm_levels)
     mapply(expression = my_calls, chunks_push)
@@ -587,6 +562,3 @@ srv_t_abnormality_by_worst_grade <- function(input,
     code_header = label
   )
 }
-
-
-
