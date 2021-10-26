@@ -70,7 +70,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                           )
                         )
                       )
-  
+
   data_list <- add_expr(
     data_list,
     quote(
