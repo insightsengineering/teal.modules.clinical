@@ -72,12 +72,9 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                           )
                         ))
 
-  data_list <- add_expr(
-    data_list,
-    quote(
-      expr = var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL")
-      )
-    )
+  data_list <- add_expr(data_list,
+                        quote(expr = var_labels(anl) <-
+                                c(anl_labels, "GRADE_DIR", "GRADE_ANL")))
 
   data_list <- add_expr(
     data_list,
@@ -309,23 +306,23 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             ) {
 
   stop_if_not(
-     is.string(dataname),
-     is.choices_selected(id_var),
-     is.choices_selected(arm_var),
-     is.choices_selected(paramcd),
-     is.choices_selected(grade_dir_var),
-     is.choices_selected(atoxgr_var),
-     is.choices_selected(worst_high_flag_var),
-     is.choices_selected(worst_low_flag_var),
-     is.choices_selected(worst_flag_indicator),
-     list(
-       is.null(pre_output) || is(pre_output, "shiny.tag"),
-       "pre_output should be either null or shiny.tag type of object"
-       ),
-     list(
-       is.null(post_output) || is(post_output, "shiny.tag"),
-       "post_output should be either null or shiny.tag type of object"
-       )
+    is.string(dataname),
+    is.choices_selected(id_var),
+    is.choices_selected(arm_var),
+    is.choices_selected(paramcd),
+    is.choices_selected(grade_dir_var),
+    is.choices_selected(atoxgr_var),
+    is.choices_selected(worst_high_flag_var),
+    is.choices_selected(worst_low_flag_var),
+    is.choices_selected(worst_flag_indicator),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+    )
   )
 
   data_extract_list <- list(
