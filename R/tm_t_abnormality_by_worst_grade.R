@@ -269,37 +269,37 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             paramcd,
                                             anrind_var = choices_selected(
                                               variable_choices(
-                                                dataname, 
+                                                dataname,
                                                 subset = "ANRIND"
                                               ),
                                               selected = "ANRIND", fixed = TRUE
                                             ),
                                             atoxgr_var = choices_selected(
                                               variable_choices(
-                                                dataname, 
+                                                dataname,
                                                 subset = "ATOXGR"
                                               ),
                                               selected = "ATOXGR", fixed = TRUE
                                             ),
                                             worst_high_flag_var = choices_selected(
                                               variable_choices(
-                                                dataname, 
+                                                dataname,
                                                 subset = "WGRHIFL"
-                                              ), 
+                                              ),
                                               selected = "WGRHIFL", fixed = TRUE
                                             ),
                                             worst_low_flag_var = choices_selected(
                                               variable_choices(
                                                 dataname,
                                                 subset = "WGRLOFL"
-                                              ), 
+                                              ),
                                               selected = "WGRLOFL", fixed = TRUE
                                             ),
                                             worst_flag_indicator = choices_selected(
                                               value_choices(
-                                                dataname, 
+                                                dataname,
                                                 subset = "WGRLOFL"
-                                              ), 
+                                              ),
                                               selected = "Y", fixed = TRUE
                                             ),
                                             add_total = TRUE,
@@ -381,7 +381,10 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(
-        a[c("arm_var", "id_var", "paramcd", "anrind_var", "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var", "worst_flag_indicator")]
+        a[c(
+          "arm_var", "id_var", "paramcd", "anrind_var",
+          "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var", "worst_flag_indicator"
+        )]
       ),
       data_extract_input(
         id = ns("arm_var"),
@@ -452,7 +455,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
 }
 
 #' @noRd
-srv_t_abnormality_by_worst_grade <- function(input,
+srv_t_abnormality_by_worst_grade <- function(input, #nolint
                                              output,
                                              session,
                                              datasets,
