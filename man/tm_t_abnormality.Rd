@@ -25,7 +25,8 @@ tm_t_abnormality(
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  na_level = "<Missing>"
 )
 }
 \arguments{
@@ -81,6 +82,8 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{na_level}{(\code{character})\cr the na level in the input dataset, default to "<Missing>".}
 }
 \description{
 Teal Module: Abnormality Summary Table

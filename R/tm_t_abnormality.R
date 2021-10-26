@@ -7,6 +7,7 @@
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
+#' @param na_level (`character`)\cr the na level in the input dataset, default to "<Missing>".
 #'
 #' @seealso [tm_t_abnormality()]
 #'
@@ -215,6 +216,7 @@ template_abnormality <- function(parentname,
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
+#' @param na_level (`character`)\cr the na level in the input dataset, default to "<Missing>".
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
 #'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
