@@ -59,10 +59,8 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                               #all cases have grade = 4 (realized with nsdl real data)
                               GRADE_ANL = factor(
                                 abs(as.numeric(as.character(atoxgr_var)))
-                                )
-                            ) %>%
-                            filter(WGRLOFL == TRUE |
-                                     WGRHIFL == TRUE) %>%
+                                )) %>%
+                            filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
                             droplevels(),
                           env  = list(
                             df = as.name(dataname),
