@@ -21,8 +21,8 @@ tm_t_abnormality_by_worst_grade(
     "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
   worst_low_flag_var = choices_selected(variable_choices(dataname, subset = "WGRLOFL"),
     selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator = choices_selected(value_choices(dataname, "WGRLOFL"), selected
-    = "Y", fixed = TRUE),
+  worst_flag_indicator = choices_selected(value_choices(dataname, subset = "WGRLOFL"),
+    selected = "Y", fixed = TRUE),
   add_total = TRUE,
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
