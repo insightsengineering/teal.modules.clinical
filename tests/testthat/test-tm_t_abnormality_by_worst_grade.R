@@ -130,8 +130,9 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
         as.data.frame() %>%
         arrange("myPARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
-    layout = quote(lyt <- basic_table() %>% split_cols_by(var = "ARMCD") %>%
-                     add_colcounts() %>% 
+    layout = quote(lyt <- basic_table() %>% 
+                   split_cols_by(var = "ARMCD") %>% 
+                   add_colcounts() %>%
                    split_rows_by(
                        "myPARAMCD",
                        label_pos = "topleft",
