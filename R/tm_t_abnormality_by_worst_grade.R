@@ -57,11 +57,12 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                               ),
                               #Changed the following prepo step methodology as not
                               #all cases have grade = 4 (realized with nsdl real data)
-                              GRADE_ANL = factor(abs(as.numeric(
-                                as.character(atoxgr_var)
-                              )))
+                              GRADE_ANL = factor(
+                                abs(as.numeric(as.character(atoxgr_var)))
+                                )
                             ) %>%
-                            filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
+                            filter(WGRLOFL == TRUE |
+                                     WGRHIFL == TRUE) %>%
                             droplevels(),
                           env  = list(
                             df = as.name(dataname),
@@ -70,11 +71,13 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                             worst_flag_indicator = worst_flag_indicator,
                             atoxgr_var = as.name(atoxgr_var)
                           )
-                        ))
+                        )
+                      )
 
-  data_list <- add_expr(data_list,
-                        quote(expr = var_labels(anl) <-
-                                c(anl_labels, "GRADE_DIR", "GRADE_ANL")))
+  data_list <- add_expr(
+    data_list,
+    quote(expr = var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL"))
+    )
 
   data_list <- add_expr(
     data_list,
