@@ -19,18 +19,19 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
   expected <- list(
     data = quote({
       anl_labels <- var_labels(adlb)
-      anl <- adlb %>% mutate(
-        WGRLOFL = case_when(WGRLOFL == "Y" ~ TRUE, TRUE ~ FALSE),
-        WGRHIFL = case_when(WGRHIFL == "Y" ~ TRUE, TRUE ~ FALSE),
-        GRADE_DIR = factor(
-          case_when(
-            as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
-            ATOXGR == "0" ~ "ZERO",
-            as.numeric(as.character(ATOXGR)) > 0 ~ "HIGH"
+      anl <- adlb %>%
+        mutate(
+          WGRLOFL = case_when(WGRLOFL == "Y" ~ TRUE, TRUE ~ FALSE),
+          WGRHIFL = case_when(WGRHIFL == "Y" ~ TRUE, TRUE ~ FALSE),
+          GRADE_DIR = factor(
+            case_when(
+              as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
+              ATOXGR == "0" ~ "ZERO",
+              as.numeric(as.character(ATOXGR)) > 0 ~ "HIGH"
+            ),
+            levels = c("LOW", "ZERO", "HIGH")
           ),
-          levels = c("LOW", "ZERO", "HIGH")
-        ),
-        GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
+          GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
       ) %>%
         filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
         droplevels()
@@ -48,21 +49,26 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
         as.data.frame() %>%
         arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
-    layout = quote(lyt <- basic_table() %>% split_cols_by(var = "ARMCD") %>%
-      add_colcounts() %>% split_rows_by(
+    layout = quote(
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ARMCD") %>%
+        add_colcounts() %>%
+        split_rows_by(
         "PARAMCD",
         label_pos = "topleft",
         split_label = obj_label(anl[["PARAMCD"]])
-      ) %>% summarize_num_patients(
-        var = "USUBJID",
-        required = "GRADE_ANL",
-        .stats = "unique_count"
-      ) %>% split_rows_by(
-        "GRADE_DIR",
-        label_pos = "topleft",
-        split_fun = trim_levels_to_map(map = map),
-        split_label = "Direction of Abnormality"
-      ) %>% count_abnormal_by_worst_grade(
+      ) %>%
+        summarize_num_patients(
+          var = "USUBJID",
+          required = "GRADE_ANL",
+          .stats = "unique_count"
+      ) %>%
+        split_rows_by(
+          "GRADE_DIR",
+          label_pos = "topleft",
+          split_fun = trim_levels_to_map(map = map),
+          split_label = "Direction of Abnormality") %>%
+        count_abnormal_by_worst_grade(
         var = "GRADE_ANL",
         variables = list(id = "USUBJID", param = "PARAMCD", anrind = "GRADE_DIR")
       ) %>%
@@ -94,18 +100,19 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
   expected <- list(
     data = quote({
       anl_labels <- var_labels(myadlb)
-      anl <- myadlb %>% mutate(
-        WGRLOFL = case_when(WGRLOFL == "Y" ~ TRUE, TRUE ~ FALSE),
-        WGRHIFL = case_when(WGRHIFL == "Y" ~ TRUE, TRUE ~ FALSE),
-        GRADE_DIR = factor(
-          case_when(
-            as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
-            ATOXGR == "0" ~ "ZERO",
-            as.numeric(as.character(ATOXGR)) > 0 ~ "HIGH"
+      anl <- myadlb %>%
+        mutate(
+          WGRLOFL = case_when(WGRLOFL == "Y" ~ TRUE, TRUE ~ FALSE),
+          WGRHIFL = case_when(WGRHIFL == "Y" ~ TRUE, TRUE ~ FALSE),
+          GRADE_DIR = factor(
+            case_when(
+              as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
+              ATOXGR == "0" ~ "ZERO",
+              as.numeric(as.character(ATOXGR)) > 0 ~ "HIGH"
+            ),
+            levels = c("LOW", "ZERO", "HIGH")
           ),
-          levels = c("LOW", "ZERO", "HIGH")
-        ),
-        GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
+          GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
       ) %>%
         filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
         droplevels()
@@ -128,16 +135,19 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
                        "myPARAMCD",
                        label_pos = "topleft",
                        split_label = obj_label(anl[["myPARAMCD"]])
-                     ) %>% summarize_num_patients(
+                     ) %>%
+                     summarize_num_patients(
                        var = "USUBJID",
                        required = "GRADE_ANL",
                        .stats = "unique_count"
-                     ) %>% split_rows_by(
+                     ) %>%
+                     split_rows_by(
                        "GRADE_DIR",
                        label_pos = "topleft",
                        split_fun = trim_levels_to_map(map = map),
                        split_label = "Direction of Abnormality"
-                     ) %>% count_abnormal_by_worst_grade(
+                     ) %>%
+                     count_abnormal_by_worst_grade(
                        var = "GRADE_ANL",
                        variables = list(id = "USUBJID", param = "myPARAMCD", anrind = "GRADE_DIR")
                      ) %>%
@@ -154,7 +164,7 @@ test_that("template_abnormality_by_worst_grade throws an error when ATOXGR conta
   adsl <- synthetic_cdisc_data("rcd_2021_07_07")$adsl
   adlb <- synthetic_cdisc_data("rcd_2021_07_07")$adlb
 
-  adlb$ATOXGR[1:2000] <- NA
+  adlb$ATOXGR[1:100] <- NA
 
   template <- template_abnormality_by_worst_grade(
     parentname = "adsl",

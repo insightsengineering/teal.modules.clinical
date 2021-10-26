@@ -117,7 +117,7 @@ filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
       ),
       paramcd = choices_selected(
         choices = value_choices(adlb, "PARAMCD", "PARAM"),
-        selected = NULL
+        selected = c("ALT", "CRP", "IGA")
       ),
       add_total = FALSE
    )

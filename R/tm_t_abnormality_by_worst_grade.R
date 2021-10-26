@@ -43,10 +43,11 @@ template_abnormality_by_worst_grade <- function(parentname,
   data_list <- add_expr(data_list,
                         substitute(
                           expr = anl <- df %>%
-                            # filter(visit_var %in% c("SCREENING", "BASELINE")) %>%
                             mutate(
                               WGRLOFL = case_when(worst_low_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
                               WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
+                              #Changed the following prepo step methodology as not
+                              #all cases have grade = 4 (realized with nsdl real data)
                               GRADE_DIR = factor(
                                 case_when(
                                   as.numeric(as.character(atoxgr_var)) < 0 ~ "LOW",
@@ -68,14 +69,15 @@ template_abnormality_by_worst_grade <- function(parentname,
                             worst_flag_indicator = worst_flag_indicator,
                             atoxgr_var = as.name(atoxgr_var)
                           )
-                        ))
+                        )
+                      )
 
   data_list <- add_expr(
     data_list,
     quote(
       expr = var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL")
+      )
     )
-  )
 
   data_list <- add_expr(
     data_list,
@@ -278,10 +280,8 @@ tm_t_abnormality_by_worst_grade <- function(label,
                                             exclude_base_abn = FALSE,
                                             drop_arm_levels = TRUE,
                                             pre_output = NULL,
-                                            post_output = NULL) {
-
-
-
+                                            post_output = NULL
+                                            ) {
 
   stop_if_not(
      is.string(dataname),
@@ -293,14 +293,14 @@ tm_t_abnormality_by_worst_grade <- function(label,
      is.choices_selected(worst_high_flag_var),
      is.choices_selected(worst_low_flag_var),
      is.choices_selected(worst_flag_indicator),
-    list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+     list(
+       is.null(pre_output) || is(pre_output, "shiny.tag"),
+       "pre_output should be either null or shiny.tag type of object"
+       ),
+     list(
+       is.null(post_output) || is(post_output, "shiny.tag"),
+       "post_output should be either null or shiny.tag type of object"
+       )
   )
 
   data_extract_list <- list(
@@ -427,21 +427,22 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) {
 
 #' @noRd
 srv_t_abnormality_by_worst_grade <- function(input,
-                                 output,
-                                 session,
-                                 datasets,
-                                 dataname,
-                                 parentname,
-                                 id_var,
-                                 arm_var,
-                                 paramcd,
-                                 anrind_var,
-                                 atoxgr_var,
-                                 worst_low_flag_var,
-                                 worst_high_flag_var,
-                                 add_total,
-                                 drop_arm_levels,
-                                 label) {
+                                             output,
+                                             session,
+                                             datasets,
+                                             dataname,
+                                             parentname,
+                                             id_var,
+                                             arm_var,
+                                             paramcd,
+                                             anrind_var,
+                                             atoxgr_var,
+                                             worst_low_flag_var,
+                                             worst_high_flag_var,
+                                             add_total,
+                                             drop_arm_levels,
+                                             label) {
+
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
