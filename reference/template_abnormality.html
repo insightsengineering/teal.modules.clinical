@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9001</span>
       </span>
     </div>
 
@@ -154,7 +154,8 @@
   treatment_flag <span class='op'>=</span> <span class='st'>"Y"</span>,
   add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   exclude_base_abn <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  drop_arm_levels <span class='op'>=</span> <span class='cn'>TRUE</span>
+  drop_arm_levels <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  na_level <span class='op'>=</span> <span class='st'>"&lt;Missing&gt;"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -217,6 +218,10 @@ whether to include column with total number of patients.</p></td>
       <td><p>(<code>logical</code>)<br /> drop the unused <code>arm_var</code> levels.
 When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
 <code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></td>
+    </tr>
+    <tr>
+      <th>na_level</th>
+      <td><p>(<code>character</code>)<br /> the NA level in the input dataset, default to "&lt;Missing&gt;".</p></td>
     </tr>
     </table>
 
