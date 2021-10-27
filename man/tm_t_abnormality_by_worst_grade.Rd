@@ -24,7 +24,6 @@ tm_t_abnormality_by_worst_grade(
   worst_flag_indicator = choices_selected(value_choices(dataname, var_choices =
     "WGRLOFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
-  exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL
