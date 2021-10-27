@@ -303,7 +303,7 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             worst_flag_indicator = choices_selected(
                                               value_choices(
                                                 dataname,
-                                                subset = "WGRLOFL"
+                                                var_choices = "WGRLOFL"
                                               ),
                                               selected = "Y", fixed = TRUE
                                             ),
