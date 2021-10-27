@@ -39,43 +39,44 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     )
   )
 
-  data_list <- add_expr(data_list,
-                        substitute(
-                          expr = anl <- df %>%
-                            mutate(
-                              WGRLOFL = case_when(worst_low_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
-                              WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
-                              #Changed the following prepo step methodology as not
-                              #all cases have grade = 4 (realized with nsdl real data)
-                              GRADE_DIR = factor(
-                                case_when(
-                                  as.numeric(as.character(atoxgr_var)) < 0 ~ "LOW",
-                                  atoxgr_var == "0" ~ "ZERO",
-                                  as.numeric(as.character(atoxgr_var)) > 0 ~ "HIGH"
-                                ),
-                                levels = c("LOW", "ZERO", "HIGH")
-                              ),
-                              #Changed the following prepo step methodology as not
-                              #all cases have grade = 4 (realized with nsdl real data)
-                              GRADE_ANL = factor(
-                                abs(
-                                  as.numeric(
-                                    as.character(atoxgr_var)
-                                    )
-                                  )
-                                )
-                              ) %>%
-                            filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
-                            droplevels(),
-                          env  = list(
-                            df = as.name(dataname),
-                            worst_low_flag_var = as.name(worst_low_flag_var),
-                            worst_high_flag_var = as.name(worst_high_flag_var),
-                            worst_flag_indicator = worst_flag_indicator,
-                            atoxgr_var = as.name(atoxgr_var)
-                          )
-                        )
-                      )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- df %>%
+        mutate(
+          WGRLOFL = case_when(worst_low_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
+          WGRHIFL = case_when(worst_high_flag_var == worst_flag_indicator ~ TRUE, TRUE ~ FALSE),
+          #Changed the following prepo step methodology as not
+          #all cases have grade = 4 (realized with nsdl real data)
+          GRADE_DIR = factor(
+            case_when(
+              as.numeric(as.character(atoxgr_var)) < 0 ~ "LOW",
+              atoxgr_var == "0" ~ "ZERO",
+              as.numeric(as.character(atoxgr_var)) > 0 ~ "HIGH"
+            ),
+            levels = c("LOW", "ZERO", "HIGH")
+          ),
+          #Changed the following prepo step methodology as not
+          #all cases have grade = 4 (realized with nsdl real data)
+          GRADE_ANL = factor(
+            abs(
+              as.numeric(
+                as.character(atoxgr_var)
+                )
+              )
+            )
+          ) %>%
+        filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
+        droplevels(),
+      env  = list(
+        df = as.name(dataname),
+        worst_low_flag_var = as.name(worst_low_flag_var),
+        worst_high_flag_var = as.name(worst_high_flag_var),
+        worst_flag_indicator = worst_flag_indicator,
+        atoxgr_var = as.name(atoxgr_var)
+      )
+    )
+  )
 
   data_list <- add_expr(
     data_list,
