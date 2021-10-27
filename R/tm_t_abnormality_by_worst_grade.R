@@ -25,6 +25,22 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                                                 drop_arm_levels = TRUE) {
 
 
+
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.string(id_var),
+    is.string(paramcd),
+    is.string(grade_dir_var),
+    is.string(atoxgr_var),
+    is.string(worst_high_flag_var),
+    is.string(worst_low_flag_var),
+    is.string(worst_flag_indicator),
+    is.flag(add_total),
+    is.flag(drop_arm_levels)
+  )
+
   y <- list()
 
   data_list <- list()
