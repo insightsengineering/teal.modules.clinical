@@ -16,7 +16,8 @@ template_abnormality(
   treatment_flag = "Y",
   add_total = FALSE,
   exclude_base_abn = FALSE,
-  drop_arm_levels = TRUE
+  drop_arm_levels = TRUE,
+  na_level = "<Missing>"
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ whether to include column with total number of patients.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to "<Missing>".}
 }
 \description{
 Template: Abnormality Summary Table
