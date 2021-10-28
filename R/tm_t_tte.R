@@ -47,6 +47,7 @@ control_tte <- function(
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
                          arm_var = "ARM",
+                         param = "",
                          ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
@@ -140,7 +141,12 @@ template_tte <- function(dataname = "ANL",
     )
   }
   layout_list <- list()
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = basic_table(
+        title = paste0("Time-To-Event Table", ifelse(param != "", " for ", ""), param)),
+      env = list(param = param)))
   layout_list <- add_expr(
     layout_list,
     split_col_expr(
@@ -771,10 +777,14 @@ srv_t_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
+    input_param <- paste0(gsub(paste0(unlist(anl_m$filter_info)["selected"], ": "), "",
+                             grep(unlist(anl_m$filter_info)["selected"], names(paramcd$filter[[1]]$choices), value = TRUE)),
+                        " (", unlist(anl_m$filter_info)["selected"], ")")
     my_calls <- template_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      param = input_param,
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,

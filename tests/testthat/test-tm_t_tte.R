@@ -42,7 +42,8 @@ test_that("template_tte produces healthy standard output", {
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste0("Time-To-Event Table", ifelse("" != "", " for ", ""), "")) %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         summarize_vars(
