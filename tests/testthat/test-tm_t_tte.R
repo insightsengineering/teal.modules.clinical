@@ -3,6 +3,7 @@ test_that("template_tte produces healthy standard output", {
     dataname = "ANL",
     parentname = "ANL_ADSL",
     arm_var = "ARM",
+    paramcd = "OS",
     ref_arm = "B: Placebo",
     comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = FALSE,
@@ -36,13 +37,14 @@ test_that("template_tte produces healthy standard output", {
           ),
           EVNTDESC = factor(EVNTDESC)
         ) %>%
-        df_explicit_na(na_level = "")
+        df_explicit_na()
       ANL_ADSL <- ANL_ADSL %>%# nolint
         dplyr::mutate(ARM = droplevels(ARM)) %>%
-        df_explicit_na(na_level = "")
+        df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Time-To-Event Table for", "OS")) %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         summarize_vars(
@@ -109,6 +111,7 @@ test_that("template_tte produces correct data expression when not comparing arms
     dataname = "ANL",
     parentname = "ANL_ADSL",
     arm_var = "ARM",
+    paramcd = "OS",
     ref_arm = NULL,
     comp_arm = c("A: Drug X", "B: Placebo", "C: Combination"),
     compare_arm = FALSE,
@@ -139,10 +142,10 @@ test_that("template_tte produces correct data expression when not comparing arms
         ),
         EVNTDESC = factor(EVNTDESC)
       ) %>%
-      df_explicit_na(na_level = "")
+      df_explicit_na()
     ANL_ADSL <- ANL_ADSL %>% #nolint
       dplyr::mutate(ARM = droplevels(ARM)) %>%
-      df_explicit_na(na_level = "")
+      df_explicit_na()
   })
   expect_equal(result$data, expected_data)
 })
