@@ -8,6 +8,7 @@ template_rsp(
   dataname,
   parentname,
   arm_var,
+  param = "Response",
   ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,

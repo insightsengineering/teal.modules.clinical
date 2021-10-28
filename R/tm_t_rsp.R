@@ -703,7 +703,8 @@ srv_t_rsp <- function(input,
     anl_m <- anl_merged()
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_param <- paste0(gsub(paste0(unlist(anl_m$filter_info)["selected"], ": "), "",
-                        grep(unlist(anl_m$filter_info)["selected"], names(paramcd$filter[[1]]$choices), value = TRUE)),
+                        grep(unlist(anl_m$filter_info)["selected"],
+                             names(paramcd$filter[[1]]$choices), value = TRUE)),
                         " (", unlist(anl_m$filter_info)["selected"], ")")
     req(input$responders %in% anl_m$data()[[input_aval_var]])
 
