@@ -26,7 +26,12 @@ test_that("template_rsp generates standard expressions", {
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response",
+                      "for", paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1, "and",
+                             ""), tail(c("CR", "PR"), 1), "Responders")
+      ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -96,7 +101,11 @@ test_that("template_rsp generates right expressions with non-default", {
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response", "for",
+                      paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1,
+                             "and", ""), tail(c("CR", "PR"), 1), "Responders")) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -156,7 +165,11 @@ test_that("template_rsp generates expression without arm comparison", {
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response",
+                      "for", paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1, "and",
+                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -209,7 +222,11 @@ test_that("template_rsp generates expression with non-default controls and strat
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response", "for",
+                      paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1, "and",
+                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -298,7 +315,11 @@ test_that("template_rsp can combine comparison arms", {
       groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
     ),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response", "for",
+                      paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1, "and",
+                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
         ) %>%
@@ -385,7 +406,11 @@ test_that("template_rsp can combine refs", {
         df_explicit_na(na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste("Table of", "Response", "for",
+                      paste(head(c("CR", "PR"), -1), collapse = ", "),
+                      ifelse(length(c("CR", "PR")) > 1, "and",
+                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         add_colcounts() %>%
         estimate_proportion(
