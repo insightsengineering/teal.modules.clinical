@@ -778,7 +778,8 @@ srv_t_tte <- function(input,
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_param <- paste0(gsub(paste0(unlist(anl_m$filter_info)["selected"], ": "), "",
-                             grep(unlist(anl_m$filter_info)["selected"], names(paramcd$filter[[1]]$choices), value = TRUE)),
+                             grep(unlist(anl_m$filter_info)["selected"],
+                                  names(paramcd$filter[[1]]$choices), value = TRUE)),
                         " (", unlist(anl_m$filter_info)["selected"], ")")
     my_calls <- template_tte(
       dataname = "ANL",

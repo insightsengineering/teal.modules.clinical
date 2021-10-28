@@ -8,6 +8,7 @@ template_tte(
   dataname = "ANL",
   parentname = "ADSL_FILTERED",
   arm_var = "ARM",
+  param = "",
   ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
