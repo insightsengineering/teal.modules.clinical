@@ -105,7 +105,8 @@ test_that("template_rsp generates right expressions with non-default", {
         title = paste("Table of", "Response", "for",
                       paste(head(c("CR", "PR"), -1), collapse = ", "),
                       ifelse(length(c("CR", "PR")) > 1,
-                             "and", ""), tail(c("CR", "PR"), 1), "Responders")) %>%
+                             "and", ""), tail(c("CR", "PR"), 1), "Responders")
+        ) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -169,7 +170,8 @@ test_that("template_rsp generates expression without arm comparison", {
         title = paste("Table of", "Response",
                       "for", paste(head(c("CR", "PR"), -1), collapse = ", "),
                       ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
+                             ""), tail(c("CR", "PR"), 1), "Responders")
+        ) %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -226,7 +228,8 @@ test_that("template_rsp generates expression with non-default controls and strat
         title = paste("Table of", "Response", "for",
                       paste(head(c("CR", "PR"), -1), collapse = ", "),
                       ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
+                             ""), tail(c("CR", "PR"), 1), "Responders")
+        ) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
         estimate_proportion(
@@ -319,7 +322,8 @@ test_that("template_rsp can combine comparison arms", {
         title = paste("Table of", "Response", "for",
                       paste(head(c("CR", "PR"), -1), collapse = ", "),
                       ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
+                             ""), tail(c("CR", "PR"), 1), "Responders")
+        ) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
         ) %>%
@@ -410,7 +414,8 @@ test_that("template_rsp can combine refs", {
         title = paste("Table of", "Response", "for",
                       paste(head(c("CR", "PR"), -1), collapse = ", "),
                       ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")) %>%
+                             ""), tail(c("CR", "PR"), 1), "Responders")
+        ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         add_colcounts() %>%
         estimate_proportion(
