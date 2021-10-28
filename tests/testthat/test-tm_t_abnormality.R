@@ -13,13 +13,13 @@ test_that("template_abnormality generates correct expressions with default argum
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% dplyr::filter(ONTRTFL == "Y" & !is.na(ANRIND))
+      anl <- adlb %>% dplyr::filter(ONTRTFL == "Y" & !is.na(ANRIND) & ANRIND != "<Missing>")
       anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(anl[["ARM"]])
       adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
       adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      anl <- df_explicit_na(anl, na_level = "<Missing>")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote({
       map <- unique(anl[c(c("AVISIT", "PARAM"), "ANRIND")])
@@ -79,12 +79,12 @@ test_that("template_abnormality generates correct expressions with custom argume
 
   expected <- list(
     data = quote({
-      anl <- adlb %>% dplyr::filter(MYTRTFL == "YES" & !is.na(MYANRIND))
+      anl <- adlb %>% dplyr::filter(MYTRTFL == "YES" & !is.na(MYANRIND) & MYANRIND != "<Missing>")
       adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
       arm_levels <- levels(adsl[["ARM"]])
       anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
-      anl <- df_explicit_na(anl, na_level = "")
-      adsl <- df_explicit_na(adsl, na_level = "")
+      anl <- df_explicit_na(anl, na_level = "<Missing>")
+      adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote({
       map <- unique(anl[c(c("AVISIT", "PARAMCD"), "MYANRIND")])

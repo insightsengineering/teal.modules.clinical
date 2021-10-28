@@ -1,59 +1,62 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
+Version: 0.8.10.9002
 Date: 2021-10-13
-Version: 0.8.10.9000
 Authors@R: c(
-  person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre")),
-  person("Adrian", "Waddell", email = "adrian.waddell@roche.com", role = "aut"),
-  person("Heng", "Wang", email = "wang.heng@gene.com", role = c("aut")),
-  person("Yuyao", "Song", email = "yuyao.song@roche.com", role = c("aut")),
-  person("Chendi", "Liao", email = "chendi.liao@roche.com", role = c("aut")),
-  person("Mark", "Rothe", role = c("aut")),
-  person("Xiao", "Yu Mo", role = c("aut")),
-  person("Roche", role = c("cph", "fnd"))
+    person("NEST", , , "nestcicd@roche.com", role = c("aut", "cre")),
+    person("Adrian", "Waddell", , "adrian.waddell@roche.com", role = "aut"),
+    person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
+    person("Yuyao", "Song", , "yuyao.song@roche.com", role = "aut"),
+    person("Chendi", "Liao", , "chendi.liao@roche.com", role = "aut"),
+    person("Mark", "Rothe", role = "aut"),
+    person("Xiao", "Yu Mo", role = "aut"),
+    person("Roche", role = c("cph", "fnd"))
   )
-Description: Provides teal modules for the standard clinical trials outputs.
-  The teal modules add an encoding panel to interactively change the encodings within teal.
-Depends:
-  ggplot2,
-  R (>= 3.6),
-  shiny,
-  teal (>= 0.10.0),
-  tern (>= 0.7.5)
-Imports:
-  assertthat,
-  broom,
-  dplyr,
-  grid,
-  magrittr,
-  methods,
-  rlang,
-  rmarkdown,
-  rtables (>= 0.3.8),
-  scales,
-  shinyjs,
-  shinyWidgets,
-  stats,
-  styler,
-  teal.devel (>= 0.2.12),
-  utils,
-  utils.nest (>= 0.2.11),
-  DT,
-  tidyr,
-  vistime,
-  ggrepel,
-  kableExtra
-Suggests:
-  knitr,
-  scda(>= 0.1.1),
-  scda.2021(>= 0.1.1),
-  test.nest (>= 0.2.11),
-  testthat (>= 2.0)
+Description: Provides teal modules for the standard clinical trials
+    outputs.  The teal modules add an encoding panel to interactively
+    change the encodings within teal.
 License: Apache License 2.0 | file LICENSE
+URL: https://github.com/insightsengineering/teal.modules.clinical
+BugReports: 
+    https://github.com/insightsengineering/teal.modules.clinical/issues
+Depends:
+    ggplot2,
+    R (>= 3.6),
+    shiny,
+    teal (>= 0.10.0),
+    tern (>= 0.7.5)
+Imports:
+    assertthat,
+    broom,
+    dplyr,
+    DT,
+    ggrepel,
+    grid,
+    kableExtra,
+    magrittr,
+    methods,
+    rlang,
+    rmarkdown,
+    rtables (>= 0.3.8),
+    scales,
+    shinyjs,
+    shinyWidgets,
+    stats,
+    styler,
+    teal.devel (>= 0.2.12),
+    tidyr,
+    utils,
+    utils.nest (>= 0.2.11),
+    vistime
+Suggests:
+    knitr,
+    scda.2021(>= 0.1.1),
+    scda(>= 0.1.1),
+    test.nest (>= 0.2.11),
+    testthat (>= 2.0)
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-VignetteBuilder: knitr
-URL: https://github.com/insightsengineering/teal.modules.clinical
-BugReports: https://github.com/insightsengineering/teal.modules.clinical/issues
