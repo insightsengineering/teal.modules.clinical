@@ -10,7 +10,6 @@ template_abnormality_by_worst_grade(
   arm_var,
   id_var = "USUBJID",
   paramcd = "PARAMCD",
-  grade_dir_var = "ANRIND",
   atoxgr_var = "ATOXGR",
   worst_high_flag_var = "WGRHIFL",
   worst_low_flag_var = "WGRLOFL",
@@ -34,9 +33,6 @@ the variable name for subject id.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
-
-\item{grade_dir_var}{(\code{character})\cr the variable name indicating
-Analysis Reference Range Indicator.}
 
 \item{atoxgr_var}{(\code{character})\cr the variable name indicating
 Analysis Toxicity Grade.}

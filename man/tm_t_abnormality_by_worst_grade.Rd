@@ -13,8 +13,6 @@ tm_t_abnormality_by_worst_grade(
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
   paramcd,
-  grade_dir_var = choices_selected(variable_choices(dataname, subset = "ANRIND"),
-    selected = "ANRIND", fixed = TRUE),
   atoxgr_var = choices_selected(variable_choices(dataname, subset = "ATOXGR"), selected
     = "ATOXGR", fixed = TRUE),
   worst_high_flag_var = choices_selected(variable_choices(dataname, subset =
@@ -51,10 +49,6 @@ object specifying the variable name for subject id.}
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
-\item{grade_dir_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
-object with all available choices and preselected option
-for variable names that can be used as Analysis Reference Range Indicator.}
-
 \item{atoxgr_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
 object with all available choices and preselected option
 for variable names that can be used as Analysis Toxicity Grade.}
@@ -82,6 +76,10 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{grade_dir_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+object with all available choices and preselected option
+for variable names that can be used as Analysis Reference Range Indicator.}
 }
 \value{
 
