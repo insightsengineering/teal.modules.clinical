@@ -508,7 +508,12 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       need(!is_empty(anl_m$data()[[input_paramcd_var]]), "Please select at least one Laboratory parameter."),
       need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
       need(input_id_var, "Please select a Subject Identifier."),
-      need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
+      need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
+      need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
+      need(is.factor(anl_m$data()[[input_paramcd_var]]), "Treatment variable should be a factor."),
+      need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
+      need(all(levels(anl_m$data()[[input_atoxgr]]) %in% -4:4), "All grade values should be within -4:4 range.")
+
     )
 
     # validate inputs
@@ -523,7 +528,6 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       ),
       arm_var = input_arm_var
     )
-
   })
 
   call_preparation <- reactive({
