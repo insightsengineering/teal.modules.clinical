@@ -354,7 +354,8 @@ tm_t_abnormality <- function(label,
         dataname = dataname,
         parentname = parentname,
         abnormal = abnormal,
-        label = label
+        label = label,
+        na_level = na_level
         )
       ),
     filters = get_extract_datanames(data_extract_list)
@@ -470,7 +471,8 @@ srv_t_abnormality <- function(input,
                               treatment_flag_var,
                               add_total,
                               drop_arm_levels,
-                              label) {
+                              label,
+                              na_level) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
