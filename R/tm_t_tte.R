@@ -41,7 +41,7 @@ control_tte <- function(
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
-#' @param param (`character`)\cr endpoint parameter value to use in the table title.
+#' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
 #' @seealso [tm_t_tte()]
 #'
@@ -110,12 +110,12 @@ template_tte <- function(dataname = "ANL",
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
+      parentname <- arm_preparation %>% df_explicit_na()
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -146,7 +146,7 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = basic_table(
-        title = paste0("Time-To-Event Table", ifelse(paramcd != "", " for ", ""), paramcd)),
+        title = paste("Time-To-Event Table for", paramcd)),
       env = list(paramcd = paramcd))
     )
   layout_list <- add_expr(
@@ -779,20 +779,12 @@ srv_t_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    # input_param <- paste0(
-    #   gsub(
-    #     paste0(unlist(anl_m$filter_info)["selected"], ": "), "",
-    #     grep(unlist(anl_m$filter_info)["selected"],
-    #          names(paramcd$filter[[1]]$choices), value = TRUE)
-    #     ),
-    #   " (", unlist(anl_m$filter_info)["selected"], ")"
-    #   )
 
     my_calls <- template_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(paramcd$filter)["selected"],
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
