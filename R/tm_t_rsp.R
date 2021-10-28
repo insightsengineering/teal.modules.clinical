@@ -7,6 +7,7 @@
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
+#' @param param (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_rsp()]
 #'

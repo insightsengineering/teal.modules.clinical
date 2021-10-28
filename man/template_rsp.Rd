@@ -31,6 +31,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
+\item{param}{(\code{character})\cr response parameter value to use in the table title.}
+
 \item{ref_arm}{(\code{character})\cr
 the level of reference arm in case of arm comparison.}
 
