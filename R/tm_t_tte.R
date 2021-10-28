@@ -41,6 +41,7 @@ control_tte <- function(
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
+#' @param param (`character`)\cr endpoint parameter value to use in the table title.
 #'
 #' @seealso [tm_t_tte()]
 #'
