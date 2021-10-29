@@ -150,7 +150,7 @@ template_tte <- function(dataname = "ANL",
         title = paste("Time-To-Event Table for", paramcd)),
       env = list(paramcd = paramcd))
     )
-  if(!compare_arm && !combine_comp_arms && add_total) {
+  if (!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -174,7 +174,7 @@ template_tte <- function(dataname = "ANL",
       )
     )
   }
-  
+
   layout_list <- add_expr(
     layout_list,
     substitute(
