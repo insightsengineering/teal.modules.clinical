@@ -63,7 +63,8 @@ template_rsp <- function(dataname,
                              method_test = "cmh",
                              strat = NULL
                            )
-                         )
+                         ),
+                         add_total = FALSE
 ) {
   assert_that(
     is.string(dataname),
@@ -72,7 +73,8 @@ template_rsp <- function(dataname,
     is.string(aval_var),
     is.flag(compare_arm),
     is.flag(combine_comp_arms),
-    is.flag(show_rsp_cat)
+    is.flag(show_rsp_cat),
+    is.flag(add_total)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -135,17 +137,28 @@ template_rsp <- function(dataname,
     )
   }
 
+
   layout_list <- list()
   layout_list <- add_expr(layout_list, substitute(basic_table()))
-  layout_list <- add_expr(
-    layout_list,
-    split_col_expr(
-      compare = compare_arm,
-      combine = combine_comp_arms,
-      arm_var = arm_var,
-      ref = ref_arm_val
+
+  if(!compare_arm && !combine_comp_arms && add_total) {
+    layout_list <- add_expr(
+      split_cols_by(
+        var = arm_var,
+        split_fun = add_overall_level("All Patients", first = FALSE)
+      )
     )
-  )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      split_col_expr(
+        compare = compare_arm,
+        combine = combine_comp_arms,
+        arm_var = arm_var,
+        ref = ref_arm_val
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
@@ -412,6 +425,7 @@ tm_t_rsp <- function(label,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     add_total = TRUE,
                      pre_output = NULL,
                      post_output = NULL) {
 
@@ -420,6 +434,7 @@ tm_t_rsp <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(conf_level),
+    is.flag(add_total),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -450,6 +465,7 @@ tm_t_rsp <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
+        add_total = add_total,
         label = label
       )
     ),
@@ -467,7 +483,7 @@ ui_t_rsp <- function(id, ...) {
     a$arm_var,
     a$aval_var,
     a$strata_var
-  )
+    )
 
   ns <- NS(id)
   standard_layout(
@@ -496,6 +512,7 @@ ui_t_rsp <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
@@ -535,6 +552,12 @@ ui_t_rsp <- function(id, ...) {
             )
           )
         )
+        # conditionalPanel(
+        #   condition = paste0("input['", ns("compare_arms"), "'] == NULL"),
+        #   div(
+        #     checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        #   )
+        # )
       ),
       optionalSelectInput(
         inputId = ns("conf_level"),
@@ -570,6 +593,7 @@ srv_t_rsp <- function(input,
                       arm_var,
                       arm_ref_comp,
                       strata_var,
+                      add_total,
                       label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -735,7 +759,8 @@ srv_t_rsp <- function(input,
           method_test = "cmh",
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
-      )
+      ),
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })
