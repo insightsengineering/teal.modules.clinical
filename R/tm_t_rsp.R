@@ -143,10 +143,16 @@ template_rsp <- function(dataname,
 
   if(!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
-      split_cols_by(
-        var = arm_var,
-        split_fun = add_overall_level("All Patients", first = FALSE)
-      )
+      layout_list,
+      substitute(
+        split_cols_by(
+          var = arm_var,
+          split_fun = add_overall_level("All Patients", first = FALSE)
+          ),
+        env = list(
+          arm_var = arm_var
+        )
+        )
     )
   } else {
     layout_list <- add_expr(
