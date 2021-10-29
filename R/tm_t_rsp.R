@@ -7,6 +7,7 @@
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
+#' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_rsp()]
 #'
@@ -41,6 +42,7 @@
 template_rsp <- function(dataname,
                          parentname,
                          arm_var,
+                         paramcd,
                          ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
@@ -103,12 +105,12 @@ template_rsp <- function(dataname,
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
+      parentname <- arm_preparation %>% df_explicit_na()
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -136,7 +138,18 @@ template_rsp <- function(dataname,
   }
 
   layout_list <- list()
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = basic_table(
+        title = paste("Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
+                      ifelse(length(responders) > 1, "and", ""), tail(responders, 1), "Responders")
+        ),
+      env = list(
+        paramcd = paramcd,
+        responders = responder_val)
+      )
+    )
   layout_list <- add_expr(
     layout_list,
     split_col_expr(
@@ -713,6 +726,7 @@ srv_t_rsp <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,

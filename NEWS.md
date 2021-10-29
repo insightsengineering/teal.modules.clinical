@@ -26,6 +26,7 @@
 * Updated `tm_t_pp_laboratory` to display 4 decimals by default.
 * Updated `tm_t_events_by_grade` to use the `trim_levels_in_group` split function instead of the `trim_rows` function.
 * Added a table title to `tm_t_tte`.
+* Added table titles to `tm_t_rsp` and `tm_t_binary_outcome`.
 
 ### Miscellaneous
 * Updated `LICENCE` and `README` with new package references.
