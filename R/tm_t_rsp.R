@@ -138,7 +138,7 @@ template_rsp <- function(dataname,
       )
     )
   }
-  
+
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
@@ -152,8 +152,8 @@ template_rsp <- function(dataname,
         responders = responder_val)
       )
     )
-  
-  if(!compare_arm && !combine_comp_arms && add_total) {
+
+  if (!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
       layout_list,
       substitute(
