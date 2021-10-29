@@ -206,8 +206,6 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param grade_dir_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
-#' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Reference Range Indicator.
 #' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #' object with all available choices and preselected option
