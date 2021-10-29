@@ -7,6 +7,7 @@
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
+#' @param na_level (`character`)\cr the NA level in the input dataset, default to "<Missing>".
 #'
 #' @seealso [tm_t_abnormality()]
 #'
@@ -21,7 +22,8 @@ template_abnormality <- function(parentname,
                                  treatment_flag = "Y",
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
-                                 drop_arm_levels = TRUE) {
+                                 drop_arm_levels = TRUE,
+                                 na_level = "<Missing>") {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -45,12 +47,13 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade)),
+        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade) & grade != na_level),
       env = list(
         df = as.name(dataname),
         grade = as.name(grade),
         treatment_flag_var = as.name(treatment_flag_var),
-        treatment_flag = treatment_flag
+        treatment_flag = treatment_flag,
+        na_level = na_level
       )
     )
   )
@@ -68,14 +71,14 @@ template_abnormality <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      dataname <- df_explicit_na(dataname, na_level = na_level),
+      env = list(dataname = as.name("anl"), na_level = na_level))
     )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      parentname <- df_explicit_na(parentname, na_level = na_level),
+      env = list(parentname = as.name(parentname), na_level = na_level))
     )
 
   y$data <- bracket_expr(data_list)
@@ -213,6 +216,7 @@ template_abnormality <- function(parentname,
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
 #' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   variable for baseline abnormality grade.
+#' @param na_level (`character`)\cr the NA level in the input dataset, default to "<Missing>".
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
 #'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
@@ -303,7 +307,8 @@ tm_t_abnormality <- function(label,
                              exclude_base_abn = FALSE,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
-                             post_output = NULL) {
+                             post_output = NULL,
+                             na_level = "<Missing>") {
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
@@ -349,7 +354,8 @@ tm_t_abnormality <- function(label,
         dataname = dataname,
         parentname = parentname,
         abnormal = abnormal,
-        label = label
+        label = label,
+        na_level = na_level
         )
       ),
     filters = get_extract_datanames(data_extract_list)
@@ -465,7 +471,8 @@ srv_t_abnormality <- function(input,
                               treatment_flag_var,
                               add_total,
                               drop_arm_levels,
-                              label) {
+                              label,
+                              na_level) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -548,7 +555,8 @@ srv_t_abnormality <- function(input,
       treatment_flag = input$treatment_flag,
       add_total = input$add_total,
       exclude_base_abn = input$exclude_base_abn,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      na_level = na_level
     )
     mapply(expression = my_calls, chunks_push)
   })

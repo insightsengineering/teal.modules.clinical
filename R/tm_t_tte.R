@@ -41,12 +41,14 @@ control_tte <- function(
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
+#' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
 #' @seealso [tm_t_tte()]
 #'
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
                          arm_var = "ARM",
+                         paramcd,
                          ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
@@ -109,12 +111,12 @@ template_tte <- function(dataname = "ANL",
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
+      parentname <- arm_preparation %>% df_explicit_na()
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -141,8 +143,13 @@ template_tte <- function(dataname = "ANL",
     )
   }
   layout_list <- list()
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
-
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = basic_table(
+        title = paste("Time-To-Event Table for", paramcd)),
+      env = list(paramcd = paramcd))
+    )
   if(!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -167,8 +174,7 @@ template_tte <- function(dataname = "ANL",
       )
     )
   }
-
-
+  
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -796,10 +802,12 @@ srv_t_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
+
     my_calls <- template_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
