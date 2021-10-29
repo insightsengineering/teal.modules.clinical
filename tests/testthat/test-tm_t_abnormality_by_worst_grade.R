@@ -7,7 +7,6 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
     arm_var = "ARMCD",
     id_var = "USUBJID",
     paramcd = "PARAMCD",
-    grade_dir_var = "ANRIND",
     atoxgr_var = "ATOXGR",
     worst_high_flag_var = "WGRHIFL",
     worst_low_flag_var = "WGRLOFL",
@@ -21,8 +20,6 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
       anl_labels <- var_labels(adlb)
       anl <- adlb %>%
         mutate(
-          WGRLOFL = case_when(WGRLOFL == "Y" ~ TRUE, TRUE ~ FALSE),
-          WGRHIFL = case_when(WGRHIFL == "Y" ~ TRUE, TRUE ~ FALSE),
           GRADE_DIR = factor(
             case_when(
               as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
@@ -33,9 +30,9 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           ),
           GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
       ) %>%
-        filter(WGRLOFL == TRUE | WGRHIFL == TRUE) %>%
+        filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      var_labels(anl) <- c(anl_labels, "GRADE_DIR", "GRADE_ANL")
+      var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -67,12 +64,12 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
-          split_label = "Direction of Abnormality") %>%
+          split_label = obj_label(anl$GRADE_DIR)) %>%
         count_abnormal_by_worst_grade(
         var = "GRADE_ANL",
         variables = list(id = "USUBJID", param = "PARAMCD", grade_dir = "GRADE_DIR")
       ) %>%
-      append_topleft("    Highest NCI CTCAE Grade")),
+      append_topleft("    Highest Grade")),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
