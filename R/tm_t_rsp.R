@@ -431,7 +431,7 @@ tm_t_rsp <- function(label,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     add_total = TRUE,
+                     add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL) {
 
@@ -471,7 +471,6 @@ tm_t_rsp <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        add_total = add_total,
         label = label
       )
     ),
@@ -518,7 +517,6 @@ ui_t_rsp <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
@@ -558,12 +556,10 @@ ui_t_rsp <- function(id, ...) {
             )
           )
         )
-        # conditionalPanel(
-        #   condition = paste0("input['", ns("compare_arms"), "'] == NULL"),
-        #   div(
-        #     checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
-        #   )
-        # )
+      ),
+      conditionalPanel(
+        condition = paste0("!input['", ns("compare_arms"), "']"),
+          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       optionalSelectInput(
         inputId = ns("conf_level"),
