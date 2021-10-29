@@ -47,7 +47,8 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
         arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
     layout = quote(
-      lyt <- basic_table() %>% split_cols_by(var = "ARMCD") %>%
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ARMCD") %>%
         add_colcounts() %>%
         split_rows_by(
           "PARAMCD",
@@ -127,7 +128,8 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
         arrange("myPARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
     layout = quote(
-      lyt <- basic_table() %>% split_cols_by(var = "ARMCD") %>%
+      lyt <- basic_table() %>%
+        split_cols_by(var = "ARMCD") %>%
         add_colcounts() %>%
         split_rows_by(
           "myPARAMCD",
