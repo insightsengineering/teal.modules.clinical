@@ -508,7 +508,7 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       need(input_id_var, "Please select a Subject Identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
       need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-      need(is.factor(anl_m$data()[[input_paramcd_var]]), "Treatment variable should be a factor."),
+      need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
       need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
       need(all(levels(anl_m$data()[[input_atoxgr]]) %in% -4:4), "All grade values should be within -4:4 range.")
 
