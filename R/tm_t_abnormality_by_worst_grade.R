@@ -511,7 +511,6 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
       need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
       need(all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))), "All grade values should be within -4:4 range.")
-
     )
 
     # validate inputs
