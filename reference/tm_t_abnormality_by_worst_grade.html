@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Teal Module: SMQ Table — tm_t_smq • teal.modules.clinical</title>
+<title>Teal Module: Laboratory test results with highest grade post-baseline — tm_t_abnormality_by_worst_grade • teal.modules.clinical</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Teal Module: SMQ Table — tm_t_smq" />
-<meta property="og:description" content="Teal Module: SMQ Table" />
+<meta property="og:title" content="Teal Module: Laboratory test results with highest grade post-baseline — tm_t_abnormality_by_worst_grade" />
+<meta property="og:description" content="Teal Module: Laboratory test results with highest grade post-baseline" />
 
 
 
@@ -133,16 +133,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Teal Module: <code>SMQ</code> Table</h1>
-    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_smq.R'><code>R/tm_t_smq.R</code></a></small>
-    <div class="hidden name"><code>tm_t_smq.Rd</code></div>
+    <h1>Teal Module: Laboratory test results with highest grade post-baseline</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_abnormality_by_worst_grade.R'><code>R/tm_t_abnormality_by_worst_grade.R</code></a></small>
+    <div class="hidden name"><code>tm_t_abnormality_by_worst_grade.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Teal Module: <code>SMQ</code> Table</p>
+    <p>Teal Module: Laboratory test results with highest grade post-baseline</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tm_t_smq</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>tm_t_abnormality_by_worst_grade</span><span class='op'>(</span>
   <span class='va'>label</span>,
   <span class='va'>dataname</span>,
   parentname <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='fu'>is</span><span class='op'>(</span><span class='va'>arm_var</span>, <span class='st'>"data_extract_spec"</span><span class='op'>)</span>, <span class='fu'>datanames_input</span><span class='op'>(</span><span class='va'>arm_var</span><span class='op'>)</span>,
@@ -150,14 +150,17 @@
   <span class='va'>arm_var</span>,
   id_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, subset <span class='op'>=</span> <span class='st'>"USUBJID"</span><span class='op'>)</span>, selected <span class='op'>=</span>
     <span class='st'>"USUBJID"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
-  <span class='va'>llt</span>,
+  <span class='va'>paramcd</span>,
+  atoxgr_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, subset <span class='op'>=</span> <span class='st'>"ATOXGR"</span><span class='op'>)</span>, selected
+    <span class='op'>=</span> <span class='st'>"ATOXGR"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  worst_high_flag_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, subset <span class='op'>=</span>
+    <span class='st'>"WGRHIFL"</span><span class='op'>)</span>, selected <span class='op'>=</span> <span class='st'>"WGRHIFL"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  worst_low_flag_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, subset <span class='op'>=</span> <span class='st'>"WGRLOFL"</span><span class='op'>)</span>,
+    selected <span class='op'>=</span> <span class='st'>"WGRLOFL"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  worst_flag_indicator <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>dataname</span>, var_choices <span class='op'>=</span>
+    <span class='st'>"WGRLOFL"</span><span class='op'>)</span>, selected <span class='op'>=</span> <span class='st'>"Y"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
   add_total <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  sort_criteria <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"freq_desc"</span>, <span class='st'>"alpha"</span><span class='op'>)</span>,
   drop_arm_levels <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  na_level <span class='op'>=</span> <span class='st'>"&lt;Missing&gt;"</span>,
-  smq_varlabel <span class='op'>=</span> <span class='st'>"Standardized MedDRA Query"</span>,
-  <span class='va'>baskets</span>,
-  <span class='va'>scopes</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -194,9 +197,30 @@ second variable will be nested under the first variable.</p></td>
 object specifying the variable name for subject id.</p></td>
     </tr>
     <tr>
-      <th>llt</th>
+      <th>paramcd</th>
       <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br />
-name of the variable with low level term for events.</p></td>
+variable value designating the studied parameter.</p></td>
+    </tr>
+    <tr>
+      <th>atoxgr_var</th>
+      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec</a>)<br />
+object with all available choices and preselected option
+for variable names that can be used as Analysis Toxicity Grade.</p></td>
+    </tr>
+    <tr>
+      <th>worst_high_flag_var</th>
+      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec</a>)<br /> object with all available
+choices and preselected option for variable names that can be used as Worst High Grade flag.</p></td>
+    </tr>
+    <tr>
+      <th>worst_low_flag_var</th>
+      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec</a>)<br /> object with all available
+choices and preselected option for variable names that can be used as Worst Low Grade flag.</p></td>
+    </tr>
+    <tr>
+      <th>worst_flag_indicator</th>
+      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec</a>)<br /> value indicating
+worst grade.</p></td>
     </tr>
     <tr>
       <th>add_total</th>
@@ -204,36 +228,10 @@ name of the variable with low level term for events.</p></td>
 whether to include column with total number of patients.</p></td>
     </tr>
     <tr>
-      <th>sort_criteria</th>
-      <td><p>(<code>character</code>)<br /> how to sort the final table. Default option <code>freq_desc</code> sorts
-by decreasing total number of patients with event. Alternative option <code>alpha</code> sorts events
-alphabetically.</p></td>
-    </tr>
-    <tr>
       <th>drop_arm_levels</th>
       <td><p>(<code>logical</code>)<br /> drop the unused <code>arm_var</code> levels.
 When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
 <code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></td>
-    </tr>
-    <tr>
-      <th>na_level</th>
-      <td><p>(<code>string</code>)<br /> used to replace all <code>NA</code> or empty values
-in character or factor variables in the data.</p></td>
-    </tr>
-    <tr>
-      <th>smq_varlabel</th>
-      <td><p>(<code>character</code>)<br /> label of the new column <code>SMQ</code>
-created by <code><a href='https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html'>tern::h_stack_by_baskets()</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>baskets</th>
-      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br />
-object with all available choices and preselected options for Standardized/Customized queries</p></td>
-    </tr>
-    <tr>
-      <th>scopes</th>
-      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br />
-object with all available choices for the scopes of Standardized queries.</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -249,60 +247,58 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    
+
+
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='template_abnormality_by_worst_grade.html'>template_abnormality_by_worst_grade()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 
 <span class='va'>adsl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>adae</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adae</span>
-
-<span class='va'>names_baskets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^(SMQ|CQ).*NAM$"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>adae</span><span class='op'>)</span>, value <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>names_scopes</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^SMQ.*SC$"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>adae</span><span class='op'>)</span>, value <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='va'>cs_baskets</span> <span class='op'>&lt;-</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>adae</span>, subset <span class='op'>=</span> <span class='va'>names_baskets</span><span class='op'>)</span>,
-selected <span class='op'>=</span> <span class='va'>names_baskets</span>
-<span class='op'>)</span>
-
-<span class='va'>cs_scopes</span> <span class='op'>&lt;-</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>adae</span>, subset <span class='op'>=</span> <span class='va'>names_scopes</span><span class='op'>)</span>,
-selected <span class='op'>=</span> <span class='va'>names_scopes</span>,
-fixed <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
+<span class='va'>adlb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adlb</span> <span class='op'>%&gt;%</span>
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='op'>!</span><span class='va'>AVISIT</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SCREENING"</span>, <span class='st'>"BASELINE"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>adsl</span>,
-    code <span class='op'>=</span> <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span>
-    <span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADAE"</span>, <span class='va'>adae</span>,
-      code <span class='op'>=</span> <span class='st'>"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span>
-      <span class='op'>)</span>,
+    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>adsl</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,
+    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADLB"</span>, <span class='va'>adlb</span>,
+                  code <span class='op'>=</span> <span class='st'>'ADLB &lt;- synthetic_cdisc_data("latest")$adlb %&gt;%
+filter(!AVISIT %in% c("SCREENING", "BASELINE"))'</span><span class='op'>)</span>,
     check <span class='op'>=</span> <span class='cn'>TRUE</span>
   <span class='op'>)</span>,
   modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_t_smq</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Adverse events by `SMQ` Table"</span>,
-      dataname <span class='op'>=</span> <span class='st'>"ADAE"</span>,
+    <span class='fu'>tm_t_abnormality_by_worst_grade</span><span class='op'>(</span>
+      label <span class='op'>=</span> <span class='st'>"Laboratory test results with highest grade post-baseline"</span>,
+      dataname <span class='op'>=</span> <span class='st'>"ADLB"</span>,
       arm_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>adsl</span>, subset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"SEX"</span><span class='op'>)</span><span class='op'>)</span>,
+        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>adsl</span>, subset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span><span class='op'>)</span><span class='op'>)</span>,
         selected <span class='op'>=</span> <span class='st'>"ARM"</span>
       <span class='op'>)</span>,
-      add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
-      baskets <span class='op'>=</span> <span class='va'>cs_baskets</span>,
-      scopes <span class='op'>=</span> <span class='va'>cs_scopes</span>,
-      llt <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>adae</span>, subset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AEDECOD"</span><span class='op'>)</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AEDECOD"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
+      paramcd <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
+        choices <span class='op'>=</span> <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>adlb</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,
+        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ALT"</span>, <span class='st'>"CRP"</span>, <span class='st'>"IGA"</span><span class='op'>)</span>
+      <span class='op'>)</span>,
+      add_total <span class='op'>=</span> <span class='cn'>FALSE</span>
+   <span class='op'>)</span>
+ <span class='op'>)</span>,
+ filter <span class='op'>=</span> <span class='op'>(</span>
+ <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+ ADSL <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>SAFFL <span class='op'>=</span> <span class='st'>"Y"</span><span class='op'>)</span>,
+ ADLB <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ONTRTFL <span class='op'>=</span> <span class='st'>"Y"</span><span class='op'>)</span>
+ <span class='op'>)</span>
+ <span class='op'>)</span>
 <span class='op'>)</span>
 
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+ <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
 <span class='op'>}</span>
-
 
 </div></pre>
   </div>

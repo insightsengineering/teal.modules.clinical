@@ -79,6 +79,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_abnormality.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_abnormality_by_worst_grade.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_adverse_events.html</loc>
   </url>
   <url>
@@ -209,6 +212,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_abnormality.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_abnormality_by_worst_grade.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_ancova.html</loc>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Template: Adverse Events grouped by Grade with threshold — template_events_col_by_grade • teal.modules.clinical</title>
+<title>Template: Laboratory test results with highest grade post-baseline — template_abnormality_by_worst_grade • teal.modules.clinical</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Template: Adverse Events grouped by Grade with threshold — template_events_col_by_grade" />
-<meta property="og:description" content="Template: Adverse Events grouped by Grade with threshold" />
+<meta property="og:title" content="Template: Laboratory test results with highest grade post-baseline — template_abnormality_by_worst_grade" />
+<meta property="og:description" content="Template: Laboratory test results with highest grade post-baseline" />
 
 
 
@@ -133,28 +133,26 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Template: Adverse Events grouped by Grade with threshold</h1>
-    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_events_by_grade.R'><code>R/tm_t_events_by_grade.R</code></a></small>
-    <div class="hidden name"><code>template_events_col_by_grade.Rd</code></div>
+    <h1>Template: Laboratory test results with highest grade post-baseline</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_abnormality_by_worst_grade.R'><code>R/tm_t_abnormality_by_worst_grade.R</code></a></small>
+    <div class="hidden name"><code>template_abnormality_by_worst_grade.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Template: Adverse Events grouped by Grade with threshold</p>
+    <p>Template: Laboratory test results with highest grade post-baseline</p>
     </div>
 
-    <pre class="usage"><span class='fu'>template_events_col_by_grade</span><span class='op'>(</span>
-  <span class='va'>dataname</span>,
+    <pre class="usage"><span class='fu'>template_abnormality_by_worst_grade</span><span class='op'>(</span>
   <span class='va'>parentname</span>,
+  <span class='va'>dataname</span>,
   <span class='va'>arm_var</span>,
-  grading_groups <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>`Any Grade (%)` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"1"</span>, <span class='st'>"2"</span>, <span class='st'>"3"</span>, <span class='st'>"4"</span>, <span class='st'>"5"</span><span class='op'>)</span>, `Grade 1-2 (%)`
-    <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"1"</span>, <span class='st'>"2"</span><span class='op'>)</span>, `Grade 3-4 (%)` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"3"</span>, <span class='st'>"4"</span><span class='op'>)</span>, `Grade 5 (%)` <span class='op'>=</span> <span class='st'>"5"</span><span class='op'>)</span>,
-  add_total <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  id <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
-  <span class='va'>hlt</span>,
-  <span class='va'>llt</span>,
-  grade <span class='op'>=</span> <span class='st'>"AETOXGR"</span>,
-  prune_freq <span class='op'>=</span> <span class='fl'>0.1</span>,
-  prune_diff <span class='op'>=</span> <span class='fl'>0</span>,
+  id_var <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
+  paramcd <span class='op'>=</span> <span class='st'>"PARAMCD"</span>,
+  atoxgr_var <span class='op'>=</span> <span class='st'>"ATOXGR"</span>,
+  worst_high_flag_var <span class='op'>=</span> <span class='st'>"WGRHIFL"</span>,
+  worst_low_flag_var <span class='op'>=</span> <span class='st'>"WGRLOFL"</span>,
+  worst_flag_indicator <span class='op'>=</span> <span class='st'>"Y"</span>,
+  add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   drop_arm_levels <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -162,14 +160,14 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataname</th>
-      <td><p>(<code>character</code>)<br />
-analysis data used in teal module.</p></td>
-    </tr>
-    <tr>
       <th>parentname</th>
       <td><p>(<code>character</code>)<br />
 parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>dataname</th>
+      <td><p>(<code>character</code>)<br />
+analysis data used in teal module.</p></td>
     </tr>
     <tr>
       <th>arm_var</th>
@@ -177,40 +175,38 @@ parent analysis data used in teal module, usually this refers to <code>ADSL</cod
 variable names that can be used as <code>arm_var</code>.</p></td>
     </tr>
     <tr>
-      <th>grading_groups</th>
-      <td><p>(<code>character</code>) <br /> list of grading groups.</p></td>
+      <th>id_var</th>
+      <td><p>(<code>character</code>)<br />
+the variable name for subject id.</p></td>
+    </tr>
+    <tr>
+      <th>paramcd</th>
+      <td><p>(<code>character</code>)<br />
+variable value designating the studied parameter.</p></td>
+    </tr>
+    <tr>
+      <th>atoxgr_var</th>
+      <td><p>(<code>character</code>)<br /> the variable name indicating
+Analysis Toxicity Grade.</p></td>
+    </tr>
+    <tr>
+      <th>worst_high_flag_var</th>
+      <td><p>(<code>character</code>)<br /> the variable name indicating
+Worst High Grade flag</p></td>
+    </tr>
+    <tr>
+      <th>worst_low_flag_var</th>
+      <td><p>(<code>character</code>)<br /> the variable name indicating
+Worst Low Grade flag</p></td>
+    </tr>
+    <tr>
+      <th>worst_flag_indicator</th>
+      <td><p>(<code>character</code>)<br /> value indicating worst grade.</p></td>
     </tr>
     <tr>
       <th>add_total</th>
       <td><p>(<code>logical</code>)<br />
 whether to include column with total number of patients.</p></td>
-    </tr>
-    <tr>
-      <th>id</th>
-      <td><p>(<code>character</code>) <br /> unique identifier of patients in datasets, default to "USUBJID".</p></td>
-    </tr>
-    <tr>
-      <th>hlt</th>
-      <td><p>(<code>character</code>)<br />
-name of the variable with high level term for events.</p></td>
-    </tr>
-    <tr>
-      <th>llt</th>
-      <td><p>(<code>character</code>)<br />
-name of the variable with low level term for events.</p></td>
-    </tr>
-    <tr>
-      <th>grade</th>
-      <td><p>(<code>character</code>) <br /> grade term which grading_groups is based on, default to "AETOXGR".</p></td>
-    </tr>
-    <tr>
-      <th>prune_freq</th>
-      <td><p>(<code>number</code>)<br /> threshold to use for trimming table using event incidence rate in any column.</p></td>
-    </tr>
-    <tr>
-      <th>prune_diff</th>
-      <td><p>(<code>number</code>)<br /> threshold to use for trimming table using as criteria difference in
-rates between any two columns.</p></td>
     </tr>
     <tr>
       <th>drop_arm_levels</th>
@@ -222,7 +218,7 @@ When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='tm_t_events_by_grade.html'>tm_t_events_by_grade()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='tm_t_abnormality_by_worst_grade.html'>tm_t_abnormality_by_worst_grade()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
