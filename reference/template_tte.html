@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9007</span>
       </span>
     </div>
 
@@ -157,7 +157,8 @@
   time_points <span class='op'>=</span> <span class='cn'>NULL</span>,
   time_unit_var <span class='op'>=</span> <span class='st'>"AVALU"</span>,
   event_desc_var <span class='op'>=</span> <span class='st'>"EVNTDESC"</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='control_tte.html'>control_tte</a></span><span class='op'>(</span><span class='op'>)</span>
+  control <span class='op'>=</span> <span class='fu'><a href='control_tte.html'>control_tte</a></span><span class='op'>(</span><span class='op'>)</span>,
+  add_total <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -235,6 +236,11 @@ name of the variable representing time units.</p></td>
       <th>control</th>
       <td><p>(<code>list</code>)<br /> list of settings for the analysis,
 see <code><a href='control_tte.html'>control_tte()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>add_total</th>
+      <td><p>(<code>logical</code>)<br />
+whether to include column with total number of patients.</p></td>
     </tr>
     </table>
 

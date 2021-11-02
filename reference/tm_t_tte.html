@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9007</span>
       </span>
     </div>
 
@@ -159,6 +159,7 @@
   time_unit_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, <span class='st'>"AVALU"</span><span class='op'>)</span>, <span class='st'>"AVALU"</span>, fixed
     <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
   event_desc_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='st'>"EVNTDESC"</span>, <span class='st'>"EVNTDESC"</span>, fixed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -246,6 +247,11 @@ variable.</p></td>
       <th>event_desc_var</th>
       <td><p>(<code>character</code> or <code>data_extract_spec()</code>)<br /> variable name with the event description
 information, optional.</p></td>
+    </tr>
+    <tr>
+      <th>add_total</th>
+      <td><p>(<code>logical</code>)<br />
+whether to include column with total number of patients.</p></td>
     </tr>
     <tr>
       <th>pre_output</th>

@@ -83,7 +83,7 @@ STREAM template rspt01." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9007</span>
       </span>
     </div>
 
@@ -156,6 +156,7 @@ STREAM template <code>rspt01</code>.</p>
   aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, <span class='st'>"AVALC"</span><span class='op'>)</span>, <span class='st'>"AVALC"</span>, fixed <span class='op'>=</span>
     <span class='cn'>TRUE</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span><span class='op'>)</span>, <span class='fl'>0.95</span>, keep_order <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -216,6 +217,11 @@ variable.</p></td>
       <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code>)<br />
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).</p></td>
+    </tr>
+    <tr>
+      <th>add_total</th>
+      <td><p>(<code>logical</code>)<br />
+whether to include column with total number of patients.</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
