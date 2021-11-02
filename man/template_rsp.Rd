@@ -18,7 +18,8 @@ template_rsp(
   responder_val = c("CR", "PR"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
-    list(method_ci = "cmh", method_test = "cmh", strat = NULL))
+    list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
+  add_total = FALSE
 )
 }
 \arguments{
@@ -54,6 +55,9 @@ name of the analysis variable.}
 translate \code{AVALC} into responder / non-responder.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 }
 \description{
 Creates a valid expression for responder analysis.
