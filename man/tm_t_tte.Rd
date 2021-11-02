@@ -21,6 +21,7 @@ tm_t_tte(
   time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
     = TRUE),
   event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+  add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
 )
@@ -78,6 +79,9 @@ variable.}
 
 \item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
 information, optional.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

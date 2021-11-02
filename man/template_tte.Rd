@@ -19,7 +19,8 @@ template_tte(
   time_points = NULL,
   time_unit_var = "AVALU",
   event_desc_var = "EVNTDESC",
-  control = control_tte()
+  control = control_tte(),
+  add_total = FALSE
 )
 }
 \arguments{
@@ -65,6 +66,9 @@ name of the variable representing time units.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 }
 \description{
 Creates a valid expression for time-to-event analysis.
