@@ -59,7 +59,8 @@ template_tte <- function(dataname = "ANL",
                          time_points = NULL,
                          time_unit_var = "AVALU",
                          event_desc_var = "EVNTDESC",
-                         control = control_tte()) {
+                         control = control_tte(),
+                         add_total = FALSE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -149,15 +150,30 @@ template_tte <- function(dataname = "ANL",
         title = paste("Time-To-Event Table for", paramcd)),
       env = list(paramcd = paramcd))
     )
-  layout_list <- add_expr(
-    layout_list,
-    split_col_expr(
-      compare = compare_arm,
-      combine = combine_comp_arms,
-      arm_var = arm_var,
-      ref = ref_arm_val
+  if (!compare_arm && !combine_comp_arms && add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        split_cols_by(
+          var = arm_var,
+          split_fun = add_overall_level("All Patients", first = FALSE)
+        ),
+        env = list(
+          arm_var = arm_var
+        )
+      )
     )
-  )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      split_col_expr(
+        compare = compare_arm,
+        combine = combine_comp_arms,
+        arm_var = arm_var,
+        ref = ref_arm_val
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
@@ -412,6 +428,7 @@ tm_t_tte <- function(label,
                        variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
                      ),
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+                     add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL) {
   stop_if_not(
@@ -421,6 +438,7 @@ tm_t_tte <- function(label,
     is.choices_selected(time_points),
     is.choices_selected(conf_level_coxph),
     is.choices_selected(conf_level_survfit),
+    is.flag(add_total),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -546,6 +564,10 @@ ui_t_tte <- function(id, ...) {
           )
         )
       ),
+      conditionalPanel(
+        condition = paste0("!input['", ns("compare_arms"), "']"),
+          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+      ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
@@ -665,6 +687,7 @@ srv_t_tte <- function(input,
                       parentname,
                       arm_ref_comp,
                       time_unit_var,
+                      add_total,
                       label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -810,7 +833,8 @@ srv_t_tte <- function(input,
           conf_level = as.numeric(input$conf_level_survfit),
           conf_type = input$conf_type_survfit
         )
-      )
+      ),
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })
