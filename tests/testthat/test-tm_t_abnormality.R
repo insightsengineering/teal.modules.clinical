@@ -22,12 +22,13 @@ test_that("template_abnormality generates correct expressions with default argum
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote({
-      map <- unique(anl[c(c("AVISIT", "PARAM"), "ANRIND")])
-      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE)
-      map <- map %>%
-        group_by(across(all_of(c("AVISIT", "PARAM")))) %>%
-        filter(n() > 1 || anl["ANRIND"] %in% list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH"))) %>%
-        ungroup()
+      map <- h_map_for_count_abnormal(
+        df = anl,
+        variables = list(anl = "ANRIND", split_rows = c("AVISIT", "PARAM")),
+        abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
+        method = "default",
+        na_level = "<Missing>"
+      )
     }),
     layout = quote(
       lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
@@ -87,12 +88,13 @@ test_that("template_abnormality generates correct expressions with custom argume
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout_prep = quote({
-      map <- unique(anl[c(c("AVISIT", "PARAMCD"), "MYANRIND")])
-      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE)
-      map <- map %>%
-        group_by(across(all_of(c("AVISIT", "PARAMCD")))) %>%
-        filter(n() > 1 || anl["MYANRIND"] %in% list(Low = "LOW", Medium = "MEDIUM")) %>%
-        ungroup()
+      map <- h_map_for_count_abnormal(
+        df = anl,
+        variables = list(anl = "MYANRIND", split_rows = c("AVISIT", "PARAMCD")),
+        abnormal = list(Low = "LOW", Medium = "MEDIUM"),
+        method = "default",
+        na_level = "<Missing>"
+      )
     }),
     layout = quote(
       lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
@@ -152,12 +154,13 @@ test_that("template_abnormality generates correct expressions with customized na
       adsl <- df_explicit_na(adsl, na_level = "NA")
     }),
     layout_prep = quote({
-      map <- unique(anl[c(c("AVISIT", "PARAM"), "ANRIND")])
-      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE)
-      map <- map %>%
-        group_by(across(all_of(c("AVISIT", "PARAM")))) %>%
-        filter(n() > 1 || anl["ANRIND"] %in% list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH"))) %>%
-        ungroup()
+      map <- h_map_for_count_abnormal(
+        df = anl,
+        variables = list(anl = "ANRIND", split_rows = c("AVISIT", "PARAM")),
+        abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
+        method = "default",
+        na_level = "NA"
+      )
     }),
     layout = quote(
       lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
