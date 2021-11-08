@@ -11,6 +11,7 @@
 #'  names of the variables that can be used for interaction variable selection.
 #' @param responder_val (`character`)\cr
 #'  values of the responder variable corresponding with a successful response.
+#' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_logistic()]
 #'
@@ -18,6 +19,7 @@
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
+                              paramcd,
                               cov_var,
                               interaction_var,
                               ref_arm,
@@ -32,6 +34,7 @@ template_logistic <- function(dataname,
     is.string(dataname),
     is.string(arm_var),
     is.string(aval_var),
+    is.string(paramcd),
     is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
     is.string(interaction_var) || is.null(interaction_var),
@@ -142,13 +145,25 @@ template_logistic <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- basic_table() %>%
+      result <- basic_table(
+        title = paste(
+          "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
+          ifelse(length(responder_val) > 1, "and", ""),
+          tail(responder_val, 1), "Responders"
+          )
+      ) %>%
         summarize_logistic(conf_level = conf_level) %>%
         append_topleft(topleft) %>%
         build_table(df = mod)
       result
     },
-    env = list(conf_level = conf_level, topleft = topleft))
+    env = list(
+      conf_level = conf_level,
+      topleft = topleft,
+      paramcd = paramcd,
+      responder_val = responder_val
+      )
+    )
 
   y
 }
@@ -564,6 +579,7 @@ srv_t_logistic <- function(input,
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$avalc_var),
+      paramcd = paramcd,
       cov_var = if (length(cov_var) > 0) cov_var else NULL,
       interaction_var = if (interaction_flag) interaction_var else NULL,
       ref_arm = input$ref_arm,
