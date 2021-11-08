@@ -144,12 +144,26 @@ template_coxreg <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, quote(basic_table()))
-
   if (!multivariate) {
     layout_list <- add_expr(
       layout_list,
+      substitute(
+        expr = basic_table(title = paste("Cox Regression for", paramcd)),
+        env = list(paramcd = paramcd)
+      )
+    )
+
+    layout_list <- add_expr(
+      layout_list,
       quote(split_rows_by("effect"))
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = basic_table(title = paste("Multi-Variable Cox Regression for", paramcd)),
+        env = list(paramcd = paramcd)
+      )
     )
   }
 
