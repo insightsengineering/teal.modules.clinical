@@ -3,6 +3,7 @@ test_that("template_logistic generates correct expressions", {
     dataname = "ANL",
     arm_var = "ARMCD",
     aval_var = "AVALC",
+    paramcd = "PARAMCD",
     cov_var = c("AGE", "SEX"),
     interaction_var = "AGE",
     ref_arm = c("ARM A", "ARM B"),
@@ -34,7 +35,15 @@ test_that("template_logistic generates correct expressions", {
       df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- basic_table() %>%
+      result <- basic_table(
+        title = paste(
+          "Table of", "PARAMCD",
+          "for",
+          paste(head(c("CR", "PR"), -1), collapse = ", "),
+          ifelse(length(c("CR", "PR")) > 1, "and", ""),
+          tail(c("CR", "PR"), 1),
+          "Responders")
+        ) %>%
         summarize_logistic(conf_level = 0.95) %>%
         append_topleft("BESRSPI") %>%
         build_table(df = mod)
