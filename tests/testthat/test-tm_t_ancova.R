@@ -27,7 +27,19 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste(
+          "Table of",
+          paste(head(c("FKSI-ALL", "BKWBXYZ"), -1), collapse = ", "),
+          ifelse(length(c("FKSI-ALL", "BKWBXYZ")) > 1, "and", ""),
+          tail(c("FKSI-ALL", "BKWBXYZ"), 1),
+          ifelse(length(c("FKSI-ALL", "BKWBXYZ")) > 1, "parameters", "parameter"),
+          "at",
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "visits", "visit"),
+          paste(head(unique(adqs[["AVISIT"]]), -1), collapse = ", "),
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "and", ""),
+          tail(unique(adqs[["AVISIT"]]), 1), "for", "CHG")
+        ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -88,7 +100,19 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+       title = paste(
+          "Table of",
+          paste(head(c("A", "B"), -1), collapse = ", "),
+          ifelse(length(c("A", "B")) > 1, "and", ""),
+          tail(c("A", "B"), 1),
+          ifelse(length(c("A", "B")) > 1, "parameters", "parameter"),
+          "at",
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "visits", "visit"),
+          paste(head(unique(adqs[["AVISIT"]]), -1), collapse = ", "),
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "and", ""),
+          tail(unique(adqs[["AVISIT"]]), 1), "for", "CHG")
+          ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -150,7 +174,19 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste(
+          "Table of",
+          paste(head(c("A", "B"), -1), collapse = ", "),
+          ifelse(length(c("A", "B")) > 1, "and", ""),
+          tail(c("A", "B"), 1),
+          ifelse(length(c("A", "B")) > 1, "parameters", "parameter"),
+          "at",
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "visits", "visit"),
+          paste(head(unique(adqs[["AVISIT"]]), -1), collapse = ", "),
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "and", ""),
+          tail(unique(adqs[["AVISIT"]]), 1), "for", "CHG")
+      ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -210,7 +246,19 @@ test_that("template_ancova generates expressions with single endpoint", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(
+        title = paste(
+          "Table of",
+          paste(head("MYFAVORITE", -1), collapse = ", "),
+          ifelse(length("MYFAVORITE") > 1, "and", ""),
+          tail("MYFAVORITE", 1),
+          ifelse(length("MYFAVORITE") > 1, "parameters", "parameter"),
+          "at",
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "visits", "visit"),
+          paste(head(unique(adqs[["AVISIT"]]), -1), collapse = ", "),
+          ifelse(length(unique(adqs[["AVISIT"]])) > 1, "and", ""),
+          tail(unique(adqs[["AVISIT"]]), 1), "for", "CHG")
+      ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         split_rows_by(

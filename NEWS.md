@@ -3,6 +3,8 @@
 * Updated R version requirement to >= 3.6.
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now. This is a breaking change. 
 * New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline. 
+* Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table. 
+
 
 # teal.modules.clinical 0.8.10
 ### New features
