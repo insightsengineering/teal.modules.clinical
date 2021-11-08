@@ -118,7 +118,27 @@ template_ancova <- function(dataname = "ANL",
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, quote(basic_table()))
+  title <- paste(
+    "Table of",
+    paste(head(paramcd_levels, -1), collapse = ", "),
+    ifelse(length(paramcd_levels) > 1, "and", ""),
+    tail(paramcd_levels, 1),
+    ifelse(length(paramcd_levels) > 1, "parameters", "parameter"),
+    "for",
+    aval_var
+  )
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = basic_table(
+        title = title
+      ),
+      env = list(
+        title = title
+      )
+    )
+    )
 
   layout_list <- add_expr(
     layout_list,
