@@ -7,16 +7,13 @@
 tm_g_lineplot(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
-  arm_var = choices_selected(variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-    "ARM"),
-  x_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed =
-    TRUE),
-  y_var = choices_selected(variable_choices(dataname, c("AVAL", "BASE", "CHG",
-    "PCHG")), "AVAL"),
-  y_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed =
-    TRUE),
+  parentname = ifelse(is(strata, "data_extract_spec"), datanames_input(strata), "ADSL"),
+  strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD",
+    "ACTARMCD")), "ARM"),
+  x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
+  y = choices_selected(variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")),
+    "AVAL"),
+  y_unit = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
   paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed =
     TRUE),
   param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
@@ -44,18 +41,49 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+\item{strata}{(\code{character} scalar or \code{NA}) strata variable name. \cr}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-variable value designating the studied parameter.}
+\item{x}{(\code{character} scalar) x variable name. \cr}
 
-\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{y}{(\code{character} scalar) y variable name. \cr}
+
+\item{y_unit}{(\code{character} scalar or \code{NA}) y_unit variable name. \cr}
+
+\item{paramcd}{(\code{character} scalar or \code{NA}) paramcd variable name. \cr}
+
+\item{param}{(\code{character})\cr
+parameter chosen to filter the data by.}
+
+\item{conf_level}{(\code{numeric})\cr
+value for the confidence level within the range of (0, 1).}
+
+\item{interval}{(\code{character} or \code{NULL}) \cr
+names of the statistics that will be plotted as intervals.
+All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},
+and be of a \code{double} or \code{numeric} type vector of length two.}
+
+\item{mid}{(\code{character} or \code{NULL}) \cr
+names of the statistics that will be plotted as midpoints.
+All the statistics indicated in \code{mid} variable must be present in the object returned by \code{sfun},
+and be of a \code{double} or \code{numeric} type vector of length one.}
+
+\item{whiskers}{(\code{character}) \cr
+names of the interval whiskers that will be plotted. Must match the \code{names} attribute of the
+\code{interval} element in the list returned by \code{sfun}.
+It is possible to specify one whisker only, lower or upper.}
+
+\item{table}{(\code{character} or \code{NULL}) \cr
+names of the statistics that will be displayed in the table below the plot.
+All the statistics indicated in \code{table} variable must be present in the object returned by \code{sfun}.}
+
+\item{mid_type}{(\code{character} scalar) \cr
+controls the type of the \code{mid} plot, it can be point (\code{p}), line (\code{l}), or point and line (\code{pl}).}
+
+\item{mid_point_size}{(\code{integer} or \code{double}) \cr
+controls the font size of the point for \code{mid} plot.}
+
+\item{table_font_size}{(\code{integer} or \code{double}) \cr
+controls the font size of values in the table.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -96,11 +124,11 @@ app <- init(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
-      arm_var = choices_selected(
+      strata = choices_selected(
         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
-      y_var = choices_selected(
+      y = choices_selected(
         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),

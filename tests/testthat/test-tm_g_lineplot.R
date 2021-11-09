@@ -50,8 +50,8 @@ test_that("template_g_lineplot works as expected with default arguments", {
 
 test_that("template_g_lineplot gives correct data expression with custom arguments", {
   result <- template_g_lineplot(
-    arm_var = "ARMCD",
-    y_var = "CHG",
+    strata = "ARMCD",
+    y = "CHG",
     mid = "median",
     interval = "median_ci",
     whiskers = "median_ci_upr",

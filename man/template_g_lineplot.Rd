@@ -6,11 +6,12 @@
 \usage{
 template_g_lineplot(
   dataname = "ANL",
-  arm_var = "ARM",
-  x_var = "AVISIT",
-  y_var = "AVAL",
-  y_unit_var = "AVALU",
+  strata = "ARM",
+  x = "AVISIT",
+  y = "AVAL",
+  y_unit = "AVALU",
   paramcd = "PARAMCD",
+  param = "ALT",
   mid = "mean",
   interval = "mean_ci",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -28,11 +29,18 @@ template_g_lineplot(
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{strata}{(\code{character} scalar or \code{NA}) strata variable name. \cr}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{x}{(\code{character} scalar) x variable name. \cr}
+
+\item{y}{(\code{character} scalar) y variable name. \cr}
+
+\item{y_unit}{(\code{character} scalar or \code{NA}) y_unit variable name. \cr}
+
+\item{paramcd}{(\code{character} scalar or \code{NA}) paramcd variable name. \cr}
+
+\item{param}{(\code{character})\cr
+parameter chosen to filter the data by.}
 
 \item{mid}{(\code{character} or \code{NULL}) \cr
 names of the statistics that will be plotted as midpoints.
@@ -68,14 +76,10 @@ controls the font size of the point for \code{mid} plot.}
 \item{table_font_size}{(\code{integer} or \code{double}) \cr
 controls the font size of values in the table.}
 
-\item{title}{(\code{character})\cr
-title of the output.}
+\item{title}{(\code{character} scalar) \cr plot title.}
 
 \item{y_lab}{(\code{character} scalar) \cr y-axis label.
 If it equals to \code{NULL}, then no label will be added.}
-
-\item{param}{(\code{character})\cr
-parameter chosen to filter the data by.}
 }
 \description{
 Template: Line Plot

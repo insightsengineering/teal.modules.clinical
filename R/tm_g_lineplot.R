@@ -1,7 +1,8 @@
 #' Template: Line Plot
 #'
-#' @inheritParams template_arguments
 #' @inheritParams tern::g_lineplot
+#' @inheritParams tern::control_lineplot_vars
+#' @inheritParams template_arguments
 #' @param param (`character`)\cr
 #'   parameter chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
@@ -11,11 +12,12 @@
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_lineplot <- function(dataname = "ANL",
-                                arm_var = "ARM",
-                                x_var = "AVISIT",
-                                y_var = "AVAL",
-                                y_unit_var = "AVALU",
+                                strata = "ARM",
+                                x = "AVISIT",
+                                y = "AVAL",
+                                y_unit = "AVALU",
                                 paramcd = "PARAMCD",
+                                param = "ALT",
                                 mid = "mean",
                                 interval = "mean_ci",
                                 whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -29,15 +31,15 @@ template_g_lineplot <- function(dataname = "ANL",
                                 y_lab = "") {
   assert_that(
     is.string(dataname),
-    is.string(arm_var),
-    is.string(x_var),
-    is.string(y_var),
-    is.string(y_unit_var),
+    is.string(strata),
+    is.string(x),
+    is.string(y),
+    is.string(y_unit),
     is.string(paramcd),
     is.string(title),
     is.string(y_lab)
   )
-  y <- list()
+  z <- list()
 
   data_list <- list()
 
@@ -53,18 +55,18 @@ template_g_lineplot <- function(dataname = "ANL",
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = dplyr::filter(x_var != "SCREENING") %>%
-          dplyr::mutate(x_var = droplevels(x)),
-        names = list(x_var = as.name(x_var)),
+        expr = dplyr::filter(x != "SCREENING") %>%
+          dplyr::mutate(x = droplevels(x)),
+        names = list(x = as.name(x)),
         others = list(
           anl = as.name(dataname),
-          x = as.name(x_var)
+          x_var = as.name(x)
         )
       )
     )
   }
 
-  y$data <- substitute(
+  z$data <- substitute(
     expr = {
       anl <- data_pipe
     },
@@ -73,9 +75,9 @@ template_g_lineplot <- function(dataname = "ANL",
     )
   )
 
-  y$variables <- substitute(
+  z$variables <- substitute(
     expr = variables <- control_lineplot_vars(x = x, y = y, strata = arm, paramcd = paramcd, y_unit = y_unit),
-    env = list(x = x_var, y = y_var, arm = arm_var, paramcd = paramcd, y_unit = y_unit_var)
+    env = list(x = x, y = y, arm = strata, paramcd = paramcd, y_unit = y_unit)
   )
 
   mid_choices <- c(
@@ -116,7 +118,7 @@ template_g_lineplot <- function(dataname = "ANL",
             "Plot of ", names(which(mid_choices == mid)), " and ",
             ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
             names(which(interval_choices == interval)), " by Visit"),
-          y_lab = paste(y_var, names(which(mid_choices == mid)), "Values for"),
+          y_lab = paste(y, names(which(mid_choices == mid)), "Values for"),
           ggtheme = theme_minimal(),
           control = control_summarize_vars(conf_level = conf_level),
           subtitle_add_paramcd = FALSE,
@@ -134,14 +136,14 @@ template_g_lineplot <- function(dataname = "ANL",
         interval_choices = interval_choices,
         mid_point_size = mid_point_size,
         table_font_size = table_font_size,
-        y_var = y_var
+        y = y
       )
     )
   )
 
-  y$graph <- bracket_expr(graph_list)
+  z$graph <- bracket_expr(graph_list)
 
-  y
+  z
 }
 
 
@@ -150,6 +152,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' This teal module produces a grid style Line Plot for data with
 #' ADaM structure.
 #'
+#' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -171,11 +174,11 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     tm_g_lineplot(
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
-#'       arm_var = choices_selected(
+#'       strata = choices_selected(
 #'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
-#'       y_var = choices_selected(
+#'       y = choices_selected(
 #'         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
 #'         "AVAL"
 #'       ),
@@ -193,12 +196,12 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
-                          arm_var = choices_selected(variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
-                          x_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
-                          y_var = choices_selected(
+                          parentname = ifelse(is(strata, "data_extract_spec"), datanames_input(strata), "ADSL"),
+                          strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
+                          x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
+                          y = choices_selected(
                             variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
-                          y_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
+                          y_unit = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
                           paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE),
                           param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -235,11 +238,11 @@ tm_g_lineplot <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    strata = cs_to_des_select(strata, dataname = parentname),
     param = cs_to_des_filter(param, dataname = dataname),
-    x_var = cs_to_des_select(x_var, dataname = dataname, multiple = FALSE),
-    y_var = cs_to_des_select(y_var, dataname = dataname),
-    y_unit_var = cs_to_des_select(y_unit_var, dataname = dataname),
+    x = cs_to_des_select(x, dataname = dataname, multiple = FALSE),
+    y = cs_to_des_select(y, dataname = dataname),
+    y_unit = cs_to_des_select(y_unit, dataname = dataname),
     paramcd = cs_to_des_select(paramcd, dataname = dataname)
   )
 
@@ -271,12 +274,12 @@ ui_g_lineplot <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
-    a$arm_var,
+    a$strata,
     a$paramcd,
-    a$x_var,
+    a$x,
     a$param,
-    a$y_var,
-    a$y_unit_var
+    a$y,
+    a$y_unit
   )
 
   ns <- NS(id)
@@ -289,7 +292,7 @@ ui_g_lineplot <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "x_var", "y_var", "y_unit_var", "param")]),
+      datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
       data_extract_input(
         id = ns("param"),
         label = "Select Biomarker",
@@ -297,21 +300,21 @@ ui_g_lineplot <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("arm_var"),
+        id = ns("strata"),
         label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
+        data_extract_spec = a$strata,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("y_var"),
+        id = ns("y"),
         label = "Analysis Variable",
-        data_extract_spec = a$y_var,
+        data_extract_spec = a$y,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
-        id = ns("x_var"),
+        id = ns("x"),
         label = "Time Variable",
-        data_extract_spec = a$x_var,
+        data_extract_spec = a$x,
         is_single_dataset = is_single_dataset_value
       ),
       selectInput(
@@ -375,9 +378,9 @@ ui_g_lineplot <- function(id, ...) {
             selected = "pl"
           ),
           data_extract_input(
-            id = ns("y_unit_var"),
+            id = ns("y_unit"),
             label = "Analysis Unit Variable",
-            data_extract_spec = a$y_unit_var,
+            data_extract_spec = a$y_unit,
             is_single_dataset = is_single_dataset_value
           ),
           data_extract_input(
@@ -431,11 +434,11 @@ srv_g_lineplot <- function(input,
                            dataname,
                            parentname,
                            paramcd,
-                           arm_var,
-                           x_var,
-                           y_var,
+                           strata,
+                           x,
+                           y,
                            param,
-                           y_unit_var,
+                           y_unit,
                            label,
                            plot_height,
                            plot_width) {
@@ -445,8 +448,8 @@ srv_g_lineplot <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x_var, y_var, arm_var, paramcd, y_unit_var, param),
-    input_id = c("x_var", "y_var", "arm_var", "paramcd", "y_unit_var", "param"),
+    data_extract = list(x, y, strata, paramcd, y_unit, param),
+    input_id = c("x", "y", "strata", "paramcd", "y_unit", "param"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -456,24 +459,24 @@ srv_g_lineplot <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_x_var <- as.vector(anl_m$columns_source$x_var)
-    input_y_var <- as.vector(anl_m$columns_source$y_var)
+    input_strata <- as.vector(anl_m$columns_source$strata)
+    input_x_var <- as.vector(anl_m$columns_source$x)
+    input_y <- as.vector(anl_m$columns_source$y)
     input_param <- unlist(param$filter)["vars_selected"]
     input_paramcd <- as.vector(anl_m$columns_source$paramcd)
-    input_y_unit_var <- as.vector(anl_m$columns_source$y_unit_var)
+    input_y_unit <- as.vector(anl_m$columns_source$y_unit)
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
+      adslvars = c("USUBJID", "STUDYID", input_strata),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y_var, input_y_unit_var, input_param),
-      arm_var = input_arm_var
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit, input_param),
+      strata = input_strata
     )
 
     # validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+    if (length(input_strata) > 0 && length(unique(adsl_filtered[[input_strata]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
 
@@ -484,7 +487,7 @@ srv_g_lineplot <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_y_var), "Analysis variable should be a single column."))
+    validate(need(is_character_single(input_y), "Analysis variable should be a single column."))
     validate(need(is_character_single(input_x_var), "Time variable should be a single column."))
 
     NULL
@@ -514,11 +517,11 @@ srv_g_lineplot <- function(input,
 
     my_calls <- template_g_lineplot(
       dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      y_var = as.vector(anl_m$columns_source$y_var),
-      x_var = as.vector(anl_m$columns_source$x_var),
+      strata = as.vector(anl_m$columns_source$strata),
+      y = as.vector(anl_m$columns_source$y),
+      x = as.vector(anl_m$columns_source$x),
       paramcd = as.vector(anl_m$columns_source$paramcd),
-      y_unit_var = as.vector(anl_m$columns_source$y_unit_var),
+      y_unit = as.vector(anl_m$columns_source$y_unit),
       conf_level = as.numeric(input$conf_level),
       incl_screen = input$incl_screen,
       mid = input$mid,
@@ -551,7 +554,7 @@ srv_g_lineplot <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, y_var, x_var, y_unit_var, param)
+      list(strata, paramcd, y, x, y_unit, param)
     ),
     modal_title = label
   )
