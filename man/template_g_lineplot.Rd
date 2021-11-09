@@ -74,7 +74,7 @@ title of the output.}
 \item{y_lab}{(\code{character} scalar) \cr y-axis label.
 If it equals to \code{NULL}, then no label will be added.}
 
-\item{biomarker}{(\code{character})\cr
+\item{param}{(\code{character})\cr
 biomarker chosen to filter the data by.}
 }
 \description{

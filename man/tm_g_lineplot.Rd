@@ -19,7 +19,7 @@ tm_g_lineplot(
     TRUE),
   paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed =
     TRUE),
-  biomarker = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
+  param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   interval = "mean_ci",
   mid = "mean",
@@ -104,7 +104,7 @@ app <- init(
         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
-      biomarker = choices_selected(
+      param = choices_selected(
         value_choices(ADLB, "PARAMCD", "PARAM"),
         "ALT"
       )

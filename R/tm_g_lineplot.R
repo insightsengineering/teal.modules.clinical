@@ -2,7 +2,7 @@
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_lineplot
-#' @param biomarker (`character`)\cr
+#' @param param (`character`)\cr
 #'   biomarker chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
 #'   should the screening visit be included.
@@ -179,7 +179,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
 #'         "AVAL"
 #'       ),
-#'       biomarker = choices_selected(
+#'       param = choices_selected(
 #'         value_choices(ADLB, "PARAMCD", "PARAM"),
 #'         "ALT"
 #'       )
@@ -200,7 +200,7 @@ tm_g_lineplot <- function(label,
                             variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
                           y_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
                           paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE),
-                          biomarker = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
+                          param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           interval = "mean_ci",
                           mid = "mean",
@@ -236,7 +236,7 @@ tm_g_lineplot <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    biomarker = cs_to_des_filter(biomarker, dataname = dataname),
+    param = cs_to_des_filter(param, dataname = dataname),
     x_var = cs_to_des_select(x_var, dataname = dataname, multiple = FALSE),
     y_var = cs_to_des_select(y_var, dataname = dataname),
     y_unit_var = cs_to_des_select(y_unit_var, dataname = dataname),
@@ -274,7 +274,7 @@ ui_g_lineplot <- function(id, ...) {
     a$arm_var,
     a$paramcd,
     a$x_var,
-    a$biomarker,
+    a$param,
     a$y_var,
     a$y_unit_var
   )
@@ -289,11 +289,11 @@ ui_g_lineplot <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "x_var", "y_var", "y_unit_var", "biomarker")]),
+      datanames_input(a[c("arm_var", "paramcd", "x_var", "y_var", "y_unit_var", "param")]),
       data_extract_input(
-        id = ns("biomarker"),
+        id = ns("param"),
         label = "Select Biomarker",
-        data_extract_spec = a$biomarker,
+        data_extract_spec = a$param,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
@@ -434,7 +434,7 @@ srv_g_lineplot <- function(input,
                            arm_var,
                            x_var,
                            y_var,
-                           biomarker,
+                           param,
                            y_unit_var,
                            label,
                            plot_height,
@@ -445,8 +445,8 @@ srv_g_lineplot <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x_var, y_var, arm_var, paramcd, y_unit_var, biomarker),
-    input_id = c("x_var", "y_var", "arm_var", "paramcd", "y_unit_var", "biomarker"),
+    data_extract = list(x_var, y_var, arm_var, paramcd, y_unit_var, param),
+    input_id = c("x_var", "y_var", "arm_var", "paramcd", "y_unit_var", "param"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -459,7 +459,7 @@ srv_g_lineplot <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_x_var <- as.vector(anl_m$columns_source$x_var)
     input_y_var <- as.vector(anl_m$columns_source$y_var)
-    input_biomarker <- unlist(biomarker$filter)["vars_selected"]
+    input_param <- unlist(param$filter)["vars_selected"]
     input_paramcd <- as.vector(anl_m$columns_source$paramcd)
     input_y_unit_var <- as.vector(anl_m$columns_source$y_unit_var)
 
@@ -468,7 +468,7 @@ srv_g_lineplot <- function(input,
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y_var, input_y_unit_var, input_biomarker),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y_var, input_y_unit_var, input_param),
       arm_var = input_arm_var
     )
 
@@ -510,7 +510,7 @@ srv_g_lineplot <- function(input,
       input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
       input_interval <- input$interval
     }
-    input_biomarker <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$biomarker)]]))
+    input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
 
     my_calls <- template_g_lineplot(
       dataname = "ANL",
@@ -551,7 +551,7 @@ srv_g_lineplot <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, y_var, x_var, y_unit_var, biomarker)
+      list(arm_var, paramcd, y_var, x_var, y_unit_var, param)
     ),
     modal_title = label
   )
