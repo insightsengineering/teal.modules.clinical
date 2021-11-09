@@ -2,36 +2,41 @@
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_lineplot
-#' @param facet_var (`character`)\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
+#' @param biomarker (`character`)\cr
+#'   biomarker chosen to filter the data by.
+#' @param incl_screen (`boolean`)\cr
+#'   should the screening visit be included.
 #'
 #' @seealso [tm_g_lineplot()]
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_lineplot <- function(dataname = "ANL",
                                 arm_var = "ARM",
-                                aval_var = "AVAL",
                                 x_var = "AVISIT",
                                 y_var = "AVAL",
                                 y_unit_var = "AVALU",
                                 paramcd = "PARAMCD",
-                                biomarker = "ALT",
+                                mid = "mean",
+                                interval = "mean_ci",
+                                whiskers = c("mean_ci_lwr", "mean_ci_upr"),
+                                table = c("n", "mean_sd", "median", "range"),
+                                mid_type = "pl",
                                 conf_level = 0.95,
+                                incl_screen = TRUE,
+                                mid_point_size = 2,
+                                table_font_size = 4,
                                 title = "Line Plot",
-                                xticks = NULL) {
+                                y_lab = "") {
   assert_that(
     is.string(dataname),
     is.string(arm_var),
-    is.string(aval_var),
     is.string(x_var),
     is.string(y_var),
     is.string(y_unit_var),
-    is.string(biomarker),
-    is.null(xticks) | is.numeric(xticks),
-    is.string(title)
+    is.string(paramcd),
+    is.string(title),
+    is.string(y_lab)
   )
-  # browser()
   y <- list()
 
   data_list <- list()
@@ -39,10 +44,25 @@ template_g_lineplot <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl %>% dplyr::filter(paramcd == biomarker),
-      env = list(anl = as.name(dataname), paramcd = as.name(paramcd), biomarker = biomarker)
+      expr = anl ,
+      env = list(anl = as.name(dataname))
     )
   )
+
+  if (!incl_screen) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = dplyr::filter(x_var != "SCREENING") %>%
+          dplyr::mutate(x_var = droplevels(x)),
+        names = list(x_var = as.name(x_var)),
+        others = list(
+          anl = as.name(dataname),
+          x = as.name(x_var)
+        )
+      )
+    )
+  }
 
   y$data <- substitute(
     expr = {
@@ -54,9 +74,21 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   y$variables <- substitute(
-      expr = variables <- control_lineplot_vars(x = x, y = y, strata = arm, paramcd = paramcd, y_unit = y_unit),
-      env = list(x = x_var, y = y_var, arm = arm_var, paramcd = paramcd, y_unit = y_unit_var)
-    )
+    expr = variables <- control_lineplot_vars(x = x, y = y, strata = arm, paramcd = paramcd, y_unit = y_unit),
+    env = list(x = x_var, y = y_var, arm = arm_var, paramcd = paramcd, y_unit = y_unit_var)
+  )
+
+  mid_choices <- c(
+    "n" = "n",
+    "Mean" = "mean",
+    "Standard Deviation" = "sd",
+    "Median" = "median")
+
+  interval_choices <- c(
+    "Mean Confidence Interval" = "mean_ci",
+    "Median Confidence Interval" = "median_ci",
+    "25% and 75% Quantiles" = "quantiles",
+    "Range" = "range")
 
   graph_list <- list()
 
@@ -70,35 +102,39 @@ template_g_lineplot <- function(dataname = "ANL",
     substitute(
       expr = {
         result <- g_lineplot(
-              df = anl,
-              variables = variables,
-              # xlab = paste0(
-              #   xlab,
-              #   " (",
-              #   gsub(
-              #     "(^|[[:space:]])([[:alpha:]])",
-              #     "\\1\\U\\2",
-              #     tolower(anl$y_unit_var[1]),
-              #     perl = TRUE
-              #   ),
-              #   ")"
-              # ),
-              # y_val = y_val,
-              newpage = FALSE,
-              title = title,
-              xticks = xticks,
-              # title = paste(
-              #   title, ",", quote(biomarker),
-              #   "=", as.character(unique(df$biomarker))
-              # ),
-              ggtheme = theme_minimal(),
-              control = control_summarize_vars(conf_level = conf_level)
+          df = anl,
+          variables = variables,
+          interval = interval,
+          mid = mid,
+          whiskers = whiskers,
+          table = table,
+          mid_type = mid_type,
+          mid_point_size = mid_point_size,
+          table_font_size = table_font_size,
+          newpage = FALSE,
+          title = paste0(
+            "Plot of ", names(which(mid_choices == mid)), " and ",
+            ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level*100), "% "), ""),
+            names(which(interval_choices == interval)), " by Visit"),
+          y_lab = paste(y_var, names(which(mid_choices == mid)), "Values for"),
+          ggtheme = theme_minimal(),
+          control = control_summarize_vars(conf_level = conf_level),
+          subtitle_add_paramcd = FALSE,
+          subtitle_add_unit = FALSE
         )
       },
       env = list(
         conf_level = conf_level,
-        title = title,
-        xticks = xticks
+        interval = interval,
+        mid = mid,
+        whiskers = whiskers,
+        table = table,
+        mid_type = mid_type,
+        mid_choices = mid_choices,
+        interval_choices = interval_choices,
+        mid_point_size = mid_point_size,
+        table_font_size = table_font_size,
+        y_var = y_var
       )
     )
   )
@@ -133,18 +169,17 @@ template_g_lineplot <- function(dataname = "ANL",
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_lineplot(
-#'       label = "LINE PLOT",
+#'       label = "Line Plot",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
 #'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       y_var = choices_selected(
-#'         variable_choices(ADLB, "AVAL"),
-#'         "AVAL",
-#'         fixed = TRUE
+#'         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
+#'         "AVAL"
 #'       ),
-#'       paramcd = choices_selected(
+#'       biomarker = choices_selected(
 #'         value_choices(ADLB, "PARAMCD", "PARAM"),
 #'         "ALT"
 #'       )
@@ -160,20 +195,30 @@ tm_g_lineplot <- function(label,
                           dataname,
                           parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                           arm_var = choices_selected(variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
-                          x_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT"),
-                          y_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
+                          x_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
+                          y_var = choices_selected(variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
                           y_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
-                          paramcd = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
+                          paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE),
+                          biomarker = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                          plot_height = c(1200L, 400L, 5000L),
+                          interval = "mean_ci",
+                          mid = "mean",
+                          whiskers = c("mean_ci_lwr", "mean_ci_upr"),
+                          table = NULL,
+                          mid_type = "pl",
+                          mid_point_size = c(2, 1, 5),
+                          table_font_size = c(4, 2, 6),
+                          plot_height = c(1000L, 200L, 4000L),
                           plot_width = NULL,
                           pre_output = NULL,
                           post_output = NULL) {
-
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is.choices_selected(conf_level),
+    is_character_single(mid),
+    is_character_single(interval),
+    is_character_vector(whiskers),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -190,10 +235,11 @@ tm_g_lineplot <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    biomarker = cs_to_des_filter(biomarker, dataname = dataname),
     x_var = cs_to_des_select(x_var, dataname = dataname, multiple = FALSE),
     y_var = cs_to_des_select(y_var, dataname = dataname),
-    y_unit_var = cs_to_des_select(y_unit_var, dataname = dataname)
+    y_unit_var = cs_to_des_select(y_unit_var, dataname = dataname),
+    paramcd = cs_to_des_select(paramcd, dataname = dataname)
   )
 
   module(
@@ -227,13 +273,12 @@ ui_g_lineplot <- function(id, ...) {
     a$arm_var,
     a$paramcd,
     a$x_var,
-    # a$biomarker,
+    a$biomarker,
     a$y_var,
     a$y_unit_var
   )
 
   ns <- NS(id)
-
   standard_layout(
     output = white_small_well(
       verbatimTextOutput(outputId = ns("text")),
@@ -243,11 +288,17 @@ ui_g_lineplot <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "x_var", "y_var", "y_unit_var")]),#, "biomarker")]),
+      datanames_input(a[c("arm_var", "paramcd", "x_var", "y_var", "y_unit_var", "biomarker")]),
       data_extract_input(
-        id = ns("paramcd"),
+        id = ns("biomarker"),
         label = "Select Biomarker",
-        data_extract_spec = a$paramcd,
+        data_extract_spec = a$biomarker,
+        is_single_dataset = is_single_dataset_value
+      ),
+      data_extract_input(
+        id = ns("arm_var"),
+        label = "Select Treatment Variable",
+        data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_input(
@@ -258,35 +309,40 @@ ui_g_lineplot <- function(id, ...) {
       ),
       data_extract_input(
         id = ns("x_var"),
-        label = "X Variable",
+        label = "Time Variable",
         data_extract_spec = a$x_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      selectInput(
+        ns("mid"),
+        "Midpoint Statistic",
+        choices = c(
+          "n" = "n",
+          "Mean" = "mean",
+          "Standard deviation" = "sd",
+          "Median" = "median"
+        ),
+        selected = "mean"
       ),
-      data_extract_input(
-        id = ns("y_unit_var"),
-        label = "Analysis Unit Variable",
-        data_extract_spec = a$y_unit_var,
-        is_single_dataset = is_single_dataset_value
+      optionalSelectInput(
+        ns("interval"),
+        "Interval",
+        choices = c(
+          "Mean CI" = "mean_ci",
+          "Median CI" = "median_ci",
+          "25% and 75%-ile" = "quantiles",
+          "Min - Max" = "range"
+        ),
+        selected = "mean_ci"
+      ),
+      checkboxInput(
+        ns("incl_screen"),
+        "Include screening visit",
+        value = TRUE
       ),
       panel_group(
         panel_item(
           "Additional plot settings",
-          textInput(
-            inputId = ns("xticks"),
-            label = "Specify break intervals for x-axis e.g. 0 ; 500"
-          ),
-          checkboxInput(
-            inputId = ns("show_lineplot_table"),
-            label = "Show Line Plot table",
-            value = TRUE,
-            width = "100%"
-          ),
           optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
@@ -294,7 +350,66 @@ ui_g_lineplot <- function(id, ...) {
             a$conf_level$selected,
             multiple = FALSE,
             fixed = a$conf_level$fixed
+          ),
+          optionalSliderInputValMinMax(
+            ns("mid_point_size"),
+            "Midpoint symbol size",
+            a$mid_point_size,
+            ticks = FALSE
+          ),
+          checkboxGroupInput(
+            ns("whiskers"),
+            "Whiskers to display",
+            choices = c("Lower", "Upper"),
+            selected = c("Lower", "Upper")
+          ),
+          radioButtons(
+            ns("mid_type"),
+            label = "Plot type",
+            choices = c(
+              "Point and line" = "pl",
+              "Point" = "p",
+              "Line" = "l"
+            ),
+            selected = "pl"
+          ),
+          data_extract_input(
+            id = ns("y_unit_var"),
+            label = "Analysis Unit Variable",
+            data_extract_spec = a$y_unit_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          data_extract_input(
+            id = ns("paramcd"),
+            label = "Parameter Code Variable",
+            data_extract_spec = a$paramcd,
+            is_single_dataset = is_single_dataset_value
           )
+        )
+      ),
+      panel_group(
+        panel_item(
+          "Additional table settings",
+          optionalSliderInputValMinMax(
+            ns("table_font_size"),
+            "Table Font Size",
+            a$table_font_size,
+            ticks = FALSE
+          ),
+          checkboxGroupInput(
+            ns("table"),
+            label = "Choose the statistics to display in the table",
+            choices = c(
+              "n" = "n",
+              "Mean (SD)" = "mean_sd",
+              "Mean CI" = "mean_ci",
+              "Median" = "median",
+              "Median CI" = "median_ci",
+              "25% and 75%-ile" = "quantiles",
+              "Min - Max" = "range"
+            ),
+            selected = c("n", "mean_sd", "median", "range"),
+          ),
         )
       )
     ),
@@ -309,28 +424,28 @@ ui_g_lineplot <- function(id, ...) {
 #' @noRd
 #'
 srv_g_lineplot <- function(input,
-                     output,
-                     session,
-                     datasets,
-                     dataname,
-                     parentname,
-                     paramcd,
-                     arm_var,
-                     x_var,
-                     y_var,
-                     # biomarker,
-                     y_unit_var,
-                     label,
-                     plot_height,
-                     plot_width) {
-  stopifnot(is_cdisc_data(datasets))
+                           output,
+                           session,
+                           datasets,
+                           dataname,
+                           parentname,
+                           paramcd,
+                           arm_var,
+                           x_var,
+                           y_var,
+                           biomarker,
+                           y_unit_var,
+                           label,
+                           plot_height,
+                           plot_width) {
 
+  stopifnot(is_cdisc_data(datasets))
   init_chunks()
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x_var, y_var, arm_var, paramcd, y_unit_var),#, biomarker),
-    input_id = c("x_var", "y_var", "arm_var", "paramcd", "y_unit_var"),#, "biomarker"),
+    data_extract = list(x_var, y_var, arm_var, paramcd, y_unit_var, biomarker),
+    input_id = c("x_var", "y_var", "arm_var", "paramcd", "y_unit_var", "biomarker"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -343,20 +458,16 @@ srv_g_lineplot <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_x_var <- as.vector(anl_m$columns_source$x_var)
     input_y_var <- as.vector(anl_m$columns_source$y_var)
-    # input_biomarker <- as.vector(anl_m$columns_source$biomarker)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+    input_biomarker <- unlist(biomarker$filter)["vars_selected"]
+    input_paramcd <- as.vector(anl_m$columns_source$paramcd)
     input_y_unit_var <- as.vector(anl_m$columns_source$y_unit_var)
-    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-      strsplit(",") %>%
-      unlist() %>%
-      as.numeric()
 
     # validate inputs
     validate_args <- list(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y_var, input_y_unit_var),#, input_biomarker),
+      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y_var, input_y_unit_var, input_biomarker),
       arm_var = input_arm_var
     )
 
@@ -367,31 +478,19 @@ srv_g_lineplot <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    # validate xticks
-    if (length(input_xticks) == 0) {
-      input_xticks <- NULL
-    }
-    else {
-      validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
-      validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
-      validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
-    }
-
     validate(need(
       input$conf_level > 0 && input$conf_level < 1,
       "Please choose a confidence level between 0 and 1"
     ))
 
     validate(need(is_character_single(input_y_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_x_var), "X variable should be a single column."))
-
-    # validate font size
-    # validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
+    validate(need(is_character_single(input_x_var), "Time variable should be a single column."))
 
     NULL
   })
 
   call_preparation <- reactive({
+
     validate_checks()
 
     chunks_reset()
@@ -402,17 +501,15 @@ srv_g_lineplot <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 2)
 
-    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-      strsplit(",") %>%
-      unlist() %>%
-      as.numeric()
-
-    if (length(input_xticks) == 0) {
-      input_xticks <- NULL
+    whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
+    if (is_empty(whiskers_selected) | is.null(input$interval)) {
+      input_whiskers <- NULL
+      input_interval <- NULL
+    } else {
+      input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
+      input_interval <- input$interval
     }
-
-    input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
-    title <- paste("Line Plot of", input_paramcd)
+    input_biomarker <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$biomarker)]]))
 
     my_calls <- template_g_lineplot(
       dataname = "ANL",
@@ -420,11 +517,16 @@ srv_g_lineplot <- function(input,
       y_var = as.vector(anl_m$columns_source$y_var),
       x_var = as.vector(anl_m$columns_source$x_var),
       paramcd = as.vector(anl_m$columns_source$paramcd),
-      # biomarker = as.vector(anl_m$columns_source$biomarker),
       y_unit_var = as.vector(anl_m$columns_source$y_unit_var),
-      xticks = input_xticks,
       conf_level = as.numeric(input$conf_level),
-      title = title
+      incl_screen = input$incl_screen,
+      mid = input$mid,
+      interval = input_interval,
+      whiskers = input_whiskers,
+      table = input$table,
+      mid_type = input$mid_type,
+      mid_point_size = input$mid_point_size,
+      table_font_size = input$table_font_size
     )
     mapply(expression = my_calls, chunks_push)
   })
@@ -433,7 +535,6 @@ srv_g_lineplot <- function(input,
     call_preparation()
     chunks_safe_eval()
   })
-
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
@@ -449,7 +550,7 @@ srv_g_lineplot <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(
-      list(arm_var, paramcd, y_var, x_var, y_unit_var)#, biomarker)
+      list(arm_var, paramcd, y_var, x_var, y_unit_var, biomarker)
     ),
     modal_title = label
   )
