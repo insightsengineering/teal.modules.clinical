@@ -59,7 +59,7 @@ controls the type of the \code{mid} plot, it can be point (\code{p}), line (\cod
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
 
-\item{incl_screen}{(\code{boolean})\cr
+\item{incl_screen}{(\code{logical})\cr
 should the screening visit be included.}
 
 \item{mid_point_size}{(\code{integer} or \code{double}) \cr
