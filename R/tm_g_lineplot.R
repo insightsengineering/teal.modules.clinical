@@ -44,7 +44,7 @@ template_g_lineplot <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl ,
+      expr = anl,
       env = list(anl = as.name(dataname))
     )
   )
@@ -114,7 +114,7 @@ template_g_lineplot <- function(dataname = "ANL",
           newpage = FALSE,
           title = paste0(
             "Plot of ", names(which(mid_choices == mid)), " and ",
-            ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level*100), "% "), ""),
+            ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
             names(which(interval_choices == interval)), " by Visit"),
           y_lab = paste(y_var, names(which(mid_choices == mid)), "Values for"),
           ggtheme = theme_minimal(),
@@ -196,7 +196,8 @@ tm_g_lineplot <- function(label,
                           parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                           arm_var = choices_selected(variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
                           x_var = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
-                          y_var = choices_selected(variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
+                          y_var = choices_selected(
+                            variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
                           y_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
                           paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE),
                           biomarker = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),

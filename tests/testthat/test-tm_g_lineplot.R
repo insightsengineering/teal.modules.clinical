@@ -1,5 +1,5 @@
 adlb <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adlb
-ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT")
+ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT") # nolint
 
 test_that("template_g_lineplot works as expected with default arguments", {
   result <- template_g_lineplot()
