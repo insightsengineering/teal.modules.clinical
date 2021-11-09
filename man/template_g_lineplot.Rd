@@ -75,7 +75,7 @@ title of the output.}
 If it equals to \code{NULL}, then no label will be added.}
 
 \item{param}{(\code{character})\cr
-biomarker chosen to filter the data by.}
+parameter chosen to filter the data by.}
 }
 \description{
 Template: Line Plot

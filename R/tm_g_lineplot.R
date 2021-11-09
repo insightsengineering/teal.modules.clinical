@@ -3,7 +3,7 @@
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_lineplot
 #' @param param (`character`)\cr
-#'   biomarker chosen to filter the data by.
+#'   parameter chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
 #'   should the screening visit be included.
 #'
