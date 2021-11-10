@@ -161,6 +161,7 @@ tm_t_pp_laboratory <- function(label,
                                anrind = NULL,
                                pre_output = NULL,
                                post_output = NULL) {
+  logger::log_info("Initializing tm_t_pp_laboratory")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
   assert_that(is_character_single(parentname))

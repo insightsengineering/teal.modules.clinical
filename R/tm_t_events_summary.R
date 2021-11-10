@@ -588,7 +588,7 @@ tm_t_events_summary <- function(label,
                                 count_events = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_events_summary")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
