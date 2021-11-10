@@ -1,9 +1,17 @@
-# teal.modules.clinical 0.8.10.9011
+# teal.modules.clinical 0.8.10.9013
 
-* Updated R version requirement to >= 3.6.
-* Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now. This is a breaking change. 
+### Breaking changes
+* Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
+
+### New features
 * New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline. 
 * Enhanced `tm_t_logistic` to include selected parameter in title of the table. 
+
+## Enhancements
+* Added support for logging with the `logger` package and added info level logs upon initialization of a module.
+
+### Miscellaneous
+* Updated R version requirement to >= 3.6.
 
 # teal.modules.clinical 0.8.10
 ### New features

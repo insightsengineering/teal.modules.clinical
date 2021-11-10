@@ -545,6 +545,7 @@ tm_t_shift_by_grade <- function(label,
                                 post_output = NULL,
                                 na_level = "<Missing>",
                                 code_missing_baseline = FALSE) {
+  logger::log_info("Initializing tm_t_shift_by_grade")
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),

@@ -309,6 +309,7 @@ tm_t_abnormality <- function(label,
                              pre_output = NULL,
                              post_output = NULL,
                              na_level = "<Missing>") {
+  logger::log_info("Initializing tm_t_abnormality")
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
