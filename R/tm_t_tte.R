@@ -41,12 +41,14 @@ control_tte <- function(
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_tte()].
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
+#' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
 #' @seealso [tm_t_tte()]
 #'
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
                          arm_var = "ARM",
+                         paramcd,
                          ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
@@ -57,7 +59,8 @@ template_tte <- function(dataname = "ANL",
                          time_points = NULL,
                          time_unit_var = "AVALU",
                          event_desc_var = "EVNTDESC",
-                         control = control_tte()) {
+                         control = control_tte(),
+                         add_total = FALSE) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -108,12 +111,12 @@ template_tte <- function(dataname = "ANL",
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
+      parentname <- arm_preparation %>% df_explicit_na()
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -140,16 +143,37 @@ template_tte <- function(dataname = "ANL",
     )
   }
   layout_list <- list()
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    split_col_expr(
-      compare = compare_arm,
-      combine = combine_comp_arms,
-      arm_var = arm_var,
-      ref = ref_arm_val
+    substitute(
+      expr = basic_table(
+        title = paste("Time-To-Event Table for", paramcd)),
+      env = list(paramcd = paramcd))
     )
-  )
+  if (!compare_arm && !combine_comp_arms && add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        split_cols_by(
+          var = arm_var,
+          split_fun = add_overall_level("All Patients", first = FALSE)
+        ),
+        env = list(
+          arm_var = arm_var
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      split_col_expr(
+        compare = compare_arm,
+        combine = combine_comp_arms,
+        arm_var = arm_var,
+        ref = ref_arm_val
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
@@ -404,8 +428,10 @@ tm_t_tte <- function(label,
                        variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
                      ),
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+                     add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL) {
+  logger::log_info("Initializing tm_t_tte")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
@@ -413,6 +439,7 @@ tm_t_tte <- function(label,
     is.choices_selected(time_points),
     is.choices_selected(conf_level_coxph),
     is.choices_selected(conf_level_survfit),
+    is.flag(add_total),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -538,6 +565,10 @@ ui_t_tte <- function(id, ...) {
           )
         )
       ),
+      conditionalPanel(
+        condition = paste0("!input['", ns("compare_arms"), "']"),
+          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+      ),
       optionalSelectInput(ns("time_points"),
                           "Time Points",
                           a$time_points$choices,
@@ -657,6 +688,7 @@ srv_t_tte <- function(input,
                       parentname,
                       arm_ref_comp,
                       time_unit_var,
+                      add_total,
                       label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -771,10 +803,12 @@ srv_t_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
+
     my_calls <- template_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
@@ -800,7 +834,8 @@ srv_t_tte <- function(input,
           conf_level = as.numeric(input$conf_level_survfit),
           conf_type = input$conf_type_survfit
         )
-      )
+      ),
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })

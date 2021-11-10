@@ -1,4 +1,16 @@
-# teal.modules.clinical 0.8.10.9000
+# teal.modules.clinical 0.8.10.9013
+
+### Breaking changes
+* Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
+
+### New features
+* New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline. 
+
+## Enhancements
+* Added support for logging with the `logger` package and added info level logs upon initialization of a module.
+
+### Miscellaneous
+* Updated R version requirement to >= 3.6.
 
 # teal.modules.clinical 0.8.10
 ### New features
@@ -21,6 +33,9 @@
 * Used `format_count_fraction` to fix formatting inconsistency in `tm_t_events_summary`.
 * Updated `count_occurrences` `vars` argument in `tm_t_shift_by_grade`.
 * Updated `tm_t_pp_laboratory` to display 4 decimals by default.
+* Updated `tm_t_events_by_grade` to use the `trim_levels_in_group` split function instead of the `trim_rows` function.
+* Added a table title to `tm_t_tte`.
+* Added table titles to `tm_t_rsp` and `tm_t_binary_outcome`.
 
 ### Miscellaneous
 * Updated `LICENCE` and `README` with new package references.

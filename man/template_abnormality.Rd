@@ -9,14 +9,15 @@ template_abnormality(
   dataname,
   arm_var,
   by_vars,
-  abnormal,
+  abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
   grade = "ANRIND",
   baseline_var = "BNRIND",
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   add_total = FALSE,
   exclude_base_abn = FALSE,
-  drop_arm_levels = TRUE
+  drop_arm_levels = TRUE,
+  na_level = "<Missing>"
 )
 }
 \arguments{
@@ -32,7 +33,7 @@ variable names that can be used as \code{arm_var}.}
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}
 
-\item{abnormal}{(\code{character})\cr indicating abnormality grade.}
+\item{abnormal}{(\verb{named list})\cr indicating abnormality direction and grades.}
 
 \item{grade}{(\code{character})\cr name of the variable that can be used to
 specify the abnormality grade. Variable must be factor.}
@@ -53,6 +54,8 @@ whether to include column with total number of patients.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to "<Missing>".}
 }
 \description{
 Template: Abnormality Summary Table

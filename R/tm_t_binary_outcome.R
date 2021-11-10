@@ -63,14 +63,16 @@ tm_t_binary_outcome <- function(label,
                                   "AVALC", fixed = TRUE
                                 ),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                add_total = FALSE,
                                 pre_output = NULL,
                                 post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_binary_outcome")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(conf_level),
+    is.flag(add_total),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -242,6 +244,10 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
+      conditionalPanel(
+        condition = paste0("!input['", ns("compare_arms"), "']"),
+          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+      ),
       panel_item(
         "Additional table settings",
         optionalSelectInput(
@@ -299,6 +305,7 @@ srv_t_binary_outcome <- function(input,
                                  arm_var,
                                  arm_ref_comp,
                                  strata_var,
+                                 add_total,
                                  label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -441,6 +448,7 @@ srv_t_binary_outcome <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
@@ -463,7 +471,8 @@ srv_t_binary_outcome <- function(input,
           method_test = input$s_diff_test,
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
-      )
+      ),
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })

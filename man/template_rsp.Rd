@@ -8,6 +8,7 @@ template_rsp(
   dataname,
   parentname,
   arm_var,
+  paramcd,
   ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
@@ -17,7 +18,8 @@ template_rsp(
   responder_val = c("CR", "PR"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
-    list(method_ci = "cmh", method_test = "cmh", strat = NULL))
+    list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
+  add_total = FALSE
 )
 }
 \arguments{
@@ -29,6 +31,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
+
+\item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
 \item{ref_arm}{(\code{character})\cr
 the level of reference arm in case of arm comparison.}
@@ -51,6 +55,9 @@ name of the analysis variable.}
 translate \code{AVALC} into responder / non-responder.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 }
 \description{
 Creates a valid expression for responder analysis.

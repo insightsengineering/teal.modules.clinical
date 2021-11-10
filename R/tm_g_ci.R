@@ -378,7 +378,7 @@ tm_g_ci <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
-
+  logger::log_info("Initializing tm_g_ci")
   stat <- match.arg(stat)
   stop_if_not(
     is.character(label),

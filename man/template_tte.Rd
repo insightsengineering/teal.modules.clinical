@@ -8,6 +8,7 @@ template_tte(
   dataname = "ANL",
   parentname = "ADSL_FILTERED",
   arm_var = "ARM",
+  paramcd,
   ref_arm = NULL,
   comp_arm = NULL,
   compare_arm = FALSE,
@@ -18,7 +19,8 @@ template_tte(
   time_points = NULL,
   time_unit_var = "AVALU",
   event_desc_var = "EVNTDESC",
-  control = control_tte()
+  control = control_tte(),
+  add_total = FALSE
 )
 }
 \arguments{
@@ -30,6 +32,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
+
+\item{paramcd}{(\code{character})\cr endpoint parameter value to use in the table title.}
 
 \item{ref_arm}{(\code{character})\cr
 the level of reference arm in case of arm comparison.}
@@ -62,6 +66,9 @@ name of the variable representing time units.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_tte]{control_tte()}}.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 }
 \description{
 Creates a valid expression for time-to-event analysis.

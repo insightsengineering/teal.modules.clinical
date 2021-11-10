@@ -7,6 +7,7 @@
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
+#' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_rsp()]
 #'
@@ -41,6 +42,7 @@
 template_rsp <- function(dataname,
                          parentname,
                          arm_var,
+                         paramcd,
                          ref_arm = NULL,
                          comp_arm = NULL,
                          compare_arm = FALSE,
@@ -63,7 +65,8 @@ template_rsp <- function(dataname,
                              method_test = "cmh",
                              strat = NULL
                            )
-                         )
+                         ),
+                         add_total = FALSE
 ) {
   assert_that(
     is.string(dataname),
@@ -72,7 +75,8 @@ template_rsp <- function(dataname,
     is.string(aval_var),
     is.flag(compare_arm),
     is.flag(combine_comp_arms),
-    is.flag(show_rsp_cat)
+    is.flag(show_rsp_cat),
+    is.flag(add_total)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -103,12 +107,12 @@ template_rsp <- function(dataname,
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = "")
+      parentname <- arm_preparation %>% df_explicit_na()
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -136,16 +140,43 @@ template_rsp <- function(dataname,
   }
 
   layout_list <- list()
-  layout_list <- add_expr(layout_list, substitute(basic_table()))
   layout_list <- add_expr(
     layout_list,
-    split_col_expr(
-      compare = compare_arm,
-      combine = combine_comp_arms,
-      arm_var = arm_var,
-      ref = ref_arm_val
+    substitute(
+      expr = basic_table(
+        title = paste("Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
+                      ifelse(length(responders) > 1, "and", ""), tail(responders, 1), "Responders")
+        ),
+      env = list(
+        paramcd = paramcd,
+        responders = responder_val)
+      )
     )
-  )
+
+  if (!compare_arm && !combine_comp_arms && add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        split_cols_by(
+          var = arm_var,
+          split_fun = add_overall_level("All Patients", first = FALSE)
+          ),
+        env = list(
+          arm_var = arm_var
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      split_col_expr(
+        compare = compare_arm,
+        combine = combine_comp_arms,
+        arm_var = arm_var,
+        ref = ref_arm_val
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
@@ -412,14 +443,16 @@ tm_t_rsp <- function(label,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_rsp")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(conf_level),
+    is.flag(add_total),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -467,7 +500,7 @@ ui_t_rsp <- function(id, ...) {
     a$arm_var,
     a$aval_var,
     a$strata_var
-  )
+    )
 
   ns <- NS(id)
   standard_layout(
@@ -536,6 +569,10 @@ ui_t_rsp <- function(id, ...) {
           )
         )
       ),
+      conditionalPanel(
+        condition = paste0("!input['", ns("compare_arms"), "']"),
+          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+      ),
       optionalSelectInput(
         inputId = ns("conf_level"),
         label = HTML(paste("Confidence Level")),
@@ -570,6 +607,7 @@ srv_t_rsp <- function(input,
                       arm_var,
                       arm_ref_comp,
                       strata_var,
+                      add_total,
                       label) {
   stopifnot(is_cdisc_data(datasets))
 
@@ -713,6 +751,7 @@ srv_t_rsp <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
+      paramcd = unlist(anl_m$filter_info)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,
@@ -735,7 +774,8 @@ srv_t_rsp <- function(input,
           method_test = "cmh",
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
-      )
+      ),
+      add_total = input$add_total
     )
     mapply(expression = my_calls, chunks_push)
   })

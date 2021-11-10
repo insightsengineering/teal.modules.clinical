@@ -87,7 +87,7 @@ template_events_by_grade <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- trim_levels_in_group)
 
   layout_list <- list()
 
@@ -132,7 +132,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun,
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = var_labels(dataname[term_var], fill = TRUE)
           ) %>%
@@ -166,7 +166,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun,
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = var_labels(dataname[hlt], fill = TRUE)
           ) %>%
@@ -179,7 +179,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun,
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = var_labels(dataname[llt], fill = TRUE)
           ) %>%
@@ -218,7 +218,7 @@ template_events_by_grade <- function(dataname,
   prune_list <- add_expr(
     prune_list,
     quote(
-      pruned_result <- result %>% trim_rows()
+      pruned_result <- result
     )
   )
 
@@ -771,7 +771,7 @@ tm_t_events_by_grade <- function(label,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_events_by_grade")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
