@@ -39,9 +39,9 @@ test_that("template_logistic generates correct expressions", {
         title = paste(
           "Table of", "PARAMCD",
           "for",
-          paste(head(c("CR", "PR"), -1), collapse = ", "),
-          ifelse(length(c("CR", "PR")) > 1, "and", ""),
-          tail(c("CR", "PR"), 1),
+          paste(head(unlist(list(c("CR", "PR"))), -1), collapse = ", "),
+          ifelse(length(unlist(list(c("CR", "PR")))) > 1, "and", ""),
+          tail(unlist(list(c("CR", "PR"))), 1),
           "Responders")
         ) %>%
         summarize_logistic(conf_level = 0.95) %>%
