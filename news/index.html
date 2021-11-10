@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9012</span>
       </span>
     </div>
 
@@ -136,21 +136,44 @@
       <small>Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="tealmodulesclinical-08109011" class="section level1">
-<h1 class="page-header" data-toc-text="0.8.10.9011">
-<a href="#tealmodulesclinical-08109011" class="anchor"></a>teal.modules.clinical 0.8.10.9011</h1>
+    <div id="tealmodulesclinical-08109012" class="section level1">
+<h1 class="page-header" data-toc-text="0.8.10.9012">
+<a href="#tealmodulesclinical-08109012" class="anchor"></a>teal.modules.clinical 0.8.10.9012</h1>
+<div id="breaking-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h3>
 <ul>
-<li>Updated R version requirement to &gt;= 3.6.</li>
-<li>Updated <code>tm_t_abnormality</code> due to changes in <code>count_abnormal</code> that <code>abnormal</code> argument is taking list as input now. This is a breaking change.</li>
+<li>Updated <code>tm_t_abnormality</code> due to changes in <code>count_abnormal</code> that <code>abnormal</code> argument is taking list as input now.</li>
+</ul>
+</div>
+<div id="new-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h3>
+<ul>
 <li>New module <code>tm_t_abnormality_by_worst_grade</code> was added for the analysis of laboratory test results with highest grade post-baseline.</li>
 </ul>
+</div>
+<div id="enhancements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>Enhancements</h2>
+<ul>
+<li>Added support for logging with the <code>logger</code> package and added info level logs upon initialization of a module.</li>
+</ul>
+<div id="miscellaneous" class="section level3">
+<h3 class="hasAnchor">
+<a href="#miscellaneous" class="anchor"></a>Miscellaneous</h3>
+<ul>
+<li>Updated R version requirement to &gt;= 3.6.</li>
+</ul>
+</div>
+</div>
 </div>
     <div id="tealmodulesclinical-0810" class="section level1">
 <h1 class="page-header" data-toc-text="0.8.10">
 <a href="#tealmodulesclinical-0810" class="anchor"></a>teal.modules.clinical 0.8.10</h1>
-<div id="new-features" class="section level3">
+<div id="new-features-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New features</h3>
+<a href="#new-features-1" class="anchor"></a>New features</h3>
 <ul>
 <li>New module <code>tm_t_smq</code> was added for the analysis of adverse events by Standardized <code>MedDRA</code> Query.</li>
 <li>New module <code>tm_t_shift_by_grade</code> was added for the analysis of grade laboratory abnormalities.</li>
@@ -166,9 +189,9 @@
 <li>Fixed <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).</li>
 </ul>
 </div>
-<div id="enhancements" class="section level3">
+<div id="enhancements-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>Enhancements</h3>
+<a href="#enhancements-1" class="anchor"></a>Enhancements</h3>
 <ul>
 <li>Added validation checks to <code>tm_t_rsp</code> and <code>tm_t_binary_outcome</code> for stratification errors when filters are applied.</li>
 <li>Added <code>tm_g_km</code> validation check for plot tables font size.</li>
@@ -186,9 +209,9 @@
 <li>Added table titles to <code>tm_t_rsp</code> and <code>tm_t_binary_outcome</code>.</li>
 </ul>
 </div>
-<div id="miscellaneous" class="section level3">
+<div id="miscellaneous-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#miscellaneous" class="anchor"></a>Miscellaneous</h3>
+<a href="#miscellaneous-1" class="anchor"></a>Miscellaneous</h3>
 <ul>
 <li>Updated <code>LICENCE</code> and <code>README</code> with new package references.</li>
 <li>Added <code>error_on_lint: TRUE</code> to <code>.lintr</code>.</li>
@@ -200,18 +223,18 @@
     <div id="tealmodulesclinical-089" class="section level1">
 <h1 class="page-header" data-toc-text="0.8.9">
 <a href="#tealmodulesclinical-089" class="anchor"></a>teal.modules.clinical 0.8.9</h1>
-<div id="new-features-1" class="section level3">
+<div id="new-features-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New features</h3>
+<a href="#new-features-2" class="anchor"></a>New features</h3>
 <ul>
 <li>Added a capability to remember the order of user input to some encoding UI elements. The inputs with tracking enabled are marked with a double arrow icon. The affected modules are: <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, <code>tm_g_forest_rsp</code>, <code>tm_g_forest_tte</code>, <code>tm_t_events_summary</code>, <code>tm_t_abnormality</code>, <code>tm_t_mult_events</code>.</li>
 <li>Added a new argument <code>numeric_stats</code> to <code>tm_t_summary</code> and <code>tm_t_summary_by</code> to control displayed summary statistics for numeric variables.</li>
 <li>Added a new argument <code>drop_zero_levels</code> to <code>tm_t_summary_by</code> so that rows with all zeros can be dropped from result table.</li>
 </ul>
 </div>
-<div id="enhancements-1" class="section level3">
+<div id="enhancements-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#enhancements-1" class="anchor"></a>Enhancements</h3>
+<a href="#enhancements-2" class="anchor"></a>Enhancements</h3>
 <ul>
 <li>Split <code>tm_g_patient_profile</code> tabs into 8 separate new modules.</li>
 <li>Added the option to select patient ID from the filter panel for all the modules of patient profile.</li>
@@ -252,9 +275,9 @@
     <div id="tealmodulesclinical-088" class="section level1">
 <h1 class="page-header" data-toc-text="0.8.8">
 <a href="#tealmodulesclinical-088" class="anchor"></a>teal.modules.clinical 0.8.8</h1>
-<div id="enhancements-2" class="section level3">
+<div id="enhancements-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#enhancements-2" class="anchor"></a>Enhancements</h3>
+<a href="#enhancements-3" class="anchor"></a>Enhancements</h3>
 <ul>
 <li>Added the option to download and expand tables.</li>
 <li>In <code>tm_g_km</code> added support for downloading images and updated x-axis label to be shown in title case.</li>
@@ -287,9 +310,9 @@
 <li>Clarified functionality of <code>drop_arm_levels</code> for <code>tm_t_summary</code> and <code>tm_t_summary_by</code>. In the encodings panel, the checkbox will only be shown when the parent dataset and analysis dataset are different.</li>
 </ul>
 </div>
-<div id="miscellaneous-1" class="section level3">
+<div id="miscellaneous-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#miscellaneous-1" class="anchor"></a>Miscellaneous</h3>
+<a href="#miscellaneous-2" class="anchor"></a>Miscellaneous</h3>
 <ul>
 <li>Replaced the remaining two <code>observe</code> function calls with <code>observeEvent</code> to optimize performance.</li>
 <li>Fixed grammar in the “Select a patient’s id” error message in the <code>tm_g_patient_profile</code>.</li>
@@ -324,9 +347,9 @@
 <li>New module <code>tm_g_ipp</code> was added for individual patient plots.</li>
 </ul>
 </div>
-<div id="enhancements-3" class="section level3">
+<div id="enhancements-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#enhancements-3" class="anchor"></a>Enhancements</h3>
+<a href="#enhancements-4" class="anchor"></a>Enhancements</h3>
 <ul>
 <li>The argument <code>drop_arm_levels</code> was added to all safety modules. This allows removal of columns based on factor levels not found in filtered data.</li>
 <li>
@@ -334,9 +357,9 @@
 <li>The argument <code>time_unit_var</code> was added to <code>template_g_km</code> to add the time unit to the x-axis label.</li>
 </ul>
 </div>
-<div id="miscellaneous-2" class="section level3">
+<div id="miscellaneous-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#miscellaneous-2" class="anchor"></a>Miscellaneous</h3>
+<a href="#miscellaneous-3" class="anchor"></a>Miscellaneous</h3>
 <ul>
 <li>Removed redundant <code>Analysis Data:</code> label from Encodings Panel.</li>
 <li>Removed limit requiring 15 or fewer columns for tabulation modules. New maximum threshold is 100 columns.</li>
@@ -353,18 +376,18 @@
     <div id="tealmodulesclinical-086" class="section level1">
 <h1 class="page-header" data-toc-text="0.8.6">
 <a href="#tealmodulesclinical-086" class="anchor"></a>teal.modules.clinical 0.8.6</h1>
-<div id="new-features-2" class="section level3">
+<div id="new-features-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-2" class="anchor"></a>New Features</h3>
+<a href="#new-features-3" class="anchor"></a>New Features</h3>
 <ul>
 <li>New module <code>tm_g_ci</code> was added for confidence interval plots.</li>
 <li>New module <code>tm_t_ancova</code> was added for analysis of variance summary tables.</li>
 <li>New module <code>tm_t_mult_events</code> was added for multiple events by term.</li>
 </ul>
 </div>
-<div id="enhancements-4" class="section level3">
+<div id="enhancements-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#enhancements-4" class="anchor"></a>Enhancements</h3>
+<a href="#enhancements-5" class="anchor"></a>Enhancements</h3>
 <ul>
 <li>Refactored all modules using the redesigned <code>rtables</code> and <code>tern</code> packages.</li>
 <li>Enhanced modules. They now take advantage of <code>data_extract_spec</code> and <code>data_merge_module</code> functionality from <code>teal</code>.</li>
@@ -372,9 +395,9 @@
 <li>Updated all modules to use <code>OptionalSelectInput</code> for <code>conf_level</code>.</li>
 </ul>
 </div>
-<div id="miscellaneous-3" class="section level3">
+<div id="miscellaneous-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#miscellaneous-3" class="anchor"></a>Miscellaneous</h3>
+<a href="#miscellaneous-4" class="anchor"></a>Miscellaneous</h3>
 <ul>
 <li>Added vignette about <code>substitute</code> which can be helpful when developing analysis template functions for teal modules.</li>
 </ul>
