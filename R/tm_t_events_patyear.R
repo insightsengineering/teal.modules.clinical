@@ -16,7 +16,6 @@ template_events_patyear <- function(dataname,
                                     drop_arm_levels = TRUE) {
   # initialize
   y <- list()
-
   # data
   data_list <- list()
   data_list <- add_expr(
