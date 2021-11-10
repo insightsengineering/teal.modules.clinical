@@ -253,7 +253,7 @@ tm_g_forest_rsp <- function(label,
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
                             post_output = NULL) {
-
+  logger::log_info("Initializing tm_g_forest_rsp")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),

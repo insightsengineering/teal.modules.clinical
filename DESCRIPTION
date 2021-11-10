@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.10.9012
+Version: 0.8.10.9013
 Date: 2021-10-13
 Authors@R: c(
     person("NEST", , , "nestcicd@roche.com", role = c("aut", "cre")),
@@ -33,6 +33,7 @@ Imports:
     ggrepel,
     grid,
     kableExtra,
+    logger,
     magrittr,
     methods,
     rlang,

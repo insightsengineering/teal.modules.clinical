@@ -389,7 +389,7 @@ tm_t_ancova <- function(label,
                         pre_output = NULL,
                         post_output = NULL
 ) {
-
+  logger::log_info("Initializing tm_t_ancova")
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),
