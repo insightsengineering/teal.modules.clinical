@@ -124,6 +124,7 @@ tm_t_pp_medical_history <- function(label,
                                     mhdistat = NULL,
                                     pre_output = NULL,
                                     post_output = NULL) {
+  logger::log_info("Initializing tm_t_pp_medical_history")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
   assert_that(is_character_single(parentname))

@@ -227,6 +227,7 @@ tm_g_pp_vitals <- function(label,
                            plot_width = NULL,
                            pre_output = NULL,
                            post_output = NULL) {
+  logger::log_info("Initializing tm_g_pp_vitals")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
   assert_that(is_character_single(parentname))

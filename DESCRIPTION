@@ -33,6 +33,7 @@ Imports:
     ggrepel,
     grid,
     kableExtra,
+    logger,
     magrittr,
     methods,
     rlang,
