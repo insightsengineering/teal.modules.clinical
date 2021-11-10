@@ -313,7 +313,7 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             pre_output = NULL,
                                             post_output = NULL
                                             ) {
-
+  logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
   stop_if_not(
     is.string(dataname),
     is.choices_selected(id_var),
