@@ -134,6 +134,7 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_width = NULL,
                                  pre_output = NULL,
                                  post_output = NULL) {
+  logger::log_info("Initializing tm_g_barchart_simple")
   stop_if_not(
     is_character_single(label),
     is.null(plot_options) || is.list(plot_options),

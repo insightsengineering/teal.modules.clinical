@@ -398,6 +398,7 @@ tm_g_pp_patient_timeline <- function(label,
                                      plot_width = NULL,
                                      pre_output = NULL,
                                      post_output = NULL) {
+  logger::log_info("Initializing tm_g_pp_patient_timeline")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname_adcm))
   assert_that(is_character_single(dataname_adae))

@@ -303,7 +303,7 @@ tm_t_exposure <- function(label,
                           na_level = "<Missing>",
                           pre_output = NULL,
                           post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_exposure")
   stop_if_not(
     is.string(dataname),
     is.flag(add_total),

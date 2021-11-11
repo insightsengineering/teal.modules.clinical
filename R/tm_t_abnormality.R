@@ -88,28 +88,15 @@ template_abnormality <- function(parentname,
   prep_list <- add_expr(
     prep_list,
     substitute(
-      # Define the map that will be displayed
-      map <- unique(dataname[c(by_vars, grade)]),
-      env = list(dataname = as.name("anl"), by_vars = by_vars, grade = grade)
-    )
-  )
-  prep_list <- add_expr(
-    prep_list,
-    substitute(
-      # change all factors to characters for the map
-      map <- data.frame(lapply(map, as.character), stringsAsFactors = FALSE),
-      env = list(map = as.name("map"))
-    )
-  )
-  prep_list <- add_expr(
-    prep_list,
-    substitute(
-      # remove the record where only normals exit
-      map <- map %>%
-        group_by(across(all_of(by_vars))) %>%
-        filter(n() > 1 || anl[grade] %in% abnormal) %>%
-        ungroup(),
-      env = list(map = as.name("map"), by_vars = by_vars, grade = grade, abnormal = abnormal)
+      # Define the map for layout using helper function h_map_for_count_abnormal
+      map <- h_map_for_count_abnormal(
+        df = dataname,
+        variables = list(anl = grade, split_rows = by_vars),
+        abnormal = abnormal,
+        method = "default",
+        na_level = na_level
+      ),
+      env = list(dataname = as.name("anl"), by_vars = by_vars, grade = grade, abnormal = abnormal, na_level = na_level)
     )
   )
 
@@ -309,6 +296,7 @@ tm_t_abnormality <- function(label,
                              pre_output = NULL,
                              post_output = NULL,
                              na_level = "<Missing>") {
+  logger::log_info("Initializing tm_t_abnormality")
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),

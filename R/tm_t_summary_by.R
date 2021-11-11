@@ -383,7 +383,7 @@ tm_t_summary_by <- function(label,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
                             post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_summary_by")
   useNA <- match.arg(useNA) # nolint
   stop_if_not(
     is_character_single(label),

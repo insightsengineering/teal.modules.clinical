@@ -367,6 +367,7 @@ tm_t_smq <- function(label,
                      scopes,
                      pre_output = NULL,
                      post_output = NULL) {
+  logger::log_info("Initializing tm_t_smq")
   stop_if_not(
     is.string(dataname),
     is.choices_selected(arm_var),
