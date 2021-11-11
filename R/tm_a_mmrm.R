@@ -476,7 +476,7 @@ tm_a_mmrm <- function(label,
                       plot_width = NULL,
                       pre_output = NULL,
                       post_output = NULL) {
-
+  logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
   stop_if_not(
     is_character_single(dataname),

@@ -255,7 +255,7 @@ tm_g_forest_tte <- function(label,
                             plot_width = c(980L, 500L, 2000L),
                             pre_output = NULL,
                             post_output = NULL) {
-
+  logger::log_info("Initializing tm_g_forest_tte")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),

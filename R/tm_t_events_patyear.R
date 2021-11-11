@@ -16,7 +16,6 @@ template_events_patyear <- function(dataname,
                                     drop_arm_levels = TRUE) {
   # initialize
   y <- list()
-
   # data
   data_list <- list()
   data_list <- add_expr(
@@ -189,6 +188,7 @@ tm_t_events_patyear <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL
                                 ) {
+  logger::log_info("Initializing tm_t_events_patyear")
   stop_if_not(
     is_character_single(dataname),
     is_character_single(parentname),

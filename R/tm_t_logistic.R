@@ -226,7 +226,7 @@ tm_t_logistic <- function(label,
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL) {
-
+  logger::log_info("Initializing tm_t_logistic")
   stopifnot(
     length(dataname) == 1,
     is.choices_selected(conf_level)
