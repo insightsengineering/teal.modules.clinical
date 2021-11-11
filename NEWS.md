@@ -5,6 +5,7 @@
 
 ### New features
 * New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline. 
+* New module `tm_g_lineplot` was added for creating line plots.
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
