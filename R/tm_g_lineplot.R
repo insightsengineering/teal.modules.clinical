@@ -472,7 +472,7 @@ srv_g_lineplot <- function(input,
       adslvars = c("USUBJID", "STUDYID", input_strata),
       anl = anl_filtered,
       anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit, input_param),
-      strata = input_strata
+      arm_var = input_strata
     )
 
     # validate arm levels
