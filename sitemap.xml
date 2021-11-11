@@ -133,6 +133,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_g_km.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_g_lineplot.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_laboratory.html</loc>
   </url>
   <url>
@@ -197,6 +200,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_km.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_lineplot.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_pp_adverse_events.html</loc>

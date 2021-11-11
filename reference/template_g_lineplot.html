@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Teal Module: Patient Profile Basic Info Teal Module — tm_t_pp_basic_info • teal.modules.clinical</title>
+<title>Template: Line Plot — template_g_lineplot • teal.modules.clinical</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Teal Module: Patient Profile Basic Info Teal Module — tm_t_pp_basic_info" />
-<meta property="og:description" content="This teal module produces a patient profile basic info report using ADaM datasets." />
+<meta property="og:title" content="Template: Line Plot — template_g_lineplot" />
+<meta property="og:description" content="Template: Line Plot" />
 
 
 
@@ -133,87 +133,136 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Teal Module: Patient Profile Basic Info Teal Module</h1>
-    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_pp_basic_info.R'><code>R/tm_t_pp_basic_info.R</code></a></small>
-    <div class="hidden name"><code>tm_t_pp_basic_info.Rd</code></div>
+    <h1>Template: Line Plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_g_lineplot.R'><code>R/tm_g_lineplot.R</code></a></small>
+    <div class="hidden name"><code>template_g_lineplot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This teal module produces a patient profile basic info report using ADaM datasets.</p>
+    <p>Template: Line Plot</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tm_t_pp_basic_info</span><span class='op'>(</span>
-  <span class='va'>label</span>,
-  dataname <span class='op'>=</span> <span class='st'>"ADSL"</span>,
-  patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
-  vars <span class='op'>=</span> <span class='cn'>NULL</span>,
-  pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
-  post_output <span class='op'>=</span> <span class='cn'>NULL</span>
+    <pre class="usage"><span class='fu'>template_g_lineplot</span><span class='op'>(</span>
+  dataname <span class='op'>=</span> <span class='st'>"ANL"</span>,
+  strata <span class='op'>=</span> <span class='st'>"ARM"</span>,
+  x <span class='op'>=</span> <span class='st'>"AVISIT"</span>,
+  y <span class='op'>=</span> <span class='st'>"AVAL"</span>,
+  y_unit <span class='op'>=</span> <span class='st'>"AVALU"</span>,
+  paramcd <span class='op'>=</span> <span class='st'>"PARAMCD"</span>,
+  param <span class='op'>=</span> <span class='st'>"ALT"</span>,
+  mid <span class='op'>=</span> <span class='st'>"mean"</span>,
+  interval <span class='op'>=</span> <span class='st'>"mean_ci"</span>,
+  whiskers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mean_ci_lwr"</span>, <span class='st'>"mean_ci_upr"</span><span class='op'>)</span>,
+  table <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"n"</span>, <span class='st'>"mean_sd"</span>, <span class='st'>"median"</span>, <span class='st'>"range"</span><span class='op'>)</span>,
+  mid_type <span class='op'>=</span> <span class='st'>"pl"</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  incl_screen <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  mid_point_size <span class='op'>=</span> <span class='fl'>2</span>,
+  table_font_size <span class='op'>=</span> <span class='fl'>4</span>,
+  title <span class='op'>=</span> <span class='st'>"Line Plot"</span>,
+  y_lab <span class='op'>=</span> <span class='st'>""</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>label</th>
-      <td><p>(<code>character</code>)<br />
-menu item label of the module in the teal app</p></td>
-    </tr>
-    <tr>
       <th>dataname</th>
       <td><p>(<code>character</code>)<br />
 analysis data used in teal module.</p></td>
     </tr>
     <tr>
-      <th>patient_col</th>
-      <td><p>(<code>character</code>) value patient ID column to be used.</p></td>
+      <th>strata</th>
+      <td><p>(<code>character</code> scalar or <code>NA</code>) strata variable name. <br /></p></td>
     </tr>
     <tr>
-      <th>vars</th>
-      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br /> ADSL columns to be shown in
-Basic Info tab.</p></td>
+      <th>x</th>
+      <td><p>(<code>character</code> scalar) x variable name. <br /></p></td>
     </tr>
     <tr>
-      <th>pre_output</th>
-      <td><p>optional, (<code>shiny.tag</code>)<br />
-with text placed before the output to put the output into context.
-For example a title.</p></td>
+      <th>y</th>
+      <td><p>(<code>character</code> scalar) y variable name. <br /></p></td>
     </tr>
     <tr>
-      <th>post_output</th>
-      <td><p>optional, (<code>shiny.tag</code>)<br />
-with text placed after the output to put the output into context. For example
-the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText()</a></code> elements are useful.</p></td>
+      <th>y_unit</th>
+      <td><p>(<code>character</code> scalar or <code>NA</code>) y_unit variable name. <br /></p></td>
+    </tr>
+    <tr>
+      <th>paramcd</th>
+      <td><p>(<code>character</code> scalar or <code>NA</code>) paramcd variable name. <br /></p></td>
+    </tr>
+    <tr>
+      <th>param</th>
+      <td><p>(<code>character</code>)<br />
+parameter chosen to filter the data by.</p></td>
+    </tr>
+    <tr>
+      <th>mid</th>
+      <td><p>(<code>character</code> or <code>NULL</code>) <br />
+names of the statistics that will be plotted as midpoints.
+All the statistics indicated in <code>mid</code> variable must be present in the object returned by <code>sfun</code>,
+and be of a <code>double</code> or <code>numeric</code> type vector of length one.</p></td>
+    </tr>
+    <tr>
+      <th>interval</th>
+      <td><p>(<code>character</code> or <code>NULL</code>) <br />
+names of the statistics that will be plotted as intervals.
+All the statistics indicated in <code>interval</code> variable must be present in the object returned by <code>sfun</code>,
+and be of a <code>double</code> or <code>numeric</code> type vector of length two.</p></td>
+    </tr>
+    <tr>
+      <th>whiskers</th>
+      <td><p>(<code>character</code>) <br />
+names of the interval whiskers that will be plotted. Must match the <code>names</code> attribute of the
+<code>interval</code> element in the list returned by <code>sfun</code>.
+It is possible to specify one whisker only, lower or upper.</p></td>
+    </tr>
+    <tr>
+      <th>table</th>
+      <td><p>(<code>character</code> or <code>NULL</code>) <br />
+names of the statistics that will be displayed in the table below the plot.
+All the statistics indicated in <code>table</code> variable must be present in the object returned by <code>sfun</code>.</p></td>
+    </tr>
+    <tr>
+      <th>mid_type</th>
+      <td><p>(<code>character</code> scalar) <br />
+controls the type of the <code>mid</code> plot, it can be point (<code>p</code>), line (<code>l</code>), or point and line (<code>pl</code>).</p></td>
+    </tr>
+    <tr>
+      <th>conf_level</th>
+      <td><p>(<code>numeric</code>)<br />
+value for the confidence level within the range of (0, 1).</p></td>
+    </tr>
+    <tr>
+      <th>incl_screen</th>
+      <td><p>(<code>logical</code>)<br />
+should the screening visit be included.</p></td>
+    </tr>
+    <tr>
+      <th>mid_point_size</th>
+      <td><p>(<code>integer</code> or <code>double</code>) <br />
+controls the font size of the point for <code>mid</code> plot.</p></td>
+    </tr>
+    <tr>
+      <th>table_font_size</th>
+      <td><p>(<code>integer</code> or <code>double</code>) <br />
+controls the font size of values in the table.</p></td>
+    </tr>
+    <tr>
+      <th>title</th>
+      <td><p>(<code>character</code> scalar) <br /> plot title.</p></td>
+    </tr>
+    <tr>
+      <th>y_lab</th>
+      <td><p>(<code>character</code> scalar) <br /> y-axis label.
+If it equals to <code>NULL</code>, then no label will be added.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
+    <div class='dont-index'><p><code><a href='tm_g_lineplot.html'>tm_g_lineplot()</a></code></p></div>
 
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_t_pp_basic_info</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Basic info"</span>,
-      dataname <span class='op'>=</span> <span class='st'>"ADSL"</span>,
-      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
-      vars <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADSL</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"AGE"</span>, <span class='st'>"SEX"</span>, <span class='st'>"COUNTRY"</span>, <span class='st'>"RACE"</span>, <span class='st'>"EOSSTT"</span><span class='op'>)</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; 2021-11-11 19:11:41.4423 pid:2182 teal.modules.clinical fun:tm_t_pp_basic_info [INFO] Initializing tm_t_pp_basic_info</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
