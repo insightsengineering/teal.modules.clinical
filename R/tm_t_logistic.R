@@ -161,7 +161,7 @@ template_logistic <- function(dataname,
       conf_level = conf_level,
       topleft = topleft,
       paramcd = paramcd,
-      responder_val = list(responder_val)
+      responder_val = responder_val
       )
     )
 
