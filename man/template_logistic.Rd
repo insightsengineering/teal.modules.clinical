@@ -8,6 +8,7 @@ template_logistic(
   dataname,
   arm_var,
   aval_var,
+  paramcd,
   cov_var,
   interaction_var,
   ref_arm,
@@ -28,6 +29,8 @@ variable names that can be used as \code{arm_var}.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
+
+\item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
