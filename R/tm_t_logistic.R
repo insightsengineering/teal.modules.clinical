@@ -147,7 +147,7 @@ template_logistic <- function(dataname,
     expr = {
       result <- basic_table(
         title = paste(
-          "Table of", paramcd, "for", paste(head(unlist(responder_val), -1), collapse = ", "),
+          "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
           ifelse(length(unlist(responder_val)) > 1, "and", ""),
           tail(unlist(responder_val), 1), "Responders"
           )
