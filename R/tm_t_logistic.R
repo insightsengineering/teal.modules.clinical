@@ -149,7 +149,7 @@ template_logistic <- function(dataname,
         title = paste(
           "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
           ifelse(length(responder_val) > 1, "and", ""),
-          tail(unlist(responder_val), 1), "Responders"
+          tail(responder_val, 1), "Responders"
           )
       ) %>%
         summarize_logistic(conf_level = conf_level) %>%
