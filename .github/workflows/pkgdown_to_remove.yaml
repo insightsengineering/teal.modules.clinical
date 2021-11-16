@@ -7,7 +7,7 @@ on:
       - "v*"
     branches:
       - main
-      - multisite_pkgdown
+      - "6-multisite-pkgdown@main"
   pull_request:
     branches:
       - main
