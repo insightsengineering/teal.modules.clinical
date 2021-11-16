@@ -28,7 +28,33 @@ on:
 
 jobs:
   docs:
-    name: Pkgdown Docs 📚 
-    uses: insightsengineering/r.pkg.template/.github/workflows/pkgdown.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    - name: Pkgdown Docs 📚 
+      uses: insightsengineering/r.pkg.template/.github/workflows/pkgdown.yaml@main
+      secrets:
+        REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+
+#    - name: Change branch multisite docs
+#      uses: actions/checkout@v2
+#      with:
+#        ref: gh-pages
+#
+#    - name: Multisite docs update links 
+#      run: |
+#        echo -e "GITHUB_REF: {$GITHUB_REF}"
+#        curl -s https://$GITHUB_PAT@raw.githubusercontent.com/insightsengineering/r-pkgdown-multisite/main/pkgdown-multisite.R > pkgdown-multisite.R
+#        Rscript pkgdown-multisite.R ${{ github.event.repository.name }} ${GITHUB_REF#refs/*/}
+#        rm pkgdown-multisite.R
+#        git config --local user.email "actions@github.com"
+#        git config --local user.name "GitHub Actions"
+#        ls -altcrh
+#        # workaround for no changes to commit:
+#        if [ `git diff | wc -l` != 0 ]
+#          then
+#          git add -A
+#          git commit -m "multisite docs"
+#          git push
+#        fi
+#      shell: bash
+#      env:
+#        GITHUB_PAT: ${{ secrets.REPO_GITHUB_TOKEN }}
+# 
