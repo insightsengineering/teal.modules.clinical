@@ -1,3 +1,4 @@
+---
 name: Pkgdown Docs
 
 on:
@@ -6,6 +7,7 @@ on:
       - "v*"
     branches:
       - main
+      - multisite_pkgdown
   pull_request:
     branches:
       - main
@@ -20,7 +22,7 @@ on:
       - NAMESPACE
 
 jobs:
-  pkgdown:
+  pkgdown1:
     name: Generate
     runs-on: ubuntu-latest
     container:
@@ -47,7 +49,7 @@ jobs:
             } catch (err) {
               core.setFailed(`Request failed with error ${err}`)
             }
-      
+
       - name: Checkout repo during PR
         uses: actions/checkout@v2
         if: github.event_name == 'pull_request'
