@@ -145,7 +145,7 @@ jobs:
 
   upload-release-assets:
     name: Upload documentation assets
-    needs: pkgdown
+    needs: pkgdown1
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
