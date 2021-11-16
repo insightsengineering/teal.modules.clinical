@@ -47,6 +47,7 @@ jobs:
             } catch (err) {
               core.setFailed(`Request failed with error ${err}`)
             }
+      
       - name: Checkout repo during PR
         uses: actions/checkout@v2
         if: github.event_name == 'pull_request'
