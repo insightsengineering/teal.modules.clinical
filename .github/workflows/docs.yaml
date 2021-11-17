@@ -17,14 +17,6 @@ on:
     branches:
       - main
       - pre-release
-    paths:
-      - inst/templates/**
-      - _pkgdown.yml
-      - DESCRIPTION
-      - '**.md'
-      - man/**
-      - LICENSE.*
-      - NAMESPACE
 
 jobs:
   docs:
