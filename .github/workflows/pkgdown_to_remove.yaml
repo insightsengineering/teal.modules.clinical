@@ -101,9 +101,11 @@ jobs:
       - name: Multisite docs update links 
         run: |
           echo -e "GITHUB_REF: {$GITHUB_REF}"
+          pwd
           ls -al .
+          echo -e "repository name = ${{ github.event.repository.name }} \n github_ref = ${GITHUB_REF#refs/*/}"
           curl -s https://$GITHUB_PAT@raw.githubusercontent.com/insightsengineering/r-pkgdown-multisite/6-pkg-multisite/pkgdown-multisite.R -o pkgdown-multisite.R
-          Rscript pkgdown-multisite.R ${{ github.event.repository.name }} ${GITHUB_REF#refs/*/}
+          Rscript pkgdown-multisite.R . ${GITHUB_REF#refs/*/}
           rm pkgdown-multisite.R
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
