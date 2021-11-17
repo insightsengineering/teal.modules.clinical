@@ -32,3 +32,39 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/pkgdown.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+
+  multisite:
+    # if: ${{ github.event_name == 'push' }}
+    needs: docs
+    name: Multisite pkgdown site
+    steps:
+      - name: Change branch multisite docs
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Multisite docs update links 
+        uses: insightsengineering/r-pkgdown-multisite@6-pkg-multisite
+        env:
+          GITHUB_PAT: ${{ secrets.REPO_GITHUB_TOKEN }}
+      
+      - name: Setup github user
+        uses: fregante/setup-git-user@v1
+        #        git config --local user.email "actions@github.com"
+        #  git config --local user.name "GitHub Actions"
+
+      - name: Push changes, if any
+        run: |
+          echo -e "GITHUB_REF: {$GITHUB_REF}"
+          pwd
+          ls -al .
+          echo -e "repository name = ${{ github.event.repository.name }} \n github_ref = ${GITHUB_REF#refs/*/}"
+          ls -altcrh
+          # workaround for no changes to commit:
+          if [ `git diff | wc -l` != 0 ]
+            then
+            git add -A
+            git commit -m "multisite docs"
+            git push
+          fi
+        shell: sh
