@@ -2,6 +2,10 @@
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_rsp
+#' @param default_responses (`list` or `logical` or `numeric` or `character`) \cr defines
+#'   the default codes for the response variable in the module per value of `paramcd`.
+#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
+#'   and contain arrays, each name corresponding to a single value of `paramcd`.
 #'
 #' @export
 #'
@@ -59,10 +63,11 @@ tm_t_binary_outcome <- function(label,
                                 paramcd,
                                 strata_var,
                                 aval_var = choices_selected(
-                                  variable_choices(dataname, "AVALC"),
-                                  "AVALC", fixed = TRUE
-                                ),
+                                  choices = variable_choices(dataname, c("AVALC", "SEX")),
+                                  selected = "AVALC", fixed = FALSE),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                default_responses =
+                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                                 add_total = FALSE,
                                 pre_output = NULL,
                                 post_output = NULL) {
@@ -81,6 +86,14 @@ tm_t_binary_outcome <- function(label,
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
+  )
+
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
   )
 
   args <- as.list(environment())
@@ -103,7 +116,8 @@ tm_t_binary_outcome <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        default_responses = default_responses
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -306,7 +320,8 @@ srv_t_binary_outcome <- function(input,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
-                                 label) {
+                                 label,
+                                 default_responses) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -338,6 +353,26 @@ srv_t_binary_outcome <- function(input,
     input_id = c("arm_var", "strata_var"),
     anl_name = "ANL_ADSL"
   )
+
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]], input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+      aval_var <- anl_merged()$columns_source$aval_var
+      common_rsp <- if (is.list(default_responses)) {
+        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+      } else {
+        default_responses
+      }
+      responder_choices <- if (is_empty(aval_var)) {
+        character(0)
+      } else {
+        unique(anl_merged()$data()[[aval_var]])
+      }
+      updateSelectInput(
+        session, "responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp)
+      )
+    }, once = FALSE, ignoreInit = TRUE)
 
   # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
@@ -422,6 +457,10 @@ srv_t_binary_outcome <- function(input,
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"))
 
     NULL
   })

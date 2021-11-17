@@ -444,22 +444,21 @@ srv_g_forest_rsp <- function(input,
     anl_name = "ANL_ADSL"
   )
 
-  # Update UI choices depending on selection of previous options
+  # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
     aval_var <- anl_merged()$columns_source$aval_var
-    if (nrow(anl_merged()$data()) == 0) {
-      responder_choices <- c("CR", "PR")
-      responder_sel <- c("CR", "PR")
+    responder_choices <- if (is_empty(aval_var)) {
+      character(0)
     } else {
-      responder_choices <- unique(anl_merged()$data()[[aval_var]])
-      responder_sel <- intersect(responder_choices, isolate(input$responders))
+      unique(anl_merged()$data()[[aval_var]])
     }
+    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
     updateSelectInput(
       session, "responders",
       choices = responder_choices,
-      selected = responder_sel
+      selected = intersect(responder_choices, common_rsp)
     )
-  })
+  }, once = FALSE)
 
   subgroup_var_ordered <- get_input_order("subgroup_var", subgroup_var$dataname)
 
