@@ -619,28 +619,31 @@ srv_t_events_byterm <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- reactive(
+    selector_list_creator(
+      list(arm_var = arm_var, hlt = hlt, llt = llt),
+      datasets = datasets
+    )
+  )
+
+  anl_merged <- data_merge_module_srv(
+    anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, hlt, llt),
-    input_id = c("arm_var", "hlt", "llt"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
-
-  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- arm_var_user_input()
+    input_arm_var <- anl_selectors()$arm_var()$input_order
     input_level_term <- c(
       as.vector(anl_m$columns_source$hlt),
       as.vector(anl_m$columns_source$llt)
@@ -705,7 +708,7 @@ srv_t_events_byterm <- function(input,
     my_calls <- template_events(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = arm_var_user_input(),
+      arm_var = anl_selectors()$arm_var()$input_order,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
       add_total = input$add_total,

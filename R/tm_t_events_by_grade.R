@@ -919,15 +919,13 @@ srv_t_events_by_grade <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, hlt, llt, grade),
-    input_id = c("arm_var", "hlt", "llt", "grade"),
+    data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 
