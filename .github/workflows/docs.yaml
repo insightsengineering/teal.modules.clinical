@@ -27,6 +27,9 @@ jobs:
 
   multisite:
     # if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/insightsengineering/rstudio_4.1.0_bioc_3.13:latest
     needs: docs
     name: Multisite pkgdown site
     steps:
