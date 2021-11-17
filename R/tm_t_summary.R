@@ -401,31 +401,34 @@ srv_summary <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- reactive(
+    selector_list_creator(
+      list(arm_var = arm_var, summarize_vars = summarize_vars),
+      datasets = datasets
+    )
+  )
+
+  anl_merged <- data_merge_module_srv(
+    anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, summarize_vars),
-    input_id = c("arm_var", "summarize_vars"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 
-  summary_user_input <- get_input_order("summarize_vars", summarize_vars$dataname)
-  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
-
   # validate inputs
   validate_checks <- reactive({
+
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- arm_var_user_input()
-    input_summarize_vars <- summary_user_input()
+    input_arm_var <- anl_selectors()$arm_var()$input_order
+    input_summarize_vars <- anl_selectors()$summarize_vars()$input_order
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
@@ -464,12 +467,12 @@ srv_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    sum_vars <- summary_user_input()
+    sum_vars <- anl_selectors()$summarize_vars()$input_order
 
     my_calls <- template_summary(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = arm_var_user_input(),
+      arm_var = anl_selectors()$arm_var()$input_order,
       sum_vars = sum_vars,
       show_labels = "visible",
       add_total = input$add_total,

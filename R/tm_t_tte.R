@@ -700,7 +700,7 @@ srv_t_tte <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parentname),
+    id_arm_var =  extract_input("arm_var", parentname),
     datasets = datasets,
     dataname = parentname,
     arm_ref_comp = arm_ref_comp,
@@ -710,15 +710,20 @@ srv_t_tte <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, aval_var, cnsr_var, strata_var, event_desc_var, time_unit_var),
-    input_id = c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var", "time_unit_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      strata_var = strata_var,
+      event_desc_var = event_desc_var,
+      time_unit_var = time_unit_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, strata_var),
-    input_id = c("arm_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
