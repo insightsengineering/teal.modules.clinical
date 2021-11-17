@@ -629,15 +629,13 @@ srv_t_rsp <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, strata_var, aval_var),
-    input_id = c("arm_var", "paramcd", "strata_var", "aval_var"),
+    data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, strata_var),
-    input_id = c("arm_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
