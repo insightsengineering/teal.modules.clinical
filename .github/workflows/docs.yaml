@@ -26,12 +26,12 @@ jobs:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 
   multisite:
-    # if: ${{ github.event_name == 'push' }}
+    name: Multisite pkgdown site
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/insightsengineering/rstudio_4.1.0_bioc_3.13:latest
     needs: docs
-    name: Multisite pkgdown site
     steps:
       - name: Change branch multisite docs
         uses: actions/checkout@v2
@@ -40,26 +40,14 @@ jobs:
 
       - name: Multisite docs update links 
         uses: insightsengineering/r-pkgdown-multisite@6-pkg-multisite
+        with:
+          path: "."
+          release_name: "main"
         env:
           GITHUB_PAT: ${{ secrets.REPO_GITHUB_TOKEN }}
       
       - name: Setup github user
         uses: fregante/setup-git-user@v1
-        #        git config --local user.email "actions@github.com"
-        #  git config --local user.name "GitHub Actions"
 
       - name: Push changes, if any
-        run: |
-          echo -e "GITHUB_REF: {$GITHUB_REF}"
-          pwd
-          ls -al .
-          echo -e "repository name = ${{ github.event.repository.name }} \n github_ref = ${GITHUB_REF#refs/*/}"
-          ls -altcrh
-          # workaround for no changes to commit:
-          if [ `git diff | wc -l` != 0 ]
-            then
-            git add -A
-            git commit -m "multisite docs"
-            git push
-          fi
-        shell: sh
+        uses: EndBug/add-and-commit@v7
