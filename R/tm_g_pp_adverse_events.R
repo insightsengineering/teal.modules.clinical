@@ -409,8 +409,10 @@ srv_g_adverse_events <- function(input,
   # Adverse events tab ----
   ae_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(aeterm, tox_grade, causality, outcome, action, time, decod),
-    input_id = c("aeterm", "tox_grade", "causality", "outcome", "action", "time", "decod")
+    data_extract = list(
+      aeterm = aeterm, tox_grade = tox_grade, causality = causality,
+      outcome = outcome, action = action, time = time, decod = decod
+    )
   )
 
   calls <- reactive({

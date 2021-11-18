@@ -574,12 +574,9 @@ srv_g_therapy <- function(input,
   therapy_merged_data <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      atirel, cmdecod, cmindc,
-      cmdose, cmtrt, cmdosu, cmroute, cmdosfrq, cmstdy, cmendy
-    ),
-    input_id = c(
-      "atirel", "cmdecod", "cmindc", "cmdose",
-      "cmtrt", "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
+      atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
+      cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
+      cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
     ),
     merge_function = "dplyr::left_join"
   )
