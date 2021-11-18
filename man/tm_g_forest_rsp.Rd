@@ -18,6 +18,7 @@ tm_g_forest_rsp(
   strata_var,
   fixed_symbol_size = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  default_responses = NULL,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -67,6 +68,13 @@ estimate. Otherwise, the symbol size will be proportional to the sample size in 
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
+
+\item{default_responses}{(\code{list} or \code{logical} or \code{numeric} or \code{character}) \cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -135,7 +143,10 @@ app <- init(
         variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
-      plot_height = c(600L, 200L, 2000L)
+      plot_height = c(600L, 200L, 2000L),
+      default_responses = list(BESRSPI = list(rsp = c("SD", "PR"), levels = c("CR", "PR", "SD")),
+                               INVET = list(rsp = c("CR", "PR"), levels = c("CR", "PR", "SD", "NE")),
+                               OVRINF = list(rsp = c("CR")))
     )
   )
 )

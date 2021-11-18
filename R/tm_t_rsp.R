@@ -346,6 +346,12 @@ template_rsp <- function(dataname,
 #' STREAM template `rspt01`.
 #'
 #' @inheritParams module_arguments
+#' @param default_responses (`list` or `logical` or `numeric` or `character`) \cr defines
+#'   the default codes for the response variable in the module per value of `paramcd`.
+#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
+#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
+#'   may contain default response values or named arrays `rsp` of default selected response
+#'   values and `levels` of default level choices
 #'
 #' @details Additional standard UI inputs include `responders`,
 #'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
@@ -427,11 +433,13 @@ template_rsp <- function(dataname,
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
 #'         select = NULL
 #'       ),
-#'       default_responses = list(BESRSPI = list(rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-#'                                               levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)", "NEW_ONE")),
-#'                                INVET = list(rsp = c("Stable Disease (SD)"),
-#'                                             levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
-#'                                OVRINF = list(rsp = c("Partial Response (PR)")))
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)", "Partial Disease (PD)")),
+#'         INVET = list(rsp = c("Stable Disease (SD)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
+#'         OVRINF = list(rsp = c("Partial Response (PR)")))
 #'     )
 #'   )
 #' )

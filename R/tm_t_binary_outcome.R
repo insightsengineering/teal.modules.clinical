@@ -2,10 +2,6 @@
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_rsp
-#' @param default_responses (`list` or `logical` or `numeric` or `character`) \cr defines
-#'   the default codes for the response variable in the module per value of `paramcd`.
-#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
-#'   and contain arrays, each name corresponding to a single value of `paramcd`.
 #'
 #' @export
 #'
@@ -467,7 +463,8 @@ srv_t_binary_outcome <- function(input,
 
     validate(
       need(all(unlist(lapply(default_responses, function(x) {
-        if (is.null(x$levels)) {
+        lvls <- if (is.list(x)) x$levels else NULL
+        if (is.null(lvls)) {
           all(unlist(x) %in% levels(unlist(anl_filtered[c(aval_var$select$choices)])))
         } else TRUE}))),
         "All selected default responses must be in AVAL"))

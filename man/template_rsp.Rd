@@ -15,7 +15,7 @@ template_rsp(
   combine_comp_arms = FALSE,
   aval_var = "AVALC",
   show_rsp_cat = TRUE,
-  responder_val = c("CR", "PR"),
+  responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),

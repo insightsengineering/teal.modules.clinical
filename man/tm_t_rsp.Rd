@@ -16,6 +16,7 @@ tm_t_rsp(
   aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
     TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  default_responses = NULL,
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -57,6 +58,13 @@ variable.}
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
+
+\item{default_responses}{(\code{list} or \code{logical} or \code{numeric} or \code{character}) \cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
@@ -152,7 +160,14 @@ app <- init(
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
         select = NULL
-      )
+      ),
+      default_responses = list(
+        BESRSPI = list(
+          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)", "Partial Disease (PD)")),
+        INVET = list(rsp = c("Stable Disease (SD)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
+        OVRINF = list(rsp = c("Partial Response (PR)")))
     )
   )
 )

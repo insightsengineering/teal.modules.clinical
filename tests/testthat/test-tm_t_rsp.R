@@ -14,14 +14,14 @@ test_that("template_rsp generates standard expressions", {
 
   expected <- list(
     data = quote({
-      anl <- adrs %>%
-        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
-      adsl <- adsl %>%
-        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na()
@@ -29,9 +29,9 @@ test_that("template_rsp generates standard expressions", {
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI",
-                      "for", paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")
+                      "for", paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
+                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
+                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
       ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
@@ -85,7 +85,8 @@ test_that("template_rsp generates right expressions with non-default", {
     comp_arm = c("A: Drug X", "C: Combination"),
     compare_arm = TRUE,
     combine_comp_arms = FALSE,
-    show_rsp_cat = FALSE
+    show_rsp_cat = FALSE,
+    responder_val = c("PR", "SD")
   )
 
   expected <- list(
@@ -94,7 +95,9 @@ test_that("template_rsp generates right expressions with non-default", {
         dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         dplyr::mutate(ARM = stats::relevel(ARM, ref = "B: Placebo")) %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("PR", "SD")) %>%
+        dplyr::filter(AVALC %in% c("PR", "SD")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("PR", "SD"))) %>%
         df_explicit_na()
       ADSL <- ADSL %>% # nolint
         dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
@@ -105,9 +108,9 @@ test_that("template_rsp generates right expressions with non-default", {
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1,
-                             "and", ""), tail(c("CR", "PR"), 1), "Responders")
+                      paste(head(c("PR", "SD"), -1), collapse = ", "),
+                      ifelse(length(c("PR", "SD")) > 1,
+                             "and", ""), tail(c("PR", "SD"), 1), "Responders")
         ) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
@@ -162,7 +165,9 @@ test_that("template_rsp generates expression without arm comparison", {
     data = quote({
       anl <- ADRS %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
       ADSL <- ADSL %>%  # nolint
         dplyr::mutate(ARM = droplevels(ARM)) %>%
@@ -171,9 +176,9 @@ test_that("template_rsp generates expression without arm comparison", {
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI",
-                      "for", paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")
+                      "for", paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
+                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
+                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
         ) %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
@@ -219,7 +224,9 @@ test_that("template_rsp generates expression with non-default controls and strat
         dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>%
         dplyr::mutate(ARM = stats::relevel(ARM, ref = "B: Placebo")) %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
       ADSL <- ADSL %>% # nolint
         dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
@@ -230,9 +237,9 @@ test_that("template_rsp generates expression with non-default controls and strat
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")
+                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
+                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
+                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
         ) %>%
         split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         add_colcounts() %>%
@@ -311,7 +318,9 @@ test_that("template_rsp can combine comparison arms", {
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
       ADSL <- ADSL %>% # nolint
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -325,9 +334,9 @@ test_that("template_rsp can combine comparison arms", {
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")
+                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
+                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
+                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
         ) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
@@ -406,7 +415,9 @@ test_that("template_rsp can combine refs", {
         dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
-        dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
+        dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
       adsl <- adsl %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -418,9 +429,9 @@ test_that("template_rsp can combine refs", {
     layout = quote(
       lyt <- basic_table(
         title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("CR", "PR"), -1), collapse = ", "),
-                      ifelse(length(c("CR", "PR")) > 1, "and",
-                             ""), tail(c("CR", "PR"), 1), "Responders")
+                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
+                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
+                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
         ) %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         add_colcounts() %>%
