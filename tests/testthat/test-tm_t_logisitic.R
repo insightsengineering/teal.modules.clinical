@@ -3,13 +3,14 @@ test_that("template_logistic generates correct expressions", {
     dataname = "ANL",
     arm_var = "ARMCD",
     aval_var = "AVALC",
+    paramcd = "PARAMCD",
     cov_var = c("AGE", "SEX"),
     interaction_var = "AGE",
     ref_arm = c("ARM A", "ARM B"),
     comp_arm = "ARM C",
     conf_level = 0.95,
     combine_comp_arms = FALSE,
-    responder_val = c("CR", "PR"),
+    responder_val = c("CR"),
     topleft = "BESRSPI",
     at = c(30, 40)
   )
@@ -22,7 +23,7 @@ test_that("template_logistic generates correct expressions", {
       dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
-      dplyr::mutate(Response = AVALC %in% c("CR", "PR")) %>%
+      dplyr::mutate(Response = AVALC %in% "CR") %>%
       df_explicit_na(na_level = "")
     ),
     relabel = quote(rtables::var_labels(anl["ARMCD"]) <- arm_var_lab),
@@ -34,7 +35,15 @@ test_that("template_logistic generates correct expressions", {
       df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- basic_table() %>%
+      result <- basic_table(
+        title = paste(
+          "Table of", "PARAMCD",
+          "for",
+          paste(head("CR", -1), collapse = ", "),
+          ifelse(length("CR") > 1, "and", ""),
+          tail("CR", 1),
+          "Responders")
+        ) %>%
         summarize_logistic(conf_level = 0.95) %>%
         append_topleft("BESRSPI") %>%
         build_table(df = mod)
