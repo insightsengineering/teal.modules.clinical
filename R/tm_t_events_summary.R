@@ -743,7 +743,7 @@ ui_t_events_summary <- function(id, ...) {
 }
 
 #' @noRd
- srv_t_events_summary <- function(input,
+srv_t_events_summary <- function(input,
                                  output,
                                  session,
                                  datasets,
