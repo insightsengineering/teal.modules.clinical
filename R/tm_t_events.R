@@ -627,7 +627,7 @@ srv_t_events_byterm <- function(input,
   )
 
   anl_merged <- data_merge_module_srv(
-    anl_selectors,
+    selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
