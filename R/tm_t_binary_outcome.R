@@ -420,13 +420,6 @@ srv_t_binary_outcome <- function(input,
     validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
     validate(
-      need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      )
-    )
-
-    validate(
       if (length(input_strata_var) >= 1L) {
         need(
           sum(
@@ -457,6 +450,10 @@ srv_t_binary_outcome <- function(input,
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
+
+    validate(
+      need(all(unlist(default_responses) %in% levels(unlist(anl_filtered[aval_var$select$choices[1:2]]))),
+      "All selected default responses must be in AVAL"))
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
