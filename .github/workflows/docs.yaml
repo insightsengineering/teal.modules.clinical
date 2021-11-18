@@ -27,7 +27,6 @@ jobs:
 
   multisite:
     name: Multisite creation
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/insightsengineering/rstudio_4.1.0_bioc_3.13:latest
@@ -40,9 +39,6 @@ jobs:
 
       - name: Multisite docs update links 
         uses: insightsengineering/r-pkgdown-multisite@6-pkg-multisite
-        with:
-          path: "."
-          release_name: "main"
         env:
           GITHUB_PAT: ${{ secrets.REPO_GITHUB_TOKEN }}
       
