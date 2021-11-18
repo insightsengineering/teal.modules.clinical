@@ -743,7 +743,7 @@ ui_t_events_summary <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_summary <- function(input,
+ srv_t_events_summary <- function(input,
                                  output,
                                  session,
                                  datasets,
@@ -761,35 +761,37 @@ srv_t_events_summary <- function(input,
 
   init_chunks()
 
-  data_extract_vars <- list(arm_var, dthfl_var, dcsreas_var, aeseq_var, llt)
-  data_extract_inputs <- c("arm_var", "dthfl_var", "dcsreas_var", "aeseq_var", "llt")
+  data_extract_vars <- list(
+    arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
+    aeseq_var = aeseq_var, llt = llt
+  )
 
   if (!is.null(flag_var_anl)) {
-    data_extract_vars <- c(data_extract_vars, list(flag_var_anl))
-    data_extract_inputs <- c(data_extract_inputs, "flag_var_anl")
+    data_extract_vars[["flag_var_anl"]] <- flag_var_anl
   }
 
   if (!is.null(flag_var_aesi)) {
-    data_extract_vars <- c(data_extract_vars, list(flag_var_aesi))
-    data_extract_inputs <- c(data_extract_inputs, "flag_var_aesi")
+    data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
   }
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- reactive(
+    selector_list_creator(
+      data_extract_vars,
+      datasets = datasets
+    )
+  )
+
+  anl_merged <- data_merge_module_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = data_extract_vars,
-    input_id = data_extract_inputs,
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, dthfl_var, dcsreas_var),
-    input_id = c("arm_var", "dthfl_var", "dcsreas_var"),
+    data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
     anl_name = "ANL_ADSL"
   )
-
-  flag_var_anl_ordered <- get_input_order("flag_var_anl", flag_var_anl$dataname)
-  flag_var_aesi <- get_input_order("flag_var_aesi", flag_var_aesi$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -799,8 +801,8 @@ srv_t_events_summary <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
     input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-    input_flag_var_anl <- flag_var_anl_ordered()
-    input_flag_var_aesi <- flag_var_aesi()
+    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
+    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
     input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
@@ -832,8 +834,8 @@ srv_t_events_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_flag_var_anl <- flag_var_anl_ordered()
-    input_flag_var_aesi <- flag_var_aesi()
+    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
+    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
 
     my_calls <- template_events_summary(
       anl_name = "ANL",
