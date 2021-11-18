@@ -249,6 +249,7 @@ tm_g_forest_rsp <- function(label,
                             strata_var,
                             fixed_symbol_size = TRUE,
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            default_responses = NULL,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
@@ -273,6 +274,14 @@ tm_g_forest_rsp <- function(label,
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
+  )
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -295,6 +304,7 @@ tm_g_forest_rsp <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        default_responses = default_responses,
         plot_height = plot_height,
         plot_width = plot_width
       )
@@ -412,7 +422,8 @@ srv_g_forest_rsp <- function(input,
                              strata_var,
                              plot_height,
                              plot_width,
-                             label) {
+                             label,
+                             default_responses) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -444,6 +455,40 @@ srv_g_forest_rsp <- function(input,
     anl_name = "ANL_ADSL"
   )
 
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]], input[[extract_input("paramcd", paramcd$filter[[1]]$dataname,
+                                                                       filter = TRUE)]]), {
+      aval_var <- anl_merged()$columns_source$aval_var
+      sel_param <- if (is.list(default_responses)) {
+        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+      } else default_responses
+      common_rsp <- if (is.list(default_responses)) {
+        if (is.list(sel_param)) {
+          sel_param$rsp
+        } else {
+          sel_param
+        }
+      } else {
+        c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
+      }
+      responder_choices <- if (is_empty(aval_var)) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
+          }
+        } else {
+          unique(anl_merged()$data()[[aval_var]])
+        }
+      }
+      updateSelectInput(
+        session, "responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp)
+      )
+  }, once = FALSE, ignoreInit = TRUE)
+
   # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
     aval_var <- anl_merged()$columns_source$aval_var
@@ -458,7 +503,7 @@ srv_g_forest_rsp <- function(input,
       choices = responder_choices,
       selected = intersect(responder_choices, common_rsp)
     )
-  }, once = FALSE)
+  }, once = TRUE)
 
   subgroup_var_ordered <- get_input_order("subgroup_var", subgroup_var$dataname)
 
@@ -500,6 +545,14 @@ srv_g_forest_rsp <- function(input,
              "Not all stratification variables are factors.")
       )
     }
+
+    validate(
+      need(all(unlist(lapply(default_responses, function(x) {
+        lvls <- if (is.list(x)) x$levels else NULL
+        if (is.null(lvls)) {
+          all(unlist(x) %in% unique(unlist(anl_merged()$data()[c(aval_var$select$choices)])))
+        } else TRUE}))),
+        "All selected default responses must be in AVAL"))
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,

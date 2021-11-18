@@ -260,7 +260,7 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       panel_item(
         "Additional table settings",
@@ -355,24 +355,38 @@ srv_t_binary_outcome <- function(input,
   )
 
   observeEvent(
-    c(input[[extract_input("aval_var", "ADRS")]], input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
-      aval_var <- anl_merged()$columns_source$aval_var
-      common_rsp <- if (is.list(default_responses)) {
-        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-      } else {
-        default_responses
-      }
-      responder_choices <- if (is_empty(aval_var)) {
-        character(0)
-      } else {
-        unique(anl_merged()$data()[[aval_var]])
-      }
-      updateSelectInput(
-        session, "responders",
-        choices = responder_choices,
-        selected = intersect(responder_choices, common_rsp)
-      )
-    }, once = FALSE, ignoreInit = TRUE)
+    c(input[[extract_input("aval_var", "ADRS")]], input[[extract_input("paramcd", paramcd$filter[[1]]$dataname,
+                                                                       filter = TRUE)]]), {
+       aval_var <- anl_merged()$columns_source$aval_var
+       sel_param <- if (is.list(default_responses)) {
+         default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+       } else default_responses
+       common_rsp <- if (is.list(default_responses)) {
+         if (is.list(sel_param)) {
+           sel_param$rsp
+         } else {
+           sel_param
+         }
+       } else {
+         c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
+       }
+       responder_choices <- if (is_empty(aval_var)) {
+         character(0)
+       } else {
+         if ("levels" %in% names(sel_param)) {
+           if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+             sel_param$levels
+           }
+         } else {
+           unique(anl_merged()$data()[[aval_var]])
+         }
+       }
+       updateSelectInput(
+         session, "responders",
+         choices = responder_choices,
+         selected = intersect(responder_choices, common_rsp)
+       )
+  }, once = FALSE, ignoreInit = TRUE)
 
   # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
@@ -452,8 +466,11 @@ srv_t_binary_outcome <- function(input,
       need(input$responders, "`Responders` field is empty"))
 
     validate(
-      need(all(unlist(default_responses) %in% levels(unlist(anl_filtered[aval_var$select$choices[1:2]]))),
-      "All selected default responses must be in AVAL"))
+      need(all(unlist(lapply(default_responses, function(x) {
+        if (is.null(x$levels)) {
+          all(unlist(x) %in% levels(unlist(anl_filtered[c(aval_var$select$choices)])))
+        } else TRUE}))),
+        "All selected default responses must be in AVAL"))
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
