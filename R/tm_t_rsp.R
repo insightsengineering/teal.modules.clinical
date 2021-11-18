@@ -436,7 +436,8 @@ template_rsp <- function(dataname,
 #'       default_responses = list(
 #'         BESRSPI = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)", "Partial Disease (PD)")),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
+#'              "Stable Disease (SD)", "Partial Disease (PD)")),
 #'         INVET = list(rsp = c("Stable Disease (SD)"),
 #'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
 #'         OVRINF = list(rsp = c("Partial Response (PR)")))

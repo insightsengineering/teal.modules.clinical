@@ -14,14 +14,16 @@ test_that("template_rsp generates standard expressions", {
 
   expected <- list(
     data = quote({
-      anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      anl <- adrs %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::filter(AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)"))) %>%
         df_explicit_na()
-      adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+      adsl <- adsl %>%
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         df_explicit_na()
