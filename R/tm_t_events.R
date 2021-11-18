@@ -643,7 +643,7 @@ srv_t_events_byterm <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- anl_selectors()$arm_var()$input_order
+    input_arm_var <- anl_selectors()$arm_var()$select_ordered
     input_level_term <- c(
       as.vector(anl_m$columns_source$hlt),
       as.vector(anl_m$columns_source$llt)
@@ -708,7 +708,7 @@ srv_t_events_byterm <- function(input,
     my_calls <- template_events(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = anl_selectors()$arm_var()$input_order,
+      arm_var = anl_selectors()$arm_var()$select_ordered,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
       add_total = input$add_total,

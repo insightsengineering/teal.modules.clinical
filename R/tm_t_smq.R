@@ -537,7 +537,7 @@ srv_t_smq <- function(input,
     anl_m <- anl_merged()
     anl_adsl <- adsl_merged()
 
-    input_arm_var <- anl_selectors()$arm_var()$input_order
+    input_arm_var <- anl_selectors()$arm_var()$select_ordered
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_baskets <- as.vector(anl_m$columns_source$baskets)
     input_scopes <- as.vector(anl_m$columns_source$scopes)
@@ -579,7 +579,7 @@ srv_t_smq <- function(input,
     my_calls <- template_smq(
       parentname = "ANL_ADSL",
       dataname = "ANL",
-      arm_var = anl_selectors()$arm_var()$input_order,
+      arm_var = anl_selectors()$arm_var()$select_ordered,
       llt = as.vector(anl_m$columns_source$llt),
       add_total = input$add_total,
       sort_criteria = input$sort_criteria,
