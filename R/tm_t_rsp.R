@@ -672,37 +672,37 @@ srv_t_rsp <- function(input,
   )
 
   observeEvent(
-    c(input[[extract_input("aval_var", "ADRS")]], input[[extract_input("paramcd", paramcd$filter[[1]]$dataname,
-                                                                       filter = TRUE)]]), {
-      aval_var <- anl_merged()$columns_source$aval_var
-      sel_param <- if (is.list(default_responses)) {
-        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-      } else default_responses
-      common_rsp <- if (is.list(default_responses)) {
-        if (is.list(sel_param)) {
-          sel_param$rsp
-        } else {
-          sel_param
-        }
-      } else {
-        c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-      }
-      responder_choices <- if (is_empty(aval_var)) {
-        character(0)
-      } else {
-        if ("levels" %in% names(sel_param)) {
-          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-            sel_param$levels
+    c(input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else default_responses
+        common_rsp <- if (is.list(default_responses)) {
+          if (is.list(sel_param)) {
+            sel_param$rsp
+          } else {
+            sel_param
           }
         } else {
-          unique(anl_merged()$data()[[aval_var]])
+          c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
         }
-      }
-      updateSelectInput(
-        session, "responders",
-        choices = responder_choices,
-        selected = intersect(responder_choices, common_rsp)
-      )
+        responder_choices <- if (is_empty(aval_var)) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            }
+          } else {
+            unique(anl_merged()$data()[[aval_var]])
+          }
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
     }, once = FALSE, ignoreInit = TRUE)
 
   # Because the AVALC values depends on the selected PARAMCD.
@@ -789,12 +789,13 @@ srv_t_rsp <- function(input,
         if (is.null(lvls)) {
           all(unlist(x) %in% unique(unlist(anl_merged()$data()[c(aval_var$select$choices)])))
         } else TRUE}))),
-        "All selected default responses must be in AVAL"))
+        "All selected default responses must be in AVAL")
+    )
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+      "Please choose a confidence level between 0 and 1")
+    )
 
     NULL
   })
