@@ -474,17 +474,16 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var, id_var, paramcd, atoxgr_var, worst_high_flag_var, worst_low_flag_var
+      arm_var = arm_var, id_var = id_var, paramcd = paramcd,
+      atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
+      worst_low_flag_var = worst_low_flag_var
     ),
-    input_id = c(
-      "arm_var", "id_var", "paramcd", "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var"
-    ),
-    merge_function = "dplyr::inner_join")
+    merge_function = "dplyr::inner_join"
+  )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 

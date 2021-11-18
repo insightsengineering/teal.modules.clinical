@@ -409,15 +409,16 @@ srv_g_ipp <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, aval_var, avalu_var, id_var, paramcd, visit_var, base_var),
-    input_id = c("arm_var", "aval_var", "avalu_var", "id_var", "paramcd", "visit_var", "base_var"),
+    data_extract = list(
+      arm_var = arm_var, aval_var = aval_var, avalu_var = avalu_var,
+      id_var = id_var, paramcd = paramcd, visit_var = visit_var, base_var = base_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, id_var),
-    input_id = c("arm_var", "id_var"),
+    data_extract = list(arm_var = arm_var, id_var = id_var),
     anl_name = "ANL_ADSL"
   )
 
