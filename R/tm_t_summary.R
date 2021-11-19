@@ -425,8 +425,8 @@ srv_summary <- function(input,
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- anl_selectors()$arm_var()$select_ordered
-    input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
+    input_arm_var <- anl_selectors$arm_var()$select_ordered
+    input_summarize_vars <- anl_selectors$summarize_vars()$select_ordered
 
     validate(
       need(input_arm_var, "Please select a treatment variable"),
@@ -465,12 +465,12 @@ srv_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    sum_vars <- anl_selectors()$summarize_vars()$select_ordered
+    sum_vars <- anl_selectors$summarize_vars()$select_ordered
 
     my_calls <- template_summary(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = anl_selectors()$arm_var()$select_ordered,
+      arm_var = anl_selectors$arm_var()$select_ordered,
       sum_vars = sum_vars,
       show_labels = "visible",
       add_total = input$add_total,

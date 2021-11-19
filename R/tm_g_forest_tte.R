@@ -479,7 +479,7 @@ srv_g_forest_tte <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
+    input_subgroup_var <- anl_selectors$subgroup_var()$select_ordered
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
@@ -543,7 +543,7 @@ srv_g_forest_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <-  anl_selectors()$subgroup_var()$select_ordered
+    subgroup_var <-  anl_selectors$subgroup_var()$select_ordered
 
     my_calls <- template_forest_tte(
       dataname = "ANL",

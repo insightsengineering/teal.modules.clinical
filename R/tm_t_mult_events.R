@@ -473,7 +473,7 @@ srv_t_mult_events_byterm <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_seq_var <- as.vector(anl_m$columns_source$seq_var)
 
-    input_hlt <- anl_selectors()$hlt()$select_ordered
+    input_hlt <- anl_selectors$hlt()$select_ordered
     input_llt <- as.vector(anl_m$columns_source$llt)
 
     validate(need(input_arm_var, "Please select a treatment variable"))
@@ -509,7 +509,7 @@ srv_t_mult_events_byterm <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_hlt <- anl_selectors()$hlt()$select_ordered
+    input_hlt <- anl_selectors$hlt()$select_ordered
     input_llt <- as.vector(anl_m$columns_source$llt)
 
     my_calls <- template_mult_events(
