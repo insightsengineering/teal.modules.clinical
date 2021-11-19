@@ -447,7 +447,7 @@ srv_g_forest_tte <- function(input,
   )
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(
         arm_var = arm_var, paramcd = paramcd, subgroup_var = subgroup_var,
         strata_var = strata_var, aval_var = aval_var, cnsr_var = cnsr_var, time_unit_var = time_unit_var

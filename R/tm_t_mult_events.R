@@ -443,7 +443,7 @@ srv_t_mult_events_byterm <- function(input,
   init_chunks()
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(arm_var = arm_var, seq_var = seq_var, hlt = hlt, llt = llt),
       datasets = datasets
     )

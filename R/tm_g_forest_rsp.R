@@ -431,7 +431,7 @@ srv_g_forest_rsp <- function(input,
   )
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(
         arm_var = arm_var, subgroup_var = subgroup_var,
         strata_var = strata_var, paramcd = paramcd, aval_var = aval_var

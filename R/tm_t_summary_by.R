@@ -587,7 +587,7 @@ srv_summary_by <- function(input,
   }
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       vars,
       datasets = datasets
     )

@@ -512,7 +512,7 @@ srv_t_smq <- function(input,
   init_chunks()
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(arm_var = arm_var, id_var = id_var, baskets = baskets, scopes = scopes, llt = llt),
       datasets = datasets
     )

@@ -474,7 +474,7 @@ srv_t_abnormality <- function(input,
   })
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(
         arm_var = arm_var, id_var = id_var, by_vars = by_vars,
         grade = grade, baseline_var = baseline_var, treatment_flag_var = treatment_flag_var

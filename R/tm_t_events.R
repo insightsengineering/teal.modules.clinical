@@ -620,7 +620,7 @@ srv_t_events_byterm <- function(input,
   init_chunks()
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(arm_var = arm_var, hlt = hlt, llt = llt),
       datasets = datasets
     )

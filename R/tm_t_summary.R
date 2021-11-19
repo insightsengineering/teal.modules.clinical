@@ -402,7 +402,7 @@ srv_summary <- function(input,
   init_chunks()
 
   anl_selectors <- reactive(
-    selector_list_creator(
+    data_extract_multiple_srv(
       list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = datasets
     )
