@@ -700,7 +700,7 @@ srv_t_tte <- function(input,
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var =  extract_input("arm_var", parentname),
+    id_arm_var = extract_input("arm_var", parentname),
     datasets = datasets,
     dataname = parentname,
     arm_ref_comp = arm_ref_comp,
