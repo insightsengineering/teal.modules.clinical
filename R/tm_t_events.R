@@ -619,14 +619,12 @@ srv_t_events_byterm <- function(input,
 
   init_chunks()
 
-  anl_selectors <- reactive(
-    data_extract_multiple_srv(
-      list(arm_var = arm_var, hlt = hlt, llt = llt),
-      datasets = datasets
-    )
+  anl_selectors <- data_extract_multiple_srv(
+    list(arm_var = arm_var, hlt = hlt, llt = llt),
+    datasets = datasets
   )
 
-  anl_merged <- data_merge_module_srv(
+  anl_merged <- data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"

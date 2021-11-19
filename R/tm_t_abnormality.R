@@ -473,17 +473,15 @@ srv_t_abnormality <- function(input,
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
   })
 
-  anl_selectors <- reactive(
-    data_extract_multiple_srv(
-      list(
-        arm_var = arm_var, id_var = id_var, by_vars = by_vars,
-        grade = grade, baseline_var = baseline_var, treatment_flag_var = treatment_flag_var
-      ),
-      datasets = datasets
-    )
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var, id_var = id_var, by_vars = by_vars,
+      grade = grade, baseline_var = baseline_var, treatment_flag_var = treatment_flag_var
+    ),
+    datasets = datasets
   )
 
-  anl_merged <- data_merge_module_srv(
+  anl_merged <- data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"

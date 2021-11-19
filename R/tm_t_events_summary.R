@@ -774,14 +774,12 @@ srv_t_events_summary <- function(input,
     data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
   }
 
-  anl_selectors <- reactive(
-    data_extract_multiple_srv(
-      data_extract_vars,
-      datasets = datasets
-    )
+  anl_selectors <- data_extract_multiple_srv(
+    data_extract_vars,
+    datasets = datasets
   )
 
-  anl_merged <- data_merge_module_srv(
+  anl_merged <- data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"

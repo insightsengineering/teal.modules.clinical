@@ -446,17 +446,20 @@ srv_g_forest_tte <- function(input,
     module = "tm_g_forest_tte"
   )
 
-  anl_selectors <- reactive(
-    data_extract_multiple_srv(
-      list(
-        arm_var = arm_var, paramcd = paramcd, subgroup_var = subgroup_var,
-        strata_var = strata_var, aval_var = aval_var, cnsr_var = cnsr_var, time_unit_var = time_unit_var
-      ),
-      datasets = datasets
-    )
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      subgroup_var = subgroup_var,
+      strata_var = strata_var,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      time_unit_var = time_unit_var
+    ),
+    datasets = datasets
   )
 
-  anl_merged <- data_merge_module_srv(
+  anl_merged <- data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
