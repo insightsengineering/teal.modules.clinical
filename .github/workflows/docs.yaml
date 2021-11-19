@@ -38,7 +38,7 @@ jobs:
           ref: gh-pages
 
       - name: Multisite docs update links 
-        uses: insightsengineering/r-pkgdown-multisite@6-pkg-multisite
+        uses: insightsengineering/r-pkgdown-multisite@v1
         env:
           GITHUB_PAT: ${{ secrets.REPO_GITHUB_TOKEN }}
       
