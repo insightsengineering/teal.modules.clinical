@@ -703,23 +703,7 @@ srv_t_rsp <- function(input,
           choices = responder_choices,
           selected = intersect(responder_choices, common_rsp)
         )
-    }, once = FALSE, ignoreInit = TRUE)
-
-  # Because the AVALC values depends on the selected PARAMCD.
-  observeEvent(anl_merged(), {
-    aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- if (is_empty(aval_var)) {
-      character(0)
-    } else {
-      unique(anl_merged()$data()[[aval_var]])
-    }
-    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = intersect(responder_choices, common_rsp)
-    )
-  }, once = TRUE)
+    })
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -781,6 +765,17 @@ srv_t_rsp <- function(input,
           "After filtering at least one combination of strata variable levels
             has too few observations to calculate the odds ratio.")
       }
+    )
+
+    validate(
+      need(all(unlist(lapply(default_responses, function(x) {
+        browser()
+        if (is.list(x)) {
+          if (length(x) == 2) {
+            all(names(x) %in% c("rsp", "levels"))
+          } else TRUE
+        } else TRUE}))),
+        "The lists given in default_responses must contain named lists 'rsp' and 'levels'.")
     )
 
     validate(
