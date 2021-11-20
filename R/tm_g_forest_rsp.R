@@ -253,7 +253,7 @@ tm_g_forest_rsp <- function(label,
                             strata_var,
                             fixed_symbol_size = TRUE,
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            default_responses = NULL,
+                            default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
@@ -466,25 +466,15 @@ srv_g_forest_rsp <- function(input,
         sel_param <- if (is.list(default_responses)) {
           default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
         } else default_responses
-        common_rsp <- if (is.list(default_responses)) {
-          if (is.list(sel_param)) {
-            sel_param$rsp
-          } else {
-            sel_param
-          }
-        } else {
-          c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-        }
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
         responder_choices <- if (is_empty(aval_var)) {
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            }
-          } else {
-            unique(anl_merged()$data()[[aval_var]])
-          }
+            sel_param$levels
+          } else unique(anl_merged()$data()[[aval_var]])
         }
         updateSelectInput(
           session, "responders",
@@ -534,25 +524,30 @@ srv_g_forest_rsp <- function(input,
       )
     }
 
-    validate(
-      need(all(unlist(lapply(default_responses, function(x) {
-        browser()
-        if (is.list(x)) {
-          if (length(x) == 2) {
-            all(names(x) %in% c("rsp", "levels"))
-          } else TRUE
-        } else TRUE}))),
-        "The lists given in default_responses must contain named lists 'rsp' and 'levels'.")
-    )
+    if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
+      validate(
+        need(all(unlist(lapply(default_responses, function(x) {
+          if (is.list(x) & "levels" %in% names(x)) {
+            lvls <- x$levels
+            all(x$rsp %in% lvls)
+          } else {
+            lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+            if ("rsp" %in% names(x)) {
+              all(x$rsp %in% lvls)
+            } else all(x %in% lvls)
+          }
+          }))),
+          "All selected default responses must be in the levels of AVAL.")
+      )
+    }
 
-    validate(
-      need(all(unlist(lapply(default_responses, function(x) {
-        lvls <- if (is.list(x)) x$levels else NULL
-        if (is.null(lvls)) {
-          all(unlist(x) %in% unique(unlist(anl_merged()$data()[c(aval_var$select$choices)])))
-        } else TRUE}))),
-        "All selected default responses must be in AVAL")
-    )
+    if (is.list(default_responses)) {
+      validate(
+        need(all(grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+                   names(unlist(default_responses)) %in% names(default_responses)),
+             "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,

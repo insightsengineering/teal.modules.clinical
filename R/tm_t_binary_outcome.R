@@ -63,7 +63,7 @@ tm_t_binary_outcome <- function(label,
                                   selected = "AVALC", fixed = FALSE),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 default_responses =
-                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
+                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 add_total = FALSE,
                                 pre_output = NULL,
                                 post_output = NULL) {
@@ -355,27 +355,22 @@ srv_t_binary_outcome <- function(input,
       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
         aval_var <- anl_merged()$columns_source$aval_var
         sel_param <- if (is.list(default_responses)) {
-         default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
         } else default_responses
-        common_rsp <- if (is.list(default_responses)) {
-         if (is.list(sel_param)) {
-           sel_param$rsp
-         } else {
-           sel_param
-         }
-        } else c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
         responder_choices <- if (is_empty(aval_var)) {
-         character(0)
+          character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
-           if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-             sel_param$levels
-           }
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            }
           } else unique(anl_merged()$data()[[aval_var]])
         }
         updateSelectInput(
-          session,
-          "responders",
+          session, "responders",
           choices = responder_choices,
           selected = intersect(responder_choices, common_rsp)
         )
@@ -442,25 +437,13 @@ srv_t_binary_outcome <- function(input,
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
 
-    validate(
-      need(all(unlist(lapply(default_responses, function(x) {
-        browser()
-        if (is.list(x)) {
-          if (length(x) == 2) {
-            all(names(x) %in% c("rsp", "levels"))
-          } else TRUE
-        } else TRUE}))),
-        "The lists given in default_responses must contain named lists 'rsp' and 'levels'.")
-    )
-
-    validate(
-      need(all(unlist(lapply(default_responses, function(x) {
-        lvls <- if (is.list(x)) x$levels else NULL
-        if (is.null(lvls)) {
-          all(unlist(x) %in% levels(unlist(anl_filtered[c(aval_var$select$choices)])))
-        } else TRUE}))),
-        "All selected default responses must be in AVAL")
-    )
+    if (is.list(default_responses)) {
+      validate(
+        need(all(grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+                   gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)),
+             "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,

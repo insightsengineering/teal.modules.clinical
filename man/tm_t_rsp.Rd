@@ -16,7 +16,8 @@ tm_t_rsp(
   aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
     TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-  default_responses = NULL,
+  default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
+    "Partial Response (PR)"),
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -165,7 +166,7 @@ app <- init(
         BESRSPI = list(
           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
           levels = c("Complete Response (CR)", "Partial Response (PR)",
-             "Stable Disease (SD)", "Partial Disease (PD)")),
+             "Stable Disease (SD)", "Progressive Disease (PD)")),
         INVET = list(rsp = c("Stable Disease (SD)"),
           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
         OVRINF = list(rsp = c("Partial Response (PR)")))
