@@ -159,10 +159,10 @@ template_forest_tte <- function(dataname = "ANL",
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = title, footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+                           gp_footnotes = grid::gpar(fontsize = 12))
       } else {
         p <- decorate_grob(p, title = title, footnotes = "",
-                           gp_footnotes = gpar(fontsize = 12))
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)

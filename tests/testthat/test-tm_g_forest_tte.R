@@ -57,11 +57,11 @@ test_that("template_forest_tte generates correct expressions", {
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = "Forest plot of survival duration for ", footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
       else {
         p <- decorate_grob(p, title = "Forest plot of survival duration for ",
-                           footnotes = "", gp_footnotes = gpar(fontsize = 12))
+                           footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)
