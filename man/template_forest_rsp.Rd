@@ -10,6 +10,7 @@ template_forest_rsp(
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
+  obj_var_name = NULL,
   aval_var = "AVALC",
   responders = c("CR", "PR"),
   subgroup_var,

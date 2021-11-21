@@ -159,10 +159,10 @@ template_forest_rsp <- function(dataname = "ANL",
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(p, title = title, footnotes = footnotes(p),
-                           gp_footnotes = grid::gpar(fontsize = 12))
+                           gp_footnotes = gpar(fontsize = 12))
       } else {
         p <- decorate_grob(p, title = title, footnotes = "",
-                           gp_footnotes = grid::gpar(fontsize = 12))
+                           gp_footnotes = gpar(fontsize = 12))
       }
 
       grid::grid.newpage()
@@ -544,7 +544,7 @@ srv_g_forest_rsp <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
 
-    obj_var_name <- names(paramcd$filter[[1]]$choices)[paramcd$filter[[1]]$choices == input$`paramcd-dataset_ADTTE_singleextract-filter1-vals`]
+    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 
     my_calls <- template_forest_rsp(
       dataname = "ANL",

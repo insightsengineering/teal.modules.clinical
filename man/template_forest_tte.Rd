@@ -10,6 +10,7 @@ template_forest_tte(
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
+  obj_var_name = NULL,
   aval_var = "AVAL",
   cnsr_var = "CNSR",
   subgroup_var,
