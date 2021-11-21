@@ -149,7 +149,7 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(time_unit_var = as.name(time_unit_var))
   )
 
-  title <- paste("Forest plot of survival duration for", obj_var_name)
+  title <- paste0("Forest plot of survival duration for ", obj_var_name)
 
   y$plot <- substitute(
     expr = {

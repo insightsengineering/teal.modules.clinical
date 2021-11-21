@@ -148,7 +148,7 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
-  title <- paste("Forest plot of best overall response for", obj_var_name)
+  title <- paste0("Forest plot of best overall response for ", obj_var_name)
 
   # Plot output.
   y$plot <- substitute(

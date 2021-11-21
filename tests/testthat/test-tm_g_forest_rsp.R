@@ -46,9 +46,13 @@ test_that("template_forest_rsp generates correct expressions", {
       )
       if (!is.null(footnotes(p))) {
         p <- decorate_grob(
-          p, title = "Forest plot", footnotes = footnotes(p),
+          p, title = "Forest plot of best overall response for ", footnotes = footnotes(p),
           gp_footnotes = gpar(fontsize = 12)
         )
+      }
+      else {
+        p <- decorate_grob(p, title = "Forest plot of best overall response for ",
+                           footnotes = "", gp_footnotes = gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)
