@@ -850,7 +850,7 @@ clean_description <- function(x) {
 }
 
 
-get_g_forest_obj_var_name <- function(paramcd, input){
+get_g_forest_obj_var_name <- function(paramcd, input) {
   choices <- paramcd$filter[[1]]$choices
   current_selected <- input$`paramcd-dataset_ADTTE_singleextract-filter1-vals`
   obj_var_name <- names(choices)[choices == current_selected]
