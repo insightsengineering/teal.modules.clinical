@@ -83,7 +83,7 @@ template_smq <- function(
         df = dataname,
         baskets = baskets,
         smq_varlabel = smq_varlabel,
-        keys = c("STUDYID", id_var, arm_var, llt)
+        keys = unique(c("STUDYID", id_var, arm_var, llt))
       ),
       env = list(
         dataname = as.name("anl"),
