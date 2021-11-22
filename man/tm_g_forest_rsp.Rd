@@ -145,11 +145,19 @@ app <- init(
         "STRATA2"
       ),
       plot_height = c(600L, 200L, 2000L),
-      default_responses = list(BESRSPI = list(rsp = c("SD", "PR"),
-                                              levels = c("CR", "PR", "SD")),
-                               INVET = list(rsp = c("CR", "PR"),
-                                            levels = c("CR", "PR", "SD", "NE")),
-                               OVRINF = list(rsp = c("CR")))
+      default_responses = list(
+        BESRSPI = list(
+          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)",
+                     "Stable Disease (SD)", "Progressive Disease (PD)")),
+        INVET = list(
+          rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+        OVRINV = list(
+          rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+      )
     )
   )
 )

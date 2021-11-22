@@ -38,6 +38,19 @@
 #'       strata_var = choices_selected(
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
 #'         select = NULL
+#'       ),
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
+#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'         INVET = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
 #'       )
 #'     )
 #'   )
@@ -366,7 +379,7 @@ srv_t_binary_outcome <- function(input,
           if ("levels" %in% names(sel_param)) {
             if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
               sel_param$levels
-            }
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
           } else unique(anl_merged()$data()[[aval_var]])
         }
         updateSelectInput(

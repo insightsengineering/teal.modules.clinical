@@ -434,10 +434,15 @@ template_rsp <- function(dataname,
 #'         BESRSPI = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
 #'           levels = c("Complete Response (CR)", "Partial Response (PR)",
-#'              "Stable Disease (SD)", "Progressive Disease (PD)")),
-#'         INVET = list(rsp = c("Stable Disease (SD)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)")),
-#'         OVRINF = list(rsp = c("Partial Response (PR)")))
+#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'         INVET = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+#'       )
 #'     )
 #'   )
 #' )
@@ -682,7 +687,9 @@ srv_t_rsp <- function(input,
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
-            sel_param$levels
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
           } else unique(anl_merged()$data()[[aval_var]])
         }
         updateSelectInput(
