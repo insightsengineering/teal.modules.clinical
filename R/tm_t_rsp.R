@@ -773,9 +773,10 @@ srv_t_rsp <- function(input,
 
     if (is.list(default_responses)) {
       validate(
-        need(all(grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-                   names(unlist(default_responses)) %in% names(default_responses)),
-             "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            names(unlist(default_responses)) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
       )
     }
 

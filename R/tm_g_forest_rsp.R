@@ -231,8 +231,10 @@ template_forest_rsp <- function(dataname = "ANL",
 #'         "STRATA2"
 #'       ),
 #'       plot_height = c(600L, 200L, 2000L),
-#'       default_responses = list(BESRSPI = list(rsp = c("SD", "PR"), levels = c("CR", "PR", "SD")),
-#'                                INVET = list(rsp = c("CR", "PR"), levels = c("CR", "PR", "SD", "NE")),
+#'       default_responses = list(BESRSPI = list(rsp = c("SD", "PR"),
+#'                                               levels = c("CR", "PR", "SD")),
+#'                                INVET = list(rsp = c("CR", "PR"),
+#'                                             levels = c("CR", "PR", "SD", "NE")),
 #'                                OVRINF = list(rsp = c("CR")))
 #'     )
 #'   )
@@ -543,9 +545,10 @@ srv_g_forest_rsp <- function(input,
 
     if (is.list(default_responses)) {
       validate(
-        need(all(grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-                   names(unlist(default_responses)) %in% names(default_responses)),
-             "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            names(unlist(default_responses)) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
       )
     }
 

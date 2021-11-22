@@ -145,8 +145,10 @@ app <- init(
         "STRATA2"
       ),
       plot_height = c(600L, 200L, 2000L),
-      default_responses = list(BESRSPI = list(rsp = c("SD", "PR"), levels = c("CR", "PR", "SD")),
-                               INVET = list(rsp = c("CR", "PR"), levels = c("CR", "PR", "SD", "NE")),
+      default_responses = list(BESRSPI = list(rsp = c("SD", "PR"),
+                                              levels = c("CR", "PR", "SD")),
+                               INVET = list(rsp = c("CR", "PR"),
+                                            levels = c("CR", "PR", "SD", "NE")),
                                OVRINF = list(rsp = c("CR")))
     )
   )
