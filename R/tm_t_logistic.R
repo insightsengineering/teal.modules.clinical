@@ -249,7 +249,8 @@ tm_t_logistic <- function(label,
                           avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
-                          post_output = NULL) {
+                          post_output = NULL,
+                          no_arm_var = FALSE) {
   logger::log_info("Initializing tm_t_logistic")
   stopifnot(
     length(dataname) == 1,
@@ -258,12 +259,21 @@ tm_t_logistic <- function(label,
 
   args <- as.list(environment())
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
-  )
+  if (no_arm_var) {
+    data_extract_list <- list(
+      arm_var = NULL,
+      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+      avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
+      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+    )
+  } else {
+    data_extract_list <- list(
+      arm_var = cs_to_des_select(arm_var, dataname = parentname),
+      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+      avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
+      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+    )
+  }
 
   module(
     label = label,
@@ -323,29 +333,33 @@ ui_t_logistic <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      selectInput(
-        ns("ref_arm"),
-        "Reference Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
-      selectInput(
-        ns("comp_arm"),
-        "Comparison Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
-      checkboxInput(
-        ns("combine_comp_arms"),
-        "Combine all comparison groups?",
-        value = FALSE
-      ),
+      if (a$no_arm_var == FALSE) {
+        div(
+          data_extract_input(
+            id = ns("arm_var"),
+            label = "Select Treatment Variable",
+            data_extract_spec = a$arm_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          selectInput(
+            ns("ref_arm"),
+            "Reference Group",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          selectInput(
+            ns("comp_arm"),
+            "Comparison Group",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          checkboxInput(
+            ns("combine_comp_arms"),
+            "Combine all comparison groups?",
+            value = FALSE
+          )
+        )
+      },
       data_extract_input(
         id = ns("cov_var"),
         label = "Covariates",
