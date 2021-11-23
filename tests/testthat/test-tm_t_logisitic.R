@@ -18,12 +18,12 @@ test_that("template_logistic generates correct expressions", {
   expected <- list(
     arm_lab = quote(arm_var_lab <- var_labels(ANL["ARMCD"])),
     data = quote({
-    ANL <- ANL %>%
+    ANL <- ANL %>% #nolint
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
       dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
       dplyr::mutate(ARMCD = droplevels(ARMCD))
-    ANL <- ANL %>%
+    ANL <- ANL %>% #nolint
       dplyr::mutate(Response = AVALC %in% "CR") %>%
       df_explicit_na(na_level = "")
     }),
@@ -72,7 +72,7 @@ test_that("template_logistic generates correct expressions for no arm variable",
 
   expected <- list(
     data = quote({
-      ANL <- ANL %>%
+      ANL <- ANL %>% #nolint
         dplyr::mutate(Response = AVALC %in% "CR") %>%
         df_explicit_na(na_level = "")
     }),

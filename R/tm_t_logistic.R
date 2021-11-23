@@ -92,7 +92,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe,
+        expr = ANL <- data_pipe, #nolint
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -101,7 +101,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>%
+      expr = ANL <- df %>% #nolint
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = ""),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -618,8 +618,12 @@ srv_t_logistic <- function(input,
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
-    # anl_adsl <- adsl_merged()
-    anl_adsl <- anl_m
+    if (no_arm_var == FALSE) {
+      anl_adsl <- adsl_merged()
+    } else {
+      anl_adsl <- anl_m
+    }
+
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
