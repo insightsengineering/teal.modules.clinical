@@ -29,17 +29,30 @@ template_logistic <- function(dataname,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
                               at = NULL) {
+  if (is.null(arm_var)) {
+    assert_that(
+      is.string(dataname),
+      is.null(arm_var),
+      is.string(aval_var),
+      is.string(paramcd),
+      is.string(topleft) || is.null(topleft),
+      is.character(cov_var) || is.null(cov_var),
+      is.string(interaction_var) || is.null(interaction_var)
+    )
+  } else {
+    assert_that(
+      is.string(dataname),
+      is.string(arm_var),
+      is.string(aval_var),
+      is.string(paramcd),
+      is.string(topleft) || is.null(topleft),
+      is.character(cov_var) || is.null(cov_var),
+      is.string(interaction_var) || is.null(interaction_var),
+      is.flag(combine_comp_arms)
+    )
+  }
 
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var) || is.null(arm_var),
-    is.string(aval_var),
-    is.string(paramcd),
-    is.string(topleft) || is.null(topleft),
-    is.character(cov_var) || is.null(cov_var),
-    is.string(interaction_var) || is.null(interaction_var)
-    # is.flag(combine_comp_arms)
-  )
+
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
