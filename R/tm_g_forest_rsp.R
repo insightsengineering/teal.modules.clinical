@@ -190,7 +190,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #' library(dplyr)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'   mutate(AVALC = d_onco_rsp_label(AVALC))
 #'
 #' arm_ref_comp = list(
 #'   ARM = list(
@@ -206,7 +207,10 @@ template_forest_rsp <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs'),
+#'     cdisc_dataset("ADRS", ADRS,
+#'       code = 'ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'         mutate(AVALC = d_onco_rsp_label(AVALC))'
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -233,11 +237,11 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       default_responses = list(
 #'         BESRSPI = list(
-#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
 #'           levels = c("Complete Response (CR)", "Partial Response (PR)",
 #'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
 #'         INVET = list(
-#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
 #'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
 #'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
 #'         OVRINV = list(

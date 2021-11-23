@@ -9,7 +9,8 @@
 #' library(dplyr)
 #' library(scda)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'   mutate(AVALC = d_onco_rsp_label(AVALC))
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -20,7 +21,9 @@
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code =
 #'       "ADSL <- synthetic_cdisc_data('latest')$adsl
-#'        ADRS <- synthetic_cdisc_data('latest')$adrs"
+#'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_binary_outcome(

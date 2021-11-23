@@ -142,8 +142,10 @@ app <- init(
       x = ADRS,
       code =
         "ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
-          mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
-    )
+          mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))),
+                 AVALC = d_onco_rsp_label(AVALC))"
+    ),
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_rsp(
