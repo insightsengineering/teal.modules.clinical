@@ -618,9 +618,13 @@ srv_g_km <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      aval_var = aval_var, cnsr_var = cnsr_var,
-      arm_var = arm_var, paramcd = paramcd, strata_var = strata_var,
-      facet_var = facet_var, time_unit_var = time_unit_var
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      arm_var = arm_var,
+      paramcd = paramcd,
+      strata_var = strata_var,
+      facet_var = facet_var,
+      time_unit_var = time_unit_var
     ),
     merge_function = "dplyr::inner_join"
   )

@@ -799,8 +799,8 @@ srv_t_events_summary <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
     input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors$flag_var_anl()$select_ordered else NULL
-    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors$flag_var_aesi()$select_ordered else NULL
+    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
+    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
     input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
     input_llt <- as.vector(anl_m$columns_source$llt)
 
@@ -832,8 +832,8 @@ srv_t_events_summary <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors$flag_var_anl()$select_ordered else NULL
-    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors$flag_var_aesi()$select_ordered else NULL
+    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
+    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
 
     my_calls <- template_events_summary(
       anl_name = "ANL",

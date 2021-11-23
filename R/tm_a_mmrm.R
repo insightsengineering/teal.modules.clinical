@@ -810,8 +810,12 @@ srv_mmrm <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var = arm_var, paramcd = paramcd, id_var = id_var,
-      visit_var = visit_var, split_covariates = split_covariates, aval_var = aval_var
+      arm_var = arm_var,
+      paramcd = paramcd,
+      id_var = id_var,
+      visit_var = visit_var,
+      split_covariates = split_covariates,
+      aval_var = aval_var
     ),
     merge_function = "dplyr::inner_join"
   )

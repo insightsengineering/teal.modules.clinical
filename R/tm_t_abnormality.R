@@ -475,8 +475,12 @@ srv_t_abnormality <- function(input,
 
   anl_selectors <- data_extract_multiple_srv(
     list(
-      arm_var = arm_var, id_var = id_var, by_vars = by_vars,
-      grade = grade, baseline_var = baseline_var, treatment_flag_var = treatment_flag_var
+      arm_var = arm_var,
+      id_var = id_var,
+      by_vars = by_vars,
+      grade = grade,
+      baseline_var = baseline_var,
+      treatment_flag_var = treatment_flag_var
     ),
     datasets = datasets
   )
@@ -500,7 +504,7 @@ srv_t_abnormality <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- anl_selectors$by_vars()$select_ordered
+    input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_grade <- as.vector(anl_m$columns_source$grade)
     input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
@@ -539,7 +543,7 @@ srv_t_abnormality <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      by_vars = anl_selectors$by_vars()$select_ordered,
+      by_vars = anl_selectors()$by_vars()$select_ordered,
       abnormal = abnormal,
       grade = as.vector(anl_m$columns_source$grade),
       baseline_var = as.vector(anl_m$columns_source$baseline_var),

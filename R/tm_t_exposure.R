@@ -456,8 +456,13 @@ srv_t_exposure <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      id_var = id_var, paramcd = paramcd, row_by_var = row_by_var,
-      col_by_var = col_by_var, parcat = parcat, aval_var = aval_var, avalu_var = avalu_var
+      id_var = id_var,
+      paramcd = paramcd,
+      row_by_var = row_by_var,
+      col_by_var = col_by_var,
+      parcat = parcat,
+      aval_var = aval_var,
+      avalu_var = avalu_var
     ),
     merge_function = "dplyr::inner_join"
   )

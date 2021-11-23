@@ -410,8 +410,13 @@ srv_g_ipp <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var = arm_var, aval_var = aval_var, avalu_var = avalu_var,
-      id_var = id_var, paramcd = paramcd, visit_var = visit_var, base_var = base_var
+      arm_var = arm_var,
+      aval_var = aval_var,
+      avalu_var = avalu_var,
+      id_var = id_var,
+      paramcd = paramcd,
+      visit_var = visit_var,
+      base_var = base_var
     ),
     merge_function = "dplyr::inner_join"
   )

@@ -728,8 +728,10 @@ srv_t_shift_by_grade <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var = arm_var, visit_var = visit_var,
-      id_var = id_var, paramcd = paramcd,
+      arm_var = arm_var,
+      visit_var = visit_var,
+      id_var = id_var,
+      paramcd = paramcd,
       worst_flag_var = worst_flag_var,
       anl_toxgrade_var = anl_toxgrade_var,
       base_toxgrade_var = base_toxgrade_var

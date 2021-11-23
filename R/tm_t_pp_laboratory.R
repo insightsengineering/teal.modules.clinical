@@ -330,8 +330,12 @@ srv_g_laboratory <- function(input,
   labor_merged_data <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      timepoints = timepoints, aval = aval, avalu = avalu,
-      param = param, paramcd = paramcd, anrind = anrind
+      timepoints = timepoints,
+      aval = aval,
+      avalu = avalu,
+      param = param,
+      paramcd = paramcd,
+      anrind = anrind
     )
   )
 

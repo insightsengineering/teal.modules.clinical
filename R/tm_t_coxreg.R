@@ -589,8 +589,12 @@ srv_t_coxreg <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var = arm_var, paramcd = paramcd, strata_var = strata_var,
-      aval_var = aval_var, cnsr_var = cnsr_var, cov_var = cov_var
+      arm_var = arm_var,
+      paramcd = paramcd,
+      strata_var = strata_var,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      cov_var = cov_var
     ),
     merge_function = "dplyr::inner_join"
   )
