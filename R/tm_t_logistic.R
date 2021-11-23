@@ -277,7 +277,7 @@ tm_t_logistic <- function(label,
   )
 
   if (no_arm_var == TRUE) {
-    arm_var = NULL
+    arm_var <- NULL
   }
 
   args <- as.list(environment())
