@@ -275,6 +275,10 @@ tm_t_logistic <- function(label,
     is.choices_selected(conf_level)
   )
 
+  if (no_arm_var == TRUE) {
+    arm_var == NULL
+  }
+
   args <- as.list(environment())
 
   if (no_arm_var) {
