@@ -50,11 +50,10 @@ template_logistic <- function(dataname,
       is.string(interaction_var) || is.null(interaction_var),
       is.flag(combine_comp_arms)
     )
+
+    ref_arm_val <- paste(ref_arm, collapse = "/")
   }
 
-
-
-  ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
 
   if (!is.null(arm_var)) {
@@ -64,11 +63,12 @@ template_logistic <- function(dataname,
     )
   }
 
+  data_pipe <- list()
   data_list <- list()
 
   if (!is.null(arm_var)) {
-    data_list <- add_expr(
-      data_list,
+    data_pipe <- add_expr(
+      data_pipe,
       prepare_arm(
         dataname = dataname,
         arm_var = arm_var,
@@ -79,8 +79,8 @@ template_logistic <- function(dataname,
     )
 
     if (combine_comp_arms) {
-      data_list <- add_expr(
-        data_list,
+      data_pipe <- add_expr(
+        data_pipe,
         substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
@@ -88,22 +88,27 @@ template_logistic <- function(dataname,
         )
       )
     }
+
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = ANL <- data_pipe,
+        env = list(data_pipe = pipe_expr(data_pipe))
+      )
+    )
   }
 
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- df %>% dplyr::mutate(Response = aval_var %in% responder_val),
+      expr = ANL <- df %>%
+        dplyr::mutate(Response = aval_var %in% responder_val) %>%
+        df_explicit_na(na_level = ""),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
-
-  y$data <- substitute(
-    expr = anl <- data_pipe,
-    env = list(data_pipe = pipe_expr(data_list))
-  )
+  y$data <- bracket_expr(data_list)
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
@@ -118,7 +123,7 @@ template_logistic <- function(dataname,
       model_list,
       substitute(
         expr = fit_logistic(
-          anl,
+          ANL,
           variables = list(response = "Response", arm = arm_var, covariates = cov_var)
         ),
         env = list(arm_var = arm_var, cov_var = cov_var)
@@ -129,7 +134,7 @@ template_logistic <- function(dataname,
       model_list,
       substitute(
         expr = fit_logistic(
-          anl,
+          ANL,
           variables = list(
             response = "Response", arm = arm_var, covariates = cov_var,
             interaction = interaction_var
@@ -243,7 +248,7 @@ template_logistic <- function(dataname,
 #'       cov_var = choices_selected(
 #'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
 #'         selected = "SEX"
-#'       ), no_arm_var = TRUE
+#'       )
 #'     )
 #'   )
 #' )
