@@ -37,8 +37,8 @@ template_logistic <- function(dataname,
     is.string(paramcd),
     is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
-    is.string(interaction_var) || is.null(interaction_var),
-    is.flag(combine_comp_arms)
+    is.string(interaction_var) || is.null(interaction_var)
+    # is.flag(combine_comp_arms)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -64,24 +64,24 @@ template_logistic <- function(dataname,
         ref_arm_val = ref_arm_val
       )
     )
-  }
 
-  if (combine_comp_arms) {
-    data_list <- add_expr(
-      data_list,
-      substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm)
+    if (combine_comp_arms) {
+      data_list <- add_expr(
+        data_list,
+        substitute_names(
+          expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(comp_arm = comp_arm)
+        )
       )
-    )
+    }
   }
 
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dplyr::mutate(Response = aval_var %in% responder_val),
-      env = list(aval_var = as.name(aval_var), responder_val = responder_val)
+      expr = anl <- df %>% dplyr::mutate(Response = aval_var %in% responder_val),
+      env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
 
@@ -230,7 +230,7 @@ template_logistic <- function(dataname,
 #'       cov_var = choices_selected(
 #'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
 #'         selected = "SEX"
-#'       )
+#'       ), no_arm_var = TRUE
 #'     )
 #'   )
 #' )
@@ -286,7 +286,8 @@ tm_t_logistic <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         dataname = dataname,
-        parentname = parentname
+        parentname = parentname,
+        no_arm_var = no_arm_var
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -299,12 +300,21 @@ tm_t_logistic <- function(label,
 ui_t_logistic <- function(id, ...) {
 
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$avalc_var,
-    a$cov_var
-  )
+  if (a$no_arm_var == FALSE) {
+    is_single_dataset_value <- is_single_dataset(
+      a$arm_var,
+      a$paramcd,
+      a$avalc_var,
+      a$cov_var
+    )
+  } else {
+    is_single_dataset_value <- is_single_dataset(
+      a$paramcd,
+      a$avalc_var,
+      a$cov_var
+    )
+  }
+
 
   ns <- NS(id)
   standard_layout(
@@ -403,23 +413,26 @@ srv_t_logistic <- function(input,
                            paramcd,
                            avalc_var,
                            cov_var,
-                           label) {
+                           label,
+                           no_arm_var) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
   # Observer to update reference and comparison arm input options.
-  arm_ref_comp_observer(
-    session,
-    input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_logistic"
-  )
+  if (no_arm_var == FALSE) {
+    arm_ref_comp_observer(
+      session,
+      input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_logistic"
+    )
+  }
 
   anl_merged <- data_merge_module(
     datasets = datasets,
@@ -428,12 +441,14 @@ srv_t_logistic <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
-    anl_name = "ANL_ADSL"
-  )
+  if (no_arm_var == FALSE) {
+    adsl_merged <- data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var),
+      input_id = c("arm_var"),
+      anl_name = "ANL_ADSL"
+    )
+  }
 
   # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
@@ -519,27 +534,29 @@ srv_t_logistic <- function(input,
     )
 
     # validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
+    # if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+    #   validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+    # }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    # do.call(what = "validate_standard_inputs", validate_args)
 
-    arm_n <- base::table(anl_m$data()[[input_arm_var]])
-    anl_arm_n <- if (input$combine_comp_arms) {
-      c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
-    } else {
-      c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+    # arm_n <- base::table(anl_m$data()[[input_arm_var]])
+    # anl_arm_n <- if (input$combine_comp_arms) {
+    #   c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+    # } else {
+    #   c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+    # }
+    if (!no_arm_var) {
+      validate(need(
+        all(anl_arm_n >= 2),
+        "Each treatment group should have at least 2 records."
+      ))
     }
-    validate(need(
-      all(anl_arm_n >= 2),
-      "Each treatment group should have at least 2 records."
-    ))
 
     validate(
       need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
@@ -579,7 +596,8 @@ srv_t_logistic <- function(input,
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
-    anl_adsl <- adsl_merged()
+    # anl_adsl <- adsl_merged()
+    anl_adsl <- anl_m
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
