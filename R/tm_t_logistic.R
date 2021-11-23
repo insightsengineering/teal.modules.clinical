@@ -118,7 +118,7 @@ template_logistic <- function(dataname,
   }
 
   model_list <- list()
-  model_list <- if (is.null(interaction_var) || is.null(arm_var)) {
+  model_list <- if (is.null(interaction_var)) {
     add_expr(
       model_list,
       substitute(

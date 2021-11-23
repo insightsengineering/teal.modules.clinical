@@ -27,7 +27,7 @@ test_that("template_logistic generates correct expressions", {
       dplyr::mutate(Response = AVALC %in% "CR") %>%
       df_explicit_na(na_level = "")
     }),
-    relabel = quote(rtables::var_labels(anl["ARMCD"]) <- arm_var_lab),
+    relabel = quote(rtables::var_labels(ANL["ARMCD"]) <- arm_var_lab),
     model = quote(
     mod <- fit_logistic(
       ANL, variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")
@@ -45,6 +45,54 @@ test_that("template_logistic generates correct expressions", {
           tail("CR", 1),
           "Responders")
         ) %>%
+        summarize_logistic(conf_level = 0.95) %>%
+        append_topleft("BESRSPI") %>%
+        build_table(df = mod)
+      result
+    })
+  )
+
+  expect_equal(result, expected)
+})
+
+test_that("template_logistic generates correct expressions for no arm variable", {
+  result <- template_logistic(
+    dataname = "ANL",
+    arm_var = NULL,
+    aval_var = "AVALC",
+    paramcd = "PARAMCD",
+    cov_var = c("AGE", "SEX"),
+    interaction_var = "AGE",
+    conf_level = 0.95,
+    combine_comp_arms = FALSE,
+    responder_val = c("CR"),
+    topleft = "BESRSPI",
+    at = c(30, 40)
+  )
+
+  expected <- list(
+    data = quote({
+      ANL <- ANL %>%
+        dplyr::mutate(Response = AVALC %in% "CR") %>%
+        df_explicit_na(na_level = "")
+    }),
+    model = quote(
+      mod <- fit_logistic(
+        ANL, variables = list(response = "Response", arm = NULL, covariates = c("AGE", "SEX"), interaction = "AGE")
+      ) %>%
+        broom::tidy(conf_level = 0.95, at = c(30, 40)) %>%
+        df_explicit_na(na_level = "")
+    ),
+    table = quote({
+      result <- basic_table(
+        title = paste(
+          "Table of", "PARAMCD",
+          "for",
+          paste(head("CR", -1), collapse = ", "),
+          ifelse(length("CR") > 1, "and", ""),
+          tail("CR", 1),
+          "Responders")
+      ) %>%
         summarize_logistic(conf_level = 0.95) %>%
         append_topleft("BESRSPI") %>%
         build_table(df = mod)
