@@ -17,7 +17,8 @@ tm_t_logistic(
     TRUE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  no_arm_var = FALSE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{no_arm_var}{(\code{flag}) \cr the flag indication if no arm or treatment variable is used for the module.}
 }
 \description{
 This module produces a multi-variable logistic regression table that matches the
