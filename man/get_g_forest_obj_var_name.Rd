@@ -4,13 +4,14 @@
 \alias{get_g_forest_obj_var_name}
 \title{Utility function for extracting paramcd for forest plots}
 \usage{
-get_g_forest_obj_var_name(paramcd, input)
+get_g_forest_obj_var_name(paramcd, input, filter_idx = 1)
 }
 \arguments{
-\item{paramcd}{\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
-variable value designating the studied parameter.}
-
 \item{input}{shinyapp input}
+
+\item{filter_idx}{filter section index (default 1)}
+
+\item{[`teal::data_extract_spec()`]}{variable value designating the studied parameter.}
 }
 \description{
 Utility function for extracting paramcd for forest plots
