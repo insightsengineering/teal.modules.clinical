@@ -112,7 +112,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = rtables::var_labels(anl[arm_var]) <- arm_var_lab,
+      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab,
       env = list(arm_var = arm_var)
     )
   }
@@ -551,25 +551,25 @@ srv_t_logistic <- function(input,
       min_nrow = 4
     )
 
-    # validate arm levels
-    # if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-    #   validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    # }
-
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    # do.call(what = "validate_standard_inputs", validate_args)
+    # validate arm levels
+    if (no_arm_var == FALSE) {
+      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      }
 
-    # arm_n <- base::table(anl_m$data()[[input_arm_var]])
-    # anl_arm_n <- if (input$combine_comp_arms) {
-    #   c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
-    # } else {
-    #   c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
-    # }
-    if (!no_arm_var) {
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      arm_n <- base::table(anl_m$data()[[input_arm_var]])
+      anl_arm_n <- if (input$combine_comp_arms) {
+        c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+      } else {
+        c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+      }
       validate(need(
         all(anl_arm_n >= 2),
         "Each treatment group should have at least 2 records."
