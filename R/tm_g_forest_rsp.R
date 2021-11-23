@@ -211,11 +211,9 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       x = ADSL,
 #'       code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset(
-#'       dataname = "ADRS",
-#'       x = ADRS,
-#'       code =
-#'         'ADRS <- synthetic_cdisc_data("latest")$adrs %>%
-#'           mutate(AVALC = d_onco_rsp_label(AVALC))'
+#'       "ADRS",
+#'       ADRS,
+#'       'ADRS <- synthetic_cdisc_data("latest")$adrs %>% mutate(AVALC = d_onco_rsp_label(AVALC))'
 #'     ),
 #'     check = TRUE
 #'   ),
