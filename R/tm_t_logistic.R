@@ -32,7 +32,7 @@ template_logistic <- function(dataname,
 
   assert_that(
     is.string(dataname),
-    is.string(arm_var),
+    is.string(arm_var) || is.null(arm_var),
     is.string(aval_var),
     is.string(paramcd),
     is.string(topleft) || is.null(topleft),
@@ -43,21 +43,28 @@ template_logistic <- function(dataname,
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
-  y$arm_lab <- substitute(
-    expr = arm_var_lab <- var_labels(anl[arm_var]),
-    env = list(anl = as.name(dataname), arm_var = arm_var)
-  )
-  data_list <- list()
-  data_list <- add_expr(
-    data_list,
-    prepare_arm(
-      dataname = dataname,
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm,
-      ref_arm_val = ref_arm_val
+
+  if (!is.null(arm_var)) {
+    y$arm_lab <- substitute(
+      expr = arm_var_lab <- var_labels(anl[arm_var]),
+      env = list(anl = as.name(dataname), arm_var = arm_var)
     )
-  )
+  }
+
+  data_list <- list()
+
+  if (!is.null(arm_var)) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm(
+        dataname = dataname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val
+      )
+    )
+  }
 
   if (combine_comp_arms) {
     data_list <- add_expr(
@@ -85,13 +92,15 @@ template_logistic <- function(dataname,
     env = list(data_pipe = pipe_expr(data_list))
   )
 
-  y$relabel <- substitute(
-    expr = rtables::var_labels(anl[arm_var]) <- arm_var_lab,
-    env = list(arm_var = arm_var)
-  )
+  if (!is.null(arm_var)) {
+    y$relabel <- substitute(
+      expr = rtables::var_labels(anl[arm_var]) <- arm_var_lab,
+      env = list(arm_var = arm_var)
+    )
+  }
 
   model_list <- list()
-  model_list <- if (is.null(interaction_var)) {
+  model_list <- if (is.null(interaction_var) || is.null(arm_var)) {
     add_expr(
       model_list,
       substitute(
