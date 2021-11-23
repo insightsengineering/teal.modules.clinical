@@ -850,6 +850,15 @@ clean_description <- function(x) {
 }
 
 
+#' Utility function for extracting paramcd for forest plots
+#'
+#' Utility function for extracting paramcd for forest plots
+#'
+#' @param paramcd [`teal::choices_selected()`] or [`teal::data_extract_spec()`]
+#' variable value designating the studied parameter.
+#'
+#' @param input shinyapp input
+#'
 get_g_forest_obj_var_name <- function(paramcd, input) {
   choices <- paramcd$filter[[1]]$choices
   input_obj <- paste0("paramcd-dataset_", paramcd$dataname, "_singleextract-filter1-vals")
