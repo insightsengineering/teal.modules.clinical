@@ -120,15 +120,12 @@ arm_ref_comp = list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset(
-      dataname = "ADSL",
-      x = ADSL,
-      code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset(
-      "ADRS",
-      ADRS,
-      'ADRS <- synthetic_cdisc_data("latest")$adrs \%>\% mutate(AVALC = d_onco_rsp_label(AVALC))'
-    ),
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADRS", ADRS),
+    code =
+      "ADSL <- synthetic_cdisc_data('latest')$adsl
+       ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
+         mutate(AVALC = d_onco_rsp_label(AVALC))",
     check = TRUE
   ),
   modules = root_modules(
