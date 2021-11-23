@@ -300,13 +300,11 @@ srv_g_barchart_simple <- function(input,
 
   init_chunks()
 
-  data_extract <- list(
-    x = x, fill = fill, x_facet = x_facet, y_facet = y_facet
-  )
+  data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
   data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
   merged_data <- data_merge_module(
-      datasets = datasets,
-      data_extract = data_extract,
+    datasets = datasets,
+    data_extract = data_extract,
   )
 
   data_chunk <- reactive({
