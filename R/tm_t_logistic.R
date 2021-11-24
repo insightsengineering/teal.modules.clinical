@@ -459,16 +459,14 @@ srv_t_logistic <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, avalc_var, cov_var),
-    input_id = c("arm_var", "paramcd", "avalc_var", "cov_var"),
+    data_extract = list(arm_var = arm_var, paramcd = paramcd, avalc_var = avalc_var, cov_var = cov_var),
     merge_function = "dplyr::inner_join"
   )
 
   if (no_arm_var == FALSE) {
     adsl_merged <- data_merge_module(
       datasets = datasets,
-      data_extract = list(arm_var),
-      input_id = c("arm_var"),
+      data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
   }
