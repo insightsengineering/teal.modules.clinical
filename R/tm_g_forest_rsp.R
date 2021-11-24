@@ -239,8 +239,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       default_responses = list(
 #'         BESRSPI = list(
 #'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
-#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+#'                      "Progressive Disease (PD)", "Not Evaluable (NE)")),
 #'         INVET = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
 #'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
