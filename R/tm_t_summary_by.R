@@ -581,30 +581,27 @@ srv_summary_by <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
+  if (!is.null(paramcd)) {
+    vars[["paramcd"]] <- paramcd
+  }
+
+  anl_selectors <- data_extract_multiple_srv(
+    vars,
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = if (is.null(paramcd)) {
-      list(arm_var, id_var, by_vars, summarize_vars)
-    } else {
-      list(arm_var, id_var, paramcd, by_vars, summarize_vars)
-    },
-    input_id = if (is.null(paramcd)) {
-      list("arm_var", "id_var", "by_vars", "summarize_vars")
-    } else {
-      list("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")
-    },
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
-
-  by_vars_ordered <- get_input_order("by_vars", by_vars$dataname)
-  summarize_vars_ordered <- get_input_order("summarize_vars", summarize_vars$dataname)
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
@@ -614,8 +611,8 @@ srv_summary_by <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- by_vars_ordered()
-    input_summarize_vars <- summarize_vars_ordered()
+    input_by_vars <- anl_selectors()$by_vars()$select_ordered
+    input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
     input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
     # validate inputs
@@ -662,9 +659,9 @@ srv_summary_by <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      sum_vars = summarize_vars_ordered(),
-      by_vars = by_vars_ordered(),
-      var_labels = get_var_labels(datasets, dataname, summarize_vars_ordered()),
+      sum_vars = anl_selectors()$summarize_vars()$select_ordered,
+      by_vars = anl_selectors()$by_vars()$select_ordered,
+      var_labels = get_var_labels(datasets, dataname, anl_selectors()$summarize_vars()$select_ordered),
       id_var = as.vector(anl_m$columns_source$id_var),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
       na_level = na_level,

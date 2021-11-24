@@ -215,8 +215,7 @@ srv_g_ci <- function(input, # nousage # nolint
 
   merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x_var, y_var, color),
-    input_id = c("x_var", "y_var", "color")
+    data_extract = list(x_var = x_var, y_var = y_var, color = color)
   )
 
   validate_data <- reactive({

@@ -365,15 +365,19 @@ srv_events_patyear <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, aval_var, avalu_var, events_var),
-    input_id = c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      aval_var = aval_var,
+      avalu_var = avalu_var,
+      events_var = events_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 
