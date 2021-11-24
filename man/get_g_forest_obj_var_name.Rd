@@ -7,11 +7,12 @@
 get_g_forest_obj_var_name(paramcd, input, filter_idx = 1)
 }
 \arguments{
+\item{paramcd}{\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
+variable value designating the studied parameter.}
+
 \item{input}{shinyapp input}
 
 \item{filter_idx}{filter section index (default 1)}
-
-\item{[`teal::data_extract_spec()`]}{variable value designating the studied parameter.}
 }
 \description{
 Utility function for extracting paramcd for forest plots
