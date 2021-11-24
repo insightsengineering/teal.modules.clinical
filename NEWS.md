@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9018
+# teal.modules.clinical 0.8.10.9019
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
@@ -16,6 +16,7 @@
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
+* Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 
 # teal.modules.clinical 0.8.10
 ### New features
