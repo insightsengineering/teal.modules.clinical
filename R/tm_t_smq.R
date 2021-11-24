@@ -437,20 +437,20 @@ ui_t_smq <- function(id, ...) {
       datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("llt"),
         label = "Select the low level term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_input(
+      data_extract_ui(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
         data_extract_spec = a$baskets,
@@ -464,13 +464,13 @@ ui_t_smq <- function(id, ...) {
             "Drop arm levels not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("scopes"),
             label = "Scope variables available",
             data_extract_spec = a$scopes,

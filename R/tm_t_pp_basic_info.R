@@ -135,7 +135,7 @@ ui_t_basic_info <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("vars"),
         label = "Select variable:",
         data_extract_spec = ui_args$vars,

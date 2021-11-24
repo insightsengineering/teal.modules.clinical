@@ -4,10 +4,10 @@
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
 
 ### New features
-* New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline. 
-* Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table. 
+* New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline.
+* Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table.
 * New module `tm_g_lineplot` was added for creating line plots.
-* Enhanced `tm_t_logistic` to include selected parameter in title of the table. 
+* Enhanced `tm_t_logistic` to include selected parameter in title of the table.
 
 
 ## Enhancements
@@ -15,6 +15,7 @@
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
+* Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
 
 # teal.modules.clinical 0.8.10
 ### New features

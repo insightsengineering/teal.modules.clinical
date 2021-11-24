@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{extract_input}
 \alias{extract_input}
-\title{Extracts html id for data_extract_input}
+\title{Extracts html id for data_extract_ui}
 \usage{
 extract_input(varname, dataname, filter = FALSE)
 }
@@ -19,6 +19,6 @@ This might be retrieved like \code{data_extract_spec(...)[[1]]$dataname}.}
 if the connected \code{extract_data_spec} has objects passed to its \code{filter} argument}
 }
 \description{
-The data_extract_input is located under extended html id.
+The data_extract_ui is located under extended html id.
 We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
 }

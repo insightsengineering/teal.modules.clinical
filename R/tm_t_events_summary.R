@@ -665,7 +665,7 @@ ui_t_events_summary <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -673,7 +673,7 @@ ui_t_events_summary <- function(id, ...) {
       ),
       if_not_null(
         a$flag_var_anl,
-        data_extract_input(
+        data_extract_ui(
           id = ns("flag_var_anl"),
           label = "Event Flag Variables",
           data_extract_spec = a$flag_var_anl,
@@ -682,7 +682,7 @@ ui_t_events_summary <- function(id, ...) {
       ),
       if_not_null(
         a$flag_var_aesi,
-        data_extract_input(
+        data_extract_ui(
           id = ns("flag_var_aesi"),
           label = "AE Basket Flag Variables",
           data_extract_spec = a$flag_var_aesi,
@@ -709,25 +709,25 @@ ui_t_events_summary <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("dthfl_var"),
             label = "Death Flag Variable",
             data_extract_spec = a$dthfl_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("dcsreas_var"),
             label = "Study Discontinuation Reason Variable",
             data_extract_spec = a$dcsreas_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("aeseq_var"),
             label = "AE Sequence Variable",
             data_extract_spec = a$aeseq_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("llt"),
             label = "AE Term Variable",
             data_extract_spec = a$llt,
@@ -762,22 +762,22 @@ srv_t_events_summary <- function(input,
   init_chunks()
 
   data_extract_vars <- list(arm_var, dthfl_var, dcsreas_var, aeseq_var, llt)
-  data_extract_inputs <- c("arm_var", "dthfl_var", "dcsreas_var", "aeseq_var", "llt")
+  data_extract_uis <- c("arm_var", "dthfl_var", "dcsreas_var", "aeseq_var", "llt")
 
   if (!is.null(flag_var_anl)) {
     data_extract_vars <- c(data_extract_vars, list(flag_var_anl))
-    data_extract_inputs <- c(data_extract_inputs, "flag_var_anl")
+    data_extract_uis <- c(data_extract_uis, "flag_var_anl")
   }
 
   if (!is.null(flag_var_aesi)) {
     data_extract_vars <- c(data_extract_vars, list(flag_var_aesi))
-    data_extract_inputs <- c(data_extract_inputs, "flag_var_aesi")
+    data_extract_uis <- c(data_extract_uis, "flag_var_aesi")
   }
 
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = data_extract_vars,
-    input_id = data_extract_inputs,
+    input_id = data_extract_uis,
     merge_function = "dplyr::inner_join"
   )
 

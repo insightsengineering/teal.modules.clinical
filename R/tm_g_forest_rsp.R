@@ -316,13 +316,13 @@ ui_g_forest_rsp <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
@@ -335,7 +335,7 @@ ui_g_forest_rsp <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -365,13 +365,13 @@ ui_g_forest_rsp <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
         data_extract_spec = a$subgroup_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,

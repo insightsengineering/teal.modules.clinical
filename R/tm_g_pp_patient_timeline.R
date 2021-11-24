@@ -491,13 +491,13 @@ ui_g_patient_timeline <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmtrt"),
         label = "Select CMTRT variable:",
         data_extract_spec = ui_args$cmtrt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aeterm"),
         label = "Select AETERM variable:",
         data_extract_spec = ui_args$aeterm,
@@ -511,13 +511,13 @@ ui_g_patient_timeline <- function(id, ...) {
             ns = ns,
             if (!is.null(ui_args$aerelday_start)) {
               shiny::tagList(
-                data_extract_input(
+                data_extract_ui(
                   id = ns("aerelday_start"),
                   label = "Select AE relative start date variable:",
                   data_extract_spec = ui_args$aerelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                data_extract_input(
+                data_extract_ui(
                   id = ns("aerelday_end"),
                   label = "Select AE relative end date variable:",
                   data_extract_spec = ui_args$aerelday_end,
@@ -527,13 +527,13 @@ ui_g_patient_timeline <- function(id, ...) {
             },
             if (!is.null(ui_args$dsrelday_start)) {
               shiny::tagList(
-                data_extract_input(
+                data_extract_ui(
                   id = ns("dsrelday_start"),
                   label = "Select Medication relative start date variable:",
                   data_extract_spec = ui_args$dsrelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                data_extract_input(
+                data_extract_ui(
                   id = ns("dsrelday_end"),
                   label = "Select Medication relative end date variable:",
                   data_extract_spec = ui_args$dsrelday_end,
@@ -549,25 +549,25 @@ ui_g_patient_timeline <- function(id, ...) {
       shiny::conditionalPanel(
         paste0("input.relday_x_axis == false"),
         ns = ns,
-        data_extract_input(
+        data_extract_ui(
           id = ns("aetime_start"),
           label = "Select ASTDTM variable:",
           data_extract_spec = ui_args$aetime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_input(
+        data_extract_ui(
           id = ns("aetime_end"),
           label = "Select AENDTM variable:",
           data_extract_spec = ui_args$aetime_end,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_input(
+        data_extract_ui(
           id = ns("dstime_start"),
           label = "Select TRTSDTM variable:",
           data_extract_spec = ui_args$dstime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_input(
+        data_extract_ui(
           id = ns("dstime_end"),
           label = "Select TRTEDTM variable:",
           data_extract_spec = ui_args$dstime_end,

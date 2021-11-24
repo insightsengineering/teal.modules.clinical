@@ -183,19 +183,19 @@ ui_t_medical_history <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("mhterm"),
         label = "Select MHTERM variable:",
         data_extract_spec = ui_args$mhterm,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("mhbodsys"),
         label = "Select MHBODSYS variable:",
         data_extract_spec = ui_args$mhbodsys,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("mhdistat"),
         label = "Select MHDISTAT variable:",
         data_extract_spec = ui_args$mhdistat,
