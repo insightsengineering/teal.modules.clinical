@@ -449,8 +449,7 @@ srv_g_lineplot <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x, y, strata, paramcd, y_unit, param),
-    input_id = c("x", "y", "strata", "paramcd", "y_unit", "param"),
+    data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
     merge_function = "dplyr::inner_join"
   )
 
