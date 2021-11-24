@@ -17,6 +17,7 @@
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
+* Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 
 # teal.modules.clinical 0.8.10
 ### New features

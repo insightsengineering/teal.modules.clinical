@@ -439,17 +439,26 @@ srv_g_forest_rsp <- function(input,
     module = "tm_t_tte"
   )
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      subgroup_var = subgroup_var,
+      strata_var = strata_var,
+      paramcd = paramcd,
+      aval_var = aval_var
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, subgroup_var, strata_var, paramcd, aval_var),
-    input_id = c("arm_var", "subgroup_var", "strata_var", "paramcd", "aval_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, subgroup_var, strata_var),
-    input_id = c("arm_var", "subgroup_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
@@ -470,8 +479,6 @@ srv_g_forest_rsp <- function(input,
     )
   })
 
-  subgroup_var_ordered <- get_input_order("subgroup_var", subgroup_var$dataname)
-
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -480,7 +487,7 @@ srv_g_forest_rsp <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_subgroup_var <- subgroup_var_ordered()
+    input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -556,7 +563,8 @@ srv_g_forest_rsp <- function(input,
       obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
-      subgroup_var = if (length(subgroup_var_ordered()) != 0) subgroup_var_ordered() else NULL,
+      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0)
+        anl_selectors()$subgroup_var()$select_ordered else NULL,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (input$fixed_symbol_size) {
