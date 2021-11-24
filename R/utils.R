@@ -854,7 +854,7 @@ clean_description <- function(x) {
 #'
 #' Utility function for extracting paramcd for forest plots
 #'
-#' @param [`teal::data_extract_spec()`]
+#' @param paramcd [`teal::data_extract_spec()`]
 #' variable value designating the studied parameter.
 #'
 #' @param input shinyapp input
