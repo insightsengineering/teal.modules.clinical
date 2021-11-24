@@ -25,7 +25,7 @@ test_that("template_smq generates correct expressions with default arguments", {
       anl <- h_stack_by_baskets(
         df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
         smq_varlabel = "Standardized MedDRA Query",
-        keys = c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD")
+        keys = unique(c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD"))
         )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
@@ -103,7 +103,7 @@ test_that("template_smq generates correct expressions with custom arguments", {
       anl <- h_stack_by_baskets(
         df = anl, baskets = "mybaskets",
         smq_varlabel = "mylabel",
-        keys = c("STUDYID", "myUSUBJID", "myARMCD", "myAEDECOD")
+        keys = unique(c("STUDYID", "myUSUBJID", "myARMCD", "myAEDECOD"))
       )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       myadsl <- df_explicit_na(myadsl, na_level = "<Missing>")
