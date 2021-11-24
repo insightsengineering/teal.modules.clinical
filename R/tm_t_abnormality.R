@@ -14,6 +14,7 @@
 template_abnormality <- function(parentname,
                                  dataname,
                                  arm_var,
+                                 id_var = "USUBJID",
                                  by_vars,
                                  abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                                  grade = "ANRIND",
@@ -26,6 +27,7 @@ template_abnormality <- function(parentname,
                                  na_level = "<Missing>") {
   assert_that(
     is.string(dataname),
+    is.string(id_var),
     is.string(parentname),
     is.string(arm_var),
     is.character(by_vars),
@@ -73,13 +75,13 @@ template_abnormality <- function(parentname,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
       env = list(dataname = as.name("anl"), na_level = na_level))
-    )
+  )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
       env = list(parentname = as.name(parentname), na_level = na_level))
-    )
+  )
 
   y$data <- bracket_expr(data_list)
 
@@ -158,14 +160,14 @@ template_abnormality <- function(parentname,
       expr = count_abnormal(
         var = grade,
         abnormal = abnormal,
-        variables = list(id = usubjid, baseline = baseline_var),
+        variables = list(id = id_var, baseline = baseline_var),
         exclude_base_abn = exclude_base_abn
       ) %>%
         append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
         abnormal = abnormal,
-        usubjid = "USUBJID",
+        id_var = id_var,
         baseline_var = baseline_var,
         exclude_base_abn = exclude_base_abn,
         dataname = as.name(dataname),
@@ -313,12 +315,12 @@ tm_t_abnormality <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -344,8 +346,8 @@ tm_t_abnormality <- function(label,
         abnormal = abnormal,
         label = label,
         na_level = na_level
-        )
-      ),
+      )
+    ),
     filters = get_extract_datanames(data_extract_list)
   )
 }
@@ -364,7 +366,7 @@ ui_t_abnormality <- function(id, ...) {
     a$baseline_var,
     a$treatment_flag_var,
     a$treatment_flag
-    )
+  )
 
   standard_layout(
     output = white_small_well(table_with_settings_ui(ns("table"))),
@@ -578,7 +580,7 @@ srv_t_abnormality <- function(input,
     datasets = datasets,
     datanames = get_extract_datanames(
       list(arm_var, id_var, by_vars, grade)
-      ),
+    ),
     modal_title = "R Code for Abnormality Table",
     code_header = label
   )
