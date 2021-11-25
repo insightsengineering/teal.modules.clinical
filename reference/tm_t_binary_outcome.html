@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9022</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -173,9 +151,11 @@ Other releases
   arm_ref_comp <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>paramcd</span>,
   <span class='va'>strata_var</span>,
-  aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, <span class='st'>"AVALC"</span><span class='op'>)</span>, <span class='st'>"AVALC"</span>, fixed <span class='op'>=</span>
-    <span class='cn'>TRUE</span><span class='op'>)</span>,
+  aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVALC"</span>, <span class='st'>"SEX"</span><span class='op'>)</span><span class='op'>)</span>,
+    selected <span class='op'>=</span> <span class='st'>"AVALC"</span>, fixed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span><span class='op'>)</span>, <span class='fl'>0.95</span>, keep_order <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  default_responses <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CR"</span>, <span class='st'>"PR"</span>, <span class='st'>"Y"</span>, <span class='st'>"Complete Response (CR)"</span>,
+    <span class='st'>"Partial Response (PR)"</span>, <span class='st'>"M"</span><span class='op'>)</span>,
   add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -239,6 +219,15 @@ object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).</p></td>
     </tr>
     <tr>
+      <th>default_responses</th>
+      <td><p>(<code>list</code> or <code>logical</code> or <code>numeric</code> or <code>character</code>) <br /> defines
+the default codes for the response variable in the module per value of <code>paramcd</code>.
+A passed vector is broadcasted for all <code>paramcd</code> values. A passed <code>list</code> must be named
+and contain arrays, each name corresponding to a single value of <code>paramcd</code>. Each array
+may contain default response values or named arrays <code>rsp</code> of default selected response
+values and <code>levels</code> of default level choices</p></td>
+    </tr>
+    <tr>
       <th>add_total</th>
       <td><p>(<code>logical</code>)<br />
 whether to include column with total number of patients.</p></td>
@@ -262,7 +251,8 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
     <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
 <span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
-<span class='r-in'><span class='va'>ADRS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span></span>
+<span class='r-in'><span class='va'>ADRS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>AVALC <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/tern/man/d_onco_rsp_label.html'>d_onco_rsp_label</a></span><span class='op'>(</span><span class='va'>AVALC</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>arm_ref_comp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
 <span class='r-in'>  ARMCD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ref <span class='op'>=</span> <span class='st'>"ARM B"</span>, comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM A"</span>, <span class='st'>"ARM C"</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>  ARM <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ref <span class='op'>=</span> <span class='st'>"B: Placebo"</span>, comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A: Drug X"</span>, <span class='st'>"C: Combination"</span><span class='op'>)</span><span class='op'>)</span></span>
@@ -273,7 +263,9 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADRS"</span>, <span class='va'>ADRS</span><span class='op'>)</span>,</span>
 <span class='r-in'>    code <span class='op'>=</span></span>
 <span class='r-in'>      <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl</span>
-<span class='r-in'>       ADRS &lt;- synthetic_cdisc_data('latest')$adrs"</span></span>
+<span class='r-in'>       ADRS &lt;- synthetic_cdisc_data('latest')$adrs %&gt;%</span>
+<span class='r-in'>         mutate(AVALC = d_onco_rsp_label(AVALC))"</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
 <span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
 <span class='r-in'>    <span class='fu'>tm_t_binary_outcome</span><span class='op'>(</span></span>
@@ -291,11 +283,24 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>      strata_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
 <span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>        select <span class='op'>=</span> <span class='cn'>NULL</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      default_responses <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>        BESRSPI <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span>,</span>
+<span class='r-in'>                     <span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Progressive Disease (PD)"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        INVET <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Not Evaluable (NE)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Not Evaluable (NE)"</span>, <span class='st'>"Partial Response (PR)"</span>,</span>
+<span class='r-in'>                     <span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        OVRINV <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Not Evaluable (NE)"</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'>      <span class='op'>)</span></span>
 <span class='r-in'>    <span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
 <span class='r-in'><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:28:27.6977 pid:961 teal.modules.clinical fun:tm_t_binary_outcome [INFO] Initializing tm_t_binary_outcome</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 16:32:53.7706 pid:965 teal.modules.clinical fun:tm_t_binary_outcome [INFO] Initializing tm_t_binary_outcome</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>

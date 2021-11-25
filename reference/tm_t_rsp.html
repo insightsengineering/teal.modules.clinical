@@ -83,7 +83,7 @@ STREAM template rspt01." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9022</span>
       </span>
     </div>
 
@@ -113,28 +113,6 @@ STREAM template rspt01." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -178,6 +156,8 @@ STREAM template <code>rspt01</code>.</p>
   aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>dataname</span>, <span class='st'>"AVALC"</span><span class='op'>)</span>, <span class='st'>"AVALC"</span>, fixed <span class='op'>=</span>
     <span class='cn'>TRUE</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span><span class='op'>)</span>, <span class='fl'>0.95</span>, keep_order <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+  default_responses <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CR"</span>, <span class='st'>"PR"</span>, <span class='st'>"Y"</span>, <span class='st'>"Complete Response (CR)"</span>,
+    <span class='st'>"Partial Response (PR)"</span><span class='op'>)</span>,
   add_total <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -239,6 +219,15 @@ variable.</p></td>
       <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code>)<br />
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).</p></td>
+    </tr>
+    <tr>
+      <th>default_responses</th>
+      <td><p>(<code>list</code> or <code>logical</code> or <code>numeric</code> or <code>character</code>) <br /> defines
+the default codes for the response variable in the module per value of <code>paramcd</code>.
+A passed vector is broadcasted for all <code>paramcd</code> values. A passed <code>list</code> must be named
+and contain arrays, each name corresponding to a single value of <code>paramcd</code>. Each array
+may contain default response values or named arrays <code>rsp</code> of default selected response
+values and <code>levels</code> of default level choices</p></td>
     </tr>
     <tr>
       <th>add_total</th>
@@ -317,8 +306,10 @@ reference group.</p>
 <span class='r-in'>      x <span class='op'>=</span> <span class='va'>ADRS</span>,</span>
 <span class='r-in'>      code <span class='op'>=</span></span>
 <span class='r-in'>        <span class='st'>"ADRS &lt;- synthetic_cdisc_data('latest')$adrs %&gt;%</span>
-<span class='r-in'>          mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"</span></span>
-<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>          mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))),</span>
+<span class='r-in'>                 AVALC = d_onco_rsp_label(AVALC))"</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
 <span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
 <span class='r-in'>    <span class='fu'>tm_t_rsp</span><span class='op'>(</span></span>
@@ -336,11 +327,24 @@ reference group.</p>
 <span class='r-in'>      strata_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
 <span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SEX"</span>, <span class='st'>"BMRKR2"</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>        select <span class='op'>=</span> <span class='cn'>NULL</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      default_responses <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>        BESRSPI <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span>,</span>
+<span class='r-in'>                     <span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Progressive Disease (PD)"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        INVET <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Not Evaluable (NE)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Not Evaluable (NE)"</span>, <span class='st'>"Partial Response (PR)"</span>,</span>
+<span class='r-in'>                     <span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        OVRINV <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>          rsp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span><span class='op'>)</span>,</span>
+<span class='r-in'>          levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Progressive Disease (PD)"</span>, <span class='st'>"Stable Disease (SD)"</span>, <span class='st'>"Not Evaluable (NE)"</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'>      <span class='op'>)</span></span>
 <span class='r-in'>    <span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
 <span class='r-in'><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:29:10.7822 pid:961 teal.modules.clinical fun:tm_t_rsp [INFO] Initializing tm_t_rsp</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 16:33:43.6812 pid:965 teal.modules.clinical fun:tm_t_rsp [INFO] Initializing tm_t_rsp</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span>ui <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, server <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
