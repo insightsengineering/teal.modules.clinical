@@ -261,30 +261,25 @@ template_logistic <- function(dataname,
 tm_t_logistic <- function(label,
                           dataname,
                           parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
-                          arm_var,
+                          arm_var = NULL,
                           arm_ref_comp = NULL,
                           paramcd,
                           cov_var = NULL,
                           avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
-                          post_output = NULL,
-                          no_arm_var = FALSE) {
+                          post_output = NULL) {
   logger::log_info("Initializing tm_t_logistic")
   stopifnot(
     length(dataname) == 1,
     is.choices_selected(conf_level)
   )
 
-  if (no_arm_var == TRUE) {
-    arm_var <- NULL
-  }
-
   args <- as.list(environment())
 
-  if (no_arm_var) {
+  if (is.null(arm_var)) {
     data_extract_list <- list(
-      arm_var = NULL,
+      arm_var = arm_var,
       paramcd = cs_to_des_filter(paramcd, dataname = dataname),
       avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
       cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
