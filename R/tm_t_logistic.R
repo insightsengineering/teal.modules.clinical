@@ -306,7 +306,7 @@ tm_t_logistic <- function(label,
 ui_t_logistic <- function(id, ...) {
 
   a <- list(...)
-  if (a$no_arm_var == FALSE) {
+  if (!is.null(a$arm_var)) {
     is_single_dataset_value <- is_single_dataset(
       a$arm_var,
       a$paramcd,
@@ -349,7 +349,7 @@ ui_t_logistic <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      if (a$no_arm_var == FALSE) {
+      if (!is.null(a$arm_var)) {
         div(
           data_extract_input(
             id = ns("arm_var"),
@@ -419,14 +419,13 @@ srv_t_logistic <- function(input,
                            paramcd,
                            avalc_var,
                            cov_var,
-                           label,
-                           no_arm_var) {
+                           label) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
 
   # Observer to update reference and comparison arm input options.
-  if (no_arm_var == FALSE) {
+  if (!is.null(arm_var)) {
     arm_ref_comp_observer(
       session,
       input,
@@ -446,7 +445,7 @@ srv_t_logistic <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  if (no_arm_var == FALSE) {
+  if (!is.null(arm_var)) {
     adsl_merged <- data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var),
@@ -543,7 +542,7 @@ srv_t_logistic <- function(input,
     ))
 
     # validate arm levels
-    if (no_arm_var == FALSE) {
+    if (!is.null(arm_var)) {
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
