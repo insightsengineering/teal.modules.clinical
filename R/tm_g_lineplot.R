@@ -216,6 +216,7 @@ tm_g_lineplot <- function(label,
                           plot_width = NULL,
                           pre_output = NULL,
                           post_output = NULL) {
+  logger::log_info("Initializing tm_g_lineplot")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),

@@ -18,6 +18,8 @@ tm_g_forest_rsp(
   strata_var,
   fixed_symbol_size = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
+    "Partial Response (PR)"),
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
@@ -68,6 +70,13 @@ estimate. Otherwise, the symbol size will be proportional to the sample size in 
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
+\item{default_responses}{(\code{list} or \code{logical} or \code{numeric} or \code{character}) \cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices}
+
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
@@ -95,7 +104,8 @@ library(scda)
 library(dplyr)
 
 ADSL <- synthetic_cdisc_data("latest")$adsl
-ADRS <- synthetic_cdisc_data("latest")$adrs
+ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
+  mutate(AVALC = d_onco_rsp_label(AVALC))
 
 arm_ref_comp = list(
   ARM = list(
@@ -110,8 +120,12 @@ arm_ref_comp = list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs'),
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADRS", ADRS),
+    code =
+      "ADSL <- synthetic_cdisc_data('latest')$adsl
+       ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
+         mutate(AVALC = d_onco_rsp_label(AVALC))",
     check = TRUE
   ),
   modules = root_modules(
@@ -135,7 +149,20 @@ app <- init(
         variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
-      plot_height = c(600L, 200L, 2000L)
+      plot_height = c(600L, 200L, 2000L),
+      default_responses = list(
+        BESRSPI = list(
+          rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+                     "Progressive Disease (PD)", "Not Evaluable (NE)")),
+        INVET = list(
+          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+        OVRINV = list(
+          rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+      )
     )
   )
 )
