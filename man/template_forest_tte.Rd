@@ -10,6 +10,7 @@ template_forest_tte(
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
+  obj_var_name = "",
   aval_var = "AVAL",
   cnsr_var = "CNSR",
   subgroup_var,
@@ -34,6 +35,8 @@ the level of reference arm in case of arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr
 the level of comparison arm in case of arm comparison.}
+
+\item{obj_var_name}{(\code{character})\cr additional text string append to output title}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}

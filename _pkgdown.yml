@@ -50,6 +50,7 @@ reference:
       - split_col_expr
       - split_interactions
       - styled_expr
+      - get_g_forest_obj_var_name
 
   - title: Unexported functions
     contents:

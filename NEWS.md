@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9019
+# teal.modules.clinical 0.8.10.9022
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
@@ -8,6 +8,8 @@
 * Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table. 
 * New module `tm_g_lineplot` was added for creating line plots.
 * Enhanced `tm_t_logistic` to include selected parameter in title of the table. 
+* Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table. 
+* Enhanced `tm_g_forest_tte` to include selected parameter in title of the table. 
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
