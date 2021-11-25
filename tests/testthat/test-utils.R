@@ -290,3 +290,28 @@ test_that("clean_description", {
   expect_identical(clean_description(vals2), as.character(vals2))
 
 })
+
+
+
+test_that("get_g_forest_obj_var_name", {
+  paramcd <- data_extract_spec(
+    dataname = "ADSL",
+    filter = filter_spec(
+      vars = c("PARAMCD", "CNSR"),
+      sep = "-",
+      choices = c("os1" = "OS-1", "os0" = "OS-0", "pfs1" = "PFS-1"),
+      selected = "OS-1",
+      multiple = FALSE
+    )
+  )
+
+  input <- list("paramcd-dataset_ADSL_singleextract-filter1-vals" =
+                  c("OS-1")
+                  )
+
+  result <- get_g_forest_obj_var_name(paramcd, input)
+
+  expected <- "os1"
+
+  expect_equal(result, expected)
+})

@@ -3,6 +3,7 @@
 #' Creates a valid expression for response forest plot.
 #'
 #' @inheritParams template_arguments
+#' @param obj_var_name (`character`)\cr additional text string append to output title
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
@@ -19,6 +20,7 @@ template_forest_rsp <- function(dataname = "ANL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
+                                obj_var_name = "",
                                 aval_var = "AVALC",
                                 responders = c("CR", "PR"),
                                 subgroup_var,
@@ -31,6 +33,7 @@ template_forest_rsp <- function(dataname = "ANL",
     is.string(parentname),
     is.string(arm_var),
     is.string(aval_var),
+    is.string(obj_var_name),
     is.null(subgroup_var) || is.character(subgroup_var)
   )
 
@@ -146,6 +149,8 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
+  title <- paste0("Forest plot of best overall response for ", obj_var_name)
+
   # Plot output.
   y$plot <- substitute(
     expr = {
@@ -154,8 +159,11 @@ template_forest_rsp <- function(dataname = "ANL",
         col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
+                           gp_footnotes = grid::gpar(fontsize = 12))
+      } else {
+        p <- decorate_grob(p, title = title, footnotes = "",
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
 
       grid::grid.newpage()
@@ -164,7 +172,8 @@ template_forest_rsp <- function(dataname = "ANL",
     env = list(
       anl = as.name(dataname),
       arm_var = arm_var,
-      col_symbol_size = col_symbol_size
+      col_symbol_size = col_symbol_size,
+      title = title
     )
   )
 
@@ -607,12 +616,16 @@ srv_g_forest_rsp <- function(input,
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
+
+    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+
     my_calls <- template_forest_rsp(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
+      obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
       subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0)
