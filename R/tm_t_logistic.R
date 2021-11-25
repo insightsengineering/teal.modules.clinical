@@ -29,28 +29,26 @@ template_logistic <- function(dataname,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
                               at = NULL) {
+  # Common assertion no matter if arm_var is NULL or not.
+  assert_that(
+    is.string(dataname),
+    is.string(aval_var),
+    is.string(paramcd),
+    is.string(topleft) || is.null(topleft),
+    is.character(cov_var) || is.null(cov_var),
+    is.string(interaction_var) || is.null(interaction_var)
+  )
+
+  # Conditional assertion depends on if arm_var is NULL or not.
   if (is.null(arm_var)) {
     assert_that(
-      is.string(dataname),
-      is.null(arm_var),
-      is.string(aval_var),
-      is.string(paramcd),
-      is.string(topleft) || is.null(topleft),
-      is.character(cov_var) || is.null(cov_var),
-      is.string(interaction_var) || is.null(interaction_var)
+      is.null(arm_var)
     )
   } else {
     assert_that(
-      is.string(dataname),
       is.string(arm_var),
-      is.string(aval_var),
-      is.string(paramcd),
-      is.string(topleft) || is.null(topleft),
-      is.character(cov_var) || is.null(cov_var),
-      is.string(interaction_var) || is.null(interaction_var),
       is.flag(combine_comp_arms)
     )
-
     ref_arm_val <- paste(ref_arm, collapse = "/")
   }
 
@@ -295,8 +293,7 @@ tm_t_logistic <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         dataname = dataname,
-        parentname = parentname,
-        no_arm_var = no_arm_var
+        parentname = parentname
       )
     ),
     filters = get_extract_datanames(data_extract_list)
