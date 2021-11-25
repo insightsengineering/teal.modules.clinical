@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -244,14 +222,14 @@ ADAE dataset.</p></td>
     <tr>
       <th>plot_height</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the height of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></td>
     </tr>
     <tr>
       <th>plot_width</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the width of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></td>
     </tr>
@@ -271,56 +249,57 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>ADAE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adae</span>
-
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADAE"</span>, <span class='va'>ADAE</span>, code <span class='op'>=</span> <span class='st'>"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span><span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_g_pp_adverse_events</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Adverse events"</span>,
-      dataname <span class='op'>=</span> <span class='st'>"ADAE"</span>,
-      parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,
-      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
-      plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,
-      aeterm <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETERM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AETERM"</span>
-      <span class='op'>)</span>,
-      tox_grade <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETOXGR"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AETOXGR"</span>
-      <span class='op'>)</span>,
-      causality <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEREL"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AEREL"</span>
-      <span class='op'>)</span>,
-      outcome <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEOUT"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AEOUT"</span>
-      <span class='op'>)</span>,
-      action <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEACN"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"AEACN"</span>
-      <span class='op'>)</span>,
-      time <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"ASTDY"</span>
-      <span class='op'>)</span>,
-      decod <span class='op'>=</span> <span class='cn'>NULL</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; 2021-11-24 13:33:33.6512 pid:2120 teal.modules.clinical fun:tm_g_pp_adverse_events [INFO] Initializing tm_g_pp_adverse_events</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>ADAE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adae</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span></span>
+<span class='r-in'>  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADAE"</span>, <span class='va'>ADAE</span>, code <span class='op'>=</span> <span class='st'>"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span><span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>tm_g_pp_adverse_events</span><span class='op'>(</span></span>
+<span class='r-in'>      label <span class='op'>=</span> <span class='st'>"Adverse events"</span>,</span>
+<span class='r-in'>      dataname <span class='op'>=</span> <span class='st'>"ADAE"</span>,</span>
+<span class='r-in'>      parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,</span>
+<span class='r-in'>      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,</span>
+<span class='r-in'>      plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,</span>
+<span class='r-in'>      aeterm <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETERM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"AETERM"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      tox_grade <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETOXGR"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"AETOXGR"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      causality <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEREL"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"AEREL"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      outcome <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEOUT"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"AEOUT"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      action <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AEACN"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"AEACN"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      time <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"ASTDY"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      decod <span class='op'>=</span> <span class='cn'>NULL</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:27:58.5312 pid:961 teal.modules.clinical fun:tm_g_pp_adverse_events [INFO] Initializing tm_g_pp_adverse_events</span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

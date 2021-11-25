@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -67,28 +67,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -113,7 +91,7 @@ Other releases
       <h1 data-toc-skip>Quick start: <code>substitute</code> for NSE</h1>
                         <h4 class="author">Francois Collin</h4>
             
-            <h4 class="date">2021-11-24</h4>
+            <h4 class="date">2021-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/master/vignettes/quickstart_substitute.Rmd"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
       <div class="hidden name"><code>quickstart_substitute.Rmd</code></div>
@@ -127,7 +105,7 @@ Other releases
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <div id="section" class="section level2">
 <h2></h2>
-<p>Considering an expression, R usually evaluates it and returns its value. Instead of focusing on the value, it is also possible to work with the <strong>code</strong> which generated the <strong>value</strong>. This is where non standard evaluation, or NSE, starts. The function <code>substitute</code> is an important element of non-standard evaluation. For instance, if we consider <code>a</code> defined such as <code>a &lt;- 5</code>, then the expression <code>a</code> returns 5, the <code><a href="https://rdrr.io/r/base/substitute.html">substitute(a)</a></code> returns the code to obtain the value: <code>a</code>.</p>
+<p>Considering an expression, R usually evaluates it and returns its value. Instead of focusing on the value, it is also possible to work with the <strong>code</strong> which generated the <strong>value</strong>. This is where non standard evaluation, or NSE, starts. The function <code>substitute</code> is an important element of non-standard evaluation. For instance, if we consider <code>a</code> defined such as <code>a &lt;- 5</code>, then the expression <code>a</code> returns 5, the <code>substitute(a)</code> returns the code to obtain the value: <code>a</code>.</p>
 <p>The principle on which relies <code>teal</code> is to:</p>
 <ol style="list-style-type: lower-roman">
 <li>generate expressions.</li>
@@ -268,7 +246,7 @@ Other releases
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
 <span class="va">short_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>
 <span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="va">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
+  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
   env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
     df <span class="op">=</span> <span class="va">short_iris</span>,
     x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,
@@ -289,7 +267,7 @@ Other releases
 <p>That is pretty much the topic of the vignette: <code>substitute</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="va">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
+  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
   env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
     df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>,
     x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,
@@ -354,23 +332,23 @@ Other releases
 <span class="co">##   method   from </span>
 <span class="co">##   tidy.glm broom</span>
 <span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span>
-<span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op">%&gt;%</span>
+<span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
     <span class="va">PARAM</span> <span class="op">==</span> <span class="st">"Alanine Aminotransferase Measurement"</span> <span class="op">&amp;</span>
-      <span class="va">ARMCD</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
+      <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
   <span class="op">)</span></code></pre></div>
 <p>And the <code>rtables</code> expression is obtained as:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
   
-  expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html">split_cols_by_multivar</a></span><span class="op">(</span>
       vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
       varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
   
   env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
@@ -436,14 +414,14 @@ Other releases
                          <span class="va">visit</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
     
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
       <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html">split_cols_by_multivar</a></span><span class="op">(</span>
         vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
         varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-      <span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
       <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
     
     env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
@@ -552,9 +530,9 @@ Other releases
   <span class="co"># 1. First the columns and rows:</span>
   <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
     
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
       <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html">split_cols_by_multivar</a></span><span class="op">(</span>
         vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
         varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
@@ -659,10 +637,10 @@ Other releases
   
   <span class="co"># 1. Preprocessing ---</span>
   <span class="va">y</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span>
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
       <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
         <span class="va">PARAMCD</span> <span class="op">==</span> <span class="va">paramcd</span> <span class="op">&amp;</span>
-          <span class="va">ARMCD</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
+          <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
       <span class="op">)</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
       df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,
@@ -674,9 +652,9 @@ Other releases
   <span class="va">lyt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
   <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span><span class="op">(</span>
     
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
       <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html">split_cols_by_multivar</a></span><span class="op">(</span>
         vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
         varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>

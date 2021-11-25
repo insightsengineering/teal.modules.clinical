@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -256,14 +234,14 @@ level, each within range of (0, 1).</p></td>
     <tr>
       <th>plot_height</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the height of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></td>
     </tr>
     <tr>
       <th>plot_width</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the width of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></td>
     </tr>
@@ -289,68 +267,69 @@ different convergence behavior. This is a known observation with the used packag
 numerical precision.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>ADQS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adqs</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>ABLFL</span> <span class='op'>!=</span> <span class='st'>"Y"</span> <span class='op'>&amp;</span> <span class='va'>ABLFL2</span> <span class='op'>!=</span> <span class='st'>"Y"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>AVISIT</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"WEEK 1 DAY 8"</span>, <span class='st'>"WEEK 2 DAY 15"</span>, <span class='st'>"WEEK 3 DAY 22"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>
-    AVISIT <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>AVISIT</span><span class='op'>)</span>,
-    AVISITN <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rank.html'>rank</a></span><span class='op'>(</span><span class='va'>AVISITN</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='op'>)</span> <span class='co'># making consecutive numeric factor</span>
-  <span class='op'>)</span>
-
-<span class='va'>arm_ref_comp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  ARMCD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    ref <span class='op'>=</span> <span class='st'>"ARM B"</span>,
-    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM A"</span>, <span class='st'>"ARM C"</span><span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADQS"</span>, <span class='va'>ADQS</span>,
-      code <span class='op'>=</span> <span class='st'>'ADQS &lt;- synthetic_cdisc_data("latest")$adqs %&gt;%
-              dplyr::filter(ABLFL != "Y" &amp; ABLFL2 != "Y") %&gt;%
-              dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %&gt;%
-              dplyr::mutate(
-                AVISIT = as.factor(AVISIT),
-                AVISITN = rank(AVISITN) %&gt;%
-                  as.factor() %&gt;%
-                  as.numeric() %&gt;%
-                  as.factor() # making consecutive numeric factor
-              )'</span>
-    <span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_a_mmrm</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"MMRM"</span>,
-      dataname <span class='op'>=</span> <span class='st'>'ADQS'</span>,
-      aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVAL"</span>, <span class='st'>"CHG"</span><span class='op'>)</span>, <span class='st'>"AVAL"</span><span class='op'>)</span>,
-      id_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"USUBJID"</span>, <span class='st'>"SUBJID"</span><span class='op'>)</span>, <span class='st'>"USUBJID"</span><span class='op'>)</span>,
-      arm_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span><span class='op'>)</span>, <span class='st'>"ARM"</span><span class='op'>)</span>,
-      visit_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVISIT"</span>, <span class='st'>"AVISITN"</span><span class='op'>)</span>, <span class='st'>"AVISIT"</span><span class='op'>)</span>,
-      arm_ref_comp <span class='op'>=</span> <span class='va'>arm_ref_comp</span>,
-      paramcd <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADQS</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"FKSI-FWB"</span>
-      <span class='op'>)</span>,
-      cov_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BASE"</span>, <span class='st'>"AGE"</span>, <span class='st'>"SEX"</span>, <span class='st'>"BASE:AVISIT"</span><span class='op'>)</span>, <span class='cn'>NULL</span><span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; 2021-11-24 13:32:54.8001 pid:2120 teal.modules.clinical fun:tm_a_mmrm [INFO] Initializing tm_a_mmrm</div><div class='input'>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>ADQS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adqs</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>ABLFL</span> <span class='op'>!=</span> <span class='st'>"Y"</span> <span class='op'>&amp;</span> <span class='va'>ABLFL2</span> <span class='op'>!=</span> <span class='st'>"Y"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>AVISIT</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"WEEK 1 DAY 8"</span>, <span class='st'>"WEEK 2 DAY 15"</span>, <span class='st'>"WEEK 3 DAY 22"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span></span>
+<span class='r-in'>    AVISIT <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>AVISIT</span><span class='op'>)</span>,</span>
+<span class='r-in'>    AVISITN <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rank.html'>rank</a></span><span class='op'>(</span><span class='va'>AVISITN</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='op'>)</span> <span class='co'># making consecutive numeric factor</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>arm_ref_comp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  ARMCD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>    ref <span class='op'>=</span> <span class='st'>"ARM B"</span>,</span>
+<span class='r-in'>    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM A"</span>, <span class='st'>"ARM C"</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span></span>
+<span class='r-in'>  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADQS"</span>, <span class='va'>ADQS</span>,</span>
+<span class='r-in'>      code <span class='op'>=</span> <span class='st'>'ADQS &lt;- synthetic_cdisc_data("latest")$adqs %&gt;%</span>
+<span class='r-in'>              dplyr::filter(ABLFL != "Y" &amp; ABLFL2 != "Y") %&gt;%</span>
+<span class='r-in'>              dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %&gt;%</span>
+<span class='r-in'>              dplyr::mutate(</span>
+<span class='r-in'>                AVISIT = as.factor(AVISIT),</span>
+<span class='r-in'>                AVISITN = rank(AVISITN) %&gt;%</span>
+<span class='r-in'>                  as.factor() %&gt;%</span>
+<span class='r-in'>                  as.numeric() %&gt;%</span>
+<span class='r-in'>                  as.factor() # making consecutive numeric factor</span>
+<span class='r-in'>              )'</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>tm_a_mmrm</span><span class='op'>(</span></span>
+<span class='r-in'>      label <span class='op'>=</span> <span class='st'>"MMRM"</span>,</span>
+<span class='r-in'>      dataname <span class='op'>=</span> <span class='st'>'ADQS'</span>,</span>
+<span class='r-in'>      aval_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVAL"</span>, <span class='st'>"CHG"</span><span class='op'>)</span>, <span class='st'>"AVAL"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      id_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"USUBJID"</span>, <span class='st'>"SUBJID"</span><span class='op'>)</span>, <span class='st'>"USUBJID"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      arm_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span><span class='op'>)</span>, <span class='st'>"ARM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      visit_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVISIT"</span>, <span class='st'>"AVISITN"</span><span class='op'>)</span>, <span class='st'>"AVISIT"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      arm_ref_comp <span class='op'>=</span> <span class='va'>arm_ref_comp</span>,</span>
+<span class='r-in'>      paramcd <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADQS</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"FKSI-FWB"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      cov_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BASE"</span>, <span class='st'>"AGE"</span>, <span class='st'>"SEX"</span>, <span class='st'>"BASE:AVISIT"</span><span class='op'>)</span>, <span class='cn'>NULL</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:27:25.8423 pid:961 teal.modules.clinical fun:tm_a_mmrm [INFO] Initializing tm_a_mmrm</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

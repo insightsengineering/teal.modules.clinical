@@ -83,7 +83,7 @@ STREAM template lgrt02." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -113,28 +113,6 @@ STREAM template lgrt02." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -255,57 +233,58 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>ADRS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>PARAMCD</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BESRSPI"</span>, <span class='st'>"INVET"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>arm_ref_comp</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  ACTARMCD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    ref <span class='op'>=</span> <span class='st'>"ARM B"</span>,
-    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM A"</span>, <span class='st'>"ARM C"</span><span class='op'>)</span>
-  <span class='op'>)</span>,
-  ARM <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    ref <span class='op'>=</span> <span class='st'>"B: Placebo"</span>,
-    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A: Drug X"</span>, <span class='st'>"C: Combination"</span><span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADRS"</span>, <span class='va'>ADRS</span>, code <span class='op'>=</span> <span class='st'>'ADRS &lt;- synthetic_cdisc_data("latest")$adrs %&gt;%
-      filter(PARAMCD %in% c("BESRSPI", "INVET"))'</span><span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_t_logistic</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Logistic Regression"</span>,
-      dataname <span class='op'>=</span> <span class='st'>"ADRS"</span>,
-      arm_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span><span class='op'>)</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"ARM"</span>
-      <span class='op'>)</span>,
-      arm_ref_comp <span class='op'>=</span> <span class='va'>arm_ref_comp</span>,
-      paramcd <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"BESRSPI"</span>
-      <span class='op'>)</span>,
-      cov_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SEX"</span>, <span class='st'>"AGE"</span>, <span class='st'>"BMRKR1"</span>, <span class='st'>"BMRKR2"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"SEX"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; 2021-11-24 13:34:42.0307 pid:2120 teal.modules.clinical fun:tm_t_logistic [INFO] Initializing tm_t_logistic</div><div class='input'>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span>ui <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, server <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>ADRS</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>PARAMCD</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BESRSPI"</span>, <span class='st'>"INVET"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>arm_ref_comp</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  ACTARMCD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>    ref <span class='op'>=</span> <span class='st'>"ARM B"</span>,</span>
+<span class='r-in'>    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM A"</span>, <span class='st'>"ARM C"</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  ARM <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>    ref <span class='op'>=</span> <span class='st'>"B: Placebo"</span>,</span>
+<span class='r-in'>    comp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A: Drug X"</span>, <span class='st'>"C: Combination"</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span></span>
+<span class='r-in'>  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADRS"</span>, <span class='va'>ADRS</span>, code <span class='op'>=</span> <span class='st'>'ADRS &lt;- synthetic_cdisc_data("latest")$adrs %&gt;%</span>
+<span class='r-in'>      filter(PARAMCD %in% c("BESRSPI", "INVET"))'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>tm_t_logistic</span><span class='op'>(</span></span>
+<span class='r-in'>      label <span class='op'>=</span> <span class='st'>"Logistic Regression"</span>,</span>
+<span class='r-in'>      dataname <span class='op'>=</span> <span class='st'>"ADRS"</span>,</span>
+<span class='r-in'>      arm_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"ARM"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      arm_ref_comp <span class='op'>=</span> <span class='va'>arm_ref_comp</span>,</span>
+<span class='r-in'>      paramcd <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADRS</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"BESRSPI"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      cov_var <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SEX"</span>, <span class='st'>"AGE"</span>, <span class='st'>"BMRKR1"</span>, <span class='st'>"BMRKR2"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"SEX"</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:28:50.9812 pid:961 teal.modules.clinical fun:tm_t_logistic [INFO] Initializing tm_t_logistic</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span>ui <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, server <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

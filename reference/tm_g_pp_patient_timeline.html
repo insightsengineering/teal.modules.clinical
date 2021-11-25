@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -268,14 +246,14 @@ column of the ADCM dataset.</p></td>
     <tr>
       <th>plot_height</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the height of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></td>
     </tr>
     <tr>
       <th>plot_width</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the width of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></td>
     </tr>
@@ -295,122 +273,123 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>ADAE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adae</span>
-<span class='va'>ADCM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adcm</span>
-
-<span class='co'>#' Modify ADCM</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMINDC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Indication_"</span>, <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDECOD</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSE</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMTRT</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSU</span> <span class='op'>&lt;-</span> <span class='st'>"U"</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMROUTE</span> <span class='op'>&lt;-</span> <span class='st'>"CMROUTE"</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSFRQ</span> <span class='op'>&lt;-</span> <span class='st'>"CMDOSFRQ"</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
-<span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl B"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
-<span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl C"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>150</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
-<span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl B"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>700</span>
-<span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl C"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMASTDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>ASTDTM</span>
-<span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMAENDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>AENDTM</span>
-<span class='fu'>rtables</span><span class='fu'>::</span><span class='fu'><a href='https://roche.github.io/rtables/reference/var_labels.html'>var_labels</a></span><span class='op'>(</span>
-  <span class='va'>ADCM</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMINDC"</span>, <span class='st'>"CMTRT"</span>, <span class='st'>"CMSTDY"</span>, <span class='st'>"CMENDY"</span><span class='op'>)</span><span class='op'>]</span>
-<span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-  <span class='st'>"Indication"</span>,
-  <span class='st'>"Reported Name of Drug, Med, or Therapy"</span>,
-  <span class='st'>"Study Day of Start of Medication"</span>,
-  <span class='st'>"Study Day of End of Medication"</span>
-<span class='op'>)</span>
-<span class='va'>adcm_keys</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"STUDYID"</span>, <span class='st'>"USUBJID"</span>, <span class='st'>"ASTDTM"</span>, <span class='st'>"CMSEQ"</span>, <span class='st'>"ATC1"</span>, <span class='st'>"ATC2"</span>, <span class='st'>"ATC3"</span>, <span class='st'>"ATC4"</span><span class='op'>)</span>
-
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADAE"</span>, <span class='va'>ADAE</span>, code <span class='op'>=</span> <span class='st'>'ADAE &lt;- synthetic_cdisc_data("latest")$adae'</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADCM"</span>, <span class='va'>ADCM</span>,
-                  code <span class='op'>=</span> <span class='st'>'ADCM &lt;- synthetic_cdisc_data("latest")$adcm
-      ADCM$CMINDC &lt;- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-      ADCM$CMDOSE &lt;- 1
-      ADCM$CMTRT &lt;- ADCM$CMCAT
-      ADCM$CMDOSU &lt;- "U"
-      ADCM$CMROUTE &lt;- "CMROUTE"
-      ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"
-      ADCM$CMSTDY &lt;- 1
-      ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY &lt;- 20
-      ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY &lt;- 150
-      ADCM$CMENDY &lt;- 500
-      ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY &lt;- 700
-      ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY &lt;- 1000
-      ADCM$CMASTDTM &lt;- ADCM$ASTDTM
-      ADCM$CMAENDTM &lt;- ADCM$AENDTM
-      rtables::var_labels(
-        ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) &lt;- c(
-          "Indication",
-          "Reported Name of Drug, Med, or Therapy",
-          "Study Day of Start of Medication",
-          "Study Day of End of Medication")'</span>,
-                  keys <span class='op'>=</span> <span class='va'>adcm_keys</span>
-    <span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_g_pp_patient_timeline</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Vitals"</span>,
-      dataname_adae <span class='op'>=</span> <span class='st'>"ADAE"</span>,
-      dataname_adcm <span class='op'>=</span> <span class='st'>"ADCM"</span>,
-      parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,
-      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
-      plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,
-      cmtrt <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMTRT"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='st'>"CMTRT"</span>,
-      <span class='op'>)</span>,
-      aeterm <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETERM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AETERM"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      aetime_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDTM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDTM"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      aetime_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AENDTM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDTM"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      dstime_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMASTDTM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMASTDTM"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      dstime_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMAENDTM"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMAENDTM"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      aerelday_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDY"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      aerelday_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AENDY"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDY"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      dsrelday_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDY"</span><span class='op'>)</span>
-      <span class='op'>)</span>,
-      dsrelday_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"AENDY"</span><span class='op'>)</span>,
-        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDY"</span><span class='op'>)</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; 2021-11-24 13:33:42.2583 pid:2120 teal.modules.clinical fun:tm_g_pp_patient_timeline [INFO] Initializing tm_g_pp_patient_timeline</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>ADAE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adae</span></span>
+<span class='r-in'><span class='va'>ADCM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adcm</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#' Modify ADCM</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMINDC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Indication_"</span>, <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDECOD</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSE</span> <span class='op'>&lt;-</span> <span class='fl'>1</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMTRT</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSU</span> <span class='op'>&lt;-</span> <span class='st'>"U"</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMROUTE</span> <span class='op'>&lt;-</span> <span class='st'>"CMROUTE"</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSFRQ</span> <span class='op'>&lt;-</span> <span class='st'>"CMDOSFRQ"</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>1</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl B"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>20</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl C"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMSTDY</span> <span class='op'>&lt;-</span> <span class='fl'>150</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>500</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl B"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>700</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>[</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span> <span class='op'>==</span> <span class='st'>"medcl C"</span>, <span class='op'>]</span><span class='op'>$</span><span class='va'>CMENDY</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMASTDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>ASTDTM</span></span>
+<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMAENDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>AENDTM</span></span>
+<span class='r-in'><span class='fu'>rtables</span><span class='fu'>::</span><span class='fu'><a href='https://roche.github.io/rtables/reference/var_labels.html'>var_labels</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>ADCM</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMINDC"</span>, <span class='st'>"CMTRT"</span>, <span class='st'>"CMSTDY"</span>, <span class='st'>"CMENDY"</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='st'>"Indication"</span>,</span>
+<span class='r-in'>  <span class='st'>"Reported Name of Drug, Med, or Therapy"</span>,</span>
+<span class='r-in'>  <span class='st'>"Study Day of Start of Medication"</span>,</span>
+<span class='r-in'>  <span class='st'>"Study Day of End of Medication"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>adcm_keys</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"STUDYID"</span>, <span class='st'>"USUBJID"</span>, <span class='st'>"ASTDTM"</span>, <span class='st'>"CMSEQ"</span>, <span class='st'>"ATC1"</span>, <span class='st'>"ATC2"</span>, <span class='st'>"ATC3"</span>, <span class='st'>"ATC4"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span></span>
+<span class='r-in'>  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADAE"</span>, <span class='va'>ADAE</span>, code <span class='op'>=</span> <span class='st'>'ADAE &lt;- synthetic_cdisc_data("latest")$adae'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADCM"</span>, <span class='va'>ADCM</span>,</span>
+<span class='r-in'>                  code <span class='op'>=</span> <span class='st'>'ADCM &lt;- synthetic_cdisc_data("latest")$adcm</span>
+<span class='r-in'>      ADCM$CMINDC &lt;- paste0("Indication_", as.numeric(ADCM$CMDECOD))</span>
+<span class='r-in'>      ADCM$CMDOSE &lt;- 1</span>
+<span class='r-in'>      ADCM$CMTRT &lt;- ADCM$CMCAT</span>
+<span class='r-in'>      ADCM$CMDOSU &lt;- "U"</span>
+<span class='r-in'>      ADCM$CMROUTE &lt;- "CMROUTE"</span>
+<span class='r-in'>      ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"</span>
+<span class='r-in'>      ADCM$CMSTDY &lt;- 1</span>
+<span class='r-in'>      ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY &lt;- 20</span>
+<span class='r-in'>      ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY &lt;- 150</span>
+<span class='r-in'>      ADCM$CMENDY &lt;- 500</span>
+<span class='r-in'>      ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY &lt;- 700</span>
+<span class='r-in'>      ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY &lt;- 1000</span>
+<span class='r-in'>      ADCM$CMASTDTM &lt;- ADCM$ASTDTM</span>
+<span class='r-in'>      ADCM$CMAENDTM &lt;- ADCM$AENDTM</span>
+<span class='r-in'>      rtables::var_labels(</span>
+<span class='r-in'>        ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) &lt;- c(</span>
+<span class='r-in'>          "Indication",</span>
+<span class='r-in'>          "Reported Name of Drug, Med, or Therapy",</span>
+<span class='r-in'>          "Study Day of Start of Medication",</span>
+<span class='r-in'>          "Study Day of End of Medication")'</span>,</span>
+<span class='r-in'>                  keys <span class='op'>=</span> <span class='va'>adcm_keys</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>tm_g_pp_patient_timeline</span><span class='op'>(</span></span>
+<span class='r-in'>      label <span class='op'>=</span> <span class='st'>"Vitals"</span>,</span>
+<span class='r-in'>      dataname_adae <span class='op'>=</span> <span class='st'>"ADAE"</span>,</span>
+<span class='r-in'>      dataname_adcm <span class='op'>=</span> <span class='st'>"ADCM"</span>,</span>
+<span class='r-in'>      parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,</span>
+<span class='r-in'>      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,</span>
+<span class='r-in'>      plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,</span>
+<span class='r-in'>      cmtrt <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMTRT"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"CMTRT"</span>,</span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      aeterm <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETERM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AETERM"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      aetime_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDTM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDTM"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      aetime_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AENDTM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDTM"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      dstime_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMASTDTM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMASTDTM"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      dstime_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMAENDTM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMAENDTM"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      aerelday_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDY"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      aerelday_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AENDY"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDY"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      dsrelday_start <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"ASTDY"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASTDY"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      dsrelday_end <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"AENDY"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AENDY"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:28:04.3474 pid:961 teal.modules.clinical fun:tm_g_pp_patient_timeline [INFO] Initializing tm_g_pp_patient_timeline</span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

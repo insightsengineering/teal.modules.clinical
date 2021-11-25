@@ -83,7 +83,7 @@ ADaM structure." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -113,28 +113,6 @@ ADaM structure." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -286,14 +264,14 @@ controls the font size of values in the table.</p></td>
     <tr>
       <th>plot_height</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the height of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></td>
     </tr>
     <tr>
       <th>plot_width</th>
       <td><p>optional, (<code>numeric</code>)<br />
-a vector of length three with <code><a href='https://rdrr.io/r/base/c.html'>c(value, min, max)</a></code>. Specifies the width of
+a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></td>
     </tr>
@@ -313,43 +291,44 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-
-<span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>ADLB</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adlb</span>
-
-<span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span>
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,
-    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADLB"</span>, <span class='va'>ADLB</span>, code <span class='op'>=</span> <span class='st'>'ADLB &lt;- synthetic_cdisc_data("latest")$adlb'</span><span class='op'>)</span>,
-    check <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    <span class='fu'>tm_g_lineplot</span><span class='op'>(</span>
-      label <span class='op'>=</span> <span class='st'>"Line Plot"</span>,
-      dataname <span class='op'>=</span> <span class='st'>"ADLB"</span>,
-      strata <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADSL</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>, <span class='st'>"ACTARMCD"</span><span class='op'>)</span><span class='op'>)</span>,
-        <span class='st'>"ARM"</span>
-      <span class='op'>)</span>,
-      y <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADLB</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVAL"</span>, <span class='st'>"BASE"</span>, <span class='st'>"CHG"</span>, <span class='st'>"PCHG"</span><span class='op'>)</span><span class='op'>)</span>,
-        <span class='st'>"AVAL"</span>
-      <span class='op'>)</span>,
-      param <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span>
-        <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADLB</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,
-        <span class='st'>"ALT"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span>ui <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, server <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ADSL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>ADLB</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adlb</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span></span>
+<span class='r-in'>  data <span class='op'>=</span> <span class='fu'>cdisc_data</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADSL"</span>, <span class='va'>ADSL</span>, code <span class='op'>=</span> <span class='st'>'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'>cdisc_dataset</span><span class='op'>(</span><span class='st'>"ADLB"</span>, <span class='va'>ADLB</span>, code <span class='op'>=</span> <span class='st'>'ADLB &lt;- synthetic_cdisc_data("latest")$adlb'</span><span class='op'>)</span>,</span>
+<span class='r-in'>    check <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'>  modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'>tm_g_lineplot</span><span class='op'>(</span></span>
+<span class='r-in'>      label <span class='op'>=</span> <span class='st'>"Line Plot"</span>,</span>
+<span class='r-in'>      dataname <span class='op'>=</span> <span class='st'>"ADLB"</span>,</span>
+<span class='r-in'>      strata <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADSL</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ARM"</span>, <span class='st'>"ARMCD"</span>, <span class='st'>"ACTARMCD"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        <span class='st'>"ARM"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      y <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADLB</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"AVAL"</span>, <span class='st'>"BASE"</span>, <span class='st'>"CHG"</span>, <span class='st'>"PCHG"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>        <span class='st'>"AVAL"</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      param <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'>value_choices</span><span class='op'>(</span><span class='va'>ADLB</span>, <span class='st'>"PARAMCD"</span>, <span class='st'>"PARAM"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        <span class='st'>"ALT"</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-11-25 00:27:54.0229 pid:961 teal.modules.clinical fun:tm_g_lineplot [INFO] Initializing tm_g_lineplot</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span>ui <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, server <span class='op'>=</span> <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

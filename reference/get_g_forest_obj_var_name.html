@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Template: Events by Term — template_events • teal.modules.clinical</title>
+<title>Utility function for extracting paramcd for forest plots — get_g_forest_obj_var_name • teal.modules.clinical</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Template: Events by Term — template_events" />
-<meta property="og:description" content="Template: Events by Term" />
+<meta property="og:title" content="Utility function for extracting paramcd for forest plots — get_g_forest_obj_var_name" />
+<meta property="og:description" content="Utility function for extracting paramcd for forest plots" />
 
 
 
@@ -133,93 +133,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Template: Events by Term</h1>
-    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/tm_t_events.R'><code>R/tm_t_events.R</code></a></small>
-    <div class="hidden name"><code>template_events.Rd</code></div>
+    <h1>Utility function for extracting paramcd for forest plots</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.clinical/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>get_g_forest_obj_var_name.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Template: Events by Term</p>
+    <p>Utility function for extracting paramcd for forest plots</p>
     </div>
 
-    <pre class="usage"><span class='fu'>template_events</span><span class='op'>(</span>
-  <span class='va'>dataname</span>,
-  <span class='va'>parentname</span>,
-  <span class='va'>arm_var</span>,
-  <span class='va'>hlt</span>,
-  <span class='va'>llt</span>,
-  add_total <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  event_type <span class='op'>=</span> <span class='st'>"event"</span>,
-  sort_criteria <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"freq_desc"</span>, <span class='st'>"alpha"</span><span class='op'>)</span>,
-  prune_freq <span class='op'>=</span> <span class='fl'>0</span>,
-  prune_diff <span class='op'>=</span> <span class='fl'>0</span>,
-  drop_arm_levels <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_g_forest_obj_var_name</span><span class='op'>(</span><span class='va'>paramcd</span>, <span class='va'>input</span>, filter_idx <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataname</th>
-      <td><p>(<code>character</code>)<br />
-analysis data used in teal module.</p></td>
+      <th>paramcd</th>
+      <td><p><code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>
+variable value designating the studied parameter.</p></td>
     </tr>
     <tr>
-      <th>parentname</th>
-      <td><p>(<code>character</code>)<br />
-parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></td>
+      <th>input</th>
+      <td><p>shinyapp input</p></td>
     </tr>
     <tr>
-      <th>arm_var</th>
-      <td><p>(<code>character</code>)<br />
-variable names that can be used as <code>arm_var</code>.</p></td>
-    </tr>
-    <tr>
-      <th>hlt</th>
-      <td><p>(<code>character</code>)<br />
-name of the variable with high level term for events.</p></td>
-    </tr>
-    <tr>
-      <th>llt</th>
-      <td><p>(<code>character</code>)<br />
-name of the variable with low level term for events.</p></td>
-    </tr>
-    <tr>
-      <th>add_total</th>
-      <td><p>(<code>logical</code>)<br />
-whether to include column with total number of patients.</p></td>
-    </tr>
-    <tr>
-      <th>event_type</th>
-      <td><p>(<code>character</code>)<br /> type of event that is summarized (e.g. adverse event, treatment).
-Default is "event".</p></td>
-    </tr>
-    <tr>
-      <th>sort_criteria</th>
-      <td><p>(<code>character</code>)<br /> how to sort the final table. Default option <code>freq_desc</code> sorts
-by decreasing total number of patients with event. Alternative option <code>alpha</code> sorts events
-alphabetically.</p></td>
-    </tr>
-    <tr>
-      <th>prune_freq</th>
-      <td><p>(<code>number</code>)<br /> threshold to use for trimming table using event incidence rate in any column.</p></td>
-    </tr>
-    <tr>
-      <th>prune_diff</th>
-      <td><p>(<code>number</code>)<br /> threshold to use for trimming table using as criteria difference in
-rates between any two columns.</p></td>
-    </tr>
-    <tr>
-      <th>drop_arm_levels</th>
-      <td><p>(<code>logical</code>)<br /> drop the unused <code>arm_var</code> levels.
-When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
-<code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></td>
+      <th>filter_idx</th>
+      <td><p>filter section index (default 1)</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='tm_t_events.html'>tm_t_events()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

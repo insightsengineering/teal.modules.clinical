@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9021</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -178,40 +156,45 @@ a single <em>bracketed</em> expression.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/insightsengineering/tern'>tern</a></span><span class='op'>)</span>
-<span class='va'>adsl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span>
-<span class='va'>adrs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span>
-
-<span class='va'>expr1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span>
-  expr <span class='op'>=</span> <span class='va'>anl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>PARAMCD</span> <span class='op'>==</span> <span class='va'>param</span><span class='op'>)</span>,
-  env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>df <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/name.html'>as.name</a></span><span class='op'>(</span><span class='st'>"adrs"</span><span class='op'>)</span>, param <span class='op'>=</span> <span class='st'>"INVET"</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='va'>expr2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tern/man/d_onco_rsp_label.html'>d_onco_rsp_label</a></span><span class='op'>(</span><span class='va'>anl</span><span class='op'>$</span><span class='va'>AVALC</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>expr3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span>
-  expr <span class='op'>=</span> <span class='op'>{</span>
-    <span class='va'>anl</span><span class='op'>$</span><span class='va'>is_rsp</span> <span class='op'>&lt;-</span> <span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span> <span class='op'>%in%</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span><span class='op'>)</span>
-  <span class='op'>}</span>
-<span class='op'>)</span>
-
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>teal.modules.clinical</span><span class='fu'>:::</span><span class='fu'>bracket_expr</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>expr1</span>, <span class='va'>expr2</span>, <span class='va'>expr3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/eval.html'>eval</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span>, <span class='va'>anl</span><span class='op'>$</span><span class='va'>is_rsp</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                           
-#&gt;                            FALSE TRUE
-#&gt;   Complete Response (CR)       0  164
-#&gt;   Not Evaluable (NE)          18    0
-#&gt;   Partial Response (PR)        0  101
-#&gt;   Progressive Disease (PD)    73    0
-#&gt;   Stable Disease (SD)         44    0</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     filter, lag</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     intersect, setdiff, setequal, union</span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scda</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/insightsengineering/tern'>tern</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>adsl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adsl</span></span>
+<span class='r-in'><span class='va'>adrs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"latest"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adrs</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>expr1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span></span>
+<span class='r-in'>  expr <span class='op'>=</span> <span class='va'>anl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>PARAMCD</span> <span class='op'>==</span> <span class='va'>param</span><span class='op'>)</span>,</span>
+<span class='r-in'>  env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>df <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/name.html'>as.name</a></span><span class='op'>(</span><span class='st'>"adrs"</span><span class='op'>)</span>, param <span class='op'>=</span> <span class='st'>"INVET"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>expr2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tern/man/d_onco_rsp_label.html'>d_onco_rsp_label</a></span><span class='op'>(</span><span class='va'>anl</span><span class='op'>$</span><span class='va'>AVALC</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>expr3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span><span class='op'>(</span></span>
+<span class='r-in'>  expr <span class='op'>=</span> <span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>anl</span><span class='op'>$</span><span class='va'>is_rsp</span> <span class='op'>&lt;-</span> <span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Complete Response (CR)"</span>, <span class='st'>"Partial Response (PR)"</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>teal.modules.clinical</span><span class='fu'>:::</span><span class='fu'>bracket_expr</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>expr1</span>, <span class='va'>expr2</span>, <span class='va'>expr3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/eval.html'>eval</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>anl</span><span class='op'>$</span><span class='va'>rsp_lab</span>, <span class='va'>anl</span><span class='op'>$</span><span class='va'>is_rsp</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                            FALSE TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Complete Response (CR)       0  164</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Not Evaluable (NE)          18    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Partial Response (PR)        0  101</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Progressive Disease (PD)    73    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Stable Disease (SD)         44    0</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
