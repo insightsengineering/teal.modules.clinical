@@ -13,9 +13,11 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
-    TRUE),
+  aval_var = choices_selected(choices = variable_choices(dataname, c("AVALC", "SEX")),
+    selected = "AVALC", fixed = FALSE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
+    "Partial Response (PR)", "M"),
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -58,6 +60,13 @@ variable.}
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
+\item{default_responses}{(\code{list} or \code{logical} or \code{numeric} or \code{character}) \cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices}
+
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
@@ -76,7 +85,8 @@ Teal Module: Binary Outcome Table
 library(dplyr)
 library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
-ADRS <- synthetic_cdisc_data("latest")$adrs
+ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
+  mutate(AVALC = d_onco_rsp_label(AVALC))
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -87,7 +97,9 @@ app <- init(
     cdisc_dataset("ADRS", ADRS),
     code =
       "ADSL <- synthetic_cdisc_data('latest')$adsl
-       ADRS <- synthetic_cdisc_data('latest')$adrs"
+       ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
+         mutate(AVALC = d_onco_rsp_label(AVALC))",
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_binary_outcome(
@@ -105,6 +117,19 @@ app <- init(
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
         select = NULL
+      ),
+      default_responses = list(
+        BESRSPI = list(
+          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)",
+                     "Stable Disease (SD)", "Progressive Disease (PD)")),
+        INVET = list(
+          rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+        OVRINV = list(
+          rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
       )
     )
   )

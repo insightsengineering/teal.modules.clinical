@@ -9,7 +9,8 @@
 #' library(dplyr)
 #' library(scda)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'   mutate(AVALC = d_onco_rsp_label(AVALC))
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -20,7 +21,9 @@
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code =
 #'       "ADSL <- synthetic_cdisc_data('latest')$adsl
-#'        ADRS <- synthetic_cdisc_data('latest')$adrs"
+#'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_binary_outcome(
@@ -38,6 +41,19 @@
 #'       strata_var = choices_selected(
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
 #'         select = NULL
+#'       ),
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
+#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'         INVET = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
 #'       )
 #'     )
 #'   )
@@ -59,10 +75,11 @@ tm_t_binary_outcome <- function(label,
                                 paramcd,
                                 strata_var,
                                 aval_var = choices_selected(
-                                  variable_choices(dataname, "AVALC"),
-                                  "AVALC", fixed = TRUE
-                                ),
+                                  choices = variable_choices(dataname, c("AVALC", "SEX")),
+                                  selected = "AVALC", fixed = FALSE),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                default_responses =
+                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 add_total = FALSE,
                                 pre_output = NULL,
                                 post_output = NULL) {
@@ -81,6 +98,14 @@ tm_t_binary_outcome <- function(label,
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
+  )
+
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
   )
 
   args <- as.list(environment())
@@ -103,7 +128,8 @@ tm_t_binary_outcome <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        default_responses = default_responses
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -246,7 +272,7 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       panel_item(
         "Additional table settings",
@@ -273,7 +299,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Response Categories"),
+        tags$label("Show All Selected Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = a$show_rsp_categories,
@@ -306,7 +332,8 @@ srv_t_binary_outcome <- function(input,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
-                                 label) {
+                                 label,
+                                 default_responses) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -337,21 +364,31 @@ srv_t_binary_outcome <- function(input,
     anl_name = "ANL_ADSL"
   )
 
-  # Because the AVALC values depends on the selected PARAMCD.
-  observeEvent(anl_merged(), {
-    aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- if (is_empty(aval_var)) {
-      character(0)
-    } else {
-      unique(anl_merged()$data()[[aval_var]])
-    }
-    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = intersect(responder_choices, common_rsp)
-    )
-  }, once = TRUE, ignoreInit = TRUE)
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else default_responses
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
+        responder_choices <- if (is_empty(aval_var)) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          } else unique(anl_merged()$data()[[aval_var]])
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
+    })
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -381,13 +418,6 @@ srv_t_binary_outcome <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
-
-    validate(
-      need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      )
-    )
 
     validate(
       if (length(input_strata_var) >= 1L) {
@@ -420,6 +450,20 @@ srv_t_binary_outcome <- function(input,
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
+
+    if (is.list(default_responses)) {
+      validate(
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1")
+    )
 
     NULL
   })
