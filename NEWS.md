@@ -8,6 +8,8 @@
 * Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table. 
 * New module `tm_g_lineplot` was added for creating line plots.
 * Enhanced `tm_t_logistic` to include selected parameter in title of the table. 
+* Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table. 
+* Enhanced `tm_g_forest_tte` to include selected parameter in title of the table. 
 
 
 ## Enhancements

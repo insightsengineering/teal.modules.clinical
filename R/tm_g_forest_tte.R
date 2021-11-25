@@ -13,6 +13,7 @@ template_forest_tte <- function(dataname = "ANL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
+                                obj_var_name = "",
                                 aval_var = "AVAL",
                                 cnsr_var = "CNSR",
                                 subgroup_var,
@@ -23,6 +24,7 @@ template_forest_tte <- function(dataname = "ANL",
   assert_that(
     is.string(dataname),
     is.string(arm_var),
+    is.string(obj_var_name),
     is.character(subgroup_var) || is.null(subgroup_var)
   )
 
@@ -147,6 +149,8 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(time_unit_var = as.name(time_unit_var))
   )
 
+  title <- paste0("Forest plot of survival duration for ", obj_var_name)
+
   y$plot <- substitute(
     expr = {
       p <- g_forest(
@@ -154,15 +158,19 @@ template_forest_tte <- function(dataname = "ANL",
         col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
+                           gp_footnotes = grid::gpar(fontsize = 12))
+      } else {
+        p <- decorate_grob(p, title = title, footnotes = "",
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)
     },
     env = list(
       col_symbol_size = col_symbol_size,
-      arm_var = arm_var
+      arm_var = arm_var,
+      title = title
     )
   )
 
@@ -256,7 +264,7 @@ tm_g_forest_tte <- function(label,
                             pre_output = NULL,
                             post_output = NULL) {
   logger::log_info("Initializing tm_g_forest_tte")
-  stop_if_not(
+  utils.nest::stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
@@ -429,7 +437,6 @@ srv_g_forest_tte <- function(input,
                              plot_height,
                              plot_width) {
   stopifnot(is_cdisc_data(datasets))
-
   init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -545,12 +552,15 @@ srv_g_forest_tte <- function(input,
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  anl_selectors()$subgroup_var()$select_ordered
 
+    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+
     my_calls <- template_forest_tte(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
+      obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
