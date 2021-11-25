@@ -204,7 +204,6 @@ template_logistic <- function(dataname,
 #' @inheritParams module_arguments
 #' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
-#' @param no_arm_var (`flag`) \cr the flag indication if no arm or treatment variable is used for the module.
 #'
 #' @export
 #' @examples
