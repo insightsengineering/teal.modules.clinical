@@ -277,21 +277,13 @@ tm_t_logistic <- function(label,
 
   args <- as.list(environment())
 
-  if (is.null(arm_var)) {
-    data_extract_list <- list(
-      arm_var = arm_var,
-      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-      avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
-      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
-    )
-  } else {
-    data_extract_list <- list(
-      arm_var = cs_to_des_select(arm_var, dataname = parentname),
-      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-      avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
-      cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
-    )
-  }
+  # Use inline ifs.
+  data_extract_list <- list(
+    arm_var = `if`(is.null(arm_var), NULL, cs_to_des_select(arm_var, dataname = parentname)),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+  )
 
   module(
     label = label,
