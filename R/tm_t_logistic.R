@@ -604,14 +604,11 @@ srv_t_logistic <- function(input,
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
-    if (no_arm_var == FALSE) {
+    if (!is.null(arm_var)) {
       anl_adsl <- adsl_merged()
-    } else {
-      anl_adsl <- anl_m
+      chunks_push_data_merge(anl_adsl)
+      chunks_push_new_line()
     }
-
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
 
     ANL <- chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
