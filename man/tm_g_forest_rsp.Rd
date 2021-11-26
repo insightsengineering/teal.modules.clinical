@@ -70,12 +70,12 @@ estimate. Otherwise, the symbol size will be proportional to the sample size in 
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{logical} or \code{numeric} or \code{character}) \cr defines
+\item{default_responses}{(\code{list} or \code{character}) \cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
 and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
 may contain default response values or named arrays \code{rsp} of default selected response
-values and \code{levels} of default level choices}
+values and \code{levels} of default level choices.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
