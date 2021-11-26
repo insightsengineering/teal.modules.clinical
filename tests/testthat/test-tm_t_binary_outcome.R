@@ -1,5 +1,5 @@
-test_that("template_rsp generates standard expressions", {
-  result <- template_rsp(
+test_that("template_binary_outcome generates standard expressions", {
+  result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
     arm_var = "ARMCD",
@@ -74,8 +74,8 @@ test_that("template_rsp generates standard expressions", {
   expect_equal(result, expected)
 })
 
-test_that("template_rsp generates right expressions with non-default", {
-  result <- template_rsp(
+test_that("template_binary_outcome generates right expressions with non-default", {
+  result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
     arm_var = "ARM",
@@ -146,8 +146,8 @@ test_that("template_rsp generates right expressions with non-default", {
   expect_equal(result, expected)
 })
 
-test_that("template_rsp generates expression without arm comparison", {
-  result <- template_rsp(
+test_that("template_binary_outcome generates expression without arm comparison", {
+  result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
     arm_var = "ARM",
@@ -194,8 +194,8 @@ test_that("template_rsp generates expression without arm comparison", {
   expect_equal(result, expected)
 })
 
-test_that("template_rsp generates expression with non-default controls and strata.", {
-  result <- template_rsp(
+test_that("template_binary_outcome generates expression with non-default controls and strata.", {
+  result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
     arm_var = "ARM",
@@ -292,8 +292,8 @@ test_that("template_rsp generates expression with non-default controls and strat
   expect_equal(result, expected)
 })
 
-test_that("template_rsp can combine comparison arms", {
-  result <- template_rsp(
+test_that("template_binary_outcome can combine comparison arms", {
+  result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "ADSL",
     arm_var = "ARMCD",
@@ -387,8 +387,8 @@ test_that("split_col_expr prepare the right four possible expressions", {
   expect_equal(result, expected)
 })
 
-test_that("template_rsp can combine refs", {
-  result <- template_rsp(
+test_that("template_binary_outcome can combine refs", {
+  result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
     arm_var = "ARMCD",
