@@ -306,37 +306,37 @@ ui_g_adverse_events <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aeterm"),
         label = "Select AETERM variable:",
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("tox_grade"),
         label = "Select AETOXGR variable:",
         data_extract_spec = ui_args$tox_grade,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("causality"),
         label = "Select AEREL variable:",
         data_extract_spec = ui_args$causality,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("outcome"),
         label = "Select AEOUT variable:",
         data_extract_spec = ui_args$outcome,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("action"),
         label = "Select AEACN variable:",
         data_extract_spec = ui_args$action,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("time"),
         label = "Select ASTDY variable:",
         data_extract_spec = ui_args$time,
@@ -344,7 +344,7 @@ ui_g_adverse_events <- function(id, ...) {
       ),
       if_not_null(
         ui_args$decod,
-        data_extract_input(
+        data_extract_ui(
           id = ns("decod"),
           label = "Select DECOD variable:",
           data_extract_spec = ui_args$decod,
