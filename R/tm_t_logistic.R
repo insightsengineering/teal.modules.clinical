@@ -3,6 +3,9 @@
 #' Creates an expression for logistic regressions.
 #'
 #' @inheritParams template_arguments
+#' @param arm_var (`character`)\cr
+#'   variable names that can be used as `arm_var`. No arm or treatment variable is included in the logistic model is
+#'   being `NULL`.
 #' @param topleft (`character`)\cr
 #'  the top-left annotation in the table.
 #' @param at optional, (`NULL` or `numeric`)\cr
@@ -200,6 +203,12 @@ template_logistic <- function(dataname,
 #'   STREAM template `lgrt02`.
 #'
 #' @inheritParams module_arguments
+#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()]) or `NULL`\cr
+#'   object with all available choices
+#'   and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
+#'   arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.
 #' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
 #'
