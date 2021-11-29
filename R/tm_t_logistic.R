@@ -42,28 +42,26 @@ template_logistic <- function(dataname,
     is.string(interaction_var) || is.null(interaction_var)
   )
 
+  y <- list()
+
+  data_pipe <- list()
+  data_list <- list()
+
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
     assert_that(
       is.string(arm_var),
       is.flag(combine_comp_arms)
     )
+
     ref_arm_val <- paste(ref_arm, collapse = "/")
-  }
 
-  y <- list()
-
-  if (!is.null(arm_var)) {
     y$arm_lab <- substitute(
       expr = arm_var_lab <- var_labels(anl[arm_var]),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
-  }
 
-  data_pipe <- list()
-  data_list <- list()
-
-  if (!is.null(arm_var)) {
+    # Start to build data when arm_var is not NULL.
     data_pipe <- add_expr(
       data_pipe,
       prepare_arm(
