@@ -97,6 +97,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_basic_info.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_binary_outcome.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_coxreg.html</loc>
   </url>
   <url>
@@ -155,9 +158,6 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_prior_medication.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_rsp.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_shift_by_arm.html</loc>
@@ -266,9 +266,6 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_pp_prior_medication.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_rsp.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_shift_by_arm.html</loc>
