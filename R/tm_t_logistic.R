@@ -42,12 +42,8 @@ template_logistic <- function(dataname,
     is.string(interaction_var) || is.null(interaction_var)
   )
 
-  # Conditional assertion depends on if arm_var is NULL or not.
-  if (is.null(arm_var)) {
-    assert_that(
-      is.null(arm_var)
-    )
-  } else {
+  # Conditional assertion depends on if arm_var isn't NULL.
+  if (!is.null(arm_var)) {
     assert_that(
       is.string(arm_var),
       is.flag(combine_comp_arms)
