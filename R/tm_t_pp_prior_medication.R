@@ -302,8 +302,7 @@ srv_t_prior_medication <- function(input,
   # Prior medication tab ----
   pmed_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(atirel, cmdecod, cmindc, cmstdy),
-    input_id = c("atirel", "cmdecod", "cmindc", "cmstdy"),
+    data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
     merge_function = "dplyr::left_join"
   )
 

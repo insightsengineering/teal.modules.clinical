@@ -366,8 +366,7 @@ srv_g_vitals <- function(input,
   # Vitals tab ----
   vitals_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(paramcd, xaxis, aval),
-    input_id = c("paramcd", "xaxis", "aval"),
+    data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
     merge_function = "dplyr::left_join"
   )
 

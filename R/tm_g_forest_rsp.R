@@ -3,6 +3,7 @@
 #' Creates a valid expression for response forest plot.
 #'
 #' @inheritParams template_arguments
+#' @param obj_var_name (`character`)\cr additional text string append to output title
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
@@ -19,6 +20,7 @@ template_forest_rsp <- function(dataname = "ANL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
+                                obj_var_name = "",
                                 aval_var = "AVALC",
                                 responders = c("CR", "PR"),
                                 subgroup_var,
@@ -31,6 +33,7 @@ template_forest_rsp <- function(dataname = "ANL",
     is.string(parentname),
     is.string(arm_var),
     is.string(aval_var),
+    is.string(obj_var_name),
     is.null(subgroup_var) || is.character(subgroup_var)
   )
 
@@ -146,6 +149,8 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
+  title <- paste0("Forest plot of best overall response for ", obj_var_name)
+
   # Plot output.
   y$plot <- substitute(
     expr = {
@@ -154,8 +159,11 @@ template_forest_rsp <- function(dataname = "ANL",
         col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
+                           gp_footnotes = grid::gpar(fontsize = 12))
+      } else {
+        p <- decorate_grob(p, title = title, footnotes = "",
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
 
       grid::grid.newpage()
@@ -164,7 +172,8 @@ template_forest_rsp <- function(dataname = "ANL",
     env = list(
       anl = as.name(dataname),
       arm_var = arm_var,
-      col_symbol_size = col_symbol_size
+      col_symbol_size = col_symbol_size,
+      title = title
     )
   )
 
@@ -176,6 +185,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' This teal module produces a grid style Forest plot for response data with ADaM structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams tm_t_rsp
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #'
@@ -189,7 +199,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #' library(dplyr)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'   mutate(AVALC = d_onco_rsp_label(AVALC))
 #'
 #' arm_ref_comp = list(
 #'   ARM = list(
@@ -204,8 +215,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs'),
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADRS", ADRS),
+#'     code =
+#'       "ADSL <- synthetic_cdisc_data('latest')$adsl
+#'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -229,7 +244,20 @@ template_forest_rsp <- function(dataname = "ANL",
 #'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
 #'       ),
-#'       plot_height = c(600L, 200L, 2000L)
+#'       plot_height = c(600L, 200L, 2000L),
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+#'                      "Progressive Disease (PD)", "Not Evaluable (NE)")),
+#'         INVET = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+#'       )
 #'     )
 #'   )
 #' )
@@ -249,6 +277,7 @@ tm_g_forest_rsp <- function(label,
                             strata_var,
                             fixed_symbol_size = TRUE,
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
@@ -273,6 +302,14 @@ tm_g_forest_rsp <- function(label,
   check_slider_input(plot_height, allow_null = FALSE)
   check_slider_input(plot_width)
 
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
+  )
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -295,6 +332,7 @@ tm_g_forest_rsp <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        default_responses = default_responses,
         plot_height = plot_height,
         plot_width = plot_width
       )
@@ -412,7 +450,8 @@ srv_g_forest_rsp <- function(input,
                              strata_var,
                              plot_height,
                              plot_width,
-                             label) {
+                             label,
+                             default_responses) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -430,38 +469,54 @@ srv_g_forest_rsp <- function(input,
     module = "tm_t_tte"
   )
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      subgroup_var = subgroup_var,
+      strata_var = strata_var,
+      paramcd = paramcd,
+      aval_var = aval_var
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, subgroup_var, strata_var, paramcd, aval_var),
-    input_id = c("arm_var", "subgroup_var", "strata_var", "paramcd", "aval_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, subgroup_var, strata_var),
-    input_id = c("arm_var", "subgroup_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
-  # Update UI choices depending on selection of previous options
-  observeEvent(anl_merged(), {
-    aval_var <- anl_merged()$columns_source$aval_var
-    if (nrow(anl_merged()$data()) == 0) {
-      responder_choices <- c("CR", "PR")
-      responder_sel <- c("CR", "PR")
-    } else {
-      responder_choices <- unique(anl_merged()$data()[[aval_var]])
-      responder_sel <- intersect(responder_choices, isolate(input$responders))
-    }
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = responder_sel
-    )
-  })
-
-  subgroup_var_ordered <- get_input_order("subgroup_var", subgroup_var$dataname)
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else default_responses
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
+        responder_choices <- if (is_empty(aval_var)) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          } else unique(anl_merged()$data()[[aval_var]])
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
+    })
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
@@ -471,7 +526,7 @@ srv_g_forest_rsp <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_subgroup_var <- subgroup_var_ordered()
+    input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -502,10 +557,36 @@ srv_g_forest_rsp <- function(input,
       )
     }
 
+    if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
+      validate(
+        need(all(unlist(lapply(default_responses, function(x) {
+          if (is.list(x) & "levels" %in% names(x)) {
+            lvls <- x$levels
+            all(x$rsp %in% lvls)
+          } else {
+            lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+            if ("rsp" %in% names(x)) {
+              all(x$rsp %in% lvls)
+            } else all(x %in% lvls)
+          }
+          }))),
+          "All selected default responses must be in the levels of AVAL.")
+      )
+    }
+
+    if (is.list(default_responses)) {
+      validate(
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            names(unlist(default_responses)) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
+
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+      "Please choose a confidence level between 0 and 1")
+    )
 
     validate(
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
@@ -535,15 +616,20 @@ srv_g_forest_rsp <- function(input,
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
     subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
+
+    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+
     my_calls <- template_forest_rsp(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
+      obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
-      subgroup_var = if (length(subgroup_var_ordered()) != 0) subgroup_var_ordered() else NULL,
+      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0)
+        anl_selectors()$subgroup_var()$select_ordered else NULL,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (input$fixed_symbol_size) {

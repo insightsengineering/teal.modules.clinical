@@ -216,6 +216,7 @@ tm_g_lineplot <- function(label,
                           plot_width = NULL,
                           pre_output = NULL,
                           post_output = NULL) {
+  logger::log_info("Initializing tm_g_lineplot")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
@@ -448,8 +449,7 @@ srv_g_lineplot <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x, y, strata, paramcd, y_unit, param),
-    input_id = c("x", "y", "strata", "paramcd", "y_unit", "param"),
+    data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
     merge_function = "dplyr::inner_join"
   )
 

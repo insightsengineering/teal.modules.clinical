@@ -49,7 +49,7 @@ template_rsp <- function(dataname,
                          combine_comp_arms = FALSE,
                          aval_var = "AVALC",
                          show_rsp_cat = TRUE,
-                         responder_val = c("CR", "PR"),
+                         responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
                          control = list(
                            global = list(
                              method = "waldcc",
@@ -98,16 +98,18 @@ template_rsp <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val),
-      env = list(
+    substitute_names(
+      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
+        dplyr::mutate(aval = factor(aval_var, levels = responder_val)),
+      names = list(
+        aval = as.name(aval_var)
+      ),
+      others = list(
         responder_val = responder_val,
         aval_var = as.name(aval_var)
       )
     )
   )
-
-  data_list <- add_expr(data_list, quote(df_explicit_na()))
 
   y$data <- substitute(
     expr = {
@@ -146,12 +148,12 @@ template_rsp <- function(dataname,
       expr = basic_table(
         title = paste("Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
                       ifelse(length(responders) > 1, "and", ""), tail(responders, 1), "Responders")
-        ),
+      ),
       env = list(
         paramcd = paramcd,
         responders = responder_val)
-      )
     )
+  )
 
   if (!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
@@ -160,7 +162,7 @@ template_rsp <- function(dataname,
         split_cols_by(
           var = arm_var,
           split_fun = add_overall_level("All Patients", first = FALSE)
-          ),
+        ),
         env = list(
           arm_var = arm_var
         )
@@ -341,6 +343,12 @@ template_rsp <- function(dataname,
 #' STREAM template `rspt01`.
 #'
 #' @inheritParams module_arguments
+#' @param default_responses (`list` or `logical` or `numeric` or `character`) \cr defines
+#'   the default codes for the response variable in the module per value of `paramcd`.
+#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
+#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
+#'   may contain default response values or named arrays `rsp` of default selected response
+#'   values and `levels` of default level choices
 #'
 #' @details Additional standard UI inputs include `responders`,
 #'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
@@ -402,8 +410,10 @@ template_rsp <- function(dataname,
 #'       x = ADRS,
 #'       code =
 #'         "ADRS <- synthetic_cdisc_data('latest')$adrs %>%
-#'           mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))))"
-#'     )
+#'           mutate(Dum_ARM = factor(rep('Single ARM', nrow(.))),
+#'                  AVALC = d_onco_rsp_label(AVALC))"
+#'     ),
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_rsp(
@@ -421,6 +431,19 @@ template_rsp <- function(dataname,
 #'       strata_var = choices_selected(
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
 #'         select = NULL
+#'       ),
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
+#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'         INVET = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
 #'       )
 #'     )
 #'   )
@@ -443,6 +466,7 @@ tm_t_rsp <- function(label,
                      strata_var,
                      aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                      add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL) {
@@ -461,6 +485,14 @@ tm_t_rsp <- function(label,
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
+  )
+
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
   )
 
   args <- as.list(environment())
@@ -483,7 +515,8 @@ tm_t_rsp <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        default_responses = default_responses
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -500,7 +533,7 @@ ui_t_rsp <- function(id, ...) {
     a$arm_var,
     a$aval_var,
     a$strata_var
-    )
+  )
 
   ns <- NS(id)
   standard_layout(
@@ -571,7 +604,7 @@ ui_t_rsp <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       optionalSelectInput(
         inputId = ns("conf_level"),
@@ -608,7 +641,8 @@ srv_t_rsp <- function(input,
                       arm_ref_comp,
                       strata_var,
                       add_total,
-                      label) {
+                      label,
+                      default_responses) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -629,33 +663,41 @@ srv_t_rsp <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, strata_var, aval_var),
-    input_id = c("arm_var", "paramcd", "strata_var", "aval_var"),
+    data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, strata_var),
-    input_id = c("arm_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
-  # Because the AVALC values depends on the selected PARAMCD.
-  observeEvent(anl_merged(), {
-    aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- if (is_empty(aval_var)) {
-      character(0)
-    } else {
-      unique(anl_merged()$data()[[aval_var]])
-    }
-    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = intersect(responder_choices, common_rsp)
-    )
-  }, once = TRUE, ignoreInit = TRUE)
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else default_responses
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
+        responder_choices <- if (is_empty(aval_var)) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          } else unique(anl_merged()$data()[[aval_var]])
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
+    })
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -713,16 +755,42 @@ srv_t_rsp <- function(input,
         need(
           sum(summary(
             anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
-            ) > 0) > 1L,
-            "After filtering at least one combination of strata variable levels
+          ) > 0) > 1L,
+          "After filtering at least one combination of strata variable levels
             has too few observations to calculate the odds ratio.")
       }
     )
 
+    if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
+      validate(
+        need(all(unlist(lapply(default_responses, function(x) {
+          if (is.list(x) & "levels" %in% names(x)) {
+            lvls <- x$levels
+            all(x$rsp %in% lvls)
+          } else {
+            lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+            if ("rsp" %in% names(x)) {
+              all(x$rsp %in% lvls)
+            } else all(x %in% lvls)
+          }
+          }))),
+          "All selected default responses must be in the levels of AVAL.")
+      )
+    }
+
+    if (is.list(default_responses)) {
+      validate(
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            names(unlist(default_responses)) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
+
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+      "Please choose a confidence level between 0 and 1")
+    )
 
     NULL
   })
@@ -751,7 +819,7 @@ srv_t_rsp <- function(input,
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(anl_m$filter_info)["selected"],
+      paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,

@@ -376,15 +376,19 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, visit_var, aval_var, base_var, treatment_flag_var),
-    input_id = c("arm_var", "paramcd", "visit_var", "aval_var", "base_var", "treatment_flag_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      visit_var = visit_var,
+      aval_var = aval_var,
+      base_var = base_var,
+      treatment_flag_var = treatment_flag_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 

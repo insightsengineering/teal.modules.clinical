@@ -637,15 +637,11 @@ srv_g_patient_timeline <- function(input,
   p_timeline_merged_data <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      dsrelday_start, dsrelday_end,
-      aerelday_start, aerelday_end,
-      aeterm, aetime_start,
-      aetime_end, dstime_start, dstime_end, cmtrt),
-    input_id = c(
-      "dsrelday_start", "dsrelday_end",
-      "aerelday_start", "aerelday_end",
-      "aeterm", "aetime_start",
-      "aetime_end", "dstime_start", "dstime_end", "cmtrt")
+      dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
+      aerelday_start = aerelday_start, aerelday_end = aerelday_end,
+      aeterm = aeterm, aetime_start = aetime_start,
+      aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmtrt = cmtrt
+    )
   )
 
   patient_timeline_calls <- reactive({

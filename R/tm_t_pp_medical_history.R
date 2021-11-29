@@ -248,8 +248,7 @@ srv_t_medical_history <- function(input,
   # Medical history tab ----
   mhist_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(mhterm, mhbodsys, mhdistat),
-    input_id = c("mhterm", "mhbodsys", "mhdistat"),
+    data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
     merge_function = "dplyr::left_join"
   )
 

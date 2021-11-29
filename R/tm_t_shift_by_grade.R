@@ -728,17 +728,20 @@ srv_t_shift_by_grade <- function(input,
   anl_merged <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      arm_var, visit_var, id_var, paramcd, worst_flag_var, anl_toxgrade_var, base_toxgrade_var
-      ),
-    input_id = c(
-      "arm_var", "visit_var", "id_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var"
-      ),
-    merge_function = "dplyr::inner_join")
+      arm_var = arm_var,
+      visit_var = visit_var,
+      id_var = id_var,
+      paramcd = paramcd,
+      worst_flag_var = worst_flag_var,
+      anl_toxgrade_var = anl_toxgrade_var,
+      base_toxgrade_var = base_toxgrade_var
+    ),
+    merge_function = "dplyr::inner_join"
+  )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 
