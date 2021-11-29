@@ -463,7 +463,7 @@ ui_summary_by <- function(id, ...) {
     encoding =  div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "id_var",  "paramcd", "by_vars", "summarize_vars")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -472,20 +472,20 @@ ui_summary_by <- function(id, ...) {
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       if_not_null(
         a$paramcd,
-        data_extract_input(
+        data_extract_ui(
           id = ns("paramcd"),
           label = "Select Endpoint",
           data_extract_spec = a$paramcd,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
         data_extract_spec = a$by_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
         data_extract_spec = a$summarize_vars,
@@ -544,7 +544,7 @@ ui_summary_by <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,

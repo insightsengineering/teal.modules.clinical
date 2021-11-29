@@ -294,25 +294,25 @@ ui_g_lineplot <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("param"),
         label = "Select Biomarker",
         data_extract_spec = a$param,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("strata"),
         label = "Select Treatment Variable",
         data_extract_spec = a$strata,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("y"),
         label = "Analysis Variable",
         data_extract_spec = a$y,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("x"),
         label = "Time Variable",
         data_extract_spec = a$x,
@@ -378,13 +378,13 @@ ui_g_lineplot <- function(id, ...) {
             ),
             selected = "pl"
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("y_unit"),
             label = "Analysis Unit Variable",
             data_extract_spec = a$y_unit,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("paramcd"),
             label = "Parameter Code Variable",
             data_extract_spec = a$paramcd,

@@ -624,38 +624,38 @@ ui_t_shift_by_grade <- function(id, ...) {
       datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
         ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("worst_flag_var"),
         label = "Worst flag variable",
         data_extract_spec = a$worst_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("visit_var"),
         label = "Analysis Visit",
         data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("anl_toxgrade_var"),
         label = "Analysis toxicity grade",
         data_extract_spec = a$anl_toxgrade_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("base_toxgrade_var"),
         label = "Baseline toxicity grade",
         data_extract_spec = a$base_toxgrade_var,
@@ -679,7 +679,7 @@ ui_t_shift_by_grade <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,

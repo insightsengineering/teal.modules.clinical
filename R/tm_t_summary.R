@@ -318,14 +318,14 @@ ui_summary <- function(id, ...) {
       encoding =  div(
         tags$label("Encodings", class = "text-primary"),
         datanames_input(a[c("arm_var", "summarize_vars")]),
-        data_extract_input(
+        data_extract_ui(
           id = ns("arm_var"),
           label = "Select Treatment Variable",
           data_extract_spec = a$arm_var,
           is_single_dataset = is_single_dataset_value
         ),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-        data_extract_input(
+        data_extract_ui(
           id = ns("summarize_vars"),
           label = "Summarize Variables",
           data_extract_spec = a$summarize_vars,
