@@ -279,7 +279,6 @@ tm_t_logistic <- function(label,
 
   args <- as.list(environment())
 
-  # Use inline ifs.
   data_extract_list <- list(
     arm_var = `if`(is.null(arm_var), NULL, cs_to_des_select(arm_var, dataname = parentname)),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
