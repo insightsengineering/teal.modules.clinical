@@ -332,13 +332,13 @@ ui_t_logistic <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("avalc_var"),
         label = "Analysis Variable",
         data_extract_spec = a$avalc_var,
@@ -353,32 +353,32 @@ ui_t_logistic <- function(id, ...) {
       ),
       if (!is.null(a$arm_var)) {
         div(
-          data_extract_input(
-            id = ns("arm_var"),
-            label = "Select Treatment Variable",
-            data_extract_spec = a$arm_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          selectInput(
-            ns("ref_arm"),
-            "Reference Group",
-            choices = NULL,
-            multiple = TRUE
-          ),
-          selectInput(
-            ns("comp_arm"),
-            "Comparison Group",
-            choices = NULL,
-            multiple = TRUE
-          ),
-          checkboxInput(
-            ns("combine_comp_arms"),
-            "Combine all comparison groups?",
-            value = FALSE
+      data_extract_ui(
+        id = ns("arm_var"),
+        label = "Select Treatment Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      selectInput(
+        ns("ref_arm"),
+        "Reference Group",
+        choices = NULL,
+        multiple = TRUE
+      ),
+      selectInput(
+        ns("comp_arm"),
+        "Comparison Group",
+        choices = NULL,
+        multiple = TRUE
+      ),
+      checkboxInput(
+        ns("combine_comp_arms"),
+        "Combine all comparison groups?",
+        value = FALSE
           )
         )
       },
-      data_extract_input(
+      data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,

@@ -153,7 +153,7 @@ ui_t_binary_outcome <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Parameter",
         data_extract_spec = a$paramcd,
@@ -166,7 +166,7 @@ ui_t_binary_outcome <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -245,7 +245,7 @@ ui_t_binary_outcome <- function(id, ...) {
         panel_group(
           panel_item(
             "Stratified analysis settings",
-            data_extract_input(
+            data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",
               data_extract_spec = a$strata_var,
@@ -306,7 +306,7 @@ ui_t_binary_outcome <- function(id, ...) {
           size = "mini"
         )
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,

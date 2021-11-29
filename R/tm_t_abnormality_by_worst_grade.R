@@ -388,32 +388,32 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
           "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var", "worst_flag_indicator"
         )]
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("atoxgr_var"),
         label = "Analysis toxicity grade",
         data_extract_spec = a$atoxgr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("worst_low_flag_var"),
         label = "Worst low flag variable",
         data_extract_spec = a$worst_low_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("worst_high_flag_var"),
         label = "Worst high flag variable",
         data_extract_spec = a$worst_high_flag_var,
@@ -422,7 +422,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
       panel_group(
         panel_item(
           "Additional table settings",
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,

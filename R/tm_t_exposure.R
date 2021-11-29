@@ -378,25 +378,25 @@ ui_t_exposure <- function(id, ...) {
       datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
         )]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select the Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("parcat"),
         label = "Select the Parameter Category",
         data_extract_spec = a$parcat,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("col_by_var"),
         label = "Select Column by Variable",
         data_extract_spec = a$col_by_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("row_by_var"),
         label = "Select Row by Variable",
         data_extract_spec = a$row_by_var,
@@ -406,19 +406,19 @@ ui_t_exposure <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("aval_var"),
             label = "Analysis Value Variable",
             data_extract_spec = a$aval_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("avalu_var"),
             label = "Analysis Value Unit Variable",
             data_extract_spec = a$avalu_var,
