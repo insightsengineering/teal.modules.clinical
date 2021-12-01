@@ -196,7 +196,7 @@ ui_g_barchart_simple <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("x"),
           label = "X variable",
           data_extract_spec = args$x,
@@ -204,7 +204,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$fill)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("fill"),
           label = "Fill",
           data_extract_spec = args$fill,
@@ -212,7 +212,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$x_facet)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("x_facet"),
           label = "Column facetting variable",
           data_extract_spec = args$x_facet,
@@ -220,7 +220,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$y_facet)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("y_facet"),
           label = "Row facetting variable",
           data_extract_spec = args$y_facet,

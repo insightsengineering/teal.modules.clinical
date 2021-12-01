@@ -501,25 +501,25 @@ ui_t_tte <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -556,7 +556,7 @@ ui_t_tte <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            data_extract_input(
+            data_extract_ui(
               id = ns("strata_var"),
               label = "Stratify by",
               data_extract_spec = a$strata_var,
@@ -576,7 +576,7 @@ ui_t_tte <- function(id, ...) {
                           multiple = TRUE,
                           fixed = a$time_points$fixed
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("event_desc_var"),
         label = "Event Description Variable",
         data_extract_spec = a$event_desc_var,
@@ -659,7 +659,7 @@ ui_t_tte <- function(id, ...) {
           value = c(0.25, 0.75),
           width = "100%"
         ),
-        data_extract_input(
+        data_extract_ui(
           id = ns("time_unit_var"),
           label = "Time Unit Variable",
           data_extract_spec = a$time_unit_var,

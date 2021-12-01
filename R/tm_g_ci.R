@@ -163,17 +163,17 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x_var", "y_var", "color")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("x_var"),
         label = "Treatment (x axis)",
         data_extract_spec = args$x_var
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("y_var"),
         label = "Analyzed Value (y axis)",
         data_extract_spec = args$y_var
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("color"),
         label = "Groups (color)",
         data_extract_spec = args$color
