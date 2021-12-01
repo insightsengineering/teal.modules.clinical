@@ -456,25 +456,25 @@ ui_t_coxreg <- function(id, ...) {
       ),
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -499,7 +499,7 @@ ui_t_coxreg <- function(id, ...) {
           "Combine all comparison groups?"
         )
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,
@@ -513,7 +513,7 @@ ui_t_coxreg <- function(id, ...) {
         )
       ),
       uiOutput(ns("interaction_input")),
-      data_extract_input(
+      data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,
@@ -602,8 +602,14 @@ srv_t_coxreg <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var),
-    input_id = c("arm_var", "paramcd", "strata_var", "aval_var", "cnsr_var", "cov_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      strata_var = strata_var,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      cov_var = cov_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 

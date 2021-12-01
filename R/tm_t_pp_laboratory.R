@@ -227,37 +227,37 @@ ui_g_laboratory <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("param"),
         label = "Select PARAM variable:",
         data_extract_spec = ui_args$param,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("timepoints"),
         label = "Select timepoints variable:",
         data_extract_spec = ui_args$timepoints,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("avalu"),
         label = "Select AVALU variable:",
         data_extract_spec = ui_args$avalu,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("anrind"),
         label = "Select ANRIND variable:",
         data_extract_spec = ui_args$anrind,
@@ -329,8 +329,14 @@ srv_g_laboratory <- function(input,
   # Laboratory values tab ----
   labor_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(timepoints, aval, avalu, param, paramcd, anrind),
-    input_id = c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")
+    data_extract = list(
+      timepoints = timepoints,
+      aval = aval,
+      avalu = avalu,
+      param = param,
+      paramcd = paramcd,
+      anrind = anrind
+    )
   )
 
   labor_calls <- reactive({

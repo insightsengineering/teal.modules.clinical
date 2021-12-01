@@ -135,7 +135,7 @@ ui_t_basic_info <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("vars"),
         label = "Select variable:",
         data_extract_spec = ui_args$vars,
@@ -185,8 +185,7 @@ srv_t_basic_info <- function(input,
   # Basic Info tab ----
   binf_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(vars),
-    input_id = "vars",
+    data_extract = list(vars = vars),
     merge_function = "dplyr::left_join"
   )
 

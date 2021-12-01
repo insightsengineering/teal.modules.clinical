@@ -377,19 +377,19 @@ ui_t_mult_events_byterm <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
@@ -409,7 +409,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("seq_var"),
             label = "Analysis Sequence Number",
             data_extract_spec = a$seq_var,
@@ -442,21 +442,28 @@ srv_t_mult_events_byterm <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      seq_var = seq_var,
+      hlt = hlt,
+      llt = llt
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, seq_var, hlt, llt),
-    input_id = c("arm_var", "seq_var", "hlt", "llt"),
     merge_function = "dplyr::inner_join"
   )
 
+
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
-
-  hlt_ordered <- get_input_order("hlt", hlt$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -466,7 +473,7 @@ srv_t_mult_events_byterm <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_seq_var <- as.vector(anl_m$columns_source$seq_var)
 
-    input_hlt <- hlt_ordered()
+    input_hlt <- anl_selectors()$hlt()$select_ordered
     input_llt <- as.vector(anl_m$columns_source$llt)
 
     validate(need(input_arm_var, "Please select a treatment variable"))
@@ -502,7 +509,7 @@ srv_t_mult_events_byterm <- function(input,
     chunks_push_data_merge(anl_adsl)
     chunks_push_new_line()
 
-    input_hlt <- hlt_ordered()
+    input_hlt <- anl_selectors()$hlt()$select_ordered
     input_llt <- as.vector(anl_m$columns_source$llt)
 
     my_calls <- template_mult_events(

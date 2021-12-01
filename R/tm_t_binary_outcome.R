@@ -1,7 +1,377 @@
+#' Template: Binary Outcome
+#'
+#' Creates a valid expression for binary outcome analysis.
+#'
+#' @inheritParams template_arguments
+#' @param control (`list`)\cr list of settings for the analysis.
+#' @param responder_val (`character`)\cr the short label for observations to
+#'   translate `AVALC` into responder / non-responder.
+#' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
+#' @param paramcd (`character`)\cr response parameter value to use in the table title.
+#'
+#' @seealso [tm_t_binary_outcome()]
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Preparation of the test case.
+#' library(dplyr)
+#' library(scda)
+#' library(tern)
+#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adrs <- synthetic_cdisc_data("latest")$adrs
+#'
+#' # Generate an expression for the analysis of responders.
+#' a <- template_binary_outcome(
+#'   dataname = "adrs",
+#'   parentname = "adsl",
+#'   arm_var = "ARMCD",
+#'   paramcd = "BESRSPI",
+#'   ref_arm = "ARM A",
+#'   comp_arm = c("ARM B"),
+#'   compare_arm = TRUE,
+#'   show_rsp_cat = TRUE
+#' )
+#'
+#' b <- mapply(expr = a, FUN = eval)
+#' b$data
+#' b$layout
+#' b$table
+#' }
+#'
+template_binary_outcome <- function(dataname,
+                                    parentname,
+                                    arm_var,
+                                    paramcd,
+                                    ref_arm = NULL,
+                                    comp_arm = NULL,
+                                    compare_arm = FALSE,
+                                    combine_comp_arms = FALSE,
+                                    aval_var = "AVALC",
+                                    show_rsp_cat = TRUE,
+                                    responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
+                                    control = list(
+                                      global = list(
+                                        method = "waldcc",
+                                        conf_level = 0.95
+                                      ),
+                                      unstrat = list(
+                                        method_ci = "waldcc",
+                                        method_test = "schouten",
+                                        odds = TRUE
+                                      ),
+                                      strat = list(
+                                        method_ci = "cmh",
+                                        method_test = "cmh",
+                                        strat = NULL
+                                      )
+                                    ),
+                                    add_total = FALSE
+) {
+  assert_that(
+    is.string(dataname),
+    is.string(parentname),
+    is.string(arm_var),
+    is.string(aval_var),
+    is.flag(compare_arm),
+    is.flag(combine_comp_arms),
+    is.flag(show_rsp_cat),
+    is.flag(add_total)
+  )
+
+  ref_arm_val <- paste(ref_arm, collapse = "/")
+  y <- list()
+
+  data_list <- list()
+
+  data_list <- add_expr(
+    data_list,
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val,
+      compare_arm = compare_arm
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute_names(
+      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
+        dplyr::mutate(aval = factor(aval_var, levels = responder_val)),
+      names = list(
+        aval = as.name(aval_var)
+      ),
+      others = list(
+        responder_val = responder_val,
+        aval_var = as.name(aval_var)
+      )
+    )
+  )
+
+  y$data <- substitute(
+    expr = {
+      anl <- data_pipe
+      parentname <- arm_preparation %>% df_explicit_na()
+    },
+    env = list(
+      data_pipe = pipe_expr(data_list),
+      parentname = as.name(parentname),
+      arm_preparation = prepare_arm(
+        dataname = parentname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val,
+        compare_arm = compare_arm
+      )
+    )
+  )
+
+  if (compare_arm && combine_comp_arms) {
+    y$combine_comp_arms <- substitute(
+      expr = groups <- combine_groups(fct = df[[group]], ref = ref_arm_val),
+      env = list(
+        df = as.name(parentname),
+        group = arm_var,
+        ref_arm_val = ref_arm_val
+      )
+    )
+  }
+
+  layout_list <- list()
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = basic_table(
+        title = paste("Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
+                      ifelse(length(responders) > 1, "and", ""), tail(responders, 1), "Responders")
+      ),
+      env = list(
+        paramcd = paramcd,
+        responders = responder_val)
+    )
+  )
+
+  if (!compare_arm && !combine_comp_arms && add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        split_cols_by(
+          var = arm_var,
+          split_fun = add_overall_level("All Patients", first = FALSE)
+        ),
+        env = list(
+          arm_var = arm_var
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      split_col_expr(
+        compare = compare_arm,
+        combine = combine_comp_arms,
+        arm_var = arm_var,
+        ref = ref_arm_val
+      )
+    )
+  }
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      add_colcounts() %>%
+        estimate_proportion(
+          vars = "is_rsp",
+          conf_level = conf_level,
+          method = method,
+          table_names = "prop_est"
+        ),
+      env = list(
+        conf_level = control$global$conf_level,
+        method = control$global$method
+      )
+    )
+  )
+
+  if (compare_arm) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = estimate_proportion_diff(
+          vars = "is_rsp", show_labels = "visible",
+          var_labels = "Unstratified Analysis",
+          conf_level = conf_level,
+          method = method_ci,
+          table_names = "u_prop_diff"
+        ) %>%
+          test_proportion_diff(
+            vars = "is_rsp",
+            method = method_test,
+            table_names = "u_test_diff"
+          ),
+        env = list(
+          conf_level = control$global$conf_level,
+          method_ci = control$unstrat$method_ci,
+          method_test = control$unstrat$method_test
+        )
+      )
+    )
+
+    if (control$unstrat$odds) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            conf_level = conf_level,
+            table_names = "u_est_or"
+          ),
+          env = list(conf_level = control$global$conf_level)
+        )
+      )
+    }
+
+    if (!is.null(control$strat$strat)) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_proportion_diff(
+            vars = "is_rsp", show_labels = "visible",
+            var_labels = "Stratified Analysis",
+            variables = list(strata = strata),
+            conf_level = conf_level,
+            method = method_ci,
+            table_names = "s_prop_diff"
+          ) %>%
+            test_proportion_diff(
+              vars = "is_rsp",
+              method = method_test,
+              variables = list(strata = strata),
+              table_names = "s_test_diff"
+            ),
+          env = list(
+            conf_level = control$global$conf_level,
+            method_ci = control$strat$method_ci,
+            strata = control$strat$strat,
+            method_test = control$strat$method_test,
+            arm_var = arm_var
+          )
+        )
+      )
+    }
+  }
+
+  if (compare_arm && !is.null(control$strat$strat)) {
+    layout_list <- if (combine_comp_arms) {
+      add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            variables = list(arm = arm_var, strata = strata),
+            conf_level = conf_level,
+            table_names = "s_est_or",
+            groups_list = groups
+          ),
+          env = list(
+            conf_level = control$global$conf_level,
+            strata = control$strat$strat,
+            arm_var = arm_var
+          )
+        )
+      )
+    } else {
+      add_expr(
+        layout_list,
+        substitute(
+          expr = estimate_odds_ratio(
+            vars = "is_rsp",
+            variables = list(arm = arm_var, strata = strata),
+            conf_level = conf_level,
+            table_names = "s_est_or"
+          ),
+          env = list(
+            conf_level = control$global$conf_level,
+            strata = control$strat$strat,
+            arm_var = arm_var
+          )
+        )
+      )
+    }
+  }
+
+  if (show_rsp_cat) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        estimate_multinomial_response(
+          var = aval_var,
+          conf_level = conf_level,
+          method = method
+        ),
+        list(
+          conf_level = control$global$conf_level,
+          method = control$global$method,
+          aval_var = aval_var
+        )
+      )
+    )
+  }
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+  y$table <- substitute(
+    expr = {
+      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
+      result
+    },
+    env = list(parentname = as.name(parentname))
+  )
+  y
+}
+
 #' @title Teal Module: Binary Outcome Table
 #'
+#' This module produces a binary outcome response summary
+#' table, with the option to match the STREAM template `RSPT01`.
+#'
 #' @inheritParams module_arguments
-#' @inheritParams tm_t_rsp
+#' @param default_responses (`list` or `character`) \cr defines
+#'   the default codes for the response variable in the module per value of `paramcd`.
+#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
+#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
+#'   may contain default response values or named arrays `rsp` of default selected response
+#'   values and `levels` of default level choices.
+#'
+#' @param rsp_table (`logical`)\cr should the initial set-up of the module match
+#'   the STREAM template `rspt01`. (default FALSE)
+#'
+#' @details Additional standard UI inputs include `responders`,
+#'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
+#'
+#'   Default values of the inputs `var_arm`, `ref_arm` and
+#'   `comp_arm` are set to NULL, and updated accordingly based on selection
+#'   of `paramcd` and `var_arm`
+#'
+#'   This display order of response categories in partitioned statistics section
+#'   inherits the factor level order of the source data. Use
+#'   [base::factor()] and its `levels` argument to manipulate
+#'   the source data in order to include/exclude or re-categorize response
+#'   categories and arrange the display order. If response categories are
+#'   "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
+#'   confidence interval will not be calculated.
+#'
+#'   Reference arms automatically combined if multiple arms selected as
+#'   reference group.
+#'
+#' @return an [teal::module()] object
 #'
 #' @export
 #'
@@ -9,7 +379,8 @@
 #' library(dplyr)
 #' library(scda)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs
+#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'   mutate(AVALC = d_onco_rsp_label(AVALC))
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -20,7 +391,9 @@
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code =
 #'       "ADSL <- synthetic_cdisc_data('latest')$adsl
-#'        ADRS <- synthetic_cdisc_data('latest')$adrs"
+#'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
+#'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_t_binary_outcome(
@@ -38,6 +411,19 @@
 #'       strata_var = choices_selected(
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
 #'         select = NULL
+#'       ),
+#'       default_responses = list(
+#'         BESRSPI = list(
+#'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
+#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'         INVET = list(
+#'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'         OVRINV = list(
+#'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
 #'       )
 #'     )
 #'   )
@@ -59,10 +445,12 @@ tm_t_binary_outcome <- function(label,
                                 paramcd,
                                 strata_var,
                                 aval_var = choices_selected(
-                                  variable_choices(dataname, "AVALC"),
-                                  "AVALC", fixed = TRUE
-                                ),
+                                  choices = variable_choices(dataname, c("AVALC", "SEX")),
+                                  selected = "AVALC", fixed = FALSE),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                default_responses =
+                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
+                                rsp_table = FALSE,
                                 add_total = FALSE,
                                 pre_output = NULL,
                                 post_output = NULL) {
@@ -81,6 +469,14 @@ tm_t_binary_outcome <- function(label,
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
+  )
+
+  assert_that(
+    is.list(default_responses) ||
+      is.null(default_responses) ||
+      is.character(default_responses) ||
+      is.numeric(default_responses),
+    msg = "`default_responses` must be a named list or an array."
   )
 
   args <- as.list(environment())
@@ -103,7 +499,9 @@ tm_t_binary_outcome <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        default_responses = default_responses,
+        rsp_table = rsp_table
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -127,7 +525,7 @@ ui_t_binary_outcome <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Parameter",
         data_extract_spec = a$paramcd,
@@ -140,7 +538,7 @@ ui_t_binary_outcome <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -194,7 +592,7 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Anderson-Hauck" = "ha",
                 "Newcombe" = "newcombe"
               ),
-              selected = "waldcc",
+              selected = ifelse(a$rsp_table, "wald", "waldcc"),
               multiple = FALSE,
               fixed = FALSE
             ),
@@ -219,7 +617,7 @@ ui_t_binary_outcome <- function(id, ...) {
         panel_group(
           panel_item(
             "Stratified analysis settings",
-            data_extract_input(
+            data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",
               data_extract_spec = a$strata_var,
@@ -246,7 +644,7 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       panel_item(
         "Additional table settings",
@@ -261,7 +659,7 @@ ui_t_binary_outcome <- function(id, ...) {
             "Jeffreys" = "jeffreys",
             "Agresti-Coull" = "agresti-coull"
           ),
-          selected = "waldcc",
+          selected = ifelse(a$rsp_table, "clopper-pearson", "waldcc"),
           multiple = FALSE,
           fixed = FALSE
         ),
@@ -273,14 +671,14 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Response Categories"),
+        tags$label("Show All Selected Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
-          value = a$show_rsp_categories,
+          value = ifelse(a$rsp_table, TRUE, FALSE),
           size = "mini"
         )
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
@@ -306,7 +704,9 @@ srv_t_binary_outcome <- function(input,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
-                                 label) {
+                                 label,
+                                 default_responses,
+                                 rsp_table) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -327,33 +727,41 @@ srv_t_binary_outcome <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, strata_var, aval_var),
-    input_id = c("arm_var", "paramcd", "strata_var", "aval_var"),
+    data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, strata_var),
-    input_id = c("arm_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
-  # Because the AVALC values depends on the selected PARAMCD.
-  observeEvent(anl_merged(), {
-    aval_var <- anl_merged()$columns_source$aval_var
-    responder_choices <- if (is_empty(aval_var)) {
-      character(0)
-    } else {
-      unique(anl_merged()$data()[[aval_var]])
-    }
-    common_rsp <- c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)")
-    updateSelectInput(
-      session, "responders",
-      choices = responder_choices,
-      selected = intersect(responder_choices, common_rsp)
-    )
-  }, once = TRUE, ignoreInit = TRUE)
+  observeEvent(
+    c(input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else default_responses
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else sel_param
+        responder_choices <- if (is_empty(aval_var)) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          } else unique(anl_merged()$data()[[aval_var]])
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
+    })
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -383,13 +791,6 @@ srv_t_binary_outcome <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
-
-    validate(
-      need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      )
-    )
 
     validate(
       if (length(input_strata_var) >= 1L) {
@@ -423,6 +824,20 @@ srv_t_binary_outcome <- function(input,
       need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
 
+    if (is.list(default_responses)) {
+      validate(
+        need(all(
+          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+            gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+      )
+    }
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1")
+    )
+
     NULL
   })
 
@@ -444,11 +859,11 @@ srv_t_binary_outcome <- function(input,
     anl <- chunks_get_var("ANL") # nolint
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
 
-    my_calls <- template_rsp(
+    my_calls <- template_binary_outcome(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(anl_m$filter_info)["selected"],
+      paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
       compare_arm = input$compare_arms,

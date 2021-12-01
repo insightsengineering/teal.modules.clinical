@@ -540,19 +540,19 @@ ui_t_events_byterm <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "hlt", "llt")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
@@ -619,28 +619,29 @@ srv_t_events_byterm <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(arm_var = arm_var, hlt = hlt, llt = llt),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, hlt, llt),
-    input_id = c("arm_var", "hlt", "llt"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
-
-  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
     anl_m <- anl_merged()
-    input_arm_var <- arm_var_user_input()
+    input_arm_var <- anl_selectors()$arm_var()$select_ordered
     input_level_term <- c(
       as.vector(anl_m$columns_source$hlt),
       as.vector(anl_m$columns_source$llt)
@@ -705,7 +706,7 @@ srv_t_events_byterm <- function(input,
     my_calls <- template_events(
       dataname = "ANL",
       parentname = "ANL_ADSL",
-      arm_var = arm_var_user_input(),
+      arm_var = anl_selectors()$arm_var()$select_ordered,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
       add_total = input$add_total,

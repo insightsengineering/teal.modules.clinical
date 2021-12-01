@@ -13,6 +13,7 @@ template_forest_tte <- function(dataname = "ANL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
+                                obj_var_name = "",
                                 aval_var = "AVAL",
                                 cnsr_var = "CNSR",
                                 subgroup_var,
@@ -23,6 +24,7 @@ template_forest_tte <- function(dataname = "ANL",
   assert_that(
     is.string(dataname),
     is.string(arm_var),
+    is.string(obj_var_name),
     is.character(subgroup_var) || is.null(subgroup_var)
   )
 
@@ -147,6 +149,8 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(time_unit_var = as.name(time_unit_var))
   )
 
+  title <- paste0("Forest plot of survival duration for ", obj_var_name)
+
   y$plot <- substitute(
     expr = {
       p <- g_forest(
@@ -154,15 +158,19 @@ template_forest_tte <- function(dataname = "ANL",
         col_symbol_size = col_symbol_size
       )
       if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = "Forest plot", footnotes = footnotes(p),
-                           gp_footnotes = gpar(fontsize = 12))
+        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
+                           gp_footnotes = grid::gpar(fontsize = 12))
+      } else {
+        p <- decorate_grob(p, title = title, footnotes = "",
+                           gp_footnotes = grid::gpar(fontsize = 12))
       }
       grid::grid.newpage()
       grid::grid.draw(p)
     },
     env = list(
       col_symbol_size = col_symbol_size,
-      arm_var = arm_var
+      arm_var = arm_var,
+      title = title
     )
   )
 
@@ -256,7 +264,7 @@ tm_g_forest_tte <- function(label,
                             pre_output = NULL,
                             post_output = NULL) {
   logger::log_info("Initializing tm_g_forest_tte")
-  stop_if_not(
+  utils.nest::stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
     is_character_single(parentname),
@@ -325,25 +333,25 @@ ui_g_forest_tte <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -373,13 +381,13 @@ ui_g_forest_tte <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
         data_extract_spec = a$subgroup_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,
@@ -397,7 +405,7 @@ ui_g_forest_tte <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
-          data_extract_input(
+          data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
@@ -429,7 +437,6 @@ srv_g_forest_tte <- function(input,
                              plot_height,
                              plot_width) {
   stopifnot(is_cdisc_data(datasets))
-
   init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -446,21 +453,30 @@ srv_g_forest_tte <- function(input,
     module = "tm_g_forest_tte"
   )
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      subgroup_var = subgroup_var,
+      strata_var = strata_var,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      time_unit_var = time_unit_var
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var, time_unit_var),
-    input_id = c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "time_unit_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, subgroup_var, strata_var),
-    input_id = c("arm_var", "subgroup_var", "strata_var"),
+    data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
-
-  subgroup_var_ordered <- get_input_order("subgroup_var", subgroup_var$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -470,7 +486,7 @@ srv_g_forest_tte <- function(input,
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_subgroup_var <- subgroup_var_ordered()
+    input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
     input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
@@ -534,7 +550,9 @@ srv_g_forest_tte <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <-  subgroup_var_ordered()
+    subgroup_var <-  anl_selectors()$subgroup_var()$select_ordered
+
+    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 
     my_calls <- template_forest_tte(
       dataname = "ANL",
@@ -542,6 +560,7 @@ srv_g_forest_tte <- function(input,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
+      obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
       subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,

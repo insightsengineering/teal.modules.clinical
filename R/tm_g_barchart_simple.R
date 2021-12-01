@@ -196,7 +196,7 @@ ui_g_barchart_simple <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("x"),
           label = "X variable",
           data_extract_spec = args$x,
@@ -204,7 +204,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$fill)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("fill"),
           label = "Fill",
           data_extract_spec = args$fill,
@@ -212,7 +212,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$x_facet)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("x_facet"),
           label = "Column facetting variable",
           data_extract_spec = args$x_facet,
@@ -220,7 +220,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$y_facet)) {
-        data_extract_input(
+        data_extract_ui(
           id = ns("y_facet"),
           label = "Row facetting variable",
           data_extract_spec = args$y_facet,
@@ -300,20 +300,15 @@ srv_g_barchart_simple <- function(input,
 
   init_chunks()
 
-  data_extract <- list(
-    x = x, fill = fill, x_facet = x_facet, y_facet = y_facet
-  )
+  data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
   data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
-  merged_data <- reactive({
-    data_merge_module(
-      datasets = datasets,
-      data_extract = data_extract,
-      input_id = names(data_extract)
-    )
-  })
+  merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = data_extract,
+  )
 
   data_chunk <- reactive({
-    ANL <- merged_data()()$data() # nolint
+    ANL <- merged_data()$data() # nolint
     validate_has_data(ANL, 2)
     chunk <- chunks$new()
     chunk$reset(envir = list2env(list(ANL = ANL)))
@@ -360,7 +355,7 @@ srv_g_barchart_simple <- function(input,
 
     # dplyr::select loses labels
     chunk$push(teal.devel::get_anl_relabel_call(
-      columns_source = merged_data()()$columns_source,
+      columns_source = merged_data()$columns_source,
       datasets = datasets,
       anl_name = "counts"
     ))
@@ -425,10 +420,10 @@ srv_g_barchart_simple <- function(input,
 
   # returns named vector of non-NULL variables to group by
   r_groupby_vars <- function() {
-    x_name <- if (is.null(x)) NULL else as.vector(merged_data()()$columns_source$x)
-    fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()()$columns_source$fill)
-    x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()()$columns_source$x_facet)
-    y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()()$columns_source$y_facet)
+    x_name <- if (is.null(x)) NULL else as.vector(merged_data()$columns_source$x)
+    fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()$columns_source$fill)
+    x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()$columns_source$x_facet)
+    y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
 
     # set to NULL when empty character
     if (is_character_empty(x_name)) x_name <- NULL
@@ -459,7 +454,7 @@ srv_g_barchart_simple <- function(input,
     width = plot_width
   )
 
-  merge_ex111 <- reactive(merged_data()()$expr)
+  merge_ex111 <- reactive(merged_data()$expr)
   callModule(
     module = get_rcode_srv,
     id = "rcode",

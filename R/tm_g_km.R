@@ -414,31 +414,31 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("facet_var"),
         label = "Facet Plots by",
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -475,7 +475,7 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            data_extract_input(
+            data_extract_ui(
               id = ns("strata_var"),
               label = "Stratify by",
               data_extract_spec = a$strata_var,
@@ -561,7 +561,7 @@ ui_g_km <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
-          data_extract_input(
+          data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
@@ -617,8 +617,15 @@ srv_g_km <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
-    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
+    data_extract = list(
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      arm_var = arm_var,
+      paramcd = paramcd,
+      strata_var = strata_var,
+      facet_var = facet_var,
+      time_unit_var = time_unit_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 

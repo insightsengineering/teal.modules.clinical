@@ -216,6 +216,7 @@ tm_g_lineplot <- function(label,
                           plot_width = NULL,
                           pre_output = NULL,
                           post_output = NULL) {
+  logger::log_info("Initializing tm_g_lineplot")
   stop_if_not(
     is_character_single(label),
     is_character_single(dataname),
@@ -293,25 +294,25 @@ ui_g_lineplot <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("param"),
         label = "Select Biomarker",
         data_extract_spec = a$param,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("strata"),
         label = "Select Treatment Variable",
         data_extract_spec = a$strata,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("y"),
         label = "Analysis Variable",
         data_extract_spec = a$y,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("x"),
         label = "Time Variable",
         data_extract_spec = a$x,
@@ -377,13 +378,13 @@ ui_g_lineplot <- function(id, ...) {
             ),
             selected = "pl"
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("y_unit"),
             label = "Analysis Unit Variable",
             data_extract_spec = a$y_unit,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("paramcd"),
             label = "Parameter Code Variable",
             data_extract_spec = a$paramcd,
@@ -448,8 +449,7 @@ srv_g_lineplot <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x, y, strata, paramcd, y_unit, param),
-    input_id = c("x", "y", "strata", "paramcd", "y_unit", "param"),
+    data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
     merge_function = "dplyr::inner_join"
   )
 

@@ -14,6 +14,7 @@
 template_abnormality <- function(parentname,
                                  dataname,
                                  arm_var,
+                                 id_var = "USUBJID",
                                  by_vars,
                                  abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                                  grade = "ANRIND",
@@ -26,6 +27,7 @@ template_abnormality <- function(parentname,
                                  na_level = "<Missing>") {
   assert_that(
     is.string(dataname),
+    is.string(id_var),
     is.string(parentname),
     is.string(arm_var),
     is.character(by_vars),
@@ -158,14 +160,14 @@ template_abnormality <- function(parentname,
       expr = count_abnormal(
         var = grade,
         abnormal = abnormal,
-        variables = list(id = usubjid, baseline = baseline_var),
+        variables = list(id = id_var, baseline = baseline_var),
         exclude_base_abn = exclude_base_abn
       ) %>%
         append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
         abnormal = abnormal,
-        usubjid = "USUBJID",
+        id_var = id_var,
         baseline_var = baseline_var,
         exclude_base_abn = exclude_base_abn,
         dataname = as.name(dataname),
@@ -371,20 +373,20 @@ ui_t_abnormality <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_input(
+      data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
         data_extract_spec = a$by_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("grade"),
         label = "Grade Variable",
         data_extract_spec = a$grade,
@@ -408,19 +410,19 @@ ui_t_abnormality <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("baseline_var"),
             label = "Baseline Grade Variable",
             data_extract_spec = a$baseline_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",
             data_extract_spec = a$treatment_flag_var,
@@ -473,21 +475,29 @@ srv_t_abnormality <- function(input,
     choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
   })
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      id_var = id_var,
+      by_vars = by_vars,
+      grade = grade,
+      baseline_var = baseline_var,
+      treatment_flag_var = treatment_flag_var
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, id_var, by_vars, grade, baseline_var, treatment_flag_var),
-    input_id = c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var"),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
-
-  by_vars_ordered <- get_input_order("by_vars", by_vars$dataname)
 
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -496,7 +506,7 @@ srv_t_abnormality <- function(input,
     anl_m <- anl_merged()
     input_arm_var <- as.vector(anl_m$columns_source$arm_var)
     input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- by_vars_ordered()
+    input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_grade <- as.vector(anl_m$columns_source$grade)
     input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
     input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
@@ -535,7 +545,8 @@ srv_t_abnormality <- function(input,
       parentname = "ANL_ADSL",
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
-      by_vars = by_vars_ordered(),
+      by_vars = anl_selectors()$by_vars()$select_ordered,
+      id_var = as.vector(anl_m$columns_source$id_var),
       abnormal = abnormal,
       grade = as.vector(anl_m$columns_source$grade),
       baseline_var = as.vector(anl_m$columns_source$baseline_var),

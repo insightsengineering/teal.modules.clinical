@@ -290,31 +290,31 @@ ui_shift_by_arm <- function(id, ...) {
       datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
       )]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("visit_var"),
         label = "Select Visit",
         data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval_var"),
         label = "Select Analysis Range Indicator Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("base_var"),
         label = "Select Baseline Reference Range Indicator Variable",
         data_extract_spec = a$base_var,
@@ -330,7 +330,7 @@ ui_shift_by_arm <- function(id, ...) {
       panel_group(
         panel_item(
           "Additional Variables Info",
-          data_extract_input(
+          data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",
             data_extract_spec = a$treatment_flag_var,
@@ -376,15 +376,19 @@ srv_shift_by_arm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, visit_var, aval_var, base_var, treatment_flag_var),
-    input_id = c("arm_var", "paramcd", "visit_var", "aval_var", "base_var", "treatment_flag_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      visit_var = visit_var,
+      aval_var = aval_var,
+      base_var = base_var,
+      treatment_flag_var = treatment_flag_var),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 

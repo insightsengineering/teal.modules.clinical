@@ -163,17 +163,17 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(args[c("x_var", "y_var", "color")]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("x_var"),
         label = "Treatment (x axis)",
         data_extract_spec = args$x_var
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("y_var"),
         label = "Analyzed Value (y axis)",
         data_extract_spec = args$y_var
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("color"),
         label = "Groups (color)",
         data_extract_spec = args$color
@@ -215,8 +215,7 @@ srv_g_ci <- function(input, # nousage # nolint
 
   merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(x_var, y_var, color),
-    input_id = c("x_var", "y_var", "color")
+    data_extract = list(x_var = x_var, y_var = y_var, color = color)
   )
 
   validate_data <- reactive({

@@ -8,6 +8,7 @@ template_abnormality(
   parentname,
   dataname,
   arm_var,
+  id_var = "USUBJID",
   by_vars,
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
   grade = "ANRIND",
@@ -29,6 +30,9 @@ analysis data used in teal module.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
+
+\item{id_var}{(\code{character})\cr
+the variable name for subject id.}
 
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}

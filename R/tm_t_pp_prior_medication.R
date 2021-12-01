@@ -230,25 +230,25 @@ ui_t_prior_medication <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmdecod"),
         label = "Select the medication decoding column:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("atirel"),
         label = "Select ATIREL variable:",
         data_extract_spec = ui_args$atirel,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmindc"),
         label = "Select CMINDC variable:",
         data_extract_spec = ui_args$cmindc,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmstdy"),
         label = "Select CMSTDY variable:",
         data_extract_spec = ui_args$cmstdy,
@@ -302,8 +302,7 @@ srv_t_prior_medication <- function(input,
   # Prior medication tab ----
   pmed_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(atirel, cmdecod, cmindc, cmstdy),
-    input_id = c("atirel", "cmdecod", "cmindc", "cmstdy"),
+    data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
     merge_function = "dplyr::left_join"
   )
 

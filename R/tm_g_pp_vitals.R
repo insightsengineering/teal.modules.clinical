@@ -292,20 +292,20 @@ ui_g_vitals <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
       uiOutput(ns("paramcd_levels")),
-      data_extract_input(
+      data_extract_ui(
         id = ns("xaxis"),
         label = "Select vital plot x-axis:",
         data_extract_spec = ui_args$xaxis,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
@@ -366,8 +366,7 @@ srv_g_vitals <- function(input,
   # Vitals tab ----
   vitals_merged_data <- data_merge_module(
     datasets = datasets,
-    data_extract = list(paramcd, xaxis, aval),
-    input_id = c("paramcd", "xaxis", "aval"),
+    data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
     merge_function = "dplyr::left_join"
   )
 

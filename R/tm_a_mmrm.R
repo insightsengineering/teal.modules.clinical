@@ -553,39 +553,39 @@ ui_mmrm <- function(id, ...) {
       panel_group(
         panel_item(
           "Model Settings",
-          data_extract_input(
+          data_extract_ui(
             id = ns("aval_var"),
             label = "Analysis Variable",
             data_extract_spec = a$aval_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("paramcd"),
             label = "Select Endpoint",
             data_extract_spec = a$paramcd,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("visit_var"),
             label = "Visit Variable",
             data_extract_spec = a$visit_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("cov_var"),
             label = "Covariates",
             data_extract_spec = a$cov_var,
             is_single_dataset = is_single_dataset_value
           ),
           shinyjs::hidden(
-            data_extract_input(
+            data_extract_ui(
               id = ns("split_covariates"),
               label = "Split Covariates",
               data_extract_spec = a$split_covariates,
               is_single_dataset = is_single_dataset_value
             )
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
@@ -618,7 +618,7 @@ ui_mmrm <- function(id, ...) {
             value = FALSE
             )
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
@@ -809,15 +809,20 @@ srv_mmrm <- function(input,
 
   anl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var, paramcd, id_var, visit_var, split_covariates, aval_var),
-    input_id = c("arm_var", "paramcd", "id_var", "visit_var", "split_covariates", "aval_var"),
+    data_extract = list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      id_var = id_var,
+      visit_var = visit_var,
+      split_covariates = split_covariates,
+      aval_var = aval_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 
   adsl_merged <- data_merge_module(
     datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
+    data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
   )
 

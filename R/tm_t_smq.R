@@ -83,7 +83,7 @@ template_smq <- function(
         df = dataname,
         baskets = baskets,
         smq_varlabel = smq_varlabel,
-        keys = c("STUDYID", id_var, arm_var, llt)
+        keys = unique(c("STUDYID", id_var, arm_var, llt))
       ),
       env = list(
         dataname = as.name("anl"),
@@ -437,20 +437,20 @@ ui_t_smq <- function(id, ...) {
       datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
-      data_extract_input(
+      data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("llt"),
         label = "Select the low level term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_input(
+      data_extract_ui(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
         data_extract_spec = a$baskets,
@@ -464,13 +464,13 @@ ui_t_smq <- function(id, ...) {
             "Drop arm levels not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_input(
+          data_extract_ui(
             id = ns("scopes"),
             label = "Scope variables available",
             data_extract_spec = a$scopes,
@@ -511,10 +511,20 @@ srv_t_smq <- function(input,
 
   init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_selectors <- data_extract_multiple_srv(
+    list(
+      arm_var = arm_var,
+      id_var = id_var,
+      baskets = baskets,
+      scopes = scopes,
+      llt = llt
+    ),
+    datasets = datasets
+  )
+
+  anl_merged <- data_merge_srv(
+    selector_list = anl_selectors,
     datasets = datasets,
-    data_extract = list(arm_var, id_var, baskets, scopes, llt),
-    input_id = c("arm_var", "id_var", "baskets", "scopes", "llt"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -525,15 +535,13 @@ srv_t_smq <- function(input,
     anl_name = "ANL_ADSL"
   )
 
-  arm_var_user_input <- get_input_order("arm_var", arm_var$dataname)
-
   validate_checks <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     anl_m <- anl_merged()
     anl_adsl <- adsl_merged()
 
-    input_arm_var <- arm_var_user_input()
+    input_arm_var <- anl_selectors()$arm_var()$select_ordered
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_baskets <- as.vector(anl_m$columns_source$baskets)
     input_scopes <- as.vector(anl_m$columns_source$scopes)
@@ -575,7 +583,7 @@ srv_t_smq <- function(input,
     my_calls <- template_smq(
       parentname = "ANL_ADSL",
       dataname = "ANL",
-      arm_var = arm_var_user_input(),
+      arm_var = anl_selectors()$arm_var()$select_ordered,
       llt = as.vector(anl_m$columns_source$llt),
       add_total = input$add_total,
       sort_criteria = input$sort_criteria,

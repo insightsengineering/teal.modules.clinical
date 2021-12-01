@@ -2,7 +2,10 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Teal Module: Binary Outcome Table}
+\title{Teal Module: Binary Outcome Table
+
+This module produces a binary outcome response summary
+table, with the option to match the STREAM template \code{RSPT01}.}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -13,9 +16,12 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
-    TRUE),
+  aval_var = choices_selected(choices = variable_choices(dataname, c("AVALC", "SEX")),
+    selected = "AVALC", fixed = FALSE),
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
+    "Partial Response (PR)", "M"),
+  rsp_table = FALSE,
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL
@@ -58,6 +64,16 @@ variable.}
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
+\item{default_responses}{(\code{list} or \code{character}) \cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices.}
+
+\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match
+the STREAM template \code{rspt01}. (default FALSE)}
+
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
@@ -69,14 +85,40 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
+\value{
+an \code{\link[teal:module]{teal::module()}} object
+}
 \description{
 Teal Module: Binary Outcome Table
+
+This module produces a binary outcome response summary
+table, with the option to match the STREAM template \code{RSPT01}.
+}
+\details{
+Additional standard UI inputs include \code{responders},
+\code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms} (default FALSE)
+
+Default values of the inputs \code{var_arm}, \code{ref_arm} and
+\code{comp_arm} are set to NULL, and updated accordingly based on selection
+of \code{paramcd} and \code{var_arm}
+
+This display order of response categories in partitioned statistics section
+inherits the factor level order of the source data. Use
+\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate
+the source data in order to include/exclude or re-categorize response
+categories and arrange the display order. If response categories are
+"Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\\%
+confidence interval will not be calculated.
+
+Reference arms automatically combined if multiple arms selected as
+reference group.
 }
 \examples{
 library(dplyr)
 library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
-ADRS <- synthetic_cdisc_data("latest")$adrs
+ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
+  mutate(AVALC = d_onco_rsp_label(AVALC))
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -87,7 +129,9 @@ app <- init(
     cdisc_dataset("ADRS", ADRS),
     code =
       "ADSL <- synthetic_cdisc_data('latest')$adsl
-       ADRS <- synthetic_cdisc_data('latest')$adrs"
+       ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
+         mutate(AVALC = d_onco_rsp_label(AVALC))",
+    check = TRUE
   ),
   modules = root_modules(
     tm_t_binary_outcome(
@@ -105,6 +149,19 @@ app <- init(
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
         select = NULL
+      ),
+      default_responses = list(
+        BESRSPI = list(
+          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+          levels = c("Complete Response (CR)", "Partial Response (PR)",
+                     "Stable Disease (SD)", "Progressive Disease (PD)")),
+        INVET = list(
+          rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+        OVRINV = list(
+          rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
       )
     )
   )

@@ -452,61 +452,61 @@ ui_g_therapy <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = T)
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmdecod"),
         label = "Select the medication decoding column:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("atirel"),
         label = "Select ATIREL variable:",
         data_extract_spec = ui_args$atirel,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmindc"),
         label = "Select CMINDC variable:",
         data_extract_spec = ui_args$cmindc,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmdose"),
         label = "Select CMDOSE variable:",
         data_extract_spec = ui_args$cmdose,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmtrt"),
         label = "Select CMTRT variable:",
         data_extract_spec = ui_args$cmtrt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmdosu"),
         label = "Select CMDOSU variable:",
         data_extract_spec = ui_args$cmdosu,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmroute"),
         label = "Select CMROUTE variable:",
         data_extract_spec = ui_args$cmroute,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmdosfrq"),
         label = "Select CMDOSFRQ variable:",
         data_extract_spec = ui_args$cmdosfrq,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmstdy"),
         label = "Select CMSTDY variable:",
         data_extract_spec = ui_args$cmstdy,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      data_extract_ui(
         id = ns("cmendy"),
         label = "Select CMENDY variable:",
         data_extract_spec = ui_args$cmendy,
@@ -574,12 +574,9 @@ srv_g_therapy <- function(input,
   therapy_merged_data <- data_merge_module(
     datasets = datasets,
     data_extract = list(
-      atirel, cmdecod, cmindc,
-      cmdose, cmtrt, cmdosu, cmroute, cmdosfrq, cmstdy, cmendy
-    ),
-    input_id = c(
-      "atirel", "cmdecod", "cmindc", "cmdose",
-      "cmtrt", "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
+      atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
+      cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
+      cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
     ),
     merge_function = "dplyr::left_join"
   )
