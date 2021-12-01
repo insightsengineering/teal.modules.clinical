@@ -54,7 +54,8 @@ Suggests:
     scda.2021(>= 0.1.1),
     scda(>= 0.1.1),
     test.nest (>= 0.2.11),
-    testthat (>= 2.0)
+    testthat (>= 2.0),
+    withr
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
