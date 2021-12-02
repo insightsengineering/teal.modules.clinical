@@ -116,14 +116,14 @@ test_that("bracket_expr returns a single evaluable expression", {
   eval(bracket_expr(list(expr1, expr2, expr3)))
   result <- table(anl$rsp_lab, anl$is_rsp)
   expected <- structure(
-    c(0L, 18L, 0L, 73L, 44L, 164L, 0L, 101L, 0L, 0L),
+    c(0L, 0L, 44L, 73L, 18L, 164L, 101L, 0L, 0L, 0L),
     .Dim = c(5L, 2L),
     .Dimnames = structure(
       list(
         c(
-          "Complete Response (CR)", "Not Evaluable (NE)",
-          "Partial Response (PR)", "Progressive Disease (PD)",
-          "Stable Disease (SD)"
+          "Complete Response (CR)", "Partial Response (PR)",
+          "Stable Disease (SD)", "Progressive Disease (PD)",
+          "Not Evaluable (NE)"
         ),
         c("FALSE", "TRUE")
       ),
