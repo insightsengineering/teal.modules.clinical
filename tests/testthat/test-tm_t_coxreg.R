@@ -43,7 +43,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(title = paste("Cox Regression for", "OS")) %>%
         split_rows_by("effect") %>%
         append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
@@ -104,7 +104,7 @@ test_that("template_coxreg generates correct univariate cox regression expressio
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(title = paste("Cox Regression for", "OS")) %>%
         split_rows_by("effect") %>%
         append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
@@ -156,7 +156,7 @@ test_that("template_coxreg generates correct multivariate cox regression express
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- basic_table(title = paste("Multi-Variable Cox Regression for", "OS")) %>%
         append_topleft("OS") %>%
         split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
