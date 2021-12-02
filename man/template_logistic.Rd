@@ -25,7 +25,8 @@ template_logistic(
 analysis data used in teal module.}
 
 \item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+variable names that can be used as \code{arm_var}. No arm or treatment variable is included in the logistic model is
+being \code{NULL}.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}

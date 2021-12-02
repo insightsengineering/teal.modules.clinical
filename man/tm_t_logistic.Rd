@@ -9,7 +9,7 @@ tm_t_logistic(
   dataname,
   parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
     "ADSL"),
-  arm_var,
+  arm_var = NULL,
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
@@ -30,11 +30,12 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}) or \code{NULL}\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+second variable will be nested under the first variable.
+arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to

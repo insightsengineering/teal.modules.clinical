@@ -3,6 +3,9 @@
 #' Creates an expression for logistic regressions.
 #'
 #' @inheritParams template_arguments
+#' @param arm_var (`character`)\cr
+#'   variable names that can be used as `arm_var`. No arm or treatment variable is included in the logistic model is
+#'   being `NULL`.
 #' @param topleft (`character`)\cr
 #'  the top-left annotation in the table.
 #' @param at optional, (`NULL` or `numeric`)\cr
@@ -29,43 +32,63 @@ template_logistic <- function(dataname,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
                               at = NULL) {
-
+  # Common assertion no matter if arm_var is NULL or not.
   assert_that(
     is.string(dataname),
-    is.string(arm_var),
     is.string(aval_var),
     is.string(paramcd),
     is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
-    is.string(interaction_var) || is.null(interaction_var),
-    is.flag(combine_comp_arms)
+    is.string(interaction_var) || is.null(interaction_var)
   )
 
-  ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
-  y$arm_lab <- substitute(
-    expr = arm_var_lab <- var_labels(anl[arm_var]),
-    env = list(anl = as.name(dataname), arm_var = arm_var)
-  )
-  data_list <- list()
-  data_list <- add_expr(
-    data_list,
-    prepare_arm(
-      dataname = dataname,
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm,
-      ref_arm_val = ref_arm_val
-    )
-  )
 
-  if (combine_comp_arms) {
+  data_pipe <- list()
+  data_list <- list()
+
+  # Conditional assertion depends on if arm_var isn't NULL.
+  if (!is.null(arm_var)) {
+    assert_that(
+      is.string(arm_var),
+      is.flag(combine_comp_arms)
+    )
+
+    ref_arm_val <- paste(ref_arm, collapse = "/")
+
+    y$arm_lab <- substitute(
+      expr = arm_var_lab <- var_labels(anl[arm_var]),
+      env = list(anl = as.name(dataname), arm_var = arm_var)
+    )
+
+    # Start to build data when arm_var is not NULL.
+    data_pipe <- add_expr(
+      data_pipe,
+      prepare_arm(
+        dataname = dataname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val
+      )
+    )
+
+    if (combine_comp_arms) {
+      data_pipe <- add_expr(
+        data_pipe,
+        substitute_names(
+          expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(comp_arm = comp_arm)
+        )
+      )
+    }
+
     data_list <- add_expr(
       data_list,
-      substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm)
+      substitute(
+        expr = ANL <- data_pipe, #nolint
+        env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
   }
@@ -73,22 +96,21 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dplyr::mutate(Response = aval_var %in% responder_val),
-      env = list(aval_var = as.name(aval_var), responder_val = responder_val)
+      expr = ANL <- df %>% #nolint
+        dplyr::mutate(Response = aval_var %in% responder_val) %>%
+        df_explicit_na(na_level = ""),
+      env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
+  y$data <- bracket_expr(data_list)
 
-  y$data <- substitute(
-    expr = anl <- data_pipe,
-    env = list(data_pipe = pipe_expr(data_list))
-  )
-
-  y$relabel <- substitute(
-    expr = rtables::var_labels(anl[arm_var]) <- arm_var_lab,
-    env = list(arm_var = arm_var)
-  )
+  if (!is.null(arm_var)) {
+    y$relabel <- substitute(
+      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab,
+      env = list(arm_var = arm_var)
+    )
+  }
 
   model_list <- list()
   model_list <- if (is.null(interaction_var)) {
@@ -96,7 +118,7 @@ template_logistic <- function(dataname,
       model_list,
       substitute(
         expr = fit_logistic(
-          anl,
+          ANL,
           variables = list(response = "Response", arm = arm_var, covariates = cov_var)
         ),
         env = list(arm_var = arm_var, cov_var = cov_var)
@@ -107,7 +129,7 @@ template_logistic <- function(dataname,
       model_list,
       substitute(
         expr = fit_logistic(
-          anl,
+          ANL,
           variables = list(
             response = "Response", arm = arm_var, covariates = cov_var,
             interaction = interaction_var
@@ -175,6 +197,12 @@ template_logistic <- function(dataname,
 #'   STREAM template `lgrt02`.
 #'
 #' @inheritParams module_arguments
+#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()]) or `NULL`\cr
+#'   object with all available choices
+#'   and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
+#'   arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.
 #' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
 #'
@@ -233,7 +261,7 @@ template_logistic <- function(dataname,
 tm_t_logistic <- function(label,
                           dataname,
                           parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
-                          arm_var,
+                          arm_var = NULL,
                           arm_ref_comp = NULL,
                           paramcd,
                           cov_var = NULL,
@@ -250,7 +278,7 @@ tm_t_logistic <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = `if`(is.null(arm_var), NULL, cs_to_des_select(arm_var, dataname = parentname)),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
@@ -280,12 +308,21 @@ tm_t_logistic <- function(label,
 ui_t_logistic <- function(id, ...) {
 
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$avalc_var,
-    a$cov_var
-  )
+  if (!is.null(a$arm_var)) {
+    is_single_dataset_value <- is_single_dataset(
+      a$arm_var,
+      a$paramcd,
+      a$avalc_var,
+      a$cov_var
+    )
+  } else {
+    is_single_dataset_value <- is_single_dataset(
+      a$paramcd,
+      a$avalc_var,
+      a$cov_var
+    )
+  }
+
 
   ns <- NS(id)
   standard_layout(
@@ -314,29 +351,33 @@ ui_t_logistic <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      selectInput(
-        ns("ref_arm"),
-        "Reference Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
-      selectInput(
-        ns("comp_arm"),
-        "Comparison Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
-      checkboxInput(
-        ns("combine_comp_arms"),
-        "Combine all comparison groups?",
-        value = FALSE
-      ),
+      if (!is.null(a$arm_var)) {
+        div(
+          data_extract_ui(
+            id = ns("arm_var"),
+            label = "Select Treatment Variable",
+            data_extract_spec = a$arm_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          selectInput(
+            ns("ref_arm"),
+            "Reference Group",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          selectInput(
+            ns("comp_arm"),
+            "Comparison Group",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          checkboxInput(
+            ns("combine_comp_arms"),
+            "Combine all comparison groups?",
+            value = FALSE
+          )
+        )
+      },
       data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
@@ -386,17 +427,19 @@ srv_t_logistic <- function(input,
   init_chunks()
 
   # Observer to update reference and comparison arm input options.
-  arm_ref_comp_observer(
-    session,
-    input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_logistic"
-  )
+  if (!is.null(arm_var)) {
+    arm_ref_comp_observer(
+      session,
+      input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_logistic"
+    )
+  }
 
   anl_merged <- data_merge_module(
     datasets = datasets,
@@ -404,11 +447,13 @@ srv_t_logistic <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
+  if (!is.null(arm_var)) {
+    adsl_merged <- data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+  }
 
   # Because the AVALC values depends on the selected PARAMCD.
   observeEvent(anl_merged(), {
@@ -493,28 +538,30 @@ srv_t_logistic <- function(input,
       min_nrow = 4
     )
 
-    # validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
-
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    # validate arm levels
+    if (!is.null(arm_var)) {
+      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      }
 
-    arm_n <- base::table(anl_m$data()[[input_arm_var]])
-    anl_arm_n <- if (input$combine_comp_arms) {
-      c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
-    } else {
-      c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      arm_n <- base::table(anl_m$data()[[input_arm_var]])
+      anl_arm_n <- if (input$combine_comp_arms) {
+        c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+      } else {
+        c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+      }
+      validate(need(
+        all(anl_arm_n >= 2),
+        "Each treatment group should have at least 2 records."
+      ))
     }
-    validate(need(
-      all(anl_arm_n >= 2),
-      "Each treatment group should have at least 2 records."
-    ))
 
     validate(
       need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
@@ -554,9 +601,11 @@ srv_t_logistic <- function(input,
     chunks_push_data_merge(anl_m)
     chunks_push_new_line()
 
-    anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    if (!is.null(arm_var)) {
+      anl_adsl <- adsl_merged()
+      chunks_push_data_merge(anl_adsl)
+      chunks_push_new_line()
+    }
 
     ANL <- chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
