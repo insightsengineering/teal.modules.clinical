@@ -821,6 +821,12 @@ srv_t_coxreg <- function(input,
       list(call_template(input$comp_arm, anl_m, paramcd))
     }
 
+    title <- if (input$type == "Multivariate") {
+      paste0("Multi-Variable Cox Regression for ", paramcd)
+    } else if (input$type == "Univariate") {
+      paste0("Cox Regression for ", paramcd)
+    }
+
     res <- lapply(
       calls,
       function(call) {
@@ -829,7 +835,9 @@ srv_t_coxreg <- function(input,
         chunks_get_var("result")
       })
 
-    rtables::rbindl_rtables(res, check_headers = TRUE)
+    final_table <- rtables::rbindl_rtables(res, check_headers = TRUE)
+    rtables::main_title(final_table) <- title
+    final_table
   })
 
   callModule(
