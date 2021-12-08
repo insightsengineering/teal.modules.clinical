@@ -17,7 +17,7 @@ Description: Provides teal modules for the standard clinical trials
     change the encodings within teal.
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/insightsengineering/teal.modules.clinical
-BugReports: 
+BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     ggplot2,
@@ -53,9 +53,8 @@ Suggests:
     knitr,
     scda.2021(>= 0.1.1),
     scda(>= 0.1.1),
-    test.nest (>= 0.2.11),
     testthat (>= 2.0)
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: true
