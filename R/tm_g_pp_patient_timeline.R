@@ -412,11 +412,12 @@ tm_g_pp_patient_timeline <- function(label,
   )
 
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
-  checkmate::assert_numeric(font_size[c(2, 1, 3)], sorted = TRUE, .var.name = "font_size")
+  checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
-  checkmate::assert_numeric(plot_height[c(2, 1, 3)], sorted = TRUE, .var.name = "plot_height")
+  checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[c(2, 1, 3)], sorted = TRUE, null.ok = TRUE, .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+                            .var.name = "plot_width")
 
   assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
   assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
