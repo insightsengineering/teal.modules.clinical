@@ -22,6 +22,7 @@
 * Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
 * Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
+* Replaced calls to `utils.nest::check_slider_input` with `checkmate::assert_numeric`.
 
 # teal.modules.clinical 0.8.10
 ### New features

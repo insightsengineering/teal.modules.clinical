@@ -157,8 +157,11 @@ tm_g_barchart_simple <- function(x = NULL,
   check_no_multiple_selection(fill)
   check_no_multiple_selection(x_facet)
   check_no_multiple_selection(y_facet)
-  check_slider_input(plot_height, allow_null = FALSE)
-  check_slider_input(plot_width)
+  checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
+  checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
+  checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
+  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+                            .var.name = "plot_width")
 
   plot_options <- modifyList(
     list(stacked = FALSE), # default
