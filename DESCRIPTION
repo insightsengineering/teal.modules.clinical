@@ -28,6 +28,7 @@ Depends:
 Imports:
     assertthat,
     broom,
+    checkmate,
     dplyr,
     DT,
     ggrepel,
