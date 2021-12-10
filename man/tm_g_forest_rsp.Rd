@@ -105,7 +105,8 @@ library(dplyr)
 
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
-  mutate(AVALC = d_onco_rsp_label(AVALC))
+  mutate(AVALC = d_onco_rsp_label(AVALC)) \%>\%
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp = list(
   ARM = list(
@@ -125,7 +126,8 @@ app <- init(
     code =
       "ADSL <- synthetic_cdisc_data('latest')$adsl
        ADRS <- synthetic_cdisc_data('latest')$adrs \%>\%
-         mutate(AVALC = d_onco_rsp_label(AVALC))",
+       mutate(AVALC = d_onco_rsp_label(AVALC)) \%>\%
+       filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
     check = TRUE
   ),
   modules = root_modules(
