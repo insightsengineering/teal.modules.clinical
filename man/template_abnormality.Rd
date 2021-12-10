@@ -59,7 +59,7 @@ whether to include column with total number of patients.}
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
-\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to "<Missing>".}
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 }
 \description{
 Template: Abnormality Summary Table
