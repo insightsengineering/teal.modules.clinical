@@ -11,7 +11,7 @@ tm_g_pp_patient_timeline(
   parentname = "ADSL",
   patient_col = "USUBJID",
   aeterm = NULL,
-  cmtrt = NULL,
+  cmdecod = NULL,
   aetime_start = NULL,
   aetime_end = NULL,
   dstime_start = NULL,
@@ -43,7 +43,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{aeterm}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AETERM} column of the
 ADAE dataset.}
 
-\item{cmtrt}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{CMTRT} column of the ADCM dataset.}
+\item{cmdecod}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{cmdecod} column of the ADCM
+dataset.}
 
 \item{aetime_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDTM} column of the AE
 start of the ADAE dataset.}
@@ -101,7 +102,6 @@ ADCM <- synthetic_cdisc_data("latest")$adcm
 #' Modify ADCM
 ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 ADCM$CMDOSE <- 1
-ADCM$CMTRT <- ADCM$CMCAT
 ADCM$CMDOSU <- "U"
 ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
@@ -114,7 +114,7 @@ ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
 rtables::var_labels(
-  ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]
+  ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 ) <- c(
   "Indication",
   "Reported Name of Drug, Med, or Therapy",
@@ -131,7 +131,6 @@ app <- init(
                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
       ADCM$CMDOSE <- 1
-      ADCM$CMTRT <- ADCM$CMCAT
       ADCM$CMDOSU <- "U"
       ADCM$CMROUTE <- "CMROUTE"
       ADCM$CMDOSFRQ <- "CMDOSFRQ"
@@ -144,7 +143,7 @@ app <- init(
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
       rtables::var_labels(
-        ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+        ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
           "Indication",
           "Reported Name of Drug, Med, or Therapy",
           "Study Day of Start of Medication",
@@ -161,9 +160,9 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      cmtrt = choices_selected(
-        choices = variable_choices(ADCM, "CMTRT"),
-        selected = "CMTRT",
+      cmdecod = choices_selected(
+        choices = variable_choices(ADCM, "CMDECOD"),
+        selected = "CMDECOD",
       ),
       aeterm = choices_selected(
         choices = variable_choices(ADAE, "AETERM"),
