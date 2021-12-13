@@ -471,8 +471,7 @@ srv_events_patyear <- function(input,
         } else{
           "year"
         },
-        time_unit_output = as.numeric(input$time_unit_output),
-        basic_table_args = basic_table_args
+        time_unit_output = as.numeric(input$time_unit_output)
       ),
       drop_arm_levels = input$drop_arm_levels,
       basic_table_args = basic_table_args

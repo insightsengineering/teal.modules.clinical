@@ -68,11 +68,11 @@ template_vitals <- function(dataname = "ANL",
         dataname %>%
         dplyr::group_by(paramcd, xaxis) %>%
         dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
-        dplyr::summarise(AVAL = max(aval, na.rm = T)) %>%
+        dplyr::summarise(AVAL = max(aval, na.rm = TRUE)) %>%
         dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
-      max_day <- max(vitals[[xaxis_char]], na.rm = T)
-      max_aval <- max(vitals[[aval_char]], na.rm = T)
+      max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
+      max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
       max_aval_seq <- seq(0, max_aval, 10)
 
       full_vita <- levels(dataname[[paramcd_char]])
@@ -126,9 +126,9 @@ template_vitals <- function(dataname = "ANL",
           show.legend = FALSE
         ) +
         scale_y_continuous(
-          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = T), 50),
+          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
           name = "Vitals",
-          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
         geom_text(
           data = data.frame(
@@ -310,7 +310,7 @@ ui_g_vitals <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("paramcd"),

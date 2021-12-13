@@ -108,7 +108,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab,
+      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab, # nolint
       env = list(arm_var = arm_var)
     )
   }
@@ -166,11 +166,10 @@ template_logistic <- function(dataname,
     env = list(model_pipe = pipe_expr(model_list))
   )
 
-
   table_title <- if (length(responder_val) > 1) {
     paste(
-      "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
-      "and", tail(responder_val, 1), "Responders"
+      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "and", utils::tail(responder_val, 1), "Responders"
     )
   } else {
     paste("Table of", paramcd, "for", responder_val, "Responders")

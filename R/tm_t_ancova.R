@@ -18,8 +18,9 @@ template_ancova <- function(dataname = "ANL",
                             combine_comp_arms = FALSE,
                             aval_var,
                             cov_var,
-                            paramcd_levels = "EXAMPLE",
+                            paramcd_levels = "",
                             paramcd_var = "PARAMCD",
+                            visit_levels = "",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
                             basic_table_args = teal.devel::basic_table_args()) {
@@ -114,9 +115,10 @@ template_ancova <- function(dataname = "ANL",
   y$data <- bracket_expr(data_list)
 
   # Build layout.
-  unique_visits <- unique(ANL[[visit_var]])
+  unique_visits <- visit_levels
   visits_title <- if (length(unique_visits) > 1) {
-    paste("visits", paste(head(unique_visits, -1), collapse = ", "), "and", tail(unique_visits, 1))
+    paste("visits", paste(utils::head(unique_visits, -1), collapse = ", "),
+          "and", utils::tail(unique_visits, 1))
   } else if (length(unique_visits) == 1) {
     paste("visit", unique_visits)
   } else {
@@ -124,7 +126,8 @@ template_ancova <- function(dataname = "ANL",
   }
 
   table_title <- if (length(paramcd_levels) > 1) {
-    paste("Table of", paste(head(paramcd_levels, -1), collapse = ", "), "and", tail(paramcd_levels, 1),
+    paste("Table of", paste(utils::head(paramcd_levels, -1), collapse = ", "),
+          "and", utils::tail(paramcd_levels, 1),
           "parameters", "at", visits_title, "for", aval_var)
   } else {
     visits_title
@@ -655,6 +658,7 @@ srv_ancova <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
+    visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
     my_calls <- template_ancova(
       parentname = "ANL_ADSL",
@@ -667,6 +671,7 @@ srv_ancova <- function(input,
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
       paramcd_var = unlist(paramcd$filter)["vars_selected"],
+      visit_levels = visit_levels,
       visit_var = unlist(avisit$filter)["vars_selected"],
       conf_level = as.numeric(input$conf_level),
       basic_table_args = basic_table_args

@@ -13,8 +13,9 @@ template_ancova(
   combine_comp_arms = FALSE,
   aval_var,
   cov_var,
-  paramcd_levels = "EXAMPLE",
+  paramcd_levels = "",
   paramcd_var = "PARAMCD",
+  visit_levels = "",
   visit_var = "AVISIT",
   conf_level = 0.95,
   basic_table_args = teal.devel::basic_table_args()

@@ -13,7 +13,6 @@ template_coxreg(
   ref_arm,
   comp_arm,
   paramcd,
-  table_name = "result",
   at = list(),
   strata_var = NULL,
   combine_comp_arms = FALSE,
@@ -45,8 +44,6 @@ the level of comparison arm in case of arm comparison.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
-
-\item{table_name}{(\code{character}) table name in chunks. Returned object.}
 
 \item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a
 \code{numeric}, use \code{at} to specify the value of the covariate at which the

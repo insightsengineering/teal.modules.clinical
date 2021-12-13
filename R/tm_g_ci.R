@@ -140,7 +140,7 @@ template_g_ci <- function(dataname, # nousage # nolint
         labs = list(title = paste("Confidence Interval Plot by Treatment Group"),
                     caption = paste0(
                       switch(stat, mean = "Mean", median = "Median"),
-                      " and ", 100 * conf_level, "% CIs for ", stat," are displayed."
+                      " and ", 100 * conf_level, "% CIs for ", stat, " are displayed."
                     ),
                     x = "Treatment Group"),
         theme = list()

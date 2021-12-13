@@ -27,7 +27,7 @@ test_that("template_logistic generates correct expressions", {
       dplyr::mutate(Response = AVALC %in% "CR") %>%
       df_explicit_na(na_level = "")
     }),
-    relabel = quote(rtables::var_labels(ANL["ARMCD"]) <- arm_var_lab),
+    relabel = quote(rtables::var_labels(ANL["ARMCD"]) <- arm_var_lab), # nolint
     model = quote(
     mod <- fit_logistic(
       ANL, variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")

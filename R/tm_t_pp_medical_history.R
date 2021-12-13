@@ -181,7 +181,7 @@ ui_t_medical_history <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("mhterm"),

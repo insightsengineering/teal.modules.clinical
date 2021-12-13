@@ -141,10 +141,10 @@ template_binary_outcome <- function(dataname,
     )
   }
 
-  table_title <- if (length(responders) > 1) {
+  table_title <- if (length(responder_val) > 1) {
     paste(
-      "Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
-      "and", tail(responders, 1), "Responders"
+      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "and", utils::tail(responder_val, 1), "Responders"
     )
   } else {
     paste("Table of", paramcd, "for", responder_val, "Responders")
@@ -160,10 +160,7 @@ template_binary_outcome <- function(dataname,
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = expr_basic_table_args,
-      env = list(expr_basic_table_args = parsed_basic_table_args)
-    )
+    parsed_basic_table_args
   )
 
   if (!compare_arm && !combine_comp_arms && add_total) {
@@ -903,10 +900,10 @@ srv_t_binary_outcome <- function(input,
           method_ci = input$s_diff_ci,
           method_test = input$s_diff_test,
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
-        ),
-        basic_table_args = basic_table_args
+        )
       ),
-      add_total = input$add_total
+      add_total = input$add_total,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })
