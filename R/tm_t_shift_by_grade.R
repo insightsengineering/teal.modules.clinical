@@ -23,7 +23,8 @@ template_shift_by_grade <- function(parentname,
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
                                     na_level = "<Missing>",
-                                    code_missing_baseline = FALSE) {
+                                    code_missing_baseline = FALSE,
+                                    basic_table_args = teal.devel::basic_table_args()) {
 
 
   assert_that(
@@ -283,26 +284,31 @@ template_shift_by_grade <- function(parentname,
   #layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
-  layout_list <- list()
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
 
+  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(var = arm_var) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
   )
@@ -544,7 +550,8 @@ tm_t_shift_by_grade <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 na_level = "<Missing>",
-                                code_missing_baseline = FALSE) {
+                                code_missing_baseline = FALSE,
+                                basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")
   stop_if_not(
     is.string(dataname),
@@ -579,6 +586,8 @@ tm_t_shift_by_grade <- function(label,
     base_toxgrade_var = cs_to_des_select(base_toxgrade_var, dataname = dataname)
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   module(
@@ -593,7 +602,8 @@ tm_t_shift_by_grade <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        code_missing_baseline
+        code_missing_baseline,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -720,7 +730,8 @@ srv_t_shift_by_grade <- function(input,
                                  drop_arm_levels,
                                  na_level,
                                  input_code_missing_baseline,
-                                 label) {
+                                 label,
+                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -801,16 +812,17 @@ srv_t_shift_by_grade <- function(input,
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       visit_var = as.vector(anl_m$columns_source$visit_var),
-      id_var <- as.vector(anl_m$columns_source$id_var),
+      id_var = as.vector(anl_m$columns_source$id_var),
       worst_flag_var = as.vector(anl_m$columns_source$worst_flag_var),
       worst_flag_indicator = input$worst_flag_indicator,
       anl_toxgrade_var = as.vector(anl_m$columns_source$anl_toxgrade_var),
       base_toxgrade_var = as.vector(anl_m$columns_source$base_toxgrade_var),
       paramcd = unlist(paramcd$filter)["vars_selected"],
       drop_arm_levels = input$drop_arm_levels,
-      add_total <- input$add_total,
-      na_level <- na_level,
-      code_missing_baseline <- input$code_missing_baseline
+      add_total = input$add_total,
+      na_level = na_level,
+      code_missing_baseline = input$code_missing_baseline,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

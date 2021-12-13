@@ -96,9 +96,7 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(
-      basic_table()
-    )
+    parsed_basic_table_args
   )
 
   layout_list <- add_expr(
@@ -461,9 +459,14 @@ template_events_col_by_grade <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    parsed_basic_table_args
+  )
 
   if (add_total) {
     layout_list <- add_expr(
