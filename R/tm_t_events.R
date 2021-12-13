@@ -19,7 +19,8 @@ template_events <- function(dataname,
                             sort_criteria = c("freq_desc", "alpha"),
                             prune_freq = 0,
                             prune_diff = 0,
-                            drop_arm_levels = TRUE) {
+                            drop_arm_levels = TRUE,
+                            basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -115,9 +116,15 @@ template_events <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  parse_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table()))
+  layout_list <- add_expr(layout_list, parse_basic_table_args)
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -478,7 +485,8 @@ tm_t_events <- function(label,
                         prune_diff = 0,
                         drop_arm_levels = TRUE,
                         pre_output = NULL,
-                        post_output = NULL) {
+                        post_output = NULL,
+                        basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events")
   stop_if_not(
     is_character_single(label),
@@ -500,6 +508,8 @@ tm_t_events <- function(label,
 
   sort_criteria <- match.arg(sort_criteria)
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -519,7 +529,8 @@ tm_t_events <- function(label,
         dataname = dataname,
         parentname = parentname,
         event_type = event_type,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -614,7 +625,8 @@ srv_t_events_byterm <- function(input,
                                 hlt,
                                 llt,
                                 drop_arm_levels,
-                                label) {
+                                label,
+                                basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -714,7 +726,8 @@ srv_t_events_byterm <- function(input,
       sort_criteria = input$sort_criteria,
       prune_freq = input$prune_freq / 100,
       prune_diff = input$prune_diff / 100,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

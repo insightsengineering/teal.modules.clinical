@@ -125,13 +125,14 @@ template_exposure <- function(parentname,
     )
   )
 
-    split_label <- substitute(
-      expr = var_labels(dataname[row_by_var], fill = TRUE),
-      env = list(
-        dataname = as.name(dataname),
-        row_by_var = row_by_var
-      )
+  split_label <- substitute(
+    expr = var_labels(dataname[row_by_var], fill = TRUE),
+    env = list(
+      dataname = as.name(dataname),
+      row_by_var = row_by_var
     )
+  )
+
   if (drop_levels) {
     layout_list <- add_expr(
       layout_list,
@@ -160,17 +161,17 @@ template_exposure <- function(parentname,
     )
   }
 
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        summarize_patients_exposure_in_cols(
-          var = aval_var,
-          col_split = FALSE),
-        env = list(
-          aval_var = aval_var
-        )
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      summarize_patients_exposure_in_cols(
+        var = aval_var,
+        col_split = FALSE),
+      env = list(
+        aval_var = aval_var
       )
     )
+  )
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
