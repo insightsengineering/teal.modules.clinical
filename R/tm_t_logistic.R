@@ -176,7 +176,7 @@ template_logistic <- function(dataname,
     paste("Table of", paramcd, "for", responder_val, "Responders")
   }
 
-  parse_basic_table_args <- parse_basic_table_args(
+  parsed_basic_table_args <- parse_basic_table_args(
     resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = basic_table_args(title = table_title)
@@ -192,11 +192,9 @@ template_logistic <- function(dataname,
       result
     },
     env = list(
-      expr_basic_table_args = parse_basic_table_args,
+      expr_basic_table_args = parsed_basic_table_args,
       conf_level = conf_level,
-      topleft = topleft,
-      paramcd = paramcd,
-      responder_val = responder_val
+      topleft = topleft
       )
     )
 

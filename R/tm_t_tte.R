@@ -145,7 +145,7 @@ template_tte <- function(dataname = "ANL",
   }
   layout_list <- list()
 
-  parse_basic_table_args <- parse_basic_table_args(
+  parsed_basic_table_args <- parse_basic_table_args(
     resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = basic_table_args(title = paste("Time-To-Event Table for", paramcd))

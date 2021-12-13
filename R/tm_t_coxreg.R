@@ -12,6 +12,7 @@
 #' @param at (`list` of `numeric`)\cr when the candidate covariate is a
 #'  `numeric`, use `at` to specify the value of the covariate at which the
 #'  effect should be estimated.
+#' @param table_name (`character`) table name in chunks. Returned object.
 #'
 #' @importFrom broom tidy
 #'
@@ -25,6 +26,7 @@ template_coxreg <- function(dataname,
                             ref_arm,
                             comp_arm,
                             paramcd,
+                            table_name = "result",
                             at = list(),
                             strata_var = NULL,
                             combine_comp_arms = FALSE,
@@ -199,10 +201,11 @@ template_coxreg <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote({
+  y$table <- substitute({
     result <- build_table(lyt = lyt, df = df)
     result
-  })
+  },
+  env = list(result = table_name))
 
   y
 }
@@ -781,7 +784,7 @@ srv_t_coxreg <- function(input,
   })
 
 
-  call_template <- function(comp_arm, anl, paramcd, type) {
+  call_template <- function(comp_arm, anl, paramcd) {
     strata_var <- as.vector(anl$columns_source$strata_var)
     cov_var <- as.vector(anl$columns_source$cov_var)
     template_coxreg(

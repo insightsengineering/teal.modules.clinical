@@ -124,7 +124,7 @@ template_smq <- function(
 
   y$data <- bracket_expr(data_list)
 
-  parse_basic_table_args <- parse_basic_table_args(
+  parsed_basic_table_args <- parse_basic_table_args(
     resolve_basic_table_args(
       user_table = basic_table_args
     )
@@ -137,7 +137,7 @@ template_smq <- function(
       substitute(
         expr = expr_basic_table_args %>%
           split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var[[1]], expr_basic_table_args = parse_basic_table_args)
+        env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
       )
   )
 

@@ -276,7 +276,6 @@ template_events_by_grade <- function(dataname,
 
   y$prune <- bracket_expr(prune_list)
 
-
   # Start sort the pruned table.
   sort_list <- list()
   scorefun <- if (add_total) {

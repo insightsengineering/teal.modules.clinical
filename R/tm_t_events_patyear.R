@@ -52,15 +52,21 @@ template_events_patyear <- function(
 
   y$data <- bracket_expr(data_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # layout
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = basic_table() %>%
+      expr = expr_basic_table_args %>%
         split_cols_by(var = arm_var) %>%
         add_colcounts(),
-      env = list(arm_var = arm_var)
+      env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
     )
   )
   if (add_total) {
@@ -234,7 +240,8 @@ tm_t_events_patyear <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -464,7 +471,8 @@ srv_events_patyear <- function(input,
         } else{
           "year"
         },
-        time_unit_output = as.numeric(input$time_unit_output)
+        time_unit_output = as.numeric(input$time_unit_output),
+        basic_table_args = basic_table_args
       ),
       drop_arm_levels = input$drop_arm_levels,
       basic_table_args = basic_table_args

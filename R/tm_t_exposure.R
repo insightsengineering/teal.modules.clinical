@@ -66,7 +66,7 @@ template_exposure <- function(parentname,
   #layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
-  parse_basic_table_args <- parse_basic_table_args(
+  parsed_basic_table_args <- parse_basic_table_args(
     resolve_basic_table_args(
       user_table = basic_table_args
     )
@@ -75,7 +75,7 @@ template_exposure <- function(parentname,
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-    parse_basic_table_args
+    parsed_basic_table_args
   )
 
   if (!is_empty(col_by_var)) {
