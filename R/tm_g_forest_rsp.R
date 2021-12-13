@@ -200,7 +200,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC))
+#'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp = list(
 #'   ARM = list(
@@ -220,7 +221,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     code =
 #'       "ADSL <- synthetic_cdisc_data('latest')$adsl
 #'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
-#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
+#'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+#'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(

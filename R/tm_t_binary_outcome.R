@@ -380,7 +380,8 @@ template_binary_outcome <- function(dataname,
 #' library(scda)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC))
+#'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
@@ -392,7 +393,8 @@ template_binary_outcome <- function(dataname,
 #'     code =
 #'       "ADSL <- synthetic_cdisc_data('latest')$adsl
 #'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
-#'          mutate(AVALC = d_onco_rsp_label(AVALC))",
+#'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+#'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
