@@ -6,14 +6,16 @@
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
-template_events_patyear <- function(dataname,
-                                    parentname,
-                                    arm_var,
-                                    events_var,
-                                    aval_var = "AVAL",
-                                    add_total = TRUE,
-                                    control = control_incidence_rate(),
-                                    drop_arm_levels = TRUE) {
+template_events_patyear <- function(
+  dataname,
+  parentname,
+  arm_var,
+  events_var,
+  aval_var = "AVAL",
+  add_total = TRUE,
+  control = control_incidence_rate(),
+  drop_arm_levels = TRUE,
+  basic_table_args = teal.devel::basic_table_args()) {
   # initialize
   y <- list()
   # data
@@ -186,8 +188,8 @@ tm_t_events_patyear <- function(label,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
-                                post_output = NULL
-                                ) {
+                                post_output = NULL,
+                                basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
   stop_if_not(
     is_character_single(dataname),
@@ -209,6 +211,8 @@ tm_t_events_patyear <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
 
@@ -341,7 +345,8 @@ srv_events_patyear <- function(input,
                                events_var,
                                add_total,
                                drop_arm_levels,
-                               label) {
+                               label,
+                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -461,7 +466,8 @@ srv_events_patyear <- function(input,
         },
         time_unit_output = as.numeric(input$time_unit_output)
       ),
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })
