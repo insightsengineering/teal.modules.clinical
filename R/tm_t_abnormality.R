@@ -7,7 +7,7 @@
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
-#' @param na_level (`character`)\cr the NA level in the input dataset, default to "<Missing>".
+#' @param na_level (`character`)\cr the NA level in the input dataset, default to '<Missing>'.
 #'
 #' @seealso [tm_t_abnormality()]
 #'

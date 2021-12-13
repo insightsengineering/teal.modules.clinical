@@ -174,7 +174,9 @@ template_mmrm_tables <- function(parentname,
                                  visit_var,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
-                                 table_type = "t_mmrm_cov") {
+                                 table_type = "t_mmrm_cov",
+                                 basic_table_args = teal.devel::basic_table_args()
+                                 ) {
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -182,7 +184,7 @@ template_mmrm_tables <- function(parentname,
   # Build layout.
   layout_list <- list()
   layout_list <- layout_list %>%
-    add_expr(quote(basic_table()))
+    add_expr(parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args)))
 
   if (!is.null(arm_var)) {
     layout_list <- add_expr(
@@ -320,7 +322,9 @@ template_mmrm_plots <- function(fit_name,
                                 diagnostic_plot = list(
                                   type = "fit-residual",
                                   z_threshold = NULL
-                                )) {
+                                ),
+                                ggplot2_args = teal.devel::ggplot2_args()
+                                ) {
   y <- list()
 
   if (!is.null(lsmeans_plot)) {
@@ -387,6 +391,8 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams module_arguments
+#'
+#' @param ggplot2_args ...
 #'
 #' @importFrom shinyjs show
 #' @importFrom shinyjs hidden
@@ -475,7 +481,9 @@ tm_a_mmrm <- function(label,
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
-                      post_output = NULL) {
+                      post_output = NULL,
+                      basic_table_args = teal.devel::basic_table_args(),
+                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
   stop_if_not(
@@ -522,7 +530,8 @@ tm_a_mmrm <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -785,7 +794,8 @@ srv_mmrm <- function(input,
                      arm_ref_comp,
                      label,
                      plot_height,
-                     plot_width) {
+                     plot_width,
+                     basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -1239,7 +1249,8 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
         visit_var = as.vector(anl_m$columns_source$visit_var),
         paramcd = paramcd,
         show_relative = input$t_mmrm_lsmeans_show_relative,
-        table_type = table_type
+        table_type = table_type,
+        basic_table_args = basic_table_args
       )
 
       mapply(expression = res, table_stack_push)

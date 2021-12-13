@@ -33,14 +33,16 @@ template_mmrm_tables(
   visit_var,
   paramcd,
   show_relative = c("increase", "reduction", "none"),
-  table_type = "t_mmrm_cov"
+  table_type = "t_mmrm_cov",
+  basic_table_args = teal.devel::basic_table_args()
 )
 
 template_mmrm_plots(
   fit_name,
   lsmeans_plot = list(select = c("estimates", "contrasts"), width = 0.6, show_pval =
     FALSE),
-  diagnostic_plot = list(type = "fit-residual", z_threshold = NULL)
+  diagnostic_plot = list(type = "fit-residual", z_threshold = NULL),
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -100,9 +102,21 @@ variable value designating the studied parameter.}
 \item{table_type}{(\code{character})\cr
 type of table to output.}
 
+\item{basic_table_args}{(\code{basic_table_args}) object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
+
 \item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern:g_mmrm_lsmeans]{tern::g_mmrm_lsmeans()}}}
 
 \item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern:g_mmrm_diagnostic]{tern::g_mmrm_diagnostic()}}}
+
+\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
+with settings for the module table.
+For more details see the help vignette:
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
 }
 \description{
 Template: Mixed Model Repeated Measurements (MMRM) analysis
