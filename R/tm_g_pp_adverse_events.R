@@ -22,7 +22,8 @@ template_adverse_events <- function(dataname = "ANL",
                                     time = "ASTDY",
                                     decod = NULL,
                                     patient_id,
-                                    font_size = 12L) {
+                                    font_size = 12L,
+                                    ggplot2_args = teal.devel::ggplot2_args()) {
   assert_that(
     is.string(dataname),
     is.string(aeterm),
@@ -67,6 +68,31 @@ template_adverse_events <- function(dataname = "ANL",
     )
   )
 
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(y = "Adverse Events", title = paste0("Patient ID: ", patient_id)),
+        theme = list(
+          text = bquote(element_text(size = .(font_size[1]))),
+          axis.text.y = quote(element_blank()),
+          axis.ticks.y = quote(element_blank()),
+          legend.position = "none",
+          panel.grid.minor = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )),
+          panel.grid.major = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ))
+        )
+      )
+    )
+  )
+
   chart_list <- add_expr(
     list(),
     substitute(
@@ -98,24 +124,7 @@ template_adverse_events <- function(dataname = "ANL",
         scale_y_discrete(expand = expansion(add = 1.2)) +
         xlim(1, 1.2 * max(dataname[[time_var]])) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        ylab("Adverse Events") +
-        theme(
-          text = element_text(size = font_size_var[1]),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          panel.grid.major = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          panel.grid.minor = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          )
-        ) +
-        theme(legend.position = "none") +
-        ggtitle(paste0("Patient ID: ", patient_id)),
+        labs + themes,
       env = list(
         dataname = as.name(dataname),
         aeterm = as.name(aeterm),
@@ -124,7 +133,9 @@ template_adverse_events <- function(dataname = "ANL",
         causality = as.name(causality),
         time_var = time,
         font_size_var = font_size,
-        patient_id = patient_id
+        patient_id = patient_id,
+        labs = parsed_ggplot2_args$labs,
+        themes = parsed_ggplot2_args$theme
       )
     )
   )
@@ -227,7 +238,8 @@ tm_g_pp_adverse_events <- function(label,
                                    plot_height = c(700L, 200L, 2000L),
                                    plot_width = NULL,
                                    pre_output = NULL,
-                                   post_output = NULL) {
+                                   post_output = NULL,
+                                   ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_adverse_events")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
@@ -247,6 +259,8 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -272,7 +286,8 @@ tm_g_pp_adverse_events <- function(label,
         label = label,
         patient_col = patient_col,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = "all"
@@ -384,7 +399,8 @@ srv_g_adverse_events <- function(input,
                                  decod,
                                  plot_height,
                                  plot_width,
-                                 label) {
+                                 label,
+                                 ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -480,7 +496,8 @@ srv_g_adverse_events <- function(input,
       time = input[[extract_input("time", dataname)]],
       decod = input[[extract_input("decod", dataname)]],
       patient_id = patient_id(),
-      font_size = input[["font_size"]]
+      font_size = input[["font_size"]],
+      ggplot2_args = ggplot2_args
     )
 
     lapply(calls, chunks_push, chunks = stack)

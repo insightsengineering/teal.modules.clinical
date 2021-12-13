@@ -145,7 +145,7 @@ template_vitals <- function(dataname = "ANL",
           alpha = 1,
           nudge_y = 2.2,
           size = font_size_var / 3.5
-        ) + labs + themes + ggthemes
+        ) + labs + ggthemes + themes
 
       print(result_plot)
     }, env = list(

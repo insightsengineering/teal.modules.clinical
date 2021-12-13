@@ -50,7 +50,6 @@ template_therapy <- function(dataname = "ANL",
   y$table_list <- list()
   y$plot_list <- list()
 
-  #
   table_list <- add_expr(
     list(),
     substitute(expr = {
@@ -112,6 +111,33 @@ template_therapy <- function(dataname = "ANL",
     ))
   )
 
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(y = "Medication", title = paste0("Patient ID: ", patient_id)),
+        theme = list(
+          text = bquote(element_text(size = .(font_size))),
+          axis.text.y = quote(element_blank()),
+          axis.ticks.y = quote(element_blank()),
+          plot.title = bquote(element_text(size = .(font_size))),
+          legend.position = "none",
+          panel.grid.minor = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )),
+          panel.grid.major = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ))
+        )
+      )
+    ),
+    ggtheme = "minimal"
+  )
+
   plot_list <- add_expr(
     list(),
     substitute(expr = {
@@ -155,7 +181,7 @@ template_therapy <- function(dataname = "ANL",
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        labs + themes + ggthemes
+        labs + ggthemes + themes
 
       print(therapy_plot)
     }, env = list(
@@ -180,7 +206,9 @@ template_therapy <- function(dataname = "ANL",
       cmstdy_char = cmstdy,
       cmendy_char = cmendy,
       patient_id = patient_id,
-      font_size_var = font_size
+      labs = parsed_ggplot2_args$labs,
+      ggthemes = parsed_ggplot2_args$ggtheme,
+      themes = parsed_ggplot2_args$theme
     ))
   )
   y$table_list <- bracket_expr(table_list)

@@ -20,7 +20,8 @@ template_g_ci <- function(dataname, # nousage # nolint
                           grp_var = NULL,
                           stat = c("mean", "median"),
                           conf_level = 0.95,
-                          unit_var = "AVALU") {
+                          unit_var = "AVALU",
+                          ggplot2_args = teal.devel::ggplot2_args()) {
   stat <- match.arg(stat)
 
   graph_list <- list()
@@ -121,27 +122,43 @@ template_g_ci <- function(dataname, # nousage # nolint
         fun = fun,
         geom = "point",
         position = position_dodge(width = .5)
-      ) + labs(
-        title = title,
-        caption = caption,
-        x = "Treatment Group"
       ),
       env = list(
         fun = switch(
           stat,
           mean = substitute(mean),
           median = substitute(median)
-        ),
-        title = paste("Confidence Interval Plot by Treatment Group"),
-        caption = paste0(
-          switch(stat, mean = "Mean", median = "Median"),
-          " and ", 100 * conf_level, "% CIs for ",
-          stat,
-          " are displayed."
         )
       )
     )
   )
+
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(title = paste("Confidence Interval Plot by Treatment Group"),
+                    caption = paste0(
+                      switch(stat, mean = "Mean", median = "Median"),
+                      " and ", 100 * conf_level, "% CIs for ", stat," are displayed."
+                    ),
+                    x = "Treatment Group"),
+        theme = list()
+      )
+    )
+  )
+
+  graph_list <- add_expr(
+    expr_ls = graph_list,
+    new_expr = parsed_ggplot2_args$labs
+  )
+
+  if (!is.null(parsed_ggplot2_args$theme)) {
+    graph_list <- add_expr(
+      expr_ls = graph_list,
+      new_expr = parsed_ggplot2_args$theme
+    )
+  }
 
   substitute(
     expr = {
@@ -151,137 +168,6 @@ template_g_ci <- function(dataname, # nousage # nolint
     env = list(graph_expr = pipe_expr(graph_list, pipe_str = "+"))
   )
 
-}
-
-
-ui_g_ci <- function(id, ...) { # nousage # nolint
-  ns <- NS(id)
-  args <- list(...)
-
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
-      datanames_input(args[c("x_var", "y_var", "color")]),
-      data_extract_ui(
-        id = ns("x_var"),
-        label = "Treatment (x axis)",
-        data_extract_spec = args$x_var
-      ),
-      data_extract_ui(
-        id = ns("y_var"),
-        label = "Analyzed Value (y axis)",
-        data_extract_spec = args$y_var
-      ),
-      data_extract_ui(
-        id = ns("color"),
-        label = "Groups (color)",
-        data_extract_spec = args$color
-      ),
-      optionalSelectInput(
-        inputId = ns("conf_level"),
-        label = "Confidence Level",
-        choices = args$conf_level$choices,
-        selected = args$conf_level$selected,
-        multiple = FALSE,
-        fixed = args$conf_level$fixed
-      ),
-      radioButtons(
-        inputId = ns("stat"),
-        label = "Statistic to use",
-        choices = c("mean", "median"),
-        selected = args$stat
-      )
-    ),
-    forms = get_rcode_ui(ns("rcode")),
-    pre_output = args$pre_output,
-    post_output = args$post_output
-  )
-}
-
-srv_g_ci <- function(input, # nousage # nolint
-                     output,
-                     session,
-                     datasets,
-                     x_var,
-                     y_var,
-                     color,
-                     label,
-                     plot_height,
-                     plot_width) {
-  stopifnot(is_cdisc_data(datasets))
-
-  init_chunks()
-
-  merged_data <- data_merge_module(
-    datasets = datasets,
-    data_extract = list(x_var = x_var, y_var = y_var, color = color)
-  )
-
-  validate_data <- reactive({
-    validate(
-      need(
-        length(merged_data()$columns_source$x_var) > 0,
-        "Select a treatment (x axis)."
-      )
-    )
-    validate(
-      need(
-        length(merged_data()$columns_source$y_var) > 0,
-        "Select an analyzed value (y axis)."
-      )
-    )
-    validate_has_data(merged_data()$data(), min_nrow = 2)
-
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-  })
-
-  list_calls <- reactive(
-    template_g_ci(
-      dataname = "ANL",
-      x_var = merged_data()$columns_source$x_var,
-      y_var = merged_data()$columns_source$y_var,
-      grp_var = if (length(merged_data()$columns_source$color) == 0) {
-        NULL
-      } else {
-        merged_data()$columns_source$color
-      },
-      stat = input$stat,
-      conf_level = as.numeric(input$conf_level)
-    )
-  )
-
-  eval_call <- reactive({
-    validate_data()
-    chunks_reset()
-    chunks_push_data_merge(x = merged_data())
-    chunks_push(list_calls())
-  })
-
-  plot_r <- reactive({
-    eval_call()
-    chunks_safe_eval()
-    chunks_get_var("gg")
-  })
-
-  callModule(
-    get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = get_extract_datanames(list(x_var, y_var, color)),
-    modal_title = label
-  )
-
-  callModule(
-    plot_with_settings_srv,
-    id = "myplot",
-    plot_r = plot_r,
-    height = plot_height,
-    width = plot_width
-  )
 }
 
 #' Teal Module: Confidence Interval Plot (`CIG01`)
@@ -376,7 +262,8 @@ tm_g_ci <- function(label,
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
                     pre_output = NULL,
-                    post_output = NULL) {
+                    post_output = NULL,
+                    ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ci")
   stat <- match.arg(stat)
   stop_if_not(
@@ -386,18 +273,20 @@ tm_g_ci <- function(label,
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || is(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
 
@@ -410,10 +299,143 @@ tm_g_ci <- function(label,
       color = color,
       label = label,
       plot_height = plot_height,
-      plot_width = plot_width
+      plot_width = plot_width,
+      ggplot2_args = ggplot2_args
     ),
     ui = ui_g_ci,
     ui_args = args,
     filters = "all"
+  )
+}
+
+ui_g_ci <- function(id, ...) { # nousage # nolint
+  ns <- NS(id)
+  args <- list(...)
+
+  standard_layout(
+    output = plot_with_settings_ui(id = ns("myplot")),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      datanames_input(args[c("x_var", "y_var", "color")]),
+      data_extract_ui(
+        id = ns("x_var"),
+        label = "Treatment (x axis)",
+        data_extract_spec = args$x_var
+      ),
+      data_extract_ui(
+        id = ns("y_var"),
+        label = "Analyzed Value (y axis)",
+        data_extract_spec = args$y_var
+      ),
+      data_extract_ui(
+        id = ns("color"),
+        label = "Groups (color)",
+        data_extract_spec = args$color
+      ),
+      optionalSelectInput(
+        inputId = ns("conf_level"),
+        label = "Confidence Level",
+        choices = args$conf_level$choices,
+        selected = args$conf_level$selected,
+        multiple = FALSE,
+        fixed = args$conf_level$fixed
+      ),
+      radioButtons(
+        inputId = ns("stat"),
+        label = "Statistic to use",
+        choices = c("mean", "median"),
+        selected = args$stat
+      )
+    ),
+    forms = get_rcode_ui(ns("rcode")),
+    pre_output = args$pre_output,
+    post_output = args$post_output
+  )
+}
+
+srv_g_ci <- function(input, # nousage # nolint
+                     output,
+                     session,
+                     datasets,
+                     x_var,
+                     y_var,
+                     color,
+                     label,
+                     plot_height,
+                     plot_width,
+                     ggplot2_args) {
+  stopifnot(is_cdisc_data(datasets))
+
+  init_chunks()
+
+  merged_data <- data_merge_module(
+    datasets = datasets,
+    data_extract = list(x_var = x_var, y_var = y_var, color = color)
+  )
+
+  validate_data <- reactive({
+    validate(
+      need(
+        length(merged_data()$columns_source$x_var) > 0,
+        "Select a treatment (x axis)."
+      )
+    )
+    validate(
+      need(
+        length(merged_data()$columns_source$y_var) > 0,
+        "Select an analyzed value (y axis)."
+      )
+    )
+    validate_has_data(merged_data()$data(), min_nrow = 2)
+
+    validate(need(
+      input$conf_level >= 0 && input$conf_level <= 1,
+      "Please choose a confidence level between 0 and 1"
+    ))
+  })
+
+  list_calls <- reactive(
+    template_g_ci(
+      dataname = "ANL",
+      x_var = merged_data()$columns_source$x_var,
+      y_var = merged_data()$columns_source$y_var,
+      grp_var = if (length(merged_data()$columns_source$color) == 0) {
+        NULL
+      } else {
+        merged_data()$columns_source$color
+      },
+      stat = input$stat,
+      conf_level = as.numeric(input$conf_level),
+      ggplot2_args = ggplot2_args
+    )
+  )
+
+  eval_call <- reactive({
+    validate_data()
+    chunks_reset()
+    chunks_push_data_merge(x = merged_data())
+    chunks_push(list_calls())
+  })
+
+  plot_r <- reactive({
+    eval_call()
+    chunks_safe_eval()
+    chunks_get_var("gg")
+  })
+
+  callModule(
+    get_rcode_srv,
+    id = "rcode",
+    datasets = datasets,
+    datanames = get_extract_datanames(list(x_var, y_var, color)),
+    modal_title = label
+  )
+
+  callModule(
+    plot_with_settings_srv,
+    id = "myplot",
+    plot_r = plot_r,
+    height = plot_height,
+    width = plot_width
   )
 }
