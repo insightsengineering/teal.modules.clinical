@@ -23,7 +23,8 @@ tm_t_exposure(
   add_total,
   na_level = "<Missing>",
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -74,6 +75,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{(\code{basic_table_args}) object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Teal module: Exposure Table for Risk management plan
