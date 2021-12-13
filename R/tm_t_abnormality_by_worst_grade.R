@@ -19,7 +19,8 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                                                 worst_low_flag_var = "WGRLOFL",
                                                 worst_flag_indicator = "Y",
                                                 add_total = FALSE,
-                                                drop_arm_levels = TRUE) {
+                                                drop_arm_levels = TRUE,
+                                                basic_table_args = teal.devel::basic_table_args()) {
 
 
 
@@ -128,28 +129,28 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 
   y$layout_prep <- bracket_expr(prep_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+
 # layout start
-
   layout_list <- list()
-
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(var = arm_var) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
   )
@@ -310,8 +311,8 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             add_total = TRUE,
                                             drop_arm_levels = TRUE,
                                             pre_output = NULL,
-                                            post_output = NULL
-                                            ) {
+                                            post_output = NULL,
+                                            basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
   stop_if_not(
     is.string(dataname),
@@ -341,6 +342,8 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
     worst_low_flag_var = cs_to_des_select(worst_low_flag_var, dataname = dataname)
   )
 
+  checkmate::check_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   module(
@@ -353,7 +356,8 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -464,7 +468,8 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
                                              worst_high_flag_var,
                                              add_total,
                                              drop_arm_levels,
-                                             label) {
+                                             label,
+                                             basic_table_args) {
 
   stopifnot(is_cdisc_data(datasets))
 
@@ -549,7 +554,9 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       worst_low_flag_var =  as.vector(anl_m$columns_source$worst_low_flag_var),
       worst_flag_indicator = input$worst_flag_indicator,
       add_total = input$add_total,
-      drop_arm_levels = input$drop_arm_levels)
+      drop_arm_levels = input$drop_arm_levels,
+      basic_table_args = basic_table_args
+      )
     mapply(expression = my_calls, chunks_push)
   })
 

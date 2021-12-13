@@ -76,13 +76,14 @@ template_abnormality <- function(parentname,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
       env = list(dataname = as.name("anl"), na_level = na_level))
-    )
+  )
+
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
       env = list(parentname = as.name(parentname), na_level = na_level))
-    )
+  )
 
   y$data <- bracket_expr(data_list)
 
