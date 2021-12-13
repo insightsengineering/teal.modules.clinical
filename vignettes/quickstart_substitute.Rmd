@@ -495,7 +495,6 @@ rtables_expr <- function(df,
   # 1. y$data with the preprocessing steps.
   # 2. y$rtables the table layout and build.
   y <- list()
-  
   # 1. Preprocessing ---
   y$data <- substitute(
     df <- df %>%
