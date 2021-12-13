@@ -831,8 +831,6 @@ srv_t_coxreg <- function(input,
       calls,
       function(call) {
         mapply(expr = call, chunks_push)
-        chunks_safe_eval()
-        chunks_get_var("result")
       })
 
 
