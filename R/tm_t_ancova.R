@@ -139,7 +139,6 @@ template_ancova <- function(dataname = "ANL",
     )
   )
 
-
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   layout_list <- list()
   layout_list <- add_expr(
