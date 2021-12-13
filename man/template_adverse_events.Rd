@@ -14,7 +14,8 @@ template_adverse_events(
   time = "ASTDY",
   decod = NULL,
   patient_id,
-  font_size = 12L
+  font_size = 12L,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -38,6 +39,12 @@ analysis data used in teal module.}
 \item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+
+\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
+with settings for the module table.
+For more details see the help vignette:
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
 }
 \description{
 Creates an adverse events template call.
