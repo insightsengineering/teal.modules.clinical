@@ -832,16 +832,9 @@ srv_t_coxreg <- function(input,
         chunks_get_var("result")
       })
 
-    chunks_push(
-      substitute({
-        final_table <- rtables::rbindl_rtables(res, check_headers = TRUE)
-        final_table
-    })
-    )
 
-    chunks_safe_eval()
-
-    chunks_get_var("final_table")
+    final_table <- rtables::rbindl_rtables(res, check_headers = TRUE)
+    final_table
 
   })
 

@@ -15,7 +15,8 @@ template_smq(
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  id_var = "USUBJID"
+  id_var = "USUBJID",
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -53,6 +54,12 @@ variable names of the selected Standardized/Customized queries}
 
 \item{id_var}{(\code{character})\cr
 the variable name for subject id.}
+
+\item{basic_table_args}{(\code{basic_table_args}) object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Adverse Events Table by Standardized \code{MedDRA} Query

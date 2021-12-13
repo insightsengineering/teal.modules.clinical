@@ -22,7 +22,8 @@ template_smq <- function(
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  id_var = "USUBJID"
+  id_var = "USUBJID",
+  basic_table_args = teal.devel::basic_table_args()
 ) {
 
   assert_that(
@@ -123,14 +124,20 @@ template_smq <- function(
 
   y$data <- bracket_expr(data_list)
 
+  parse_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # Start layout steps.
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var[[1]])
+        env = list(arm_var = arm_var[[1]], expr_basic_table_args = parse_basic_table_args)
       )
   )
 
@@ -366,7 +373,8 @@ tm_t_smq <- function(label,
                      baskets,
                      scopes,
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_smq")
   stop_if_not(
     is.string(dataname),
@@ -395,6 +403,8 @@ tm_t_smq <- function(label,
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   module(
@@ -408,7 +418,8 @@ tm_t_smq <- function(label,
         dataname = dataname,
         parentname = parentname,
         na_level = na_level,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -506,7 +517,8 @@ srv_t_smq <- function(input,
                       baskets,
                       scopes,
                       na_level,
-                      label) {
+                      label,
+                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -591,7 +603,7 @@ srv_t_smq <- function(input,
       baskets = as.vector(anl_m$columns_source$baskets),
       na_level = na_level,
       id_var = as.vector(anl_m$columns_source$id_var),
-
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })
