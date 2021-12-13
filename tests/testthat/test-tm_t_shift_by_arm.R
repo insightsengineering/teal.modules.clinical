@@ -19,7 +19,7 @@ test_that("template_shift_by_arm generates correct expressions with default argu
     }),
 
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
         split_cols_by("ANRIND") %>%
         split_rows_by(
@@ -62,7 +62,7 @@ test_that("template_shift_by_arm generates correct expressions with add_total be
     }),
 
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
         split_cols_by("ANRIND") %>%
         split_rows_by(
@@ -105,7 +105,7 @@ test_that("template_shift_by_arm generates correct expressions with na.rm being 
     }),
 
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
         split_cols_by("ANRIND") %>%
         split_rows_by(

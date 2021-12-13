@@ -32,7 +32,7 @@ test_that("template_abnormality generates correct expressions with default argum
       )
     }),
     layout = quote(
-      lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -99,7 +99,7 @@ test_that("template_abnormality generates correct expressions with custom argume
       )
     }),
     layout = quote(
-      lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
         split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(
@@ -166,7 +166,7 @@ test_that("template_abnormality generates correct expressions with customized na
       )
     }),
     layout = quote(
-      lyt <- basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         split_rows_by(

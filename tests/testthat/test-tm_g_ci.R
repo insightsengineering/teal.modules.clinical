@@ -31,7 +31,7 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
@@ -72,7 +72,7 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
@@ -113,7 +113,7 @@ test_that("4. Median and 95% CIs for median", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Median and 95% CIs for median are displayed.",
         x = "Treatment Group"
@@ -155,7 +155,7 @@ test_that("5. Using different alpha level", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 90% CIs for mean are displayed.",
         x = "Treatment Group"

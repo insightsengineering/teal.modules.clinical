@@ -3,9 +3,11 @@
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable levels for the studied parameter.
 #' @param paramcd_var (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable name for the studied parameter.
+#' @param visit_levels (`character`)\cr
+#'   variable levels for studied visits.
 #'
 #' @seealso [tm_t_ancova()]
 #'
@@ -115,12 +117,11 @@ template_ancova <- function(dataname = "ANL",
   y$data <- bracket_expr(data_list)
 
   # Build layout.
-  unique_visits <- visit_levels
-  visits_title <- if (length(unique_visits) > 1) {
-    paste("visits", paste(utils::head(unique_visits, -1), collapse = ", "),
-          "and", utils::tail(unique_visits, 1))
-  } else if (length(unique_visits) == 1) {
-    paste("visit", unique_visits)
+  visits_title <- if (length(visit_levels) > 1) {
+    paste("visits", paste(utils::head(visit_levels, -1), collapse = ", "),
+          "and", utils::tail(visit_levels, 1))
+  } else if (length(visit_levels) == 1) {
+    paste("visit", visit_levels)
   } else {
     "visit"
   }

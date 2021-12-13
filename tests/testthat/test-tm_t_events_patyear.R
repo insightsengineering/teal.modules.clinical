@@ -21,7 +21,7 @@ test_that("template_events_patyear generates standard expressions", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARMCD") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -71,7 +71,7 @@ test_that("template_events_patyear generates right expressions with non-default"
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         estimate_incidence_rate(
@@ -126,7 +126,7 @@ test_that("template_events_patyear generates right expressions with non-default 
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARMCD") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%

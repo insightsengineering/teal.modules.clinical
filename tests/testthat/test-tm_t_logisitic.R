@@ -36,15 +36,7 @@ test_that("template_logistic generates correct expressions", {
       df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- basic_table(
-        title = paste(
-          "Table of", "PARAMCD",
-          "for",
-          paste(head("CR", -1), collapse = ", "),
-          ifelse(length("CR") > 1, "and", ""),
-          tail("CR", 1),
-          "Responders")
-        ) %>%
+      result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
         summarize_logistic(conf_level = 0.95) %>%
         append_topleft("BESRSPI") %>%
         build_table(df = mod)
@@ -84,15 +76,7 @@ test_that("template_logistic generates correct expressions for no arm variable",
         df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- basic_table(
-        title = paste(
-          "Table of", "PARAMCD",
-          "for",
-          paste(head("CR", -1), collapse = ", "),
-          ifelse(length("CR") > 1, "and", ""),
-          tail("CR", 1),
-          "Responders")
-      ) %>%
+      result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
         summarize_logistic(conf_level = 0.95) %>%
         append_topleft("BESRSPI") %>%
         build_table(df = mod)
