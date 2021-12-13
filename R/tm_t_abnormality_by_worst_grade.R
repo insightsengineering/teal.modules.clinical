@@ -206,15 +206,14 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' for variable names that can be used as Analysis Reference Range Indicator.
-#' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
+#' @param worst_high_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
 #' choices and preselected option for variable names that can be used as Worst High Grade flag.
-#' @param worst_low_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
+#' @param worst_low_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
 #' choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating
+#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec()])\cr value indicating
 #' worst grade.
 #' @seealso [template_abnormality_by_worst_grade()]
 #'
