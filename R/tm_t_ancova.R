@@ -403,7 +403,7 @@ tm_t_ancova <- function(label,
     )
   )
 
-  checkmate::check_class(basic_table_args, "basic_table_args")
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
 

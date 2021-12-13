@@ -340,7 +340,7 @@ tm_t_abnormality <- function(label,
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
   )
 
-  checkmate::check_class(basic_table_args, "basic_table_args")
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
