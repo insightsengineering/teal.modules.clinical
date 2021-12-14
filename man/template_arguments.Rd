@@ -118,7 +118,7 @@ For more details see the help vignette:
 The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 
 \item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
-with settings for the module table.
+with settings for the module plot.
 For more details see the help vignette:
 \code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
 The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
