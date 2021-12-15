@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9029
+# teal.modules.clinical 0.8.10.9030
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
@@ -11,6 +11,7 @@
 * Enhanced `tm_t_logistic` to include selected parameter in title of the table.
 * Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table. 
 * Enhanced `tm_g_forest_tte` to include selected parameter in title of the table. 
+* Enhanced `tm_g_pp_patient_timeline` with bold axes labels and integer values on the axis.
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
