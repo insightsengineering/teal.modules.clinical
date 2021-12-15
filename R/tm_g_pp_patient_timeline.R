@@ -30,7 +30,8 @@ template_patient_timeline <- function(dataname = "ANL",
                                       dsrelday_end = NULL,
                                       relative_day = FALSE,
                                       patient_id,
-                                      font_size = 12L) {
+                                      font_size = 12L,
+                                      ggplot2_args = teal.devel::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
   assert_that(
@@ -52,6 +53,22 @@ template_patient_timeline <- function(dataname = "ANL",
   y$chart <- list()
 
   chart_list <- if (!relative_day) {
+    parsed_ggplot2_args <- parse_ggplot2_args(
+      resolve_ggplot2_args(
+        user_plot = ggplot2_args,
+        module_plot = ggplot2_args(
+          labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
+          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
+                                               list(font_size_var = font_size)),
+                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
+                                              list(font_size_var = font_size)),
+                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
+                                               list(font_size_var = font_size)),
+                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)))
+        )
+      )
+    )
+
     add_expr(
       list(),
       substitute(
@@ -112,7 +129,6 @@ template_patient_timeline <- function(dataname = "ANL",
               col.group = "group",
               show_labels = FALSE
             ) +
-              theme(text = element_text(size = font_size_var)) +
               ggrepel::geom_text_repel(
                 mapping = aes(label = event),
                 size = font_size_var / 3.5,
@@ -121,14 +137,7 @@ template_patient_timeline <- function(dataname = "ANL",
                 nudge_x = 0.5,
                 segment.size = 0.1
               ) +
-              scale_x_datetime(labels = scales::date_format("%b-%Y")) +
-              ggtitle(paste0("Patient ID: ", patient_id)) +
-              theme(
-                plot.title = element_text(hjust = 0, size = font_size_var),
-                axis.text = element_text(size = font_size_var, face = "bold", colour = "black"),
-                axis.title = element_text(size = font_size_var, face = "bold", colour = "black")
-              ) +
-              xlab("Absolute Study Dates")
+              scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
           }
           patient_timeline_plot
         },
@@ -147,11 +156,32 @@ template_patient_timeline <- function(dataname = "ANL",
           dstime_end_var = dstime_end,
           cmtrt_var = cmtrt,
           font_size_var = font_size,
-          patient_id = patient_id
+          patient_id = patient_id,
+          labs = parsed_ggplot2_args$labs,
+          themes = parsed_ggplot2_args$theme
         )
       )
     )
   } else {
+
+    parsed_ggplot2_args <- parse_ggplot2_args(
+      resolve_ggplot2_args(
+        user_plot = ggplot2_args,
+        module_plot = ggplot2_args(
+          labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
+          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
+                                               list(font_size_var = font_size)),
+                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
+                                              list(font_size_var = font_size)),
+                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
+                                               list(font_size_var = font_size)),
+                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
+                       legend.position = "none")
+        )
+      ),
+      ggtheme = "classic"
+    )
+
     add_expr(
       list(),
       substitute(
@@ -201,23 +231,11 @@ template_patient_timeline <- function(dataname = "ANL",
               geom_label() +
               theme_void()
           } else {
-            patient_timeline_plot <- ggplot(
-              vistime_data,
-              aes(x = start, y = event, xend = end, yend = event, color = color)
-            ) +
+            patient_timeline_plot <- ggplot(vistime_data,
+                                            aes(x = start, y = event, xend = end, yend = event, color = color)) +
               geom_segment(size = 4) +
               facet_grid(group ~ ., scales = "free", space = "free") +
-              theme_classic() +
-              theme(
-                axis.text = element_text(size = font_size_var, face = "bold", colour = "black"),
-                axis.title = element_text(size = font_size_var, face = "bold", colour = "black"),
-                text = element_text(size = font_size_var),
-                legend.position = "none") +
-              xlab("Relative Study Days") +
-              ylab("") +
-              ggtitle(paste0("Patient ID: ", patient_id)) +
-              theme(plot.title = element_text(hjust = 0)) +
-              scale_x_continuous(breaks = scales::pretty_breaks())
+              scale_x_continuous(breaks = scales::pretty_breaks())  + labs + ggthemes + themes
           }
           patient_timeline_plot
         },
@@ -230,7 +248,10 @@ template_patient_timeline <- function(dataname = "ANL",
           dsrelday_start_var = dsrelday_start,
           dsrelday_end_var = dsrelday_end,
           font_size_var = font_size,
-          patient_id = patient_id
+          patient_id = patient_id,
+          labs = parsed_ggplot2_args$labs,
+          ggthemes = parsed_ggplot2_args$ggtheme,
+          themes = parsed_ggplot2_args$theme
         )
       )
     )
@@ -406,7 +427,8 @@ tm_g_pp_patient_timeline <- function(label,
                                      plot_height = c(700L, 200L, 2000L),
                                      plot_width = NULL,
                                      pre_output = NULL,
-                                     post_output = NULL) {
+                                     post_output = NULL,
+                                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname_adcm))
@@ -437,6 +459,8 @@ tm_g_pp_patient_timeline <- function(label,
       (!is.null(cmtrt) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )
 
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
+
   args <- as.list(environment())
   data_extract_list <- list(
     aeterm = if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
@@ -465,7 +489,8 @@ tm_g_pp_patient_timeline <- function(label,
         label = label,
         patient_col = patient_col,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = "all"
@@ -493,16 +518,15 @@ ui_g_patient_timeline <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       datanames_input(
-        ui_args[c(
-          "aeterm", "cmtrt",
-          "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end")]
+        ui_args[c("aeterm", "cmtrt",
+                  "aetime_start", "aetime_end", "dstime_start", "dstime_end",
+                  "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end")]
       ),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("cmtrt"),
@@ -620,7 +644,8 @@ srv_g_patient_timeline <- function(input,
                                    dsrelday_end,
                                    plot_height,
                                    plot_width,
-                                   label) {
+                                   label,
+                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -678,7 +703,6 @@ srv_g_patient_timeline <- function(input,
     p_timeline_data <- p_timeline_merged_data()$data()
     # time variables can not be NA
     p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
-
 
     validate(
       need(
@@ -748,7 +772,8 @@ srv_g_patient_timeline <- function(input,
       dsrelday_end = dsrelday_end_name,
       font_size = font_size,
       relative_day = input$relday_x_axis,
-      patient_id = patient_id()
+      patient_id = patient_id(),
+      ggplot2_args = ggplot2_args
     )
 
     lapply(patient_timeline_calls, time_line_stack_push)

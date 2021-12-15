@@ -18,7 +18,8 @@ template_patient_timeline(
   dsrelday_end = NULL,
   relative_day = FALSE,
   patient_id,
-  font_size = 12L
+  font_size = 12L,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{

@@ -133,7 +133,8 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_height = c(600L, 200L, 2000L),
                                  plot_width = NULL,
                                  pre_output = NULL,
-                                 post_output = NULL) {
+                                 post_output = NULL,
+                                 ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
   stop_if_not(
     is_character_single(label),
@@ -163,6 +164,8 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
 
+  checkmate::check_class(ggplot2_args, "ggplot2_args")
+
   plot_options <- modifyList(
     list(stacked = FALSE), # default
     if_null(plot_options, list())
@@ -180,7 +183,8 @@ tm_g_barchart_simple <- function(x = NULL,
       x_facet = x_facet,
       y_facet = y_facet,
       plot_height = plot_height,
-      plot_width = plot_width
+      plot_width = plot_width,
+      ggplot2_args = ggplot2_args
     ),
     filters = "all"
   )
@@ -298,7 +302,8 @@ srv_g_barchart_simple <- function(input,
                                   x_facet,
                                   y_facet,
                                   plot_height,
-                                  plot_width) {
+                                  plot_width,
+                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -315,6 +320,7 @@ srv_g_barchart_simple <- function(input,
     validate_has_data(ANL, 2)
     chunk <- chunks$new()
     chunk$reset(envir = list2env(list(ANL = ANL)))
+    chunks_push_data_merge(merged_data())
     chunk
   })
 
@@ -371,8 +377,27 @@ srv_g_barchart_simple <- function(input,
     chunk <- count_chunk()$clone(deep = TRUE)
 
     groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
-    add_plot_call(
-      chunk,
+
+    chunk$push(bquote({
+      total_n <- nrow(ANL) # get it from original dataset
+      plot_title <- paste0(
+        "Number of patients (total N = ",
+        total_n,
+        .(paste0(") for each combination of (", paste(groupby_vars, collapse = ", "), ")"))
+      )
+    }))
+
+    all_ggplot2_args <- resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(title = quote(plot_title),
+                    y = substitute(utils.nest::column_annotation_label(counts, y_name),
+                                   list(y_name = get_n_name(groupby_vars)))),
+        theme = list(plot.title = quote(element_text(hjust = 0.5)))
+      )
+    )
+
+    plot_call <- add_plot_call(
       y_name = get_n_name(groupby_vars),
       x_name = groupby_vars$x_name,
       fill_name = groupby_vars$fill_name,
@@ -380,19 +405,15 @@ srv_g_barchart_simple <- function(input,
       y_facet_name = groupby_vars$y_facet_name,
       label_bars = input$label_bars,
       barlayout = input$barlayout,
-      plot_options = list(axis_flipped = input$flip_axis, rotate_bar_labels = input$rotate_bar_labels)
-    )
-
-    apply_simple_ggplot_options(
-      chunk,
+      plot_options = list(axis_flipped = input$flip_axis, rotate_bar_labels = input$rotate_bar_labels),
       flip_axis = input$flip_axis,
       rotate_x_label = input$rotate_x_label,
       rotate_y_label = input$rotate_y_label,
-      expand_y_range = input$expand_y_range
+      expand_y_range = input$expand_y_range,
+      ggplot2_args = all_ggplot2_args
     )
 
-    # also adds total n
-    add_plot_title(chunk, groupby_vars)
+    chunk$push(plot_call)
 
     #explicitly calling print on the plot inside the chunk evaluates
     #the ggplot call and therefore catches errors
@@ -457,13 +478,12 @@ srv_g_barchart_simple <- function(input,
     width = plot_width
   )
 
-  merge_ex111 <- reactive(merged_data()$expr)
+
   callModule(
     module = get_rcode_srv,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(list(x, fill, x_facet, y_facet)),
-    merge_expression = merge_ex111(),
     modal_title = "Bar Chart"
   )
 }
@@ -474,12 +494,16 @@ srv_g_barchart_simple <- function(input,
 
 # when x_name etc. are NULL, will not plot it
 # plot_options$axis_flipped will only adjust hjust and vjust without flipping plot
-add_plot_call <- function(chunk,
-                          y_name, # y variable in plot
+add_plot_call <- function(y_name, # y variable in plot
                           x_name = NULL, fill_name = NULL, x_facet_name = NULL, y_facet_name = NULL,
                           label_bars = TRUE, # whether to also draw numbers as text, i.e. label bars
                           barlayout = "stacked",
-                          plot_options = NULL) {
+                          plot_options = NULL,
+                          flip_axis = NULL,
+                          rotate_x_label = NULL,
+                          rotate_y_label = NULL,
+                          expand_y_range = NULL,
+                          ggplot2_args = teal.devel::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
   validate(
@@ -497,9 +521,12 @@ add_plot_call <- function(chunk,
     length(plot_vars) > 0,
     is_logical_single(label_bars),
     barlayout %in% c("side_by_side", "stacked"),
-    is.list(plot_options)
+    is.list(plot_options),
+    is.null(flip_axis) || is_logical_single(flip_axis),
+    is.null(rotate_x_label) || is_logical_single(rotate_x_label),
+    is.null(rotate_y_label) || is_logical_single(rotate_y_label),
+    is.null(expand_y_range) || is_numeric_single(expand_y_range)
   )
-
 
   plot_options <- modifyList(
     # default options
@@ -509,7 +536,7 @@ add_plot_call <- function(chunk,
     if_null(plot_options, list())
   )
 
-  plot_args <- c(
+  plot_args <- list(
     quote(ggplot(counts))
   )
 
@@ -563,6 +590,7 @@ add_plot_call <- function(chunk,
       hjust <- 0.5 #nolintr
       vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
     }
+
     plot_args <- c(plot_args, bquote(
       geom_text(aes_string(y = .(y_name), label = .(y_name)),
                 stat = "identity",
@@ -581,54 +609,9 @@ add_plot_call <- function(chunk,
     ))
   }
 
-  # add xlabels and ylabels
-  plot_args <- c(
-    plot_args,
-    quote(theme(plot.title = element_text(hjust = 0.5))),
-    if (!is.null(x_name)) bquote(xlab(utils.nest::column_annotation_label(counts, .(x_name)))),
-    bquote(ylab(utils.nest::column_annotation_label(counts, .(y_name))))
-  )
-
-  # when x_name is NULL, modify theme to not show x-ticks
-  if (is.null(x_name)) {
-    plot_args <- c(plot_args, quote(
-      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
-    ))
-  }
-
-  chunk$push(bquote({
-    plot <- .(call_concatenate(plot_args))
-  }))
-}
-
-# NULL means option is not set
-apply_simple_ggplot_options <- function(chunk,
-                                        flip_axis = NULL,
-                                        rotate_x_label = NULL,
-                                        rotate_y_label = NULL,
-                                        expand_y_range = NULL) {
-  stopifnot(
-    is.null(flip_axis) || is_logical_single(flip_axis),
-    is.null(rotate_x_label) || is_logical_single(rotate_x_label),
-    is.null(rotate_y_label) || is_logical_single(rotate_y_label),
-    is.null(expand_y_range) || is_numeric_single(expand_y_range)
-  )
-  plot_args <- c(bquote(plot))
-
   if (isTRUE(flip_axis)) {
     plot_args <- c(plot_args, quote(
       coord_flip()
-    ))
-  }
-  if (isTRUE(rotate_x_label)) {
-    plot_args <- c(plot_args, quote(
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
-    ))
-  }
-
-  if (isTRUE(rotate_y_label)) {
-    plot_args <- c(plot_args, quote(
-      theme(axis.text.y = element_text(angle = 45, hjust = 1))
     ))
   }
 
@@ -639,9 +622,24 @@ apply_simple_ggplot_options <- function(chunk,
     )))
   }
 
-  chunk$push(bquote({
+  if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(element_text(angle = 45, hjust = 1))
+  if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
+  if (!is.null(x_name)) ggplot2_args$labs[["x"]] <- substitute(utils.nest::column_annotation_label(counts, x_name),
+                                                                   list(x_name = x_name))
+  if (is.null(x_name)) {
+    ggplot2_args$theme[["axis.text.x"]] <- quote(element_blank())
+    ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
+  }
+
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    ggplot2_args
+  )
+
+  plot_args <- c(plot_args, parsed_ggplot2_args)
+
+  bquote({
     plot <- .(call_concatenate(plot_args))
-  }))
+  })
 }
 
 # get name of column in "counts" data.frame

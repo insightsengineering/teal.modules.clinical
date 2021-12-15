@@ -114,7 +114,7 @@ template_therapy <- function(dataname = "ANL",
   plot_list <- add_expr(
     list(),
     substitute(expr = {
-      max_day <- max(dataname[[cmendy_char]], na.rm = T)
+      max_day <- max(dataname[[cmendy_char]], na.rm = TRUE)
       data <- dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
         dplyr::select_at(cols_to_include) %>%
@@ -454,7 +454,7 @@ ui_g_therapy <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("cmdecod"),

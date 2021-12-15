@@ -24,7 +24,8 @@ tm_g_pp_patient_timeline(
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
