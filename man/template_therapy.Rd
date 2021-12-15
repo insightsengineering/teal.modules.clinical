@@ -14,8 +14,8 @@ template_therapy(
   cmdosu = "CMDOSU",
   cmroute = "CMROUTE",
   cmdosfrq = "CMDOSFRQ",
-  cmstdy = "CMSTDY",
-  cmendy = "CMENDY",
+  cmstdy = "ASTDY",
+  cmendy = "AENDY",
   patient_id,
   font_size = 12L
 )

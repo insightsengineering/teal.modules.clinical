@@ -25,8 +25,8 @@ template_therapy <- function(dataname = "ANL",
                              cmdosu = "CMDOSU",
                              cmroute = "CMROUTE",
                              cmdosfrq = "CMDOSFRQ",
-                             cmstdy = "CMSTDY",
-                             cmendy = "CMENDY",
+                             cmstdy = "ASTDY",
+                             cmendy = "AENDY",
                              patient_id,
                              font_size = 12L) {
   assert_that(
@@ -238,6 +238,7 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
+#'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADCM <- synthetic_cdisc_data("latest")$adcm
 #'
@@ -248,16 +249,12 @@ template_therapy <- function(dataname = "ANL",
 #' ADCM$CMDOSU <- "U"
 #' ADCM$CMROUTE <- "CMROUTE"
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#' ADCM$CMSTDY <- 1
-#' ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-#' ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
-#' ADCM$CMENDY <- 500
-#' ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-#' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
+#' ADCM$ASTDY <- as.numeric(ADCM$ASTDY)
+#' ADCM$AENDY <- as.numeric(ADCM$AENDY)
 #' rtables::var_labels(
-#'   ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]
+#'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 #' ) <- c(
 #'   "Indication",
 #'   "Reported Name of Drug, Med, or Therapy",
@@ -277,16 +274,12 @@ template_therapy <- function(dataname = "ANL",
 #'       ADCM$CMDOSU <- "U"
 #'       ADCM$CMROUTE <- "CMROUTE"
 #'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#'       ADCM$CMSTDY <- 1
-#'       ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-#'       ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
-#'       ADCM$CMENDY <- 500
-#'       ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-#'       ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
+#'       ADCM$ASTDY <- as.numeric(ADCM$ASTDY)
+#'       ADCM$AENDY <- as.numeric(ADCM$AENDY)
 #'       rtables::var_labels(
-#'         ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+#'         ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
 #'           "Indication",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication",
@@ -335,16 +328,17 @@ template_therapy <- function(dataname = "ANL",
 #'         selected = "CMDOSFRQ"
 #'       ),
 #'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "CMSTDY"),
-#'         selected = "CMSTDY"
+#'         choices = variable_choices(ADCM, "ASTDY"),
+#'         selected = "ASTDY"
 #'       ),
 #'       cmendy = choices_selected(
-#'         choices = variable_choices(ADCM, "CMENDY"),
-#'         selected = "CMENDY"
+#'         choices = variable_choices(ADCM, "AENDY"),
+#'         selected = "AENDY"
 #'       )
 #'     )
 #'   )
 #' )
+#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
