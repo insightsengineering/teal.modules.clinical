@@ -74,7 +74,7 @@ template_adverse_events <- function(dataname = "ANL",
       module_plot = ggplot2_args(
         labs = list(y = "Adverse Events", title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = bquote(element_text(size = .(font_size[1]))),
+          text = substitute(element_text(size = font), list(font = font_size[1])),
           axis.text.y = quote(element_blank()),
           axis.ticks.y = quote(element_blank()),
           legend.position = "none",

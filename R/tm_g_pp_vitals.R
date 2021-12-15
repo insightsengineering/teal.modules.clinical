@@ -40,10 +40,10 @@ template_vitals <- function(dataname = "ANL",
       module_plot = ggplot2_args(
         labs = list(title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = bquote(element_text(size = .(font_size))),
+          text = substitute(element_text(size = font), list(font = font_size)),
           axis.text.y = quote(element_blank()),
           axis.ticks.y = quote(element_blank()),
-          plot.title = bquote(element_text(size = .(font_size))),
+          plot.title = substitute(element_text(size = font), list(font = font_size)),
           legend.position = "top",
           panel.grid.minor = quote(element_line(
             size = 0.5,
