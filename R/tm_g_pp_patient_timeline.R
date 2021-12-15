@@ -123,7 +123,11 @@ template_patient_timeline <- function(dataname = "ANL",
               ) +
               scale_x_datetime(labels = scales::date_format("%b-%Y")) +
               ggtitle(paste0("Patient ID: ", patient_id)) +
-              theme(plot.title = element_text(hjust = 0, size = font_size_var)) +
+              theme(
+                plot.title = element_text(hjust = 0, size = font_size_var),
+                axis.text = element_text(size = font_size_var, face = "bold", colour = "black"),
+                axis.title = element_text(size = font_size_var, face = "bold", colour = "black")
+              ) +
               xlab("Absolute Study Dates")
           }
           patient_timeline_plot
@@ -204,11 +208,16 @@ template_patient_timeline <- function(dataname = "ANL",
               geom_segment(size = 4) +
               facet_grid(group ~ ., scales = "free", space = "free") +
               theme_classic() +
-              theme(text = element_text(size = font_size_var), legend.position = "none") +
+              theme(
+                axis.text = element_text(size = font_size_var, face = "bold", colour = "black"),
+                axis.title = element_text(size = font_size_var, face = "bold", colour = "black"),
+                text = element_text(size = font_size_var),
+                legend.position = "none") +
               xlab("Relative Study Days") +
               ylab("") +
               ggtitle(paste0("Patient ID: ", patient_id)) +
-              theme(plot.title = element_text(hjust = 0))
+              theme(plot.title = element_text(hjust = 0)) +
+              scale_x_continuous(breaks = scales::pretty_breaks())
           }
           patient_timeline_plot
         },
