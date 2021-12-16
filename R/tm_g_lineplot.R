@@ -7,6 +7,14 @@
 #'   parameter chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
 #'   should the screening visit be included.
+#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
+#'  with settings for the module plot.
+#'  This module support arguments compatible with [tern::g_lineplot] function.
+#'  This argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
+#'  `theme` arguments will be not taken into account.
+#'  For more details see the help vignette:
+#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
+#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #'
 #' @seealso [tm_g_lineplot()]
 #'
@@ -28,7 +36,8 @@ template_g_lineplot <- function(dataname = "ANL",
                                 mid_point_size = 2,
                                 table_font_size = 4,
                                 title = "Line Plot",
-                                y_lab = "") {
+                                y_lab = "",
+                                ggplot2_args = teal.deve::ggplot2_args()) {
   assert_that(
     is.string(dataname),
     is.string(strata),
@@ -99,46 +108,60 @@ template_g_lineplot <- function(dataname = "ANL",
     quote(grid::grid.newpage())
   )
 
+  all_ggplot2_args <- resolve_ggplot2_args(
+    user_plot = ggplot2_args
+  )
+
+  plot_call <- substitute(
+    g_lineplot(
+      df = anl,
+      variables = variables,
+      interval = interval,
+      mid = mid,
+      whiskers = whiskers,
+      table = table,
+      mid_type = mid_type,
+      mid_point_size = mid_point_size,
+      table_font_size = table_font_size,
+      newpage = FALSE,
+      title = ggplot2_args_title,
+      subtitle = ggplot2_args_subtitle,
+      caption = ggplot2_args_caption,
+      y_lab = ggplot2_args_ylab,
+      legend_title = ggplot2_args_legend_title,
+      ggtheme = theme_minimal(),
+      control = control_summarize_vars(conf_level = conf_level),
+      subtitle_add_paramcd = FALSE,
+      subtitle_add_unit = FALSE
+    ),
+    env = list(
+      conf_level = conf_level,
+      interval = interval,
+      mid = mid,
+      whiskers = whiskers,
+      table = table,
+      mid_type = mid_type,
+      mid_choices = mid_choices,
+      interval_choices = interval_choices,
+      mid_point_size = mid_point_size,
+      table_font_size = table_font_size,
+      y = y,
+      ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
+        "Plot of ", names(which(mid_choices == mid)), " and ",
+        ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
+        names(which(interval_choices == interval)), " by Visit")),
+      ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
+      ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
+      ggplot2_args_ylab = utils.nest::if_null(all_ggplot2_args$labs$y,
+                                              paste(y, names(which(mid_choices == mid)), "Values for")),
+      ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
+    )
+  )
+
   graph_list <- add_expr(
     graph_list,
-    substitute(
-      expr = {
-        result <- g_lineplot(
-          df = anl,
-          variables = variables,
-          interval = interval,
-          mid = mid,
-          whiskers = whiskers,
-          table = table,
-          mid_type = mid_type,
-          mid_point_size = mid_point_size,
-          table_font_size = table_font_size,
-          newpage = FALSE,
-          title = paste0(
-            "Plot of ", names(which(mid_choices == mid)), " and ",
-            ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
-            names(which(interval_choices == interval)), " by Visit"),
-          y_lab = paste(y, names(which(mid_choices == mid)), "Values for"),
-          ggtheme = theme_minimal(),
-          control = control_summarize_vars(conf_level = conf_level),
-          subtitle_add_paramcd = FALSE,
-          subtitle_add_unit = FALSE
-        )
-      },
-      env = list(
-        conf_level = conf_level,
-        interval = interval,
-        mid = mid,
-        whiskers = whiskers,
-        table = table,
-        mid_type = mid_type,
-        mid_choices = mid_choices,
-        interval_choices = interval_choices,
-        mid_point_size = mid_point_size,
-        table_font_size = table_font_size,
-        y = y
-      )
-    )
+    substitute(result <- plot_call,
+               list(plot_call = plot_call))
   )
 
   z$graph <- bracket_expr(graph_list)
@@ -215,7 +238,8 @@ tm_g_lineplot <- function(label,
                           plot_height = c(1000L, 200L, 4000L),
                           plot_width = NULL,
                           pre_output = NULL,
-                          post_output = NULL) {
+                          post_output = NULL,
+                          ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_lineplot")
   stop_if_not(
     is_character_single(label),
@@ -240,6 +264,8 @@ tm_g_lineplot <- function(label,
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
 
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
+
   args <- as.list(environment())
   data_extract_list <- list(
     strata = cs_to_des_select(strata, dataname = parentname),
@@ -262,7 +288,8 @@ tm_g_lineplot <- function(label,
         label = label,
         parentname = parentname,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -445,7 +472,8 @@ srv_g_lineplot <- function(input,
                            y_unit,
                            label,
                            plot_height,
-                           plot_width) {
+                           plot_width,
+                           ggplot2_args) {
 
   stopifnot(is_cdisc_data(datasets))
   init_chunks()
@@ -533,7 +561,8 @@ srv_g_lineplot <- function(input,
       table = input$table,
       mid_type = input$mid_type,
       mid_point_size = input$mid_point_size,
-      table_font_size = input$table_font_size
+      table_font_size = input$table_font_size,
+      ggplot2_args = ggplot2_args
     )
     mapply(expression = my_calls, chunks_push)
   })
