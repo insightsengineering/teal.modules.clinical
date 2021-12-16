@@ -105,8 +105,6 @@ ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-ADCM$ASTDY <- as.numeric(ADCM$ASTDY)
-ADCM$AENDY <- as.numeric(ADCM$AENDY)
 rtables::var_labels(
   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 ) <- c(
@@ -130,8 +128,6 @@ app <- init(
       ADCM$CMDOSFRQ <- "CMDOSFRQ"
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
-      ADCM$ASTDY <- as.numeric(ADCM$ASTDY)
-      ADCM$AENDY <- as.numeric(ADCM$AENDY)
       rtables::var_labels(
         ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
           "Indication",
