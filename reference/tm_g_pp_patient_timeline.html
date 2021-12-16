@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9029</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.10.9031</span>
       </span>
     </div>
 
@@ -112,28 +112,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="../pre-release/index.html">pre-release</a></li>
-   <li><a href="../v0.8.10/index.html">v0.8.10</a></li>
-   <li><a href="../v0.8.9/index.html">v0.8.9</a></li>
-   <li><a href="../v0.8.8/index.html">v0.8.8</a></li>
-   <li><a href="../v0.8.7/index.html">v0.8.7</a></li>
-   <li><a href="../v0.8.6/index.html">v0.8.6</a></li>
-   <li><a href="../v0.8.5/index.html">v0.8.5</a></li>
-   <li><a href="../v0.8.4/index.html">v0.8.4</a></li>
-   <li><a href="../v0.8.3/index.html">v0.8.3</a></li>
-   <li><a href="../v0.8.2/index.html">v0.8.2</a></li>
-   <li><a href="../v0.8.1/index.html">v0.8.1</a></li>
-   <li><a href="../v0.8.0/index.html">v0.8.0</a></li>
-   <li><a href="../v0.7.0/index.html">v0.7.0</a></li>
-   <li><a href="../v0.6.0/index.html">v0.6.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -171,7 +149,7 @@ Other releases
   parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,
   patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,
   aeterm <span class='op'>=</span> <span class='cn'>NULL</span>,
-  cmtrt <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cmdecod <span class='op'>=</span> <span class='cn'>NULL</span>,
   aetime_start <span class='op'>=</span> <span class='cn'>NULL</span>,
   aetime_end <span class='op'>=</span> <span class='cn'>NULL</span>,
   dstime_start <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -218,8 +196,9 @@ parent analysis data used in teal module, usually this refers to <code>ADSL</cod
 ADAE dataset.</p></td>
     </tr>
     <tr>
-      <th>cmtrt</th>
-      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br /> <code>CMTRT</code> column of the ADCM dataset.</p></td>
+      <th>cmdecod</th>
+      <td><p>(<code><a href='https://rdrr.io/pkg/teal/man/choices_selected.html'>teal::choices_selected()</a></code> or <code><a href='https://rdrr.io/pkg/teal/man/data_extract_spec.html'>teal::data_extract_spec()</a></code>)<br /> <code>cmdecod</code> column of the ADCM
+dataset.</p></td>
     </tr>
     <tr>
       <th>aetime_start</th>
@@ -303,7 +282,6 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'><span class='co'>#' Modify ADCM</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMINDC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Indication_"</span>, <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDECOD</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSE</span> <span class='op'>&lt;-</span> <span class='fl'>1</span></span>
-<span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMTRT</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMCAT</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSU</span> <span class='op'>&lt;-</span> <span class='st'>"U"</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMROUTE</span> <span class='op'>&lt;-</span> <span class='st'>"CMROUTE"</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMDOSFRQ</span> <span class='op'>&lt;-</span> <span class='st'>"CMDOSFRQ"</span></span>
@@ -316,7 +294,7 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMASTDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>ASTDTM</span></span>
 <span class='r-in'><span class='va'>ADCM</span><span class='op'>$</span><span class='va'>CMAENDTM</span> <span class='op'>&lt;-</span> <span class='va'>ADCM</span><span class='op'>$</span><span class='va'>AENDTM</span></span>
 <span class='r-in'><span class='fu'>rtables</span><span class='fu'>::</span><span class='fu'><a href='https://roche.github.io/rtables/reference/var_labels.html'>var_labels</a></span><span class='op'>(</span></span>
-<span class='r-in'>  <span class='va'>ADCM</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMINDC"</span>, <span class='st'>"CMTRT"</span>, <span class='st'>"CMSTDY"</span>, <span class='st'>"CMENDY"</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'>  <span class='va'>ADCM</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CMINDC"</span>, <span class='st'>"CMDECOD"</span>, <span class='st'>"CMSTDY"</span>, <span class='st'>"CMENDY"</span><span class='op'>)</span><span class='op'>]</span></span>
 <span class='r-in'><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span></span>
 <span class='r-in'>  <span class='st'>"Indication"</span>,</span>
 <span class='r-in'>  <span class='st'>"Reported Name of Drug, Med, or Therapy"</span>,</span>
@@ -333,7 +311,6 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>                  code <span class='op'>=</span> <span class='st'>'ADCM &lt;- synthetic_cdisc_data("latest")$adcm</span>
 <span class='r-in'>      ADCM$CMINDC &lt;- paste0("Indication_", as.numeric(ADCM$CMDECOD))</span>
 <span class='r-in'>      ADCM$CMDOSE &lt;- 1</span>
-<span class='r-in'>      ADCM$CMTRT &lt;- ADCM$CMCAT</span>
 <span class='r-in'>      ADCM$CMDOSU &lt;- "U"</span>
 <span class='r-in'>      ADCM$CMROUTE &lt;- "CMROUTE"</span>
 <span class='r-in'>      ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"</span>
@@ -346,7 +323,7 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>      ADCM$CMASTDTM &lt;- ADCM$ASTDTM</span>
 <span class='r-in'>      ADCM$CMAENDTM &lt;- ADCM$AENDTM</span>
 <span class='r-in'>      rtables::var_labels(</span>
-<span class='r-in'>        ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) &lt;- c(</span>
+<span class='r-in'>        ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) &lt;- c(</span>
 <span class='r-in'>          "Indication",</span>
 <span class='r-in'>          "Reported Name of Drug, Med, or Therapy",</span>
 <span class='r-in'>          "Study Day of Start of Medication",</span>
@@ -363,9 +340,9 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>      parentname <span class='op'>=</span> <span class='st'>"ADSL"</span>,</span>
 <span class='r-in'>      patient_col <span class='op'>=</span> <span class='st'>"USUBJID"</span>,</span>
 <span class='r-in'>      plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,</span>
-<span class='r-in'>      cmtrt <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
-<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMTRT"</span><span class='op'>)</span>,</span>
-<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"CMTRT"</span>,</span>
+<span class='r-in'>      cmdecod <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
+<span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADCM</span>, <span class='st'>"CMDECOD"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        selected <span class='op'>=</span> <span class='st'>"CMDECOD"</span>,</span>
 <span class='r-in'>      <span class='op'>)</span>,</span>
 <span class='r-in'>      aeterm <span class='op'>=</span> <span class='fu'>choices_selected</span><span class='op'>(</span></span>
 <span class='r-in'>        choices <span class='op'>=</span> <span class='fu'>variable_choices</span><span class='op'>(</span><span class='va'>ADAE</span>, <span class='st'>"AETERM"</span><span class='op'>)</span>,</span>
@@ -406,7 +383,7 @@ the <code><a href='https://rdrr.io/pkg/shiny/man/helpText.html'>shiny::helpText(
 <span class='r-in'>    <span class='op'>)</span></span>
 <span class='r-in'>  <span class='op'>)</span></span>
 <span class='r-in'><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-12-14 15:48:37.6561 pid:863 token: teal.modules.clinical fun:tm_g_pp_patient_timeline [INFO] Initializing tm_g_pp_patient_timeline</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2021-12-16 15:23:44.8960 pid:864 token: teal.modules.clinical fun:tm_g_pp_patient_timeline [INFO] Initializing tm_g_pp_patient_timeline</span>
 <span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'><span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>}</span></span>
