@@ -9,7 +9,7 @@ template_prior_medication(
   atirel = "ATIREL",
   cmdecod = "CMDECOD",
   cmindc = "CMINDC",
-  cmstdy = "CMSTDY"
+  cmstdy = "ASTDY"
 )
 }
 \arguments{
