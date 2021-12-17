@@ -1,7 +1,8 @@
-# teal.modules.clinical 0.8.10.9031
+# teal.modules.clinical 0.8.10.9032
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
+* Changed the `tm_g_pp_patient_timeline` parameter, `cmtrt`, to `cmdecod`.
 
 ### New features
 * New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline.
