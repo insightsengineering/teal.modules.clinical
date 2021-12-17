@@ -12,7 +12,7 @@ template_prior_medication <- function(dataname = "ANL",
                                       atirel = "ATIREL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
-                                      cmstdy = "ASTDY") {
+                                      cmstdy = "CMSTDY") {
   assert_that(
     is.string(dataname),
     is.string(atirel),

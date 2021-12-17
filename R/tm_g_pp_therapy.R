@@ -25,8 +25,8 @@ template_therapy <- function(dataname = "ANL",
                              cmdosu = "CMDOSU",
                              cmroute = "CMROUTE",
                              cmdosfrq = "CMDOSFRQ",
-                             cmstdy = "ASTDY",
-                             cmendy = "AENDY",
+                             cmstdy = "CMSTDY",
+                             cmendy = "CMENDY",
                              patient_id,
                              font_size = 12L) {
   assert_that(
