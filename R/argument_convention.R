@@ -197,14 +197,14 @@ NULL
 #' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
 #' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
 #'   records in `treatment_flag_var`.
-#' @param basic_table_args (`basic_table_args`) object created by [`teal.devel::basic_table_args()`]
+#' @param basic_table_args (`basic_table_args`)\cr object created by [`teal.devel::basic_table_args()`]
 #'  with settings for the module table.
-#'  For more details see the help vignette:
+#'  For more details see the help vignette:\cr
 #'  `vignette("Custom basic_table arguments module", package = "teal.devel")`
 #'  The argument is merged with options variable `teal.basic_table_args` and default module setup.
-#' @param ggplot2_args (`ggplot2_args`) object created by [`teal.devel::ggplot2_args()`]
+#' @param ggplot2_args (`ggplot2_args`)\cr object created by [`teal.devel::ggplot2_args()`]
 #'  with settings for the module table.
-#'  For more details see the help vignette:
+#'  For more details see the help vignette:\cr
 #'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
 #'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #' @name module_arguments
