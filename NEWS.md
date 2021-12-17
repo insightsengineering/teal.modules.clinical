@@ -25,6 +25,7 @@
 * Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
 * Replaced calls to `utils.nest::check_slider_input` with `checkmate::assert_numeric`.
+* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
 
 # teal.modules.clinical 0.8.10
 ### New features
