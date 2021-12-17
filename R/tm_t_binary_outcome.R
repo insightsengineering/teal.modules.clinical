@@ -640,18 +640,23 @@ ui_t_binary_outcome <- function(id, ...) {
             optionalSelectInput(
               ns("s_diff_ci"),
               label = "Method for Difference of Proportions CI",
-              choices = c("CMH, without correction" = "cmh"),
+              choices = c("Wald, without correction" = "wald",
+                          "Wald, with correction" = "waldcc",
+                          "Anderson-Hauck" = "ha",
+                          "Newcombe" = "newcombe",
+                          "CMH, without correction" = "cmh"),
               selected = "cmh",
-              multiple = FALSE,
-              fixed = TRUE
+              multiple = FALSE
             ),
             optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
-              choices = c("CMH Test" = "cmh"),
+              choices = c("Chi-Squared Test with Schouten Correction" = "schouten",
+                          "Chi-Squared Test" = "chisq",
+                          "Cochran-Mantel-Haenszel Test" = "cmh",
+                          "Fisher's Exact Test" = "fisher"),
               selected = "cmh",
-              multiple = FALSE,
-              fixed = TRUE
+              multiple = FALSE
             )
           )
         )

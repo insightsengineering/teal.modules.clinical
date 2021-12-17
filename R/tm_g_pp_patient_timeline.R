@@ -8,7 +8,7 @@
 #' @param aetime_end (`character`)\cr name of datetime end of adverse event variable.
 #' @param dstime_start (`character`)\cr name of datetime first exposure to treatment variable.
 #' @param dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
-#' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
+#' @param cmdecod (`character`)\cr name of reported standardized name of drug, med, or therapy variable.
 #' @param aerelday_start (`character`)\cr name of start study day variable.
 #' @param aerelday_end (`character`)\cr name of end study day variable.
 #' @param dsrelday_start (`character`)\cr name of start study day variable.
@@ -23,7 +23,7 @@ template_patient_timeline <- function(dataname = "ANL",
                                       aetime_end = "AENDTM",
                                       dstime_start = "CMASTDTM",
                                       dstime_end = "CMAENDTM",
-                                      cmtrt = "CMTRT",
+                                      cmdecod = "CMDECOD",
                                       aerelday_start = NULL,
                                       aerelday_end = NULL,
                                       dsrelday_start = NULL,
@@ -40,7 +40,7 @@ template_patient_timeline <- function(dataname = "ANL",
     is.string(aetime_end) || is.null(aetime_end),
     is.string(dstime_start) || is.null(dstime_start),
     is.string(dstime_end) || is.null(dstime_end),
-    is.string(cmtrt) || is.null(cmtrt),
+    is.string(cmdecod) || is.null(cmdecod),
     is.string(aerelday_start) || is.null(aerelday_start),
     is.string(dsrelday_start) || is.null(dsrelday_start),
     is.numeric(font_size),
@@ -61,9 +61,9 @@ template_patient_timeline <- function(dataname = "ANL",
           med_chart <- NULL
           ae_chart <- NULL
 
-          if (all(vapply(list(cmtrt_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
+          if (all(vapply(list(cmdecod_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
             med_chart <- dataname %>%
-              dplyr::select(dstime_start, dstime_end, cmtrt) %>%
+              dplyr::select(dstime_start, dstime_end, cmdecod) %>%
               dplyr::distinct()
 
             colnames(med_chart) <- c("start", "end", "event")
@@ -139,13 +139,13 @@ template_patient_timeline <- function(dataname = "ANL",
           aetime_end = if_not_empty(aetime_end, as.name(aetime_end)),
           dstime_start = if_not_empty(dstime_start, as.name(dstime_start)),
           dstime_end = if_not_empty(dstime_end, as.name(dstime_end)),
-          cmtrt = if_not_empty(cmtrt, as.name(cmtrt)),
+          cmdecod = if_not_empty(cmdecod, as.name(cmdecod)),
           aeterm_var = aeterm,
           aetime_start_var = aetime_start,
           aetime_end_var = aetime_end,
           dstime_start_var = dstime_start,
           dstime_end_var = dstime_end,
-          cmtrt_var = cmtrt,
+          cmdecod_var = cmdecod,
           font_size_var = font_size,
           patient_id = patient_id
         )
@@ -156,11 +156,11 @@ template_patient_timeline <- function(dataname = "ANL",
       list(),
       substitute(
         expr = {
-          med_chart <- if (length(c(dsrelday_start_var, dsrelday_end_var, cmtrt)) == 3) {
+          med_chart <- if (length(c(dsrelday_start_var, dsrelday_end_var, cmdecod)) == 3) {
             dataname %>%
-              dplyr::select(dsrelday_start_var, dsrelday_end_var, cmtrt) %>%
+              dplyr::select(dsrelday_start_var, dsrelday_end_var, cmdecod) %>%
               dplyr::distinct() %>%
-              dplyr::rename(start = dsrelday_start_var, end = dsrelday_end_var, event = cmtrt) %>%
+              dplyr::rename(start = dsrelday_start_var, end = dsrelday_end_var, event = cmdecod) %>%
               dplyr::mutate(group = "Medication")
           } else {
             NULL
@@ -224,7 +224,7 @@ template_patient_timeline <- function(dataname = "ANL",
         env = list(
           dataname = as.name(dataname),
           aeterm = aeterm,
-          cmtrt = cmtrt,
+          cmdecod = cmdecod,
           aerelday_start_var = aerelday_start,
           aerelday_end_var = aerelday_end,
           dsrelday_start_var = dsrelday_start,
@@ -258,7 +258,8 @@ template_patient_timeline <- function(dataname = "ANL",
 #' column of the ADCM dataset.
 #' @param dsrelday_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDY}
 #' column of the ADCM dataset.
-#' @param cmtrt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMTRT} column of the ADCM dataset.
+#' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{cmdecod} column of the ADCM
+#' dataset.
 #' @param aetime_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDTM} column of the AE
 #' start of the ADAE dataset.
 #' @param aetime_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDTM} column of the AE
@@ -280,7 +281,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #' #' Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #' ADCM$CMDOSE <- 1
-#' ADCM$CMTRT <- ADCM$CMCAT
 #' ADCM$CMDOSU <- "U"
 #' ADCM$CMROUTE <- "CMROUTE"
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
@@ -293,7 +293,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' rtables::var_labels(
-#'   ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]
+#'   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 #' ) <- c(
 #'   "Indication",
 #'   "Reported Name of Drug, Med, or Therapy",
@@ -310,7 +310,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
-#'       ADCM$CMTRT <- ADCM$CMCAT
 #'       ADCM$CMDOSU <- "U"
 #'       ADCM$CMROUTE <- "CMROUTE"
 #'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
@@ -323,7 +322,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'       rtables::var_labels(
-#'         ADCM[c("CMINDC", "CMTRT", "CMSTDY", "CMENDY")]) <- c(
+#'         ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
 #'           "Indication",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication",
@@ -340,9 +339,9 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       cmtrt = choices_selected(
-#'         choices = variable_choices(ADCM, "CMTRT"),
-#'         selected = "CMTRT",
+#'       cmdecod = choices_selected(
+#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'         selected = "CMDECOD",
 #'       ),
 #'       aeterm = choices_selected(
 #'         choices = variable_choices(ADAE, "AETERM"),
@@ -393,7 +392,7 @@ tm_g_pp_patient_timeline <- function(label,
                                      parentname = "ADSL",
                                      patient_col = "USUBJID",
                                      aeterm = NULL,
-                                     cmtrt = NULL,
+                                     cmdecod = NULL,
                                      aetime_start = NULL,
                                      aetime_end = NULL,
                                      dstime_start = NULL,
@@ -434,13 +433,13 @@ tm_g_pp_patient_timeline <- function(label,
   assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
   assert_that(
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
-      (!is.null(cmtrt) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
+      (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )
 
   args <- as.list(environment())
   data_extract_list <- list(
     aeterm = if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
-    cmtrt = if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname_adcm)),
+    cmdecod = if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
     aetime_start = if_not_null(aetime_start, cs_to_des_select(aetime_start, dataname = dataname_adae)),
     aetime_end = if_not_null(aetime_end, cs_to_des_select(aetime_end, dataname = dataname_adae)),
     dstime_start = if_not_null(dstime_start, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
@@ -476,7 +475,7 @@ ui_g_patient_timeline <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- is_single_dataset(
     ui_args$aeterm,
-    ui_args$cmtrt,
+    ui_args$cmdecod,
     ui_args$aetime_start,
     ui_args$aetime_end,
     ui_args$dstime_start,
@@ -494,7 +493,7 @@ ui_g_patient_timeline <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       datanames_input(
         ui_args[c(
-          "aeterm", "cmtrt",
+          "aeterm", "cmdecod",
           "aetime_start", "aetime_end", "dstime_start", "dstime_end",
           "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end")]
       ),
@@ -505,9 +504,9 @@ ui_g_patient_timeline <- function(id, ...) {
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
-        id = ns("cmtrt"),
-        label = "Select CMTRT variable:",
-        data_extract_spec = ui_args$cmtrt,
+        id = ns("cmdecod"),
+        label = "Select CMDECOD variable:",
+        data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
       data_extract_ui(
@@ -609,7 +608,7 @@ srv_g_patient_timeline <- function(input,
                                    parentname,
                                    patient_col,
                                    aeterm,
-                                   cmtrt,
+                                   cmdecod,
                                    aetime_start,
                                    aetime_end,
                                    dstime_start,
@@ -653,7 +652,7 @@ srv_g_patient_timeline <- function(input,
       dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
       aerelday_start = aerelday_start, aerelday_end = aerelday_end,
       aeterm = aeterm, aetime_start = aetime_start,
-      aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmtrt = cmtrt
+      aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmdecod = cmdecod
     )
   )
 
@@ -665,7 +664,7 @@ srv_g_patient_timeline <- function(input,
     aetime_end <- input[[extract_input("aetime_end", dataname_adae)]]
     dstime_start <- input[[extract_input("dstime_start", dataname_adcm)]]
     dstime_end <- input[[extract_input("dstime_end", dataname_adcm)]]
-    cmtrt <- input[[extract_input("cmtrt", dataname_adcm)]]
+    cmdecod <- input[[extract_input("cmdecod", dataname_adcm)]]
     aerelday_start <- input[[extract_input("aerelday_start", dataname_adae)]]
     aerelday_end <- input[[extract_input("aerelday_end", dataname_adae)]]
     dsrelday_start <- input[[extract_input("dsrelday_start", dataname_adcm)]]
@@ -695,7 +694,7 @@ srv_g_patient_timeline <- function(input,
     )
 
     aerel_chart_vars_null <- any(vapply(list(aeterm, aerelday_start, aerelday_end), is.null, FUN.VALUE = logical(1)))
-    dsrel_chart_vars_null <- any(vapply(list(cmtrt, dsrelday_start, dsrelday_end), is.null, FUN.VALUE = logical(1)))
+    dsrel_chart_vars_null <- any(vapply(list(cmdecod, dsrelday_start, dsrelday_end), is.null, FUN.VALUE = logical(1)))
 
     # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
     # AENDY columns to data_merge_module call above.
@@ -741,7 +740,7 @@ srv_g_patient_timeline <- function(input,
       aetime_end = aetime_end,
       dstime_start = dstime_start,
       dstime_end = dstime_end,
-      cmtrt = cmtrt,
+      cmdecod = cmdecod,
       aerelday_start = aerelday_start_name,
       aerelday_end = aerelday_end_name,
       dsrelday_start = dsrelday_start_name,
@@ -775,7 +774,7 @@ srv_g_patient_timeline <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = get_extract_datanames(list(
-      aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmtrt
+      aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
     )),
     modal_title = label
   )
