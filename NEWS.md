@@ -17,8 +17,8 @@
 * Added `default_responses` argument to `tm_t_binary_outcome`, `tm_t_rsp`, `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
-* Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in most plot based modules.
-* Added support for custom arguments for `rtables::basic_table` in most table based modules.
+* Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in plot based modules.
+* Added support for custom arguments for `rtables::basic_table` in table based modules.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
