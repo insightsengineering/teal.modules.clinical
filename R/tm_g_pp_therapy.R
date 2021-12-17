@@ -181,10 +181,10 @@ template_therapy <- function(dataname = "ANL",
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        labs + ggthemes + themes
+        labs + ggtheme + theme
 
       print(therapy_plot)
-    }, env = list(
+    }, env = c(list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
       cmdecod = as.name(cmdecod),
@@ -206,10 +206,9 @@ template_therapy <- function(dataname = "ANL",
       cmstdy_char = cmstdy,
       cmendy_char = cmendy,
       patient_id = patient_id,
-      labs = parsed_ggplot2_args$labs,
-      ggthemes = parsed_ggplot2_args$ggtheme,
-      themes = parsed_ggplot2_args$theme
-    ))
+      font_size_var = font_size),
+      parsed_ggplot2_args)
+    )
   )
   y$table_list <- bracket_expr(table_list)
   y$plot_list <- bracket_expr(plot_list)
