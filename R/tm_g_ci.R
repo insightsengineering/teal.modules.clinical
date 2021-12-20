@@ -126,8 +126,8 @@ template_g_ci <- function(dataname, # nousage # nolint
       env = list(
         fun = switch(
           stat,
-          mean = substitute(mean),
-          median = substitute(median)
+          mean = quote(mean),
+          median = quote(median)
         )
       )
     )
@@ -138,10 +138,10 @@ template_g_ci <- function(dataname, # nousage # nolint
       user_plot = ggplot2_args,
       module_plot = ggplot2_args(
         labs = list(title = "Confidence Interval Plot by Treatment Group",
-                    caption = paste0(
-                      switch(stat, mean = "Mean", median = "Median"),
-                      " and ", 100 * conf_level, "% CIs for ", stat, " are displayed."
-                    ),
+                    caption = sprintf("%s and %i%% CIs for %s are displayed.",
+                                      switch(stat, mean = "Mean", median = "Median"),
+                                      100 * conf_level,
+                                      stat),
                     x = "Treatment Group"),
         theme = list()
       )
