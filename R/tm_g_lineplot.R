@@ -9,8 +9,7 @@
 #'   should the screening visit be included.
 #' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
 #'  with settings for the module plot.
-#'  This module support arguments compatible with [tern::g_lineplot] function.
-#'  This argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
+#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
 #'  `theme` arguments will be not taken into account.
 #'  For more details see the help vignette:
 #'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
@@ -177,7 +176,13 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
-#'
+#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
+#'  with settings for the module plot.
+#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
+#'  `theme` arguments will be not taken into account.
+#'  For more details see the help vignette:
+#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
+#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #' @export
 #'
 #' @examples

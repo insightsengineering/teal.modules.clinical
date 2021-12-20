@@ -10,6 +10,13 @@
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
+#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
+#'  with settings for the module plot.
+#'  For this module this argument will accepted only such `labs` arguments:  `title`, `caption`.
+#'  `theme` arguments will be not taken into account.
+#'  For more details see the help vignette:
+#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
+#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #'
 #' @seealso [tm_g_forest_rsp()]
 #'
@@ -26,7 +33,8 @@ template_forest_rsp <- function(dataname = "ANL",
                                 subgroup_var,
                                 strata_var = NULL,
                                 conf_level = 0.95,
-                                col_symbol_size = NULL) {
+                                col_symbol_size = NULL,
+                                ggplot2_args = teal.devel::ggplot2_args()) {
 
   assert_that(
     is.string(dataname),
@@ -149,33 +157,42 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
-  title <- paste0("Forest plot of best overall response for ", obj_var_name)
+  dev_plot_title <- paste0("Forest plot of best overall response for ", obj_var_name)
+
+  all_ggplot2_args <- resolve_ggplot2_args(user_plot = ggplot2_args,
+                                           module_plot = ggplot2_args(labs = list(title = dev_plot_title)))
+
+  plot_call <- substitute(
+    expr =
+      g_forest(
+        tbl = result,
+        col_symbol_size = col_s_size
+      ),
+    env = list(col_s_size = col_symbol_size)
+  )
+
+  plot_call <- if (!is.null(footnotes(p))) {
+    substitute(
+      decorate_grob(p, titles = title, footnotes = footnotes(p),
+                         gp_footnotes = grid::gpar(fontsize = 12)),
+      env = list(title = all_ggplot2_args$labs$title, p = plot_call)
+    )
+  } else {
+    substitute(
+      decorate_grob(p, titles = title, footnotes = "",
+                         gp_footnotes = grid::gpar(fontsize = 12)),
+      env = list(title = all_ggplot2_args$labs$title, p =  plot_call)
+    )
+  }
+
+   plot_call <- substitute({
+     p <- plot_call
+     grid::grid.newpage()
+     grid::grid.draw(p)
+   }, env  = list(plot_call = plot_call))
 
   # Plot output.
-  y$plot <- substitute(
-    expr = {
-      p <- g_forest(
-        tbl = result,
-        col_symbol_size = col_symbol_size
-      )
-      if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      } else {
-        p <- decorate_grob(p, title = title, footnotes = "",
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      }
-
-      grid::grid.newpage()
-      grid::grid.draw(p)
-    },
-    env = list(
-      anl = as.name(dataname),
-      arm_var = arm_var,
-      col_symbol_size = col_symbol_size,
-      title = title
-    )
-  )
+  y$plot <- plot_call
 
   y
 }
@@ -188,6 +205,13 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @inheritParams tm_t_binary_outcome
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
 #' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
+#'  with settings for the module plot.
+#'  For this module this argument will accepted only such `labs` arguments:  `title`, `caption`.
+#'  `theme` arguments will be not taken into account.
+#'  For more details see the help vignette:
+#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
+#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #'
 #' @export
 #'
@@ -283,7 +307,8 @@ tm_g_forest_rsp <- function(label,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
-                            post_output = NULL) {
+                            post_output = NULL,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
   stop_if_not(
     is_character_single(label),
@@ -306,6 +331,8 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   assert_that(
     is.list(default_responses) ||
@@ -339,7 +366,8 @@ tm_g_forest_rsp <- function(label,
         label = label,
         default_responses = default_responses,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -456,7 +484,8 @@ srv_g_forest_rsp <- function(input,
                              plot_height,
                              plot_width,
                              label,
-                             default_responses) {
+                             default_responses,
+                             ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -637,11 +666,8 @@ srv_g_forest_rsp <- function(input,
         anl_selectors()$subgroup_var()$select_ordered else NULL,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
-      col_symbol_size = if (input$fixed_symbol_size) {
-        NULL
-      } else {
-        1
-      }
+      col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
+      ggplot2_args = ggplot2_args
     )
     mapply(expression = my_calls, chunks_push)
 
