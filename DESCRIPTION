@@ -3,7 +3,7 @@ Title: Teal Modules for Standard Clinical Outputs
 Version: 0.8.10.9034
 Date: 2021-10-13
 Authors@R: c(
-    person("NEST", , , "basel.basel.nestcicd@roche.com", role = c("aut", "cre")),
+    person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre")),
     person("Adrian", "Waddell", , "adrian.waddell@roche.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
     person("Yuyao", "Song", , "yuyao.song@roche.com", role = "aut"),
