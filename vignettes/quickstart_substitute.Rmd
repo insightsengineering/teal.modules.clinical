@@ -381,7 +381,6 @@ might be chained in a pipeline.
 #' Expressions as a pipeline
 #'
 #' Accepts expressions to be chained using the `magrittr` pipeline-flavor.
-#' 
 #' @param ... (`call`)\cr or object which can be interpreted as so.
 #'    (e.g. `name`)
 #'
@@ -492,7 +491,6 @@ rtables_expr <- function(df,
                          arm,
                          visit,
                          .stats = NULL) {
-  
   # y is a list which will collect two expressions:
   # 1. y$data with the preprocessing steps.
   # 2. y$rtables the table layout and build.

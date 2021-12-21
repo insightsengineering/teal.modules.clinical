@@ -116,7 +116,7 @@ template_therapy <- function(dataname = "ANL",
     substitute(expr = {
       dataname[[cmstdy_char]] <- as.numeric(dataname[[cmstdy_char]])
       dataname[[cmendy_char]] <- as.numeric(dataname[[cmendy_char]])
-      max_day <- max(dataname[[cmendy_char]], na.rm = T)
+      max_day <- max(dataname[[cmendy_char]], na.rm = TRUE)
       data <- dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
         dplyr::select_at(cols_to_include) %>%
