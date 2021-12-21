@@ -11,7 +11,7 @@ template_patient_timeline(
   aetime_end = "AENDTM",
   dstime_start = "CMASTDTM",
   dstime_end = "CMAENDTM",
-  cmtrt = "CMTRT",
+  cmdecod = "CMDECOD",
   aerelday_start = NULL,
   aerelday_end = NULL,
   dsrelday_start = NULL,
@@ -36,7 +36,7 @@ analysis data used in teal module.}
 
 \item{dstime_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
 
-\item{cmtrt}{(\code{character})\cr name of reported name of drug, med, or therapy variable.}
+\item{cmdecod}{(\code{character})\cr name of reported standardized name of drug, med, or therapy variable.}
 
 \item{aerelday_start}{(\code{character})\cr name of start study day variable.}
 

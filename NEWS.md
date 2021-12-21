@@ -1,7 +1,8 @@
-# teal.modules.clinical 0.8.10.9030
+# teal.modules.clinical 0.8.10.9035
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
+* Changed the `tm_g_pp_patient_timeline` parameter, `cmtrt`, to `cmdecod`.
 
 ### New features
 * New module `tm_t_abnormality_by_worst_grade` was added for the analysis of laboratory test results with highest grade post-baseline.
@@ -24,6 +25,7 @@
 * Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
 * Replaced calls to `utils.nest::check_slider_input` with `checkmate::assert_numeric`.
+* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
 
 # teal.modules.clinical 0.8.10
 ### New features
