@@ -63,6 +63,12 @@ If \code{FALSE}, the univariate approach is used
 
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_coxreg]{control_coxreg()}}.}
+
+\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Creates a valid expression for Cox regression analysis.

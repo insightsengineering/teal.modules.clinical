@@ -110,6 +110,18 @@ rates between any two columns.}
 
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
+
+\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
+
+\item{ggplot2_args}{(\code{ggplot2_args})\cr object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
+with settings for the module plot.
+For more details see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module
