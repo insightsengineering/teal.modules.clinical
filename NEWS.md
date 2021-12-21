@@ -20,7 +20,7 @@
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 
 ### Bug fixes
-* Fixed show R code failure in `tm_g_ipp` roxygen example app.
+* Fixed show R code failure in `tm_g_ipp` example app.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
