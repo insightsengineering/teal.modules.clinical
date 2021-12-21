@@ -31,6 +31,12 @@ variable value designating the studied parameter.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
+\item{arm_levels}{(\code{character})\cr vector of all arm variable levels.}
+
+\item{avalu_first}{(\code{string})\cr avalu value.}
+
+\item{paramcd_first}{(\code{string})\cr paramcd value.}
+
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 

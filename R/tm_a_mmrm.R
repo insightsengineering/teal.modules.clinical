@@ -333,7 +333,7 @@ template_mmrm_plots <- function(fit_name,
                                                                    user_default = ggplot2_args[["default"]]))
 
     plot_call <- substitute(
-      expr = {
+      expr =
         g_mmrm_lsmeans(
           fit_mmrm,
           select = select,
@@ -358,8 +358,7 @@ template_mmrm_plots <- function(fit_name,
               )
             )
           }
-          )
-      },
+        ),
       env = list(
         fit_mmrm = as.name(fit_name),
         select = lsmeans_plot$select,
@@ -377,7 +376,6 @@ template_mmrm_plots <- function(fit_name,
         plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
-
   }
 
   if (!is.null(diagnostic_plot)) {
@@ -385,13 +383,12 @@ template_mmrm_plots <- function(fit_name,
                                                                    user_default = ggplot2_args[["default"]]))
 
     plot_call <- substitute(
-      expr = {
+      expr =
         g_mmrm_diagnostic(
           fit_mmrm,
           type = type,
           z_threshold = z_threshold
-        )
-      },
+        ),
       env = list(
         fit_mmrm = as.name(fit_name),
         type = diagnostic_plot$type,

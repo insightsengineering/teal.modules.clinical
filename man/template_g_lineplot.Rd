@@ -23,7 +23,7 @@ template_g_lineplot(
   table_font_size = 4,
   title = "Line Plot",
   y_lab = "",
-  ggplot2_args = teal.deve::ggplot2_args()
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{

@@ -27,8 +27,8 @@ template_coxreg_u <- function(dataname,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
                               append = FALSE,
-                              basic_table_args = teal.devel::basic_table_args()) {
-
+                              basic_table_args = teal.devel::basic_table_args(
+                                title = paste0("Multi-Variable Cox Regression for ", paramcd))) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -207,8 +207,8 @@ template_coxreg_m <- function(dataname,
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
-                              basic_table_args = teal.devel::basic_table_args()) {
-
+                              basic_table_args = teal.devel::basic_table_args(
+                                title = paste0("Cox Regression for ", paramcd))) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -829,7 +829,6 @@ srv_t_coxreg <- function(input,
       input$conf_level >= 0 && input$conf_level <= 1,
       "Please choose a confidence level between 0 and 1"
     ))
-
 
     validate_no_intersection(
       input_arm_var,

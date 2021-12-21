@@ -17,7 +17,8 @@ template_coxreg_m(
   strata_var = NULL,
   combine_comp_arms = FALSE,
   control = control_coxreg(),
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.devel::basic_table_args(title = paste0("Cox Regression for ",
+    paramcd))
 )
 }
 \arguments{

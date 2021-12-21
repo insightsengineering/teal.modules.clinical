@@ -1,6 +1,6 @@
 test_that("template_events_summary generates minimal table", {
   result <- template_events_summary(
-    anl = "adae",
+    anl_name = "adae",
     parentname = "adsl",
     arm_var = "ARM"
   )
@@ -70,7 +70,6 @@ test_that("template_events_summary generates minimal table", {
     table = quote({
       col_info(result_parent) <- col_info(result_anl)
       result <- rbind(result_anl, result_parent)
-      result
     })
   )
   expect_equal(result, expected)
@@ -78,7 +77,7 @@ test_that("template_events_summary generates minimal table", {
 
 test_that("template_events_summary generates table with multiple flags", {
   result <- template_events_summary(
-    anl = "adae",
+    anl_name = "adae",
     parentname = "adsl",
     arm_var = "ARM",
     add_total = TRUE,
@@ -212,7 +211,6 @@ test_that("template_events_summary generates table with multiple flags", {
     table = quote({
       col_info(result_parent) <- col_info(result_anl)
       result <- rbind(result_anl[1:2, ], result_parent, result_anl[3:nrow(result_anl), ])
-      result
     })
   )
   expect_equal(result, expected)

@@ -6,6 +6,9 @@
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
+#' @param arm_levels (`character`)\cr vector of all arm variable levels.
+#' @param avalu_first (`string`)\cr avalu value.
+#' @param paramcd_first (`string`)\cr paramcd value.
 #' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
 #'  with settings for the module plot.
 #'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `x`, `y`.
@@ -122,7 +125,6 @@ template_g_ipp <- function(dataname = "ANL",
       grid::grid.draw(plot)
     )
   )
-
 
   y$graph <- bracket_expr(graph_list)
 

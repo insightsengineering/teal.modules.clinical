@@ -18,7 +18,8 @@ template_coxreg_u(
   combine_comp_arms = FALSE,
   control = control_coxreg(),
   append = FALSE,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.devel::basic_table_args(title =
+    paste0("Multi-Variable Cox Regression for ", paramcd))
 )
 }
 \arguments{
