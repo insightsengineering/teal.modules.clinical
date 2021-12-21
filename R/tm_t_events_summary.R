@@ -423,9 +423,7 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  print_expr <- list(quote(result))
-
-  y$table <- bracket_expr(c(table_list, print_expr))
+  y$table <- bracket_expr(table_list)
 
   y
 }
@@ -587,7 +585,8 @@ tm_t_events_summary <- function(label,
                                 count_pt = TRUE,
                                 count_events = TRUE,
                                 pre_output = NULL,
-                                post_output = NULL) {
+                                post_output = NULL,
+                                basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_summary")
   stop_if_not(
     is_character_single(label),
@@ -606,6 +605,8 @@ tm_t_events_summary <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
 
@@ -635,7 +636,8 @@ tm_t_events_summary <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -756,7 +758,8 @@ srv_t_events_summary <- function(input,
                                  flag_var_aesi,
                                  aeseq_var,
                                  llt,
-                                 label) {
+                                 label,
+                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -852,6 +855,18 @@ srv_t_events_summary <- function(input,
     )
 
     mapply(expression = my_calls, chunks_push)
+
+    all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args)
+    chunks_push(substitute({
+      rtables::main_title(result) <- title
+      rtables::main_footer(result) <- footer
+      rtables::prov_footer(result) <- p_footer
+      rtables::subtitles(result) <- subtitle
+      result
+    }, env = list(title = `if`(is.null(all_basic_table_args$title), "", all_basic_table_args$title),
+                  footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+                  p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+                  subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
   })
 
   # Outputs to render.
