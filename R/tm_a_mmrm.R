@@ -26,9 +26,7 @@ template_fit_mmrm <- function(parentname,
                               cor_struct = "unstructured",
                               weights_emmeans = "proportional",
                               optimizer = "automatic",
-                              parallel = FALSE
-
-) {
+                              parallel = FALSE) {
   # Data
   y <- list()
   data_list <- list()
@@ -174,15 +172,19 @@ template_mmrm_tables <- function(parentname,
                                  visit_var,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
-                                 table_type = "t_mmrm_cov") {
+                                 table_type = "t_mmrm_cov",
+                                 basic_table_args = teal.devel::basic_table_args()) {
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
+  all_basic_table_args <- resolve_basic_table_args(basic_table_args)
+
   # Build layout.
   layout_list <- list()
   layout_list <- layout_list %>%
-    add_expr(quote(basic_table()))
+    add_expr(substitute(expr_basic_table_args,
+                        env = list(expr_basic_table_args = parse_basic_table_args(all_basic_table_args))))
 
   if (!is.null(arm_var)) {
     layout_list <- add_expr(
@@ -320,13 +322,19 @@ template_mmrm_plots <- function(fit_name,
                                 diagnostic_plot = list(
                                   type = "fit-residual",
                                   z_threshold = NULL
-                                )) {
+                                ),
+                                ggplot2_args = teal.devel::ggplot2_args()) {
   y <- list()
 
+
+
   if (!is.null(lsmeans_plot)) {
-    y$lsmeans_plot <- substitute(
+    parsed_ggplot2_args <- parse_ggplot2_args(resolve_ggplot2_args(user_plot = ggplot2_args[["lsmeans"]],
+                                                                   user_default = ggplot2_args[["default"]]))
+
+    plot_call <- substitute(
       expr = {
-        lsmeans_plot <- g_mmrm_lsmeans(
+        g_mmrm_lsmeans(
           fit_mmrm,
           select = select,
           width = width,
@@ -351,8 +359,6 @@ template_mmrm_plots <- function(fit_name,
             )
           }
           )
-
-        lsmeans_plot
       },
       env = list(
         fit_mmrm = as.name(fit_name),
@@ -361,22 +367,45 @@ template_mmrm_plots <- function(fit_name,
         show_pval = lsmeans_plot$show_pval
       )
     )
+
+    y$lsmeans_plot <- substitute(
+      expr = {
+        lsmeans_plot <- plot_call
+        lsmeans_plot
+      },
+      env = list(
+        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
+      )
+    )
+
   }
 
   if (!is.null(diagnostic_plot)) {
-    y$diagnostic_plot <- substitute(
+    parsed_ggplot2_args <- parse_ggplot2_args(resolve_ggplot2_args(user_plot = ggplot2_args[["diagnostic"]],
+                                                                   user_default = ggplot2_args[["default"]]))
+
+    plot_call <- substitute(
       expr = {
-        diagnostic_plot <- g_mmrm_diagnostic(
+        g_mmrm_diagnostic(
           fit_mmrm,
           type = type,
           z_threshold = z_threshold
         )
-        diagnostic_plot
       },
       env = list(
         fit_mmrm = as.name(fit_name),
         type = diagnostic_plot$type,
         z_threshold = diagnostic_plot$z_threshold
+      )
+    )
+
+    y$diagnostic_plot <- substitute(
+      expr = {
+        diagnostic_plot <- plot_call
+        diagnostic_plot
+      },
+      env = list(
+        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
   }
@@ -387,6 +416,13 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams module_arguments
+#' @param ggplot2_args optional, (`ggplot2_args`) object created by [`teal.devel::ggplot2_args()`]
+#'  with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
+#'  For more details see the help vignette:
+#'  `vignette("Custom ggplot2 arguments module", package = "teal.devel")`.
+#'  List names should match the following:\cr
+#'  `c("default", "lsmeans", "diagnostic")`.
+#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #'
 #' @importFrom shinyjs show
 #' @importFrom shinyjs hidden
@@ -475,7 +511,9 @@ tm_a_mmrm <- function(label,
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
-                      post_output = NULL) {
+                      post_output = NULL,
+                      basic_table_args = teal.devel::basic_table_args(),
+                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
   stop_if_not(
@@ -496,6 +534,19 @@ tm_a_mmrm <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+  plot_choices <- c("lsmeans", "diagnostic")
+  checkmate::assert(
+    checkmate::check_class(ggplot2_args, "ggplot2_args"),
+    checkmate::assert(
+      combine = "or",
+      checkmate::check_list(ggplot2_args, types = "ggplot2_args"),
+      checkmate::check_subset(names(ggplot2_args), c("default", plot_choices))
+    )
+  )
+  # Important step, so we could easily consume it later
+  if (inherits(ggplot2_args, "ggplot2_args")) ggplot2_args <- list(default = ggplot2_args)
 
   args <- as.list(environment())
 
@@ -522,7 +573,9 @@ tm_a_mmrm <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        basic_table_args = basic_table_args,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -785,7 +838,9 @@ srv_mmrm <- function(input,
                      arm_ref_comp,
                      label,
                      plot_height,
-                     plot_width) {
+                     plot_width,
+                     basic_table_args,
+                     ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -1239,7 +1294,8 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
         visit_var = as.vector(anl_m$columns_source$visit_var),
         paramcd = paramcd,
         show_relative = input$t_mmrm_lsmeans_show_relative,
-        table_type = table_type
+        table_type = table_type,
+        basic_table_args = basic_table_args
       )
 
       mapply(expression = res, table_stack_push)
@@ -1299,7 +1355,8 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
       res <- template_mmrm_plots(
         "fit",
         lsmeans_plot = lsmeans_plot,
-        diagnostic_plot = diagnostic_plot
+        diagnostic_plot = diagnostic_plot,
+        ggplot2_args = ggplot2_args
       )
       mapply(expression = res, plot_stack_push)
       chunks_push_chunks(plot_stack)
