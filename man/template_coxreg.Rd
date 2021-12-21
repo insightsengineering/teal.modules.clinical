@@ -17,7 +17,8 @@ template_coxreg(
   strata_var = NULL,
   combine_comp_arms = FALSE,
   multivariate = FALSE,
-  control = control_coxreg()
+  control = control_coxreg(),
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{

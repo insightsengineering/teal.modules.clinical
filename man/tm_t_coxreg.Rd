@@ -19,7 +19,8 @@ tm_t_coxreg(
   multivariate = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{

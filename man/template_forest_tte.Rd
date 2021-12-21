@@ -17,7 +17,8 @@ template_forest_tte(
   strata_var = NULL,
   conf_level = 0.95,
   col_symbol_size = NULL,
-  time_unit_var = "AVALU"
+  time_unit_var = "AVALU",
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -58,6 +59,14 @@ to calculate the estimator. If \code{NULL}, the same symbol size is used for all
 
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
+
+\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
+with settings for the module plot.
+For this module this argument will accepted only such \code{labs} arguments:  \code{title}, \code{caption}.
+\code{theme} arguments will be not taken into account.
+For more details see the help vignette:
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
 }
 \description{
 Creates a valid expression for survival forest plot.

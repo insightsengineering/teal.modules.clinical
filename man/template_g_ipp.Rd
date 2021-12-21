@@ -8,13 +8,17 @@ template_g_ipp(
   dataname = "ANL",
   paramcd,
   arm_var,
+  arm_levels,
+  avalu_first,
+  paramcd_first,
   aval_var = "AVAL",
   avalu_var = "AVALU",
   id_var = "USUBJID",
   visit_var = "AVISIT",
   base_var = "BASE",
   add_baseline_hline = FALSE,
-  separate_by_obs = FALSE
+  separate_by_obs = FALSE,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -42,6 +46,14 @@ the variable name for subject id.}
 \item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
 
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+
+\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
+with settings for the module plot.
+For this module this argument will accepted only such \code{labs} arguments:  \code{title}, \code{subtitle}, \code{x}, \code{y}.
+\code{theme} arguments will be not taken into account.
+For more details see the help vignette:
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
 }
 \description{
 Template: Individual Patient Plots

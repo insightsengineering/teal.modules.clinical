@@ -84,8 +84,7 @@ If it equals to \code{NULL}, then no label will be added.}
 
 \item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
 with settings for the module plot.
-This module support arguments compatible with \link[tern:g_lineplot]{tern::g_lineplot} function.
-This argument will accepted only such \code{labs} arguments:  \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
+For this module this argument will accepted only such \code{labs} arguments:  \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
 \code{theme} arguments will be not taken into account.
 For more details see the help vignette:
 \code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}

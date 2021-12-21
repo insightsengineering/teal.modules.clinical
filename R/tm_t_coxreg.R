@@ -29,7 +29,8 @@ template_coxreg <- function(dataname,
                             strata_var = NULL,
                             combine_comp_arms = FALSE,
                             multivariate = FALSE,
-                            control = control_coxreg()) {
+                            control = control_coxreg(),
+                            basic_table_args = teal.devel::basic_table_args()) {
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -144,26 +145,22 @@ template_coxreg <- function(dataname,
 
   layout_list <- list()
 
-  if (!multivariate) {
+  if (multivariate) {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = basic_table(title = paste("Cox Regression for", paramcd)),
-        env = list(paramcd = paramcd)
+        expr_basic_table_args,
+        env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
       )
-    )
-
-    layout_list <- add_expr(
-      layout_list,
-      quote(split_rows_by("effect"))
     )
   } else {
     layout_list <- add_expr(
       layout_list,
-      substitute(
-        expr = basic_table(title = paste("Multi-Variable Cox Regression for", paramcd)),
-        env = list(paramcd = paramcd)
-      )
+      quote(basic_table())
+    )
+    layout_list <- add_expr(
+      layout_list,
+      quote(split_rows_by("effect"))
     )
   }
 
@@ -199,10 +196,16 @@ template_coxreg <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- quote({
-    result <- build_table(lyt = lyt, df = df)
-    result
-  })
+  y$table <- if (multivariate) {
+    substitute({
+      result <- build_table(lyt = lyt, df = df)
+      result
+    })
+  } else {
+    substitute({
+      result <- c(result, build_table(lyt = lyt, df = df))
+    })
+  }
 
   y
 }
@@ -383,7 +386,8 @@ tm_t_coxreg <- function(label,
                         multivariate = TRUE,
                         conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
-                        post_output = NULL) {
+                        post_output = NULL,
+                        basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_coxreg")
   stop_if_not(
     length(dataname) == 1,
@@ -420,7 +424,8 @@ tm_t_coxreg <- function(label,
         arm_ref_comp = arm_ref_comp,
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -582,7 +587,8 @@ srv_t_coxreg <- function(input,
                          cnsr_var,
                          cov_var,
                          arm_ref_comp,
-                         label) {
+                         label,
+                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -612,7 +618,6 @@ srv_t_coxreg <- function(input,
     ),
     merge_function = "dplyr::inner_join"
   )
-
 
   ## render conditional strata levels input UI  ----
   open_textinput <- function(x, anl) {
@@ -778,7 +783,7 @@ srv_t_coxreg <- function(input,
   })
 
 
-  call_template <- function(comp_arm, anl, paramcd) {
+  call_template <- function(comp_arm, anl, paramcd, basic_table_args = teal.devel::basic_table_args()) {
     strata_var <- as.vector(anl$columns_source$strata_var)
     cov_var <- as.vector(anl$columns_source$cov_var)
     template_coxreg(
@@ -799,7 +804,8 @@ srv_t_coxreg <- function(input,
         ties = input$ties,
         conf_level = as.numeric(input$conf_level),
         interaction = if_null(input$interactions, FALSE)
-      )
+      ),
+      basic_table_args = basic_table_args
     )
   }
 
@@ -815,29 +821,34 @@ srv_t_coxreg <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
-    calls <- if (input$type != "Multivariate") {
-      lapply(input$comp_arm, call_template, anl_m, paramcd)
+    calls <- if (input$type == "Multivariate") {
+      main_titile <- paste0("Multi-Variable Cox Regression for ", paramcd)
+      all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
+                                                       module_table =  basic_table_args(title = main_titile))
+      mapply(expr = call_template(input$comp_arm, anl_m, paramcd, all_basic_table_args), chunks_push)
+      chunks_safe_eval()
+      chunks_get_var("result")
     } else {
-      list(call_template(input$comp_arm, anl_m, paramcd))
+      main_title <- paste0("Cox Regression for ", paramcd)
+      all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
+                                                       module_table =  basic_table_args(title = main_title))
+      chunks_push(quote(result <- NULL))
+      lapply(input$comp_arm, function(x) mapply(expr = call_template(x, anl_m, paramcd), chunks_push))
+      chunks_push(substitute({
+        final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
+        rtables::main_title(final_table) <- title
+        rtables::main_footer(final_table) <- footer
+        rtables::prov_footer(final_table) <- p_footer
+        rtables::subtitles(final_table) <- subtitle
+        final_table
+      }, env = list(title = all_basic_table_args$title,
+                    footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+                    p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+                    subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
+      chunks_safe_eval()
+      chunks_get_var("final_table")
     }
 
-    title <- if (input$type == "Multivariate") {
-      paste0("Multi-Variable Cox Regression for ", paramcd)
-    } else if (input$type == "Univariate") {
-      paste0("Cox Regression for ", paramcd)
-    }
-
-    res <- lapply(
-      calls,
-      function(call) {
-        mapply(expr = call, chunks_push)
-        chunks_safe_eval()
-        chunks_get_var("result")
-      })
-
-    final_table <- rtables::rbindl_rtables(res, check_headers = TRUE)
-    rtables::main_title(final_table) <- title
-    final_table
   })
 
   callModule(
