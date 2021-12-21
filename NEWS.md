@@ -19,6 +19,9 @@
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 
+### Bug fixes
+* Fixed show R code failure in `tm_g_ipp` roxygen example app.
+
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
 * Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
