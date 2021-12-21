@@ -43,7 +43,9 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>% append_topleft("OS") %>% split_rows_by("term", child_labels = "hidden") %>%
+        split_rows_by("effect") %>%
+        append_topleft("OS") %>%
+        split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
     table = quote(result <- build_table(lyt = lyt, df = df))
@@ -98,7 +100,9 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>% append_topleft("OS") %>% split_rows_by("term", child_labels = "hidden") %>%
+        split_rows_by("effect") %>%
+        append_topleft("OS") %>%
+        split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
     table = quote(result <- build_table(lyt = lyt, df = df))
