@@ -1,36 +1,33 @@
-#' Template: Cox Regression
+#' Template: Cox Regression Univariate
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis,
 #'   see [control_coxreg()].
-#' @param multivariate (`logical`)\cr
-#'   If `FALSE`, the univariate approach is used
-#'   (equivalent to `COXT01` standard) instead of the multivariate model
-#'   (equivalent to `COXT02` standard).
 #' @param at (`list` of `numeric`)\cr when the candidate covariate is a
 #'  `numeric`, use `at` to specify the value of the covariate at which the
 #'  effect should be estimated.
+#' @param append (`logical`)\cr if the result should be appended to the previous one.
 #'
 #' @importFrom broom tidy
 #'
 #' @seealso [tm_t_coxreg()]
 #'
-template_coxreg <- function(dataname,
-                            cov_var,
-                            arm_var,
-                            cnsr_var,
-                            aval_var,
-                            ref_arm,
-                            comp_arm,
-                            paramcd,
-                            at = list(),
-                            strata_var = NULL,
-                            combine_comp_arms = FALSE,
-                            multivariate = FALSE,
-                            control = control_coxreg(),
-                            basic_table_args = teal.devel::basic_table_args()) {
+template_coxreg_u <- function(dataname,
+                              cov_var,
+                              arm_var,
+                              cnsr_var,
+                              aval_var,
+                              ref_arm,
+                              comp_arm,
+                              paramcd,
+                              at = list(),
+                              strata_var = NULL,
+                              combine_comp_arms = FALSE,
+                              control = control_coxreg(),
+                              append = FALSE,
+                              basic_table_args = teal.devel::basic_table_args()) {
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -104,21 +101,7 @@ template_coxreg <- function(dataname,
     )
   }
 
-  data_list <- if (multivariate) {
-    add_expr(
-      data_list,
-      substitute(
-        model <- fit_coxreg_multivar(
-          variables = variables,
-          data = anl,
-          control = control
-        ),
-        env = list(
-          control = control
-        )
-      )
-    )
-  } else {
+  data_list <-
     add_expr(
       data_list,
       substitute(
@@ -134,7 +117,6 @@ template_coxreg <- function(dataname,
         )
       )
     )
-  }
 
   data_list <- add_expr(
     data_list,
@@ -145,24 +127,17 @@ template_coxreg <- function(dataname,
 
   layout_list <- list()
 
-  if (multivariate) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr_basic_table_args,
-        env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
-      )
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr_basic_table_args,
+      env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
     )
-  } else {
-    layout_list <- add_expr(
-      layout_list,
-      quote(basic_table())
-    )
-    layout_list <- add_expr(
-      layout_list,
-      quote(split_rows_by("effect"))
-    )
-  }
+  )
+  layout_list <- add_expr(
+    layout_list,
+    quote(split_rows_by("effect"))
+  )
 
   layout_list <- add_expr(
     layout_list,
@@ -184,7 +159,7 @@ template_coxreg <- function(dataname,
         vars = vars
       ),
       env = list(
-        multivariate = multivariate,
+        multivariate = FALSE,
         conf_level = control$conf_level,
         vars = if (control$interaction) c(vars, "pval_inter") else vars
       )
@@ -196,16 +171,184 @@ template_coxreg <- function(dataname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  y$table <- if (multivariate) {
-    substitute({
-      result <- build_table(lyt = lyt, df = df)
-      result
-    })
+  y$table <- if (append) {
+    quote(result <- c(result, build_table(lyt = lyt, df = df)))
   } else {
-    substitute({
-      result <- c(result, build_table(lyt = lyt, df = df))
-    })
+    quote(result <- build_table(lyt = lyt, df = df))
   }
+
+  y
+}
+
+#' Template: Cox Regression Multivariate
+#'
+#' Creates a valid expression for Cox regression analysis.
+#'
+#' @inheritParams template_arguments
+#' @param control (`list`)\cr list of settings for the analysis,
+#'   see [control_coxreg()].
+#' @param at (`list` of `numeric`)\cr when the candidate covariate is a
+#'  `numeric`, use `at` to specify the value of the covariate at which the
+#'  effect should be estimated.
+#'
+#' @importFrom broom tidy
+#'
+#' @seealso [tm_t_coxreg()]
+#'
+template_coxreg_m <- function(dataname,
+                              cov_var,
+                              arm_var,
+                              cnsr_var,
+                              aval_var,
+                              ref_arm,
+                              comp_arm,
+                              paramcd,
+                              at = list(),
+                              strata_var = NULL,
+                              combine_comp_arms = FALSE,
+                              control = control_coxreg(),
+                              basic_table_args = teal.devel::basic_table_args()) {
+
+  y <- list()
+  ref_arm_val <- paste(ref_arm, collapse = "/")
+
+  data_pipe <- list()
+  data_list <- list()
+
+  data_pipe <- add_expr(
+    data_pipe,
+    prepare_arm(
+      dataname = dataname,
+      arm_var = arm_var,
+      ref_arm = ref_arm,
+      comp_arm = comp_arm,
+      ref_arm_val = ref_arm_val
+    )
+  )
+
+  if (combine_comp_arms) {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute_names(
+        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm)
+      )
+    )
+  }
+
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = dplyr::mutate(event = 1 - cnsr_var),
+      env = list(cnsr_var = as.name(cnsr_var))
+    )
+  )
+
+  data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- data_pipe,
+      env = list(data_pipe = pipe_expr(data_pipe))
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = variables <- list(
+        time = aval_var, event = "event", arm = arm_var, covariates = cov_var
+      ),
+      env = list(
+        aval_var = aval_var,
+        arm_var = arm_var,
+        cov_var = cov_var
+      )
+    )
+  )
+
+  if (!is.null(strata_var)) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = variables$strata <- strata_var,
+        env = list(
+          strata_var = strata_var
+        )
+      )
+    )
+  }
+
+  data_list <-
+    add_expr(
+      data_list,
+      substitute(
+        model <- fit_coxreg_multivar(
+          variables = variables,
+          data = anl,
+          control = control
+        ),
+        env = list(
+          control = control
+        )
+      )
+    )
+
+  data_list <- add_expr(
+    data_list,
+    quote(df <- broom::tidy(model))
+  )
+
+  y$data <- bracket_expr(data_list)
+
+  layout_list <- list()
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr_basic_table_args,
+      env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
+    )
+  )
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = append_topleft(paramcd) %>%
+        split_rows_by("term", child_labels = "hidden"),
+      env = list(paramcd = paramcd)
+    )
+  )
+
+  vars <- c("n", "hr", "ci", "pval")
+
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      expr = summarize_coxreg(
+        multivar = multivariate,
+        conf_level = conf_level,
+        vars = vars
+      ),
+      env = list(
+        multivariate = TRUE,
+        conf_level = control$conf_level,
+        vars = if (control$interaction) c(vars, "pval_inter") else vars
+      )
+    )
+  )
+
+  y$layout <- substitute(
+    expr = lyt <- layout_pipe,
+    env = list(layout_pipe = pipe_expr(layout_list))
+  )
+
+  y$table <- quote({
+    result <- build_table(lyt = lyt, df = df)
+    result
+  })
 
   y
 }
@@ -783,30 +926,59 @@ srv_t_coxreg <- function(input,
   })
 
 
-  call_template <- function(comp_arm, anl, paramcd, basic_table_args = teal.devel::basic_table_args()) {
+  call_template <- function(comp_arm, anl, paramcd, multivariate, basic_table_args = NULL) {
     strata_var <- as.vector(anl$columns_source$strata_var)
+    strata_var <- if (length(strata_var) != 0) strata_var else NULL
     cov_var <- as.vector(anl$columns_source$cov_var)
-    template_coxreg(
-      dataname = "ANL",
-      cov_var = if (length(cov_var) > 0) cov_var else NULL,
-      at = if (!is.null(input$interactions) && input$interactions) at() else list(),
-      arm_var = as.vector(anl$columns_source$arm_var),
-      cnsr_var = as.vector(anl$columns_source$cnsr_var),
-      aval_var = as.vector(anl$columns_source$aval_var),
-      ref_arm = input$ref_arm,
-      comp_arm = comp_arm,
-      paramcd = paramcd,
-      strata_var = if (length(strata_var) != 0) strata_var else NULL,
-      combine_comp_arms = input$combine_comp_arms,
-      multivariate = input$type == "Multivariate",
-      control = control_coxreg(
-        pval_method = input$pval_method,
-        ties = input$ties,
-        conf_level = as.numeric(input$conf_level),
-        interaction = if_null(input$interactions, FALSE)
-      ),
-      basic_table_args = basic_table_args
+    cov_var <- if (length(cov_var) > 0) cov_var else NULL
+
+    at <- if (!is.null(input$interactions) && input$interactions) at() else list()
+    arm_var <-  as.vector(anl$columns_source$arm_var)
+    cnsr_var <- as.vector(anl$columns_source$cnsr_var)
+    aval_var <- as.vector(anl$columns_source$aval_var)
+    ref_arm <- input$ref_arm
+    combine_comp_arms <- input$combine_comp_arms
+    control <- control_coxreg(
+      pval_method = input$pval_method,
+      ties = input$ties,
+      conf_level = as.numeric(input$conf_level),
+      interaction = if_null(input$interactions, FALSE)
     )
+
+    if (multivariate) {
+      template_coxreg_m(
+        dataname = "ANL",
+        cov_var = cov_var,
+        at = at,
+        arm_var = arm_var,
+        cnsr_var = cnsr_var,
+        aval_var = aval_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        paramcd = paramcd,
+        strata_var = strata_var,
+        combine_comp_arms = combine_comp_arms,
+        control = control,
+        basic_table_args = basic_table_args
+      )
+    } else {
+      template_coxreg_u(
+        dataname = "ANL",
+        cov_var = cov_var,
+        at = at,
+        arm_var = arm_var,
+        cnsr_var = cnsr_var,
+        aval_var = aval_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        paramcd = paramcd,
+        strata_var = strata_var,
+        combine_comp_arms = combine_comp_arms,
+        control = control,
+        append = TRUE,
+        basic_table_args = basic_table_args
+      )
+    }
   }
 
   ## generate table call with template and render table ----
@@ -820,20 +992,22 @@ srv_t_coxreg <- function(input,
 
     ANL <- chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
+    multivariate <- input$type == "Multivariate"
 
-    calls <- if (input$type == "Multivariate") {
+    if (input$type == "Multivariate") {
       main_titile <- paste0("Multi-Variable Cox Regression for ", paramcd)
       all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
                                                        module_table =  basic_table_args(title = main_titile))
-      mapply(expr = call_template(input$comp_arm, anl_m, paramcd, all_basic_table_args), chunks_push)
+      mapply(expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args), chunks_push)
       chunks_safe_eval()
       chunks_get_var("result")
     } else {
       main_title <- paste0("Cox Regression for ", paramcd)
       all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
                                                        module_table =  basic_table_args(title = main_title))
-      chunks_push(quote(result <- NULL))
-      lapply(input$comp_arm, function(x) mapply(expr = call_template(x, anl_m, paramcd), chunks_push))
+      chunks_push(quote(result <- list()))
+      lapply(input$comp_arm, function(x)
+        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), chunks_push))
       chunks_push(substitute({
         final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
         rtables::main_title(final_table) <- title
