@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/404.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/articles/quickstart_substitute.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/authors.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/pull_request_template.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/add_expr.html</loc>
@@ -47,6 +68,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/h_concat_expr.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/index.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/is.cs_or_des.html</loc>
@@ -284,8 +308,5 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_tte.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/articles/quickstart_substitute.html</loc>
   </url>
 </urlset>
