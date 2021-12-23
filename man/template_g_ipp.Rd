@@ -14,7 +14,8 @@ template_g_ipp(
   visit_var = "AVISIT",
   base_var = "BASE",
   add_baseline_hline = FALSE,
-  separate_by_obs = FALSE
+  separate_by_obs = FALSE,
+  suppress_legend = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ the variable name for subject id.}
 \item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
 
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+
+\item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
 }
 \description{
 Template: Individual Patient Plots

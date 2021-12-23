@@ -6,6 +6,7 @@
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
+#' @param suppress_legend (`flag`)\cr allow user to suppress legend
 #'
 #' @importFrom grid grid.newpage grid.draw
 
@@ -18,7 +19,8 @@ template_g_ipp <- function(dataname = "ANL",
                            visit_var = "AVISIT",
                            base_var = "BASE",
                            add_baseline_hline = FALSE,
-                           separate_by_obs = FALSE) {
+                           separate_by_obs = FALSE,
+                           suppress_legend = FALSE) {
 
   assert_that(
     is.string(dataname),
@@ -30,7 +32,8 @@ template_g_ipp <- function(dataname = "ANL",
     is.string(visit_var),
     is.string(base_var),
     is.flag(add_baseline_hline),
-    is.flag(separate_by_obs)
+    is.flag(separate_by_obs),
+    is.flag(suppress_legend)
     )
 
   y <- list()
@@ -98,6 +101,18 @@ template_g_ipp <- function(dataname = "ANL",
         env = list(id = as.name(id_var))
         )
       )
+  }
+
+  if (suppress_legend){
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = {
+          plot <- plot + ggplot2::theme(legend.position = "none")
+        },
+        env = list(id = as.name(id_var))
+      )
+    )
   }
 
   graph_list <- add_expr(
@@ -249,6 +264,7 @@ tm_g_ipp <- function(label,
                        ),
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
+                     suppress_legend = FALSE,
                      plot_height = c(1200L, 400L, 5000L),
                      plot_width = NULL,
                      pre_output = NULL,
@@ -260,6 +276,7 @@ tm_g_ipp <- function(label,
     is_character_single(parentname),
     is_logical_single(add_baseline_hline),
     is_logical_single(separate_by_obs),
+    is_logical_single(suppress_legend),
     list(
       is.null(pre_output) || is(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -380,7 +397,12 @@ ui_g_ipp <- function(id, ...) {
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
-            )
+            ),
+          checkboxInput(
+            ns("suppress_legend"),
+            "Suppress legend",
+            value = a$suppress_legend
+          )
         )
       )
     ),
@@ -500,6 +522,7 @@ srv_g_ipp <- function(input,
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
+      suppress_legend = input$suppress_legend,
       paramcd <- unlist(paramcd$filter)["vars_selected"],
       arm_var <-  unlist(arm_var$filter)["vars_selected"]
     )

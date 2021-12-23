@@ -18,6 +18,7 @@
 * Added `default_responses` argument to `tm_t_binary_outcome`, `tm_t_rsp`, `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
+* Update `tm_g_ipp.R` to allow users to suppress legend when number of subjects is high.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
