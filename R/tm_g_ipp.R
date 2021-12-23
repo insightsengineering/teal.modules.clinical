@@ -103,7 +103,7 @@ template_g_ipp <- function(dataname = "ANL",
       )
   }
 
-  if (suppress_legend){
+  if (suppress_legend) {
     graph_list <- add_expr(
       graph_list,
       substitute(
