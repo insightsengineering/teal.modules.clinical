@@ -173,18 +173,18 @@ template_g_ipp <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset(
-#'     "ADSL",
-#'     adsl,
-#'     code = "adsl <- synthetic_cdisc_data('latest')$adsl %>% slice(1:20)
-#'             ADSL <- df_explicit_na(ADSL)"
-#'             ),
+#'       "ADSL",
+#'       adsl,
+#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl %>% slice(1:20)
+#'       ADSL <- df_explicit_na(ADSL)"
+#'     ),
 #'     cdisc_dataset(
-#'     "ADLB",
-#'     adlb,
-#'     code = "ADLB <- radlb(ADSL, seed = 3)
-#'             ADLB <- df_explicit_na(ADLB) %>%
-#'               dplyr::filter(AVISIT != 'SCREENING')"
-#'              )
+#'       "ADLB",
+#'       adlb,
+#'       code = "ADLB <- synthetic_cdisc_data('latest')$adlb
+#'       ADLB <- df_explicit_na(ADLB) %>%
+#'       dplyr::filter(AVISIT != 'SCREENING')"
+#'     )
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_ipp(
@@ -216,16 +216,16 @@ template_g_ipp <- function(dataname = "ANL",
 #'         variable_choices(adlb, c("AVISIT")),
 #'         "AVISIT"
 #'       ),
-#'        base_var = choices_selected(
-#'         variable_choices(adlb, c("BASE")),
-#'         "BASE",
-#'         fixed = TRUE
+#'       base_var = choices_selected(
+#'          variable_choices(adlb, c("BASE")),
+#'          "BASE",
+#'          fixed = TRUE
 #'       ),
 #'       add_baseline_hline = FALSE,
 #'       separate_by_obs = FALSE
-#'       )
 #'     )
 #'   )
+#' )
 #'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
