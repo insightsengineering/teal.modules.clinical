@@ -262,7 +262,7 @@ bracket_expr <- function(exprs) {
     ),
     collapse = "\n"
   )
-  expr <- parse(text = expr)
+  expr <- parse(text = expr, keep.source = FALSE)
   expr <- as.call(expr)[[1]]
   attributes(expr) <- NULL
   expr
