@@ -62,7 +62,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
-          split_label = obj_label(anl$GRADE_DIR),
+          split_label = obj_label(anl$GRADE_DIR)
         ) %>%
         count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
@@ -72,7 +72,8 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
             grade_dir = "GRADE_DIR"
           )
         ) %>%
-        append_topleft("    Highest Grade")),
+        append_topleft("    Highest Grade")
+    ),
     table = quote({
       result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
