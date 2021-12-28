@@ -87,13 +87,11 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
-with settings for the module plot.
-For this module this argument will accepted only such \code{labs} arguments:  \code{title}, \code{subtitle}, \code{x}, \code{y}.
-\code{theme} arguments will be not taken into account.
-For more details see the help vignette:
-\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
-The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
+\item{ggplot2_args}{(\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hardcoded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 This teal module produces grid style Individual patient plot(s) that show

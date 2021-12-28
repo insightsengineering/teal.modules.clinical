@@ -3,20 +3,19 @@
 #' Creates a valid expression for response forest plot.
 #'
 #' @inheritParams template_arguments
-#' @param obj_var_name (`character`)\cr additional text string append to output title
+#' @param obj_var_name (`character`)\cr additional text string append to output title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `caption`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#' @param ggplot2_args (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and with default module arguments
+#' (hardcoded in the module body).\cr For more details, see the help vignette:
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
 #'
@@ -202,15 +201,16 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_binary_outcome
-#' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
-#' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `caption`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#' @param fixed_symbol_size (`logical`)\cr
+#' When (`TRUE`), the same symbol size is used for plotting each estimate.
+#' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param ggplot2_args (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hardcoded in the module body). \cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#'
 #'
 #' @export
 #'

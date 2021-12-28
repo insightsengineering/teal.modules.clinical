@@ -413,13 +413,13 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams module_arguments
-#' @param ggplot2_args optional, (`ggplot2_args`) object created by [`teal.devel::ggplot2_args()`]
-#'  with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2 arguments module", package = "teal.devel")`.
-#'  List names should match the following:\cr
-#'  `c("default", "lsmeans", "diagnostic")`.
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#' @param ggplot2_args optional, (`ggplot2_args`) \cr
+#' object created by [`teal.devel::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
+#' objects for plot-specific settings. List names should match the following:\cr `
+#' c("default", "lsmeans", "diagnostic")`.
+#' The argument is merged with option `teal.ggplot2_args` and with default module arguments
+#' (hardcoded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2 arguments module", package = "teal.devel")`.
 #'
 #' @importFrom shinyjs show
 #' @importFrom shinyjs hidden

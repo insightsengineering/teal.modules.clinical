@@ -37,7 +37,7 @@ the level of reference arm in case of arm comparison.}
 \item{comp_arm}{(\code{character})\cr
 the level of comparison arm in case of arm comparison.}
 
-\item{obj_var_name}{(\code{character})\cr additional text string append to output title}
+\item{obj_var_name}{(\code{character})\cr additional text string append to output title.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
@@ -60,13 +60,12 @@ to calculate the estimator. If \code{NULL}, the same symbol size is used for all
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
 
-\item{ggplot2_args}{(\code{ggplot2_args}) object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
-with settings for the module plot.
-For this module this argument will accepted only such \code{labs} arguments:  \code{title}, \code{caption}.
-\code{theme} arguments will be not taken into account.
-For more details see the help vignette:
-\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
-The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
+\item{ggplot2_args}{(\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{caption}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hardcoded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 Creates a valid expression for survival forest plot.

@@ -9,13 +9,12 @@
 #' @param arm_levels (`character`)\cr vector of all arm variable levels.
 #' @param avalu_first (`string`)\cr `avalu` value.
 #' @param paramcd_first (`string`)\cr `paramcd` value.
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `x`, `y`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#' @param ggplot2_args (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hardcoded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @importFrom grid grid.newpage grid.draw
 
@@ -146,13 +145,6 @@ template_g_ipp <- function(dataname = "ANL",
 #' @param base_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `base_var`.
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `x`, `y`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
 #'
 #' @export
 #'

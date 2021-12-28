@@ -90,11 +90,11 @@ in character or factor variables in the data.}
 \item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
 as grade 0.}
 
-\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
-with settings for the module table.
-For more details see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
-The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
+\item{basic_table_args}{(\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hardcoded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Grade Summary Table

@@ -7,13 +7,13 @@
 #'   parameter chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
 #'   should the screening visit be included.
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#' @param ggplot2_args (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `caption`, `y`, `lty`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hardcoded in the module body).\cr
+#' For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_lineplot()]
 #'
@@ -176,13 +176,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
-#' @param ggplot2_args (`ggplot2_args`) object created by [teal.devel::ggplot2_args()]
-#'  with settings for the module plot.
-#'  For this module this argument will accepted only such `labs` arguments:  `title`, `subtitle`, `caption`, `y`, `lty`.
-#'  `theme` arguments will be not taken into account.
-#'  For more details see the help vignette:
-#'  `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`
-#'  The argument is merged with options variable `teal.ggplot2_args` and default module setup.
+#'
 #' @export
 #'
 #' @examples
