@@ -19,7 +19,8 @@ template_binary_outcome(
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
-  add_total = FALSE
+  add_total = FALSE,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -58,6 +59,12 @@ translate \code{AVALC} into responder / non-responder.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Creates a valid expression for binary outcome analysis.

@@ -25,7 +25,7 @@ test_that("template_summary generates correct expressions", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM") %>%
         add_colcounts() %>%
         summarize_vars(
@@ -71,7 +71,7 @@ test_that("template_summary can generate customized table", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARMCD") %>%
         add_overall_col("All Patients") %>%
         add_colcounts() %>%
@@ -124,7 +124,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM") %>%
         split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         add_colcounts() %>%
@@ -176,7 +176,7 @@ test_that("template_summary generates correct expressions for multiple grouping 
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM") %>%
         split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         add_overall_col("All Patients") %>%
@@ -230,7 +230,7 @@ test_that("template_summary generates correct expressions for customized numeric
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM") %>%
         split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         add_colcounts() %>%

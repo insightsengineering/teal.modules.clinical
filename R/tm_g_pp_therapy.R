@@ -28,7 +28,8 @@ template_therapy <- function(dataname = "ANL",
                              cmstdy = "CMSTDY",
                              cmendy = "CMENDY",
                              patient_id,
-                             font_size = 12L) {
+                             font_size = 12L,
+                             ggplot2_args = teal.devel::ggplot2_args()) {
   assert_that(
     is.string(dataname),
     is.string(atirel),
@@ -49,7 +50,6 @@ template_therapy <- function(dataname = "ANL",
   y$table_list <- list()
   y$plot_list <- list()
 
-  #
   table_list <- add_expr(
     list(),
     substitute(expr = {
@@ -111,6 +111,33 @@ template_therapy <- function(dataname = "ANL",
     ))
   )
 
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(y = "Medication", title = paste0("Patient ID: ", patient_id)),
+        theme = list(
+          text = substitute(element_text(size = font), list(font = font_size)),
+          axis.text.y = quote(element_blank()),
+          axis.ticks.y = quote(element_blank()),
+          plot.title = substitute(element_text(size = font), list(font = font_size)),
+          legend.position = "none",
+          panel.grid.minor = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )),
+          panel.grid.major = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ))
+        )
+      )
+    ),
+    ggtheme = "minimal"
+  )
+
   plot_list <- add_expr(
     list(),
     substitute(expr = {
@@ -156,30 +183,10 @@ template_therapy <- function(dataname = "ANL",
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        theme_minimal() +
-        theme(
-          text = element_text(size = font_size_var),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          panel.grid.major = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          panel.grid.minor = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          legend.position = "top"
-        ) +
-        ylab("Medication") +
-        theme(legend.position = "none") +
-        ggtitle(paste0("Patient ID: ", patient_id)) +
-        theme(plot.title = element_text(size = font_size_var))
+        labs + ggtheme + theme
 
       print(therapy_plot)
-    }, env = list(
+    }, env = c(list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
       cmdecod = as.name(cmdecod),
@@ -201,8 +208,9 @@ template_therapy <- function(dataname = "ANL",
       cmstdy_char = cmstdy,
       cmendy_char = cmendy,
       patient_id = patient_id,
-      font_size_var = font_size
-    ))
+      font_size_var = font_size),
+      parsed_ggplot2_args)
+    )
   )
   y$table_list <- bracket_expr(table_list)
   y$plot_list <- bracket_expr(plot_list)
@@ -359,7 +367,8 @@ tm_g_pp_therapy <- function(label,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,
                             pre_output = NULL,
-                            post_output = NULL) {
+                            post_output = NULL,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
@@ -379,6 +388,8 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -407,7 +418,8 @@ tm_g_pp_therapy <- function(label,
         label = label,
         patient_col = patient_col,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = "all"
@@ -446,7 +458,7 @@ ui_g_therapy <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("cmdecod"),
@@ -540,7 +552,8 @@ srv_g_therapy <- function(input,
                           cmendy,
                           plot_height,
                           plot_width,
-                          label) {
+                          label,
+                          ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -657,7 +670,8 @@ srv_g_therapy <- function(input,
       cmindc = input[[extract_input("cmindc", dataname)]],
       cmdose = input[[extract_input("cmdose", dataname)]],
       patient_id = patient_id(),
-      font_size = input[["font_size"]]
+      font_size = input[["font_size"]],
+      ggplot2_args = ggplot2_args
       )
 
     lapply(my_calls, therapy_stack_push)

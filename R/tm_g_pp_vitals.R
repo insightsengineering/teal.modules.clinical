@@ -19,7 +19,8 @@ template_vitals <- function(dataname = "ANL",
                             xaxis = "ADY",
                             aval = "AVAL",
                             patient_id,
-                            font_size = 12L) {
+                            font_size = 12L,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
   assert_that(
     is.string(dataname),
     is.string(paramcd),
@@ -33,6 +34,33 @@ template_vitals <- function(dataname = "ANL",
   y <- list()
   y$plot <- list()
 
+  parsed_ggplot2_args <- parse_ggplot2_args(
+    resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = ggplot2_args(
+        labs = list(title = paste0("Patient ID: ", patient_id)),
+        theme = list(
+          text = substitute(element_text(size = font), list(font = font_size)),
+          axis.text.y = quote(element_blank()),
+          axis.ticks.y = quote(element_blank()),
+          plot.title = substitute(element_text(size = font), list(font = font_size)),
+          legend.position = "top",
+          panel.grid.minor = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )),
+          panel.grid.major = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ))
+        )
+      )
+    ),
+    ggtheme = "minimal"
+  )
+
   vital_plot <- add_expr(
     list(),
     substitute(expr = {
@@ -40,11 +68,11 @@ template_vitals <- function(dataname = "ANL",
         dataname %>%
         dplyr::group_by(paramcd, xaxis) %>%
         dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
-        dplyr::summarise(AVAL = max(aval, na.rm = T)) %>%
+        dplyr::summarise(AVAL = max(aval, na.rm = TRUE)) %>%
         dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
-      max_day <- max(vitals[[xaxis_char]], na.rm = T)
-      max_aval <- max(vitals[[aval_char]], na.rm = T)
+      max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
+      max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
       max_aval_seq <- seq(0, max_aval, 10)
 
       full_vita <- levels(dataname[[paramcd_char]])
@@ -98,9 +126,9 @@ template_vitals <- function(dataname = "ANL",
           show.legend = FALSE
         ) +
         scale_y_continuous(
-          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = T), 50),
+          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
           name = "Vitals",
-          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
         geom_text(
           data = data.frame(
@@ -117,26 +145,7 @@ template_vitals <- function(dataname = "ANL",
           alpha = 1,
           nudge_y = 2.2,
           size = font_size_var / 3.5
-        ) +
-        theme_minimal() +
-        theme(
-          text = element_text(size = font_size_var),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          panel.grid.major = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          panel.grid.minor = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          legend.position = "top"
-        ) +
-        ggtitle(paste0("Patient ID: ", patient_id)) +
-        theme(plot.title = element_text(size = font_size_var))
+        ) + labs + ggthemes + themes
 
       print(result_plot)
     }, env = list(
@@ -149,7 +158,10 @@ template_vitals <- function(dataname = "ANL",
       aval = as.name(aval),
       aval_char = aval,
       patient_id = patient_id,
-      font_size_var = font_size
+      font_size_var = font_size,
+      labs = parsed_ggplot2_args$labs,
+      ggthemes = parsed_ggplot2_args$ggtheme,
+      themes = parsed_ggplot2_args$theme
     ))
   )
 
@@ -226,7 +238,8 @@ tm_g_pp_vitals <- function(label,
                            plot_height = c(700L, 200L, 2000L),
                            plot_width = NULL,
                            pre_output = NULL,
-                           post_output = NULL) {
+                           post_output = NULL,
+                           ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
   assert_that(is_character_single(label))
   assert_that(is_character_single(dataname))
@@ -246,6 +259,8 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -268,7 +283,8 @@ tm_g_pp_vitals <- function(label,
         label = label,
         patient_col = patient_col,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = "all"
@@ -294,7 +310,7 @@ ui_g_vitals <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("paramcd"),
@@ -341,7 +357,8 @@ srv_g_vitals <- function(input,
                          xaxis,
                          plot_height,
                          plot_width,
-                         label) {
+                         label,
+                         ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -456,7 +473,8 @@ srv_g_vitals <- function(input,
       xaxis = input[[extract_input("xaxis", dataname)]],
       aval = input[[extract_input("aval", dataname)]],
       patient_id = patient_id(),
-      font_size = input$`font_size`
+      font_size = input$`font_size`,
+      ggplot2_args = ggplot2_args
     )
 
     lapply(my_calls, vitals_stack_push)

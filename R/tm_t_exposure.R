@@ -22,8 +22,8 @@ template_exposure <- function(parentname,
                               drop_levels = TRUE,
                               na_level = "<Missing>",
                               aval_var,
-                              avalu_var
-                              ) {
+                              avalu_var,
+                              basic_table_args = teal.devel::basic_table_args()) {
 
   assert_that(
     is.string(dataname),
@@ -66,11 +66,16 @@ template_exposure <- function(parentname,
   #layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
-  layout_list <- list()
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
 
+  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-    quote(basic_table())
+    parsed_basic_table_args
   )
 
   if (!is_empty(col_by_var)) {
@@ -120,13 +125,14 @@ template_exposure <- function(parentname,
     )
   )
 
-    split_label <- substitute(
-      expr = var_labels(dataname[row_by_var], fill = TRUE),
-      env = list(
-        dataname = as.name(dataname),
-        row_by_var = row_by_var
-      )
+  split_label <- substitute(
+    expr = var_labels(dataname[row_by_var], fill = TRUE),
+    env = list(
+      dataname = as.name(dataname),
+      row_by_var = row_by_var
     )
+  )
+
   if (drop_levels) {
     layout_list <- add_expr(
       layout_list,
@@ -155,17 +161,17 @@ template_exposure <- function(parentname,
     )
   }
 
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        summarize_patients_exposure_in_cols(
-          var = aval_var,
-          col_split = FALSE),
-        env = list(
-          aval_var = aval_var
-        )
+  layout_list <- add_expr(
+    layout_list,
+    substitute(
+      summarize_patients_exposure_in_cols(
+        var = aval_var,
+        col_split = FALSE),
+      env = list(
+        aval_var = aval_var
       )
     )
+  )
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
@@ -302,7 +308,8 @@ tm_t_exposure <- function(label,
                           add_total,
                           na_level = "<Missing>",
                           pre_output = NULL,
-                          post_output = NULL) {
+                          post_output = NULL,
+                          basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
   stop_if_not(
     is.string(dataname),
@@ -335,6 +342,8 @@ tm_t_exposure <- function(label,
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname)
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
   module(
     label = label,
@@ -347,7 +356,8 @@ tm_t_exposure <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level
+        na_level = na_level,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -448,7 +458,8 @@ srv_t_exposure <- function(input,
                            aval_var,
                            avalu_var,
                            na_level,
-                           label) {
+                           label,
+                           basic_table_args = basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -548,7 +559,8 @@ srv_t_exposure <- function(input,
       drop_levels = TRUE,
       na_level = na_level,
       aval_var <- as.vector(anl_m$columns_source$aval_var),
-      avalu_var <- input_avalu_var
+      avalu_var <- input_avalu_var,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

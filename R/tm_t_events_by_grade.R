@@ -16,7 +16,8 @@ template_events_by_grade <- function(dataname,
                                      prune_freq = 0,
                                      prune_diff = 0,
                                      add_total = TRUE,
-                                     drop_arm_levels = TRUE) {
+                                     drop_arm_levels = TRUE,
+                                     basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -91,11 +92,11 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- list()
 
+  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+
   layout_list <- add_expr(
     layout_list,
-    quote(
-      basic_table()
-    )
+    parsed_basic_table_args
   )
 
   layout_list <- add_expr(
@@ -276,7 +277,6 @@ template_events_by_grade <- function(dataname,
 
   y$prune <- bracket_expr(prune_list)
 
-
   # Start sort the pruned table.
   sort_list <- list()
   scorefun <- if (add_total) {
@@ -359,8 +359,8 @@ template_events_col_by_grade <- function(dataname,
                                          grade = "AETOXGR",
                                          prune_freq = 0.1,
                                          prune_diff = 0,
-                                         drop_arm_levels = TRUE
-) {
+                                         drop_arm_levels = TRUE,
+                                         basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -459,9 +459,14 @@ template_events_col_by_grade <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table()))
+  layout_list <- add_expr(
+    layout_list,
+    parsed_basic_table_args
+  )
 
   if (add_total) {
     layout_list <- add_expr(
@@ -770,7 +775,8 @@ tm_t_events_by_grade <- function(label,
                                  add_total = TRUE,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
-                                 post_output = NULL) {
+                                 post_output = NULL,
+                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_by_grade")
   stop_if_not(
     is_character_single(label),
@@ -790,6 +796,8 @@ tm_t_events_by_grade <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -811,7 +819,8 @@ tm_t_events_by_grade <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        grading_groups = grading_groups
+        grading_groups = grading_groups,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -912,7 +921,8 @@ srv_t_events_by_grade <- function(input,
                                   grade,
                                   col_by_grade,
                                   grading_groups,
-                                  drop_arm_levels) {
+                                  drop_arm_levels,
+                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -1028,7 +1038,8 @@ srv_t_events_by_grade <- function(input,
         grade = if (length(input_grade) != 0) input_grade else NULL,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100,
-        drop_arm_levels = input$drop_arm_levels
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
       )
     } else {
       template_events_by_grade(
@@ -1042,7 +1053,8 @@ srv_t_events_by_grade <- function(input,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100,
         add_total = input$add_total,
-        drop_arm_levels = input$drop_arm_levels
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
       )
     }
     mapply(expression = my_calls, chunks_push)

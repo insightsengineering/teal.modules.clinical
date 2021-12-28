@@ -60,7 +60,8 @@ template_tte <- function(dataname = "ANL",
                          time_unit_var = "AVALU",
                          event_desc_var = "EVNTDESC",
                          control = control_tte(),
-                         add_total = FALSE) {
+                         add_total = FALSE,
+                         basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -143,13 +144,19 @@ template_tte <- function(dataname = "ANL",
     )
   }
   layout_list <- list()
+
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = basic_table_args(title = paste("Time-To-Event Table for", paramcd))
+    )
+  )
+
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = basic_table(
-        title = paste("Time-To-Event Table for", paramcd)),
-      env = list(paramcd = paramcd))
-    )
+    parsed_basic_table_args
+  )
+
   if (!compare_arm && !combine_comp_arms && add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -430,7 +437,8 @@ tm_t_tte <- function(label,
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_tte")
   stop_if_not(
     is_character_single(label),
@@ -449,6 +457,8 @@ tm_t_tte <- function(label,
       "post_output should be either null or shiny.tag type of object"
       )
     )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -473,7 +483,8 @@ tm_t_tte <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -689,7 +700,8 @@ srv_t_tte <- function(input,
                       arm_ref_comp,
                       time_unit_var,
                       add_total,
-                      label) {
+                      label,
+                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -840,7 +852,8 @@ srv_t_tte <- function(input,
           conf_type = input$conf_type_survfit
         )
       ),
-      add_total = input$add_total
+      add_total = input$add_total,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

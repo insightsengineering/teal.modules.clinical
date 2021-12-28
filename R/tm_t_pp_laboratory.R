@@ -225,7 +225,7 @@ ui_g_laboratory <- function(id, ...) {
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
       data_extract_ui(
         id = ns("paramcd"),

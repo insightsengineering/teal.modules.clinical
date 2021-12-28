@@ -24,7 +24,8 @@ template_abnormality <- function(parentname,
                                  add_total = FALSE,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
-                                 na_level = "<Missing>") {
+                                 na_level = "<Missing>",
+                                 basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(id_var),
@@ -75,13 +76,14 @@ template_abnormality <- function(parentname,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
       env = list(dataname = as.name("anl"), na_level = na_level))
-    )
+  )
+
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
       env = list(parentname = as.name(parentname), na_level = na_level))
-    )
+  )
 
   y$data <- bracket_expr(data_list)
 
@@ -104,26 +106,32 @@ template_abnormality <- function(parentname,
 
   y$layout_prep <- bracket_expr(prep_list)
 
-  layout_list <- list()
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = basic_table_args(main_footer = "by variables without observed abnormalities are excluded.")
+    )
+  )
 
+  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
       substitute(
-        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
-        expr = basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(var = arm_var) %>%
           add_colcounts(),
-        env = list(arm_var = arm_var)
+        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
   )
@@ -297,7 +305,8 @@ tm_t_abnormality <- function(label,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             na_level = "<Missing>") {
+                             na_level = "<Missing>",
+                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
   stop_if_not(
     is.string(dataname),
@@ -331,6 +340,8 @@ tm_t_abnormality <- function(label,
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   module(
@@ -345,7 +356,8 @@ tm_t_abnormality <- function(label,
         parentname = parentname,
         abnormal = abnormal,
         label = label,
-        na_level = na_level
+        na_level = na_level,
+        basic_table_args = basic_table_args
         )
       ),
     filters = get_extract_datanames(data_extract_list)
@@ -462,7 +474,8 @@ srv_t_abnormality <- function(input,
                               add_total,
                               drop_arm_levels,
                               label,
-                              na_level) {
+                              na_level,
+                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -555,7 +568,8 @@ srv_t_abnormality <- function(input,
       add_total = input$add_total,
       exclude_base_abn = input$exclude_base_abn,
       drop_arm_levels = input$drop_arm_levels,
-      na_level = na_level
+      na_level = na_level,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

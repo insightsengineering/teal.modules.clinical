@@ -28,7 +28,7 @@ test_that("template_summary_by generates correct expressions", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(
@@ -83,7 +83,7 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(
@@ -153,7 +153,7 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       }
     ),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -210,7 +210,7 @@ test_that("template_summary_by generates correct expressions for customized nume
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(
@@ -265,7 +265,7 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         add_colcounts() %>%
         split_rows_by(

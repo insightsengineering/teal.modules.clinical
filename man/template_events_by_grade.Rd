@@ -15,7 +15,8 @@ template_events_by_grade(
   prune_freq = 0,
   prune_diff = 0,
   add_total = TRUE,
-  drop_arm_levels = TRUE
+  drop_arm_levels = TRUE,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -49,6 +50,12 @@ whether to include column with total number of patients.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Template: Events by Grade

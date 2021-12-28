@@ -72,7 +72,7 @@ test_that("template_shift_by_grade generates correct expressions with default ar
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         split_rows_by(
@@ -178,7 +178,7 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         split_rows_by(

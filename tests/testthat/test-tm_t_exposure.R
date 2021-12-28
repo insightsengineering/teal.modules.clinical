@@ -19,7 +19,7 @@ test_that("template_exposure generates correct expressions with default argument
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("SEX") %>%
         add_colcounts() %>%
         summarize_patients_exposure_in_cols(
@@ -67,7 +67,7 @@ test_that("template_exposure generates correct expressions with custom arguments
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("SEX") %>%
         add_colcounts() %>%
         summarize_patients_exposure_in_cols(
