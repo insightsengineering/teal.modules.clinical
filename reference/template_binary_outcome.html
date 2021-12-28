@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9035</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9037</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -93,7 +84,8 @@ Other releases
   control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>global <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"waldcc"</span>, conf_level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span>, unstrat <span class="op">=</span>
     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method_ci <span class="op">=</span> <span class="st">"waldcc"</span>, method_test <span class="op">=</span> <span class="st">"schouten"</span>, odds <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, strat <span class="op">=</span>
     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method_ci <span class="op">=</span> <span class="st">"cmh"</span>, method_test <span class="op">=</span> <span class="st">"cmh"</span>, strat <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span>,
-  add_total <span class="op">=</span> <span class="cn">FALSE</span>
+  add_total <span class="op">=</span> <span class="cn">FALSE</span>,
+  basic_table_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -135,6 +127,11 @@ translate <code>AVALC</code> into responder / non-responder.</p></dd>
 <dt>add_total</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to include column with total number of patients.</p></dd>
+<dt>basic_table_args</dt>
+<dd><p>(<code>basic_table_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code>
+with settings for the module table.
+For more details see the help vignette:<br><code>vignette("Custom basic_table arguments module", package = "teal.devel")</code>
+The argument is merged with options variable <code>teal.basic_table_args</code> and default module setup.</p></dd>
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>

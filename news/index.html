@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9035</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9037</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -73,14 +64,14 @@ Other releases
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.10.9035" id="tealmodulesclinical-08109035">teal.modules.clinical 0.8.10.9035<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08109035"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.10.9037" id="tealmodulesclinical-08109037">teal.modules.clinical 0.8.10.9037<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08109037"></a></h2>
 <div class="section level4">
-<h4 id="breaking-changes-0-8-10-9035">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-10-9035"></a></h4>
+<h4 id="breaking-changes-0-8-10-9037">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-10-9037"></a></h4>
 <ul><li>Updated <code>tm_t_abnormality</code> due to changes in <code>count_abnormal</code> that <code>abnormal</code> argument is taking list as input now.</li>
 <li>Changed the <code>tm_g_pp_patient_timeline</code> parameter, <code>cmtrt</code>, to <code>cmdecod</code>.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="new-features-0-8-10-9035">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-10-9035"></a></h4>
+<h4 id="new-features-0-8-10-9037">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-10-9037"></a></h4>
 <ul><li>New module <code>tm_t_abnormality_by_worst_grade</code> was added for the analysis of laboratory test results with highest grade post-baseline.</li>
 <li>Enhanced <code>tm_t_ancova</code> to include selected parameter(s), visit(s) and the analysis variable in title of the table.</li>
 <li>New module <code>tm_g_lineplot</code> was added for creating line plots.</li>
@@ -90,13 +81,15 @@ Other releases
 <li>Enhanced <code>tm_g_pp_patient_timeline</code> with bold axes labels and integer values on the axis.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-0-8-10-9035">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-10-9035"></a></h3>
+<h3 id="enhancements-0-8-10-9037">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-10-9037"></a></h3>
 <ul><li>Added support for logging with the <code>logger</code> package and added info level logs upon initialization of a module.</li>
 <li>Added <code>default_responses</code> argument to <code>tm_t_binary_outcome</code>, <code>tm_t_rsp</code>, <code>tm_g_forest_rsp</code> to allow the user to specify default selected responses and possible response levels.</li>
 <li>Updated <code>tm_t_binary_outcome</code> to show only the selected responses in the output table when “Show All Selected Response Categories” is checked.</li>
 <li>Added <code>rsp_table</code> argument to <code>tm_t_binary_outcome</code> to allow the user to initialize the module matching the <code>RSPT01</code> STREAM template.</li>
+<li>Added support for custom arguments for <code><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggplot2::labs</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme</a></code> in plot based modules.</li>
+<li>Added support for custom arguments for <code><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">rtables::basic_table</a></code> in table based modules.</li>
 </ul><div class="section level4">
-<h4 id="miscellaneous-0-8-10-9035">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-10-9035"></a></h4>
+<h4 id="miscellaneous-0-8-10-9037">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-10-9037"></a></h4>
 <ul><li>Updated R version requirement to &gt;= 3.6.</li>
 <li>Refactored calls to the defunct <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_input.html" class="external-link">teal.devel::data_extract_input</a></code> into calls to its replacement <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_ui.html" class="external-link">teal.devel::data_extract_ui</a></code>.</li>
 <li>Updated modules to use new <code>data_merge_module</code> interface provided by teal.devel and removed usage of the now deprecated function <code><a href="https://rdrr.io/pkg/teal.devel/man/get_input_order.html" class="external-link">teal.devel::get_input_order</a></code>.</li>

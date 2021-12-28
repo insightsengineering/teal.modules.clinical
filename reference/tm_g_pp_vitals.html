@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9035</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9037</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -91,7 +82,8 @@ Other releases
   plot_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">700L</span>, <span class="fl">200L</span>, <span class="fl">2000L</span><span class="op">)</span>,
   plot_width <span class="op">=</span> <span class="cn">NULL</span>,
   pre_output <span class="op">=</span> <span class="cn">NULL</span>,
-  post_output <span class="op">=</span> <span class="cn">NULL</span>
+  post_output <span class="op">=</span> <span class="cn">NULL</span>,
+  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -138,6 +130,11 @@ For example a title.</p></dd>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
+<dt>ggplot2_args</dt>
+<dd><p>(<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code>
+with settings for the module table.
+For more details see the help vignette:<br><code>vignette("Custom ggplot2_args arguments module", package = "teal.devel")</code>
+The argument is merged with options variable <code>teal.ggplot2_args</code> and default module setup.</p></dd>
 </dl></div>
 
     <div id="ref-examples">
@@ -178,7 +175,7 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-22 07:29:44.0008 pid:2103 token: teal.modules.clinical fun:tm_g_pp_vitals [INFO] Initializing tm_g_pp_vitals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-28 06:56:28.6297 pid:2101 token: teal.modules.clinical fun:tm_g_pp_vitals [INFO] Initializing tm_g_pp_vitals</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
