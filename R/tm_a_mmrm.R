@@ -418,7 +418,7 @@ template_mmrm_plots <- function(fit_name,
 #' objects for plot-specific settings. List names should match the following:\cr `
 #' c("default", "lsmeans", "diagnostic")`.
 #' The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#' (hardcoded in the module body).\cr For more details, see the help vignette:\cr
+#' (hard coded in the module body).\cr For more details, see the help vignette:\cr
 #' `vignette("Custom ggplot2 arguments module", package = "teal.devel")`.
 #'
 #' @importFrom shinyjs show

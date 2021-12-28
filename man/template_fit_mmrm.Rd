@@ -105,7 +105,7 @@ type of table to output.}
 \item{basic_table_args}{(\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hardcoded in the module body).\cr For more details, see the help vignette:\cr
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
 \code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 
 \item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern:g_mmrm_lsmeans]{tern::g_mmrm_lsmeans()}}}
@@ -115,7 +115,7 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 \item{ggplot2_args}{(\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hardcoded in the module body).\cr For more details, see the help vignette:\cr
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
 \code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
