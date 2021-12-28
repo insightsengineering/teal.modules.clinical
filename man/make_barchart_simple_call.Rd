@@ -12,11 +12,11 @@ make_barchart_simple_call(
   y_facet_name = NULL,
   label_bars = TRUE,
   barlayout = "stacked",
-  flip_axis = NULL,
-  rotate_bar_labels = NULL,
-  rotate_x_label = NULL,
-  rotate_y_label = NULL,
-  expand_y_range = NULL,
+  flip_axis = FALSE,
+  rotate_bar_labels = FALSE,
+  rotate_x_label = FALSE,
+  rotate_y_label = FALSE,
+  expand_y_range = 0,
   ggplot2_args = teal.devel::ggplot2_args()
 )
 }
@@ -70,6 +70,6 @@ name of the \code{xaxis} variable.}
 \code{ggplot2} call to generate simple barchart
 }
 \examples{
-teal.modules.clinical:::make_barchart_simple_call("y", "x")
+teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
 }
 \keyword{internal}

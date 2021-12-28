@@ -51,19 +51,23 @@ template_g_ipp <- function(dataname = "ANL",
   # Data preprocessing
 
   y$data <- substitute(
-    expr = {
-      anl <- df %>% droplevels()
-      },
+    expr = anl <- df %>% droplevels(),
     env = list(df = as.name(dataname))
   )
 
   all_ggplot2_args <- resolve_ggplot2_args(
     user_plot =  ggplot2_args,
-    module_plot = ggplot2_args(labs = list(title = sprintf("Individual Patient Plot for %s Values (%s) over Time",
-                                                           paramcd_first, avalu_first),
-                                           x = "Visit", y = paramcd_first,
-                                           subtitle = paste(arm_levels, collapse = ", ")))
+    module_plot = ggplot2_args(
+      labs = list(
+        title = sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
+        x = "Visit",
+        y = sprintf("%s (%s)", paramcd_first, avalu_first),
+        subtitle = paste(arm_levels, collapse = ", ")
+      )
+    )
   )
+
+
 
   graph_list <- list()
   graph_list <- add_expr(
@@ -104,26 +108,20 @@ template_g_ipp <- function(dataname = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = {
-          plot <- plot + ggplot2::facet_grid(rows = vars(id))
-          },
+        expr = plot <- plot + ggplot2::facet_grid(rows = vars(id)),
         env = list(id = as.name(id_var))
-        )
       )
+    )
   }
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.newpage()
-      )
-    )
+    quote(grid::grid.newpage())
+  )
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.draw(plot)
-    )
+    quote(grid::grid.draw(plot))
   )
 
   y$graph <- bracket_expr(graph_list)

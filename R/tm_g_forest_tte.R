@@ -157,39 +157,41 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(time_unit_var = as.name(time_unit_var))
   )
 
-  dev_plot_title <- paste0("Forest plot of survival duration for ", obj_var_name)
-
-  all_ggplot2_args <- resolve_ggplot2_args(user_plot = ggplot2_args,
-                                           module_plot = ggplot2_args(labs = list(title = dev_plot_title)))
+  all_ggplot2_args <- resolve_ggplot2_args(
+    user_plot = ggplot2_args,
+    module_plot = ggplot2_args(
+      labs = list(title = paste0("Forest plot of survival duration for ", obj_var_name))
+    )
+  )
 
   plot_call <- substitute(
-    expr =
-      g_forest(
-        tbl = result,
-        col_symbol_size = col_s_size
-      ),
+    expr = g_forest(
+      tbl = result,
+      col_symbol_size = col_s_size
+    ),
     env = list(col_s_size = col_symbol_size)
   )
 
   plot_call <- if (!is.null(footnotes(p))) {
     substitute(
-      decorate_grob(p, titles = title, footnotes = footnotes(p),
-                    gp_footnotes = grid::gpar(fontsize = 12)),
+      decorate_grob(p, titles = title, footnotes = footnotes(p), gp_footnotes = grid::gpar(fontsize = 12)),
       env = list(title = all_ggplot2_args$labs$title, p = plot_call)
     )
   } else {
     substitute(
-      decorate_grob(p, titles = title, footnotes = "",
-                    gp_footnotes = grid::gpar(fontsize = 12)),
+      decorate_grob(p, titles = title, footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)),
       env = list(title = all_ggplot2_args$labs$title, p =  plot_call)
     )
   }
 
-  plot_call <- substitute({
-    p <- plot_call
-    grid::grid.newpage()
-    grid::grid.draw(p)
-  }, env  = list(plot_call = plot_call))
+  plot_call <- substitute(
+    env  = list(plot_call = plot_call),
+    expr = {
+      p <- plot_call
+      grid::grid.newpage()
+      grid::grid.draw(p)
+    }
+  )
 
   # Plot output.
   y$plot <- plot_call

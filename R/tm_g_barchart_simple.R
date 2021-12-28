@@ -518,7 +518,7 @@ srv_g_barchart_simple <- function(input,
 #'  fraction of y-axis range to expand further up.
 #' @inheritParams tm_g_barchart_simple
 #' @examples
-#' teal.modules.clinical:::make_barchart_simple_call("y", "x")
+#' teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
 #' @return `call`
 #' @keywords internal
 make_barchart_simple_call <- function(y_name,
@@ -528,11 +528,11 @@ make_barchart_simple_call <- function(y_name,
                                       y_facet_name = NULL,
                                       label_bars = TRUE, # whether to also draw numbers as text, i.e. label bars
                                       barlayout = "stacked",
-                                      flip_axis = NULL,
-                                      rotate_bar_labels = NULL,
-                                      rotate_x_label = NULL,
-                                      rotate_y_label = NULL,
-                                      expand_y_range = NULL,
+                                      flip_axis = FALSE,
+                                      rotate_bar_labels = FALSE,
+                                      rotate_x_label = FALSE,
+                                      rotate_y_label = FALSE,
+                                      expand_y_range = 0,
                                       ggplot2_args = teal.devel::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
@@ -554,7 +554,7 @@ make_barchart_simple_call <- function(y_name,
     is.null(flip_axis) || is_logical_single(flip_axis),
     is.null(rotate_x_label) || is_logical_single(rotate_x_label),
     is.null(rotate_y_label) || is_logical_single(rotate_y_label),
-    is.null(expand_y_range) || is_numeric_single(expand_y_range)
+    is_numeric_single(expand_y_range)
   )
 
   plot_args <- list(quote(ggplot(counts)))
@@ -630,7 +630,7 @@ make_barchart_simple_call <- function(y_name,
 
   if (isTRUE(flip_axis)) plot_args <- c(plot_args, quote(coord_flip()))
 
-  if (!is.null(expand_y_range)) {
+  if (expand_y_range > 0) {
     plot_args <- c(plot_args, bquote(scale_y_continuous(
       labels = scales::comma,
       expand = expansion(c(0, .(expand_y_range)))

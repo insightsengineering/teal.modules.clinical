@@ -84,9 +84,6 @@ For more details see the help vignette:\cr
 \code{vignette("Custom basic_table arguments module", package = "teal.devel")}
 The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
-\value{
-
-}
 \description{
 Teal Module: Laboratory test results with highest grade post-baseline
 }

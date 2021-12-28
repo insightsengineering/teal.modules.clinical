@@ -157,30 +157,29 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
-  dev_plot_title <- paste0("Forest plot of best overall response for ", obj_var_name)
-
-  all_ggplot2_args <- resolve_ggplot2_args(user_plot = ggplot2_args,
-                                           module_plot = ggplot2_args(labs = list(title = dev_plot_title)))
+  all_ggplot2_args <- resolve_ggplot2_args(
+    user_plot = ggplot2_args,
+    module_plot = ggplot2_args(
+      labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name))
+    )
+  )
 
   plot_call <- substitute(
-    expr =
-      g_forest(
-        tbl = result,
-        col_symbol_size = col_s_size
-      ),
+    expr = g_forest(
+      tbl = result,
+      col_symbol_size = col_s_size
+    ),
     env = list(col_s_size = col_symbol_size)
   )
 
   plot_call <- if (!is.null(footnotes(p))) {
     substitute(
-      decorate_grob(p, titles = title, footnotes = footnotes(p),
-                         gp_footnotes = grid::gpar(fontsize = 12)),
+      decorate_grob(p, titles = title, footnotes = footnotes(p), gp_footnotes = grid::gpar(fontsize = 12)),
       env = list(title = all_ggplot2_args$labs$title, p = plot_call)
     )
   } else {
     substitute(
-      decorate_grob(p, titles = title, footnotes = "",
-                         gp_footnotes = grid::gpar(fontsize = 12)),
+      decorate_grob(p, titles = title, footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)),
       env = list(title = all_ggplot2_args$labs$title, p =  plot_call)
     )
   }

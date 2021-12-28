@@ -449,7 +449,7 @@ ui_g_lineplot <- function(id, ...) {
               "Min - Max" = "range"
             ),
             selected = c("n", "mean_sd", "median", "range"),
-          ),
+          )
         )
       )
     ),
