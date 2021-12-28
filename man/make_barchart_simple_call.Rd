@@ -37,7 +37,7 @@ whether to label bars.}
 \verb{type of the layout - "side_by_side"} or \code{"stacked"} (default).}
 
 \item{flip_axis}{(\code{NULL}, \code{character(1)})\cr
-wheter to flip axis}
+whether to flip axis}
 
 \item{rotate_bar_labels}{(\code{NULL}, \code{logical(1)})\cr
 whether to rotate bar label by 45 degrees.}
