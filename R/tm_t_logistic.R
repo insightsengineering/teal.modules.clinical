@@ -31,7 +31,8 @@ template_logistic <- function(dataname,
                               conf_level = 0.95,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
-                              at = NULL) {
+                              at = NULL,
+                              basic_table_args = teal.devel::basic_table_args()) {
   # Common assertion no matter if arm_var is NULL or not.
   assert_that(
     is.string(dataname),
@@ -165,25 +166,34 @@ template_logistic <- function(dataname,
     env = list(model_pipe = pipe_expr(model_list))
   )
 
+  table_title <- if (length(responder_val) > 1) {
+    paste(
+      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "and", utils::tail(responder_val, 1), "Responders"
+    )
+  } else {
+    paste("Table of", paramcd, "for", responder_val, "Responders")
+  }
+
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = basic_table_args(title = table_title)
+    )
+  )
+
   y$table <- substitute(
     expr = {
-      result <- basic_table(
-        title = paste(
-          "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
-          ifelse(length(responder_val) > 1, "and", ""),
-          tail(responder_val, 1), "Responders"
-          )
-      ) %>%
+      result <- expr_basic_table_args %>%
         summarize_logistic(conf_level = conf_level) %>%
         append_topleft(topleft) %>%
         build_table(df = mod)
       result
     },
     env = list(
+      expr_basic_table_args = parsed_basic_table_args,
       conf_level = conf_level,
-      topleft = topleft,
-      paramcd = paramcd,
-      responder_val = responder_val
+      topleft = topleft
       )
     )
 
@@ -268,12 +278,15 @@ tm_t_logistic <- function(label,
                           avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
-                          post_output = NULL) {
+                          post_output = NULL,
+                          basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_logistic")
   stopifnot(
     length(dataname) == 1,
     is.choices_selected(conf_level)
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -295,7 +308,8 @@ tm_t_logistic <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         dataname = dataname,
-        parentname = parentname
+        parentname = parentname,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -421,7 +435,8 @@ srv_t_logistic <- function(input,
                            paramcd,
                            avalc_var,
                            cov_var,
-                           label) {
+                           label,
+                           basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -635,7 +650,8 @@ srv_t_logistic <- function(input,
       topleft = paramcd,
       conf_level = as.numeric(input$conf_level),
       at = if (at_flag) at_values else NULL,
-      responder_val = input$responders
+      responder_val = input$responders,
+      basic_table_args = basic_table_args
     )
 
     mapply(expression = calls, chunks_push)

@@ -24,7 +24,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -103,7 +103,7 @@ test_that("template_mult_events generates correct expressions with 2 HLT paramet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -188,7 +188,7 @@ test_that("template_mult_events generates correct expressions with 3 HLT paramet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -298,7 +298,7 @@ test_that("template_mult_events generates correct expressions with 4 HLT paramet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -399,7 +399,7 @@ test_that("template_mult_events generates correct expressions with no HLT parame
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -457,7 +457,7 @@ test_that("template_mult_events generates correct expressions with 1 HLT paramet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         summarize_num_patients(

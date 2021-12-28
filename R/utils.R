@@ -39,11 +39,11 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
     is_character_single(column)
   )
 
-  chunk$push(bquote({
+  chunk$push(substitute({
     counts <- counts %>% dplyr::mutate(
-      .(as.symbol(column)) := paste0(.(as.symbol(column)), " (n = ", .(as.symbol(n_column)), ")")
+      column_name := paste0(column_name, " (n = ", n_column_name, ")")
     )
-  }))
+  }, env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))))
 }
 
 #' Get variable labels

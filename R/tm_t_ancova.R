@@ -3,9 +3,11 @@
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable levels for the studied parameter.
 #' @param paramcd_var (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable name for the studied parameter.
+#' @param visit_levels (`character`)\cr
+#'   variable levels for studied visits.
 #'
 #' @seealso [tm_t_ancova()]
 #'
@@ -18,11 +20,12 @@ template_ancova <- function(dataname = "ANL",
                             combine_comp_arms = FALSE,
                             aval_var,
                             cov_var,
-                            paramcd_levels = "EXAMPLE",
+                            paramcd_levels = "",
                             paramcd_var = "PARAMCD",
+                            visit_levels = "",
                             visit_var = "AVISIT",
-                            conf_level = 0.95
-) {
+                            conf_level = 0.95,
+                            basic_table_args = teal.devel::basic_table_args()) {
 
   assert_that(
     is.string(dataname),
@@ -114,38 +117,38 @@ template_ancova <- function(dataname = "ANL",
   y$data <- bracket_expr(data_list)
 
   # Build layout.
+  visits_title <- if (length(visit_levels) > 1) {
+    paste("visits", paste(utils::head(visit_levels, -1), collapse = ", "),
+          "and", utils::tail(visit_levels, 1))
+  } else if (length(visit_levels) == 1) {
+    paste("visit", visit_levels)
+  } else {
+    "visit"
+  }
+
+  table_title <- if (length(paramcd_levels) > 1) {
+    paste("Table of", paste(utils::head(paramcd_levels, -1), collapse = ", "),
+          "and", utils::tail(paramcd_levels, 1),
+          "parameters", "at", visits_title, "for", aval_var)
+  } else {
+    visits_title
+    paste("Table of", paramcd_levels,
+          "parameter", "at", visits_title, "for", aval_var)
+  }
+
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = basic_table_args(title = table_title)
+    )
+  )
+
   y$layout_prep <- quote(split_fun <- drop_split_levels)
-
   layout_list <- list()
-
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = basic_table(
-        title = paste(
-          "Table of",
-          paste(head(paramcd_levels, -1), collapse = ", "),
-          ifelse(length(paramcd_levels) > 1, "and", ""),
-          tail(paramcd_levels, 1),
-          ifelse(length(paramcd_levels) > 1, "parameters", "parameter"),
-          "at",
-          ifelse(length(unique(dataname[[visit_var]])) > 1, "visits", "visit"),
-          paste(head(unique(dataname[[visit_var]]), -1), collapse = ", "),
-          ifelse(length(unique(dataname[[visit_var]])) > 1, "and", ""),
-          tail(unique(dataname[[visit_var]]), 1),
-          "for",
-          aval_var
-        )
-      ),
-      env = list(
-        paramcd_levels = paramcd_levels,
-        dataname = as.name(dataname),
-        visit_var = visit_var,
-        paramcd_levels = paramcd_levels,
-        aval_var = aval_var
-      )
-    )
-    )
+    parsed_basic_table_args
+  )
 
   layout_list <- add_expr(
     layout_list,
@@ -387,8 +390,8 @@ tm_t_ancova <- function(label,
                         paramcd,
                         conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
-                        post_output = NULL
-) {
+                        post_output = NULL,
+                        basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
   stop_if_not(
     is_character_single(dataname),
@@ -403,6 +406,8 @@ tm_t_ancova <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
 
@@ -425,7 +430,8 @@ tm_t_ancova <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -525,7 +531,8 @@ srv_ancova <- function(input,
                        cov_var,
                        paramcd,
                        avisit,
-                       label) {
+                       label,
+                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -652,6 +659,7 @@ srv_ancova <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
 
     paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
+    visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
     my_calls <- template_ancova(
       parentname = "ANL_ADSL",
@@ -664,8 +672,10 @@ srv_ancova <- function(input,
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
       paramcd_var = unlist(paramcd$filter)["vars_selected"],
+      visit_levels = visit_levels,
       visit_var = unlist(avisit$filter)["vars_selected"],
-      conf_level = as.numeric(input$conf_level)
+      conf_level = as.numeric(input$conf_level),
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

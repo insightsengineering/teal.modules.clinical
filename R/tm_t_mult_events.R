@@ -15,7 +15,8 @@ template_mult_events <- function(dataname,
                                  llt,
                                  add_total = TRUE,
                                  event_type = "event",
-                                 drop_arm_levels = TRUE) {
+                                 drop_arm_levels = TRUE,
+                                 basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -91,10 +92,16 @@ template_mult_events <- function(dataname,
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # Start layout steps.
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, quote(basic_table()))
+  layout_list <- add_expr(layout_list, parsed_basic_table_args)
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -319,7 +326,8 @@ tm_t_mult_events <- function(label, # nolint
                              event_type = "event",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
-                             post_output = NULL) {
+                             post_output = NULL,
+                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_mult_events")
   stop_if_not(
     is_character_single(label),
@@ -336,6 +344,8 @@ tm_t_mult_events <- function(label, # nolint
       "post_output should be either null or shiny.tag type of object"
     )
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -357,7 +367,8 @@ tm_t_mult_events <- function(label, # nolint
         dataname = dataname,
         parentname = parentname,
         event_type = event_type,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -437,7 +448,8 @@ srv_t_mult_events_byterm <- function(input,
                                      hlt,
                                      llt,
                                      drop_arm_levels,
-                                     label) {
+                                     label,
+                                     basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -521,7 +533,8 @@ srv_t_mult_events_byterm <- function(input,
       llt = input_llt,
       add_total = input$add_total,
       event_type = event_type,
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

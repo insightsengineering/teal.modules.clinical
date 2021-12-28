@@ -25,7 +25,8 @@ tm_t_summary_by(
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -97,6 +98,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
+with settings for the module table.
+For more details see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
+The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
 }
 \description{
 Teal Module: Summarize Variables by Row Groups Module

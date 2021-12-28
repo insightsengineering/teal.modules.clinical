@@ -29,7 +29,8 @@ template_summary_by <- function(parentname,
                                 ),
                                 denominator = c("N", "n", "omit"),
                                 drop_arm_levels = TRUE,
-                                drop_zero_levels = TRUE) {
+                                drop_zero_levels = TRUE,
+                                basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(parentname),
     is.string(dataname),
@@ -48,7 +49,6 @@ template_summary_by <- function(parentname,
     is.flag(drop_zero_levels)
   )
   denominator <- match.arg(denominator)
-
 
   y <- list()
 
@@ -106,9 +106,15 @@ template_summary_by <- function(parentname,
 
   layout_list <- list()
 
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   layout_list <- add_expr(
     layout_list,
-    quote(basic_table())
+    parsed_basic_table_args
   )
 
   layout_list <- add_expr(
@@ -382,7 +388,8 @@ tm_t_summary_by <- function(label,
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
-                            post_output = NULL) {
+                            post_output = NULL,
+                            basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
   useNA <- match.arg(useNA) # nolint
   stop_if_not(
@@ -414,6 +421,8 @@ tm_t_summary_by <- function(label,
     stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
   }
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
@@ -438,7 +447,8 @@ tm_t_summary_by <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level
+        na_level = na_level,
+        basic_table_args = basic_table_args
         )
       ),
     filters = get_extract_datanames(data_extract_list)
@@ -576,7 +586,8 @@ srv_summary_by <- function(input,
                            na_level,
                            drop_arm_levels,
                            drop_zero_levels,
-                           label) {
+                           label,
+                           basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -671,7 +682,8 @@ srv_summary_by <- function(input,
       parallel_vars = input$parallel_vars,
       row_groups = input$row_groups,
       drop_arm_levels = input$drop_arm_levels,
-      drop_zero_levels = input$drop_zero_levels
+      drop_zero_levels = input$drop_zero_levels,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

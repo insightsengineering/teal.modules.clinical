@@ -23,7 +23,7 @@ test_that("template_events generates correct expressions", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -102,7 +102,7 @@ test_that("template_events generates correct expressions for nested columns", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         add_colcounts() %>%
@@ -177,7 +177,7 @@ test_that("template_events can generate customized table", {
       )
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         add_colcounts() %>%
         summarize_num_patients(
@@ -233,7 +233,7 @@ test_that("template_events can generate customized table with alphabetical sorti
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -303,7 +303,7 @@ test_that("template_events can generate customized table with pruning", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         add_colcounts() %>%
         add_overall_col(label = "All Patients") %>%
@@ -393,7 +393,7 @@ test_that("template_events can generate customized table with pruning for nested
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         add_colcounts() %>%

@@ -66,8 +66,8 @@ template_binary_outcome <- function(dataname,
                                         strat = NULL
                                       )
                                     ),
-                                    add_total = FALSE
-) {
+                                    add_total = FALSE,
+                                    basic_table_args = teal.devel::basic_table_args()) {
   assert_that(
     is.string(dataname),
     is.string(parentname),
@@ -141,18 +141,26 @@ template_binary_outcome <- function(dataname,
     )
   }
 
+  table_title <- if (length(responder_val) > 1) {
+    paste(
+      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "and", utils::tail(responder_val, 1), "Responders"
+    )
+  } else {
+    paste("Table of", paramcd, "for", responder_val, "Responders")
+  }
+
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = basic_table_args(title = table_title)
+    )
+  )
+
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-    substitute(
-      expr = basic_table(
-        title = paste("Table of", paramcd, "for", paste(head(responders, -1), collapse = ", "),
-                      ifelse(length(responders) > 1, "and", ""), tail(responders, 1), "Responders")
-      ),
-      env = list(
-        paramcd = paramcd,
-        responders = responder_val)
-    )
+    parsed_basic_table_args
   )
 
   if (!compare_arm && !combine_comp_arms && add_total) {
@@ -455,7 +463,8 @@ tm_t_binary_outcome <- function(label,
                                 rsp_table = FALSE,
                                 add_total = FALSE,
                                 pre_output = NULL,
-                                post_output = NULL) {
+                                post_output = NULL,
+                                basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_binary_outcome")
   stop_if_not(
     is_character_single(label),
@@ -481,6 +490,8 @@ tm_t_binary_outcome <- function(label,
     msg = "`default_responses` must be a named list or an array."
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -503,7 +514,8 @@ tm_t_binary_outcome <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         default_responses = default_responses,
-        rsp_table = rsp_table
+        rsp_table = rsp_table,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -713,7 +725,8 @@ srv_t_binary_outcome <- function(input,
                                  add_total,
                                  label,
                                  default_responses,
-                                 rsp_table) {
+                                 rsp_table,
+                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -894,7 +907,8 @@ srv_t_binary_outcome <- function(input,
           strat = if (length(input_strata_var) != 0) input_strata_var else NULL
         )
       ),
-      add_total = input$add_total
+      add_total = input$add_total,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

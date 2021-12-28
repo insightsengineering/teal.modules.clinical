@@ -24,7 +24,7 @@ test_that("template_events_by_grade generates standard expressions", {
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ACTARM") %>%
         add_overall_col(label = "All Patients") %>%
         add_colcounts() %>%
@@ -116,7 +116,7 @@ test_that("template_events_by_grade generates standard expressions with pruning 
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ACTARM") %>%
         add_overall_col(label = "All Patients") %>%
         add_colcounts() %>%
@@ -208,7 +208,7 @@ test_that("template_events_by_grade without adding total column option works as 
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ACTARM") %>%
         add_colcounts() %>%
         summarize_occurrences_by_grade(
@@ -299,7 +299,7 @@ test_that("template_events_by_grade with hlt only works", {
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by("ACTARM") %>%
         add_overall_col(label = "All Patients") %>%
         add_colcounts() %>%
@@ -383,7 +383,7 @@ test_that("template_events_col_by_grade generates standard expressions", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -500,7 +500,7 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -606,7 +606,7 @@ test_that("template_events_col_by_grade without adding total column option works
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -711,7 +711,7 @@ test_that("template_events_col_by_grade without dropping arm levels option works
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",

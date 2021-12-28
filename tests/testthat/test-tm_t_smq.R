@@ -31,7 +31,7 @@ test_that("template_smq generates correct expressions with default arguments", {
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARMCD") %>%
         split_cols_by(var = "SEX") %>%
         add_colcounts() %>%
@@ -109,7 +109,7 @@ test_that("template_smq generates correct expressions with custom arguments", {
       myadsl <- df_explicit_na(myadsl, na_level = "<Missing>")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "myARMCD") %>%
         add_colcounts() %>%
         summarize_num_patients(

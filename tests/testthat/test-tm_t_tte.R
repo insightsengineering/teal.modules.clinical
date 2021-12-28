@@ -43,8 +43,7 @@ test_that("template_tte produces healthy standard output", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Time-To-Event Table for", "OS")) %>%
+      lyt <- rtables::basic_table(title = "Time-To-Event Table for OS") %>%
         split_cols_by(var = "ARM") %>%
         add_colcounts() %>%
         summarize_vars(
@@ -76,10 +75,7 @@ test_that("template_tte produces healthy standard output", {
           control = list(
             conf_level = 0.95,
             conf_type = "plain",
-            quantiles = c(
-              0.25,
-              0.75
-            )
+            quantiles = c(0.25, 0.75)
           ),
           table_names = "time_to_event"
         ) %>%

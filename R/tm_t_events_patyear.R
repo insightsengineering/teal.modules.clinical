@@ -6,14 +6,16 @@
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
-template_events_patyear <- function(dataname,
-                                    parentname,
-                                    arm_var,
-                                    events_var,
-                                    aval_var = "AVAL",
-                                    add_total = TRUE,
-                                    control = control_incidence_rate(),
-                                    drop_arm_levels = TRUE) {
+template_events_patyear <- function(
+  dataname,
+  parentname,
+  arm_var,
+  events_var,
+  aval_var = "AVAL",
+  add_total = TRUE,
+  control = control_incidence_rate(),
+  drop_arm_levels = TRUE,
+  basic_table_args = teal.devel::basic_table_args()) {
   # initialize
   y <- list()
   # data
@@ -50,15 +52,21 @@ template_events_patyear <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # layout
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = basic_table() %>%
+      expr = expr_basic_table_args %>%
         split_cols_by(var = arm_var) %>%
         add_colcounts(),
-      env = list(arm_var = arm_var)
+      env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
     )
   )
   if (add_total) {
@@ -186,8 +194,8 @@ tm_t_events_patyear <- function(label,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
-                                post_output = NULL
-                                ) {
+                                post_output = NULL,
+                                basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
   stop_if_not(
     is_character_single(dataname),
@@ -210,6 +218,8 @@ tm_t_events_patyear <- function(label,
       )
     )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
@@ -230,7 +240,8 @@ tm_t_events_patyear <- function(label,
       list(
         dataname = dataname,
         parentname = parentname,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -341,7 +352,8 @@ srv_events_patyear <- function(input,
                                events_var,
                                add_total,
                                drop_arm_levels,
-                               label) {
+                               label,
+                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -461,7 +473,8 @@ srv_events_patyear <- function(input,
         },
         time_unit_output = as.numeric(input$time_unit_output)
       ),
-      drop_arm_levels = input$drop_arm_levels
+      drop_arm_levels = input$drop_arm_levels,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })

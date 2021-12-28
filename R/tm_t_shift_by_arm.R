@@ -19,7 +19,8 @@ template_shift_by_arm <- function(dataname,
                                   base_var = "BNRIND",
                                   na.rm = FALSE, #nolint
                                   na_level = "<Missing>",
-                                  add_total = FALSE) {
+                                  add_total = FALSE,
+                                  basic_table_args = teal.devel::basic_table_args()) {
 
   assert_that(
     is.string(dataname),
@@ -71,6 +72,12 @@ template_shift_by_arm <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  parsed_basic_table_args <- parse_basic_table_args(
+    resolve_basic_table_args(
+      user_table = basic_table_args
+    )
+  )
+
   # Start layout steps.
   layout_list <- list()
 
@@ -78,7 +85,7 @@ template_shift_by_arm <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
           split_cols_by(aval_var) %>%
           split_rows_by(
@@ -96,7 +103,8 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level
+          na_level = na_level,
+          expr_basic_table_args = parsed_basic_table_args
         )
       )
     )
@@ -104,7 +112,7 @@ template_shift_by_arm <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = basic_table() %>%
+        expr = expr_basic_table_args %>%
           split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
           split_cols_by(aval_var) %>%
           split_rows_by(
@@ -122,7 +130,8 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level
+          na_level = na_level,
+          expr_basic_table_args = parsed_basic_table_args
         )
       )
     )
@@ -215,7 +224,8 @@ tm_t_shift_by_arm <- function(label,
                               na_level = "<Missing>",
                               add_total = FALSE,
                               pre_output = NULL,
-                              post_output = NULL) {
+                              post_output = NULL,
+                              basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_arm")
   stop_if_not(
     is_character_single(dataname),
@@ -245,6 +255,8 @@ tm_t_shift_by_arm <- function(label,
     base_var = cs_to_des_select(base_var, dataname = dataname)
   )
 
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
   args <- as.list(environment())
 
   module(
@@ -258,7 +270,8 @@ tm_t_shift_by_arm <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level
+        na_level = na_level,
+        basic_table_args = basic_table_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -368,7 +381,8 @@ srv_shift_by_arm <- function(input,
                              base_var,
                              label,
                              na_level,
-                             add_total) {
+                             add_total,
+                             basic_table_args) {
 
   stopifnot(is_cdisc_data(datasets))
 
@@ -450,7 +464,8 @@ srv_shift_by_arm <- function(input,
       base_var = as.vector(anl_m$columns_source$base_var),
       na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
       na_level = na_level,
-      add_total = input$add_total
+      add_total = input$add_total,
+      basic_table_args = basic_table_args
     )
     mapply(expression = my_calls, chunks_push)
   })
