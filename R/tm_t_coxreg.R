@@ -127,13 +127,7 @@ template_coxreg_u <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr_basic_table_args,
-      env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
-    )
-  )
+  layout_list <- add_expr(layout_list, parse_basic_table_args(basic_table_args))
   layout_list <- add_expr(
     layout_list,
     quote(split_rows_by("effect"))
@@ -274,27 +268,22 @@ template_coxreg_m <- function(dataname,
       data_list,
       substitute(
         expr = variables$strata <- strata_var,
-        env = list(
-          strata_var = strata_var
-        )
+        env = list(strata_var = strata_var)
       )
     )
   }
 
-  data_list <-
-    add_expr(
-      data_list,
-      substitute(
-        model <- fit_coxreg_multivar(
-          variables = variables,
-          data = anl,
-          control = control
-        ),
-        env = list(
-          control = control
-        )
-      )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      model <- fit_coxreg_multivar(
+        variables = variables,
+        data = anl,
+        control = control
+      ),
+      env = list(control = control)
     )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -305,13 +294,7 @@ template_coxreg_m <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr_basic_table_args,
-      env = list(expr_basic_table_args = parse_basic_table_args(basic_table_args))
-    )
-  )
+  layout_list <- add_expr(layout_list, parse_basic_table_args(basic_table_args))
 
   layout_list <- add_expr(
     layout_list,
