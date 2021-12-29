@@ -60,7 +60,7 @@ to calculate the estimator. If \code{NULL}, the same symbol size is used for all
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
 
-\item{ggplot2_args}{(\code{ggplot2_args})\cr
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{caption}.
 \code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and

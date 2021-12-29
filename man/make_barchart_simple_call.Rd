@@ -37,7 +37,7 @@ whether to label bars.}
 \verb{type of the layout - "side_by_side"} or \code{"stacked"} (default).}
 
 \item{flip_axis}{(\code{NULL}, \code{character(1)})\cr
-whether to flip axis}
+whether to flip axis.}
 
 \item{rotate_bar_labels}{(\code{NULL}, \code{logical(1)})\cr
 whether to rotate bar label by 45 degrees.}
@@ -51,7 +51,7 @@ whether to rotate y-axis label by 45 degrees.}
 \item{expand_y_range}{(\code{NULL}, \code{numeric(1)})\cr
 fraction of y-axis range to expand further up.}
 
-\item{ggplot2_args}{(\code{ggplot2_args})\cr
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr

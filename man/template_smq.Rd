@@ -55,7 +55,7 @@ variable names of the selected Standardized/Customized queries}
 \item{id_var}{(\code{character})\cr
 the variable name for subject id.}
 
-\item{basic_table_args}{(\code{basic_table_args})\cr
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr

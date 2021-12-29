@@ -3,11 +3,9 @@
 #' Creates a valid expression for Cox regression analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis,
-#'   see [control_coxreg()].
-#' @param at (`list` of `numeric`)\cr when the candidate covariate is a
-#'  `numeric`, use `at` to specify the value of the covariate at which the
-#'  effect should be estimated.
+#' @param control (`list`)\cr list of settings for the analysis, see [control_coxreg()].
+#' @param at (`list` of `numeric`)\cr when the candidate covariate is a `numeric`, use `at`
+#' to specify the value of the covariate at which the effect should be estimated.
 #' @param append (`logical`)\cr if the result should be appended to the previous one.
 #'
 #' @importFrom broom tidy

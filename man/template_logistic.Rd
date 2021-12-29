@@ -61,7 +61,7 @@ values of the responder variable corresponding with a successful response.}
 \item{at}{optional, (\code{NULL} or \code{numeric})\cr
 values for the interaction variable. Otherwise the median is used.}
 
-\item{basic_table_args}{(\code{basic_table_args})\cr
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr

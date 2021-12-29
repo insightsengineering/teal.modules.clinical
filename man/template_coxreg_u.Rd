@@ -47,9 +47,8 @@ the level of comparison arm in case of arm comparison.}
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
-\item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a
-\code{numeric}, use \code{at} to specify the value of the covariate at which the
-effect should be estimated.}
+\item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a \code{numeric}, use \code{at}
+to specify the value of the covariate at which the effect should be estimated.}
 
 \item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}
@@ -57,12 +56,11 @@ names of the variables for stratified analysis.}
 \item{combine_comp_arms}{(\code{logical})\cr
 triggers the combination of comparison arms.}
 
-\item{control}{(\code{list})\cr list of settings for the analysis,
-see \code{\link[=control_coxreg]{control_coxreg()}}.}
+\item{control}{(\code{list})\cr list of settings for the analysis, see \code{\link[=control_coxreg]{control_coxreg()}}.}
 
 \item{append}{(\code{logical})\cr if the result should be appended to the previous one.}
 
-\item{basic_table_args}{(\code{basic_table_args})\cr
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr

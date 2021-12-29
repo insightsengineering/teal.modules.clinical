@@ -174,7 +174,7 @@ template_vitals <- function(dataname = "ANL",
 #' This teal module produces a patient profile vitals plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
 #' ADVS dataset.
 #' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADVS dataset.

@@ -15,12 +15,12 @@ tm_t_pp_basic_info(
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{patient_col}{(\code{character}) value patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr ADSL columns to be shown in
 Basic Info tab.}

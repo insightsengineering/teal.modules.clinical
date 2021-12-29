@@ -10,7 +10,7 @@
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
-#' @param ggplot2_args (`ggplot2_args`)\cr
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
@@ -204,7 +204,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @param fixed_symbol_size (`logical`)\cr
 #' When (`TRUE`), the same symbol size is used for plotting each estimate.
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param ggplot2_args (`ggplot2_args`)\cr
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and

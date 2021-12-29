@@ -9,7 +9,7 @@
 #' @param arm_levels (`character`)\cr vector of all arm variable levels.
 #' @param avalu_first (`string`)\cr `avalu` value.
 #' @param paramcd_first (`string`)\cr `paramcd` value.
-#' @param ggplot2_args (`ggplot2_args`)\cr
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
@@ -134,8 +134,8 @@ template_g_ipp <- function(dataname = "ANL",
 #' trends in parameter values over time for each patient using data with
 #' ADaM structure.
 #'
-#' @inheritParams module_arguments
 #' @inheritParams template_g_ipp
+#' @inheritParams module_arguments
 #' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.

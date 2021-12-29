@@ -507,7 +507,7 @@ srv_g_barchart_simple <- function(input,
 #' @param barlayout (`NULL`, `character(1)`)\cr
 #'  `type of the layout - "side_by_side"` or `"stacked"` (default).
 #' @param flip_axis (`NULL`, `character(1)`)\cr
-#'  whether to flip axis
+#'  whether to flip axis.
 #' @param rotate_bar_labels (`NULL`, `logical(1)`)\cr
 #'  whether to rotate bar label by 45 degrees.
 #' @param rotate_x_label (`NULL`, `logical(1)`)\cr

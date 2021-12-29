@@ -29,7 +29,7 @@ tm_g_pp_therapy(
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -37,7 +37,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character}) value patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{atirel}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ATIREL} column of the
 ADCM dataset.}
@@ -88,7 +88,7 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{(\code{ggplot2_args})\cr
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr

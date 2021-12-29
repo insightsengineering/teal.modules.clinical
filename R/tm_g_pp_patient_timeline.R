@@ -266,11 +266,11 @@ template_patient_timeline <- function(dataname = "ANL",
 #' This teal module produces a patient profile timeline plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param aeterm ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AETERM} column of the
 #' ADAE dataset.
-#' @param dataname_adcm (`character`) name of ADCM dataset or equivalent.
-#' @param dataname_adae (`character`) name of ADAE dataset or equivalent.
+#' @param dataname_adcm (`character`)\cr name of ADCM dataset or equivalent.
+#' @param dataname_adae (`character`)\cr name of ADAE dataset or equivalent.
 #' @param aerelday_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDY}
 #' column of the ADAE dataset.
 #' @param aerelday_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDY}

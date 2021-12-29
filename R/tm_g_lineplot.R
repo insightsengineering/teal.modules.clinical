@@ -7,7 +7,7 @@
 #'   parameter chosen to filter the data by.
 #' @param incl_screen (`logical`)\cr
 #'   should the screening visit be included.
-#' @param ggplot2_args (`ggplot2_args`)\cr
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `caption`, `y`, `lty`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
