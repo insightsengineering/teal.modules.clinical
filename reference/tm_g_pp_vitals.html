@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -100,7 +91,7 @@ Other releases
     <h2>Arguments</h2>
     <dl><dt>label</dt>
 <dd><p>(<code>character</code>)<br>
-menu item label of the module in the teal app</p></dd>
+menu item label of the module in the teal app.</p></dd>
 <dt>dataname</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
@@ -108,7 +99,7 @@ analysis data used in teal module.</p></dd>
 <dd><p>(<code>character</code>)<br>
 parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
 <dt>patient_col</dt>
-<dd><p>(<code>character</code>) value patient ID column to be used.</p></dd>
+<dd><p>(<code>character</code>)<br> patient ID column to be used.</p></dd>
 <dt>paramcd</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>PARAMCD</code> column of the
 ADVS dataset.</p></dd>
@@ -140,10 +131,10 @@ For example a title.</p></dd>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
 <dt>ggplot2_args</dt>
-<dd><p>(<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code>
-with settings for the module table.
-For more details see the help vignette:<br><code>vignette("Custom ggplot2_args arguments module", package = "teal.devel")</code>
-The argument is merged with options variable <code>teal.ggplot2_args</code> and default module setup.</p></dd>
+<dd><p>optional, (<code>ggplot2_args</code>)<br>
+object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
+The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
+(hard coded in the module body).<br> For more details, see the help vignette:<br><code>vignette("Custom ggplot2_args arguments module", package = "teal.devel")</code>.</p></dd>
 </dl></div>
 
     <div id="ref-examples">
@@ -184,7 +175,7 @@ The argument is merged with options variable <code>teal.ggplot2_args</code> and 
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-28 06:56:28.6297 pid:2101 token: teal.modules.clinical fun:tm_g_pp_vitals [INFO] Initializing tm_g_pp_vitals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:33:10.7547 pid:2122 token: teal.modules.clinical fun:tm_g_pp_vitals [INFO] Initializing tm_g_pp_vitals</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

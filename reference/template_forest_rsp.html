@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -90,7 +81,8 @@ Other releases
   <span class="va">subgroup_var</span>,
   strata_var <span class="op">=</span> <span class="cn">NULL</span>,
   conf_level <span class="op">=</span> <span class="fl">0.95</span>,
-  col_symbol_size <span class="op">=</span> <span class="cn">NULL</span>
+  col_symbol_size <span class="op">=</span> <span class="cn">NULL</span>,
+  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -112,7 +104,7 @@ the level of reference arm in case of arm comparison.</p></dd>
 <dd><p>(<code>character</code>)<br>
 the level of comparison arm in case of arm comparison.</p></dd>
 <dt>obj_var_name</dt>
-<dd><p>(<code>character</code>)<br> additional text string append to output title</p></dd>
+<dd><p>(<code>character</code>)<br> additional text string append to output title.</p></dd>
 <dt>aval_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the analysis variable.</p></dd>
@@ -130,6 +122,13 @@ value for the confidence level within the range of (0, 1).</p></dd>
 <dd><p>(<code>integer</code>)<br> column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If <code>NULL</code>, the same symbol size is used for all subgroups.</p></dd>
+<dt>ggplot2_args</dt>
+<dd><p>optional, (<code>ggplot2_args</code>)<br>
+object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
+For this module, this argument will only accept <code>labs</code> arguments such as: <code>title</code>, <code>caption</code>.
+<code>theme</code> arguments will be not taken into account. The argument is merged with option <code>teal.ggplot2_args</code> and
+with default module arguments (hard coded in the module body).<br> For more details, see the help vignette:
+<code>vignette("Custom ggplot2_args arguments module", package = "teal.devel")</code>.</p></dd>
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>

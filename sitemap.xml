@@ -76,6 +76,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/is.cs_or_des.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/make_barchart_simple_call.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/module_arguments.html</loc>
   </url>
   <url>
@@ -124,7 +127,10 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_binary_outcome.html</loc>
   </url>
   <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_coxreg.html</loc>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_coxreg_m.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_coxreg_u.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_events.html</loc>
