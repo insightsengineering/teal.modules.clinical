@@ -16,7 +16,8 @@ template_forest_rsp(
   subgroup_var,
   strata_var = NULL,
   conf_level = 0.95,
-  col_symbol_size = NULL
+  col_symbol_size = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ the level of reference arm in case of arm comparison.}
 \item{comp_arm}{(\code{character})\cr
 the level of comparison arm in case of arm comparison.}
 
-\item{obj_var_name}{(\code{character})\cr additional text string append to output title}
+\item{obj_var_name}{(\code{character})\cr additional text string append to output title.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
@@ -53,6 +54,13 @@ value for the confidence level within the range of (0, 1).}
 \item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{caption}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 Creates a valid expression for response forest plot.

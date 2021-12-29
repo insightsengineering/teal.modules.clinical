@@ -4,6 +4,13 @@
 #'
 #' @inheritParams template_arguments
 #' @inheritParams template_forest_rsp
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#'
 #'
 #' @seealso [tm_g_forest_tte()]
 #'
@@ -20,7 +27,8 @@ template_forest_tte <- function(dataname = "ANL",
                                 strata_var = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
-                                time_unit_var = "AVALU") {
+                                time_unit_var = "AVALU",
+                                ggplot2_args = teal.devel::ggplot2_args()) {
   assert_that(
     is.string(dataname),
     is.string(arm_var),
@@ -149,30 +157,44 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(time_unit_var = as.name(time_unit_var))
   )
 
-  title <- paste0("Forest plot of survival duration for ", obj_var_name)
-
-  y$plot <- substitute(
-    expr = {
-      p <- g_forest(
-        tbl = result,
-        col_symbol_size = col_symbol_size
-      )
-      if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      } else {
-        p <- decorate_grob(p, title = title, footnotes = "",
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      }
-      grid::grid.newpage()
-      grid::grid.draw(p)
-    },
-    env = list(
-      col_symbol_size = col_symbol_size,
-      arm_var = arm_var,
-      title = title
+  all_ggplot2_args <- resolve_ggplot2_args(
+    user_plot = ggplot2_args,
+    module_plot = ggplot2_args(
+      labs = list(title = paste0("Forest plot of survival duration for ", obj_var_name))
     )
   )
+
+  plot_call <- substitute(
+    expr = g_forest(
+      tbl = result,
+      col_symbol_size = col_s_size
+    ),
+    env = list(col_s_size = col_symbol_size)
+  )
+
+  plot_call <- if (!is.null(footnotes(p))) {
+    substitute(
+      decorate_grob(p, titles = title, footnotes = footnotes(p), gp_footnotes = grid::gpar(fontsize = 12)),
+      env = list(title = all_ggplot2_args$labs$title, p = plot_call)
+    )
+  } else {
+    substitute(
+      decorate_grob(p, titles = title, footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)),
+      env = list(title = all_ggplot2_args$labs$title, p =  plot_call)
+    )
+  }
+
+  plot_call <- substitute(
+    env  = list(plot_call = plot_call),
+    expr = {
+      p <- plot_call
+      grid::grid.newpage()
+      grid::grid.draw(p)
+    }
+  )
+
+  # Plot output.
+  y$plot <- plot_call
 
   y
 }
@@ -184,6 +206,12 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_g_forest_rsp
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -262,7 +290,8 @@ tm_g_forest_tte <- function(label,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(980L, 500L, 2000L),
                             pre_output = NULL,
-                            post_output = NULL) {
+                            post_output = NULL,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_tte")
   utils.nest::stop_if_not(
     is_character_single(label),
@@ -285,6 +314,8 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
 
@@ -310,7 +341,8 @@ tm_g_forest_tte <- function(label,
         arm_ref_comp = arm_ref_comp,
         parentname = parentname,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -439,7 +471,8 @@ srv_g_forest_tte <- function(input,
                              cnsr_var,
                              time_unit_var,
                              plot_height,
-                             plot_width) {
+                             plot_width,
+                             ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   init_chunks()
 
@@ -571,7 +604,8 @@ srv_g_forest_tte <- function(input,
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = if (!input$fixed_symbol_size) 1,
-      time_unit_var = as.vector(anl_m$columns_source$time_unit_var)
+      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
+      ggplot2_args = ggplot2_args
     )
     mapply(expression = my_calls, chunks_push)
   })

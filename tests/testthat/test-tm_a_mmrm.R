@@ -6,7 +6,7 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
-    combine_comp_arm = FALSE,
+    combine_comp_arms = FALSE,
     id_var = "USUBJID",
     visit_var = "AVISIT",
     cov_var = c()
@@ -107,7 +107,7 @@ test_that("template_mmrm_tables works as expected", {
   )
   expected <- list(
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         add_colcounts() %>%
         split_rows_by("AVISIT") %>%
@@ -136,7 +136,7 @@ test_that("template_mmrm_tables works as expected when arm is not considered in 
   )
   expected <- list(
     layout = quote(
-      lyt <- basic_table() %>%
+      lyt <- rtables::basic_table() %>%
         split_rows_by("AVISIT") %>%
         summarize_lsmeans(
           arms = FALSE

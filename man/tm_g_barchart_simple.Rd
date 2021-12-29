@@ -14,7 +14,8 @@ tm_g_barchart_simple(
   plot_height = c(600L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -27,7 +28,7 @@ tm_g_barchart_simple(
 \item{y_facet}{(\code{data_extract_spec})\cr faceting groups on the col dimension.}
 
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{plot_options}{(\code{list})\cr list of plot options.}
 
@@ -48,6 +49,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 Categories can be defined up to four levels deep and are defined through

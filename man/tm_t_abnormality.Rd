@@ -32,7 +32,7 @@ tm_t_abnormality(
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -86,11 +86,11 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 
-\item{basic_table_args}{(\code{basic_table_args})\cr object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}}
-with settings for the module table.
-For more details see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}
-The argument is merged with options variable \code{teal.basic_table_args} and default module setup.}
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Abnormality Summary Table

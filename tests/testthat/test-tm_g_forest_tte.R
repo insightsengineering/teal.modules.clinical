@@ -51,18 +51,9 @@ test_that("template_forest_tte generates correct expressions", {
         )
     }),
     plot = quote({
-      p <- g_forest(
-        tbl = result,
-        col_symbol_size = NULL
-      )
-      if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = "Forest plot of survival duration for ", footnotes = footnotes(p),
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      }
-      else {
-        p <- decorate_grob(p, title = "Forest plot of survival duration for ",
-                           footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
-      }
+      p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL),
+                         titles = "Forest plot of survival duration for ", footnotes = "",
+                         gp_footnotes = grid::gpar(fontsize = 12))
       grid::grid.newpage()
       grid::grid.draw(p)
     })

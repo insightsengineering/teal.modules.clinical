@@ -6,19 +6,32 @@
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
+#' @param arm_levels (`character`)\cr vector of all arm variable levels.
+#' @param avalu_first (`string`)\cr `avalu` value.
+#' @param paramcd_first (`string`)\cr `paramcd` value.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @importFrom grid grid.newpage grid.draw
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
                            arm_var,
+                           arm_levels,
+                           avalu_first,
+                           paramcd_first,
                            aval_var = "AVAL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
                            visit_var = "AVISIT",
                            base_var = "BASE",
                            add_baseline_hline = FALSE,
-                           separate_by_obs = FALSE) {
+                           separate_by_obs = FALSE,
+                           ggplot2_args = teal.devel::ggplot2_args()) {
 
   assert_that(
     is.string(dataname),
@@ -37,11 +50,23 @@ template_g_ipp <- function(dataname = "ANL",
   # Data preprocessing
 
   y$data <- substitute(
-    expr = {
-      anl <- df %>% droplevels()
-      },
+    expr = anl <- df %>% droplevels(),
     env = list(df = as.name(dataname))
   )
+
+  all_ggplot2_args <- resolve_ggplot2_args(
+    user_plot =  ggplot2_args,
+    module_plot = ggplot2_args(
+      labs = list(
+        title = sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
+        x = "Visit",
+        y = sprintf("%s (%s)", paramcd_first, avalu_first),
+        subtitle = paste(arm_levels, collapse = ", ")
+      )
+    )
+  )
+
+
 
   graph_list <- list()
   graph_list <- add_expr(
@@ -52,30 +77,20 @@ template_g_ipp <- function(dataname = "ANL",
           df = anl,
           xvar  = visit,
           yvar = aval,
-          xlab = "Visit",
-          ylab = paste0(
-            anl[[paramcd]][1],
-            " (",
-            anl[[avalu]][1],
-            ")"
-            ),
-          title = paste0(
-            "Individual Patient Plot for ",
-            anl[[paramcd]][1],
-            " Values ",
-            "(",
-            anl[[avalu]][1],
-            ")",
-            " over Time"
-          ),
-          subtitle = paste(levels(anl[[arm]]), collapse = ", "),
+          xlab = xlab_val,
+          ylab = ylab_val,
+          title = title_val,
+          subtitle = subtitle_val,
           id_var = id,
           add_baseline_hline = add_baseline_hline,
           yvar_baseline = base
         )
-
       },
       env = list(
+        xlab_val = all_ggplot2_args$labs$x,
+        ylab_val = all_ggplot2_args$labs$y,
+        title_val = all_ggplot2_args$labs$title,
+        subtitle_val = all_ggplot2_args$labs$subtitle,
         paramcd = paramcd,
         visit = visit_var,
         aval = aval_var,
@@ -92,28 +107,21 @@ template_g_ipp <- function(dataname = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = {
-          plot <- plot + ggplot2::facet_grid(rows = vars(id))
-          },
+        expr = plot <- plot + ggplot2::facet_grid(rows = vars(id)),
         env = list(id = as.name(id_var))
-        )
       )
+    )
   }
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.newpage()
-      )
-    )
+    quote(grid::grid.newpage())
+  )
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.draw(plot)
-    )
+    quote(grid::grid.draw(plot))
   )
-
 
   y$graph <- bracket_expr(graph_list)
 
@@ -126,8 +134,8 @@ template_g_ipp <- function(dataname = "ANL",
 #' trends in parameter values over time for each patient using data with
 #' ADaM structure.
 #'
-#' @inheritParams module_arguments
 #' @inheritParams template_g_ipp
+#' @inheritParams module_arguments
 #' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.
@@ -252,7 +260,8 @@ tm_g_ipp <- function(label,
                      plot_height = c(1200L, 400L, 5000L),
                      plot_width = NULL,
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ipp")
   stop_if_not(
     is_character_single(label),
@@ -275,6 +284,8 @@ tm_g_ipp <- function(label,
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -299,7 +310,8 @@ tm_g_ipp <- function(label,
         label = label,
         parentname = parentname,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = get_extract_datanames(data_extract_list)
@@ -405,7 +417,8 @@ srv_g_ipp <- function(input,
                       base_var,
                       plot_height,
                       plot_width,
-                      label) {
+                      label,
+                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   init_chunks()
@@ -491,17 +504,29 @@ srv_g_ipp <- function(input,
     ANL <- chunks_get_var("ANL") # nolint
     validate_has_data(ANL, 2)
 
+    arm_var <- unlist(arm_var$filter)["vars_selected"]
+    avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+    paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+    avalu_first <- as.character(ANL[[avalu_var]][1])
+    paramcd_first <- as.character(ANL[[paramcd]][1])
+    arm_levels <- levels(droplevels(ANL[[arm_var]]))
+
     my_calls <- template_g_ipp(
       dataname = "ANL",
       aval_var = as.vector(anl_m$columns_source$aval_var),
-      avalu_var = as.vector(anl_m$columns_source$avalu_var),
+      avalu_var = avalu_var,
+      avalu_first = avalu_first,
       id_var = as.vector(anl_m$columns_source$id_var),
       visit_var = as.vector(anl_m$columns_source$visit_var),
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
-      paramcd <- unlist(paramcd$filter)["vars_selected"],
-      arm_var <-  unlist(arm_var$filter)["vars_selected"]
+      paramcd = paramcd,
+      paramcd_first = paramcd_first,
+      arm_var = arm_var,
+      arm_levels = arm_levels,
+      ggplot2_args = ggplot2_args
     )
     mapply(expression = my_calls, chunks_push)
   })

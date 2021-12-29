@@ -21,7 +21,7 @@ tm_t_pp_laboratory(
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -29,7 +29,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character}) value patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{timepoints}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr Time variable to be represented in
 the laboratory table.}

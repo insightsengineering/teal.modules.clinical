@@ -23,12 +23,13 @@ tm_g_forest_rsp(
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(900L, 200L, 2000L),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -63,8 +64,9 @@ as the default subgroups.}
 \item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 names of the variables for stratified analysis.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each
-estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
+\item{fixed_symbol_size}{(\code{logical})\cr
+When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
 object with all available choices and preselected option for the confidence
@@ -94,6 +96,13 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{caption}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body). \cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 This teal module produces a grid style Forest plot for response data with ADaM structure.

@@ -8,13 +8,17 @@ template_g_ipp(
   dataname = "ANL",
   paramcd,
   arm_var,
+  arm_levels,
+  avalu_first,
+  paramcd_first,
   aval_var = "AVAL",
   avalu_var = "AVALU",
   id_var = "USUBJID",
   visit_var = "AVISIT",
   base_var = "BASE",
   add_baseline_hline = FALSE,
-  separate_by_obs = FALSE
+  separate_by_obs = FALSE,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -26,6 +30,12 @@ variable value designating the studied parameter.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
+
+\item{arm_levels}{(\code{character})\cr vector of all arm variable levels.}
+
+\item{avalu_first}{(\code{string})\cr \code{avalu} value.}
+
+\item{paramcd_first}{(\code{string})\cr \code{paramcd} value.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
@@ -42,6 +52,13 @@ the variable name for subject id.}
 \item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
 
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{subtitle}, \code{x}, \code{y}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 Template: Individual Patient Plots

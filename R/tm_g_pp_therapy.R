@@ -143,7 +143,7 @@ template_therapy <- function(dataname = "ANL",
     substitute(expr = {
       dataname[[cmstdy_char]] <- as.numeric(dataname[[cmstdy_char]])
       dataname[[cmendy_char]] <- as.numeric(dataname[[cmendy_char]])
-      max_day <- max(dataname[[cmendy_char]], na.rm = T)
+      max_day <- max(dataname[[cmendy_char]], na.rm = TRUE)
       data <- dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # remove PRIOR_CONCOMITANT
         dplyr::select_at(cols_to_include) %>%
@@ -222,7 +222,7 @@ template_therapy <- function(dataname = "ANL",
 #' This teal module produces a patient profile therapy plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param atirel ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ATIREL} column of the
 #' ADCM dataset.
 #' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDECOD} column of the

@@ -65,7 +65,7 @@ template_medical_history <- function(dataname = "ANL",
 #' This teal module produces a patient medical history report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) name of the patients' ids column.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param mhterm
 #' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
 #' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the

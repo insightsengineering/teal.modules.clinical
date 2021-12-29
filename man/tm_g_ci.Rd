@@ -20,7 +20,7 @@ tm_g_ci(
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
 
@@ -53,11 +53,11 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{(\code{ggplot2_args})\cr object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}}
-with settings for the module table.
-For more details see the help vignette:\cr
-\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}
-The argument is merged with options variable \code{teal.ggplot2_args} and default module setup.}
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 The module generates the R code and returns the corresponding output.

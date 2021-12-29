@@ -172,7 +172,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
-          split_label = obj_label(anl$GRADE_DIR),
+          split_label = obj_label(anl$GRADE_DIR)
           ) %>%
         count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
@@ -218,7 +218,6 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 #' worst grade.
 #' @seealso [template_abnormality_by_worst_grade()]
 #'
-#' @return
 #' @export
 #'
 #' @examples
