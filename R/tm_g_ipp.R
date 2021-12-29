@@ -510,7 +510,7 @@ srv_g_ipp <- function(input,
 
     avalu_first <- as.character(ANL[[avalu_var]][1])
     paramcd_first <- as.character(ANL[[paramcd]][1])
-    arm_levels <- levels(ANL[[arm_var]])
+    arm_levels <- levels(droplevels(ANL[[arm_var]]))
 
     my_calls <- template_g_ipp(
       dataname = "ANL",
