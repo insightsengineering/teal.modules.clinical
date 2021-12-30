@@ -11,8 +11,6 @@
 #' @param y_facet (`data_extract_spec`)\cr faceting groups on the col dimension.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
-#' @importFrom utils modifyList
-#'
 #' @export
 #'
 #' @examples
@@ -165,7 +163,7 @@ tm_g_barchart_simple <- function(x = NULL,
                             .var.name = "plot_width")
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
-  plot_options <- modifyList(
+  plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
     if_null(plot_options, list())
   )
