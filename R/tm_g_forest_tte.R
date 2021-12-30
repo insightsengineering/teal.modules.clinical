@@ -160,7 +160,7 @@ template_forest_tte <- function(dataname = "ANL",
   all_ggplot2_args <- resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = ggplot2_args(
-      labs = list(title = paste0("Forest plot of survival duration for ", obj_var_name))
+      labs = list(title = paste0("Forest plot of survival duration for ", obj_var_name), caption = "")
     )
   )
 
@@ -172,17 +172,10 @@ template_forest_tte <- function(dataname = "ANL",
     env = list(col_s_size = col_symbol_size)
   )
 
-  plot_call <- if (!is.null(footnotes(p))) {
-    substitute(
-      decorate_grob(p, titles = title, footnotes = footnotes(p), gp_footnotes = grid::gpar(fontsize = 12)),
-      env = list(title = all_ggplot2_args$labs$title, p = plot_call)
-    )
-  } else {
-    substitute(
-      decorate_grob(p, titles = title, footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)),
-      env = list(title = all_ggplot2_args$labs$title, p =  plot_call)
-    )
-  }
+  plot_call <- substitute(
+    decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
+    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
+  )
 
   plot_call <- substitute(
     env  = list(plot_call = plot_call),
