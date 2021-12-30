@@ -241,10 +241,10 @@ tm_g_pp_vitals <- function(label,
                            post_output = NULL,
                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(parentname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -264,10 +264,10 @@ tm_g_pp_vitals <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    param = if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    aval = if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    xaxis = if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
+    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
+    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
+    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
+    xaxis = utils.nest::if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
   )
 
   module(
@@ -406,7 +406,7 @@ srv_g_vitals <- function(input,
 
     cur_selected <- isolate(input$paramcd_levels_vals)
 
-    selected <- if (!is_empty(cur_selected)) {
+    selected <- if (!utils.nest::is_empty(cur_selected)) {
       cur_selected
     } else {
       paramcd_col_levels

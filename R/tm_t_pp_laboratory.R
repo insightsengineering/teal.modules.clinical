@@ -162,10 +162,10 @@ tm_t_pp_laboratory <- function(label,
                                pre_output = NULL,
                                post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_laboratory")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(parentname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -175,12 +175,12 @@ tm_t_pp_laboratory <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    timepoints = if_not_null(timepoints, cs_to_des_select(timepoints, dataname = dataname)),
-    aval = if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    avalu = if_not_null(avalu, cs_to_des_select(avalu, dataname = dataname)),
-    param = if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    anrind = if_not_null(anrind, cs_to_des_select(anrind, dataname = dataname))
+    timepoints = utils.nest::if_not_null(timepoints, cs_to_des_select(timepoints, dataname = dataname)),
+    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
+    avalu = utils.nest::if_not_null(avalu, cs_to_des_select(avalu, dataname = dataname)),
+    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
+    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
+    anrind = utils.nest::if_not_null(anrind, cs_to_des_select(anrind, dataname = dataname))
   )
 
   module(

@@ -306,11 +306,11 @@ tm_g_forest_rsp <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(fixed_symbol_size),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(fixed_symbol_size),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -532,7 +532,7 @@ srv_g_forest_rsp <- function(input,
         common_rsp <- if (is.list(sel_param)) {
           sel_param$rsp
         } else sel_param
-        responder_choices <- if (is_empty(aval_var)) {
+        responder_choices <- if (utils.nest::is_empty(aval_var)) {
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
@@ -619,7 +619,7 @@ srv_g_forest_rsp <- function(input,
     )
 
     validate(
-      need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty."),
       need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected."

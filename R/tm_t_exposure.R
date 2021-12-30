@@ -29,13 +29,13 @@ template_exposure <- function(parentname,
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(row_by_var),
-    assertthat::is.string(col_by_var) || is_empty(col_by_var),
+    assertthat::is.string(col_by_var) || utils.nest::is_empty(col_by_var),
     assertthat::is.string(paramcd),
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var) || is_empty(avalu_var),
+    assertthat::is.string(avalu_var) || utils.nest::is_empty(avalu_var),
     assertthat::is.flag(drop_levels)
   )
 
@@ -78,7 +78,7 @@ template_exposure <- function(parentname,
     parsed_basic_table_args
   )
 
-  if (!is_empty(col_by_var)) {
+  if (!utils.nest::is_empty(col_by_var)) {
     if (add_total) {
       layout_list <- add_expr(
         layout_list,
@@ -311,7 +311,7 @@ tm_t_exposure <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
-  stop_if_not(
+  utils.nest::stop_if_not(
     assertthat::is.string(dataname),
     assertthat::is.flag(add_total),
     is.choices_selected(paramcd),

@@ -227,12 +227,12 @@ tm_t_shift_by_arm <- function(label,
                               post_output = NULL,
                               basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_arm")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
-    is_character_single(na_level),
+    utils.nest::is_character_single(na_level),
     useNA %in% c("ifany", "no"), # nolint,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),

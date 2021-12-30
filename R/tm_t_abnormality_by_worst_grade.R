@@ -313,7 +313,7 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             post_output = NULL,
                                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
-  stop_if_not(
+  utils.nest::stop_if_not(
     assertthat::is.string(dataname),
     is.choices_selected(id_var),
     is.choices_selected(arm_var),
@@ -505,7 +505,7 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
     validate(
       need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
       need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-      need(!is_empty(anl_m$data()[[input_paramcd_var]]), "Please select at least one Laboratory parameter."),
+      need(!utils.nest::is_empty(anl_m$data()[[input_paramcd_var]]), "Please select at least one Laboratory parameter."),
       need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
       need(input_id_var, "Please select a Subject Identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade."),

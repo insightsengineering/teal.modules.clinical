@@ -143,15 +143,15 @@ template_g_lineplot <- function(dataname = "ANL",
       mid_point_size = mid_point_size,
       table_font_size = table_font_size,
       y = y,
-      ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
+      ggplot2_args_title = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
         "Plot of ", names(which(mid_choices == mid)), " and ",
         ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
         names(which(interval_choices == interval)), " by Visit")),
-      ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
-      ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
-      ggplot2_args_ylab = utils.nest::if_null(all_ggplot2_args$labs$y,
+      ggplot2_args_subtitle = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
+      ggplot2_args_caption = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
+      ggplot2_args_ylab = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$y,
                                               paste(y, names(which(mid_choices == mid)), "Values for")),
-      ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
+      ggplot2_args_legend_title = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
     )
   )
 
@@ -238,13 +238,13 @@ tm_g_lineplot <- function(label,
                           post_output = NULL,
                           ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_lineplot")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
     is.choices_selected(conf_level),
-    is_character_single(mid),
-    is_character_single(interval),
-    is_character_vector(whiskers),
+    utils.nest::is_character_single(mid),
+    utils.nest::is_character_single(interval),
+    utils.nest::is_character_vector(whiskers),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -513,8 +513,8 @@ srv_g_lineplot <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_y), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_x_var), "Time variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_y), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_x_var), "Time variable should be a single column."))
 
     NULL
   })
@@ -532,7 +532,7 @@ srv_g_lineplot <- function(input,
     validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    if (is_empty(whiskers_selected) | is.null(input$interval)) {
+    if (utils.nest::is_empty(whiskers_selected) | is.null(input$interval)) {
       input_whiskers <- NULL
       input_interval <- NULL
     } else {

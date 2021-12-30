@@ -392,20 +392,20 @@ tm_t_summary_by <- function(label,
                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
   useNA <- match.arg(useNA) # nolint
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_zero_levels),
-    is_logical_single(parallel_vars),
-    is_logical_single(row_groups),
+    utils.nest::is_logical_single(parallel_vars),
+    utils.nest::is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
-    is_character_single(na_level),
+    utils.nest::is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
-    is_logical_single(drop_arm_levels),
+    utils.nest::is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -428,7 +428,7 @@ tm_t_summary_by <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    paramcd = if_not_null(
+    paramcd = utils.nest::if_not_null(
       paramcd,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
       ),
@@ -480,7 +480,7 @@ ui_summary_by <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      if_not_null(
+      utils.nest::if_not_null(
         a$paramcd,
         data_extract_ui(
           id = ns("paramcd"),
@@ -624,7 +624,7 @@ srv_summary_by <- function(input,
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-    input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
+    input_paramcd <- utils.nest::if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
     # validate inputs
     validate(

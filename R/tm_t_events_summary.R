@@ -588,14 +588,14 @@ tm_t_events_summary <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_summary")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(add_total),
-    is_logical_single(count_subj),
-    is_logical_single(count_pt),
-    is_logical_single(count_events),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(add_total),
+    utils.nest::is_logical_single(count_subj),
+    utils.nest::is_logical_single(count_pt),
+    utils.nest::is_logical_single(count_events),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -614,11 +614,11 @@ tm_t_events_summary <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = if_not_null(
+    flag_var_anl = utils.nest::if_not_null(
       flag_var_anl,
       cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
     ),
-    flag_var_aesi = if_not_null(
+    flag_var_aesi = utils.nest::if_not_null(
       flag_var_aesi,
       cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
     ),
@@ -673,7 +673,7 @@ ui_t_events_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      if_not_null(
+      utils.nest::if_not_null(
         a$flag_var_anl,
         data_extract_ui(
           id = ns("flag_var_anl"),
@@ -682,7 +682,7 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      if_not_null(
+      utils.nest::if_not_null(
         a$flag_var_aesi,
         data_extract_ui(
           id = ns("flag_var_aesi"),

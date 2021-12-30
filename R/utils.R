@@ -25,7 +25,7 @@
 #' }
 call_concatenate <- function(args, bin_op = "+") {
   stopifnot(
-    is_character_single(bin_op),
+    utils.nest::is_character_single(bin_op),
     all(vapply(args, is.language, logical(1)))
   )
   # can be used for dplyr and ggplot2 to concatenate calls with +
@@ -34,9 +34,9 @@ call_concatenate <- function(args, bin_op = "+") {
 
 # needs columns like n_, n_ARM etc. to get count from
 add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- if_null(n_column, get_n_name(groupby_vars = column))
+  n_column <- utils.nest::if_null(n_column, get_n_name(groupby_vars = column))
   stopifnot(
-    is_character_single(column)
+    utils.nest::is_character_single(column)
   )
 
   chunk$push(substitute({
@@ -264,7 +264,7 @@ bracket_expr <- function(exprs) {
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(utils.nest::is_logical_single(multiple))
 
   select_spec(
     choices = cs$choices,
@@ -282,7 +282,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(utils.nest::is_logical_single(multiple))
 
   vars <- if (inherits(cs, "delayed_choices_selected")) {
     cs$choices$var_choices
@@ -310,16 +310,16 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  stop_if_not(
+  utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    is_character_single(dataname),
-    is_logical_single(multiple)
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {
-    stop_if_not(
+    utils.nest::stop_if_not(
       list(
         length(cs$selected) == 1 || is.null(cs$selected),
         paste(cs_name, "must only have 1 selected value")
@@ -349,16 +349,16 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  stop_if_not(
+  utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    is_character_single(dataname),
-    is_logical_single(multiple)
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {
-    stop_if_not(
+    utils.nest::stop_if_not(
       list(
         length(cs$selected) == 1 || is.null(cs$selected),
         paste(cs_name, "must only have 1 selected value")
@@ -456,7 +456,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
   stopifnot(is.choices_selected(x))
-  stopifnot(is_character_vector(x$choices))
+  stopifnot(utils.nest::is_character_vector(x$choices))
 
   split_x <- x
   split_x$choices <- split_interactions(x$choices)

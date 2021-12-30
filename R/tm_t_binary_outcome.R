@@ -466,10 +466,10 @@ tm_t_binary_outcome <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_binary_outcome")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
     assertthat::is.flag(add_total),
     list(
@@ -765,7 +765,7 @@ srv_t_binary_outcome <- function(input,
         common_rsp <- if (is.list(sel_param)) {
           sel_param$rsp
         } else sel_param
-        responder_choices <- if (is_empty(aval_var)) {
+        responder_choices <- if (utils.nest::is_empty(aval_var)) {
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
@@ -839,7 +839,7 @@ srv_t_binary_outcome <- function(input,
     )
 
     validate(
-      need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty"))
 
     if (is.list(default_responses)) {

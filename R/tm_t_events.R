@@ -30,8 +30,8 @@ template_events <- function(dataname,
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
     assertthat::is.string(event_type),
-    is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff),
+    utils.nest::is_numeric_single(prune_freq),
+    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(drop_arm_levels)
   )
 
@@ -488,13 +488,13 @@ tm_t_events <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_logical_single(add_total),
-    is_character_single(event_type),
-    is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_logical_single(add_total),
+    utils.nest::is_character_single(event_type),
+    utils.nest::is_numeric_single(prune_freq),
+    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),

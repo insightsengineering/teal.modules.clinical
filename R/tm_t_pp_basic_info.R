@@ -86,9 +86,9 @@ tm_t_pp_basic_info <- function(label,
                                pre_output = NULL,
                                post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_basic_info")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -97,7 +97,7 @@ tm_t_pp_basic_info <- function(label,
   )
 
   args <- as.list(environment())
-  data_extract_list <- list(vars = if_not_null(vars, cs_to_des_select(vars, dataname = dataname,  multiple = TRUE)))
+  data_extract_list <- list(vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname,  multiple = TRUE)))
 
   module(
     label = label,

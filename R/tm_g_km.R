@@ -333,10 +333,10 @@ tm_g_km <- function(label,
                     pre_output = NULL,
                     post_output = NULL) {
   logger::log_info("Initializing tm_g_km")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -680,8 +680,8 @@ srv_g_km <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate font size
     validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))

@@ -171,7 +171,7 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (is_empty(cov_var)) {
+    if (utils.nest::is_empty(cov_var)) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -252,7 +252,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
 
-    if (!is_empty(cov_var)) {
+    if (!utils.nest::is_empty(cov_var)) {
 
       layout_list <- add_expr(
         layout_list,
@@ -393,9 +393,9 @@ tm_t_ancova <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -594,7 +594,7 @@ srv_ancova <- function(input,
 
     # Other validations.
     validate(need(
-      !is_empty(input_aval_var),
+      !utils.nest::is_empty(input_aval_var),
       "Analysis variable cannot be empty."
     ))
     validate(need(

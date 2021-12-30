@@ -553,7 +553,7 @@ tm_t_shift_by_grade <- function(label,
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")
-  stop_if_not(
+  utils.nest::stop_if_not(
     assertthat::is.string(dataname),
     is.choices_selected(arm_var),
     is.choices_selected(paramcd),

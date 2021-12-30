@@ -508,7 +508,7 @@ tm_t_coxreg <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_coxreg")
-  stop_if_not(
+  utils.nest::stop_if_not(
     length(dataname) == 1,
     is.choices_selected(conf_level),
     list(
@@ -864,8 +864,8 @@ srv_t_coxreg <- function(input,
       ))
     }
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate covariate has at least two levels
     validate(
@@ -917,7 +917,7 @@ srv_t_coxreg <- function(input,
       pval_method = input$pval_method,
       ties = input$ties,
       conf_level = as.numeric(input$conf_level),
-      interaction = if_null(input$interactions, FALSE)
+      interaction = utils.nest::if_null(input$interactions, FALSE)
     )
 
     if (multivariate) {

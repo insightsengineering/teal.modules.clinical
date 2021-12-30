@@ -62,7 +62,7 @@ template_adverse_events <- function(dataname = "ANL",
         outcome = as.name(outcome),
         action = as.name(action),
         time = as.name(time),
-        decod = if_not_null(decod, as.name(decod)),
+        decod = utils.nest::if_not_null(decod, as.name(decod)),
         vars = c(aeterm, tox_grade, causality, outcome, action, time, decod)
       )
     )
@@ -241,10 +241,10 @@ tm_g_pp_adverse_events <- function(label,
                                    post_output = NULL,
                                    ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_adverse_events")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(parentname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -264,13 +264,13 @@ tm_g_pp_adverse_events <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    aeterm = if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname)),
-    tox_grade = if_not_null(tox_grade, cs_to_des_select(tox_grade, dataname = dataname)),
-    causality = if_not_null(causality, cs_to_des_select(causality, dataname = dataname)),
-    outcome = if_not_null(outcome, cs_to_des_select(outcome, dataname = dataname)),
-    action = if_not_null(action, cs_to_des_select(action, dataname = dataname)),
-    time = if_not_null(time, cs_to_des_select(time, dataname = dataname)),
-    decod = if_not_null(decod, cs_to_des_select(decod, dataname = dataname))
+    aeterm = utils.nest::if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname)),
+    tox_grade = utils.nest::if_not_null(tox_grade, cs_to_des_select(tox_grade, dataname = dataname)),
+    causality = utils.nest::if_not_null(causality, cs_to_des_select(causality, dataname = dataname)),
+    outcome = utils.nest::if_not_null(outcome, cs_to_des_select(outcome, dataname = dataname)),
+    action = utils.nest::if_not_null(action, cs_to_des_select(action, dataname = dataname)),
+    time = utils.nest::if_not_null(time, cs_to_des_select(time, dataname = dataname)),
+    decod = utils.nest::if_not_null(decod, cs_to_des_select(decod, dataname = dataname))
   )
 
   module(
@@ -361,7 +361,7 @@ ui_g_adverse_events <- function(id, ...) {
         data_extract_spec = ui_args$time,
         is_single_dataset = is_single_dataset_value
       ),
-      if_not_null(
+      utils.nest::if_not_null(
         ui_args$decod,
         data_extract_ui(
           id = ns("decod"),

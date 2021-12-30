@@ -156,10 +156,10 @@ tm_t_pp_prior_medication <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_prior_medication")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(parentname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -169,10 +169,10 @@ tm_t_pp_prior_medication <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    atirel = if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
-    cmstdy = if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname))
+    atirel = utils.nest::if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
+    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
+    cmindc = utils.nest::if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
+    cmstdy = utils.nest::if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname))
   )
 
   module(

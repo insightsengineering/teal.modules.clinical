@@ -508,8 +508,8 @@ tm_a_mmrm <- function(label,
                       ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
-  stop_if_not(
-    is_character_single(dataname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -908,7 +908,7 @@ srv_mmrm <- function(input,
 
 observeEvent(adsl_merged()$columns_source$arm_var, {
   arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
-    if (is_empty(arm_var)) {
+    if (utils.nest::is_empty(arm_var)) {
       shinyjs::hide("ref_arm")
       shinyjs::hide("comp_arm")
       shinyjs::hide("help_text")

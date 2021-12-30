@@ -134,8 +134,8 @@ tm_g_barchart_simple <- function(x = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
-  stop_if_not(
-    is_character_single(label),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
     is.null(plot_options) || is.list(plot_options),
     !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
     list(
@@ -165,7 +165,7 @@ tm_g_barchart_simple <- function(x = NULL,
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
-    if_null(plot_options, list())
+    utils.nest::if_null(plot_options, list())
   )
 
   ui_args <- as.list(environment())
@@ -246,32 +246,32 @@ ui_g_barchart_simple <- function(id, ...) {
           checkboxInput(
             ns("label_bars"),
             "Label bars",
-            value = if_null(args$plot_options$label_bars, TRUE)
+            value = utils.nest::if_null(args$plot_options$label_bars, TRUE)
           ),
           checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
-            value = if_null(args$plot_options$rotate_bar_labels, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_bar_labels, FALSE)
           ),
           checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
-            value = if_null(args$plot_options$rotate_x_label, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_x_label, FALSE)
           ),
           checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
-            value = if_null(args$plot_options$rotate_y_label, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_y_label, FALSE)
           ),
           checkboxInput(
             ns("flip_axis"),
             "Flip axes",
-            value = if_null(args$plot_options$flip_axis, FALSE)
+            value = utils.nest::if_null(args$plot_options$flip_axis, FALSE)
           ),
           checkboxInput(
             ns("show_n"),
             "Show n",
-            value = if_null(args$plot_options$show_n, TRUE)
+            value = utils.nest::if_null(args$plot_options$show_n, TRUE)
           ),
           sliderInput(
             inputId = ns("expand_y_range"),
@@ -541,18 +541,18 @@ make_barchart_simple_call <- function(y_name,
     )
   )
   stopifnot(
-    is_character_single(y_name),
-    is.null(x_name) || is_character_single(x_name),
-    is.null(fill_name) || is_character_single(fill_name),
-    is.null(x_facet_name) || is_character_single(x_facet_name),
-    is.null(y_facet_name) || is_character_single(y_facet_name),
+    utils.nest::is_character_single(y_name),
+    is.null(x_name) || utils.nest::is_character_single(x_name),
+    is.null(fill_name) || utils.nest::is_character_single(fill_name),
+    is.null(x_facet_name) || utils.nest::is_character_single(x_facet_name),
+    is.null(y_facet_name) || utils.nest::is_character_single(y_facet_name),
     length(plot_vars) > 0,
-    is_logical_single(label_bars),
+    utils.nest::is_logical_single(label_bars),
     barlayout %in% c("side_by_side", "stacked"),
-    is.null(flip_axis) || is_logical_single(flip_axis),
-    is.null(rotate_x_label) || is_logical_single(rotate_x_label),
-    is.null(rotate_y_label) || is_logical_single(rotate_y_label),
-    is_numeric_single(expand_y_range)
+    is.null(flip_axis) || utils.nest::is_logical_single(flip_axis),
+    is.null(rotate_x_label) || utils.nest::is_logical_single(rotate_x_label),
+    is.null(rotate_y_label) || utils.nest::is_logical_single(rotate_y_label),
+    utils.nest::is_numeric_single(expand_y_range)
   )
 
   plot_args <- list(quote(ggplot(counts)))
@@ -660,9 +660,9 @@ get_n_name <- function(groupby_vars) {
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
-  stopifnot(is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
+  stopifnot(utils.nest::is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
 
-  n_name <- if_null(n_name, get_n_name(groupby_vars))
+  n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
       dplyr::group_by_at(.(groupby_vars)) %>%

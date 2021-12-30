@@ -376,7 +376,7 @@ tm_t_smq <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_smq")
-  stop_if_not(
+  utils.nest::stop_if_not(
     assertthat::is.string(dataname),
     is.choices_selected(arm_var),
     assertthat::is.flag(add_total),

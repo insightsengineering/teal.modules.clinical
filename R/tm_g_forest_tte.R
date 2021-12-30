@@ -291,12 +291,12 @@ tm_g_forest_tte <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_tte")
-  utils.nest::stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
-    is_logical_single(fixed_symbol_size),
+    utils.nest::is_logical_single(fixed_symbol_size),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -562,9 +562,9 @@ srv_g_forest_tte <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(!is_empty(anl_m$data()[[input_paramcd]]), "Value of the endpoint variable should not be empty."))
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(!utils.nest::is_empty(anl_m$data()[[input_paramcd]]), "Value of the endpoint variable should not be empty."))
+    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     NULL
   })

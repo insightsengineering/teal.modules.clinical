@@ -261,12 +261,12 @@ tm_g_ipp <- function(label,
                      post_output = NULL,
                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ipp")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(add_baseline_hline),
-    is_logical_single(separate_by_obs),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(add_baseline_hline),
+    utils.nest::is_logical_single(separate_by_obs),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -476,11 +476,11 @@ srv_g_ipp <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(
-      need(is_character_single(input_aval_var), "Analysis variable should be a single column.")
+      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
       )
 
     validate(
-      need(is_character_single(input_visit_var), "Please select a timepoint variable.")
+      need(utils.nest::is_character_single(input_visit_var), "Please select a timepoint variable.")
     )
 
     NULL

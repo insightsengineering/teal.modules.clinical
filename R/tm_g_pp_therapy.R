@@ -370,10 +370,10 @@ tm_g_pp_therapy <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
-  assertthat::assert_that(is_character_single(label))
-  assertthat::assert_that(is_character_single(dataname))
-  assertthat::assert_that(is_character_single(parentname))
-  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
@@ -393,16 +393,16 @@ tm_g_pp_therapy <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    atirel = if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
-    cmdose = if_not_null(cmdose, cs_to_des_select(cmdose, dataname = dataname)),
-    cmtrt = if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname)),
-    cmdosu = if_not_null(cmdosu, cs_to_des_select(cmdosu, dataname = dataname)),
-    cmdosfrq = if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = dataname)),
-    cmroute = if_not_null(cmroute, cs_to_des_select(cmroute, dataname = dataname)),
-    cmstdy = if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname)),
-    cmendy = if_not_null(cmendy, cs_to_des_select(cmendy, dataname = dataname))
+    atirel = utils.nest::if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
+    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
+    cmindc = utils.nest::if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
+    cmdose = utils.nest::if_not_null(cmdose, cs_to_des_select(cmdose, dataname = dataname)),
+    cmtrt = utils.nest::if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname)),
+    cmdosu = utils.nest::if_not_null(cmdosu, cs_to_des_select(cmdosu, dataname = dataname)),
+    cmdosfrq = utils.nest::if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = dataname)),
+    cmroute = utils.nest::if_not_null(cmroute, cs_to_des_select(cmroute, dataname = dataname)),
+    cmstdy = utils.nest::if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname)),
+    cmendy = utils.nest::if_not_null(cmendy, cs_to_des_select(cmendy, dataname = dataname))
   )
 
   module(

@@ -261,12 +261,12 @@ tm_t_summary <- function(label,
                          post_output = NULL,
                          basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     useNA %in% c("ifany", "no"), # nolint,
-    is_character_single(na_level),
-    is_logical_single(drop_arm_levels),
+    utils.nest::is_character_single(na_level),
+    utils.nest::is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

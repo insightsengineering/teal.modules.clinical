@@ -197,9 +197,9 @@ tm_t_events_patyear <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(arm_var),
     is.choices_selected(events_var),
     is.choices_selected(paramcd),
@@ -420,8 +420,8 @@ srv_events_patyear <- function(input,
     ))
 
     validate(
-      need(is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(is_character_single(input_events_var), "Events variable should be a single column."),
+      need(utils.nest::is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
+      need(utils.nest::is_character_single(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected."),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
       need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
