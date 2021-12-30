@@ -79,17 +79,17 @@ template_vitals <- function(dataname = "ANL",
       provided_vita <- paramcd_levels_chars
       known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
-      paramcd_levels_e <- known_vita[na.omit(match(provided_vita, known_vita))]
+      paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
       len_paramcd_levels_e <- length(paramcd_levels_e)
 
-      all_colors <- setNames(color_palette(length(full_vita)), full_vita)
+      all_colors <- stats::setNames(color_palette(length(full_vita)), full_vita)
       vars_colors <- all_colors[provided_vita]
       names(vars_colors) <- provided_vita
 
-      base_stats <- setNames(c(140, 90, 38, 20, 94, 100), known_vita)
+      base_stats <- stats::setNames(c(140, 90, 38, 20, 94, 100), known_vita)
       paramcd_stats_e <- base_stats[paramcd_levels_e]
 
-      base_labels <- setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
+      base_labels <- stats::setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
       paramcd_labels_e <- base_labels[paramcd_levels_e]
 
       base_stats_df <- data.frame(

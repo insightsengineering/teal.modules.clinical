@@ -8,8 +8,6 @@
 #' to specify the value of the covariate at which the effect should be estimated.
 #' @param append (`logical`)\cr if the result should be appended to the previous one.
 #'
-#' @importFrom broom tidy
-#'
 #' @seealso [tm_t_coxreg()]
 #'
 template_coxreg_u <- function(dataname,
@@ -182,8 +180,6 @@ template_coxreg_u <- function(dataname,
 #' @param at (`list` of `numeric`)\cr when the candidate covariate is a
 #'  `numeric`, use `at` to specify the value of the covariate at which the
 #'  effect should be estimated.
-#'
-#' @importFrom broom tidy
 #'
 #' @seealso [tm_t_coxreg()]
 #'
@@ -373,7 +369,6 @@ template_coxreg_m <- function(dataname,
 #' - Multivariate is the default choice for backward compatibility.
 #'
 #' @export
-#' @importFrom stats setNames
 #'
 #' @examples
 #' ## First example
@@ -751,7 +746,7 @@ srv_t_coxreg <- function(input,
     textInput(
       session$ns(paste0("interact_", x)),
       label = paste("Hazard Ratios for", x, "at (comma delimited):"),
-      value = as.character(median(anl$data()[[x]]))
+      value = as.character(stats::median(anl$data()[[x]]))
     )
   }
 
@@ -901,7 +896,7 @@ srv_t_coxreg <- function(input,
             as.numeric(unlist(vec))
           }
         })
-      setNames(res, interaction_var)
+      stats::setNames(res, interaction_var)
     }
   })
 
