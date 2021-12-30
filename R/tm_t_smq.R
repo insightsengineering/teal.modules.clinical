@@ -26,16 +26,16 @@ template_smq <- function(
   basic_table_args = teal.devel::basic_table_args()
 ) {
 
-  assert_that(
-    is.string(parentname),
-    is.string(dataname),
+  assertthat::assert_that(
+    assertthat::is.string(parentname),
+    assertthat::is.string(dataname),
     is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    is.string(id_var),
-    is.string(llt),
-    is.flag(add_total),
-    is.flag(drop_arm_levels),
-    is.string(na_level),
-    is.string(smq_varlabel),
+    assertthat::is.string(id_var),
+    assertthat::is.string(llt),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(na_level),
+    assertthat::is.string(smq_varlabel),
     is.character(baskets)
   )
 
@@ -377,10 +377,10 @@ tm_t_smq <- function(label,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_smq")
   stop_if_not(
-    is.string(dataname),
+    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
-    is.flag(add_total),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels),
     is.choices_selected(id_var),
     is.choices_selected(llt),
     list(

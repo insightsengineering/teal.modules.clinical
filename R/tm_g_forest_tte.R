@@ -27,10 +27,10 @@ template_forest_tte <- function(dataname = "ANL",
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
                                 ggplot2_args = teal.devel::ggplot2_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(obj_var_name),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(obj_var_name),
     is.character(subgroup_var) || is.null(subgroup_var)
   )
 

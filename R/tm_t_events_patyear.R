@@ -205,9 +205,9 @@ tm_t_events_patyear <- function(label,
     is.choices_selected(paramcd),
     is.choices_selected(aval_var),
     is.choices_selected(avalu_var),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     is.choices_selected(conf_level),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

@@ -25,18 +25,18 @@ template_exposure <- function(parentname,
                               avalu_var,
                               basic_table_args = teal.devel::basic_table_args()) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(row_by_var),
-    is.string(col_by_var) || is_empty(col_by_var),
-    is.string(paramcd),
-    is.string(id_var),
-    is.flag(add_total),
-    is.string(na_level),
-    is.string(aval_var),
-    is.string(avalu_var) || is_empty(avalu_var),
-    is.flag(drop_levels)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(row_by_var),
+    assertthat::is.string(col_by_var) || is_empty(col_by_var),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(id_var),
+    assertthat::is.flag(add_total),
+    assertthat::is.string(na_level),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(avalu_var) || is_empty(avalu_var),
+    assertthat::is.flag(drop_levels)
   )
 
   y <- list()
@@ -312,8 +312,8 @@ tm_t_exposure <- function(label,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
   stop_if_not(
-    is.string(dataname),
-    is.flag(add_total),
+    assertthat::is.string(dataname),
+    assertthat::is.flag(add_total),
     is.choices_selected(paramcd),
     is.choices_selected(row_by_var),
     is.choices_selected(col_by_var),
@@ -321,7 +321,7 @@ tm_t_exposure <- function(label,
     is.choices_selected(parcat),
     is.choices_selected(aval_var),
     is.choices_selected(avalu_var),
-    is.string(na_level),
+    assertthat::is.string(na_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

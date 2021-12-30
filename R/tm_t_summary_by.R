@@ -31,22 +31,22 @@ template_summary_by <- function(parentname,
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
                                 basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(parentname),
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(id_var),
+  assertthat::assert_that(
+    assertthat::is.string(parentname),
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(id_var),
     is.character(sum_vars),
     is.character(by_vars),
     is.character(var_labels),
-    is.flag(add_total),
-    is.flag(parallel_vars),
-    is.flag(row_groups),
-    is.flag(na.rm),
-    is.string(na_level),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(parallel_vars),
+    assertthat::is.flag(row_groups),
+    assertthat::is.flag(na.rm),
+    assertthat::is.string(na_level),
+    assertthat::is.flag(drop_arm_levels),
     is.character(numeric_stats),
-    is.flag(drop_zero_levels)
+    assertthat::is.flag(drop_zero_levels)
   )
   denominator <- match.arg(denominator)
 
@@ -397,8 +397,8 @@ tm_t_summary_by <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(id_var),
-    is.flag(add_total),
-    is.flag(drop_zero_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_zero_levels),
     is_logical_single(parallel_vars),
     is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint

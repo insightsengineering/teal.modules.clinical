@@ -27,20 +27,20 @@ template_shift_by_grade <- function(parentname,
                                     basic_table_args = teal.devel::basic_table_args()) {
 
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(id_var),
-    is.string(visit_var),
-    is.string(worst_flag_indicator),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(id_var),
+    assertthat::is.string(visit_var),
+    assertthat::is.string(worst_flag_indicator),
     is.character(worst_flag_var),
-    is.string(anl_toxgrade_var),
-    is.string(base_toxgrade_var),
-    is.string(paramcd),
-    is.flag(drop_arm_levels),
-    is.flag(add_total),
-    is.string(na_level)
+    assertthat::is.string(anl_toxgrade_var),
+    assertthat::is.string(base_toxgrade_var),
+    assertthat::is.string(paramcd),
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.string(na_level)
   )
 
   worst_flag_var <- match.arg(worst_flag_var)
@@ -554,7 +554,7 @@ tm_t_shift_by_grade <- function(label,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")
   stop_if_not(
-    is.string(dataname),
+    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
     is.choices_selected(paramcd),
     is.choices_selected(worst_flag_var),
@@ -562,10 +562,10 @@ tm_t_shift_by_grade <- function(label,
     is.choices_selected(anl_toxgrade_var),
     is.choices_selected(base_toxgrade_var),
     is.choices_selected(id_var),
-    is.flag(add_total),
-    is.flag(drop_arm_levels),
-    is.string(na_level),
-    is.flag(code_missing_baseline),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(na_level),
+    assertthat::is.flag(code_missing_baseline),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

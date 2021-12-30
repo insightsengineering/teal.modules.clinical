@@ -21,18 +21,18 @@ template_events <- function(dataname,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
                             basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
     is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    is.string(hlt) || is.null(hlt),
-    is.string(llt) || is.null(llt),
+    assertthat::is.string(hlt) || is.null(hlt),
+    assertthat::is.string(llt) || is.null(llt),
     is.character(c(llt, hlt)),
-    is.flag(add_total),
-    is.string(event_type),
+    assertthat::is.flag(add_total),
+    assertthat::is.string(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
-    is.flag(drop_arm_levels)
+    assertthat::is.flag(drop_arm_levels)
   )
 
   sort_criteria <- match.arg(sort_criteria)
@@ -495,7 +495,7 @@ tm_t_events <- function(label,
     is_character_single(event_type),
     is_numeric_single(prune_freq),
     is_numeric_single(prune_diff),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

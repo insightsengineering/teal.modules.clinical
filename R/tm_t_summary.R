@@ -22,16 +22,16 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
     is.character(arm_var),
     is.character(sum_vars),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     is.character(var_labels),
-    is.flag(na.rm),
-    is.string(na_level),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(na.rm),
+    assertthat::is.string(na_level),
+    assertthat::is.flag(drop_arm_levels),
     is.character(numeric_stats)
   )
   denominator <- match.arg(denominator)

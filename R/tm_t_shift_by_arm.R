@@ -22,19 +22,19 @@ template_shift_by_arm <- function(dataname,
                                   add_total = FALSE,
                                   basic_table_args = teal.devel::basic_table_args()) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(visit_var),
-    is.string(paramcd),
-    is.string(aval_var),
-    is.string(base_var),
-    is.flag(na.rm),
-    is.string(na_level),
-    is.string(treatment_flag_var),
-    is.string(treatment_flag),
-    is.flag(add_total)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(visit_var),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(base_var),
+    assertthat::is.flag(na.rm),
+    assertthat::is.string(na_level),
+    assertthat::is.string(treatment_flag_var),
+    assertthat::is.string(treatment_flag),
+    assertthat::is.flag(add_total)
   )
 
   y <- list()

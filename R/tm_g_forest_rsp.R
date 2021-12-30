@@ -32,12 +32,12 @@ template_forest_rsp <- function(dataname = "ANL",
                                 col_symbol_size = NULL,
                                 ggplot2_args = teal.devel::ggplot2_args()) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(obj_var_name),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(obj_var_name),
     is.null(subgroup_var) || is.character(subgroup_var)
   )
 
@@ -330,7 +330,7 @@ tm_g_forest_rsp <- function(label,
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
-  assert_that(
+  assertthat::assert_that(
     is.list(default_responses) ||
       is.null(default_responses) ||
       is.character(default_responses) ||

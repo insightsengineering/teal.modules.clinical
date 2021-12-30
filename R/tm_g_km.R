@@ -31,16 +31,16 @@ template_g_km <- function(dataname = "ANL",
                           annot_coxph = TRUE,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(cnsr_var),
-    is.string(time_unit_var),
-    is.flag(compare_arm),
-    is.flag(combine_comp_arms),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(cnsr_var),
+    assertthat::is.string(time_unit_var),
+    assertthat::is.flag(compare_arm),
+    assertthat::is.flag(combine_comp_arms),
     is.null(xticks) | is.numeric(xticks),
-    is.string(title)
+    assertthat::is.string(title)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")

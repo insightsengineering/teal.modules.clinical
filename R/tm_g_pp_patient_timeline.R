@@ -34,19 +34,19 @@ template_patient_timeline <- function(dataname = "ANL",
                                       ggplot2_args = teal.devel::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
-  assert_that(
-    is.string(dataname),
-    is.string(aeterm) || is.null(aeterm),
-    is.string(aetime_start) || is.null(aetime_start),
-    is.string(aetime_end) || is.null(aetime_end),
-    is.string(dstime_start) || is.null(dstime_start),
-    is.string(dstime_end) || is.null(dstime_end),
-    is.string(cmdecod) || is.null(cmdecod),
-    is.string(aerelday_start) || is.null(aerelday_start),
-    is.string(dsrelday_start) || is.null(dsrelday_start),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(aeterm) || is.null(aeterm),
+    assertthat::is.string(aetime_start) || is.null(aetime_start),
+    assertthat::is.string(aetime_end) || is.null(aetime_end),
+    assertthat::is.string(dstime_start) || is.null(dstime_start),
+    assertthat::is.string(dstime_end) || is.null(dstime_end),
+    assertthat::is.string(cmdecod) || is.null(cmdecod),
+    assertthat::is.string(aerelday_start) || is.null(aerelday_start),
+    assertthat::is.string(dsrelday_start) || is.null(dsrelday_start),
     is.numeric(font_size),
     is.logical(relative_day),
-    is.string(patient_id)
+    assertthat::is.string(patient_id)
   )
 
   y <- list()
@@ -429,15 +429,15 @@ tm_g_pp_patient_timeline <- function(label,
                                      post_output = NULL,
                                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname_adcm))
-  assert_that(is_character_single(dataname_adae))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+  assertthat::assert_that(is_character_single(label))
+  assertthat::assert_that(is_character_single(dataname_adcm))
+  assertthat::assert_that(is_character_single(dataname_adae))
+  assertthat::assert_that(is_character_single(parentname))
+  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
               msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
               msg = "post_output should be either null or shiny.tag type of object"
   )
 
@@ -449,11 +449,11 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
                             .var.name = "plot_width")
 
-  assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
-  assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
-  assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
-  assert_that(
+  assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
+  assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
+  assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
+  assertthat::assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
+  assertthat::assert_that(
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
       (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )

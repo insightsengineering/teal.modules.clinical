@@ -11,11 +11,11 @@ template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS",
                                      mhdistat = "MHDISTAT") {
-  assert_that(
-    is.string(dataname),
-    is.string(mhterm),
-    is.string(mhbodsys),
-    is.string(mhdistat)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(mhterm),
+    assertthat::is.string(mhbodsys),
+    assertthat::is.string(mhdistat)
   )
 
   y <- list()
@@ -125,14 +125,14 @@ tm_t_pp_medical_history <- function(label,
                                     pre_output = NULL,
                                     post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_medical_history")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+  assertthat::assert_that(is_character_single(label))
+  assertthat::assert_that(is_character_single(dataname))
+  assertthat::assert_that(is_character_single(parentname))
+  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 

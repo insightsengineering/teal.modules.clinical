@@ -21,12 +21,12 @@ template_vitals <- function(dataname = "ANL",
                             patient_id,
                             font_size = 12L,
                             ggplot2_args = teal.devel::ggplot2_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(xaxis),
-    is.string(aval),
-    is.string(patient_id),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(xaxis),
+    assertthat::is.string(aval),
+    assertthat::is.string(patient_id),
     is.numeric(font_size)
   )
 
@@ -241,14 +241,14 @@ tm_g_pp_vitals <- function(label,
                            post_output = NULL,
                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+  assertthat::assert_that(is_character_single(label))
+  assertthat::assert_that(is_character_single(dataname))
+  assertthat::assert_that(is_character_single(parentname))
+  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 

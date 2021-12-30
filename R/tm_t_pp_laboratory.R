@@ -19,14 +19,14 @@ template_laboratory <- function(dataname = "ANL",
                                 aval = "AVAL",
                                 avalu = "AVALU",
                                 round_value = 0L) {
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(param),
-    is.string(anrind),
-    is.string(timepoints),
-    is.string(aval),
-    is.string(avalu),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(param),
+    assertthat::is.string(anrind),
+    assertthat::is.string(timepoints),
+    assertthat::is.string(aval),
+    assertthat::is.string(avalu),
     is.integer(round_value) && round_value >= 0
   )
 
@@ -162,14 +162,14 @@ tm_t_pp_laboratory <- function(label,
                                pre_output = NULL,
                                post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_laboratory")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+  assertthat::assert_that(is_character_single(label))
+  assertthat::assert_that(is_character_single(dataname))
+  assertthat::assert_that(is_character_single(parentname))
+  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 

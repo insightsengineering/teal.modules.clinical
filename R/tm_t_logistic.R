@@ -33,13 +33,13 @@ template_logistic <- function(dataname,
                               at = NULL,
                               basic_table_args = teal.devel::basic_table_args()) {
   # Common assertion no matter if arm_var is NULL or not.
-  assert_that(
-    is.string(dataname),
-    is.string(aval_var),
-    is.string(paramcd),
-    is.string(topleft) || is.null(topleft),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
-    is.string(interaction_var) || is.null(interaction_var)
+    assertthat::is.string(interaction_var) || is.null(interaction_var)
   )
 
   y <- list()
@@ -49,9 +49,9 @@ template_logistic <- function(dataname,
 
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
-    assert_that(
-      is.string(arm_var),
-      is.flag(combine_comp_arms)
+    assertthat::assert_that(
+      assertthat::is.string(arm_var),
+      assertthat::is.flag(combine_comp_arms)
     )
 
     ref_arm_val <- paste(ref_arm, collapse = "/")

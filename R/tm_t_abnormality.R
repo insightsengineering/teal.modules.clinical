@@ -26,20 +26,20 @@ template_abnormality <- function(parentname,
                                  drop_arm_levels = TRUE,
                                  na_level = "<Missing>",
                                  basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(id_var),
-    is.string(parentname),
-    is.string(arm_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(id_var),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
     is.character(by_vars),
     is.list(abnormal),
-    is.string(grade),
-    is.string(baseline_var),
-    is.string(treatment_flag_var),
-    is.string(treatment_flag),
-    is.flag(add_total),
-    is.flag(exclude_base_abn),
-    is.flag(drop_arm_levels)
+    assertthat::is.string(grade),
+    assertthat::is.string(baseline_var),
+    assertthat::is.string(treatment_flag_var),
+    assertthat::is.string(treatment_flag),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(exclude_base_abn),
+    assertthat::is.flag(drop_arm_levels)
   )
 
   y <- list()
@@ -309,9 +309,9 @@ tm_t_abnormality <- function(label,
                              basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
   stop_if_not(
-    is.string(dataname),
+    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     is.choices_selected(by_vars),
     is.choices_selected(grade),
     is_character_list(abnormal, min_length = 2, max_length = 2),
@@ -320,7 +320,7 @@ tm_t_abnormality <- function(label,
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
     is_logical_single(exclude_base_abn),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

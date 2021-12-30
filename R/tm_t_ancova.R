@@ -27,12 +27,12 @@ template_ancova <- function(dataname = "ANL",
                             conf_level = 0.95,
                             basic_table_args = teal.devel::basic_table_args()) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.flag(combine_comp_arms),
-    is.string(aval_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.flag(combine_comp_arms),
+    assertthat::is.string(aval_var),
     is.character(cov_var)
   )
 

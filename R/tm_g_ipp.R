@@ -31,17 +31,17 @@ template_g_ipp <- function(dataname = "ANL",
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.devel::ggplot2_args()) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(avalu_var),
-    is.string(id_var),
-    is.string(visit_var),
-    is.string(base_var),
-    is.flag(add_baseline_hline),
-    is.flag(separate_by_obs)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(avalu_var),
+    assertthat::is.string(id_var),
+    assertthat::is.string(visit_var),
+    assertthat::is.string(base_var),
+    assertthat::is.flag(add_baseline_hline),
+    assertthat::is.flag(separate_by_obs)
     )
 
   y <- list()

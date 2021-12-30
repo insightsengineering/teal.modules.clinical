@@ -68,15 +68,15 @@ template_binary_outcome <- function(dataname,
                                     ),
                                     add_total = FALSE,
                                     basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.flag(compare_arm),
-    is.flag(combine_comp_arms),
-    is.flag(show_rsp_cat),
-    is.flag(add_total)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.flag(compare_arm),
+    assertthat::is.flag(combine_comp_arms),
+    assertthat::is.flag(show_rsp_cat),
+    assertthat::is.flag(add_total)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -471,7 +471,7 @@ tm_t_binary_outcome <- function(label,
     is_character_single(dataname),
     is_character_single(parentname),
     is.choices_selected(conf_level),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -482,7 +482,7 @@ tm_t_binary_outcome <- function(label,
     )
   )
 
-  assert_that(
+  assertthat::assert_that(
     is.list(default_responses) ||
       is.null(default_responses) ||
       is.character(default_responses) ||

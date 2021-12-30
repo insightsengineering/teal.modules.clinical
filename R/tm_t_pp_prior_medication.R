@@ -13,12 +13,12 @@ template_prior_medication <- function(dataname = "ANL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
                                       cmstdy = "CMSTDY") {
-  assert_that(
-    is.string(dataname),
-    is.string(atirel),
-    is.string(cmdecod),
-    is.string(cmindc),
-    is.string(cmstdy)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(atirel),
+    assertthat::is.string(cmdecod),
+    assertthat::is.string(cmindc),
+    assertthat::is.string(cmstdy)
   )
 
   y <- list()
@@ -156,14 +156,14 @@ tm_t_pp_prior_medication <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_prior_medication")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+  assertthat::assert_that(is_character_single(label))
+  assertthat::assert_that(is_character_single(dataname))
+  assertthat::assert_that(is_character_single(parentname))
+  assertthat::assert_that(is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 

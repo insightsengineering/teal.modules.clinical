@@ -62,16 +62,16 @@ template_tte <- function(dataname = "ANL",
                          control = control_tte(),
                          add_total = FALSE,
                          basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(cnsr_var),
-    is.string(time_unit_var),
-    is.string(event_desc_var),
-    is.flag(compare_arm),
-    is.flag(combine_comp_arms)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(cnsr_var),
+    assertthat::is.string(time_unit_var),
+    assertthat::is.string(event_desc_var),
+    assertthat::is.flag(compare_arm),
+    assertthat::is.flag(combine_comp_arms)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -447,7 +447,7 @@ tm_t_tte <- function(label,
     is.choices_selected(time_points),
     is.choices_selected(conf_level_coxph),
     is.choices_selected(conf_level_survfit),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

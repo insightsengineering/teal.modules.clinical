@@ -181,7 +181,7 @@ styled_expr <- function(expr) { # nolint nousage
 #'
 add_expr <- function(expr_ls, new_expr) {
 
-  assert_that(
+  assertthat::assert_that(
     is.list(expr_ls),
     is.call(new_expr) || is.name(new_expr)
   )
@@ -561,14 +561,14 @@ prepare_arm <- function(dataname,
                         compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
     is.null(ref_arm) || is.character(ref_arm),
     is.character(comp_arm) || is.null(comp_arm),
-    is.flag(compare_arm),
-    is.string(ref_arm_val),
-    is.flag(drop)
+    assertthat::is.flag(compare_arm),
+    assertthat::is.string(ref_arm_val),
+    assertthat::is.flag(drop)
   )
 
   data_list <- list()
@@ -663,11 +663,11 @@ prepare_arm_levels <- function(dataname,
                                arm_var,
                                drop_arm_levels = TRUE) {
 
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.flag(drop_arm_levels)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.flag(drop_arm_levels)
   )
 
   data_list <- list()
