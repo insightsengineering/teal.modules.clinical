@@ -281,15 +281,15 @@ template_mult_events <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adcm <- synthetic_cdisc_data("latest")$adcm
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADCM <- synthetic_cdisc_data("latest")$adcm
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADCM", adcm,
-#'       code = 'adcm <- synthetic_cdisc_data("latest")$adcm',
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADCM", ADCM,
+#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm',
 #'       keys = adcm_keys
 #'     )
 #'   ),
