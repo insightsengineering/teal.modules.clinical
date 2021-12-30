@@ -333,7 +333,7 @@ template_events <- function(dataname,
         sort_list,
         quote(
           criteria_fun <- function(tr) {
-            is(tr, "ContentRow")
+            inherits(tr, "ContentRow")
           }
         )
       )
@@ -404,7 +404,7 @@ template_events <- function(dataname,
           sort_list,
           quote(
             criteria_fun <- function(tr) {
-              is(tr, "ContentRow")
+              inherits(tr, "ContentRow")
             }
           )
         )
@@ -474,7 +474,7 @@ template_events <- function(dataname,
 #'
 tm_t_events <- function(label,
                         dataname,
-                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                         arm_var,
                         hlt,
                         llt,
@@ -497,11 +497,11 @@ tm_t_events <- function(label,
     is_numeric_single(prune_diff),
     is.flag(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

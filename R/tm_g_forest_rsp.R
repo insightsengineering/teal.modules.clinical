@@ -18,9 +18,6 @@
 #' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
-#'
-#' @importFrom grid grid.newpage grid.draw
-#'
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,
@@ -293,7 +290,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,
@@ -316,11 +313,11 @@ tm_g_forest_rsp <- function(label,
     is_logical_single(fixed_symbol_size),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )

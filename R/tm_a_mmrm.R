@@ -162,8 +162,6 @@ if (!is.null(arm_var)) {
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`)\cr
 #'   type of table to output.
-#'
-#' @importFrom broom tidy
 template_mmrm_tables <- function(parentname,
                                  dataname,
                                  fit_name,
@@ -421,9 +419,6 @@ template_mmrm_plots <- function(fit_name,
 #' (hard coded in the module body).\cr For more details, see the help vignette:\cr
 #' `vignette("Custom ggplot2 arguments module", package = "teal.devel")`.
 #'
-#' @importFrom shinyjs show
-#' @importFrom shinyjs hidden
-#' @importFrom broom tidy
 #' @export
 #'
 #' @note
@@ -496,7 +491,7 @@ template_mmrm_plots <- function(fit_name,
 #'
 tm_a_mmrm <- function(label,
                       dataname,
-                      parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                      parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                       aval_var,
                       id_var,
                       arm_var,
@@ -517,11 +512,11 @@ tm_a_mmrm <- function(label,
     is_character_single(dataname),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )
@@ -580,7 +575,6 @@ tm_a_mmrm <- function(label,
 }
 
 #' @noRd
-#' @importFrom shinyjs hidden
 ui_mmrm <- function(id, ...) {
 
   a <- list(...) # module args
@@ -818,7 +812,6 @@ ui_mmrm <- function(id, ...) {
 }
 
 #' @noRd
-#' @importFrom shinyjs hide show onclick disable enable
 srv_mmrm <- function(input,
                      output,
                      session,

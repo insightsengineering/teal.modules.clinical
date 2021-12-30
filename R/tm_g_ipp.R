@@ -15,8 +15,6 @@
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
 #' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
-#'
-#' @importFrom grid grid.newpage grid.draw
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
@@ -224,7 +222,7 @@ template_g_ipp <- function(dataname = "ANL",
 tm_g_ipp <- function(label,
                      dataname,
                      parentname = ifelse(
-                       is(arm_var, "data_extract_spec"),
+                       inherits(arm_var, "data_extract_spec"),
                        datanames_input(arm_var),
                        "ADSL"
                        ),
@@ -270,11 +268,11 @@ tm_g_ipp <- function(label,
     is_logical_single(add_baseline_hline),
     is_logical_single(separate_by_obs),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

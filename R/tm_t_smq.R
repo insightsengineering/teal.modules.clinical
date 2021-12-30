@@ -281,7 +281,7 @@ template_smq <- function(
   y$sort_and_prune <- quote(
     expr = {
       all_zero <- function(tr) {
-        !is(tr, "ContentRow")  && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow")  && all_zero_or_na(tr)
       }
       pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
       pruned_and_sorted_result
@@ -359,7 +359,7 @@ template_smq <- function(
 #'
 tm_t_smq <- function(label,
                      dataname,
-                     parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                     parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                      arm_var,
                      id_var = choices_selected(
                        variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
@@ -384,11 +384,11 @@ tm_t_smq <- function(label,
     is.choices_selected(id_var),
     is.choices_selected(llt),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

@@ -139,11 +139,11 @@ tm_g_barchart_simple <- function(x = NULL,
     is.null(plot_options) || is.list(plot_options),
     !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )

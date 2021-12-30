@@ -520,7 +520,7 @@ template_shift_by_grade <- function(parentname,
 
 tm_t_shift_by_grade <- function(label,
                                 dataname,
-                                parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                                parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                                 arm_var,
                                 visit_var = choices_selected(
                                   variable_choices(dataname, subset = "AVISIT"), selected = "AVISIT", fixed = TRUE
@@ -567,11 +567,11 @@ tm_t_shift_by_grade <- function(label,
     is.string(na_level),
     is.flag(code_missing_baseline),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

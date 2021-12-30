@@ -283,7 +283,7 @@ template_abnormality <- function(parentname,
 #'
 tm_t_abnormality <- function(label,
                              dataname,
-                             parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                             parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                              arm_var,
                              by_vars,
                              grade,
@@ -322,11 +322,11 @@ tm_t_abnormality <- function(label,
     is_logical_single(exclude_base_abn),
     is.flag(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )

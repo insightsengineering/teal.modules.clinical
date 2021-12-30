@@ -16,8 +16,6 @@
 #' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_lineplot()]
-#'
-#' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_lineplot <- function(dataname = "ANL",
                                 strata = "ARM",
                                 x = "AVISIT",
@@ -218,7 +216,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = ifelse(is(strata, "data_extract_spec"), datanames_input(strata), "ADSL"),
+                          parentname = ifelse(inherits(strata, "data_extract_spec"), datanames_input(strata), "ADSL"),
                           strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
                           x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
                           y = choices_selected(
@@ -248,11 +246,11 @@ tm_g_lineplot <- function(label,
     is_character_single(interval),
     is_character_vector(whiskers),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -298,8 +296,6 @@ tm_g_lineplot <- function(label,
 
 #' User Interface for Line Plot Module
 #' @noRd
-#'
-#' @importFrom shinyWidgets switchInput
 ui_g_lineplot <- function(id, ...) {
 
   a <- list(...)

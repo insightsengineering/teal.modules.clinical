@@ -13,8 +13,6 @@
 #'
 #'
 #' @seealso [tm_g_forest_tte()]
-#'
-#' @importFrom grid grid.newpage grid.draw
 template_forest_tte <- function(dataname = "ANL",
                                 parentname = "ANL_ADSL",
                                 arm_var,
@@ -274,7 +272,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 tm_g_forest_tte <- function(label,
                             dataname,
-                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                             arm_var,
                             arm_ref_comp = NULL,
                             subgroup_var,
@@ -300,11 +298,11 @@ tm_g_forest_tte <- function(label,
     is.choices_selected(conf_level),
     is_logical_single(fixed_symbol_size),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )

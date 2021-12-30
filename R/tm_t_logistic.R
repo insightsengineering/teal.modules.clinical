@@ -18,7 +18,6 @@
 #'
 #' @seealso [tm_t_logistic()]
 #'
-#' @importFrom broom tidy
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
@@ -270,7 +269,7 @@ template_logistic <- function(dataname,
 #'
 tm_t_logistic <- function(label,
                           dataname,
-                          parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                          parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                           arm_var = NULL,
                           arm_ref_comp = NULL,
                           paramcd,
@@ -422,7 +421,6 @@ ui_t_logistic <- function(id, ...) {
 
 #' Server Function for `tm_t_logistic`
 #' @noRd
-#' @importFrom stats median
 #'
 srv_t_logistic <- function(input,
                            output,

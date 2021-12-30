@@ -267,7 +267,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             dataname,
                                             parentname = ifelse(
-                                              is(arm_var, "data_extract_spec"),
+                                              inherits(arm_var, "data_extract_spec"),
                                               datanames_input(arm_var),
                                               "ADSL"
                                             ),
@@ -323,11 +323,11 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
     is.choices_selected(worst_low_flag_var),
     is.choices_selected(worst_flag_indicator),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

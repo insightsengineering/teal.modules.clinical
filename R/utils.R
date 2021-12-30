@@ -126,7 +126,6 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'   hence the warning.
 #'
 #' @export
-#' @importFrom styler style_text
 #'
 #' @examples
 #' expr <- quote(
@@ -188,7 +187,7 @@ add_expr <- function(expr_ls, new_expr) {
   )
 
   # support nested expressions such as expr({a <- 1; b <- 2})
-  if (is(new_expr, "{")) {
+  if (inherits(new_expr, "{")) {
     res <- expr_ls
     for (idx in seq_along(new_expr)[-1]) {
       res <- add_expr(res, new_expr[[idx]])
@@ -400,7 +399,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #' @export
 #' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
-  is.choices_selected(x) || is(x, "data_extract_spec")
+  is.choices_selected(x) || inherits(x, "data_extract_spec")
 }
 
 #' Split-Column Expression
@@ -815,7 +814,7 @@ color_lab_values <- function(x,
 }
 
 is_cdisc_data <- function(datasets) {
-  is(datasets, "CDISCFilteredData")
+  inherits(datasets, "CDISCFilteredData")
 }
 
 #' Clean a categorical variable descriptions

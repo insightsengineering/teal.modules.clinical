@@ -12,7 +12,6 @@
 #' @import tern
 #' @import utils.nest
 #' @importFrom magrittr %>%
-#' @importFrom methods is
 #'
 #' @docType package
 #' @name teal.modules.clinical

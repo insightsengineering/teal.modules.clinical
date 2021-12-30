@@ -279,7 +279,7 @@ template_exposure <- function(parentname,
 tm_t_exposure <- function(label,
                           dataname,
                           parentname = ifelse(
-                            is(col_by_var, "data_extract_spec"),
+                            inherits(col_by_var, "data_extract_spec"),
                             datanames_input(col_by_var),
                             "ADSL"
                             ),
@@ -323,11 +323,11 @@ tm_t_exposure <- function(label,
     is.choices_selected(avalu_var),
     is.string(na_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

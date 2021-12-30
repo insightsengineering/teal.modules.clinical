@@ -446,7 +446,7 @@ template_binary_outcome <- function(dataname,
 tm_t_binary_outcome <- function(label,
                                 dataname,
                                 parentname = ifelse(
-                                  test = is(arm_var, "data_extract_spec"),
+                                  test = inherits(arm_var, "data_extract_spec"),
                                   yes = datanames_input(arm_var),
                                   no = "ADSL"
                                 ),
@@ -473,11 +473,11 @@ tm_t_binary_outcome <- function(label,
     is.choices_selected(conf_level),
     is.flag(add_total),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -522,9 +522,7 @@ tm_t_binary_outcome <- function(label,
   )
 }
 
-#' @importFrom shinyWidgets switchInput
 ui_t_binary_outcome <- function(id, ...) {
-
   a <- list(...)
   is_single_dataset_value <- is_single_dataset(
     a$paramcd,

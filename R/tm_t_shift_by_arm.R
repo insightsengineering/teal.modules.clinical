@@ -208,7 +208,7 @@ template_shift_by_arm <- function(dataname,
 #'
 tm_t_shift_by_arm <- function(label,
                               dataname,
-                              parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                              parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
                               arm_var,
                               paramcd,
                               visit_var,
@@ -235,11 +235,11 @@ tm_t_shift_by_arm <- function(label,
     is_character_single(na_level),
     useNA %in% c("ifany", "no"), # nolint,
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )

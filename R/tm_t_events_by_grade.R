@@ -637,7 +637,7 @@ template_events_col_by_grade <- function(dataname,
     prune_list,
     quote(
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
     )
   )
@@ -755,7 +755,7 @@ template_events_col_by_grade <- function(dataname,
 tm_t_events_by_grade <- function(label,
                                  dataname,
                                  parentname = ifelse(
-                                   is(arm_var, "data_extract_spec"),
+                                   inherits(arm_var, "data_extract_spec"),
                                    datanames_input(arm_var),
                                    "ADSL"
                                  ),
@@ -788,11 +788,11 @@ tm_t_events_by_grade <- function(label,
     is_numeric_single(prune_diff),
     is_logical_single(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
       ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
       )
     )
