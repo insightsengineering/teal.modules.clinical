@@ -1,4 +1,4 @@
-test_that("template_fit_mmrm works as expected when not combining comparison arms", {
+testthat::test_that("template_fit_mmrm works as expected when not combining comparison arms", {
   result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
@@ -38,10 +38,10 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
         parallel = FALSE)
     )
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_fit_mmrm works as expected when combining combination arms", {
+testthat::test_that("template_fit_mmrm works as expected when combining combination arms", {
   result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
@@ -91,10 +91,10 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
       )
     )
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_tables works as expected", {
+testthat::test_that("template_mmrm_tables works as expected", {
   result <- template_mmrm_tables(
     parentname = "ADSL",
     dataname = "ANL",
@@ -120,10 +120,10 @@ test_that("template_mmrm_tables works as expected", {
       cov_matrix
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_tables works as expected when arm is not considered in the model", {
+testthat::test_that("template_mmrm_tables works as expected when arm is not considered in the model", {
   result <- template_mmrm_tables(
     parentname = "ADSL",
     dataname = "ANL",
@@ -148,10 +148,10 @@ test_that("template_mmrm_tables works as expected when arm is not considered in 
       cov_matrix
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_plots works as expected", {
+testthat::test_that("template_mmrm_plots works as expected", {
   result <- template_mmrm_plots(
     "fit_mmrm",
     lsmeans_plot = list(
@@ -203,5 +203,5 @@ test_that("template_mmrm_plots works as expected", {
       diagnostic_plot
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

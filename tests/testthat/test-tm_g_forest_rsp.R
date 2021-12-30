@@ -1,4 +1,4 @@
-test_that("template_forest_rsp generates correct expressions", {
+testthat::test_that("template_forest_rsp generates correct expressions", {
   result <- template_forest_rsp(
     dataname = "adrs",
     parentname = "adsl",
@@ -48,5 +48,5 @@ test_that("template_forest_rsp generates correct expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

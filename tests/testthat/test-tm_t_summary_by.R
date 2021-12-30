@@ -1,4 +1,4 @@
-test_that("template_summary_by generates correct expressions", {
+testthat::test_that("template_summary_by generates correct expressions", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -50,10 +50,10 @@ test_that("template_summary_by generates correct expressions", {
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
+testthat::test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -109,10 +109,10 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions when `row_groups` is true", {
+testthat::test_that("template_summary_by generates correct expressions when `row_groups` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adsl",
@@ -176,10 +176,10 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions for customized numeric statistics", {
+testthat::test_that("template_summary_by generates correct expressions for customized numeric statistics", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -232,10 +232,10 @@ test_that("template_summary_by generates correct expressions for customized nume
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions for `drop_zero_levels` is true", {
+testthat::test_that("template_summary_by generates correct expressions for `drop_zero_levels` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -294,5 +294,5 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

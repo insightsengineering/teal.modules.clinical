@@ -1,4 +1,4 @@
-test_that("template_tte produces healthy standard output", {
+testthat::test_that("template_tte produces healthy standard output", {
   result <- template_tte(
     dataname = "ANL",
     parentname = "ANL_ADSL",
@@ -99,10 +99,10 @@ test_that("template_tte produces healthy standard output", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_tte produces correct data expression when not comparing arms", {
+testthat::test_that("template_tte produces correct data expression when not comparing arms", {
   result <- template_tte(
     dataname = "ANL",
     parentname = "ANL_ADSL",
@@ -143,5 +143,5 @@ test_that("template_tte produces correct data expression when not comparing arms
       dplyr::mutate(ARM = droplevels(ARM)) %>%
       df_explicit_na()
   })
-  expect_equal(result$data, expected_data)
+  testthat::expect_equal(result$data, expected_data)
 })

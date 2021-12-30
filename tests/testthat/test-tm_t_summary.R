@@ -1,4 +1,4 @@
-test_that("template_summary generates correct expressions", {
+testthat::test_that("template_summary generates correct expressions", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -42,10 +42,10 @@ test_that("template_summary generates correct expressions", {
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary can generate customized table", {
+testthat::test_that("template_summary can generate customized table", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -90,10 +90,10 @@ test_that("template_summary can generate customized table", {
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary generates correct expressions for multiple grouping variables", {
+testthat::test_that("template_summary generates correct expressions for multiple grouping variables", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -142,10 +142,10 @@ test_that("template_summary generates correct expressions for multiple grouping 
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary generates correct expressions for multiple grouping variables and all patientts", {
+testthat::test_that("template_summary generates correct expressions for multiple grouping variables and all patientts", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -195,10 +195,10 @@ test_that("template_summary generates correct expressions for multiple grouping 
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary generates correct expressions for customized numeric statistics", {
+testthat::test_that("template_summary generates correct expressions for customized numeric statistics", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -248,5 +248,5 @@ test_that("template_summary generates correct expressions for customized numeric
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

@@ -1,4 +1,4 @@
-test_that("template_forest_tte generates correct expressions", {
+testthat::test_that("template_forest_tte generates correct expressions", {
   result <- template_forest_tte(
     dataname = "adtte",
     arm_var = "ARMCD",
@@ -58,5 +58,5 @@ test_that("template_forest_tte generates correct expressions", {
       grid::grid.draw(p)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

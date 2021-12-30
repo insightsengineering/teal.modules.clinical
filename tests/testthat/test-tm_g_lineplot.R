@@ -1,7 +1,7 @@
 adlb <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adlb
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT") # nolint
 
-test_that("template_g_lineplot works as expected with default arguments", {
+testthat::test_that("template_g_lineplot works as expected with default arguments", {
   result <- template_g_lineplot()
   expected <- list(
     data = quote({
@@ -34,10 +34,10 @@ test_that("template_g_lineplot works as expected with default arguments", {
         subtitle_add_unit = FALSE)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_g_lineplot gives correct data expression with custom arguments", {
+testthat::test_that("template_g_lineplot gives correct data expression with custom arguments", {
   result <- template_g_lineplot(
     strata = "ARMCD",
     y = "CHG",
@@ -80,5 +80,5 @@ test_that("template_g_lineplot gives correct data expression with custom argumen
         subtitle_add_unit = FALSE)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

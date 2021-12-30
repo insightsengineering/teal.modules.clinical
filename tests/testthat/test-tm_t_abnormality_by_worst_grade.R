@@ -1,5 +1,5 @@
 library(scda)
-test_that("template_abnormality_by_worst_grade generates correct expressions with default arguments", {
+testthat::test_that("template_abnormality_by_worst_grade generates correct expressions with default arguments", {
 
   result <- template_abnormality_by_worst_grade(
     parentname = "adsl",
@@ -79,10 +79,10 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality_by_worst_grade generates correct expressions with custom arguments", {
+testthat::test_that("template_abnormality_by_worst_grade generates correct expressions with custom arguments", {
   result <- template_abnormality_by_worst_grade(
     parentname = "myadsl",
     dataname = "myadlb",
@@ -160,10 +160,10 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality_by_worst_grade throws an error when ATOXGR contains NA values", {
+testthat::test_that("template_abnormality_by_worst_grade throws an error when ATOXGR contains NA values", {
   adsl <- synthetic_cdisc_data("rcd_2021_07_07")$adsl
   adlb <- synthetic_cdisc_data("rcd_2021_07_07")$adlb
 
@@ -183,6 +183,6 @@ test_that("template_abnormality_by_worst_grade throws an error when ATOXGR conta
     drop_arm_levels = TRUE
   )
 
-  expect_error(mapply(eval, template))
+  testthat::expect_error(mapply(eval, template))
 
 })

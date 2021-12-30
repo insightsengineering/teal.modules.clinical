@@ -1,4 +1,4 @@
-test_that("template_g_ipp works as expected with default arguments", {
+testthat::test_that("template_g_ipp works as expected with default arguments", {
   result <- template_g_ipp(paramcd = "PARAMCD", arm_var = "ARMCD",
                            arm_levels = letters[1:3], avalu_first = letters[4], paramcd_first = letters[5])
 
@@ -13,11 +13,11 @@ test_that("template_g_ipp works as expected with default arguments", {
       grid::grid.draw(plot)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
 
-test_that("template_g_ipp works as expected with non-default arguments", {
+testthat::test_that("template_g_ipp works as expected with non-default arguments", {
   result <- template_g_ipp(
     dataname = "adlb",
     paramcd = "PARAM",
@@ -46,5 +46,5 @@ test_that("template_g_ipp works as expected with non-default arguments", {
       grid::grid.draw(plot)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

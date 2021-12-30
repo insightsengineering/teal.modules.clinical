@@ -1,4 +1,4 @@
-test_that("template_events_by_grade generates standard expressions", {
+testthat::test_that("template_events_by_grade generates standard expressions", {
   result <- template_events_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -84,10 +84,10 @@ test_that("template_events_by_grade generates standard expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_by_grade generates standard expressions with pruning conditions", {
+testthat::test_that("template_events_by_grade generates standard expressions with pruning conditions", {
 
   result <- template_events_by_grade(
     dataname = "adae",
@@ -180,10 +180,10 @@ test_that("template_events_by_grade generates standard expressions with pruning 
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_by_grade without adding total column option works as expected", {
+testthat::test_that("template_events_by_grade without adding total column option works as expected", {
   result <- template_events_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -270,10 +270,10 @@ test_that("template_events_by_grade without adding total column option works as 
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_by_grade with hlt only works", {
+testthat::test_that("template_events_by_grade with hlt only works", {
   result <- template_events_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -343,10 +343,10 @@ test_that("template_events_by_grade with hlt only works", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_col_by_grade generates standard expressions", {
+testthat::test_that("template_events_col_by_grade generates standard expressions", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -460,10 +460,10 @@ test_that("template_events_col_by_grade generates standard expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_col_by_grade generates STREAM variant 8", {
+testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -566,10 +566,10 @@ test_that("template_events_col_by_grade generates STREAM variant 8", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_col_by_grade without adding total column option works as expected", {
+testthat::test_that("template_events_col_by_grade without adding total column option works as expected", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -672,10 +672,10 @@ test_that("template_events_col_by_grade without adding total column option works
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_col_by_grade without dropping arm levels option works as expected", {
+testthat::test_that("template_events_col_by_grade without dropping arm levels option works as expected", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -777,5 +777,5 @@ test_that("template_events_col_by_grade without dropping arm levels option works
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

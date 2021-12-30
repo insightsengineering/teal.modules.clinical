@@ -1,4 +1,4 @@
-test_that("template_binary_outcome generates standard expressions", {
+testthat::test_that("template_binary_outcome generates standard expressions", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
@@ -68,10 +68,10 @@ test_that("template_binary_outcome generates standard expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates right expressions with non-default", {
+testthat::test_that("template_binary_outcome generates right expressions with non-default", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -135,10 +135,10 @@ test_that("template_binary_outcome generates right expressions with non-default"
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates expression without arm comparison", {
+testthat::test_that("template_binary_outcome generates expression without arm comparison", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -180,10 +180,10 @@ test_that("template_binary_outcome generates expression without arm comparison",
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates expression with non-default controls and strata.", {
+testthat::test_that("template_binary_outcome generates expression with non-default controls and strata.", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -275,10 +275,10 @@ test_that("template_binary_outcome generates expression with non-default control
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome can combine comparison arms", {
+testthat::test_that("template_binary_outcome can combine comparison arms", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "ADSL",
@@ -351,10 +351,10 @@ test_that("template_binary_outcome can combine comparison arms", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("split_col_expr prepare the right four possible expressions", {
+testthat::test_that("split_col_expr prepare the right four possible expressions", {
   result <- list(
     split_col_expr(compare = TRUE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
     split_col_expr(compare = TRUE, combine = FALSE, arm_var = "ARMCD", ref = "ARM C"),
@@ -367,10 +367,10 @@ test_that("split_col_expr prepare the right four possible expressions", {
     quote(split_cols_by(var = "ARMCD")),
     quote(split_cols_by(var = "ARMCD"))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome can combine refs", {
+testthat::test_that("template_binary_outcome can combine refs", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
@@ -439,5 +439,5 @@ test_that("template_binary_outcome can combine refs", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

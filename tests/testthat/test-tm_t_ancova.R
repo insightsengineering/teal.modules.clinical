@@ -1,4 +1,4 @@
-test_that("template_ancova generates expressions with multiple endpoints", {
+testthat::test_that("template_ancova generates expressions with multiple endpoints", {
   result <- template_ancova(
     dataname = "adqs",
     parentname = "adsl",
@@ -54,10 +54,10 @@ test_that("template_ancova generates expressions with multiple endpoints", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_ancova generates expressions with multiple endpoints with combined comparison arms", {
+testthat::test_that("template_ancova generates expressions with multiple endpoints with combined comparison arms", {
   result <- template_ancova(
     parentname = "adsl",
     dataname = "adqs",
@@ -115,10 +115,10 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_ancova generates expressions with multiple endpoints with combined reference arms", {
+testthat::test_that("template_ancova generates expressions with multiple endpoints with combined reference arms", {
   result <- template_ancova(
     parentname = "adsl",
     dataname = "adqs",
@@ -177,10 +177,10 @@ test_that("template_ancova generates expressions with multiple endpoints with co
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_ancova generates expressions with single endpoint", {
+testthat::test_that("template_ancova generates expressions with single endpoint", {
   result <- template_ancova(
     parentname = "adsl",
     dataname = "adqs",
@@ -243,5 +243,5 @@ test_that("template_ancova generates expressions with single endpoint", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

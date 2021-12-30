@@ -1,4 +1,4 @@
-test_that("template_logistic generates correct expressions", {
+testthat::test_that("template_logistic generates correct expressions", {
   result <- template_logistic(
     dataname = "ANL",
     arm_var = "ARMCD",
@@ -44,10 +44,10 @@ test_that("template_logistic generates correct expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_logistic generates correct expressions for no arm variable", {
+testthat::test_that("template_logistic generates correct expressions for no arm variable", {
   result <- template_logistic(
     dataname = "ANL",
     arm_var = NULL,
@@ -84,5 +84,5 @@ test_that("template_logistic generates correct expressions for no arm variable",
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

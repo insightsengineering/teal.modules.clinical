@@ -1,4 +1,4 @@
-test_that("template_events generates correct expressions", {
+testthat::test_that("template_events generates correct expressions", {
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -70,10 +70,10 @@ test_that("template_events generates correct expressions", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events generates correct expressions for nested columns", {
+testthat::test_that("template_events generates correct expressions for nested columns", {
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -150,10 +150,10 @@ test_that("template_events generates correct expressions for nested columns", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events can generate customized table", {
+testthat::test_that("template_events can generate customized table", {
   result <- template_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -201,10 +201,10 @@ test_that("template_events can generate customized table", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events can generate customized table with alphabetical sorting", {
+testthat::test_that("template_events can generate customized table with alphabetical sorting", {
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -272,10 +272,10 @@ test_that("template_events can generate customized table with alphabetical sorti
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events can generate customized table with pruning", {
+testthat::test_that("template_events can generate customized table with pruning", {
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -358,10 +358,10 @@ test_that("template_events can generate customized table with pruning", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events can generate customized table with pruning for nested column", {
+testthat::test_that("template_events can generate customized table with pruning for nested column", {
   result <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -449,5 +449,5 @@ test_that("template_events can generate customized table with pruning for nested
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

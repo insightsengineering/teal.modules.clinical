@@ -1,4 +1,4 @@
-test_that("template_shift_by_arm generates correct expressions with default arguments", {
+testthat::test_that("template_shift_by_arm generates correct expressions with default arguments", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -37,10 +37,10 @@ test_that("template_shift_by_arm generates correct expressions with default argu
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_shift_by_arm generates correct expressions with add_total being TRUE", {
+testthat::test_that("template_shift_by_arm generates correct expressions with add_total being TRUE", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -80,10 +80,10 @@ test_that("template_shift_by_arm generates correct expressions with add_total be
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_shift_by_arm generates correct expressions with na.rm being TRUE", {
+testthat::test_that("template_shift_by_arm generates correct expressions with na.rm being TRUE", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -123,5 +123,5 @@ test_that("template_shift_by_arm generates correct expressions with na.rm being 
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

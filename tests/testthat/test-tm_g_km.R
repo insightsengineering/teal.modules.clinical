@@ -1,4 +1,4 @@
-test_that("template_g_km works as expected with default arguments", {
+testthat::test_that("template_g_km works as expected with default arguments", {
   result <- template_g_km(comp_arm = c("ARM A", "ARM B"))
   expected <- list(
     data = quote({
@@ -60,10 +60,10 @@ test_that("template_g_km works as expected with default arguments", {
       km_grobs
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_g_km gives correct data expression when we want to compare versus reference arms", {
+testthat::test_that("template_g_km gives correct data expression when we want to compare versus reference arms", {
   result <- template_g_km(
     comp_arm = c("ARM A", "ARM B"),
     ref_arm = c("ARM C", "ARM D"),
@@ -77,10 +77,10 @@ test_that("template_g_km gives correct data expression when we want to compare v
       dplyr::mutate(ARM = droplevels(ARM)) %>%
       dplyr::mutate(is_event = CNSR == 0)
   })
-  expect_equal(result$data, expected_data)
+  testthat::expect_equal(result$data, expected_data)
 })
 
-test_that("template_g_km gives correct data expression when we want to combine comparison arms", {
+testthat::test_that("template_g_km gives correct data expression when we want to combine comparison arms", {
   result <- template_g_km(
     comp_arm = c("ARM A", "ARM B"),
     ref_arm = c("ARM C", "ARM D"),
@@ -96,5 +96,5 @@ test_that("template_g_km gives correct data expression when we want to combine c
       dplyr::mutate(is_event = CNSR == 0) %>%
       dplyr::mutate(ARM = combine_levels(ARM, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B"))
   })
-  expect_equal(result$data, expected_data)
+  testthat::expect_equal(result$data, expected_data)
 })

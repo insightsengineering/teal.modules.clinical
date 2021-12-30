@@ -1,4 +1,4 @@
-test_that("template_smq generates correct expressions with default arguments", {
+testthat::test_that("template_smq generates correct expressions with default arguments", {
   result <- template_smq(
     parentname = "adsl",
     dataname = "adae",
@@ -76,10 +76,10 @@ test_that("template_smq generates correct expressions with default arguments", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_smq generates correct expressions with custom arguments", {
+testthat::test_that("template_smq generates correct expressions with custom arguments", {
   result <- template_smq(
     parentname = "myadsl",
     dataname = "myadae",
@@ -153,5 +153,5 @@ test_that("template_smq generates correct expressions with custom arguments", {
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

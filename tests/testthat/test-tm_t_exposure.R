@@ -1,4 +1,4 @@
-test_that("template_exposure generates correct expressions with default arguments", {
+testthat::test_that("template_exposure generates correct expressions with default arguments", {
   result <- template_exposure(
     parentname = "adsl",
     dataname = "adex",
@@ -43,10 +43,10 @@ test_that("template_exposure generates correct expressions with default argument
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_exposure generates correct expressions with custom arguments", {
+testthat::test_that("template_exposure generates correct expressions with custom arguments", {
   result <- template_exposure(
     parentname = "myadsl",
     dataname = "myadex",
@@ -91,5 +91,5 @@ test_that("template_exposure generates correct expressions with custom arguments
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

@@ -1,4 +1,4 @@
-test_that("template_abnormality generates correct expressions with default arguments", {
+testthat::test_that("template_abnormality generates correct expressions with default arguments", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -60,10 +60,10 @@ test_that("template_abnormality generates correct expressions with default argum
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality generates correct expressions with custom arguments", {
+testthat::test_that("template_abnormality generates correct expressions with custom arguments", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -128,10 +128,10 @@ test_that("template_abnormality generates correct expressions with custom argume
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality generates correct expressions with customized na_level", {
+testthat::test_that("template_abnormality generates correct expressions with customized na_level", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -194,5 +194,5 @@ test_that("template_abnormality generates correct expressions with customized na
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

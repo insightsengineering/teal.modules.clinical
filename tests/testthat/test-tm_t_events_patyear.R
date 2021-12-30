@@ -1,4 +1,4 @@
-test_that("template_events_patyear generates standard expressions", {
+testthat::test_that("template_events_patyear generates standard expressions", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -46,10 +46,10 @@ test_that("template_events_patyear generates standard expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_patyear generates right expressions with non-default", {
+testthat::test_that("template_events_patyear generates right expressions with non-default", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -95,10 +95,10 @@ test_that("template_events_patyear generates right expressions with non-default"
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_patyear generates right expressions with non-default controls", {
+testthat::test_that("template_events_patyear generates right expressions with non-default controls", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -151,5 +151,5 @@ test_that("template_events_patyear generates right expressions with non-default 
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

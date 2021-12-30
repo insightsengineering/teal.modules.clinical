@@ -1,5 +1,5 @@
 library(scda)
-test_that("template_shift_by_grade generates correct expressions with default arguments", {
+testthat::test_that("template_shift_by_grade generates correct expressions with default arguments", {
   result <- template_shift_by_grade(
     parentname = "adsl",
     dataname = "adlb",
@@ -98,10 +98,10 @@ test_that("template_shift_by_grade generates correct expressions with default ar
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_shift_by_grade generates correct expressions with custom arguments", {
+testthat::test_that("template_shift_by_grade generates correct expressions with custom arguments", {
   result <- template_shift_by_grade(
     parentname = "adsl",
     dataname = "adlb",
@@ -204,13 +204,13 @@ test_that("template_shift_by_grade generates correct expressions with custom arg
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that(
+testthat::test_that(
   "template_shift_by_grade throws an error when worst_flag_var
   is not one of “WGRLOVFL”, “WGRLOFL”, “WGRHIVFL”, “WGRHIFL”", {
-  expect_error(
+  testthat::expect_error(
     result <- template_shift_by_grade(
       parentname = "adsl",
       dataname = "adlb",
@@ -231,7 +231,7 @@ test_that(
 })
 
 
-test_that(
+testthat::test_that(
   "template_shift_by_grade is keeping the same number of missing data
   (as 'Missing') at the end of preprocessing steps", {
     adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
@@ -261,6 +261,6 @@ test_that(
     data <- eval(template_data)
     result_missing_n <- sum(data$ATOXGR_GP == "Missing")
 
-    expect_equal(expected_missing_n, result_missing_n)
+    testthat::expect_equal(expected_missing_n, result_missing_n)
   }
 )

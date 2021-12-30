@@ -1,4 +1,4 @@
-test_that("template_coxreg generates correct univariate cox regression expressions", {
+testthat::test_that("template_coxreg generates correct univariate cox regression expressions", {
   result <- template_coxreg_u(
     dataname = "adrs",
     cov_var = NULL,
@@ -50,11 +50,11 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     ),
     table = quote(result <- build_table(lyt = lyt, df = df))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
 
-test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
+testthat::test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
   result <- template_coxreg_u(
     dataname = "adrs",
     cov_var = NULL,
@@ -107,10 +107,10 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     ),
     table = quote(result <- build_table(lyt = lyt, df = df))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_coxreg generates correct multivariate cox regression expressions", {
+testthat::test_that("template_coxreg generates correct multivariate cox regression expressions", {
   result <- template_coxreg_m(
     dataname = "adrs",
     cov_var = c("AGE", "SEX"),
@@ -157,5 +157,5 @@ test_that("template_coxreg generates correct multivariate cox regression express
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
