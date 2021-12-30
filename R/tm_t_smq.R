@@ -124,8 +124,8 @@ template_smq <- function(
 
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -359,7 +359,7 @@ template_smq <- function(
 #'
 tm_t_smq <- function(label,
                      dataname,
-                     parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                     parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                      arm_var,
                      id_var = choices_selected(
                        variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
@@ -422,7 +422,7 @@ tm_t_smq <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -433,7 +433,7 @@ ui_t_smq <- function(id, ...) {
   a <- list(...) # module args
 
 
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$id_var,
     a$baskets,
@@ -441,47 +441,47 @@ ui_t_smq <- function(id, ...) {
     a$llt
   )
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c(
+      teal.devel::datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("llt"),
         label = "Select the low level term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
         data_extract_spec = a$baskets,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional Variables Info",
           checkboxInput(ns(
             "drop_arm_levels"),
             "Drop arm levels not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("scopes"),
             label = "Scope variables available",
             data_extract_spec = a$scopes,
@@ -499,7 +499,7 @@ ui_t_smq <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -521,9 +521,9 @@ srv_t_smq <- function(input,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     list(
       arm_var = arm_var,
       id_var = id_var,
@@ -534,13 +534,13 @@ srv_t_smq <- function(input,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var),
     input_id = c("arm_var"),
@@ -568,7 +568,7 @@ srv_t_smq <- function(input,
       need(input_arm_var, "Please select the arm variable.")
     )
     #validate inputs
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
@@ -584,13 +584,13 @@ srv_t_smq <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     my_calls <- template_smq(
       parentname = "ANL_ADSL",
@@ -605,28 +605,28 @@ srv_t_smq <- function(input,
       id_var = as.vector(anl_m$columns_source$id_var),
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("pruned_and_sorted_result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, id_var, baskets, scopes, llt)
     ),
     modal_title = "R Code for SMQ tables",

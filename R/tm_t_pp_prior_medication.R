@@ -195,7 +195,7 @@ tm_t_pp_prior_medication <- function(label,
 
 ui_t_prior_medication <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     ui_args$atirel,
     ui_args$cmdecod,
     ui_args$cmindc,
@@ -203,46 +203,46 @@ ui_t_prior_medication <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
+  teal.devel::standard_layout(
     output = div(
-      get_dt_rows(ns("prior_medication_table"), ns("prior_medication_table_rows")),
+      teal.devel::get_dt_rows(ns("prior_medication_table"), ns("prior_medication_table_rows")),
       DT::DTOutput(outputId = ns("prior_medication_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
+      teal.devel::datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select the medication decoding column:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("atirel"),
         label = "Select ATIREL variable:",
         data_extract_spec = ui_args$atirel,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cmindc"),
         label = "Select CMINDC variable:",
         data_extract_spec = ui_args$cmindc,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cmstdy"),
         label = "Select CMSTDY variable:",
         data_extract_spec = ui_args$cmstdy,
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -263,7 +263,7 @@ srv_t_prior_medication <- function(input,
                                    label) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -287,7 +287,7 @@ srv_t_prior_medication <- function(input,
   )
 
   # Prior medication tab ----
-  pmed_merged_data <- data_merge_module(
+  pmed_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
     merge_function = "dplyr::left_join"
@@ -315,11 +315,11 @@ srv_t_prior_medication <- function(input,
       )
     )
 
-    pmed_stack <- chunks$new()
+    pmed_stack <- teal.devel::chunks$new()
     pmed_stack_push <- function(...) {
-      chunks_push(..., chunks = pmed_stack)
+      teal.devel::chunks_push(..., chunks = pmed_stack)
     }
-    chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
+    teal.devel::chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
 
     pmed_stack_push(substitute(
       expr = {
@@ -339,23 +339,23 @@ srv_t_prior_medication <- function(input,
     )
 
     lapply(my_calls, pmed_stack_push)
-    chunks_safe_eval(pmed_stack)
+    teal.devel::chunks_safe_eval(pmed_stack)
     pmed_stack
   })
 
   output$prior_medication_table <- DT::renderDataTable({
-    chunks_reset()
-    chunks_push_chunks(pmed_call())
-    chunks_get_var("result")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(pmed_call())
+    teal.devel::chunks_get_var("result")
     },
     options = list(pageLength = input$prior_medication_table_rows)
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
+    datanames = teal.devel::get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
     modal_title = label
   )
 }

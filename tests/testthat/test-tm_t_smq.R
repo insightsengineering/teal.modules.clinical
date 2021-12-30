@@ -70,7 +70,7 @@ testthat::test_that("template_smq generates correct expressions with default arg
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !is(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && all_zero_or_na(tr)
       }
       pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
       pruned_and_sorted_result
@@ -147,7 +147,7 @@ testthat::test_that("template_smq generates correct expressions with custom argu
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !is(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && all_zero_or_na(tr)
       }
       pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
       pruned_and_sorted_result

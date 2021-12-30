@@ -7,8 +7,8 @@
 tm_t_shift_by_grade(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   visit_var = choices_selected(variable_choices(dataname, subset = "AVISIT"), selected
     = "AVISIT", fixed = TRUE),

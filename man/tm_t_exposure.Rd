@@ -7,8 +7,8 @@
 tm_t_exposure(
   label,
   dataname,
-  parentname = ifelse(is(col_by_var, "data_extract_spec"), datanames_input(col_by_var),
-    "ADSL"),
+  parentname = ifelse(inherits(col_by_var, "data_extract_spec"),
+    teal.devel::datanames_input(col_by_var), "ADSL"),
   row_by_var,
   col_by_var,
   paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),

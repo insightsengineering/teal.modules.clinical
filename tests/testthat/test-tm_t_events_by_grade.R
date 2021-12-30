@@ -450,7 +450,7 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
     }),
     prune = quote({
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
@@ -556,7 +556,7 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
     }),
     prune = quote({
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
@@ -662,7 +662,7 @@ testthat::test_that("template_events_col_by_grade without adding total column op
     }),
     prune = quote({
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
@@ -767,7 +767,7 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
     }),
     prune = quote({
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%

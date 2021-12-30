@@ -45,7 +45,7 @@ template_coxreg_u <- function(dataname,
   if (combine_comp_arms) {
     data_pipe <- add_expr(
       data_pipe,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -123,7 +123,7 @@ template_coxreg_u <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, parse_basic_table_args(basic_table_args))
+  layout_list <- add_expr(layout_list, teal.devel::parse_basic_table_args(basic_table_args))
   layout_list <- add_expr(
     layout_list,
     quote(split_rows_by("effect"))
@@ -217,7 +217,7 @@ template_coxreg_m <- function(dataname,
   if (combine_comp_arms) {
     data_pipe <- add_expr(
       data_pipe,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -288,7 +288,7 @@ template_coxreg_m <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, parse_basic_table_args(basic_table_args))
+  layout_list <- add_expr(layout_list, teal.devel::parse_basic_table_args(basic_table_args))
 
   layout_list <- add_expr(
     layout_list,
@@ -494,7 +494,7 @@ template_coxreg_m <- function(dataname,
 #'
 tm_t_coxreg <- function(label,
                         dataname,
-                        parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                         arm_var,
                         arm_ref_comp = NULL,
                         paramcd,
@@ -547,7 +547,7 @@ tm_t_coxreg <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -555,7 +555,7 @@ tm_t_coxreg <- function(label,
 ui_t_coxreg <- function(id, ...) {
 
   a <- list(...) # module args
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$paramcd,
     a$strata_var,
@@ -566,8 +566,8 @@ ui_t_coxreg <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       radioButtons(
         ns("type"),
@@ -579,26 +579,26 @@ ui_t_coxreg <- function(id, ...) {
         selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -623,7 +623,7 @@ ui_t_coxreg <- function(id, ...) {
           "Combine all comparison groups?"
         )
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,
@@ -637,14 +637,14 @@ ui_t_coxreg <- function(id, ...) {
         )
       ),
       uiOutput(ns("interaction_input")),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           conditionalPanel(
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
@@ -686,7 +686,7 @@ ui_t_coxreg <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -710,10 +710,10 @@ srv_t_coxreg <- function(input,
                          basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Observer to update reference and comparison arm input options.
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session,
     input,
     id_ref = "ref_arm",
@@ -725,7 +725,7 @@ srv_t_coxreg <- function(input,
     module = "tm_t_coxreg"
   )
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       arm_var = arm_var,
@@ -806,23 +806,23 @@ srv_t_coxreg <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate_no_intersection(
+    teal.devel::validate_no_intersection(
       input_arm_var,
       input_strata_var,
       "`Treatment` and `Strata` variables should not be overlapped."
     )
-    validate_no_intersection(
+    teal.devel::validate_no_intersection(
       input_arm_var,
       input_cov_var,
       "`Treatment` and `Covariate` variables should not be overlapped."
     )
-    validate_no_intersection(
+    teal.devel::validate_no_intersection(
       input_strata_var,
       input_cov_var,
       "`Strata` and `Covariate` variables should not be overlapped."
     )
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
 
     arm_n <- base::table(anl_m$data()[[input_arm_var]])
     anl_arm_n <- if (input$combine_comp_arms) {
@@ -859,7 +859,7 @@ srv_t_coxreg <- function(input,
 
     if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
       validate(need(
-        (sum(sapply(at(), is_empty)) == 0),
+        (sum(sapply(at(), utils.nest::is_empty)) == 0),
         "Please specify all the interaction levels."
       ))
     }
@@ -960,30 +960,35 @@ srv_t_coxreg <- function(input,
   table <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
     multivariate <- input$type == "Multivariate"
 
     if (input$type == "Multivariate") {
-      main_titile <- paste0("Multi-Variable Cox Regression for ", paramcd)
-      all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
-                                                       module_table =  basic_table_args(title = main_titile))
-      mapply(expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args), chunks_push)
-      chunks_safe_eval()
-      chunks_get_var("result")
+      main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
+      all_basic_table_args <- teal.devel::resolve_basic_table_args(
+        user_table = basic_table_args,
+        module_table =  teal.devel::basic_table_args(title = main_title)
+      )
+      mapply(
+        expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args),
+        teal.devel::chunks_push
+      )
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
     } else {
       main_title <- paste0("Cox Regression for ", paramcd)
-      all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args,
-                                                       module_table =  basic_table_args(title = main_title))
-      chunks_push(quote(result <- list()))
+      all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args,
+                                                       module_table =  teal.devel::basic_table_args(title = main_title))
+      teal.devel::chunks_push(quote(result <- list()))
       lapply(input$comp_arm, function(x)
-        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), chunks_push))
-      chunks_push(substitute({
+        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.devel::chunks_push))
+      teal.devel::chunks_push(substitute({
         final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
         rtables::main_title(final_table) <- title
         rtables::main_footer(final_table) <- footer
@@ -994,23 +999,23 @@ srv_t_coxreg <- function(input,
                     footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
                     p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
                     subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
-      chunks_safe_eval()
-      chunks_get_var("final_table")
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("final_table")
     }
 
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
     ),
     modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",

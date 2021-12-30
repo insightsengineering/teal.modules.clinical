@@ -352,7 +352,7 @@ testthat::test_that("template_events can generate customized table with pruning"
           scorefun =  score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
       pruned_and_sorted_result
@@ -443,7 +443,7 @@ testthat::test_that("template_events can generate customized table with pruning 
           scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
       pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
       pruned_and_sorted_result

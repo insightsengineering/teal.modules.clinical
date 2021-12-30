@@ -592,7 +592,7 @@ prepare_arm <- function(dataname,
     if (length(ref_arm) > 1) {
       data_list <- add_expr(
         data_list,
-        substitute_names(
+        utils.nest::substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
@@ -603,7 +603,7 @@ prepare_arm <- function(dataname,
     # Reference level is explicit.
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = stats::relevel(arm_var, ref = ref_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(ref_arm_val = ref_arm_val)
@@ -623,7 +623,7 @@ prepare_arm <- function(dataname,
   if (drop) {
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = droplevels(arm_var)),
         names = list(arm_var = as.name(arm_var))
       )
@@ -677,7 +677,7 @@ prepare_arm_levels <- function(dataname,
     # Keep only levels that exist in `dataname` dataset
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -714,7 +714,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -730,7 +730,7 @@ prepare_arm_levels <- function(dataname,
     # Keep only levels that exist in `parentname` dataset
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -754,7 +754,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = factor(arm_var, levels = arm_levels)
         ),

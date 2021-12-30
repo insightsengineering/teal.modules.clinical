@@ -68,10 +68,10 @@ template_adverse_events <- function(dataname = "ANL",
     )
   )
 
-  parsed_ggplot2_args <- parse_ggplot2_args(
-    resolve_ggplot2_args(
+  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
+    teal.devel::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = ggplot2_args(
+      module_plot = teal.devel::ggplot2_args(
         labs = list(y = "Adverse Events", title = paste0("Patient ID: ", patient_id)),
         theme = list(
           text = substitute(element_text(size = font), list(font = font_size[1])),
@@ -296,7 +296,7 @@ tm_g_pp_adverse_events <- function(label,
 
 ui_g_adverse_events <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     ui_args$aeterm,
     ui_args$tox_grade,
     ui_args$causality,
@@ -307,15 +307,15 @@ ui_g_adverse_events <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
+  teal.devel::standard_layout(
     output = div(
-      get_dt_rows(ns("table"), ns("table_rows")),
+      teal.devel::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
-      plot_with_settings_ui(id = ns("chart"))
+      teal.devel::plot_with_settings_ui(id = ns("chart"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c(
+      teal.devel::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
         "action", "time", "decod"
       )]),
@@ -325,37 +325,37 @@ ui_g_adverse_events <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aeterm"),
         label = "Select AETERM variable:",
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("tox_grade"),
         label = "Select AETOXGR variable:",
         data_extract_spec = ui_args$tox_grade,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("causality"),
         label = "Select AEREL variable:",
         data_extract_spec = ui_args$causality,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("outcome"),
         label = "Select AEOUT variable:",
         data_extract_spec = ui_args$outcome,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("action"),
         label = "Select AEACN variable:",
         data_extract_spec = ui_args$action,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("time"),
         label = "Select ASTDY variable:",
         data_extract_spec = ui_args$time,
@@ -363,20 +363,20 @@ ui_g_adverse_events <- function(id, ...) {
       ),
       utils.nest::if_not_null(
         ui_args$decod,
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("decod"),
           label = "Select DECOD variable:",
           data_extract_spec = ui_args$decod,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      panel_item(
+      teal.devel::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
         optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -403,7 +403,7 @@ srv_g_adverse_events <- function(input,
                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -427,7 +427,7 @@ srv_g_adverse_events <- function(input,
   )
 
   # Adverse events tab ----
-  ae_merged_data <- data_merge_module(
+  ae_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       aeterm = aeterm,
@@ -442,7 +442,7 @@ srv_g_adverse_events <- function(input,
 
   calls <- reactive({
     validate(need(patient_id(), "Please select a patient."))
-    validate_has_data(ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ], 1)
+    teal.devel::validate_has_data(ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ], 1)
 
     validate(
       need(
@@ -471,10 +471,10 @@ srv_g_adverse_events <- function(input,
       )
     )
 
-    stack <- chunks$new()
+    stack <- teal.devel::chunks$new()
     stack$reset()
 
-    chunks_push_data_merge(ae_merged_data(), chunks = stack)
+    teal.devel::chunks_push_data_merge(ae_merged_data(), chunks = stack)
 
     stack$push(substitute(
       expr = {
@@ -500,26 +500,26 @@ srv_g_adverse_events <- function(input,
       ggplot2_args = ggplot2_args
     )
 
-    lapply(calls, chunks_push, chunks = stack)
-    chunks_safe_eval(chunks = stack)
+    lapply(calls, teal.devel::chunks_push, chunks = stack)
+    teal.devel::chunks_safe_eval(chunks = stack)
     stack
   })
   output$table <- DT::renderDataTable({
-    chunks_reset()
-    chunks_push_chunks(calls())
-    chunks_get_var("table")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(calls())
+    teal.devel::chunks_get_var("table")
     },
     options = list(pageLength = input$table_rows)
   )
 
   chart <- reactive({
-    chunks_reset()
-    chunks_push_chunks(calls())
-    chunks_get_var("chart")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(calls())
+    teal.devel::chunks_get_var("chart")
   })
 
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "chart",
     plot_r = chart,
     height = plot_height,
@@ -527,10 +527,10 @@ srv_g_adverse_events <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(
+    datanames = teal.devel::get_extract_datanames(list(
       aeterm, tox_grade, causality, outcome, action, time, decod
     )),
     modal_title = label

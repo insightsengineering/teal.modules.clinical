@@ -60,7 +60,7 @@ template_g_lineplot <- function(dataname = "ANL",
   if (!incl_screen) {
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::filter(x != "SCREENING") %>%
           dplyr::mutate(x = droplevels(x)),
         names = list(x = as.name(x)),
@@ -105,7 +105,7 @@ template_g_lineplot <- function(dataname = "ANL",
     quote(grid::grid.newpage())
   )
 
-  all_ggplot2_args <- resolve_ggplot2_args(
+  all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
     user_plot = ggplot2_args
   )
 
@@ -143,15 +143,15 @@ template_g_lineplot <- function(dataname = "ANL",
       mid_point_size = mid_point_size,
       table_font_size = table_font_size,
       y = y,
-      ggplot2_args_title = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
+      ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
         "Plot of ", names(which(mid_choices == mid)), " and ",
         ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
         names(which(interval_choices == interval)), " by Visit")),
-      ggplot2_args_subtitle = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
-      ggplot2_args_caption = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
-      ggplot2_args_ylab = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$y,
+      ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
+      ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
+      ggplot2_args_ylab = utils.nest::if_null(all_ggplot2_args$labs$y,
                                               paste(y, names(which(mid_choices == mid)), "Values for")),
-      ggplot2_args_legend_title = utils.nest::utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
+      ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
     )
   )
 
@@ -216,7 +216,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = ifelse(inherits(strata, "data_extract_spec"), datanames_input(strata), "ADSL"),
+                          parentname = ifelse(inherits(strata, "data_extract_spec"), teal.devel::datanames_input(strata), "ADSL"),
                           strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
                           x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
                           y = choices_selected(
@@ -289,7 +289,7 @@ tm_g_lineplot <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -299,7 +299,7 @@ tm_g_lineplot <- function(label,
 ui_g_lineplot <- function(id, ...) {
 
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$strata,
     a$paramcd,
     a$x,
@@ -309,35 +309,35 @@ ui_g_lineplot <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
-    output = white_small_well(
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      plot_with_settings_ui(
+      teal.devel::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
+      teal.devel::data_extract_ui(
         id = ns("param"),
         label = "Select Biomarker",
         data_extract_spec = a$param,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("strata"),
         label = "Select Treatment Variable",
         data_extract_spec = a$strata,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("y"),
         label = "Analysis Variable",
         data_extract_spec = a$y,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("x"),
         label = "Time Variable",
         data_extract_spec = a$x,
@@ -370,8 +370,8 @@ ui_g_lineplot <- function(id, ...) {
         "Include screening visit",
         value = TRUE
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           optionalSelectInput(
             ns("conf_level"),
@@ -403,13 +403,13 @@ ui_g_lineplot <- function(id, ...) {
             ),
             selected = "pl"
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("y_unit"),
             label = "Analysis Unit Variable",
             data_extract_spec = a$y_unit,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("paramcd"),
             label = "Parameter Code Variable",
             data_extract_spec = a$paramcd,
@@ -417,8 +417,8 @@ ui_g_lineplot <- function(id, ...) {
           )
         )
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           optionalSliderInputValMinMax(
             ns("table_font_size"),
@@ -443,7 +443,7 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -471,9 +471,9 @@ srv_g_lineplot <- function(input,
                            ggplot2_args) {
 
   stopifnot(is_cdisc_data(datasets))
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
     merge_function = "dplyr::inner_join"
@@ -506,7 +506,7 @@ srv_g_lineplot <- function(input,
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
 
     validate(need(
       input$conf_level > 0 && input$conf_level < 1,
@@ -523,13 +523,13 @@ srv_g_lineplot <- function(input,
 
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 2)
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+    teal.devel::validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
     if (utils.nest::is_empty(whiskers_selected) | is.null(input$interval)) {
@@ -559,17 +559,17 @@ srv_g_lineplot <- function(input,
       table_font_size = input$table_font_size,
       ggplot2_args = ggplot2_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   line_plot <- reactive({
     call_preparation()
-    chunks_safe_eval()
+    teal.devel::chunks_safe_eval()
   })
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = line_plot,
     height = plot_height,
@@ -577,10 +577,10 @@ srv_g_lineplot <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(strata, paramcd, y, x, y_unit, param)
     ),
     modal_title = label

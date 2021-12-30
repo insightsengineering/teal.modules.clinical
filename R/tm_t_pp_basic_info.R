@@ -9,7 +9,7 @@ template_basic_info <- function(dataname = "ANL",
                                 vars) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
-    is_character_vector(vars)
+    utils.nest::is_character_vector(vars)
   )
   y <- list()
   y$table <- list()
@@ -97,7 +97,9 @@ tm_t_pp_basic_info <- function(label,
   )
 
   args <- as.list(environment())
-  data_extract_list <- list(vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname,  multiple = TRUE)))
+  data_extract_list <- list(
+    vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname,  multiple = TRUE))
+  )
 
   module(
     label = label,
@@ -118,31 +120,31 @@ tm_t_pp_basic_info <- function(label,
 
 ui_t_basic_info <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(ui_args$vars)
+  is_single_dataset_value <- teal.devel::is_single_dataset(ui_args$vars)
 
   ns <- NS(id)
-  standard_layout(
+  teal.devel::standard_layout(
     output = div(
-      get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
+      teal.devel::get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c("vars")]),
+      teal.devel::datanames_input(ui_args[c("vars")]),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("vars"),
         label = "Select variable:",
         data_extract_spec = ui_args$vars,
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -159,7 +161,7 @@ srv_t_basic_info <- function(input,
                              label) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -183,7 +185,7 @@ srv_t_basic_info <- function(input,
   )
 
   # Basic Info tab ----
-  binf_merged_data <- data_merge_module(
+  binf_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(vars = vars),
     merge_function = "dplyr::left_join"
@@ -198,11 +200,11 @@ srv_t_basic_info <- function(input,
       )
     )
 
-    call_stack <- chunks$new()
+    call_stack <- teal.devel::chunks$new()
     call_stack_push <- function(...) {
-      chunks_push(..., chunks = call_stack)
+      teal.devel::chunks_push(..., chunks = call_stack)
     }
-    chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+    teal.devel::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
 
     call_stack_push(substitute(
       expr = {
@@ -218,23 +220,23 @@ srv_t_basic_info <- function(input,
       vars = input[[extract_input("vars", dataname)]]
     )
     lapply(my_calls, call_stack_push)
-    chunks_safe_eval(chunks = call_stack)
+    teal.devel::chunks_safe_eval(chunks = call_stack)
     call_stack
   })
 
   output$basic_info_table <- DT::renderDataTable({
-    chunks_reset()
-    chunks_push_chunks(basic_info_call())
-    chunks_get_var("result")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(basic_info_call())
+    teal.devel::chunks_get_var("result")
     },
     options = list(pageLength = input$basic_info_table_rows)
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(vars)),
+    datanames = teal.devel::get_extract_datanames(list(vars)),
     modal_title = label
   )
 }

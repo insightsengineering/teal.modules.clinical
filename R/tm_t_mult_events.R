@@ -72,7 +72,7 @@ template_mult_events <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    substitute_names(
+    utils.nest::substitute_names(
       expr = anl <- anl %>%
         dplyr::mutate(seq_var = as.factor(seq_var)),
       names = list(
@@ -92,8 +92,8 @@ template_mult_events <- function(dataname,
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -317,7 +317,7 @@ template_mult_events <- function(dataname,
 #' }
 tm_t_mult_events <- function(label, # nolint
                              dataname,
-                             parentname = ifelse(inherits(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                             parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                              arm_var,
                              seq_var,
                              hlt,
@@ -371,7 +371,7 @@ tm_t_mult_events <- function(label, # nolint
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -379,36 +379,36 @@ tm_t_mult_events <- function(label, # nolint
 ui_t_mult_events_byterm <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
+  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
 
-  standard_layout(
-    output = white_small_well(
-      table_with_settings_ui(ns("table"))
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
+      teal.devel::table_with_settings_ui(ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
@@ -417,10 +417,10 @@ ui_t_mult_events_byterm <- function(id, ...) {
           )
         )
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional Variables Info",
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("seq_var"),
             label = "Analysis Sequence Number",
             data_extract_spec = a$seq_var,
@@ -429,7 +429,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -452,9 +452,9 @@ srv_t_mult_events_byterm <- function(input,
                                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     list(
       arm_var = arm_var,
       seq_var = seq_var,
@@ -464,14 +464,14 @@ srv_t_mult_events_byterm <- function(input,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
@@ -499,7 +499,7 @@ srv_t_mult_events_byterm <- function(input,
     )
 
     # validate inputs
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
@@ -512,14 +512,14 @@ srv_t_mult_events_byterm <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     input_hlt <- anl_selectors()$hlt()$select_ordered
     input_llt <- as.vector(anl_m$columns_source$llt)
@@ -536,28 +536,28 @@ srv_t_mult_events_byterm <- function(input,
       drop_arm_levels = input$drop_arm_levels,
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
+    datanames = teal.devel::get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
     modal_title = "Event Table",
     code_header = label
   )

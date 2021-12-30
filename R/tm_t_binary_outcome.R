@@ -98,7 +98,7 @@ template_binary_outcome <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    substitute_names(
+    utils.nest::substitute_names(
       expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
         dplyr::mutate(aval = factor(aval_var, levels = responder_val)),
       names = list(
@@ -150,10 +150,10 @@ template_binary_outcome <- function(dataname,
     paste("Table of", paramcd, "for", responder_val, "Responders")
   }
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = basic_table_args(title = table_title)
+      module_table = teal.devel::basic_table_args(title = table_title)
     )
   )
 
@@ -447,7 +447,7 @@ tm_t_binary_outcome <- function(label,
                                 dataname,
                                 parentname = ifelse(
                                   test = inherits(arm_var, "data_extract_spec"),
-                                  yes = datanames_input(arm_var),
+                                  yes = teal.devel::datanames_input(arm_var),
                                   no = "ADSL"
                                 ),
                                 arm_var,
@@ -518,13 +518,13 @@ tm_t_binary_outcome <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 ui_t_binary_outcome <- function(id, ...) {
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$paramcd,
     a$arm_var,
     a$aval_var,
@@ -532,12 +532,12 @@ ui_t_binary_outcome <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Parameter",
         data_extract_spec = a$paramcd,
@@ -550,7 +550,7 @@ ui_t_binary_outcome <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -592,8 +592,8 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        panel_group(
-          panel_item(
+        teal.devel::panel_group(
+          teal.devel::panel_item(
             "Unstratified analysis settings",
             optionalSelectInput(
               ns("u_diff_ci"),
@@ -626,10 +626,10 @@ ui_t_binary_outcome <- function(id, ...) {
             )
           )
         ),
-        panel_group(
-          panel_item(
+        teal.devel::panel_group(
+          teal.devel::panel_item(
             "Stratified analysis settings",
-            data_extract_ui(
+            teal.devel::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",
               data_extract_spec = a$strata_var,
@@ -663,7 +663,7 @@ ui_t_binary_outcome <- function(id, ...) {
         condition = paste0("!input['", ns("compare_arms"), "']"),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
-      panel_item(
+      teal.devel::panel_item(
         "Additional table settings",
         optionalSelectInput(
           inputId = ns("prop_ci_method"),
@@ -695,14 +695,14 @@ ui_t_binary_outcome <- function(id, ...) {
           size = "mini"
         )
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -727,11 +727,11 @@ srv_t_binary_outcome <- function(input,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
@@ -743,13 +743,13 @@ srv_t_binary_outcome <- function(input,
     on_off = reactive(input$compare_arms)
   )
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
@@ -806,9 +806,9 @@ srv_t_binary_outcome <- function(input,
       validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
 
-    validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+    teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
     validate(
       if (length(input_strata_var) >= 1L) {
@@ -861,20 +861,20 @@ srv_t_binary_outcome <- function(input,
 
   call_preparation <- reactive({
     validate_check()
-    chunks_reset()
+    teal.devel::chunks_reset()
 
     anl_m <- anl_merged()
     input_aval_var <- as.vector(anl_m$columns_source$aval_var)
     req(input$responders %in% anl_m$data()[[input_aval_var]])
 
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
-    anl <- chunks_get_var("ANL") # nolint
+    anl <- teal.devel::chunks_get_var("ANL") # nolint
     input_strata_var <- as.vector(anl_m$columns_source$strata_var)
 
     my_calls <- template_binary_outcome(
@@ -908,28 +908,28 @@ srv_t_binary_outcome <- function(input,
       add_total = input$add_total,
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, aval_var, strata_var)
     ),
     modal_title = "Binary Outcome",

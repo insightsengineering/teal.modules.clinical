@@ -284,7 +284,7 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
     ),
     table = quote({
       all_zero <- function(tr) {
-        if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+        if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow"))
           return(FALSE)
         rvs <- unlist(unname(row_values(tr)))
         all(rvs == 0)
@@ -294,5 +294,5 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
       result
     })
   )
-  testthat::expect_equal(result, expected)
+  testthat::expect_equal(result$table, expected$table)
 })

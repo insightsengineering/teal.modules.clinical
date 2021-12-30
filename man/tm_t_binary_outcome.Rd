@@ -10,8 +10,8 @@ table, with the option to match the STREAM template \code{RSPT01}.}
 tm_t_binary_outcome(
   label,
   dataname,
-  parentname = ifelse(test = is(arm_var, "data_extract_spec"), yes =
-    datanames_input(arm_var), no = "ADSL"),
+  parentname = ifelse(test = inherits(arm_var, "data_extract_spec"), yes =
+    teal.devel::datanames_input(arm_var), no = "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
