@@ -265,8 +265,8 @@ template_shift_by_grade <- function(parentname,
     substitute(
       dataname <- var_relabel(
         dataname,
-        PARAMCD = var_labels(dataname)[[paramcd]],
-        AVISIT = var_labels(dataname)[[visit_var]],
+        PARAMCD = rtables::var_labels(dataname)[[paramcd]],
+        AVISIT = rtables::var_labels(dataname)[[visit_var]],
         ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       ),
@@ -296,25 +296,25 @@ template_shift_by_grade <- function(parentname,
     if (add_total) {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(
+          rtables::split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
-          add_colcounts(),
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(var = arm_var) %>%
-          add_colcounts(),
+          rtables::split_cols_by(var = arm_var) %>%
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
   )
 
   split_label <- substitute(
-    expr = var_labels(dataname)[[paramcd]],
+    expr = rtables::var_labels(dataname)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -324,7 +324,7 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by(
+      expr = rtables::split_rows_by(
         var = paramcd,
         split_fun = split_fun,
         label_pos = "topleft",
@@ -339,7 +339,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = var_labels(dataname)[[visit_var]],
+      expr = rtables::var_labels(dataname)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -349,7 +349,7 @@ template_shift_by_grade <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(
+        expr = rtables::split_rows_by(
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
@@ -370,7 +370,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = var_labels(dataname)[[by_var_gp]],
+    expr = rtables::var_labels(dataname)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp
@@ -379,7 +379,7 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by(
+      expr = rtables::split_rows_by(
         var = by_var_gp,
         split_fun = split_fun,
         label_pos = "topleft",
@@ -437,8 +437,8 @@ template_shift_by_grade <- function(parentname,
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
+        rtables::prune_table()
       result
     },
     env = list(parent = as.name(parentname))

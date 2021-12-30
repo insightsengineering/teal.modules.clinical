@@ -26,8 +26,8 @@ testthat::test_that("template_summary generates correct expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
         summarize_vars(
           vars = c("RACE", "COUNTRY", "AGE"),
           show_labels = "visible",
@@ -38,7 +38,7 @@ testthat::test_that("template_summary generates correct expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -72,9 +72,9 @@ testthat::test_that("template_summary can generate customized table", {
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARMCD") %>%
-        add_overall_col("All Patients") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ARMCD") %>%
+        rtables::add_overall_col("All Patients") %>%
+        rtables::add_colcounts() %>%
         summarize_vars(
           vars = "RACE",
           var_labels = c(RACE = "Race"),
@@ -86,7 +86,7 @@ testthat::test_that("template_summary can generate customized table", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -125,9 +125,9 @@ testthat::test_that("template_summary generates correct expressions for multiple
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
+        rtables::add_colcounts() %>%
         summarize_vars(
           vars = c("RACE", "COUNTRY", "AGE"),
           show_labels = "visible",
@@ -138,7 +138,7 @@ testthat::test_that("template_summary generates correct expressions for multiple
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -177,10 +177,10 @@ testthat::test_that("template_summary generates correct expressions for multiple
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
-        add_overall_col("All Patients") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
+        rtables::add_overall_col("All Patients") %>%
+        rtables::add_colcounts() %>%
         summarize_vars(
           vars = c("RACE", "COUNTRY", "AGE"),
           show_labels = "visible",
@@ -191,7 +191,7 @@ testthat::test_that("template_summary generates correct expressions for multiple
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -231,9 +231,9 @@ testthat::test_that("template_summary generates correct expressions for customiz
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
+        rtables::add_colcounts() %>%
         summarize_vars(
           vars = c("RACE", "COUNTRY", "AGE"),
           show_labels = "visible",
@@ -244,7 +244,7 @@ testthat::test_that("template_summary generates correct expressions for customiz
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )

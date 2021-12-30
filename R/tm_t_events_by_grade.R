@@ -104,7 +104,7 @@ template_events_by_grade <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(arm_var),
+      expr = rtables::split_cols_by(arm_var),
       env = list(arm_var = arm_var)
     )
   )
@@ -113,7 +113,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -125,19 +125,19 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
+        expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             term_var,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[term_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[term_var], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = id,
@@ -159,32 +159,32 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
+        expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             hlt,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[hlt], fill = TRUE)
+            split_label = rtables::var_labels(dataname[hlt], fill = TRUE)
           ) %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             llt,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[llt], fill = TRUE)
+            split_label = rtables::var_labels(dataname[llt], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = id,
@@ -212,7 +212,7 @@ template_events_by_grade <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
@@ -272,7 +272,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -476,7 +476,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
+        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
         env = list(arm_var = arm_var)
       )
     )
@@ -484,7 +484,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var),
+        expr = rtables::split_cols_by(var = arm_var),
         env = list(arm_var = arm_var)
       )
     )
@@ -503,7 +503,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group(llt)),
+        expr = rtables::split_rows_by(hlt, child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group(llt)),
         env = list(hlt = hlt, llt = llt)
       )
     )
@@ -568,7 +568,7 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Full table.
-  y$table <- quote(result <- build_table(lyt = lyt, df = anl, col_counts = col_counts))
+  y$table <- quote(result <- rtables::build_table(lyt = lyt, df = anl, col_counts = col_counts))
 
   # Start sorting table.
   sort_list <- list()
@@ -670,29 +670,29 @@ template_events_col_by_grade <- function(dataname,
   prune_pipe <- add_expr(
     prune_pipe,
     quote(
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun)
     )
   )
 
   if (prune_freq > 0 & prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
     )
   } else if (prune_freq > 0 & prune_diff == 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_any)))
     )
   } else if (prune_freq == 0 & prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_diff)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_diff)))
     )
   } else {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table())
+      quote(rtables::prune_table())
     )
   }
   prune_pipe <- pipe_expr(prune_pipe)

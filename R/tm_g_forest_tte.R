@@ -145,7 +145,7 @@ template_forest_tte <- function(dataname = "ANL",
   # Table output.
   y$table <- substitute(
     expr = {
-      result <- basic_table() %>%
+      result <- rtables::basic_table() %>%
         tabulate_survival_subgroups(
           df,
           vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),

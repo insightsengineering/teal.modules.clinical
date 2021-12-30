@@ -64,8 +64,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
         )
       anl <- var_relabel(
         anl,
-        PARAMCD = var_labels(anl)[["PARAMCD"]],
-        AVISIT = var_labels(anl)[["AVISIT"]],
+        PARAMCD = rtables::var_labels(anl)[["PARAMCD"]],
+        AVISIT = rtables::var_labels(anl)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
@@ -73,28 +73,28 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           var = "PARAMCD", split_fun = split_fun, label_pos = "topleft",
-          split_label = var_labels(anl)[["PARAMCD"]]
+          split_label = rtables::var_labels(anl)[["PARAMCD"]]
           ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AVISIT", split_fun = split_fun, label_pos = "topleft",
-          split_label = var_labels(anl)[["AVISIT"]]
+          split_label = rtables::var_labels(anl)[["AVISIT"]]
           ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           var = "ATOXGR_GP", split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["ATOXGR_GP"]]
+          split_label = rtables::var_labels(anl)[["ATOXGR_GP"]]
           ) %>%
         summarize_num_patients(var = "USUBJID", .stats = c("unique_count")) %>%
         count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
@@ -170,8 +170,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
       )
       anl <- var_relabel(
         anl,
-        PARAMCD = var_labels(anl)[["PARAMCD"]],
-        AVISIT = var_labels(anl)[["AVISIT"]],
+        PARAMCD = rtables::var_labels(anl)[["PARAMCD"]],
+        AVISIT = rtables::var_labels(anl)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
@@ -179,28 +179,28 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           var = "PARAMCD", split_fun = split_fun, label_pos = "topleft",
-          split_label = var_labels(anl)[["PARAMCD"]]
+          split_label = rtables::var_labels(anl)[["PARAMCD"]]
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AVISIT", split_fun = split_fun, label_pos = "topleft",
-          split_label = var_labels(anl)[["AVISIT"]]
+          split_label = rtables::var_labels(anl)[["AVISIT"]]
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           var = "ATOXGR_GP", split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["ATOXGR_GP"]]
+          split_label = rtables::var_labels(anl)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "MYUSUBJID", .stats = c("unique_count")) %>%
         count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )

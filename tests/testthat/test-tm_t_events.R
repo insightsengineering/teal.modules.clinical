@@ -24,23 +24,23 @@ testthat::test_that("template_events generates correct expressions", {
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -52,10 +52,10 @@ testthat::test_that("template_events generates correct expressions", {
         append_varlabels(adae, "AEDECOD", indent = 1L)
       ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -103,24 +103,24 @@ testthat::test_that("template_events generates correct expressions for nested co
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -132,10 +132,10 @@ testthat::test_that("template_events generates correct expressions for nested co
         append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -178,8 +178,8 @@ testthat::test_that("template_events can generate customized table", {
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
@@ -190,10 +190,10 @@ testthat::test_that("template_events can generate customized table", {
         append_varlabels(adcm, "CMDECOD")
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -234,23 +234,23 @@ testthat::test_that("template_events can generate customized table with alphabet
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -262,10 +262,10 @@ testthat::test_that("template_events can generate customized table with alphabet
         append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result
@@ -304,23 +304,23 @@ testthat::test_that("template_events can generate customized table with pruning"
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -332,14 +332,14 @@ testthat::test_that("template_events can generate customized table with pruning"
         append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
-      pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -354,7 +354,7 @@ testthat::test_that("template_events can generate customized table with pruning"
       criteria_fun <- function(tr) {
         inherits(tr, "ContentRow")
       }
-      pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+      pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
       pruned_and_sorted_result
     })
   )
@@ -394,24 +394,24 @@ testthat::test_that("template_events can generate customized table with pruning 
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
-        split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
+        rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(unique = "Total number of patients with at least one event",
                       nonunique = "Overall total number of events")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -423,14 +423,14 @@ testthat::test_that("template_events can generate customized table with pruning 
         append_varlabels(adae, "AEDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     prune = quote({
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
-      pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+      pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -445,7 +445,7 @@ testthat::test_that("template_events can generate customized table with pruning 
       criteria_fun <- function(tr) {
         inherits(tr, "ContentRow")
       }
-      pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+      pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
       pruned_and_sorted_result
     })
   )

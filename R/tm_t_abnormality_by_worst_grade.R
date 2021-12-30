@@ -45,7 +45,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl_labels <- var_labels(df),
+      expr = anl_labels <- rtables::var_labels(df),
       env = list(
         df = as.name(dataname)
       )
@@ -92,7 +92,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
   data_list <- add_expr(
     data_list,
     quote(
-      expr = var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      expr = rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       )
     )
 
@@ -140,18 +140,18 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     if (add_total) {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(
+          rtables::split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
-          add_colcounts(),
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(var = arm_var) %>%
-          add_colcounts(),
+          rtables::split_cols_by(var = arm_var) %>%
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
@@ -160,7 +160,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by(
+      expr = rtables::split_rows_by(
         paramcd,
         label_pos = "topleft",
         split_label = obj_label(anl[[paramcd]])
@@ -170,7 +170,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
           required = "GRADE_ANL",
           .stats = "unique_count"
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
@@ -180,7 +180,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
           var = "GRADE_ANL",
           variables = list(id = id_var, param  = paramcd, grade_dir = "GRADE_DIR")
         ) %>%
-        append_topleft("    Highest Grade"),
+        rtables::append_topleft("    Highest Grade"),
       env = list(
         paramcd = paramcd,
         id_var = id_var
@@ -195,7 +195,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(parent = as.name(parentname))

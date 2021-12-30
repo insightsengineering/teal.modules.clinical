@@ -149,7 +149,7 @@ template_forest_rsp <- function(dataname = "ANL",
 
   # Table output.
   y$table <- quote(
-    result <- basic_table() %>%
+    result <- rtables::basic_table() %>%
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 

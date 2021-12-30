@@ -28,19 +28,19 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table(title = "Table of FKSI-ALL and BKWBXYZ parameters at visit  for CHG") %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -49,7 +49,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -89,19 +89,19 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table(title = "Table of A and B parameters at visit  for CHG") %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -110,7 +110,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -151,19 +151,19 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table(title = "Table of A and B parameters at visit  for CHG") %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["PARAMCD"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -172,7 +172,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )
@@ -211,15 +211,15 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table(title = "Table of MYFAVORITE parameter at visit  for CHG") %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adqs["AVISIT"], fill = TRUE)
+          split_label = rtables::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
-        append_topleft(paste0("  ", "MYFAVORITE")) %>%
+        rtables::append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(
           vars = "CHG",
           variables = list(arm = "ARMCD", covariates = NULL),
@@ -238,7 +238,7 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = adqs, alt_counts_df = adsl)
       result
     })
   )

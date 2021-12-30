@@ -86,9 +86,9 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
-          split_cols_by(aval_var) %>%
-          split_rows_by(
+          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          rtables::split_cols_by(aval_var) %>%
+          rtables::split_rows_by(
             arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE),
             label_pos = "topleft",
@@ -113,9 +113,9 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
-          split_cols_by(aval_var) %>%
-          split_rows_by(
+          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          rtables::split_cols_by(aval_var) %>%
+          rtables::split_rows_by(
             arm_var,
             split_fun = drop_split_levels,
             label_pos = "topleft",
@@ -145,7 +145,7 @@ template_shift_by_arm <- function(dataname,
   # Full table.
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = dataname)
+      result <- rtables::build_table(lyt = lyt, df = dataname)
       result
     },
     env = list(dataname = as.name(dataname))

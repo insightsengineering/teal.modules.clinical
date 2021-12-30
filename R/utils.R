@@ -72,12 +72,12 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' @export
 #' @examples
 #' expr <- quote(
-#'   basic_table() %>%
-#'   split_cols_by(var = "ARMCD") %>%
+#'   rtables::basic_table() %>%
+#'   rtables::split_cols_by(var = "ARMCD") %>%
 #'   test_proportion_diff(
 #'     vars = "rsp", method = "cmh", variables = list(strata = "strat")
 #'   ) %>%
-#'   build_table(df = dta)
+#'   rtables::build_table(df = dta)
 #' )
 #'
 #' teal.modules.clinical:::h_concat_expr(expr)
@@ -129,12 +129,12 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'
 #' @examples
 #' expr <- quote(
-#'   basic_table() %>%
-#'     split_cols_by(var = "ARMCD") %>%
+#'   rtables::basic_table() %>%
+#'     rtables::split_cols_by(var = "ARMCD") %>%
 #'     test_proportion_diff(
 #'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
 #'     ) %>%
-#'     build_table(df = dta)
+#'     rtables::build_table(df = dta)
 #' )
 #'
 #' teal.modules.clinical:::styled_expr(expr)
@@ -164,9 +164,9 @@ styled_expr <- function(expr) { # nolint nousage
 #' @examples
 #'
 #' lyt <- list()
-#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
+#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(rtables::basic_table()))
 #' lyt <- teal.modules.clinical:::add_expr(
-#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+#'   lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 #' )
 #' lyt <- teal.modules.clinical:::add_expr(
 #'   lyt,
@@ -176,7 +176,7 @@ styled_expr <- function(expr) { # nolint nousage
 #'     )
 #'   )
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
+#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
 #' teal.modules.clinical:::pipe_expr(lyt)
 #'
 add_expr <- function(expr_ls, new_expr) {
@@ -429,7 +429,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
     )
   } else if (compare & !combine) {
     substitute(
-      expr = split_cols_by(
+      expr = rtables::split_cols_by(
         var = arm_var,
         ref_group = ref
       ),
@@ -440,7 +440,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
     )
   } else if (!compare) {
     substitute(
-      expr = split_cols_by(var = arm_var),
+      expr = rtables::split_cols_by(var = arm_var),
       env = list(arm_var = arm_var)
     )
   }

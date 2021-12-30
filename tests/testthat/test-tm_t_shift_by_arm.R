@@ -20,9 +20,9 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
 
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = drop_split_levels,
           label_pos = "topleft",
@@ -33,7 +33,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )
@@ -63,9 +63,9 @@ testthat::test_that("template_shift_by_arm generates correct expressions with ad
 
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = add_overall_level("All Patients", first = FALSE),
           label_pos = "topleft",
@@ -76,7 +76,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with ad
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )
@@ -106,9 +106,9 @@ testthat::test_that("template_shift_by_arm generates correct expressions with na
 
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = drop_split_levels,
           label_pos = "topleft",
@@ -119,7 +119,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with na
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )

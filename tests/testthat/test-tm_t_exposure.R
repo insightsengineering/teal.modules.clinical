@@ -20,8 +20,8 @@ testthat::test_that("template_exposure generates correct expressions with defaul
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("SEX") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
           var = "AVAL",
           col_split = TRUE,
@@ -30,16 +30,16 @@ testthat::test_that("template_exposure generates correct expressions with defaul
             sum_exposure = paste("Sum of", "TDURD", sprintf("(%s)", "Days"))
             )
           ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(adex["RACE"], fill = TRUE),
+          split_label = rtables::var_labels(adex["RACE"], fill = TRUE),
           nested = FALSE) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -68,8 +68,8 @@ testthat::test_that("template_exposure generates correct expressions with custom
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("SEX") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
           var = "myAVAL",
           col_split = TRUE,
@@ -78,16 +78,16 @@ testthat::test_that("template_exposure generates correct expressions with custom
             sum_exposure = paste("Sum of", "myTDURD", sprintf("(%s)", "Days"))
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "myRACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(myadex["myRACE"], fill = TRUE),
+          split_label = rtables::var_labels(myadex["myRACE"], fill = TRUE),
           nested = FALSE) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
       result
     })
   )

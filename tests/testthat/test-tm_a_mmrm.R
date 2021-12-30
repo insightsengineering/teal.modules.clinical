@@ -108,12 +108,12 @@ testthat::test_that("template_mmrm_tables works as expected", {
   expected <- list(
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        split_rows_by("AVISIT") %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by("AVISIT") %>%
         append_varlabels(ANL, "AVISIT") %>%
         summarize_lsmeans(show_relative = "increase") %>%
-        append_topleft(paste0("  ", "ALBUMIN"))
+        rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")
@@ -137,11 +137,11 @@ testthat::test_that("template_mmrm_tables works as expected when arm is not cons
   expected <- list(
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_rows_by("AVISIT") %>%
+        rtables::split_rows_by("AVISIT") %>%
         summarize_lsmeans(
           arms = FALSE
         ) %>%
-        append_topleft(paste0("  ", "ALBUMIN"))
+        rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")

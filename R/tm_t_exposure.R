@@ -83,7 +83,7 @@ template_exposure <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_cols_by(col_by_var, split_fun = add_overall_level("Total", first = FALSE)),
+          rtables::split_cols_by(col_by_var, split_fun = add_overall_level("Total", first = FALSE)),
           env = list(
             col_by_var = col_by_var
           )
@@ -93,7 +93,7 @@ template_exposure <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_cols_by(col_by_var),
+          rtables::split_cols_by(col_by_var),
           env = list(
             col_by_var = col_by_var
           )
@@ -104,7 +104,7 @@ template_exposure <- function(parentname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   layout_list <- add_expr(
@@ -126,7 +126,7 @@ template_exposure <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = var_labels(dataname[row_by_var], fill = TRUE),
+    expr = rtables::var_labels(dataname[row_by_var], fill = TRUE),
     env = list(
       dataname = as.name(dataname),
       row_by_var = row_by_var
@@ -137,7 +137,7 @@ template_exposure <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(
+        rtables::split_rows_by(
           row_by_var, label_pos = "topleft", split_fun = split_fun, split_label = split_label, nested = FALSE
           ),
         env = list(
@@ -150,7 +150,7 @@ template_exposure <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(
+        rtables::split_rows_by(
           row_by_var, label_pos = "topleft", split_label = split_label, nested = FALSE
         ),
         env = list(
@@ -180,7 +180,7 @@ template_exposure <- function(parentname,
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(parent = as.name(parentname))
@@ -215,7 +215,7 @@ template_exposure <- function(parentname,
 #' adex <- synthetic_cdisc_data("latest")$adex
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
-#' labels <- var_labels(adex)
+#' labels <- rtables::var_labels(adex)
 #' adex <- adex %>%
 #'  distinct(USUBJID, .keep_all = TRUE) %>%
 #'   mutate(PARAMCD = "TDURD",
@@ -223,7 +223,7 @@ template_exposure <- function(parentname,
 #'          AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
 #'          AVALU = "Days") %>%
 #'          bind_rows(adex)
-#'  var_labels(adex) <- labels
+#'  rtables::var_labels(adex) <- labels
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -231,7 +231,7 @@ template_exposure <- function(parentname,
 #'     cdisc_dataset("ADEX", adex,
 #'       code = 'set.seed(1, kind = "Mersenne-Twister")
 #'       ADEX <- synthetic_cdisc_data("latest")$adex
-#'       labels <- var_labels(ADEX)
+#'       labels <- rtables::var_labels(ADEX)
 #'       ADEX <- ADEX %>%
 #'        distinct(USUBJID, .keep_all = TRUE) %>%
 #'        mutate(PARAMCD = "TDURD",
@@ -239,7 +239,7 @@ template_exposure <- function(parentname,
 #'               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
 #'               AVALU = "Days") %>%
 #'               bind_rows(ADEX)
-#'       var_labels(ADEX) <- labels'  #nolint
+#'       rtables::var_labels(ADEX) <- labels'  #nolint
 #'     ),
 #'     check = TRUE
 #'   ),

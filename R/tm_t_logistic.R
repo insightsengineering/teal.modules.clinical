@@ -57,7 +57,7 @@ template_logistic <- function(dataname,
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- var_labels(anl[arm_var]),
+      expr = arm_var_lab <- rtables::var_labels(anl[arm_var]),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -185,8 +185,8 @@ template_logistic <- function(dataname,
     expr = {
       result <- expr_basic_table_args %>%
         summarize_logistic(conf_level = conf_level) %>%
-        append_topleft(topleft) %>%
-        build_table(df = mod)
+        rtables::append_topleft(topleft) %>%
+        rtables::build_table(df = mod)
       result
     },
     env = list(

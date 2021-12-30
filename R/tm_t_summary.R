@@ -96,7 +96,7 @@ template_summary <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(arm_var),
+      expr = rtables::split_cols_by(arm_var),
       env = list(arm_var = arm_var[[1]])
     )
   )
@@ -105,12 +105,12 @@ template_summary <- function(dataname,
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
         substitute(
-          expr = split_cols_by(nested_col),
+          expr = rtables::split_cols_by(nested_col),
           env = list(nested_col = arm_var[[2]])
         )
       }
@@ -119,12 +119,12 @@ template_summary <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(add_overall_col("All Patients"))
+      quote(rtables::add_overall_col("All Patients"))
     )
   }
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   env_sum_vars <- list(
@@ -177,7 +177,7 @@ template_summary <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(parent = as.name(parentname))

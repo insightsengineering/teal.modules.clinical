@@ -128,7 +128,7 @@ template_events <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(var = arm_var),
+      expr = rtables::split_cols_by(var = arm_var),
       env = list(arm_var = arm_var[[1]])
     )
   )
@@ -137,12 +137,12 @@ template_events <- function(dataname,
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = split_cols_by(nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
         substitute(
-          expr = split_cols_by(nested_col),
+          expr = rtables::split_cols_by(nested_col),
           env = list(nested_col = arm_var[[2]])
         )
       }
@@ -151,14 +151,14 @@ template_events <- function(dataname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -205,14 +205,14 @@ template_events <- function(dataname,
       layout_list,
       substitute(
         expr =
-          split_rows_by(
+          rtables::split_rows_by(
             hlt,
             child_labels = "visible",
             nested = FALSE,
             indent_mod = -1L,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = var_labels(dataname[hlt], fill = TRUE)
+            split_label = rtables::var_labels(dataname[hlt], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = "USUBJID",
@@ -241,7 +241,7 @@ template_events <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
@@ -250,7 +250,7 @@ template_events <- function(dataname,
   prune_list <- add_expr(
     prune_list,
     quote(
-      pruned_result <- result %>% prune_table()
+      pruned_result <- result %>% rtables::prune_table()
     )
   )
 
@@ -301,7 +301,7 @@ template_events <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% prune_table(keep_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
       )
     )
   }
@@ -341,7 +341,7 @@ template_events <- function(dataname,
       sort_list <- add_expr(
         sort_list,
         quote({
-          pruned_and_sorted_result <- trim_rows(pruned_result, criteria = criteria_fun)
+          pruned_and_sorted_result <- rtables::trim_rows(pruned_result, criteria = criteria_fun)
           pruned_and_sorted_result
         })
       )
@@ -412,7 +412,7 @@ template_events <- function(dataname,
         sort_list <- add_expr(
           sort_list,
           quote(
-            pruned_and_sorted_result <- trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+            pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
           )
         )
       }

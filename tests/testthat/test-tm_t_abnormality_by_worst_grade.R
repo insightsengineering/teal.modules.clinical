@@ -17,7 +17,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- var_labels(adlb)
+      anl_labels <- rtables::var_labels(adlb)
       anl <- adlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
@@ -32,7 +32,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
       ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -48,9 +48,9 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "PARAMCD",
           label_pos = "topleft",
           split_label = obj_label(anl[["PARAMCD"]])) %>%
@@ -58,7 +58,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
           var = "USUBJID",
           required = "GRADE_ANL",
           .stats = "unique_count") %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
@@ -72,10 +72,10 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             grade_dir = "GRADE_DIR"
           )
         ) %>%
-        append_topleft("    Highest Grade")
+        rtables::append_topleft("    Highest Grade")
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -99,7 +99,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- var_labels(myadlb)
+      anl_labels <- rtables::var_labels(myadlb)
       anl <- myadlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
@@ -114,7 +114,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
       ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       myadsl <- myadsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -130,9 +130,9 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "myPARAMCD",
           label_pos = "topleft",
           split_label = obj_label(anl[["myPARAMCD"]])) %>%
@@ -140,7 +140,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
           var = "USUBJID",
           required = "GRADE_ANL",
           .stats = "unique_count") %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
@@ -154,9 +154,9 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             grade_dir = "GRADE_DIR"
           )
         ) %>%
-        append_topleft("    Highest Grade")),
+        rtables::append_topleft("    Highest Grade")),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
       result
     })
   )

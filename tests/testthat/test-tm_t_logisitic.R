@@ -16,7 +16,7 @@ testthat::test_that("template_logistic generates correct expressions", {
   )
 
   expected <- list(
-    arm_lab = quote(arm_var_lab <- var_labels(ANL["ARMCD"])),
+    arm_lab = quote(arm_var_lab <- rtables::var_labels(ANL["ARMCD"])),
     data = quote({
     ANL <- ANL %>% #nolint
       dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -38,8 +38,8 @@ testthat::test_that("template_logistic generates correct expressions", {
     table = quote({
       result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
         summarize_logistic(conf_level = 0.95) %>%
-        append_topleft("BESRSPI") %>%
-        build_table(df = mod)
+        rtables::append_topleft("BESRSPI") %>%
+        rtables::build_table(df = mod)
       result
     })
   )
@@ -78,8 +78,8 @@ testthat::test_that("template_logistic generates correct expressions for no arm 
     table = quote({
       result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
         summarize_logistic(conf_level = 0.95) %>%
-        append_topleft("BESRSPI") %>%
-        build_table(df = mod)
+        rtables::append_topleft("BESRSPI") %>%
+        rtables::build_table(df = mod)
       result
     })
   )

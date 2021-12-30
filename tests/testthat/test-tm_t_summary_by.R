@@ -29,11 +29,11 @@ testthat::test_that("template_summary_by generates correct expressions", {
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -46,7 +46,7 @@ testthat::test_that("template_summary_by generates correct expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -84,11 +84,11 @@ testthat::test_that("template_summary_by generates correct expressions when `par
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -101,7 +101,7 @@ testthat::test_that("template_summary_by generates correct expressions when `par
         )
     ),
     table = quote({
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -154,25 +154,25 @@ testthat::test_that("template_summary_by generates correct expressions when `row
     ),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "SEX",
-          split_label = var_labels(adsl)[["SEX"]],
+          split_label = rtables::var_labels(adsl)[["SEX"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
-        summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
-        split_rows_by(
+        rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
+        rtables::split_rows_by(
           "COUNTRY",
-          split_label = var_labels(adsl)[["COUNTRY"]],
+          split_label = rtables::var_labels(adsl)[["COUNTRY"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
-        summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
+        rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -211,11 +211,11 @@ testthat::test_that("template_summary_by generates correct expressions for custo
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -228,7 +228,7 @@ testthat::test_that("template_summary_by generates correct expressions for custo
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -266,11 +266,11 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -289,8 +289,8 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
         rvs <- unlist(unname(row_values(tr)))
         all(rvs == 0)
       }
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        trim_rows(criteria = all_zero)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::trim_rows(criteria = all_zero)
       result
     })
   )

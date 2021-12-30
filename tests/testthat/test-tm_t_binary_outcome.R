@@ -30,8 +30,8 @@ testthat::test_that("template_binary_outcome generates standard expressions", {
       lyt <- rtables::basic_table(
           title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
         ) %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -63,7 +63,7 @@ testthat::test_that("template_binary_outcome generates standard expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
@@ -102,8 +102,8 @@ testthat::test_that("template_binary_outcome generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Table of BESRSPI for PR and SD Responders") %>%
-        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -130,7 +130,7 @@ testthat::test_that("template_binary_outcome generates right expressions with no
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -165,8 +165,8 @@ testthat::test_that("template_binary_outcome generates expression without arm co
       lyt <- rtables::basic_table(
         title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
         ) %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -175,7 +175,7 @@ testthat::test_that("template_binary_outcome generates expression without arm co
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -221,8 +221,8 @@ testthat::test_that("template_binary_outcome generates expression with non-defau
       lyt <- rtables::basic_table(
           title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
         ) %>%
-        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.8,
@@ -270,7 +270,7 @@ testthat::test_that("template_binary_outcome generates expression with non-defau
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -316,7 +316,7 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
         ) %>%
-        add_colcounts() %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -346,7 +346,7 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
@@ -363,9 +363,9 @@ testthat::test_that("split_col_expr prepare the right four possible expressions"
   )
   expected <- list(
     quote(split_cols_by_groups(var = "ARMCD", groups_list = groups, ref_group = names(groups)[1])),
-    quote(split_cols_by(var = "ARMCD", ref_group = "ARM C")),
-    quote(split_cols_by(var = "ARMCD")),
-    quote(split_cols_by(var = "ARMCD"))
+    quote(rtables::split_cols_by(var = "ARMCD", ref_group = "ARM C")),
+    quote(rtables::split_cols_by(var = "ARMCD")),
+    quote(rtables::split_cols_by(var = "ARMCD"))
   )
   testthat::expect_equal(result, expected)
 })
@@ -403,8 +403,8 @@ testthat::test_that("template_binary_outcome can combine refs", {
       lyt <- rtables::basic_table(
           title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
         ) %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -434,7 +434,7 @@ testthat::test_that("template_binary_outcome can combine refs", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )

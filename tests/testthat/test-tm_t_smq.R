@@ -32,9 +32,9 @@ testthat::test_that("template_smq generates correct expressions with default arg
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        split_cols_by(var = "SEX") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::split_cols_by(var = "SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique"),
@@ -42,14 +42,14 @@ testthat::test_that("template_smq generates correct expressions with default arg
             unique = "Total number of patients with at least one adverse event"
             )
           ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
           split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
@@ -61,7 +61,7 @@ testthat::test_that("template_smq generates correct expressions with default arg
         append_varlabels(anl, "AEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     }),
     sort = quote({
       sorted_result <- result %>%
@@ -70,9 +70,9 @@ testthat::test_that("template_smq generates correct expressions with default arg
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !inherits(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     })
   )
@@ -110,8 +110,8 @@ testthat::test_that("template_smq generates correct expressions with custom argu
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "myARMCD") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "myARMCD") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "myUSUBJID",
           .stats = c("unique"),
@@ -119,14 +119,14 @@ testthat::test_that("template_smq generates correct expressions with custom argu
             unique = "Total number of patients with at least one adverse event"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
           split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]) %>%
         summarize_num_patients(
           var = "myUSUBJID",
           .stats = c("unique", "nonunique"),
@@ -138,7 +138,7 @@ testthat::test_that("template_smq generates correct expressions with custom argu
         append_varlabels(anl, "myAEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
     }),
     sort = quote({
       sorted_result <- result %>%
@@ -147,9 +147,9 @@ testthat::test_that("template_smq generates correct expressions with custom argu
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !inherits(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     })
   )

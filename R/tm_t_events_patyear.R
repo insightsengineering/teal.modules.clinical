@@ -64,8 +64,8 @@ template_events_patyear <- function(
     layout_list,
     substitute(
       expr = expr_basic_table_args %>%
-        split_cols_by(var = arm_var) %>%
-        add_colcounts(),
+        rtables::split_cols_by(var = arm_var) %>%
+        rtables::add_colcounts(),
       env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
     )
   )
@@ -73,7 +73,7 @@ template_events_patyear <- function(
     layout_list <- add_expr(
       layout_list,
       substitute(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -108,7 +108,7 @@ template_events_patyear <- function(
   # table
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(parent = as.name(parentname))

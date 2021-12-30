@@ -161,7 +161,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_cols_by(
+        rtables::split_cols_by(
           var = arm_var,
           split_fun = add_overall_level("All Patients", first = FALSE)
         ),
@@ -185,13 +185,13 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = add_colcounts() %>%
+      expr = rtables::add_colcounts() %>%
         summarize_vars(
           "is_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients with event (%)")
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "EVNT1",
           split_label = "Earliest contributing event",
           split_fun = keep_split_levels("Patients with event (%)"),
@@ -199,8 +199,8 @@ template_tte <- function(dataname = "ANL",
           child_labels = "hidden",
           indent_mod = 1L,
         ) %>%
-        split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
-        summarize_row_groups(format = "xx") %>%
+        rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
+        rtables::summarize_row_groups(format = "xx") %>%
         summarize_vars(
           "is_not_event",
           .stats = "count_fraction",
@@ -332,7 +332,7 @@ template_tte <- function(dataname = "ANL",
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
       result
     },
     env = list(parentname = as.name(parentname))

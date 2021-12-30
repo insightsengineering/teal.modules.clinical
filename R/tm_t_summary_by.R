@@ -121,7 +121,7 @@ template_summary_by <- function(parentname,
     layout_list,
     if (add_total) {
       substitute(
-        expr = split_cols_by(
+        expr = rtables::split_cols_by(
           arm_var,
           split_fun = add_overall_level("All Patients", first = FALSE)
         ),
@@ -130,7 +130,7 @@ template_summary_by <- function(parentname,
     }
     else {
       substitute(
-        expr = split_cols_by(arm_var),
+        expr = rtables::split_cols_by(arm_var),
         env = list(arm_var = arm_var)
       )
     }
@@ -138,7 +138,7 @@ template_summary_by <- function(parentname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   if (denominator == "omit") {
@@ -165,7 +165,7 @@ template_summary_by <- function(parentname,
   for (by_var in by_vars) {
 
     split_label <- substitute(
-      expr = var_labels(dataname)[[by_var]],
+      expr = rtables::var_labels(dataname)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -175,7 +175,7 @@ template_summary_by <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(
+        rtables::split_rows_by(
           by_var,
           split_label = split_label,
           split_fun = split_fun,
@@ -192,7 +192,7 @@ template_summary_by <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = summarize_row_groups(var = id_var, cfun = cfun_unique),
+          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique),
           env = list(
             id_var = id_var
           )
@@ -290,7 +290,7 @@ template_summary_by <- function(parentname,
           rvs <- unlist(unname(row_values(tr)))
           all(rvs == 0)
         }
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows(criteria = all_zero)
+        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% rtables::trim_rows(criteria = all_zero)
         result
       },
       env = list(parent = as.name(parentname))
@@ -298,7 +298,7 @@ template_summary_by <- function(parentname,
   } else {
     y$table <- substitute(
       expr = {
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
         result
       },
       env = list(parent = as.name(parentname))

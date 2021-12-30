@@ -167,7 +167,7 @@ template_binary_outcome <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_cols_by(
+        rtables::split_cols_by(
           var = arm_var,
           split_fun = add_overall_level("All Patients", first = FALSE)
         ),
@@ -191,7 +191,7 @@ template_binary_outcome <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      add_colcounts() %>%
+      rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = conf_level,
@@ -337,7 +337,7 @@ template_binary_outcome <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
       result
     },
     env = list(parentname = as.name(parentname))

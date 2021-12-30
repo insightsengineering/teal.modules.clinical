@@ -114,7 +114,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
+        flag_var_anl_label <- rtables::var_labels(anl[, flag_var_anl]),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -124,7 +124,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),
+        flag_var_aesi_label <- rtables::var_labels(anl[, flag_var_aesi]),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )
@@ -150,19 +150,19 @@ template_events_summary <- function(anl_name,
   layout_parent_list <- list()
   layout_parent_list <- add_expr(
     layout_parent_list,
-    quote(basic_table())
+    quote(rtables::basic_table())
   )
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
-      expr = split_cols_by(arm_var) %>% add_colcounts(),
+      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
   if (add_total) {
     layout_parent_list <- add_expr(
       layout_parent_list,
-      quote(add_overall_col(label = "All Patients"))
+      quote(rtables::add_overall_col(label = "All Patients"))
     )
   }
   layout_parent_list <- add_expr(
@@ -197,7 +197,7 @@ template_events_summary <- function(anl_name,
   table_parent_list <- add_expr(
     table_parent_list,
     substitute(
-      expr = result_parent <- build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
+      expr = result_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -206,13 +206,13 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- list()
   layout_anl_list <- add_expr(
     layout_anl_list,
-    quote(basic_table())
+    quote(rtables::basic_table())
   )
 
   layout_anl_list <- add_expr(
     layout_anl_list,
     substitute(
-      expr = split_cols_by(arm_var) %>% add_colcounts(),
+      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
@@ -220,7 +220,7 @@ template_events_summary <- function(anl_name,
   if (add_total) {
     layout_anl_list <- add_expr(
       layout_anl_list,
-      quote(add_overall_col(label = "All Patients"))
+      quote(rtables::add_overall_col(label = "All Patients"))
     )
   }
 
@@ -251,7 +251,7 @@ template_events_summary <- function(anl_name,
   table_anl_list <- add_expr(
     table_anl_list,
     substitute(
-      expr = result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
+      expr = result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -387,7 +387,7 @@ template_events_summary <- function(anl_name,
   table_list <- add_expr(
     table_list,
     quote(
-      col_info(result_parent) <- col_info(result_anl)
+      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
     )
   )
 
@@ -405,7 +405,7 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        expr = result <- rbind(
+        expr = result <- rtables::rbind(
           result_anl[1:2, ],
           result_parent,
           result_anl[3:nrow(result_anl), ]
@@ -418,7 +418,7 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        result <- rbind(result_anl, result_parent)
+        result <- rtables::rbind(result_anl, result_parent)
       )
     )
   }

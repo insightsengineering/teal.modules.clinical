@@ -44,7 +44,7 @@ testthat::test_that("template_forest_tte generates correct expressions", {
         )
     }),
     table = quote({
-      result <- basic_table() %>%
+      result <- rtables::basic_table() %>%
         tabulate_survival_subgroups(
           df, vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
           time_unit = as.character(anl$AVALU[1])

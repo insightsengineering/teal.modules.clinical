@@ -105,8 +105,8 @@ template_mult_events <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(var = arm_var) %>%
-        add_colcounts(),
+      expr = rtables::split_cols_by(var = arm_var) %>%
+        rtables::add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
@@ -115,7 +115,7 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -176,14 +176,14 @@ template_mult_events <- function(dataname,
         layout_list,
         substitute(
           expr =
-            split_rows_by(
+            rtables::split_rows_by(
               hlt,
               child_labels = "visible",
               nested = nested,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = var_labels(dataname[hlt_new], fill = TRUE)
+              split_label = rtables::var_labels(dataname[hlt_new], fill = TRUE)
             ),
           env = list(
             hlt = hlt_new,
@@ -230,7 +230,7 @@ template_mult_events <- function(dataname,
 
   # Table
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(
       parent = as.name(parentname)
     )

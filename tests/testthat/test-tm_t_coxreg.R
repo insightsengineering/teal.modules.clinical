@@ -43,12 +43,12 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::split_rows_by("effect") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
-    table = quote(result <- build_table(lyt = lyt, df = df))
+    table = quote(result <- rtables::build_table(lyt = lyt, df = df))
   )
   testthat::expect_equal(result, expected)
 })
@@ -100,12 +100,12 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::split_rows_by("effect") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
-    table = quote(result <- build_table(lyt = lyt, df = df))
+    table = quote(result <- rtables::build_table(lyt = lyt, df = df))
   )
   testthat::expect_equal(result, expected)
 })
@@ -148,12 +148,12 @@ testthat::test_that("template_coxreg generates correct multivariate cox regressi
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Cox Regression for OS") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = df)
+      result <- rtables::build_table(lyt = lyt, df = df)
       result
     })
   )

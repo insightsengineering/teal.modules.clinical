@@ -153,13 +153,13 @@ template_ancova <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        add_colcounts() %>%
-        split_rows_by(
+      expr = rtables::split_cols_by(var = arm_var, ref_group = ref_group) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(dataname[visit_var], fill = TRUE)
+          split_label = rtables::var_labels(dataname[visit_var], fill = TRUE)
         ),
       env = list(
         arm_var = arm_var,
@@ -175,11 +175,11 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_rows_by(
+          rtables::split_rows_by(
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
           summarize_ancova(
             vars = aval_var,
@@ -203,11 +203,11 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_rows_by(
+          rtables::split_rows_by(
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
           summarize_ancova(
             vars = aval_var,
@@ -233,7 +233,7 @@ template_ancova <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        append_topleft(paste0("  ", paramcd_levels)) %>%
+        rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
         summarize_ancova(
           vars = aval_var,
           variables = list(arm = arm_var, covariates = NULL),
@@ -286,7 +286,7 @@ template_ancova <- function(dataname = "ANL",
   # Build table.
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(

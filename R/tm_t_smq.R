@@ -136,7 +136,7 @@ template_smq <- function(
     layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(var = arm_var),
+          rtables::split_cols_by(var = arm_var),
         env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
       )
   )
@@ -146,12 +146,12 @@ template_smq <- function(
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = split_cols_by(var = nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(var = nested_col, split_fun = drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
         substitute(
-          expr = split_cols_by(var = nested_col),
+          expr = rtables::split_cols_by(var = nested_col),
           env = list(nested_col = arm_var[[2]])
         )
       }
@@ -160,14 +160,14 @@ template_smq <- function(
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -189,7 +189,7 @@ template_smq <- function(
   )
 
   split_label <- substitute(
-    expr = var_labels(dataname)[["SMQ"]],
+    expr = rtables::var_labels(dataname)[["SMQ"]],
     env = list(
       dataname = as.name("anl")
     )
@@ -198,7 +198,7 @@ template_smq <- function(
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by(
+      expr = rtables::split_rows_by(
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
@@ -259,7 +259,7 @@ template_smq <- function(
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
@@ -281,9 +281,9 @@ template_smq <- function(
   y$sort_and_prune <- quote(
     expr = {
       all_zero <- function(tr) {
-        !inherits(tr, "ContentRow")  && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow")  && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     }
   )

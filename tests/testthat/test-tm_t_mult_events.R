@@ -25,9 +25,9 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -37,14 +37,14 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
             nonunique = "Total number of treatments"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "ATC1",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC1"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -63,7 +63,7 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
     ),
 
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)
@@ -104,9 +104,9 @@ testthat::test_that("template_mult_events generates correct expressions with 2 H
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -116,17 +116,17 @@ testthat::test_that("template_mult_events generates correct expressions with 2 H
             nonunique = "Total number of treatments"
           )
         ) %>%
-        split_rows_by("ATC1",
+        rtables::split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC1"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
-        split_rows_by("ATC2",
+        rtables::split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC2"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -146,7 +146,7 @@ testthat::test_that("template_mult_events generates correct expressions with 2 H
         )
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>%
@@ -189,9 +189,9 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -201,32 +201,32 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
             nonunique = "Total number of treatments"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "ATC1",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC1"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "ATC2",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC2"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "ATC3",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC3"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC3"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -244,7 +244,7 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
         append_varlabels(adcm, "CMDECOD", indent = 3L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>%
@@ -299,9 +299,9 @@ testthat::test_that("template_mult_events generates correct expressions with 4 H
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -311,29 +311,29 @@ testthat::test_that("template_mult_events generates correct expressions with 4 H
             nonunique = "Total number of treatments"
           )
         ) %>%
-        split_rows_by("ATC1",
+        rtables::split_rows_by("ATC1",
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC1"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
-        split_rows_by("ATC2",
+        rtables::split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC2"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC2"], fill = TRUE)
         ) %>%
-        split_rows_by("ATC3",
+        rtables::split_rows_by("ATC3",
           child_labels = "visible",
           nested = TRUE, indent_mod = 0L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC3"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC3"], fill = TRUE)
         ) %>%
-        split_rows_by("ATC4",
+        rtables::split_rows_by("ATC4",
           child_labels = "visible", nested = TRUE,
           indent_mod = 0L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC4"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC4"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -353,7 +353,7 @@ testthat::test_that("template_mult_events generates correct expressions with 4 H
         )
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>%
@@ -400,9 +400,9 @@ testthat::test_that("template_mult_events generates correct expressions with no 
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -416,7 +416,7 @@ testthat::test_that("template_mult_events generates correct expressions with no 
         append_varlabels(adcm, "CMDECOD", indent = 0L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>% sort_at_path(path = "CMDECOD", scorefun = score_occurrences)
@@ -458,8 +458,8 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "USUBJID",
           count_by = "ASEQ",
@@ -469,14 +469,14 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
             nonunique = "Total number of treatments"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "ATC1",
           child_labels = "visible",
           nested = FALSE,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(adcm["ATC1"], fill = TRUE)
+          split_label = rtables::var_labels(adcm["ATC1"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -494,7 +494,7 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
         append_varlabels(adcm, "CMDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
     table_sorted = quote({
       sorted_result <- result %>% sort_at_path(path = c("ATC1", "*", "CMDECOD"), scorefun = score_occurrences)

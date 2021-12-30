@@ -4,18 +4,18 @@ library(tern)
 
 testthat::test_that("h_concat_expr returns a string for long expression", {
   expr <- quote(
-    basic_table() %>%
-      split_cols_by(var = "ARMCD") %>%
+    rtables::basic_table() %>%
+      rtables::split_cols_by(var = "ARMCD") %>%
       test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       ) %>%
-      build_table(df = dta)
+      rtables::build_table(df = dta)
   )
   result <- h_concat_expr(expr)
   expected <- paste0(
-    "basic_table() %>% split_cols_by(var = \"ARMCD\") %>% ",
-    "test_proportion_diff(vars = \"rsp\",      method = \"cmh\", ",
-    "variables = list(strata = \"strat\")) %>% build_table(df = dta)"
+    "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      ",
+    "test_proportion_diff(vars = \"rsp\", method = \"cmh\", ",
+    "variables = list(strata = \"strat\")) %>%      rtables::build_table(df = dta)"
   )
   testthat::expect_identical(result, expected)
 })
@@ -34,9 +34,9 @@ testthat::test_that("pipe_expr concatenate expressions into a single pipeline (%
 
 testthat::test_that("add_expr adds expressions to expression list", {
   lyt <- list()
-  lyt <- add_expr(lyt, substitute(basic_table()))
+  lyt <- add_expr(lyt, substitute(rtables::basic_table()))
   lyt <- add_expr(
-    lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+    lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
   )
   lyt <- add_expr(
     lyt,
@@ -47,23 +47,23 @@ testthat::test_that("add_expr adds expressions to expression list", {
     )
   )
 
-  result <- lyt <- add_expr(lyt, substitute(build_table(df = dta)))
+  result <- lyt <- add_expr(lyt, substitute(rtables::build_table(df = dta)))
   expected <- list(
-    substitute(basic_table()),
-    substitute(split_cols_by(var = arm)),
+    substitute(rtables::basic_table()),
+    substitute(rtables::split_cols_by(var = arm)),
     substitute(test_proportion_diff(
       vars = "rsp", method = "cmh", variables = list(strata = "strat")
     )),
-    substitute(build_table(df = dta))
+    substitute(rtables::build_table(df = dta))
   )
   testthat::expect_identical(result, expected)
 })
 
 testthat::test_that("add_expr manages expression list which can be used by pipe_expr", {
   lyt <- list()
-  lyt <- add_expr(lyt, substitute(basic_table()))
+  lyt <- add_expr(lyt, substitute(rtables::basic_table()))
   lyt <- add_expr(
-    lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+    lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
   )
   lyt <- add_expr(
     lyt,
@@ -74,15 +74,15 @@ testthat::test_that("add_expr manages expression list which can be used by pipe_
     )
   )
 
-  lyt <- add_expr(lyt, substitute(build_table(df = dta)))
+  lyt <- add_expr(lyt, substitute(rtables::build_table(df = dta)))
   result <- pipe_expr(lyt)
   expected <- substitute(
-    basic_table() %>%
-      split_cols_by(var = arm) %>%
+    rtables::basic_table() %>%
+      rtables::split_cols_by(var = arm) %>%
       test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       ) %>%
-      build_table(df = dta)
+      rtables::build_table(df = dta)
   )
   testthat::expect_identical(result, expected)
 })

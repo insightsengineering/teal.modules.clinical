@@ -33,16 +33,16 @@ testthat::test_that("template_abnormality generates correct expressions with def
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by("PARAM",
-          split_label = var_labels(adlb)[["PARAM"]],
+        rtables::split_rows_by("PARAM",
+          split_label = rtables::var_labels(adlb)[["PARAM"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -55,8 +55,8 @@ testthat::test_that("template_abnormality generates correct expressions with def
         append_varlabels(adlb, "ANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
@@ -100,17 +100,17 @@ testthat::test_that("template_abnormality generates correct expressions with cus
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "PARAMCD",
-          split_label = var_labels(adlb)[["PARAMCD"]],
+          split_label = rtables::var_labels(adlb)[["PARAMCD"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -123,8 +123,8 @@ testthat::test_that("template_abnormality generates correct expressions with cus
         append_varlabels(adlb, "MYANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
@@ -167,16 +167,16 @@ testthat::test_that("template_abnormality generates correct expressions with cus
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by("PARAM",
-                      split_label = var_labels(adlb)[["PARAM"]],
+        rtables::split_rows_by("PARAM",
+                      split_label = rtables::var_labels(adlb)[["PARAM"]],
                       label_pos = "topleft",
                       split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -189,8 +189,8 @@ testthat::test_that("template_abnormality generates correct expressions with cus
         append_varlabels(adlb, "ANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )

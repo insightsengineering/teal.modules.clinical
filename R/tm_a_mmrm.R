@@ -188,7 +188,7 @@ template_mmrm_tables <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var, ref_group = ref_arm),
+        expr = rtables::split_cols_by(var = arm_var, ref_group = ref_arm),
         env = list(arm_var = arm_var, ref_arm = ref_arm_val)
         )
       )
@@ -198,8 +198,8 @@ template_mmrm_tables <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = add_colcounts() %>%
-            split_rows_by(visit_var) %>%
+          expr = rtables::add_colcounts() %>%
+            rtables::split_rows_by(visit_var) %>%
             summarize_lsmeans(
               .stats = c(
                 "n",
@@ -217,11 +217,11 @@ template_mmrm_tables <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = add_colcounts() %>%
-            split_rows_by(visit_var) %>%
+          expr = rtables::add_colcounts() %>%
+            rtables::split_rows_by(visit_var) %>%
             append_varlabels(dataname, visit_var) %>%
             summarize_lsmeans(show_relative = show_relative) %>%
-            append_topleft(paste0("  ", paramcd)),
+            rtables::append_topleft(paste0("  ", paramcd)),
           env = list(
             dataname = as.name(dataname),
             visit_var = visit_var,
@@ -237,9 +237,9 @@ template_mmrm_tables <- function(parentname,
       layout_list,
       substitute(
         expr =
-          split_rows_by(visit_var) %>%
+          rtables::split_rows_by(visit_var) %>%
           summarize_lsmeans(arms = FALSE) %>%
-          append_topleft(paste0("  ", paramcd)),
+          rtables::append_topleft(paste0("  ", paramcd)),
         env = list(visit_var = visit_var,
                    paramcd = paramcd)
       )
@@ -256,7 +256,7 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_lsmeans = {
       y$lsmeans_table <- substitute(
         expr = {
-          lsmeans_table <- build_table(
+          lsmeans_table <- rtables::build_table(
             lyt = lyt,
             df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
             alt_counts_df = parentname)

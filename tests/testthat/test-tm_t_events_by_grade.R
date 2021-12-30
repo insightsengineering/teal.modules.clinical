@@ -25,32 +25,32 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ACTARM") %>%
-        add_overall_col(label = "All Patients") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ACTARM") %>%
+        rtables::add_overall_col(label = "All Patients") %>%
+        rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEDECOD",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEDECOD"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -60,7 +60,7 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -117,32 +117,32 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ACTARM") %>%
-        add_overall_col(label = "All Patients") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ACTARM") %>%
+        rtables::add_overall_col(label = "All Patients") %>%
+        rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEDECOD",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEDECOD"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -152,7 +152,7 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -163,7 +163,7 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
       col_indices <- 1:(ncol(result) - TRUE)
       row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) &
         has_fractions_difference(atleast = 0.1, col_indices = col_indices)
-      pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
+      pruned_result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
@@ -209,33 +209,33 @@ testthat::test_that("template_events_by_grade without adding total column option
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ACTARM") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ACTARM") %>%
+        rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEDECOD",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEDECOD"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEDECOD"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -245,7 +245,7 @@ testthat::test_that("template_events_by_grade without adding total column option
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -300,20 +300,20 @@ testthat::test_that("template_events_by_grade with hlt only works", {
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ACTARM") %>%
-        add_overall_col(label = "All Patients") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by("ACTARM") %>%
+        rtables::add_overall_col(label = "All Patients") %>%
+        rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
           grade_groups = grade_groups) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
           nested = TRUE,
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = var_labels(adae["AEBODSYS"], fill = TRUE)
+          split_label = rtables::var_labels(adae["AEBODSYS"], fill = TRUE)
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -323,7 +323,7 @@ testthat::test_that("template_events_by_grade with hlt only works", {
         append_varlabels(adae,  "AESEV", indent = 1L)
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -384,7 +384,7 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
@@ -394,7 +394,7 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
             "Grade 5 (%)" = "5"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "AEBODSYS", child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group("AEDECOD")
         ) %>%
         append_varlabels(df = anl, vars = "AEBODSYS") %>%
@@ -413,7 +413,7 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
         append_varlabels(df = anl, vars = "AEDECOD", indent = 1L)
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         col_counts = col_counts
@@ -454,8 +454,8 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
-        trim_rows(criteria = criteria_fun) %>%
-        prune_table(keep_rows(at_least_percent_any))
+        rtables::trim_rows(criteria = criteria_fun) %>%
+        rtables::prune_table(keep_rows(at_least_percent_any))
       pruned_and_sorted_result
     })
   )
@@ -501,7 +501,7 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
@@ -521,7 +521,7 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
         append_varlabels(df = anl, vars = "AEDECOD")
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         col_counts = col_counts
@@ -560,8 +560,8 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
-        trim_rows(criteria = criteria_fun) %>%
-        prune_table(keep_rows(at_least_percent_any))
+        rtables::trim_rows(criteria = criteria_fun) %>%
+        rtables::prune_table(keep_rows(at_least_percent_any))
       pruned_and_sorted_result
     })
   )
@@ -607,7 +607,7 @@ testthat::test_that("template_events_col_by_grade without adding total column op
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
@@ -627,7 +627,7 @@ testthat::test_that("template_events_col_by_grade without adding total column op
         append_varlabels(df = anl, vars = "AEDECOD")
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         col_counts = col_counts
@@ -666,8 +666,8 @@ testthat::test_that("template_events_col_by_grade without adding total column op
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
-        trim_rows(criteria = criteria_fun) %>%
-        prune_table(keep_rows(at_least_percent_any))
+        rtables::trim_rows(criteria = criteria_fun) %>%
+        rtables::prune_table(keep_rows(at_least_percent_any))
       pruned_and_sorted_result
     })
   )
@@ -712,7 +712,7 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ACTARM") %>%
+        rtables::split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
           groups = list(
@@ -732,7 +732,7 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
         append_varlabels(df = anl, vars = "AEDECOD")
     ),
     table = quote(
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         col_counts = col_counts
@@ -771,8 +771,8 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
       }
       at_least_percent_any <- has_fraction_in_any_col(atleast = 0.1, col_indices = col_indices)
       pruned_and_sorted_result <- sorted_result %>%
-        trim_rows(criteria = criteria_fun) %>%
-        prune_table(keep_rows(at_least_percent_any))
+        rtables::trim_rows(criteria = criteria_fun) %>%
+        rtables::prune_table(keep_rows(at_least_percent_any))
       pruned_and_sorted_result
     })
   )

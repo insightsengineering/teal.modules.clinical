@@ -119,18 +119,18 @@ template_abnormality <- function(parentname,
     if (add_total) {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(
+          rtables::split_cols_by(
             var = arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE)
           ) %>%
-          add_colcounts(),
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     } else {
       substitute(
         expr = expr_basic_table_args %>%
-          split_cols_by(var = arm_var) %>%
-          add_colcounts(),
+          rtables::split_cols_by(var = arm_var) %>%
+          rtables::add_colcounts(),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
@@ -138,7 +138,7 @@ template_abnormality <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = var_labels(dataname)[[by_var]],
+      expr = rtables::var_labels(dataname)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -147,7 +147,7 @@ template_abnormality <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(
+        rtables::split_rows_by(
           by_var,
           split_label = split_label,
           label_pos = "topleft",
@@ -192,8 +192,8 @@ template_abnormality <- function(parentname,
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
+        rtables::prune_table()
       result
     },
     env = list(parent = as.name(parentname))

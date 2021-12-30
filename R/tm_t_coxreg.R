@@ -126,14 +126,14 @@ template_coxreg_u <- function(dataname,
   layout_list <- add_expr(layout_list, teal.devel::parse_basic_table_args(basic_table_args))
   layout_list <- add_expr(
     layout_list,
-    quote(split_rows_by("effect"))
+    quote(rtables::split_rows_by("effect"))
   )
 
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = append_topleft(paramcd) %>%
-        split_rows_by("term", child_labels = "hidden"),
+      expr = rtables::append_topleft(paramcd) %>%
+        rtables::split_rows_by("term", child_labels = "hidden"),
       env = list(paramcd = paramcd)
     )
   )
@@ -162,9 +162,9 @@ template_coxreg_u <- function(dataname,
   )
 
   y$table <- if (append) {
-    quote(result <- c(result, build_table(lyt = lyt, df = df)))
+    quote(result <- c(result, rtables::build_table(lyt = lyt, df = df)))
   } else {
-    quote(result <- build_table(lyt = lyt, df = df))
+    quote(result <- rtables::build_table(lyt = lyt, df = df))
   }
 
   y
@@ -293,8 +293,8 @@ template_coxreg_m <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = append_topleft(paramcd) %>%
-        split_rows_by("term", child_labels = "hidden"),
+      expr = rtables::append_topleft(paramcd) %>%
+        rtables::split_rows_by("term", child_labels = "hidden"),
       env = list(paramcd = paramcd)
     )
   )
@@ -323,7 +323,7 @@ template_coxreg_m <- function(dataname,
   )
 
   y$table <- quote({
-    result <- build_table(lyt = lyt, df = df)
+    result <- rtables::build_table(lyt = lyt, df = df)
     result
   })
 
