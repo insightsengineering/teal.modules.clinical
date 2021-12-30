@@ -19,7 +19,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
     data = quote({
       anl_labels <- var_labels(adlb)
       anl <- adlb %>%
-        mutate(
+        dplyr::mutate(
           GRADE_DIR = factor(
             case_when(
               as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
@@ -30,7 +30,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           ),
           GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
       ) %>%
-        filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
+        dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
       var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
@@ -44,7 +44,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
         ) %>%
         lapply(as.character) %>%
         as.data.frame() %>%
-        arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
+        dplyr::arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
@@ -101,7 +101,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
     data = quote({
       anl_labels <- var_labels(myadlb)
       anl <- myadlb %>%
-        mutate(
+        dplyr::mutate(
           GRADE_DIR = factor(
             case_when(
               as.numeric(as.character(ATOXGR)) < 0 ~ "LOW",
@@ -112,7 +112,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
           ),
           GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
       ) %>%
-        filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
+        dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
       var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
@@ -126,7 +126,7 @@ test_that("template_abnormality_by_worst_grade generates correct expressions wit
       ) %>%
         lapply(as.character) %>%
         as.data.frame() %>%
-        arrange("myPARAMCD", desc(GRADE_DIR), GRADE_ANL)
+        dplyr::arrange("myPARAMCD", desc(GRADE_DIR), GRADE_ANL)
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%

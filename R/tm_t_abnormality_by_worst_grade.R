@@ -56,7 +56,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     data_list,
     substitute(
       expr = anl <- df %>%
-        mutate(
+        dplyr::mutate(
           #Changed the following prepo step methodology as not
           #all cases have grade = 4 (realized with nsdl real data)
           GRADE_DIR = factor(
@@ -77,7 +77,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
               )
             )
           ) %>%
-        filter(worst_low_flag_var == worst_flag_indicator | worst_high_flag_var == worst_flag_indicator) %>%
+        dplyr::filter(worst_low_flag_var == worst_flag_indicator | worst_high_flag_var == worst_flag_indicator) %>%
         droplevels(),
       env  = list(
         df = as.name(dataname),
@@ -120,7 +120,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
         ) %>%
         lapply(as.character) %>%
         as.data.frame() %>%
-        arrange(paramcd, desc(GRADE_DIR), GRADE_ANL),
+        dplyr::arrange(paramcd, desc(GRADE_DIR), GRADE_ANL),
       env = list(
         paramcd = paramcd
       )
