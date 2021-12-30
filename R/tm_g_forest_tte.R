@@ -272,7 +272,11 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 tm_g_forest_tte <- function(label,
                             dataname,
-                            parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(
+                              inherits(arm_var, "data_extract_spec"),
+                              teal.devel::datanames_input(arm_var),
+                              "ADSL"
+                            ),
                             arm_var,
                             arm_ref_comp = NULL,
                             subgroup_var,
@@ -562,7 +566,10 @@ srv_g_forest_tte <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(!utils.nest::is_empty(anl_m$data()[[input_paramcd]]), "Value of the endpoint variable should not be empty."))
+    validate(need(
+      !utils.nest::is_empty(anl_m$data()[[input_paramcd]]),
+      "Value of the endpoint variable should not be empty."
+    ))
     validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 

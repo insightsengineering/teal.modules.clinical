@@ -216,7 +216,11 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = ifelse(inherits(strata, "data_extract_spec"), teal.devel::datanames_input(strata), "ADSL"),
+                          parentname = ifelse(
+                            inherits(strata, "data_extract_spec"),
+                            teal.devel::datanames_input(strata),
+                            "ADSL"
+                          ),
                           strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
                           x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
                           y = choices_selected(

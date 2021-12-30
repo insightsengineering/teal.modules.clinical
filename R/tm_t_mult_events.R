@@ -317,7 +317,11 @@ template_mult_events <- function(dataname,
 #' }
 tm_t_mult_events <- function(label, # nolint
                              dataname,
-                             parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                             parentname = ifelse(
+                               inherits(arm_var, "data_extract_spec"),
+                               teal.devel::datanames_input(arm_var),
+                               "ADSL"
+                             ),
                              arm_var,
                              seq_var,
                              hlt,

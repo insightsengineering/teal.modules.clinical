@@ -666,7 +666,9 @@ ui_t_events_summary <- function(id, ...) {
     output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]),
+      teal.devel::datanames_input(
+        a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
+      ),
       teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",

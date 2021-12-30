@@ -499,7 +499,11 @@ template_mmrm_plots <- function(fit_name,
 #'
 tm_a_mmrm <- function(label,
                       dataname,
-                      parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                      parentname = ifelse(
+                        inherits(arm_var, "data_extract_spec"),
+                        teal.devel::datanames_input(arm_var),
+                        "ADSL"
+                      ),
                       aval_var,
                       id_var,
                       arm_var,

@@ -442,7 +442,10 @@ srv_g_adverse_events <- function(input,
 
   calls <- reactive({
     validate(need(patient_id(), "Please select a patient."))
-    teal.devel::validate_has_data(ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ], 1)
+    teal.devel::validate_has_data(
+      ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
+      1
+    )
 
     validate(
       need(

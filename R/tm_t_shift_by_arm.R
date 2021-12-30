@@ -86,7 +86,7 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
@@ -113,7 +113,7 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temprary solution for over arching column
+          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
@@ -208,7 +208,11 @@ template_shift_by_arm <- function(dataname,
 #'
 tm_t_shift_by_arm <- function(label,
                               dataname,
-                              parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                              parentname = ifelse(
+                                inherits(arm_var, "data_extract_spec"),
+                                teal.devel::datanames_input(arm_var),
+                                "ADSL"
+                              ),
                               arm_var,
                               paramcd,
                               visit_var,

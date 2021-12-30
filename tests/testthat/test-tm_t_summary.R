@@ -145,7 +145,8 @@ testthat::test_that("template_summary generates correct expressions for multiple
   testthat::expect_equal(result, expected)
 })
 
-testthat::test_that("template_summary generates correct expressions for multiple grouping variables and all patientts", {
+testthat::test_that(
+  "template_summary generates correct expressions for multiple grouping variables and all patientts", {
   result <- template_summary(
     dataname = "adrs",
     parentname = "adsl",
@@ -196,7 +197,8 @@ testthat::test_that("template_summary generates correct expressions for multiple
     })
   )
   testthat::expect_equal(result, expected)
-})
+  }
+)
 
 testthat::test_that("template_summary generates correct expressions for customized numeric statistics", {
   result <- template_summary(

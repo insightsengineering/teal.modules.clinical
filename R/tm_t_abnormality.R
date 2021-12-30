@@ -109,7 +109,9 @@ template_abnormality <- function(parentname,
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(main_footer = "by variables without observed abnormalities are excluded.")
+      module_table = teal.devel::basic_table_args(
+        main_footer = "by variables without observed abnormalities are excluded."
+      )
     )
   )
 
@@ -283,7 +285,11 @@ template_abnormality <- function(parentname,
 #'
 tm_t_abnormality <- function(label,
                              dataname,
-                             parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                             parentname = ifelse(
+                               inherits(arm_var, "data_extract_spec"),
+                               teal.devel::datanames_input(arm_var),
+                               "ADSL"
+                             ),
                              arm_var,
                              by_vars,
                              grade,

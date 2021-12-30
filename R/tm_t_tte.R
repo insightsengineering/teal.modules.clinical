@@ -421,7 +421,11 @@ template_tte <- function(dataname = "ANL",
 #'
 tm_t_tte <- function(label,
                      dataname,
-                     parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                     parentname = ifelse(
+                       inherits(arm_var, "data_extract_spec"),
+                       teal.devel::datanames_input(arm_var),
+                       "ADSL"
+                     ),
                      arm_var,
                      arm_ref_comp = NULL,
                      paramcd,
@@ -787,7 +791,10 @@ srv_t_tte <- function(input,
 
     validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
     validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_event_desc), "Event description variable should be a single column."))
+    validate(need(
+      utils.nest::is_character_single(input_event_desc),
+      "Event description variable should be a single column."
+    ))
 
     # check that there is at least one record with no missing data
     validate(need(

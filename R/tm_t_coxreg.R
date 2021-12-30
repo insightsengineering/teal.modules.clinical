@@ -494,7 +494,11 @@ template_coxreg_m <- function(dataname,
 #'
 tm_t_coxreg <- function(label,
                         dataname,
-                        parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(
+                          inherits(arm_var, "data_extract_spec"),
+                          teal.devel::datanames_input(arm_var),
+                          "ADSL"
+                        ),
                         arm_var,
                         arm_ref_comp = NULL,
                         paramcd,
@@ -579,7 +583,9 @@ ui_t_coxreg <- function(id, ...) {
         selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]),
+      teal.devel::datanames_input(
+        a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]
+      ),
       teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",

@@ -335,7 +335,9 @@ ui_g_ipp <- function(id, ...) {
     output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]),
+      teal.devel::datanames_input(
+        a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]
+      ),
       teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Arm",

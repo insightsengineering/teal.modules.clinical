@@ -290,7 +290,11 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(
+                              inherits(arm_var, "data_extract_spec"),
+                              teal.devel::datanames_input(arm_var),
+                              "ADSL"
+                            ),
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,

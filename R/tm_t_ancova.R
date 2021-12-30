@@ -381,7 +381,11 @@ template_ancova <- function(dataname = "ANL",
 #'
 tm_t_ancova <- function(label,
                         dataname,
-                        parentname = ifelse(inherits(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(
+                          inherits(arm_var, "data_extract_spec"),
+                          teal.devel::datanames_input(arm_var),
+                          "ADSL"
+                        ),
                         arm_var,
                         arm_ref_comp = NULL,
                         aval_var,

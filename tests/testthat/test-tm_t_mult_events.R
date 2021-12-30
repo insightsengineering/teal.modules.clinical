@@ -78,7 +78,8 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
 })
 
 
-testthat::test_that("template_mult_events generates correct expressions with 2 HLT parameters and drop_arm_levels = FALSE", {
+testthat::test_that(
+  "template_mult_events generates correct expressions with 2 HLT parameters and drop_arm_levels = FALSE", {
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -159,7 +160,8 @@ testthat::test_that("template_mult_events generates correct expressions with 2 H
   )
 
   testthat::expect_equal(result, expected)
-})
+  }
+)
 
 
 testthat::test_that("template_mult_events generates correct expressions with 3 HLT parameters", {
@@ -431,7 +433,8 @@ testthat::test_that("template_mult_events generates correct expressions with no 
   testthat::expect_equal(result, expected)
 })
 
-testthat::test_that("template_mult_events generates correct expressions with 1 HLT parameter and without 'All Patients' column", {
+testthat::test_that(
+  "template_mult_events generates correct expressions with 1 HLT parameter and without 'All Patients' column", {
   result <- template_mult_events(
     dataname = "adcm",
     parentname = "adsl",
@@ -506,4 +509,5 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
   )
 
   testthat::expect_equal(result, expected)
-})
+  }
+)
