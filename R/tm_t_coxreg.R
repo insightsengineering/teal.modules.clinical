@@ -828,7 +828,7 @@ srv_t_coxreg <- function(input,
       "`Strata` and `Covariate` variables should not be overlapped."
     )
 
-    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
+    do.call(what = "validate_standard_inputs", validate_args)
 
     arm_n <- base::table(anl_m$data()[[input_arm_var]])
     anl_arm_n <- if (input$combine_comp_arms) {

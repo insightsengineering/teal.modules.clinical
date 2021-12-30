@@ -510,7 +510,7 @@ srv_g_lineplot <- function(input,
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
 
-    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
+    do.call(what = "validate_standard_inputs", validate_args)
 
     validate(need(
       input$conf_level > 0 && input$conf_level < 1,

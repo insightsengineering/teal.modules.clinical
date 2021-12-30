@@ -667,7 +667,7 @@ srv_g_km <- function(input,
       validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
-    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
+    do.call(what = "validate_standard_inputs", validate_args)
 
     # validate xticks
     if (length(input_xticks) == 0) {

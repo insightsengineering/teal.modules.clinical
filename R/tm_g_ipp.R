@@ -475,7 +475,7 @@ srv_g_ipp <- function(input,
       arm_var = input_arm_var
     )
 
-    do.call(what = "teal.devel::validate_standard_inputs", validate_args)
+    do.call(what = "validate_standard_inputs", validate_args)
 
     validate(
       need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
