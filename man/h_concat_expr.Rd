@@ -26,5 +26,4 @@ expr <- quote(
 )
 
 teal.modules.clinical:::h_concat_expr(expr)
-
 }

@@ -35,8 +35,6 @@ library(assertthat)
 library(testthat)
 expect_error(assertthat::assert_that(teal_enough_rows(data = iris, min_nrow = 1500)))
 
-
 armcd <- NULL
 expect_error(assertthat::assert_that(teal_has_element(str = armcd, "ARMCD")))
-
 }

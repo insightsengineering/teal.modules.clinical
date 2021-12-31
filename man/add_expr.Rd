@@ -40,5 +40,4 @@ lyt <- teal.modules.clinical:::add_expr(
 )
 lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
 teal.modules.clinical:::pipe_expr(lyt)
-
 }

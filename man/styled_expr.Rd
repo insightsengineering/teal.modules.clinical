@@ -27,5 +27,4 @@ expr <- quote(
 )
 
 teal.modules.clinical:::styled_expr(expr)
-
 }

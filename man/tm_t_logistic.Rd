@@ -123,7 +123,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(ui = app$ui, server = app$server)
 }
