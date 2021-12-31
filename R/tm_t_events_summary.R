@@ -42,21 +42,20 @@ template_events_summary <- function(anl_name,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
-
-  assert_that(
-    is.string(anl_name),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(dthfl_var),
-    is.string(dcsreas_var),
-    is.flag(add_total),
+  assertthat::assert_that(
+    assertthat::is.string(anl_name),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(dthfl_var),
+    assertthat::is.string(dcsreas_var),
+    assertthat::is.flag(add_total),
     is.character(flag_var_anl) || is.null(NULL),
     is.character(flag_var_aesi) || is.null(NULL),
-    is.string(aeseq_var),
-    is.string(llt),
-    is.flag(count_subj),
-    is.flag(count_pt),
-    is.flag(count_events)
+    assertthat::is.string(aeseq_var),
+    assertthat::is.string(llt),
+    assertthat::is.flag(count_subj),
+    assertthat::is.flag(count_pt),
+    assertthat::is.flag(count_events)
   )
 
   y <- list()
@@ -89,7 +88,7 @@ template_events_summary <- function(anl_name,
   )
 
 
-  #Create dummy variable for counting patients with an AE
+  # Create dummy variable for counting patients with an AE
   data_list <- add_expr(
     data_list,
     quote(anl$tmp_aefl <- "Y")
@@ -97,7 +96,7 @@ template_events_summary <- function(anl_name,
 
   data_list <- add_expr(
     data_list,
-    substitute_names(
+    utils.nest::substitute_names(
       expr = anl <- anl %>% dplyr::mutate(
         a = as.character(a),
         USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
@@ -114,7 +113,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- var_labels(anl[, flag_var_anl]),
+        flag_var_anl_label <- rtables::var_labels(anl[, flag_var_anl]),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -124,7 +123,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- var_labels(anl[, flag_var_aesi]),
+        flag_var_aesi_label <- rtables::var_labels(anl[, flag_var_aesi]),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )
@@ -134,13 +133,15 @@ template_events_summary <- function(anl_name,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -150,19 +151,19 @@ template_events_summary <- function(anl_name,
   layout_parent_list <- list()
   layout_parent_list <- add_expr(
     layout_parent_list,
-    quote(basic_table())
+    quote(rtables::basic_table())
   )
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
-      expr = split_cols_by(arm_var) %>% add_colcounts(),
+      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
   if (add_total) {
     layout_parent_list <- add_expr(
       layout_parent_list,
-      quote(add_overall_col(label = "All Patients"))
+      quote(rtables::add_overall_col(label = "All Patients"))
     )
   }
   layout_parent_list <- add_expr(
@@ -197,7 +198,7 @@ template_events_summary <- function(anl_name,
   table_parent_list <- add_expr(
     table_parent_list,
     substitute(
-      expr = result_parent <- build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
+      expr = result_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -206,13 +207,13 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- list()
   layout_anl_list <- add_expr(
     layout_anl_list,
-    quote(basic_table())
+    quote(rtables::basic_table())
   )
 
   layout_anl_list <- add_expr(
     layout_anl_list,
     substitute(
-      expr = split_cols_by(arm_var) %>% add_colcounts(),
+      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
       env = list(arm_var = arm_var)
     )
   )
@@ -220,7 +221,7 @@ template_events_summary <- function(anl_name,
   if (add_total) {
     layout_anl_list <- add_expr(
       layout_anl_list,
-      quote(add_overall_col(label = "All Patients"))
+      quote(rtables::add_overall_col(label = "All Patients"))
     )
   }
 
@@ -233,7 +234,7 @@ template_events_summary <- function(anl_name,
         denom = "N_col",
         .stats = "count_fraction",
         .labels = c(
-          count_fraction = "Total number of patients with at least one adverse event" #nolint
+          count_fraction = "Total number of patients with at least one adverse event"
         ),
         .indent_mods = c(count_fraction = 0L),
         table_names = "total_pts_at_least_one"
@@ -251,7 +252,7 @@ template_events_summary <- function(anl_name,
   table_anl_list <- add_expr(
     table_anl_list,
     substitute(
-      expr = result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
+      expr = result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -387,7 +388,7 @@ template_events_summary <- function(anl_name,
   table_list <- add_expr(
     table_list,
     quote(
-      col_info(result_parent) <- col_info(result_anl)
+      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
     )
   )
 
@@ -401,24 +402,21 @@ template_events_summary <- function(anl_name,
   )
 
   if (any(all_conditions)) {
-
     table_list <- add_expr(
       table_list,
       quote(
-        expr = result <- rbind(
+        expr = result <- rtables::rbind(
           result_anl[1:2, ],
           result_parent,
           result_anl[3:nrow(result_anl), ]
         )
       )
     )
-
   } else {
-
     table_list <- add_expr(
       table_list,
       quote(
-        result <- rbind(result_anl, result_parent)
+        result <- rtables::rbind(result_anl, result_parent)
       )
     )
   }
@@ -456,7 +454,7 @@ template_events_summary <- function(anl_name,
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'   mutate(
-#'     DTHFL = case_when(  # nolint
+#'     DTHFL = case_when( # nolint
 #'       !is.na(DTHDT) ~ "Y",
 #'       TRUE ~ ""
 #'     )
@@ -495,8 +493,9 @@ template_events_summary <- function(anl_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code =
-#'           'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code =
+#'         'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'             mutate(
 #'               DTHFL = case_when(  # nolint
 #'                 !is.na(DTHDT) ~ "Y",
@@ -505,31 +504,34 @@ template_events_summary <- function(anl_name,
 #'             ) %>%
 #'             rtables::var_relabel(
 #'               DTHFL = "Subject Death Flag"
-#'             )'),
-#'     cdisc_dataset("ADAE", ADAE, code =
-#'           'ADAE <- synthetic_cdisc_data("latest")$adae
+#'             )'
+#'     ),
+#'     cdisc_dataset("ADAE", ADAE,
+#'       code =
+#'         "ADAE <- synthetic_cdisc_data('latest')$adae
 #'           add_event_flags <- function(dat) {
 #'             dat %>%
 #'               dplyr::mutate(
-#'                 TMPFL_SER = AESER == "Y",
-#'                 TMPFL_REL = AEREL == "Y",
-#'                 TMPFL_GR5 = AETOXGR == "5",
+#'                 TMPFL_SER = AESER == 'Y',
+#'                 TMPFL_REL = AEREL == 'Y',
+#'                 TMPFL_GR5 = AETOXGR == '5',
 #'                 TMP_SMQ01 = !is.na(SMQ01NAM),
 #'                 TMP_SMQ02 = !is.na(SMQ02NAM),
 #'                 TMP_CQ01 = !is.na(CQ01NAM)
 #'               ) %>%
 #'               rtables::var_relabel(
-#'                 TMPFL_SER = "Serious AE",
-#'                 TMPFL_REL = "Related AE",
-#'                 TMPFL_GR5 = "Grade 5 AE",
-#'                 TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'                 TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'                 TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
+#'                 TMPFL_SER = 'Serious AE',
+#'                 TMPFL_REL = 'Related AE',
+#'                 TMPFL_GR5 = 'Grade 5 AE',
+#'                 TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),
+#'                 TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
+#'                 TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
 #'               )
 #'           }
 #'           # Generating user-defined event flags.
-#'           ADAE <- ADAE %>% add_event_flags()')
-#'     ),
+#'           ADAE <- ADAE %>% add_event_flags()"
+#'     )
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
@@ -561,24 +563,28 @@ template_events_summary <- function(anl_name,
 tm_t_events_summary <- function(label,
                                 dataname,
                                 parentname = ifelse(
-                                  is(arm_var, "data_extract_spec"),
-                                  datanames_input(arm_var),
+                                  inherits(arm_var, "data_extract_spec"),
+                                  teal.devel::datanames_input(arm_var),
                                   "ADSL"
                                 ),
                                 arm_var,
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
                                 dthfl_var = choices_selected(
-                                  variable_choices(parentname, "DTHFL"), "DTHFL", fixed = TRUE
+                                  variable_choices(parentname, "DTHFL"), "DTHFL",
+                                  fixed = TRUE
                                 ),
                                 dcsreas_var = choices_selected(
-                                  variable_choices(parentname, "DCSREAS"), "DCSREAS", fixed = TRUE
+                                  variable_choices(parentname, "DCSREAS"), "DCSREAS",
+                                  fixed = TRUE
                                 ),
                                 llt = choices_selected(
-                                  variable_choices(dataname, "AEDECOD"), "AEDECOD", fixed = TRUE
+                                  variable_choices(dataname, "AEDECOD"), "AEDECOD",
+                                  fixed = TRUE
                                 ),
                                 aeseq_var = choices_selected(
-                                  variable_choices(dataname, "AESEQ"), "AESEQ", fixed = TRUE
+                                  variable_choices(dataname, "AESEQ"), "AESEQ",
+                                  fixed = TRUE
                                 ),
                                 add_total = TRUE,
                                 count_subj = TRUE,
@@ -588,20 +594,20 @@ tm_t_events_summary <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_summary")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(add_total),
-    is_logical_single(count_subj),
-    is_logical_single(count_pt),
-    is_logical_single(count_events),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(add_total),
+    utils.nest::is_logical_single(count_subj),
+    utils.nest::is_logical_single(count_pt),
+    utils.nest::is_logical_single(count_events),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -614,11 +620,11 @@ tm_t_events_summary <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = if_not_null(
+    flag_var_anl = utils.nest::if_not_null(
       flag_var_anl,
       cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
     ),
-    flag_var_aesi = if_not_null(
+    flag_var_aesi = utils.nest::if_not_null(
       flag_var_aesi,
       cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
     ),
@@ -640,7 +646,7 @@ tm_t_events_summary <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -648,11 +654,10 @@ tm_t_events_summary <- function(label,
 
 #' @noRd
 ui_t_events_summary <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
 
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$dthfl_var,
     a$dcsreas_var,
@@ -662,29 +667,31 @@ ui_t_events_summary <- function(id, ...) {
     a$llt
   )
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]),
-      data_extract_ui(
+      teal.devel::datanames_input(
+        a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
+      ),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      if_not_null(
+      utils.nest::if_not_null(
         a$flag_var_anl,
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("flag_var_anl"),
           label = "Event Flag Variables",
           data_extract_spec = a$flag_var_anl,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      if_not_null(
+      utils.nest::if_not_null(
         a$flag_var_aesi,
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("flag_var_aesi"),
           label = "AE Basket Flag Variables",
           data_extract_spec = a$flag_var_aesi,
@@ -694,42 +701,46 @@ ui_t_events_summary <- function(id, ...) {
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total),
+        value = a$add_total
+      ),
       tags$label("Table Settings"),
       checkboxInput(
         ns("count_subj"),
         "Count patients",
-        value = a$count_subj),
+        value = a$count_subj
+      ),
       checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
-        value = a$count_pt),
+        value = a$count_pt
+      ),
       checkboxInput(
         ns("count_events"),
         "Count events",
-        value = a$count_events),
-      panel_group(
-        panel_item(
+        value = a$count_events
+      ),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional Variables Info",
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("dthfl_var"),
             label = "Death Flag Variable",
             data_extract_spec = a$dthfl_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("dcsreas_var"),
             label = "Study Discontinuation Reason Variable",
             data_extract_spec = a$dcsreas_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("aeseq_var"),
             label = "AE Sequence Variable",
             data_extract_spec = a$aeseq_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("llt"),
             label = "AE Term Variable",
             data_extract_spec = a$llt,
@@ -738,7 +749,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -762,7 +773,7 @@ srv_t_events_summary <- function(input,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   data_extract_vars <- list(
     arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
@@ -777,18 +788,18 @@ srv_t_events_summary <- function(input,
     data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
   }
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     data_extract_vars,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
     anl_name = "ANL_ADSL"
@@ -813,7 +824,7 @@ srv_t_events_summary <- function(input,
     )
 
     # validate inputs
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
       anl = anl_filtered,
@@ -826,14 +837,14 @@ srv_t_events_summary <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
     input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
@@ -854,42 +865,46 @@ srv_t_events_summary <- function(input,
       count_events = input$count_events
     )
 
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
 
-    all_basic_table_args <- resolve_basic_table_args(user_table = basic_table_args)
-    chunks_push(substitute({
-      rtables::main_title(result) <- title
-      rtables::main_footer(result) <- footer
-      rtables::prov_footer(result) <- p_footer
-      rtables::subtitles(result) <- subtitle
-      result
-    }, env = list(title = `if`(is.null(all_basic_table_args$title), "", all_basic_table_args$title),
-                  footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-                  p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-                  subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
+    all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+    teal.devel::chunks_push(substitute(
+      expr = {
+        rtables::main_title(result) <- title
+        rtables::main_footer(result) <- footer
+        rtables::prov_footer(result) <- p_footer
+        rtables::subtitles(result) <- subtitle
+        result
+      },
+      env = list(
+        title = `if`(is.null(all_basic_table_args$title), "", all_basic_table_args$title),
+        footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+        p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+        subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+      )
+    ))
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(data_extract_vars),
+    datanames = teal.devel::get_extract_datanames(data_extract_vars),
     modal_title = "Adverse Event Summary Table",
     code_header = label
   )
-
 }

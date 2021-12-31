@@ -7,8 +7,8 @@
 tm_t_events_patyear(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   events_var,
   paramcd,
@@ -110,19 +110,21 @@ app <- init(
       dataname = "ADAETTE",
       arm_var = choices_selected(
         choices = variable_choices(adsl, c("ARM", "ARMCD")),
-        selected = "ARMCD"),
+        selected = "ARMCD"
+      ),
       add_total = TRUE,
       events_var = choices_selected(
         choices = variable_choices(adaette, "n_events"),
-       selected = "n_events",
-       fixed = TRUE),
+        selected = "n_events",
+        fixed = TRUE
+      ),
       paramcd = choices_selected(
         choices = value_choices(adaette, "PARAMCD", "PARAM"),
-        selected = "AETTE1")
+        selected = "AETTE1"
+      )
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

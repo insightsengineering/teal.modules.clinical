@@ -7,8 +7,8 @@
 tm_a_mmrm(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   aval_var,
   id_var,
   arm_var,
@@ -154,7 +154,7 @@ app <- init(
   modules = root_modules(
     tm_a_mmrm(
       label = "MMRM",
-      dataname = 'ADQS',
+      dataname = "ADQS",
       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
@@ -168,7 +168,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

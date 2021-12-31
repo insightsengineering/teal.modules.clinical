@@ -1,4 +1,4 @@
-test_that("template_coxreg generates correct univariate cox regression expressions", {
+testthat::test_that("template_coxreg generates correct univariate cox regression expressions", {
   result <- template_coxreg_u(
     dataname = "adrs",
     cov_var = NULL,
@@ -36,25 +36,25 @@ test_that("template_coxreg generates correct univariate cox regression expressio
           ties = "efron",
           conf_level = 0.95,
           interaction = FALSE
-          ),
+        ),
         at = list(AGE = c(35, 45))
-        )
+      )
       df <- broom::tidy(model)
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::split_rows_by("effect") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
-    table = quote(result <- build_table(lyt = lyt, df = df))
+    table = quote(result <- rtables::build_table(lyt = lyt, df = df))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
 
-test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
+testthat::test_that("template_coxreg generates correct univariate cox regression expressions with interactions", {
   result <- template_coxreg_u(
     dataname = "adrs",
     cov_var = NULL,
@@ -100,17 +100,17 @@ test_that("template_coxreg generates correct univariate cox regression expressio
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
-        split_rows_by("effect") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::split_rows_by("effect") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = FALSE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval", "pval_inter"))
     ),
-    table = quote(result <- build_table(lyt = lyt, df = df))
+    table = quote(result <- rtables::build_table(lyt = lyt, df = df))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_coxreg generates correct multivariate cox regression expressions", {
+testthat::test_that("template_coxreg generates correct multivariate cox regression expressions", {
   result <- template_coxreg_m(
     dataname = "adrs",
     cov_var = c("AGE", "SEX"),
@@ -142,20 +142,20 @@ test_that("template_coxreg generates correct multivariate cox regression express
           ties = "exact",
           conf_level = 0.95,
           interaction = FALSE
-          )
         )
+      )
       df <- broom::tidy(model)
     }),
     layout = quote(
       lyt <- rtables::basic_table(title = "Cox Regression for OS") %>%
-        append_topleft("OS") %>%
-        split_rows_by("term", child_labels = "hidden") %>%
+        rtables::append_topleft("OS") %>%
+        rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = df)
+      result <- rtables::build_table(lyt = lyt, df = df)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

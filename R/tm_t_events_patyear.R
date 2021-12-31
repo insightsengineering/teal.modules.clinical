@@ -6,16 +6,15 @@
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
-template_events_patyear <- function(
-  dataname,
-  parentname,
-  arm_var,
-  events_var,
-  aval_var = "AVAL",
-  add_total = TRUE,
-  control = control_incidence_rate(),
-  drop_arm_levels = TRUE,
-  basic_table_args = teal.devel::basic_table_args()) {
+template_events_patyear <- function(dataname,
+                                    parentname,
+                                    arm_var,
+                                    events_var,
+                                    aval_var = "AVAL",
+                                    add_total = TRUE,
+                                    control = control_incidence_rate(),
+                                    drop_arm_levels = TRUE,
+                                    basic_table_args = teal.devel::basic_table_args()) {
   # initialize
   y <- list()
   # data
@@ -41,19 +40,21 @@ template_events_patyear <- function(
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -64,8 +65,8 @@ template_events_patyear <- function(
     layout_list,
     substitute(
       expr = expr_basic_table_args %>%
-        split_cols_by(var = arm_var) %>%
-        add_colcounts(),
+        rtables::split_cols_by(var = arm_var) %>%
+        rtables::add_colcounts(),
       env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
     )
   )
@@ -73,7 +74,7 @@ template_events_patyear <- function(
     layout_list <- add_expr(
       layout_list,
       substitute(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -108,14 +109,13 @@ template_events_patyear <- function(
   # table
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(parent = as.name(parentname))
   )
 
   y
-
 }
 
 #' Teal module: Event rates adjusted for patient-years
@@ -157,19 +157,21 @@ template_events_patyear <- function(
 #'       dataname = "ADAETTE",
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
-#'         selected = "ARMCD"),
+#'         selected = "ARMCD"
+#'       ),
 #'       add_total = TRUE,
 #'       events_var = choices_selected(
 #'         choices = variable_choices(adaette, "n_events"),
-#'        selected = "n_events",
-#'        fixed = TRUE),
+#'         selected = "n_events",
+#'         fixed = TRUE
+#'       ),
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adaette, "PARAMCD", "PARAM"),
-#'         selected = "AETTE1")
+#'         selected = "AETTE1"
+#'       )
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
@@ -177,18 +179,20 @@ template_events_patyear <- function(
 tm_t_events_patyear <- function(label,
                                 dataname,
                                 parentname = ifelse(
-                                  is(arm_var, "data_extract_spec"),
-                                  datanames_input(arm_var),
+                                  inherits(arm_var, "data_extract_spec"),
+                                  teal.devel::datanames_input(arm_var),
                                   "ADSL"
                                 ),
                                 arm_var,
                                 events_var,
                                 paramcd,
                                 aval_var = choices_selected(
-                                  variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE
+                                  variable_choices(dataname, "AVAL"), "AVAL",
+                                  fixed = TRUE
                                 ),
                                 avalu_var = choices_selected(
-                                  variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                                  variable_choices(dataname, "AVALU"), "AVALU",
+                                  fixed = TRUE
                                 ),
                                 add_total = TRUE,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -197,26 +201,26 @@ tm_t_events_patyear <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(arm_var),
     is.choices_selected(events_var),
     is.choices_selected(paramcd),
     is.choices_selected(aval_var),
     is.choices_selected(avalu_var),
-    is.flag(add_total),
+    assertthat::is.flag(add_total),
     is.choices_selected(conf_level),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
@@ -244,7 +248,7 @@ tm_t_events_patyear <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -252,39 +256,39 @@ tm_t_events_patyear <- function(label,
 ui_events_patyear <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var)
+  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var)
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("patyear_table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("patyear_table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("events_var"),
         label = "Event Variable",
         data_extract_spec = a$events_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("avalu_var"),
         label = "Analysis Unit Variable",
         data_extract_spec = a$avalu_var,
@@ -306,8 +310,8 @@ ui_events_patyear <- function(id, ...) {
         multiple = FALSE,
         fixed = FALSE
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
@@ -332,7 +336,7 @@ ui_events_patyear <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -356,7 +360,7 @@ srv_events_patyear <- function(input,
                                basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # This reactiveVal and the observeEvent that listens to it are only run upon app launch
   # They are used in combination to avoid the use of observe, which is costly in terms of performance
@@ -375,7 +379,7 @@ srv_events_patyear <- function(input,
     )
   })
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       arm_var = arm_var,
@@ -387,7 +391,7 @@ srv_events_patyear <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
@@ -406,7 +410,7 @@ srv_events_patyear <- function(input,
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
     # validate inputs
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
@@ -420,14 +424,18 @@ srv_events_patyear <- function(input,
     ))
 
     validate(
-      need(is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(is_character_single(input_events_var), "Events variable should be a single column."),
+      need(utils.nest::is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
+      need(utils.nest::is_character_single(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected."),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
-      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select an Event Type Parameter is not selected."),
-      need(!any(is.na(anl_m$data()[[input_events_var]])),
-        "`Event Variable` for selected parameter includes NA values.")
+      need(
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+        "`Select an Event Type Parameter is not selected."
+      ),
+      need(
+        !any(is.na(anl_m$data()[[input_events_var]])),
+        "`Event Variable` for selected parameter includes NA values."
+      )
     )
 
     NULL
@@ -437,14 +445,14 @@ srv_events_patyear <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     my_calls <- template_events_patyear(
       dataname = "ANL",
@@ -468,7 +476,7 @@ srv_events_patyear <- function(input,
           "day"
         } else if (as.character(input$time_unit_input) == "MONTHS") {
           "month"
-        } else{
+        } else {
           "year"
         },
         time_unit_output = as.numeric(input$time_unit_output)
@@ -476,28 +484,28 @@ srv_events_patyear <- function(input,
       drop_arm_levels = input$drop_arm_levels,
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   patyear_table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "patyear_table",
     table_r = patyear_table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, aval_var, events_var)
     ),
     modal_title = "Event Rate adjusted for patient-year at risk",

@@ -7,8 +7,8 @@
 tm_t_events(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   hlt,
   llt,
@@ -101,17 +101,16 @@ app <- teal::init(
       llt = choices_selected(
         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
-       ),
+      ),
       hlt = choices_selected(
         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
-       ),
+      ),
       add_total = TRUE,
       event_type = "adverse event"
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

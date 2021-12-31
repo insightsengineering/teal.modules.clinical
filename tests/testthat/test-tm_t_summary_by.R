@@ -1,4 +1,4 @@
-test_that("template_summary_by generates correct expressions", {
+testthat::test_that("template_summary_by generates correct expressions", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -29,11 +29,11 @@ test_that("template_summary_by generates correct expressions", {
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -46,14 +46,14 @@ test_that("template_summary_by generates correct expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
+testthat::test_that("template_summary_by generates correct expressions when `parallel_vars` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -84,11 +84,11 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -101,18 +101,18 @@ test_that("template_summary_by generates correct expressions when `parallel_vars
         )
     ),
     table = quote({
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
-        )
+      )
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions when `row_groups` is true", {
+testthat::test_that("template_summary_by generates correct expressions when `row_groups` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adsl",
@@ -144,42 +144,42 @@ test_that("template_summary_by generates correct expressions when `row_groups` i
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout_cfun = quote(
-      cfun_unique <- function(x, labelstr = "", .N_col) { #nolint
+      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint
         y <- length(unique(x))
         rcell(
-          c(y , y / .N_col), #nolint
+          c(y, y / .N_col), # nolint
           label = labelstr
         )
       }
     ),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "SEX",
-          split_label = var_labels(adsl)[["SEX"]],
+          split_label = rtables::var_labels(adsl)[["SEX"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
-        summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
-        split_rows_by(
+        rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
+        rtables::split_rows_by(
           "COUNTRY",
-          split_label = var_labels(adsl)[["COUNTRY"]],
+          split_label = rtables::var_labels(adsl)[["COUNTRY"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
-        summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
+        rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions for customized numeric statistics", {
+testthat::test_that("template_summary_by generates correct expressions for customized numeric statistics", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -211,11 +211,11 @@ test_that("template_summary_by generates correct expressions for customized nume
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -228,14 +228,14 @@ test_that("template_summary_by generates correct expressions for customized nume
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_summary_by generates correct expressions for `drop_zero_levels` is true", {
+testthat::test_that("template_summary_by generates correct expressions for `drop_zero_levels` is true", {
   result <- template_summary_by(
     parentname = "adsl",
     dataname = "adlb",
@@ -266,11 +266,11 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -284,15 +284,16 @@ test_that("template_summary_by generates correct expressions for `drop_zero_leve
     ),
     table = quote({
       all_zero <- function(tr) {
-        if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+        if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow")) {
           return(FALSE)
+        }
         rvs <- unlist(unname(row_values(tr)))
         all(rvs == 0)
       }
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        trim_rows(criteria = all_zero)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::trim_rows(criteria = all_zero)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result$table, expected$table)
 })

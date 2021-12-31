@@ -1,7 +1,7 @@
 adlb <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adlb
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT") # nolint
 
-test_that("template_g_lineplot works as expected with default arguments", {
+testthat::test_that("template_g_lineplot works as expected with default arguments", {
   result <- template_g_lineplot()
   expected <- list(
     data = quote({
@@ -9,7 +9,8 @@ test_that("template_g_lineplot works as expected with default arguments", {
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -31,13 +32,14 @@ test_that("template_g_lineplot works as expected with default arguments", {
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.95),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_g_lineplot gives correct data expression with custom arguments", {
+testthat::test_that("template_g_lineplot gives correct data expression with custom arguments", {
   result <- template_g_lineplot(
     strata = "ARMCD",
     y = "CHG",
@@ -52,11 +54,14 @@ test_that("template_g_lineplot gives correct data expression with custom argumen
   )
   expected <- list(
     data = quote({
-      anl <- ANL %>% dplyr::filter(AVISIT != "SCREENING") %>% dplyr::mutate(AVISIT = droplevels(AVISIT))
+      anl <- ANL %>%
+        dplyr::filter(AVISIT != "SCREENING") %>%
+        dplyr::mutate(AVISIT = droplevels(AVISIT))
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -77,8 +82,9 @@ test_that("template_g_lineplot gives correct data expression with custom argumen
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.9),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

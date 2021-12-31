@@ -7,8 +7,8 @@
 tm_t_abnormality_by_worst_grade(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
@@ -94,14 +94,15 @@ library(dplyr)
 
 adsl <- synthetic_cdisc_data("latest")$adsl
 adlb <- synthetic_cdisc_data("latest")$adlb \%>\%
-filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
+  filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADLB", adlb,
-                  code = 'ADLB <- synthetic_cdisc_data("latest")$adlb \%>\%
-filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
+      code = "ADLB <- synthetic_cdisc_data('latest')$adlb \%>\%
+        filter(!AVISIT \%in\% c('SCREENING', 'BASELINE'))"
+    ),
     check = TRUE
   ),
   modules = root_modules(
@@ -117,17 +118,16 @@ filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
         selected = c("ALT", "CRP", "IGA")
       ),
       add_total = FALSE
-   )
- ),
- filter = (
- list(
- ADSL = list(SAFFL = "Y"),
- ADLB = list(ONTRTFL = "Y")
- )
- )
+    )
+  ),
+  filter = (
+    list(
+      ADSL = list(SAFFL = "Y"),
+      ADLB = list(ONTRTFL = "Y")
+    )
+  )
 )
-
- \dontrun{
+\dontrun{
 shinyApp(app$ui, app$server)
 }
 

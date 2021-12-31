@@ -18,18 +18,18 @@ template_events_by_grade <- function(dataname,
                                      add_total = TRUE,
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(hlt) || is.null(hlt),
-    is.string(llt) || is.null(llt),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(hlt) || is.null(hlt),
+    assertthat::is.string(llt) || is.null(llt),
     !is.null(hlt) || !is.null(llt),
-    is.string(grade),
-    is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff),
-    is.flag(add_total),
-    is.flag(drop_arm_levels)
+    assertthat::is.string(grade),
+    utils.nest::is_numeric_single(prune_freq),
+    utils.nest::is_numeric_single(prune_diff),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels)
   )
 
   y <- list()
@@ -60,19 +60,22 @@ template_events_by_grade <- function(dataname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name(dataname)))
+      env = list(dataname = as.name(dataname))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   data_list <- add_expr(
@@ -92,7 +95,9 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- list()
 
-  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+  )
 
   layout_list <- add_expr(
     layout_list,
@@ -102,7 +107,7 @@ template_events_by_grade <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_cols_by(arm_var),
+      expr = rtables::split_cols_by(arm_var),
       env = list(arm_var = arm_var)
     )
   )
@@ -111,7 +116,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -123,19 +128,19 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
+        expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             term_var,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[term_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[term_var], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = id,
@@ -157,32 +162,32 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = add_colcounts() %>%
+        expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             hlt,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[hlt], fill = TRUE)
+            split_label = rtables::var_labels(dataname[hlt], fill = TRUE)
           ) %>%
           summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups
           ) %>%
-          split_rows_by(
+          rtables::split_rows_by(
             llt,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = var_labels(dataname[llt], fill = TRUE)
+            split_label = rtables::var_labels(dataname[llt], fill = TRUE)
           ) %>%
           summarize_num_patients(
             var = id,
@@ -210,7 +215,7 @@ template_events_by_grade <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
@@ -235,7 +240,6 @@ template_events_by_grade <- function(dataname,
     )
 
     if (prune_freq > 0 && prune_diff == 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -243,9 +247,7 @@ template_events_by_grade <- function(dataname,
           env = list(prune_freq = prune_freq)
         )
       )
-
     } else if (prune_freq == 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -253,9 +255,7 @@ template_events_by_grade <- function(dataname,
           env = list(prune_diff = prune_diff)
         )
       )
-
     } else if (prune_freq > 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -270,7 +270,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% prune_table(keep_content_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -298,7 +298,7 @@ template_events_by_grade <- function(dataname,
       substitute(
         expr = {
           pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path =  term_var, scorefun = scorefun, decreasing = TRUE)
+            sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
           pruned_and_sorted_result
         },
         env = list(
@@ -361,19 +361,19 @@ template_events_col_by_grade <- function(dataname,
                                          prune_diff = 0,
                                          drop_arm_levels = TRUE,
                                          basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
     is.list(grading_groups),
-    is.flag(add_total),
-    is.string(id),
-    is.string(hlt) || is.null(hlt),
-    is.string(llt),
-    is.string(grade),
-    is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff),
-    is.flag(drop_arm_levels)
+    assertthat::is.flag(add_total),
+    assertthat::is.string(id),
+    assertthat::is.string(hlt) || is.null(hlt),
+    assertthat::is.string(llt),
+    assertthat::is.string(grade),
+    utils.nest::is_numeric_single(prune_freq),
+    utils.nest::is_numeric_single(prune_diff),
+    assertthat::is.flag(drop_arm_levels)
   )
 
   y <- list()
@@ -459,7 +459,9 @@ template_events_col_by_grade <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- parse_basic_table_args(resolve_basic_table_args(user_table = basic_table_args))
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+  )
 
   # Start layout steps.
   layout_list <- list()
@@ -472,7 +474,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
+        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
         env = list(arm_var = arm_var)
       )
     )
@@ -480,7 +482,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_cols_by(var = arm_var),
+        expr = rtables::split_cols_by(var = arm_var),
         env = list(arm_var = arm_var)
       )
     )
@@ -499,7 +501,12 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = split_rows_by(hlt, child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group(llt)),
+        expr = rtables::split_rows_by(
+          hlt,
+          child_labels = "visible",
+          nested = FALSE,
+          split_fun = trim_levels_in_group(llt)
+        ),
         env = list(hlt = hlt, llt = llt)
       )
     )
@@ -564,7 +571,7 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Full table.
-  y$table <- quote(result <- build_table(lyt = lyt, df = anl, col_counts = col_counts))
+  y$table <- quote(result <- rtables::build_table(lyt = lyt, df = anl, col_counts = col_counts))
 
   # Start sorting table.
   sort_list <- list()
@@ -637,7 +644,7 @@ template_events_col_by_grade <- function(dataname,
     prune_list,
     quote(
       criteria_fun <- function(tr) {
-        is(tr, "ContentRow")
+        inherits(tr, "ContentRow")
       }
     )
   )
@@ -666,29 +673,29 @@ template_events_col_by_grade <- function(dataname,
   prune_pipe <- add_expr(
     prune_pipe,
     quote(
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = criteria_fun)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun)
     )
   )
 
   if (prune_freq > 0 & prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
     )
   } else if (prune_freq > 0 & prune_diff == 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_any)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_any)))
     )
   } else if (prune_freq == 0 & prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table(keep_rows(at_least_percent_diff)))
+      quote(rtables::prune_table(keep_rows(at_least_percent_diff)))
     )
   } else {
     prune_pipe <- add_expr(
       prune_pipe,
-      quote(prune_table())
+      quote(rtables::prune_table())
     )
   }
   prune_pipe <- pipe_expr(prune_pipe)
@@ -731,7 +738,7 @@ template_events_col_by_grade <- function(dataname,
 #'   modules = root_modules(
 #'     tm_t_events_by_grade(
 #'       label = "Adverse Events by Grade Table",
-#'       dataname = 'ADAE',
+#'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       llt = choices_selected(
 #'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
@@ -755,8 +762,8 @@ template_events_col_by_grade <- function(dataname,
 tm_t_events_by_grade <- function(label,
                                  dataname,
                                  parentname = ifelse(
-                                   is(arm_var, "data_extract_spec"),
-                                   datanames_input(arm_var),
+                                   inherits(arm_var, "data_extract_spec"),
+                                   teal.devel::datanames_input(arm_var),
                                    "ADSL"
                                  ),
                                  arm_var,
@@ -778,24 +785,24 @@ tm_t_events_by_grade <- function(label,
                                  post_output = NULL,
                                  basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_by_grade")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(add_total),
-    is_logical_single(col_by_grade),
-    is_numeric_single(prune_freq),
-    is_numeric_single(prune_diff),
-    is_logical_single(drop_arm_levels),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(add_total),
+    utils.nest::is_logical_single(col_by_grade),
+    utils.nest::is_numeric_single(prune_freq),
+    utils.nest::is_numeric_single(prune_diff),
+    utils.nest::is_logical_single(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
@@ -823,41 +830,40 @@ tm_t_events_by_grade <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_t_events_by_grade <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
+  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
-    encoding =  div(
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+    encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("grade"),
         label = "Event Grade",
         data_extract_spec = a$grade,
@@ -866,13 +872,15 @@ ui_t_events_by_grade <- function(id, ...) {
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total),
+        value = a$add_total
+      ),
       checkboxInput(
         ns("col_by_grade"),
         "Display grade groupings in nested columns",
-        value = a$col_by_grade),
-      panel_group(
-        panel_item(
+        value = a$col_by_grade
+      ),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
@@ -901,7 +909,7 @@ ui_t_events_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -925,15 +933,15 @@ srv_t_events_by_grade <- function(input,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
@@ -958,7 +966,7 @@ srv_t_events_by_grade <- function(input,
     )
     teal.devel::validate_has_elements(
       input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" #nolint
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
     )
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
@@ -968,7 +976,7 @@ srv_t_events_by_grade <- function(input,
         need(
           is.factor(anl_filtered[[input_grade]]) &&
             all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
-          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." #nolint
+          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
         )
       )
     } else {
@@ -999,7 +1007,7 @@ srv_t_events_by_grade <- function(input,
     }
 
     # validate inputs
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c(adsl_keys, input_arm_var),
       anl = anl_filtered,
@@ -1012,14 +1020,14 @@ srv_t_events_by_grade <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     input_hlt <- as.vector(anl_m$columns_source$hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
@@ -1057,28 +1065,28 @@ srv_t_events_by_grade <- function(input,
         basic_table_args = basic_table_args
       )
     }
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("pruned_and_sorted_result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, hlt, llt, grade)
     ),
     modal_title = "AE by Grade Table",

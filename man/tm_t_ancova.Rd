@@ -7,8 +7,8 @@
 tm_t_ancova(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   aval_var,
@@ -101,7 +101,7 @@ library(scda)
 adsl <- synthetic_cdisc_data("latest")$adsl
 adqs <- synthetic_cdisc_data("latest")$adqs
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
@@ -150,7 +150,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

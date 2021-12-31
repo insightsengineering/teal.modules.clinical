@@ -7,8 +7,8 @@
 tm_t_smq(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
@@ -97,24 +97,24 @@ names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
 
 cs_baskets <- choices_selected(
-choices = variable_choices(adae, subset = names_baskets),
-selected = names_baskets
+  choices = variable_choices(adae, subset = names_baskets),
+  selected = names_baskets
 )
 
 cs_scopes <- choices_selected(
-choices = variable_choices(adae, subset = names_scopes),
-selected = names_scopes,
-fixed = TRUE
+  choices = variable_choices(adae, subset = names_scopes),
+  selected = names_scopes,
+  fixed = TRUE
 )
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
-    code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
+      code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
     ),
     cdisc_dataset("ADAE", adae,
       code = "ADAE <- synthetic_cdisc_data('latest')$adae"
-      ),
+    ),
     check = TRUE
   ),
   modules = root_modules(
@@ -135,10 +135,8 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }
-
 
 }

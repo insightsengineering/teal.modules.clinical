@@ -1,4 +1,4 @@
-test_that("template_smq generates correct expressions with default arguments", {
+testthat::test_that("template_smq generates correct expressions with default arguments", {
   result <- template_smq(
     parentname = "adsl",
     dataname = "adae",
@@ -11,7 +11,7 @@ test_that("template_smq generates correct expressions with default arguments", {
     smq_varlabel = "Standardized MedDRA Query",
     baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
     sort_criteria = c("freq_desc")
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -26,42 +26,44 @@ test_that("template_smq generates correct expressions with default arguments", {
         df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
         smq_varlabel = "Standardized MedDRA Query",
         keys = unique(c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD"))
-        )
+      )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        split_cols_by(var = "SEX") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::split_cols_by(var = "SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event"
-            )
-          ) %>%
-        split_rows_by(
+          )
+        ) %>%
+        rtables::split_rows_by(
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
           split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]
+        ) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event",
-            nonunique = "Total number of events")
-          ) %>%
+            nonunique = "Total number of events"
+          )
+        ) %>%
         count_occurrences(vars = "AEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "AEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     }),
     sort = quote({
       sorted_result <- result %>%
@@ -70,16 +72,16 @@ test_that("template_smq generates correct expressions with default arguments", {
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !is(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_smq generates correct expressions with custom arguments", {
+testthat::test_that("template_smq generates correct expressions with custom arguments", {
   result <- template_smq(
     parentname = "myadsl",
     dataname = "myadae",
@@ -110,8 +112,8 @@ test_that("template_smq generates correct expressions with custom arguments", {
     }),
     layout = quote(
       lyt <- rtables::basic_table() %>%
-        split_cols_by(var = "myARMCD") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "myARMCD") %>%
+        rtables::add_colcounts() %>%
         summarize_num_patients(
           var = "myUSUBJID",
           .stats = c("unique"),
@@ -119,26 +121,28 @@ test_that("template_smq generates correct expressions with custom arguments", {
             unique = "Total number of patients with at least one adverse event"
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "SMQ",
           child_labels = "visible",
           nested = FALSE,
           split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]
+        ) %>%
         summarize_num_patients(
           var = "myUSUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event",
-            nonunique = "Total number of events")
+            nonunique = "Total number of events"
+          )
         ) %>%
         count_occurrences(vars = "myAEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "myAEDECOD", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
     }),
     sort = quote({
       sorted_result <- result %>%
@@ -147,11 +151,11 @@ test_that("template_smq generates correct expressions with custom arguments", {
     }),
     sort_and_prune = quote({
       all_zero <- function(tr) {
-        !is(tr, "ContentRow") && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

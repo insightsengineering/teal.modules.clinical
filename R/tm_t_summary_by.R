@@ -31,22 +31,22 @@ template_summary_by <- function(parentname,
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
                                 basic_table_args = teal.devel::basic_table_args()) {
-  assert_that(
-    is.string(parentname),
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(id_var),
+  assertthat::assert_that(
+    assertthat::is.string(parentname),
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(id_var),
     is.character(sum_vars),
     is.character(by_vars),
     is.character(var_labels),
-    is.flag(add_total),
-    is.flag(parallel_vars),
-    is.flag(row_groups),
-    is.flag(na.rm),
-    is.string(na_level),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(parallel_vars),
+    assertthat::is.flag(row_groups),
+    assertthat::is.flag(na.rm),
+    assertthat::is.string(na_level),
+    assertthat::is.flag(drop_arm_levels),
     is.character(numeric_stats),
-    is.flag(drop_zero_levels)
+    assertthat::is.flag(drop_zero_levels)
   )
   denominator <- match.arg(denominator)
 
@@ -58,7 +58,7 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr =  anl <- df %>%
+      expr = anl <- df %>%
         df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
       env = list(
         df = as.name(dataname),
@@ -83,7 +83,8 @@ template_summary_by <- function(parentname,
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level))
+      env = list(parentname = as.name(parentname), na_level = na_level)
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -91,23 +92,21 @@ template_summary_by <- function(parentname,
   # Build layout
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   if (row_groups) {
-  # nolint start
     y$layout_cfun <- quote(
-      cfun_unique <- function(x, labelstr = "", .N_col) {
+      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint
         y <- length(unique(x))
         rcell(
-          c(y , y / .N_col),
+          c(y, y / .N_col),
           label = labelstr
         )
       }
     )
-  # nolint end
-}
+  }
 
   layout_list <- list()
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -121,16 +120,15 @@ template_summary_by <- function(parentname,
     layout_list,
     if (add_total) {
       substitute(
-        expr = split_cols_by(
+        expr = rtables::split_cols_by(
           arm_var,
           split_fun = add_overall_level("All Patients", first = FALSE)
         ),
         env = list(arm_var = arm_var)
       )
-    }
-    else {
+    } else {
       substitute(
-        expr = split_cols_by(arm_var),
+        expr = rtables::split_cols_by(arm_var),
         env = list(arm_var = arm_var)
       )
     }
@@ -138,7 +136,7 @@ template_summary_by <- function(parentname,
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   if (denominator == "omit") {
@@ -150,8 +148,7 @@ template_summary_by <- function(parentname,
       denom = ifelse(denominator == "n", "n", "N_col"),
       stats = c(numeric_stats, "count")
     )
-  }
-  else{
+  } else {
     env_vars <- list(
       sum_vars = sum_vars,
       sum_var_labels = var_labels[sum_vars],
@@ -163,9 +160,8 @@ template_summary_by <- function(parentname,
   }
 
   for (by_var in by_vars) {
-
     split_label <- substitute(
-      expr = var_labels(dataname)[[by_var]],
+      expr = rtables::var_labels(dataname)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -175,7 +171,7 @@ template_summary_by <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        split_rows_by(
+        rtables::split_rows_by(
           by_var,
           split_label = split_label,
           split_fun = split_fun,
@@ -192,7 +188,7 @@ template_summary_by <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = summarize_row_groups(var = id_var, cfun = cfun_unique),
+          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique),
           env = list(
             id_var = id_var
           )
@@ -206,13 +202,12 @@ template_summary_by <- function(parentname,
       layout_list,
       if (length(var_labels) > 0) {
         substitute(
-          expr =  split_cols_by_multivar(vars = sum_vars, varlabels = sum_var_labels),
+          expr = split_cols_by_multivar(vars = sum_vars, varlabels = sum_var_labels),
           env = list(sum_vars = sum_vars, sum_var_labels = var_labels[sum_vars])
         )
-      }
-      else {
+      } else {
         substitute(
-          expr =  split_cols_by_multivar(vars = sum_vars),
+          expr = split_cols_by_multivar(vars = sum_vars),
           env = list(sum_vars = sum_vars)
         )
       }
@@ -234,8 +229,7 @@ template_summary_by <- function(parentname,
             ),
             env = env_vars
           )
-        }
-        else {
+        } else {
           substitute(
             expr = summarize_colvars(
               vars = sum_vars,
@@ -243,10 +237,10 @@ template_summary_by <- function(parentname,
               denom = denom,
               .stats = stats
             ),
-            env = env_vars)
+            env = env_vars
+          )
         }
-      }
-      else {
+      } else {
         if (length(var_labels > 0)) {
           substitute(
             expr = summarize_vars(
@@ -259,8 +253,7 @@ template_summary_by <- function(parentname,
             ),
             env = env_vars
           )
-        }
-        else {
+        } else {
           substitute(
             expr = summarize_vars(
               vars = sum_vars,
@@ -285,12 +278,17 @@ template_summary_by <- function(parentname,
     y$table <- substitute(
       expr = {
         all_zero <- function(tr) {
-          if (!is(tr, "TableRow") || is(tr, "LabelRow"))
+          if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow")) {
             return(FALSE)
+          }
           rvs <- unlist(unname(row_values(tr)))
           all(rvs == 0)
         }
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>% trim_rows(criteria = all_zero)
+        result <- rtables::build_table(
+          lyt = lyt,
+          df = anl,
+          alt_counts_df = parent
+        ) %>% rtables::trim_rows(criteria = all_zero)
         result
       },
       env = list(parent = as.name(parentname))
@@ -298,7 +296,7 @@ template_summary_by <- function(parentname,
   } else {
     y$table <- substitute(
       expr = {
-        result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
         result
       },
       env = list(parent = as.name(parentname))
@@ -360,22 +358,22 @@ template_summary_by <- function(parentname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 tm_t_summary_by <- function(label,
                             dataname,
                             parentname = ifelse(
-                              is(arm_var, "data_extract_spec"),
-                              datanames_input(arm_var),
+                              inherits(arm_var, "data_extract_spec"),
+                              teal.devel::datanames_input(arm_var),
                               "ADSL"
-                              ),
+                            ),
                             arm_var,
                             by_vars,
                             summarize_vars,
                             id_var = choices_selected(
-                              variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
+                              variable_choices(dataname, subset = "USUBJID"),
+                              selected = "USUBJID", fixed = TRUE
                             ),
                             paramcd = NULL,
                             add_total = TRUE,
@@ -392,29 +390,29 @@ tm_t_summary_by <- function(label,
                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
   useNA <- match.arg(useNA) # nolint
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(id_var),
-    is.flag(add_total),
-    is.flag(drop_zero_levels),
-    is_logical_single(parallel_vars),
-    is_logical_single(row_groups),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_zero_levels),
+    utils.nest::is_logical_single(parallel_vars),
+    utils.nest::is_logical_single(row_groups),
     useNA %in% c("ifany", "no"), # nolint
-    is_character_single(na_level),
+    utils.nest::is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
-    is_logical_single(drop_arm_levels),
+    utils.nest::is_logical_single(drop_arm_levels),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
   if (!all(numeric_stats %in% allowed_numeric_stats)) {
@@ -428,10 +426,10 @@ tm_t_summary_by <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    paramcd = if_not_null(
+    paramcd = utils.nest::if_not_null(
       paramcd,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
-      ),
+    ),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
   )
@@ -449,53 +447,52 @@ tm_t_summary_by <- function(label,
         label = label,
         na_level = na_level,
         basic_table_args = basic_table_args
-        )
-      ),
-    filters = get_extract_datanames(data_extract_list)
+      )
+    ),
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_summary_by <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$id_var,
     a$paramcd,
     a$by_vars,
     a$summarize_vars
-    )
+  )
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
-    encoding =  div(
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+    encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "id_var",  "paramcd", "by_vars", "summarize_vars")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      if_not_null(
+      utils.nest::if_not_null(
         a$paramcd,
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("paramcd"),
           label = "Select Endpoint",
           data_extract_spec = a$paramcd,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
         data_extract_spec = a$by_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
         data_extract_spec = a$summarize_vars,
@@ -503,8 +500,8 @@ ui_summary_by <- function(id, ...) {
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
       checkboxInput(ns("row_groups"), "Show summarize variables in row groups", value = a$row_groups),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional table settings",
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
@@ -551,10 +548,10 @@ ui_summary_by <- function(id, ...) {
           }
         )
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional Variables Info",
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
@@ -563,7 +560,7 @@ ui_summary_by <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -590,25 +587,25 @@ srv_summary_by <- function(input,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
   if (!is.null(paramcd)) {
     vars[["paramcd"]] <- paramcd
   }
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     vars,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
@@ -624,7 +621,7 @@ srv_summary_by <- function(input,
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-    input_paramcd <- if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
+    input_paramcd <- utils.nest::if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
 
     # validate inputs
     validate(
@@ -632,12 +629,14 @@ srv_summary_by <- function(input,
       need(input_id_var, "Please select a subject identifier."),
       need(input_summarize_vars, "Please select a summarize variable."),
       if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-        need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select Endpoint` is not selected.")
-        },
+        need(
+          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+          "`Select Endpoint` is not selected."
+        )
+      },
       need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
     )
-    validate_standard_inputs(
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
@@ -657,14 +656,14 @@ srv_summary_by <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     my_calls <- template_summary_by(
       parentname = "ANL_ADSL",
@@ -674,7 +673,7 @@ srv_summary_by <- function(input,
       by_vars = anl_selectors()$by_vars()$select_ordered,
       var_labels = get_var_labels(datasets, dataname, anl_selectors()$summarize_vars()$select_ordered),
       id_var = as.vector(anl_m$columns_source$id_var),
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), #nolint
+      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
       na_level = na_level,
       numeric_stats = input$numeric_stats,
       denominator = input$denominator,
@@ -685,30 +684,30 @@ srv_summary_by <- function(input,
       drop_zero_levels = input$drop_zero_levels,
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, id_var, paramcd, by_vars, summarize_vars)
-      ),
+    ),
     modal_title = "Summary by Row Groups Table",
     code_header = label
   )

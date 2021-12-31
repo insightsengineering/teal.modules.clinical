@@ -7,8 +7,8 @@
 tm_t_shift_by_arm(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   paramcd,
   visit_var,
@@ -107,25 +107,29 @@ app <- init(
       label = "Shift by Arm Table",
       dataname = "ADEG",
       arm_var = choices_selected(
-        variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+        variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        selected = "ARM"
       ),
       paramcd = choices_selected(
-      value_choices(adeg, "PARAMCD"), selected = "HR"
+        value_choices(adeg, "PARAMCD"),
+        selected = "HR"
       ),
       visit_var = choices_selected(
-      value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+        value_choices(adeg, "AVISIT"),
+        selected = "POST-BASELINE MINIMUM"
       ),
       aval_var = choices_selected(
-      variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+        variable_choices(adeg, subset = "ANRIND"),
+        selected = "ANRIND", fixed = TRUE
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+        variable_choices(adeg, subset = "BNRIND"),
+        selected = "BNRIND", fixed = TRUE
       ),
       useNA = "ifany"
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

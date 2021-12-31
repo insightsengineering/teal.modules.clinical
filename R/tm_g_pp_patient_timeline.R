@@ -34,37 +34,45 @@ template_patient_timeline <- function(dataname = "ANL",
                                       ggplot2_args = teal.devel::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
-  assert_that(
-    is.string(dataname),
-    is.string(aeterm) || is.null(aeterm),
-    is.string(aetime_start) || is.null(aetime_start),
-    is.string(aetime_end) || is.null(aetime_end),
-    is.string(dstime_start) || is.null(dstime_start),
-    is.string(dstime_end) || is.null(dstime_end),
-    is.string(cmdecod) || is.null(cmdecod),
-    is.string(aerelday_start) || is.null(aerelday_start),
-    is.string(dsrelday_start) || is.null(dsrelday_start),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(aeterm) || is.null(aeterm),
+    assertthat::is.string(aetime_start) || is.null(aetime_start),
+    assertthat::is.string(aetime_end) || is.null(aetime_end),
+    assertthat::is.string(dstime_start) || is.null(dstime_start),
+    assertthat::is.string(dstime_end) || is.null(dstime_end),
+    assertthat::is.string(cmdecod) || is.null(cmdecod),
+    assertthat::is.string(aerelday_start) || is.null(aerelday_start),
+    assertthat::is.string(dsrelday_start) || is.null(dsrelday_start),
     is.numeric(font_size),
     is.logical(relative_day),
-    is.string(patient_id)
+    assertthat::is.string(patient_id)
   )
 
   y <- list()
   y$chart <- list()
 
   chart_list <- if (!relative_day) {
-    parsed_ggplot2_args <- parse_ggplot2_args(
-      resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
+      teal.devel::resolve_ggplot2_args(
         user_plot = ggplot2_args,
-        module_plot = ggplot2_args(
+        module_plot = teal.devel::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
-          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
-                                               list(font_size_var = font_size)),
-                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                              list(font_size_var = font_size)),
-                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                               list(font_size_var = font_size)),
-                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)))
+          theme = list(
+            plot.title = substitute(
+              element_text(hjust = 0, size = font_size_var),
+              list(font_size_var = font_size)
+            ),
+            axis.text = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            axis.title = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size))
+          )
         )
       )
     )
@@ -143,12 +151,12 @@ template_patient_timeline <- function(dataname = "ANL",
         },
         env = list(
           dataname = as.name(dataname),
-          aeterm = if_not_empty(aeterm, as.name(aeterm)),
-          aetime_start = if_not_empty(aetime_start, as.name(aetime_start)),
-          aetime_end = if_not_empty(aetime_end, as.name(aetime_end)),
-          dstime_start = if_not_empty(dstime_start, as.name(dstime_start)),
-          dstime_end = if_not_empty(dstime_end, as.name(dstime_end)),
-          cmdecod = if_not_empty(cmdecod, as.name(cmdecod)),
+          aeterm = utils.nest::if_not_empty(aeterm, as.name(aeterm)),
+          aetime_start = utils.nest::if_not_empty(aetime_start, as.name(aetime_start)),
+          aetime_end = utils.nest::if_not_empty(aetime_end, as.name(aetime_end)),
+          dstime_start = utils.nest::if_not_empty(dstime_start, as.name(dstime_start)),
+          dstime_end = utils.nest::if_not_empty(dstime_end, as.name(dstime_end)),
+          cmdecod = utils.nest::if_not_empty(cmdecod, as.name(cmdecod)),
           aeterm_var = aeterm,
           aetime_start_var = aetime_start,
           aetime_end_var = aetime_end,
@@ -163,20 +171,27 @@ template_patient_timeline <- function(dataname = "ANL",
       )
     )
   } else {
-
-    parsed_ggplot2_args <- parse_ggplot2_args(
-      resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
+      teal.devel::resolve_ggplot2_args(
         user_plot = ggplot2_args,
-        module_plot = ggplot2_args(
+        module_plot = teal.devel::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
-          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
-                                               list(font_size_var = font_size)),
-                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                              list(font_size_var = font_size)),
-                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                               list(font_size_var = font_size)),
-                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
-                       legend.position = "none")
+          theme = list(
+            plot.title = substitute(
+              element_text(hjust = 0, size = font_size_var),
+              list(font_size_var = font_size)
+            ),
+            axis.text = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            axis.title = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
+            legend.position = "none"
+          )
         )
       ),
       ggtheme = "classic"
@@ -231,11 +246,16 @@ template_patient_timeline <- function(dataname = "ANL",
               geom_label() +
               theme_void()
           } else {
-            patient_timeline_plot <- ggplot(vistime_data,
-                                            aes(x = start, y = event, xend = end, yend = event, color = color)) +
+            patient_timeline_plot <- ggplot(
+              vistime_data,
+              aes(x = start, y = event, xend = end, yend = event, color = color)
+            ) +
               geom_segment(size = 4) +
               facet_grid(group ~ ., scales = "free", space = "free") +
-              scale_x_continuous(breaks = scales::pretty_breaks())  + labs + ggthemes + themes
+              scale_x_continuous(breaks = scales::pretty_breaks()) +
+              labs +
+              ggthemes +
+              themes
           }
           patient_timeline_plot
         },
@@ -328,7 +348,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMDOSU <- "U"
@@ -348,7 +368,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication",
 #'           "Study Day of End of Medication")',
-#'                   keys = adcm_keys
+#'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -429,16 +449,16 @@ tm_g_pp_patient_timeline <- function(label,
                                      post_output = NULL,
                                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname_adcm))
-  assert_that(is_character_single(dataname_adae))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
-              msg = "pre_output should be either null or shiny.tag type of object"
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname_adcm))
+  assertthat::assert_that(utils.nest::is_character_single(dataname_adae))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
+    msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
-              msg = "post_output should be either null or shiny.tag type of object"
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
+    msg = "post_output should be either null or shiny.tag type of object"
   )
 
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
@@ -446,14 +466,19 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
-  assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
-  assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
-  assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
-  assert_that(
+  assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
+  assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
+  assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
+  assertthat::assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
+  assertthat::assert_that(
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
       (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )
@@ -462,16 +487,22 @@ tm_g_pp_patient_timeline <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    aeterm = if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
-    cmdecod = if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
-    aetime_start = if_not_null(aetime_start, cs_to_des_select(aetime_start, dataname = dataname_adae)),
-    aetime_end = if_not_null(aetime_end, cs_to_des_select(aetime_end, dataname = dataname_adae)),
-    dstime_start = if_not_null(dstime_start, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
-    dstime_end = if_not_null(dstime_end, cs_to_des_select(dstime_end, dataname = dataname_adcm)),
-    aerelday_start = if_not_null(aerelday_start, cs_to_des_select(aerelday_start, dataname = dataname_adae)),
-    aerelday_end = if_not_null(aerelday_end, cs_to_des_select(aerelday_end, dataname = dataname_adae)),
-    dsrelday_start = if_not_null(dsrelday_start, cs_to_des_select(dsrelday_start, dataname = dataname_adcm)),
-    dsrelday_end = if_not_null(dsrelday_end, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
+    aeterm = utils.nest::if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
+    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
+    aetime_start = utils.nest::if_not_null(aetime_start, cs_to_des_select(aetime_start, dataname = dataname_adae)),
+    aetime_end = utils.nest::if_not_null(aetime_end, cs_to_des_select(aetime_end, dataname = dataname_adae)),
+    dstime_start = utils.nest::if_not_null(dstime_start, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
+    dstime_end = utils.nest::if_not_null(dstime_end, cs_to_des_select(dstime_end, dataname = dataname_adcm)),
+    aerelday_start = utils.nest::if_not_null(
+      aerelday_start,
+      cs_to_des_select(aerelday_start, dataname = dataname_adae)
+    ),
+    aerelday_end = utils.nest::if_not_null(aerelday_end, cs_to_des_select(aerelday_end, dataname = dataname_adae)),
+    dsrelday_start = utils.nest::if_not_null(
+      dsrelday_start,
+      cs_to_des_select(dsrelday_start, dataname = dataname_adcm)
+    ),
+    dsrelday_end = utils.nest::if_not_null(dsrelday_end, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
   )
 
   module(
@@ -498,7 +529,7 @@ tm_g_pp_patient_timeline <- function(label,
 
 ui_g_patient_timeline <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     ui_args$aeterm,
     ui_args$cmdecod,
     ui_args$aetime_start,
@@ -512,15 +543,16 @@ ui_g_patient_timeline <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("patient_timeline_plot")),
+  teal.devel::standard_layout(
+    output = teal.devel::plot_with_settings_ui(id = ns("patient_timeline_plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(
+      teal.devel::datanames_input(
         ui_args[c(
           "aeterm", "cmdecod",
           "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end")]
+          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
+        )]
       ),
       optionalSelectInput(
         ns("patient_id"),
@@ -528,13 +560,13 @@ ui_g_patient_timeline <- function(id, ...) {
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select CMDECOD variable:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aeterm"),
         label = "Select AETERM variable:",
         data_extract_spec = ui_args$aeterm,
@@ -548,13 +580,13 @@ ui_g_patient_timeline <- function(id, ...) {
             ns = ns,
             if (!is.null(ui_args$aerelday_start)) {
               shiny::tagList(
-                data_extract_ui(
+                teal.devel::data_extract_ui(
                   id = ns("aerelday_start"),
                   label = "Select AE relative start date variable:",
                   data_extract_spec = ui_args$aerelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                data_extract_ui(
+                teal.devel::data_extract_ui(
                   id = ns("aerelday_end"),
                   label = "Select AE relative end date variable:",
                   data_extract_spec = ui_args$aerelday_end,
@@ -564,13 +596,13 @@ ui_g_patient_timeline <- function(id, ...) {
             },
             if (!is.null(ui_args$dsrelday_start)) {
               shiny::tagList(
-                data_extract_ui(
+                teal.devel::data_extract_ui(
                   id = ns("dsrelday_start"),
                   label = "Select Medication relative start date variable:",
                   data_extract_spec = ui_args$dsrelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                data_extract_ui(
+                teal.devel::data_extract_ui(
                   id = ns("dsrelday_end"),
                   label = "Select Medication relative end date variable:",
                   data_extract_spec = ui_args$dsrelday_end,
@@ -586,38 +618,38 @@ ui_g_patient_timeline <- function(id, ...) {
       shiny::conditionalPanel(
         paste0("input.relday_x_axis == false"),
         ns = ns,
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("aetime_start"),
           label = "Select ASTDTM variable:",
           data_extract_spec = ui_args$aetime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("aetime_end"),
           label = "Select AENDTM variable:",
           data_extract_spec = ui_args$aetime_end,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("dstime_start"),
           label = "Select TRTSDTM variable:",
           data_extract_spec = ui_args$dstime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("dstime_end"),
           label = "Select TRTEDTM variable:",
           data_extract_spec = ui_args$dstime_end,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      panel_item(
+      teal.devel::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
         optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -648,7 +680,7 @@ srv_g_patient_timeline <- function(input,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -656,23 +688,24 @@ srv_g_patient_timeline <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
-      } else {
-        intersect(patient_id(), patient_data_base())
-      }
-    )
-  },
-  ignoreInit = TRUE
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
+      )
+    },
+    ignoreInit = TRUE
   )
 
   # Patient timeline tab ----
-  p_timeline_merged_data <- data_merge_module(
+  p_timeline_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
@@ -708,7 +741,7 @@ srv_g_patient_timeline <- function(input,
       need(
         input$relday_x_axis ||
           (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-          sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+            sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(
@@ -723,16 +756,28 @@ srv_g_patient_timeline <- function(input,
 
     # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
     # AENDY columns to data_merge_module call above.
-    aerelday_start_name <- if_not_empty(aerelday_start, p_timeline_merged_data()$columns_source$aerelday_start[[1]])
-    aerelday_end_name <- if_not_empty(aerelday_end, p_timeline_merged_data()$columns_source$aerelday_end[[1]])
-    dsrelday_start_name <- if_not_empty(dsrelday_start, p_timeline_merged_data()$columns_source$dsrelday_start[[1]])
-    dsrelday_end_name <- if_not_empty(dsrelday_end, p_timeline_merged_data()$columns_source$dsrelday_end[[1]])
+    aerelday_start_name <- utils.nest::if_not_empty(
+      aerelday_start,
+      p_timeline_merged_data()$columns_source$aerelday_start[[1]]
+    )
+    aerelday_end_name <- utils.nest::if_not_empty(
+      aerelday_end,
+      p_timeline_merged_data()$columns_source$aerelday_end[[1]]
+    )
+    dsrelday_start_name <- utils.nest::if_not_empty(
+      dsrelday_start,
+      p_timeline_merged_data()$columns_source$dsrelday_start[[1]]
+    )
+    dsrelday_end_name <- utils.nest::if_not_empty(
+      dsrelday_end,
+      p_timeline_merged_data()$columns_source$dsrelday_end[[1]]
+    )
 
     validate(
       need(
         !input$relday_x_axis ||
           (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
-          sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
+            sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(
@@ -742,12 +787,12 @@ srv_g_patient_timeline <- function(input,
       )
     )
 
-    patient_timeline_stack <- chunks$new()
+    patient_timeline_stack <- teal.devel::chunks$new()
     time_line_stack_push <- function(...) {
-      chunks_push(..., chunks = patient_timeline_stack)
+      teal.devel::chunks_push(..., chunks = patient_timeline_stack)
     }
 
-    chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
+    teal.devel::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
 
     time_line_stack_push(substitute(
       expr = {
@@ -777,18 +822,18 @@ srv_g_patient_timeline <- function(input,
     )
 
     lapply(patient_timeline_calls, time_line_stack_push)
-    chunks_safe_eval(chunks = patient_timeline_stack)
+    teal.devel::chunks_safe_eval(chunks = patient_timeline_stack)
     patient_timeline_stack
   })
 
   patient_timeline_plot <- reactive({
-    chunks_reset()
-    chunks_push_chunks(patient_timeline_calls())
-    chunks_get_var("patient_timeline_plot")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(patient_timeline_calls())
+    teal.devel::chunks_get_var("patient_timeline_plot")
   })
 
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "patient_timeline_plot",
     plot_r = patient_timeline_plot,
     height = plot_height,
@@ -796,10 +841,10 @@ srv_g_patient_timeline <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(
+    datanames = teal.devel::get_extract_datanames(list(
       aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
     )),
     modal_title = label

@@ -7,8 +7,8 @@
 tm_g_ipp(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   paramcd,
   id_var = choices_selected(variable_choices(dataname, "USUBJID"), "USUBJID", fixed =
@@ -105,7 +105,7 @@ adlb <- adlb \%>\% filter(USUBJID \%in\% adsl$USUBJID)
 
 adsl <- df_explicit_na(adsl)
 adlb <- df_explicit_na(adlb) \%>\%
- dplyr::filter(AVISIT != "SCREENING")
+  dplyr::filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(
@@ -154,16 +154,15 @@ app <- init(
         "AVISIT"
       ),
       base_var = choices_selected(
-         variable_choices(adlb, c("BASE")),
-         "BASE",
-         fixed = TRUE
+        variable_choices(adlb, c("BASE")),
+        "BASE",
+        fixed = TRUE
       ),
       add_baseline_hline = FALSE,
       separate_by_obs = FALSE
     )
   )
 )
-
 \dontrun{
 shinyApp(ui = app$ui, server = app$server)
 }

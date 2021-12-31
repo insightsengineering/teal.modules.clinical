@@ -82,7 +82,7 @@ app <- init(
         dataname = "ADSL",
         select = select_spec(
           choices = c("ARMCD", "BMRKR2"),
-          selected = c("ARMCD" ),
+          selected = c("ARMCD"),
           multiple = FALSE,
           fixed = FALSE
         )
@@ -130,7 +130,6 @@ app <- init(
     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

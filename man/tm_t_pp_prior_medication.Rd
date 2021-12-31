@@ -79,7 +79,7 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADCM", ADCM,
-                  code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
       ADCM$CMDOSE <- 1
       ADCM$CMTRT <- ADCM$CMCAT
@@ -94,7 +94,7 @@ app <- init(
           "Reported Name of Drug, Med, or Therapy",
           "Study Day of Start of Medication"
          )',
-    keys = adcm_keys
+      keys = adcm_keys
     ),
     check = TRUE
   ),

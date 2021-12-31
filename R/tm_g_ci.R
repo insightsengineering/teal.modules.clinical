@@ -80,8 +80,7 @@ template_g_ci <- function(dataname, # nousage # nolint
           position = position_dodge(width = .5)
         ),
         env = list(
-          fun = switch(
-            stat,
+          fun = switch(stat,
             mean = substitute(stat_mean_ci),
             median = substitute(stat_median_ci)
           )
@@ -99,8 +98,7 @@ template_g_ci <- function(dataname, # nousage # nolint
           position = position_dodge(width = .5)
         ),
         env = list(
-          fun = switch(
-            stat,
+          fun = switch(stat,
             mean = substitute(
               expr = function(x) stat_mean_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
@@ -124,8 +122,7 @@ template_g_ci <- function(dataname, # nousage # nolint
         position = position_dodge(width = .5)
       ),
       env = list(
-        fun = switch(
-          stat,
+        fun = switch(stat,
           mean = quote(mean),
           median = quote(median)
         )
@@ -133,16 +130,23 @@ template_g_ci <- function(dataname, # nousage # nolint
     )
   )
 
-  parsed_ggplot2_args <- parse_ggplot2_args(
-    resolve_ggplot2_args(
+  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
+    teal.devel::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = ggplot2_args(
-        labs = list(title = "Confidence Interval Plot by Treatment Group",
-                    caption = sprintf("%s and %i%% CIs for %s are displayed.",
-                                      switch(stat, mean = "Mean", median = "Median"),
-                                      100 * conf_level,
-                                      stat),
-                    x = "Treatment Group"),
+      module_plot = teal.devel::ggplot2_args(
+        labs = list(
+          title = "Confidence Interval Plot by Treatment Group",
+          caption = sprintf(
+            "%s and %i%% CIs for %s are displayed.",
+            switch(stat,
+              mean = "Mean",
+              median = "Median"
+            ),
+            100 * conf_level,
+            stat
+          ),
+          x = "Treatment Group"
+        ),
         theme = list()
       )
     )
@@ -164,10 +168,9 @@ template_g_ci <- function(dataname, # nousage # nolint
     expr = {
       gg <- graph_expr
       print(gg)
-      },
+    },
     env = list(graph_expr = pipe_expr(graph_list, pipe_str = "+"))
   )
-
 }
 
 #' Teal Module: Confidence Interval Plot (`CIG01`)
@@ -200,7 +203,7 @@ template_g_ci <- function(dataname, # nousage # nolint
 #'         dataname = "ADSL",
 #'         select = select_spec(
 #'           choices = c("ARMCD", "BMRKR2"),
-#'           selected = c("ARMCD" ),
+#'           selected = c("ARMCD"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
@@ -248,7 +251,6 @@ template_g_ci <- function(dataname, # nousage # nolint
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
@@ -266,16 +268,16 @@ tm_g_ci <- function(label,
                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ci")
   stat <- match.arg(stat)
-  stop_if_not(
+  utils.nest::stop_if_not(
     is.character(label),
-    is_class_list("data_extract_spec")(list(y_var, x_var, color)),
+    utils.nest::is_class_list("data_extract_spec")(list(y_var, x_var, color)),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -283,8 +285,12 @@ tm_g_ci <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -312,22 +318,22 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
   ns <- NS(id)
   args <- list(...)
 
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot")),
+  teal.devel::standard_layout(
+    output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(args[c("x_var", "y_var", "color")]),
-      data_extract_ui(
+      teal.devel::datanames_input(args[c("x_var", "y_var", "color")]),
+      teal.devel::data_extract_ui(
         id = ns("x_var"),
         label = "Treatment (x axis)",
         data_extract_spec = args$x_var
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("y_var"),
         label = "Analyzed Value (y axis)",
         data_extract_spec = args$y_var
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("color"),
         label = "Groups (color)",
         data_extract_spec = args$color
@@ -347,7 +353,7 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
         selected = args$stat
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
@@ -366,9 +372,9 @@ srv_g_ci <- function(input, # nousage # nolint
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  merged_data <- data_merge_module(
+  merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(x_var = x_var, y_var = y_var, color = color)
   )
@@ -386,7 +392,7 @@ srv_g_ci <- function(input, # nousage # nolint
         "Select an analyzed value (y axis)."
       )
     )
-    validate_has_data(merged_data()$data(), min_nrow = 2)
+    teal.devel::validate_has_data(merged_data()$data(), min_nrow = 2)
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
@@ -412,27 +418,27 @@ srv_g_ci <- function(input, # nousage # nolint
 
   eval_call <- reactive({
     validate_data()
-    chunks_reset()
-    chunks_push_data_merge(x = merged_data())
-    chunks_push(list_calls())
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_data_merge(x = merged_data())
+    teal.devel::chunks_push(list_calls())
   })
 
   plot_r <- reactive({
     eval_call()
-    chunks_safe_eval()
-    chunks_get_var("gg")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("gg")
   })
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(x_var, y_var, color)),
+    datanames = teal.devel::get_extract_datanames(list(x_var, y_var, color)),
     modal_title = label
   )
 
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,

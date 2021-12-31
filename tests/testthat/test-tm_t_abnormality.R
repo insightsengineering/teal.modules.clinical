@@ -1,4 +1,4 @@
-test_that("template_abnormality generates correct expressions with default arguments", {
+testthat::test_that("template_abnormality generates correct expressions with default arguments", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -33,16 +33,16 @@ test_that("template_abnormality generates correct expressions with default argum
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by("PARAM",
-          split_label = var_labels(adlb)[["PARAM"]],
+        rtables::split_rows_by("PARAM",
+          split_label = rtables::var_labels(adlb)[["PARAM"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -55,15 +55,15 @@ test_that("template_abnormality generates correct expressions with default argum
         append_varlabels(adlb, "ANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality generates correct expressions with custom arguments", {
+testthat::test_that("template_abnormality generates correct expressions with custom arguments", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -100,17 +100,17 @@ test_that("template_abnormality generates correct expressions with custom argume
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "PARAMCD",
-          split_label = var_labels(adlb)[["PARAMCD"]],
+          split_label = rtables::var_labels(adlb)[["PARAMCD"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -119,19 +119,19 @@ test_that("template_abnormality generates correct expressions with custom argume
           abnormal = list(Low = "LOW", Medium = "MEDIUM"),
           variables = list(id = "USUBJID", baseline = "MYBASELINE"),
           exclude_base_abn = TRUE
-      ) %>%
+        ) %>%
         append_varlabels(adlb, "MYANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_abnormality generates correct expressions with customized na_level", {
+testthat::test_that("template_abnormality generates correct expressions with customized na_level", {
   result <- template_abnormality(
     dataname = "adlb",
     parentname = "adsl",
@@ -167,18 +167,18 @@ test_that("template_abnormality generates correct expressions with customized na
     }),
     layout = quote(
       lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
-        split_rows_by(
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           "AVISIT",
-          split_label = var_labels(adlb)[["AVISIT"]],
+          split_label = rtables::var_labels(adlb)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
-        split_rows_by("PARAM",
-                      split_label = var_labels(adlb)[["PARAM"]],
-                      label_pos = "topleft",
-                      split_fun = trim_levels_to_map(map = map)
+        rtables::split_rows_by("PARAM",
+          split_label = rtables::var_labels(adlb)[["PARAM"]],
+          label_pos = "topleft",
+          split_fun = trim_levels_to_map(map = map)
         ) %>%
         count_abnormal(
           var = "ANRIND",
@@ -189,10 +189,10 @@ test_that("template_abnormality generates correct expressions with customized na
         append_varlabels(adlb, "ANRIND", indent = 2L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
-        prune_table()
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
+        rtables::prune_table()
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

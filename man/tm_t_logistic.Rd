@@ -7,8 +7,8 @@
 tm_t_logistic(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var = NULL,
   arm_ref_comp = NULL,
   paramcd,
@@ -85,7 +85,7 @@ ADSL <- synthetic_cdisc_data("latest")$adsl
 ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
   filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")
@@ -123,7 +123,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(ui = app$ui, server = app$server)
 }

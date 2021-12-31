@@ -7,8 +7,8 @@
 tm_t_events_by_grade(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   hlt,
   llt,
@@ -98,7 +98,7 @@ app <- init(
   modules = root_modules(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
-      dataname = 'ADAE',
+      dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
         choices = variable_choices(adae, c("AETERM", "AEDECOD")),

@@ -7,8 +7,8 @@
 tm_t_summary_by(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   by_vars,
   summarize_vars,
@@ -145,7 +145,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

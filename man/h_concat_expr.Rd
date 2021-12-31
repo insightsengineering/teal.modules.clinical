@@ -17,14 +17,13 @@ Deparse an expression into a \code{string}.
 }
 \examples{
 expr <- quote(
-  basic_table() \%>\%
-  split_cols_by(var = "ARMCD") \%>\%
-  test_proportion_diff(
-    vars = "rsp", method = "cmh", variables = list(strata = "strat")
-  ) \%>\%
-  build_table(df = dta)
+  rtables::basic_table() \%>\%
+    rtables::split_cols_by(var = "ARMCD") \%>\%
+    test_proportion_diff(
+      vars = "rsp", method = "cmh", variables = list(strata = "strat")
+    ) \%>\%
+    rtables::build_table(df = dta)
 )
 
 teal.modules.clinical:::h_concat_expr(expr)
-
 }

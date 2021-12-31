@@ -7,8 +7,8 @@
 tm_t_mult_events(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   seq_var,
   hlt,
@@ -77,15 +77,15 @@ Teal Module: Multiple Events by Term
 library(dplyr)
 library(scda)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adcm <- synthetic_cdisc_data("latest")$adcm
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADCM <- synthetic_cdisc_data("latest")$adcm
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- teal::init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADCM", adcm,
-      code = 'adcm <- synthetic_cdisc_data("latest")$adcm',
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADCM", ADCM,
+      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm',
       keys = adcm_keys
     )
   ),
@@ -96,11 +96,11 @@ app <- teal::init(
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
       hlt = choices_selected(
-        choices = variable_choices(adcm, c("ATC1", "ATC2", "ATC3", "ATC4")),
+        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
       llt = choices_selected(
-        choices = variable_choices(adcm, c("CMDECOD")),
+        choices = variable_choices(ADCM, c("CMDECOD")),
         selected = c("CMDECOD")
       ),
       add_total = TRUE,

@@ -11,31 +11,28 @@
 #'
 #' @seealso [tm_t_smq()]
 #'
-template_smq <- function(
-  dataname,
-  parentname,
-  arm_var,
-  llt = "AEDECOD",
-  add_total = TRUE,
-  sort_criteria = c("freq_desc", "alpha"),
-  drop_arm_levels = TRUE,
-  na_level = "<Missing>",
-  smq_varlabel = "Standardized MedDRA Query",
-  baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
-  id_var = "USUBJID",
-  basic_table_args = teal.devel::basic_table_args()
-) {
-
-  assert_that(
-    is.string(parentname),
-    is.string(dataname),
+template_smq <- function(dataname,
+                         parentname,
+                         arm_var,
+                         llt = "AEDECOD",
+                         add_total = TRUE,
+                         sort_criteria = c("freq_desc", "alpha"),
+                         drop_arm_levels = TRUE,
+                         na_level = "<Missing>",
+                         smq_varlabel = "Standardized MedDRA Query",
+                         baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
+                         id_var = "USUBJID",
+                         basic_table_args = teal.devel::basic_table_args()) {
+  assertthat::assert_that(
+    assertthat::is.string(parentname),
+    assertthat::is.string(dataname),
     is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    is.string(id_var),
-    is.string(llt),
-    is.flag(add_total),
-    is.flag(drop_arm_levels),
-    is.string(na_level),
-    is.string(smq_varlabel),
+    assertthat::is.string(id_var),
+    assertthat::is.string(llt),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(na_level),
+    assertthat::is.string(smq_varlabel),
     is.character(baskets)
   )
 
@@ -102,9 +99,11 @@ template_smq <- function(
     substitute(
       anl <- df_explicit_na(
         dataname,
-        na_level = na_level),
-      env = list(dataname = as.name("anl"),
-                 na_level = na_level
+        na_level = na_level
+      ),
+      env = list(
+        dataname = as.name("anl"),
+        na_level = na_level
       )
     )
   )
@@ -114,18 +113,19 @@ template_smq <- function(
     substitute(
       parentname <- df_explicit_na(
         parentname,
-        na_level = na_level),
+        na_level = na_level
+      ),
       env = list(
         parentname = as.name(parentname),
         na_level = na_level
-        )
       )
+    )
   )
 
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- parse_basic_table_args(
-    resolve_basic_table_args(
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -134,11 +134,11 @@ template_smq <- function(
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
-      substitute(
-        expr = expr_basic_table_args %>%
-          split_cols_by(var = arm_var),
-        env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
-      )
+    substitute(
+      expr = expr_basic_table_args %>%
+        rtables::split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
+    )
   )
 
   if (length(arm_var) == 2) {
@@ -146,12 +146,12 @@ template_smq <- function(
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = split_cols_by(var = nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(var = nested_col, split_fun = drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
         substitute(
-          expr = split_cols_by(var = nested_col),
+          expr = rtables::split_cols_by(var = nested_col),
           env = list(nested_col = arm_var[[2]])
         )
       }
@@ -160,14 +160,14 @@ template_smq <- function(
 
   layout_list <- add_expr(
     layout_list,
-    quote(add_colcounts())
+    quote(rtables::add_colcounts())
   )
 
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
       quote(
-        add_overall_col(label = "All Patients")
+        rtables::add_overall_col(label = "All Patients")
       )
     )
   }
@@ -184,12 +184,12 @@ template_smq <- function(
       ),
       env = list(
         id_var = id_var
-        )
+      )
     )
   )
 
   split_label <- substitute(
-    expr = var_labels(dataname)[["SMQ"]],
+    expr = rtables::var_labels(dataname)[["SMQ"]],
     env = list(
       dataname = as.name("anl")
     )
@@ -198,7 +198,7 @@ template_smq <- function(
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = split_rows_by(
+      expr = rtables::split_rows_by(
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
@@ -210,7 +210,7 @@ template_smq <- function(
       env = list(
         llt = llt,
         split_label = split_label
-       )
+      )
     )
   )
 
@@ -227,7 +227,7 @@ template_smq <- function(
       ),
       env = list(
         id_var = id_var
-        )
+      )
     )
   )
 
@@ -237,7 +237,7 @@ template_smq <- function(
       expr = count_occurrences(vars = llt, drop = FALSE),
       env = list(
         llt = llt
-        )
+      )
     )
   )
 
@@ -259,37 +259,37 @@ template_smq <- function(
 
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
 
   if (sort_criteria == "freq_desc") {
     y$sort <- substitute(
-    expr = {
-      sorted_result <- result %>%
-        sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-        sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
-    },
-    env = list(llt = llt)
-    )} else {
-      y$sort <- quote(
-        sorted_result <- result
-      )
-    }
+      expr = {
+        sorted_result <- result %>%
+          sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+      },
+      env = list(llt = llt)
+    )
+  } else {
+    y$sort <- quote(
+      sorted_result <- result
+    )
+  }
 
   y$sort_and_prune <- quote(
     expr = {
       all_zero <- function(tr) {
-        !is(tr, "ContentRow")  && all_zero_or_na(tr)
+        !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
       }
-      pruned_and_sorted_result <- sorted_result %>% trim_rows(criteria = all_zero)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       pruned_and_sorted_result
     }
   )
 
   y
-
 }
 
 #' Teal Module: `SMQ` Table
@@ -313,24 +313,24 @@ template_smq <- function(
 #' names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
 #'
 #' cs_baskets <- choices_selected(
-#' choices = variable_choices(adae, subset = names_baskets),
-#' selected = names_baskets
+#'   choices = variable_choices(adae, subset = names_baskets),
+#'   selected = names_baskets
 #' )
 #'
 #' cs_scopes <- choices_selected(
-#' choices = variable_choices(adae, subset = names_scopes),
-#' selected = names_scopes,
-#' fixed = TRUE
+#'   choices = variable_choices(adae, subset = names_scopes),
+#'   selected = names_scopes,
+#'   fixed = TRUE
 #' )
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'     code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
+#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
 #'     ),
 #'     cdisc_dataset("ADAE", adae,
 #'       code = "ADAE <- synthetic_cdisc_data('latest')$adae"
-#'       ),
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -351,18 +351,21 @@ template_smq <- function(
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 #'
-#'
 tm_t_smq <- function(label,
                      dataname,
-                     parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                     parentname = ifelse(
+                       inherits(arm_var, "data_extract_spec"),
+                       teal.devel::datanames_input(arm_var),
+                       "ADSL"
+                     ),
                      arm_var,
                      id_var = choices_selected(
-                       variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
+                       variable_choices(dataname, subset = "USUBJID"),
+                       selected = "USUBJID", fixed = TRUE
                      ),
                      llt,
                      add_total = TRUE,
@@ -376,19 +379,19 @@ tm_t_smq <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_smq")
-  stop_if_not(
-    is.string(dataname),
+  utils.nest::stop_if_not(
+    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
-    is.flag(add_total),
-    is.flag(drop_arm_levels),
+    assertthat::is.flag(add_total),
+    assertthat::is.flag(drop_arm_levels),
     is.choices_selected(id_var),
     is.choices_selected(llt),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -422,18 +425,17 @@ tm_t_smq <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_t_smq <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...) # module args
 
 
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$id_var,
     a$baskets,
@@ -441,47 +443,48 @@ ui_t_smq <- function(id, ...) {
     a$llt
   )
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c(
+      teal.devel::datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("llt"),
         label = "Select the low level term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
         data_extract_spec = a$baskets,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional Variables Info",
           checkboxInput(ns(
-            "drop_arm_levels"),
-            "Drop arm levels not in filtered analysis dataset",
-            value = a$drop_arm_levels
+            "drop_arm_levels"
           ),
-          data_extract_ui(
+          "Drop arm levels not in filtered analysis dataset",
+          value = a$drop_arm_levels
+          ),
+          teal.devel::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("scopes"),
             label = "Scope variables available",
             data_extract_spec = a$scopes,
@@ -490,8 +493,9 @@ ui_t_smq <- function(id, ...) {
           selectInput(
             inputId = ns("sort_criteria"),
             label = "Sort Criteria",
-            choices = c("Decreasing frequency" = "freq_desc",
-                        "Alphabetically" = "alpha"
+            choices = c(
+              "Decreasing frequency" = "freq_desc",
+              "Alphabetically" = "alpha"
             ),
             selected = a$sort_criteria,
             multiple = FALSE
@@ -499,7 +503,7 @@ ui_t_smq <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -521,9 +525,9 @@ srv_t_smq <- function(input,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     list(
       arm_var = arm_var,
       id_var = id_var,
@@ -534,13 +538,13 @@ srv_t_smq <- function(input,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var),
     input_id = c("arm_var"),
@@ -567,30 +571,29 @@ srv_t_smq <- function(input,
       need(input_llt, "Please select the low level term."),
       need(input_arm_var, "Please select the arm variable.")
     )
-    #validate inputs
-    validate_standard_inputs(
+    # validate inputs
+    teal.devel::validate_standard_inputs(
       adsl = adsl_filtered,
       adslvars = c("USUBJID", "STUDYID", input_arm_var),
       anl = anl_filtered,
       anlvars = c(
         "USUBJID", "STUDYID", input_id_var, input_baskets,
         input_scopes, input_llt
-        ),
+      ),
       arm_var = input_arm_var[[1]]
     )
-
   })
 
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
     my_calls <- template_smq(
       parentname = "ANL_ADSL",
@@ -605,28 +608,28 @@ srv_t_smq <- function(input,
       id_var = as.vector(anl_m$columns_source$id_var),
       basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("pruned_and_sorted_result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("pruned_and_sorted_result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, id_var, baskets, scopes, llt)
     ),
     modal_title = "R Code for SMQ tables",

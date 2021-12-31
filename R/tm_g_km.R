@@ -8,8 +8,6 @@
 #'   for variable names that can be used for facet plotting.
 #'
 #' @seealso [tm_g_km()]
-#'
-#' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
                           ref_arm = NULL,
@@ -33,16 +31,16 @@ template_g_km <- function(dataname = "ANL",
                           annot_coxph = TRUE,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(cnsr_var),
-    is.string(time_unit_var),
-    is.flag(compare_arm),
-    is.flag(combine_comp_arms),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(cnsr_var),
+    assertthat::is.string(time_unit_var),
+    assertthat::is.flag(compare_arm),
+    assertthat::is.flag(combine_comp_arms),
     is.null(xticks) | is.numeric(xticks),
-    is.string(title)
+    assertthat::is.string(title)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -78,7 +76,7 @@ template_g_km <- function(dataname = "ANL",
     comp_arm_val <- paste(comp_arm, collapse = "/")
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
@@ -162,7 +160,7 @@ template_g_km <- function(dataname = "ANL",
                   title = paste(
                     title, ",", quote(facet_var),
                     "=", as.character(unique(df_i$facet_var))
-                    ),
+                  ),
                   ggtheme = theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
@@ -272,7 +270,7 @@ template_g_km <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
@@ -313,14 +311,17 @@ template_g_km <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_km <- function(label,
                     dataname,
-                    parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                    parentname = ifelse(
+                      inherits(arm_var, "data_extract_spec"),
+                      teal.devel::datanames_input(arm_var),
+                      "ADSL"
+                    ),
                     arm_var,
                     arm_ref_comp = NULL,
                     paramcd,
@@ -335,17 +336,17 @@ tm_g_km <- function(label,
                     pre_output = NULL,
                     post_output = NULL) {
   logger::log_info("Initializing tm_g_km")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -353,8 +354,12 @@ tm_g_km <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -383,19 +388,16 @@ tm_g_km <- function(label,
         plot_width = plot_width
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 
 #' User Interface for KM Module
 #' @noRd
-#'
-#' @importFrom shinyWidgets switchInput
 ui_g_km <- function(id, ...) {
-
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$paramcd,
     a$strata_var,
@@ -407,41 +409,41 @@ ui_g_km <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      plot_with_settings_ui(
+      teal.devel::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("facet_var"),
         label = "Facet Plots by",
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -478,7 +480,7 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            data_extract_ui(
+            teal.devel::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratify by",
               data_extract_spec = a$strata_var,
@@ -489,8 +491,8 @@ ui_g_km <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        panel_group(
-          panel_item(
+        teal.devel::panel_group(
+          teal.devel::panel_item(
             "Comparison settings",
             radioButtons(
               ns("pval_method_coxph"),
@@ -521,8 +523,8 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
@@ -564,7 +566,7 @@ ui_g_km <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
@@ -573,7 +575,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -602,11 +604,11 @@ srv_g_km <- function(input,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
@@ -618,7 +620,7 @@ srv_g_km <- function(input,
     on_off = reactive(input$compare_arms)
   )
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       aval_var = aval_var,
@@ -633,7 +635,6 @@ srv_g_km <- function(input,
   )
 
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -672,8 +673,7 @@ srv_g_km <- function(input,
     # validate xticks
     if (length(input_xticks) == 0) {
       input_xticks <- NULL
-    }
-    else {
+    } else {
       validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
       validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
       validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
@@ -684,8 +684,8 @@ srv_g_km <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate font size
     validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
@@ -696,13 +696,13 @@ srv_g_km <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 2)
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+    teal.devel::validate_has_data(ANL, 2)
 
     input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
       strsplit(",") %>%
@@ -741,18 +741,18 @@ srv_g_km <- function(input,
       ci_ribbon = input$show_ci_ribbon,
       title = title
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   km_plot <- reactive({
     call_preparation()
-    chunks_safe_eval()
+    teal.devel::chunks_safe_eval()
   })
 
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = km_plot,
     height = plot_height,
@@ -760,13 +760,12 @@ srv_g_km <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
     ),
     modal_title = label
   )
-
 }

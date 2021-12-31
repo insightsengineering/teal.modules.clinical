@@ -3,16 +3,13 @@
 #' Provides teal modules for the standard clinical trials outputs.
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
-#' @import assertthat
 #' @import ggplot2
 #' @import shiny
-#' @import rtables
 #' @import teal
-#' @import teal.devel
 #' @import tern
-#' @import utils.nest
 #' @importFrom magrittr %>%
-#' @importFrom methods is
+#' @importFrom rlang :=
+#' @importFrom teal.devel validate_standard_inputs
 #'
 #' @docType package
 #' @name teal.modules.clinical
@@ -27,7 +24,7 @@ if (getRversion() >= "2.15.1") {
   ))
 }
 
-# Avoiding R CMD check notes
-#' @importFrom dplyr arrange
-#' @importFrom rlang :=
+#' Avoiding R CMD check notes
+#' @importFrom methods is
+#' @noRd
 NULL

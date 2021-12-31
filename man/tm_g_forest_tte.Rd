@@ -7,8 +7,8 @@
 tm_g_forest_tte(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   subgroup_var,
@@ -117,7 +117,7 @@ ADTTE <- synthetic_cdisc_data("latest")$adtte
 
 ADSL$RACE <- droplevels(ADSL$RACE)
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
@@ -130,38 +130,40 @@ arm_ref_comp = list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- synthetic_cdisc_data("latest")$adsl
-              ADSL$RACE <- droplevels(ADSL$RACE)'),
+    cdisc_dataset(
+      "ADSL",
+      ADSL,
+      code = "ADSL <- synthetic_cdisc_data('latest')$adsl
+        ADSL$RACE <- droplevels(ADSL$RACE)"
+    ),
     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
     check = TRUE
   ),
   modules = root_modules(
     tm_g_forest_tte(
-       label = "Forest Survival",
-       dataname = "ADTTE",
-       arm_var = choices_selected(
-         variable_choices(ADSL, c("ARM", "ARMCD")),
-         "ARMCD"
-       ),
-       arm_ref_comp = arm_ref_comp,
-       paramcd = choices_selected(
-         value_choices(ADTTE, "PARAMCD", "PARAM"),
-         "OS"
-       ),
-       subgroup_var = choices_selected(
-         variable_choices(ADSL, names(ADSL)),
-         c("BMRKR2", "SEX")
-       ),
-       strata_var = choices_selected(
-         variable_choices(ADSL, c("STRATA1", "STRATA2")),
-         "STRATA2"
-       ),
-       plot_height = c(600, 200, 2000)
+      label = "Forest Survival",
+      dataname = "ADTTE",
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD")),
+        "ARMCD"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        "OS"
+      ),
+      subgroup_var = choices_selected(
+        variable_choices(ADSL, names(ADSL)),
+        c("BMRKR2", "SEX")
+      ),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
+        "STRATA2"
+      ),
+      plot_height = c(600, 200, 2000)
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

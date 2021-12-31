@@ -25,7 +25,7 @@
 #' }
 call_concatenate <- function(args, bin_op = "+") {
   stopifnot(
-    is_character_single(bin_op),
+    utils.nest::is_character_single(bin_op),
     all(vapply(args, is.language, logical(1)))
   )
   # can be used for dplyr and ggplot2 to concatenate calls with +
@@ -34,16 +34,17 @@ call_concatenate <- function(args, bin_op = "+") {
 
 # needs columns like n_, n_ARM etc. to get count from
 add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- if_null(n_column, get_n_name(groupby_vars = column))
+  n_column <- utils.nest::if_null(n_column, get_n_name(groupby_vars = column))
   stopifnot(
-    is_character_single(column)
+    utils.nest::is_character_single(column)
   )
 
-  chunk$push(substitute({
+  chunk$push(substitute(
     counts <- counts %>% dplyr::mutate(
       column_name := paste0(column_name, " (n = ", n_column_name, ")")
-    )
-  }, env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))))
+    ),
+    env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
+  ))
 }
 
 #' Get variable labels
@@ -56,9 +57,9 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
-   labels <- datasets$get_varlabels(dataname, vars)
-   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
-   return(labels)
+  labels <- datasets$get_varlabels(dataname, vars)
+  labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
+  return(labels)
 }
 
 #' Expression Deparsing
@@ -72,16 +73,15 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' @export
 #' @examples
 #' expr <- quote(
-#'   basic_table() %>%
-#'   split_cols_by(var = "ARMCD") %>%
-#'   test_proportion_diff(
-#'     vars = "rsp", method = "cmh", variables = list(strata = "strat")
-#'   ) %>%
-#'   build_table(df = dta)
+#'   rtables::basic_table() %>%
+#'     rtables::split_cols_by(var = "ARMCD") %>%
+#'     test_proportion_diff(
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'     ) %>%
+#'     rtables::build_table(df = dta)
 #' )
 #'
 #' teal.modules.clinical:::h_concat_expr(expr)
-#'
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
   paste(expr, collapse = " ")
@@ -107,7 +107,6 @@ h_concat_expr <- function(expr) {
 #'   )
 #' )
 #' result
-#'
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -126,20 +125,18 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'   hence the warning.
 #'
 #' @export
-#' @importFrom styler style_text
 #'
 #' @examples
 #' expr <- quote(
-#'   basic_table() %>%
-#'     split_cols_by(var = "ARMCD") %>%
+#'   rtables::basic_table() %>%
+#'     rtables::split_cols_by(var = "ARMCD") %>%
 #'     test_proportion_diff(
 #'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
 #'     ) %>%
-#'     build_table(df = dta)
+#'     rtables::build_table(df = dta)
 #' )
 #'
 #' teal.modules.clinical:::styled_expr(expr)
-#'
 styled_expr <- function(expr) { # nolint nousage
   styler::style_text(text = deparse(expr))
 }
@@ -165,9 +162,9 @@ styled_expr <- function(expr) { # nolint nousage
 #' @examples
 #'
 #' lyt <- list()
-#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
+#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(rtables::basic_table()))
 #' lyt <- teal.modules.clinical:::add_expr(
-#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+#'   lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 #' )
 #' lyt <- teal.modules.clinical:::add_expr(
 #'   lyt,
@@ -177,18 +174,16 @@ styled_expr <- function(expr) { # nolint nousage
 #'     )
 #'   )
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
+#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
 #' teal.modules.clinical:::pipe_expr(lyt)
-#'
 add_expr <- function(expr_ls, new_expr) {
-
-  assert_that(
+  assertthat::assert_that(
     is.list(expr_ls),
     is.call(new_expr) || is.name(new_expr)
   )
 
   # support nested expressions such as expr({a <- 1; b <- 2})
-  if (is(new_expr, "{")) {
+  if (inherits(new_expr, "{")) {
     res <- expr_ls
     for (idx in seq_along(new_expr)[-1]) {
       res <- add_expr(res, new_expr[[idx]])
@@ -233,9 +228,7 @@ add_expr <- function(expr_ls, new_expr) {
 #' res <- teal.modules.clinical:::bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
-#'
 bracket_expr <- function(exprs) {
-
   expr <- lapply(exprs, deparse)
 
   # Because `deparse` returns a vector accounting for line break attempted
@@ -265,7 +258,7 @@ bracket_expr <- function(exprs) {
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(utils.nest::is_logical_single(multiple))
 
   select_spec(
     choices = cs$choices,
@@ -283,7 +276,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(is_logical_single(multiple))
+  stopifnot(utils.nest::is_logical_single(multiple))
 
   vars <- if (inherits(cs, "delayed_choices_selected")) {
     cs$choices$var_choices
@@ -311,16 +304,16 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  stop_if_not(
+  utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    is_character_single(dataname),
-    is_logical_single(multiple)
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {
-    stop_if_not(
+    utils.nest::stop_if_not(
       list(
         length(cs$selected) == 1 || is.null(cs$selected),
         paste(cs_name, "must only have 1 selected value")
@@ -350,16 +343,16 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  stop_if_not(
+  utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    is_character_single(dataname),
-    is_logical_single(multiple)
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {
-    stop_if_not(
+    utils.nest::stop_if_not(
       list(
         length(cs$selected) == 1 || is.null(cs$selected),
         paste(cs_name, "must only have 1 selected value")
@@ -400,7 +393,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #' @export
 #' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
-  is.choices_selected(x) || is(x, "data_extract_spec")
+  is.choices_selected(x) || inherits(x, "data_extract_spec")
 }
 
 #' Split-Column Expression
@@ -416,8 +409,7 @@ is.cs_or_des <- function(x) { # nolint
 #'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
-
-  if  (compare & combine) {
+  if (compare & combine) {
     substitute(
       expr = split_cols_by_groups(
         var = arm_var,
@@ -430,7 +422,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
     )
   } else if (compare & !combine) {
     substitute(
-      expr = split_cols_by(
+      expr = rtables::split_cols_by(
         var = arm_var,
         ref_group = ref
       ),
@@ -441,7 +433,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
     )
   } else if (!compare) {
     substitute(
-      expr = split_cols_by(var = arm_var),
+      expr = rtables::split_cols_by(var = arm_var),
       env = list(arm_var = arm_var)
     )
   }
@@ -457,7 +449,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
   stopifnot(is.choices_selected(x))
-  stopifnot(is_character_vector(x$choices))
+  stopifnot(utils.nest::is_character_vector(x$choices))
 
   split_x <- x
   split_x$choices <- split_interactions(x$choices)
@@ -562,14 +554,14 @@ prepare_arm <- function(dataname,
                         compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
     is.null(ref_arm) || is.character(ref_arm),
     is.character(comp_arm) || is.null(comp_arm),
-    is.flag(compare_arm),
-    is.string(ref_arm_val),
-    is.flag(drop)
+    assertthat::is.flag(compare_arm),
+    assertthat::is.string(ref_arm_val),
+    assertthat::is.flag(drop)
   )
 
   data_list <- list()
@@ -593,7 +585,7 @@ prepare_arm <- function(dataname,
     if (length(ref_arm) > 1) {
       data_list <- add_expr(
         data_list,
-        substitute_names(
+        utils.nest::substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
@@ -604,13 +596,13 @@ prepare_arm <- function(dataname,
     # Reference level is explicit.
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = stats::relevel(arm_var, ref = ref_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(ref_arm_val = ref_arm_val)
       )
     )
-  }  else {
+  } else {
     data_list <- add_expr(
       data_list,
       substitute(
@@ -624,7 +616,7 @@ prepare_arm <- function(dataname,
   if (drop) {
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = droplevels(arm_var)),
         names = list(arm_var = as.name(arm_var))
       )
@@ -663,12 +655,11 @@ prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
                                drop_arm_levels = TRUE) {
-
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.flag(drop_arm_levels)
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.flag(drop_arm_levels)
   )
 
   data_list <- list()
@@ -678,7 +669,7 @@ prepare_arm_levels <- function(dataname,
     # Keep only levels that exist in `dataname` dataset
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -715,7 +706,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -725,13 +716,12 @@ prepare_arm_levels <- function(dataname,
         )
       )
     )
-
   } else {
 
     # Keep only levels that exist in `parentname` dataset
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -755,7 +745,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = factor(arm_var, levels = arm_levels)
         ),
@@ -790,8 +780,6 @@ color_lab_values <- function(x,
                                HIGH = "glyphicon glyphicon-arrow-up",
                                LOW = "glyphicon glyphicon-arrow-down"
                              )) {
-
-
   is_character <- is.character(x) && is.vector(x)
 
   if ((!is_character) || !any(grepl(sprintf("(?:%s)", paste0(classes, collapse = "|")), x, perl = TRUE))) {
@@ -815,7 +803,7 @@ color_lab_values <- function(x,
 }
 
 is_cdisc_data <- function(datasets) {
-  is(datasets, "CDISCFilteredData")
+  inherits(datasets, "CDISCFilteredData")
 }
 
 #' Clean a categorical variable descriptions
@@ -851,8 +839,10 @@ clean_description <- function(x) {
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   choices <- paramcd$filter[[filter_idx]]$choices
-  input_obj <- paste0("paramcd-dataset_", paramcd$dataname,
-  "_singleextract-filter", filter_idx, "-vals")
+  input_obj <- paste0(
+    "paramcd-dataset_", paramcd$dataname,
+    "_singleextract-filter", filter_idx, "-vals"
+  )
   current_selected <- input[[input_obj]]
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name

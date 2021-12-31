@@ -11,8 +11,6 @@
 #' @param y_facet (`data_extract_spec`)\cr faceting groups on the col dimension.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
-#' @importFrom utils modifyList
-#'
 #' @export
 #'
 #' @examples
@@ -22,7 +20,7 @@
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
-#' adae_labels <- var_labels(ADAE)
+#' adae_labels <- rtables::var_labels(ADAE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' # reinstate labels
@@ -34,11 +32,12 @@
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-#'               adae_labels <- var_labels(ADAE)
+#'               adae_labels <- rtables::var_labels(ADAE)
 #'               ADAE <- ADAE %>%
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
 #'               ADAE <- do.call(rtables::var_relabel,
-#'                 append(list(x = ADAE), as.list(adae_labels)))"),
+#'                 append(list(x = ADAE), as.list(adae_labels)))"
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -47,9 +46,12 @@
 #'       x = data_extract_spec(
 #'         dataname = "ADSL",
 #'         select = select_spec(
-#'           choices = variable_choices(ADSL,
-#'                                      c("ARM", "ACTARM", "SEX",
-#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'           choices = variable_choices(
+#'             ADSL,
+#'             c(
+#'               "ARM", "ACTARM", "SEX",
+#'               "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'             )
 #'           ),
 #'           selected = "ACTARM",
 #'           multiple = FALSE
@@ -59,9 +61,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = "SEX",
 #'             multiple = FALSE
@@ -88,9 +93,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -109,9 +117,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -136,38 +147,40 @@ tm_g_barchart_simple <- function(x = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
-  stop_if_not(
-    is_character_single(label),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
     is.null(plot_options) || is.list(plot_options),
     !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
-  x <- list_extract_spec(x, allow_null = TRUE)
-  fill <- list_extract_spec(fill, allow_null = TRUE)
-  x_facet <- list_extract_spec(x_facet, allow_null = TRUE)
-  y_facet <- list_extract_spec(y_facet, allow_null = TRUE)
-  check_no_multiple_selection(x)
-  check_no_multiple_selection(fill)
-  check_no_multiple_selection(x_facet)
-  check_no_multiple_selection(y_facet)
+  x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
+  fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
+  x_facet <- teal.devel::list_extract_spec(x_facet, allow_null = TRUE)
+  y_facet <- teal.devel::list_extract_spec(y_facet, allow_null = TRUE)
+  teal.devel::check_no_multiple_selection(x)
+  teal.devel::check_no_multiple_selection(fill)
+  teal.devel::check_no_multiple_selection(x_facet)
+  teal.devel::check_no_multiple_selection(y_facet)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+    .var.name = "plot_width"
+  )
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
-  plot_options <- modifyList(
+  plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
-    if_null(plot_options, list())
+    utils.nest::if_null(plot_options, list())
   )
 
   ui_args <- as.list(environment())
@@ -192,17 +205,17 @@ tm_g_barchart_simple <- function(x = NULL,
 ui_g_barchart_simple <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
-  is_single_dataset_value <- is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
-  standard_layout(
-    output = white_small_well(
-      plot_with_settings_ui(id = ns("myplot")),
+  is_single_dataset_value <- teal.devel::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
+      teal.devel::plot_with_settings_ui(id = ns("myplot")),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
+      teal.devel::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("x"),
           label = "X variable",
           data_extract_spec = args$x,
@@ -210,7 +223,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$fill)) {
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("fill"),
           label = "Fill",
           data_extract_spec = args$fill,
@@ -218,7 +231,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$x_facet)) {
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("x_facet"),
           label = "Column facetting variable",
           data_extract_spec = args$x_facet,
@@ -226,15 +239,15 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$y_facet)) {
-        data_extract_ui(
+        teal.devel::data_extract_ui(
           id = ns("y_facet"),
           label = "Row facetting variable",
           data_extract_spec = args$y_facet,
           is_single_dataset = is_single_dataset_value
         )
       },
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           if (!is.null(args$fill)) {
             radioButtons(
@@ -248,32 +261,32 @@ ui_g_barchart_simple <- function(id, ...) {
           checkboxInput(
             ns("label_bars"),
             "Label bars",
-            value = if_null(args$plot_options$label_bars, TRUE)
+            value = utils.nest::if_null(args$plot_options$label_bars, TRUE)
           ),
           checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
-            value = if_null(args$plot_options$rotate_bar_labels, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_bar_labels, FALSE)
           ),
           checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
-            value = if_null(args$plot_options$rotate_x_label, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_x_label, FALSE)
           ),
           checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
-            value = if_null(args$plot_options$rotate_y_label, FALSE)
+            value = utils.nest::if_null(args$plot_options$rotate_y_label, FALSE)
           ),
           checkboxInput(
             ns("flip_axis"),
             "Flip axes",
-            value = if_null(args$plot_options$flip_axis, FALSE)
+            value = utils.nest::if_null(args$plot_options$flip_axis, FALSE)
           ),
           checkboxInput(
             ns("show_n"),
             "Show n",
-            value = if_null(args$plot_options$show_n, TRUE)
+            value = utils.nest::if_null(args$plot_options$show_n, TRUE)
           ),
           sliderInput(
             inputId = ns("expand_y_range"),
@@ -286,7 +299,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
@@ -305,17 +318,17 @@ srv_g_barchart_simple <- function(input,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
   data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
-  merged_data <- data_merge_module(datasets = datasets, data_extract = data_extract)
+  merged_data <- teal.devel::data_merge_module(datasets = datasets, data_extract = data_extract)
 
   data_chunk <- reactive({
     ANL <- merged_data()$data() # nolint
-    validate_has_data(ANL, 2)
-    chunk <- chunks$new()
-    chunks_push_data_merge(merged_data(), chunks = chunk)
+    teal.devel::validate_has_data(ANL, 2)
+    chunk <- teal.devel::chunks$new()
+    teal.devel::chunks_push_data_merge(merged_data(), chunks = chunk)
     chunk
   })
 
@@ -325,7 +338,7 @@ srv_g_barchart_simple <- function(input,
     groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
     # count
-    n_names <- c() #nolintr
+    n_names <- c()
     count_by_group <- function(groupby_vars, ...) {
       # chunk and n_names are modified
       n_name <- get_n_name(groupby_vars)
@@ -337,7 +350,7 @@ srv_g_barchart_simple <- function(input,
 
     if (input$show_n) {
       # count for each group
-      #x_name: more complicated, done below
+      # x_name: more complicated, done below
       if (!is.null(groupby_vars_l$fill_name)) count_by_group(groupby_vars_l$fill_name)
       if (!is.null(groupby_vars_l$x_facet_name)) count_by_group(groupby_vars_l$x_facet_name)
       if (!is.null(groupby_vars_l$y_facet_name)) count_by_group(groupby_vars_l$y_facet_name)
@@ -364,7 +377,7 @@ srv_g_barchart_simple <- function(input,
       anl_name = "counts"
     ))
 
-    chunks_safe_eval(chunk)
+    teal.devel::chunks_safe_eval(chunk)
     chunk
   })
 
@@ -384,12 +397,16 @@ srv_g_barchart_simple <- function(input,
       )
     )
 
-    all_ggplot2_args <- resolve_ggplot2_args(
+    all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = ggplot2_args(
-        labs = list(title = quote(plot_title),
-                    y = substitute(utils.nest::column_annotation_label(counts, y_name),
-                                   list(y_name = get_n_name(groupby_vars)))),
+      module_plot = teal.devel::ggplot2_args(
+        labs = list(
+          title = quote(plot_title),
+          y = substitute(
+            utils.nest::column_annotation_label(counts, y_name),
+            list(y_name = get_n_name(groupby_vars))
+          )
+        ),
         theme = list(plot.title = quote(element_text(hjust = 0.5)))
       )
     )
@@ -412,18 +429,18 @@ srv_g_barchart_simple <- function(input,
 
     chunk$push(plot_call)
 
-    #explicitly calling print on the plot inside the chunk evaluates
-    #the ggplot call and therefore catches errors
+    # explicitly calling print on the plot inside the chunk evaluates
+    # the ggplot call and therefore catches errors
     chunk$push(quote(print(plot)))
 
-    chunks_safe_eval(chunk)
+    teal.devel::chunks_safe_eval(chunk)
     chunk
   })
 
   generate_code <- reactive({
     chunk <- plot_chunk()
-    chunks_reset()
-    chunks_push_chunks(chunk) # set session chunks for ShowRCode
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(chunk) # set session chunks for ShowRCode
 
     chunk
   })
@@ -447,10 +464,10 @@ srv_g_barchart_simple <- function(input,
     y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
 
     # set to NULL when empty character
-    if (is_character_empty(x_name)) x_name <- NULL
-    if (is_character_empty(fill_name)) fill_name <- NULL
-    if (is_character_empty(x_facet_name)) x_facet_name <- NULL
-    if (is_character_empty(y_facet_name)) y_facet_name <- NULL
+    if (utils.nest::is_character_empty(x_name)) x_name <- NULL
+    if (utils.nest::is_character_empty(fill_name)) fill_name <- NULL
+    if (utils.nest::is_character_empty(x_facet_name)) x_facet_name <- NULL
+    if (utils.nest::is_character_empty(y_facet_name)) y_facet_name <- NULL
 
     res <- c(
       x_name = x_name, fill_name = fill_name,
@@ -468,7 +485,7 @@ srv_g_barchart_simple <- function(input,
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,
@@ -477,10 +494,10 @@ srv_g_barchart_simple <- function(input,
 
 
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(x, fill, x_facet, y_facet)),
+    datanames = teal.devel::get_extract_datanames(list(x, fill, x_facet, y_facet)),
     modal_title = "Bar Chart"
   )
 }
@@ -543,37 +560,38 @@ make_barchart_simple_call <- function(y_name,
     )
   )
   stopifnot(
-    is_character_single(y_name),
-    is.null(x_name) || is_character_single(x_name),
-    is.null(fill_name) || is_character_single(fill_name),
-    is.null(x_facet_name) || is_character_single(x_facet_name),
-    is.null(y_facet_name) || is_character_single(y_facet_name),
+    utils.nest::is_character_single(y_name),
+    is.null(x_name) || utils.nest::is_character_single(x_name),
+    is.null(fill_name) || utils.nest::is_character_single(fill_name),
+    is.null(x_facet_name) || utils.nest::is_character_single(x_facet_name),
+    is.null(y_facet_name) || utils.nest::is_character_single(y_facet_name),
     length(plot_vars) > 0,
-    is_logical_single(label_bars),
+    utils.nest::is_logical_single(label_bars),
     barlayout %in% c("side_by_side", "stacked"),
-    is.null(flip_axis) || is_logical_single(flip_axis),
-    is.null(rotate_x_label) || is_logical_single(rotate_x_label),
-    is.null(rotate_y_label) || is_logical_single(rotate_y_label),
-    is_numeric_single(expand_y_range)
+    is.null(flip_axis) || utils.nest::is_logical_single(flip_axis),
+    is.null(rotate_x_label) || utils.nest::is_logical_single(rotate_x_label),
+    is.null(rotate_y_label) || utils.nest::is_logical_single(rotate_y_label),
+    utils.nest::is_numeric_single(expand_y_range)
   )
 
   plot_args <- list(quote(ggplot(counts)))
 
   # aesthetic variables
-  x_val_var <- if (is.null(x_name)) 0 else x_name #nolintr
-  plot_args <- c(plot_args,
-                 if (is.null(fill_name)) {
-                   bquote(aes_string(x = .(x_val_var)))
-                 } else {
-                   bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
-                 }
+  x_val_var <- if (is.null(x_name)) 0 else x_name
+  plot_args <- c(
+    plot_args,
+    if (is.null(fill_name)) {
+      bquote(aes_string(x = .(x_val_var)))
+    } else {
+      bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
+    }
   )
 
   if (!(is.null(x_facet_name) && is.null(y_facet_name))) {
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      facet_grid(.(teal.devel::facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
     ))
   }
 
@@ -604,19 +622,19 @@ make_barchart_simple_call <- function(y_name,
     # see https://stackoverflow.com/questions/7263849/what-do-hjust-and-vjust-do-when-making-a-plot-using-ggplot
     if (isTRUE(flip_axis)) {
       hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
-      vjust <- 0.5 #nolintr
+      vjust <- 0.5
     } else {
-      hjust <- 0.5 #nolintr
+      hjust <- 0.5
       vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
     }
 
     plot_args <- c(plot_args, bquote(
       geom_text(aes_string(y = .(y_name), label = .(y_name)),
-                stat = "identity",
-                angle = .(if (rotate_bar_labels) 45 else 0),
-                position = .(position),
-                # hjust, vjust are respective to position, i.e. top, center etc. alignment
-                hjust = .(hjust), vjust = .(vjust)
+        stat = "identity",
+        angle = .(if (rotate_bar_labels) 45 else 0),
+        position = .(position),
+        # hjust, vjust are respective to position, i.e. top, center etc. alignment
+        hjust = .(hjust), vjust = .(vjust)
       )
     ))
   }
@@ -640,14 +658,16 @@ make_barchart_simple_call <- function(y_name,
   if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(element_text(angle = 45, hjust = 1))
   if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
-    ggplot2_args$labs[["x"]] <- substitute(utils.nest::column_annotation_label(counts, x_name),
-                                                                   list(x_name = x_name))
+    ggplot2_args$labs[["x"]] <- substitute(
+      expr = utils.nest::column_annotation_label(counts, x_name),
+      env = list(x_name = x_name)
+    )
   } else {
     ggplot2_args$theme[["axis.text.x"]] <- quote(element_blank())
     ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
   }
 
-  parsed_ggplot2_args <- parse_ggplot2_args(ggplot2_args)
+  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(ggplot2_args)
   plot_args <- c(plot_args, parsed_ggplot2_args)
 
   bquote(plot <- .(call_concatenate(plot_args)))
@@ -662,9 +682,9 @@ get_n_name <- function(groupby_vars) {
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
-  stopifnot(is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
+  stopifnot(utils.nest::is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
 
-  n_name <- if_null(n_name, get_n_name(groupby_vars))
+  n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
       dplyr::group_by_at(.(groupby_vars)) %>%

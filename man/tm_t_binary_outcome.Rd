@@ -10,8 +10,8 @@ table, with the option to match the STREAM template \code{RSPT01}.}
 tm_t_binary_outcome(
   label,
   dataname,
-  parentname = ifelse(test = is(arm_var, "data_extract_spec"), yes =
-    datanames_input(arm_var), no = "ADSL"),
+  parentname = ifelse(test = inherits(arm_var, "data_extract_spec"), yes =
+    teal.devel::datanames_input(arm_var), no = "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
@@ -162,20 +162,26 @@ app <- init(
       default_responses = list(
         BESRSPI = list(
           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-          levels = c("Complete Response (CR)", "Partial Response (PR)",
-                     "Stable Disease (SD)", "Progressive Disease (PD)")),
+          levels = c(
+            "Complete Response (CR)", "Partial Response (PR)",
+            "Stable Disease (SD)", "Progressive Disease (PD)"
+          )
+        ),
         INVET = list(
           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+          levels = c(
+            "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+            "Progressive Disease (PD)", "Stable Disease (SD)"
+          )
+        ),
         OVRINV = list(
           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+        )
       )
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }
