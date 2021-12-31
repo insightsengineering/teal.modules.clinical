@@ -24,7 +24,7 @@ COXT01 and COXT02 standard outputs, respectively."><!-- mathjax --><script src="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -45,15 +45,6 @@ COXT01 and COXT02 standard outputs, respectively."><!-- mathjax --><script src="
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -83,8 +74,8 @@ Other releases
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_t_coxreg</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
   arm_ref_comp <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">paramcd</span>,
@@ -198,9 +189,9 @@ Wald test will be substituted.</p></li>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">ADSL</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
+<span class="r-in"><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
 <span class="r-in"><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adtte</span></span>
-<span class="r-in"><span class="va">arm_ref_comp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="va">arm_ref_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span class="r-in">  ACTARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span class="r-in">    ref <span class="op">=</span> <span class="st">"ARM B"</span>,</span>
 <span class="r-in">    comp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM C"</span><span class="op">)</span></span>
@@ -229,14 +220,14 @@ Wald test will be substituted.</p></li>
 <span class="r-in">      strata_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
 <span class="r-in">        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COUNTRY"</span>, <span class="st">"STRATA1"</span>, <span class="st">"STRATA2"</span><span class="op">)</span>, <span class="st">"STRATA1"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
-<span class="r-in">      cov_var    <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
+<span class="r-in">      cov_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
 <span class="r-in">        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"BMRKR1"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"REGION1"</span><span class="op">)</span>, <span class="st">"AGE"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      multivariate <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:33:33.9289 pid:2122 token: teal.modules.clinical fun:tm_t_coxreg [INFO] Initializing tm_t_coxreg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:05:56.9553 pid:2124 token: teal.modules.clinical fun:tm_t_coxreg [INFO] Initializing tm_t_coxreg</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
@@ -252,18 +243,19 @@ Wald test will be substituted.</p></li>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span class="r-in">  STUDYID <span class="op">=</span> <span class="st">"LUNG"</span>,</span>
-<span class="r-in">  AVAL    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>        <span class="fl">4</span>,   <span class="fl">3</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">2</span>,   <span class="fl">2</span>,   <span class="fl">3</span>,   <span class="fl">1</span>,   <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">  CNSR    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>        <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">0</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">0</span><span class="op">)</span>,</span>
-<span class="r-in">  ARMCD   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>                <span class="fl">0</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">0</span><span class="op">)</span>,</span>
+<span class="r-in">  AVAL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span class="r-in">  CNSR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span class="r-in">  ARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
+<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span class="r-in">    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  SEX     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>                <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">0</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span>,   <span class="fl">1</span><span class="op">)</span>,</span>
+<span class="r-in">  SEX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
+<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span class="r-in">    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"M"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  INST    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in">  INST <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="fu">base</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">ADTTE</span>, <span class="va">ADTTE</span>, <span class="va">ADTTE</span>, <span class="va">ADTTE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">ADTTE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
@@ -272,7 +264,8 @@ Wald test will be substituted.</p></li>
 <span class="r-in"><span class="va">ADTTE</span><span class="op">$</span><span class="va">USUBJID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"sub"</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ADTTE</span><span class="op">)</span>, <span class="va">ADTTE</span><span class="op">$</span><span class="va">INST</span>, sep <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ADTTE</span><span class="op">$</span><span class="va">PARAM</span> <span class="op">&lt;-</span> <span class="va">ADTTE</span><span class="op">$</span><span class="va">PARAMCD</span> <span class="op">&lt;-</span> <span class="st">"OS"</span></span>
 <span class="r-in"><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">ADTTE</span>, select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"USUBJID"</span>, <span class="st">"STUDYID"</span>, <span class="st">"ARMCD"</span>, <span class="st">"SEX"</span>, <span class="st">"INST"</span>, <span class="st">"AGE"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">ADTTE</span>,</span>
+<span class="r-in">  select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"USUBJID"</span>, <span class="st">"STUDYID"</span>, <span class="st">"ARMCD"</span>, <span class="st">"SEX"</span>, <span class="st">"INST"</span>, <span class="st">"AGE"</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Teal application</span></span>
@@ -281,7 +274,7 @@ Wald test will be substituted.</p></li>
 <span class="r-in"><span class="co">## preprocessing. You will need to create the dataset as above before</span></span>
 <span class="r-in"><span class="co">## running the exported R code.</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">arm_ref_comp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"ARM A"</span>, comp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">arm_ref_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="st">"ARM A"</span>, comp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
 <span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span></span>
@@ -308,8 +301,7 @@ Wald test will be substituted.</p></li>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:33:34.1194 pid:2122 token: teal.modules.clinical fun:tm_t_coxreg [INFO] Initializing tm_t_coxreg</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:05:57.1857 pid:2124 token: teal.modules.clinical fun:tm_t_coxreg [INFO] Initializing tm_t_coxreg</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

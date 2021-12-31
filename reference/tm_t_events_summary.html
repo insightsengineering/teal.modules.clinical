@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -81,8 +72,8 @@ Other releases
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_t_events_summary</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
   flag_var_anl <span class="op">=</span> <span class="cn">NULL</span>,
   flag_var_aesi <span class="op">=</span> <span class="cn">NULL</span>,
@@ -182,7 +173,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span class="r-in">    DTHFL <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span>  <span class="co"># nolint</span></span>
+<span class="r-in">    DTHFL <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span> <span class="co"># nolint</span></span>
 <span class="r-in">      <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">DTHDT</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Y"</span>,</span>
 <span class="r-in">      <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">""</span></span>
 <span class="r-in">    <span class="op">)</span></span>
@@ -221,8 +212,9 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>, code <span class="op">=</span></span>
-<span class="r-in">          <span class="st">'ADSL &lt;- synthetic_cdisc_data("latest")$adsl %&gt;%</span>
+<span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>,</span>
+<span class="r-in">      code <span class="op">=</span></span>
+<span class="r-in">        <span class="st">'ADSL &lt;- synthetic_cdisc_data("latest")$adsl %&gt;%</span>
 <span class="r-in">            mutate(</span>
 <span class="r-in">              DTHFL = case_when(  # nolint</span>
 <span class="r-in">                !is.na(DTHDT) ~ "Y",</span>
@@ -231,31 +223,34 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">            ) %&gt;%</span>
 <span class="r-in">            rtables::var_relabel(</span>
 <span class="r-in">              DTHFL = "Subject Death Flag"</span>
-<span class="r-in">            )'</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>, code <span class="op">=</span></span>
-<span class="r-in">          <span class="st">'ADAE &lt;- synthetic_cdisc_data("latest")$adae</span>
+<span class="r-in">            )'</span></span>
+<span class="r-in">    <span class="op">)</span>,</span>
+<span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>,</span>
+<span class="r-in">      code <span class="op">=</span></span>
+<span class="r-in">        <span class="st">"ADAE &lt;- synthetic_cdisc_data('latest')$adae</span>
 <span class="r-in">          add_event_flags &lt;- function(dat) {</span>
 <span class="r-in">            dat %&gt;%</span>
 <span class="r-in">              dplyr::mutate(</span>
-<span class="r-in">                TMPFL_SER = AESER == "Y",</span>
-<span class="r-in">                TMPFL_REL = AEREL == "Y",</span>
-<span class="r-in">                TMPFL_GR5 = AETOXGR == "5",</span>
+<span class="r-in">                TMPFL_SER = AESER == 'Y',</span>
+<span class="r-in">                TMPFL_REL = AEREL == 'Y',</span>
+<span class="r-in">                TMPFL_GR5 = AETOXGR == '5',</span>
 <span class="r-in">                TMP_SMQ01 = !is.na(SMQ01NAM),</span>
 <span class="r-in">                TMP_SMQ02 = !is.na(SMQ02NAM),</span>
 <span class="r-in">                TMP_CQ01 = !is.na(CQ01NAM)</span>
 <span class="r-in">              ) %&gt;%</span>
 <span class="r-in">              rtables::var_relabel(</span>
-<span class="r-in">                TMPFL_SER = "Serious AE",</span>
-<span class="r-in">                TMPFL_REL = "Related AE",</span>
-<span class="r-in">                TMPFL_GR5 = "Grade 5 AE",</span>
-<span class="r-in">                TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),</span>
-<span class="r-in">                TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),</span>
-<span class="r-in">                TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])</span>
+<span class="r-in">                TMPFL_SER = 'Serious AE',</span>
+<span class="r-in">                TMPFL_REL = 'Related AE',</span>
+<span class="r-in">                TMPFL_GR5 = 'Grade 5 AE',</span>
+<span class="r-in">                TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),</span>
+<span class="r-in">                TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),</span>
+<span class="r-in">                TMP_CQ01 = aesi_label(dat[['CQ01NAM']])</span>
 <span class="r-in">              )</span>
 <span class="r-in">          }</span>
 <span class="r-in">          # Generating user-defined event flags.</span>
-<span class="r-in">          ADAE &lt;- ADAE %&gt;% add_event_flags()'</span><span class="op">)</span></span>
-<span class="r-in">    <span class="op">)</span>,</span>
+<span class="r-in">          ADAE &lt;- ADAE %&gt;% add_event_flags()"</span></span>
+<span class="r-in">    <span class="op">)</span></span>
+<span class="r-in">  <span class="op">)</span>,</span>
 <span class="r-in">  modules <span class="op">=</span> <span class="fu">root_modules</span><span class="op">(</span></span>
 <span class="r-in">    <span class="fu">tm_t_events_summary</span><span class="op">(</span></span>
 <span class="r-in">      label <span class="op">=</span> <span class="st">"Adverse Events Summary"</span>,</span>
@@ -280,7 +275,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:33:46.2346 pid:2122 token: teal.modules.clinical fun:tm_t_events_summary [INFO] Initializing tm_t_events_summary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:06:09.2198 pid:2124 token: teal.modules.clinical fun:tm_t_events_summary [INFO] Initializing tm_t_events_summary</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

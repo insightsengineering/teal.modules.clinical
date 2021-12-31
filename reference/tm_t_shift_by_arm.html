@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -81,8 +72,8 @@ Other releases
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_t_shift_by_arm</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
   <span class="va">paramcd</span>,
   <span class="va">visit_var</span>,
@@ -182,26 +173,30 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">      label <span class="op">=</span> <span class="st">"Shift by Arm Table"</span>,</span>
 <span class="r-in">      dataname <span class="op">=</span> <span class="st">"ADEG"</span>,</span>
 <span class="r-in">      arm_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adsl</span>, subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span><span class="op">)</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"ARM"</span></span>
+<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adsl</span>, subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">        selected <span class="op">=</span> <span class="st">"ARM"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu">value_choices</span><span class="op">(</span><span class="va">adeg</span>, <span class="st">"PARAMCD"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"HR"</span></span>
+<span class="r-in">        <span class="fu">value_choices</span><span class="op">(</span><span class="va">adeg</span>, <span class="st">"PARAMCD"</span><span class="op">)</span>,</span>
+<span class="r-in">        selected <span class="op">=</span> <span class="st">"HR"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      visit_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu">value_choices</span><span class="op">(</span><span class="va">adeg</span>, <span class="st">"AVISIT"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"POST-BASELINE MINIMUM"</span></span>
+<span class="r-in">        <span class="fu">value_choices</span><span class="op">(</span><span class="va">adeg</span>, <span class="st">"AVISIT"</span><span class="op">)</span>,</span>
+<span class="r-in">        selected <span class="op">=</span> <span class="st">"POST-BASELINE MINIMUM"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      aval_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adeg</span>, subset <span class="op">=</span> <span class="st">"ANRIND"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"ANRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adeg</span>, subset <span class="op">=</span> <span class="st">"ANRIND"</span><span class="op">)</span>,</span>
+<span class="r-in">        selected <span class="op">=</span> <span class="st">"ANRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      base_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adeg</span>, subset <span class="op">=</span> <span class="st">"BNRIND"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"BNRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adeg</span>, subset <span class="op">=</span> <span class="st">"BNRIND"</span><span class="op">)</span>,</span>
+<span class="r-in">        selected <span class="op">=</span> <span class="st">"BNRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      useNA <span class="op">=</span> <span class="st">"ifany"</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:34:19.9653 pid:2122 token: teal.modules.clinical fun:tm_t_shift_by_arm [INFO] Initializing tm_t_shift_by_arm</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:06:43.2109 pid:2124 token: teal.modules.clinical fun:tm_t_shift_by_arm [INFO] Initializing tm_t_shift_by_arm</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

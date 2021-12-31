@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -81,8 +72,8 @@ Other releases
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_t_exposure</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">col_by_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">col_by_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">col_by_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">col_by_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">row_by_var</span>,
   <span class="va">col_by_var</span>,
   paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span>choices <span class="op">=</span> <span class="fu">value_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>,
@@ -169,15 +160,17 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in"><span class="va">adex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adex</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span>, kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu">rtables</span><span class="fu">::</span><span class="fu"><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">adex</span> <span class="op">&lt;-</span> <span class="va">adex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">USUBJID</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>PARAMCD <span class="op">=</span> <span class="st">"TDURD"</span>,</span>
-<span class="r-in">         PARAM <span class="op">=</span> <span class="st">"Overall duration (days)"</span>,</span>
-<span class="r-in">         AVAL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">200</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">         AVALU <span class="op">=</span> <span class="st">"Days"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">         <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span></span>
-<span class="r-in"> <span class="fu"><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">labels</span></span>
+<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">USUBJID</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span class="r-in">    PARAMCD <span class="op">=</span> <span class="st">"TDURD"</span>,</span>
+<span class="r-in">    PARAM <span class="op">=</span> <span class="st">"Overall duration (days)"</span>,</span>
+<span class="r-in">    AVAL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">200</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span class="r-in">    AVALU <span class="op">=</span> <span class="st">"Days"</span></span>
+<span class="r-in">  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">rtables</span><span class="fu">::</span><span class="fu"><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span><span class="va">adex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">labels</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
@@ -185,7 +178,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADEX"</span>, <span class="va">adex</span>,</span>
 <span class="r-in">      code <span class="op">=</span> <span class="st">'set.seed(1, kind = "Mersenne-Twister")</span>
 <span class="r-in">      ADEX &lt;- synthetic_cdisc_data("latest")$adex</span>
-<span class="r-in">      labels &lt;- var_labels(ADEX)</span>
+<span class="r-in">      labels &lt;- rtables::var_labels(ADEX)</span>
 <span class="r-in">      ADEX &lt;- ADEX %&gt;%</span>
 <span class="r-in">       distinct(USUBJID, .keep_all = TRUE) %&gt;%</span>
 <span class="r-in">       mutate(PARAMCD = "TDURD",</span>
@@ -193,7 +186,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">              AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),</span>
 <span class="r-in">              AVALU = "Days") %&gt;%</span>
 <span class="r-in">              bind_rows(ADEX)</span>
-<span class="r-in">      var_labels(ADEX) &lt;- labels'</span>  <span class="co">#nolint</span></span>
+<span class="r-in">      rtables::var_labels(ADEX) &lt;- labels'</span> <span class="co"># nolint</span></span>
 <span class="r-in">    <span class="op">)</span>,</span>
 <span class="r-in">    check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
@@ -220,12 +213,11 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">      add_total <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in"> filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">   ADSL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SAFFL <span class="op">=</span> <span class="st">"Y"</span><span class="op">)</span></span>
-<span class="r-in"> <span class="op">)</span></span>
+<span class="r-in">  filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    ADSL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SAFFL <span class="op">=</span> <span class="st">"Y"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:33:51.0949 pid:2122 token: teal.modules.clinical fun:tm_t_exposure [INFO] Initializing tm_t_exposure</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:06:14.1766 pid:2124 token: teal.modules.clinical fun:tm_t_exposure [INFO] Initializing tm_t_exposure</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

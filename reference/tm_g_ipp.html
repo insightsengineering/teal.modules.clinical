@@ -25,7 +25,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -46,15 +46,6 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -85,8 +76,8 @@ ADaM structure.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_g_ipp</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
   <span class="va">paramcd</span>,
   id_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"USUBJID"</span><span class="op">)</span>, <span class="st">"USUBJID"</span>, fixed <span class="op">=</span>
@@ -182,7 +173,7 @@ with default module arguments (hard coded in the module body).<br> For more deta
 <span class="r-in"></span>
 <span class="r-in"><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tern/man/df_explicit_na.html" class="external-link">df_explicit_na</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tern/man/df_explicit_na.html" class="external-link">df_explicit_na</a></span><span class="op">(</span><span class="va">adlb</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AVISIT</span> <span class="op">!=</span> <span class="st">"SCREENING"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AVISIT</span> <span class="op">!=</span> <span class="st">"SCREENING"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
@@ -231,17 +222,16 @@ with default module arguments (hard coded in the module body).<br> For more deta
 <span class="r-in">        <span class="st">"AVISIT"</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      base_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">         <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adlb</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BASE"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">         <span class="st">"BASE"</span>,</span>
-<span class="r-in">         fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span class="r-in">        <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adlb</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BASE"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">        <span class="st">"BASE"</span>,</span>
+<span class="r-in">        fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
 <span class="r-in">      add_baseline_hline <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span class="r-in">      separate_by_obs <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:32:39.6890 pid:2122 token: teal.modules.clinical fun:tm_g_ipp [INFO] Initializing tm_g_ipp</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:05:01.2584 pid:2124 token: teal.modules.clinical fun:tm_g_ipp [INFO] Initializing tm_g_ipp</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">ui</span>, server <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

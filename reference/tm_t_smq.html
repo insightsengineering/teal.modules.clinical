@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -81,8 +72,8 @@ Other releases
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tm_t_smq</span><span class="op">(</span>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
-  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, <span class="fu">datanames_input</span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>,
-    <span class="st">"ADSL"</span><span class="op">)</span>,
+  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
+    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
   id_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, subset <span class="op">=</span> <span class="st">"USUBJID"</span><span class="op">)</span>, selected <span class="op">=</span>
     <span class="st">"USUBJID"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
@@ -172,24 +163,24 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in"><span class="va">names_scopes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^SMQ.*SC$"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">adae</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">cs_baskets</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, subset <span class="op">=</span> <span class="va">names_baskets</span><span class="op">)</span>,</span>
-<span class="r-in">selected <span class="op">=</span> <span class="va">names_baskets</span></span>
+<span class="r-in">  choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, subset <span class="op">=</span> <span class="va">names_baskets</span><span class="op">)</span>,</span>
+<span class="r-in">  selected <span class="op">=</span> <span class="va">names_baskets</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">cs_scopes</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span>
-<span class="r-in">choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, subset <span class="op">=</span> <span class="va">names_scopes</span><span class="op">)</span>,</span>
-<span class="r-in">selected <span class="op">=</span> <span class="va">names_scopes</span>,</span>
-<span class="r-in">fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span class="r-in">  choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, subset <span class="op">=</span> <span class="va">names_scopes</span><span class="op">)</span>,</span>
+<span class="r-in">  selected <span class="op">=</span> <span class="va">names_scopes</span>,</span>
+<span class="r-in">  fixed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
 <span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">adsl</span>,</span>
-<span class="r-in">    code <span class="op">=</span> <span class="st">"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span></span>
+<span class="r-in">      code <span class="op">=</span> <span class="st">"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span></span>
 <span class="r-in">    <span class="op">)</span>,</span>
 <span class="r-in">    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">adae</span>,</span>
 <span class="r-in">      code <span class="op">=</span> <span class="st">"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span></span>
-<span class="r-in">      <span class="op">)</span>,</span>
+<span class="r-in">    <span class="op">)</span>,</span>
 <span class="r-in">    check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
 <span class="r-in">  modules <span class="op">=</span> <span class="fu">root_modules</span><span class="op">(</span></span>
@@ -210,12 +201,10 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-29 13:34:30.4133 pid:2122 token: teal.modules.clinical fun:tm_t_smq [INFO] Initializing tm_t_smq</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2021-12-31 14:06:54.3133 pid:2124 token: teal.modules.clinical fun:tm_t_smq [INFO] Initializing tm_t_smq</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
