@@ -251,7 +251,6 @@ template_g_ci <- function(dataname, # nousage # nolint
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

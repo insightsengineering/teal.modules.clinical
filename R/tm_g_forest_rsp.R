@@ -286,7 +286,6 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

@@ -216,7 +216,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }

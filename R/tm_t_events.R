@@ -455,7 +455,6 @@ template_events <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

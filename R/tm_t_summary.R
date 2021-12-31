@@ -238,7 +238,6 @@ template_summary <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

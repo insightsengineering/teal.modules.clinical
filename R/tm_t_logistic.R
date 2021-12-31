@@ -262,7 +262,6 @@ template_logistic <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }

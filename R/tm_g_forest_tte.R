@@ -261,7 +261,6 @@ template_forest_tte <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

@@ -493,7 +493,6 @@ template_mmrm_plots <- function(fit_name,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

@@ -280,7 +280,6 @@ template_abnormality <- function(parentname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

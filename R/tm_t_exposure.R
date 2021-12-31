@@ -280,7 +280,6 @@ template_exposure <- function(parentname,
 #'     ADSL = list(SAFFL = "Y")
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

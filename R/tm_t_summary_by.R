@@ -358,7 +358,6 @@ template_summary_by <- function(parentname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

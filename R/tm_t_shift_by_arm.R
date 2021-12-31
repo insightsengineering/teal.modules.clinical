@@ -206,7 +206,6 @@ template_shift_by_arm <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

@@ -378,7 +378,6 @@ template_ancova <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

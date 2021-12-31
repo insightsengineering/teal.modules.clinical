@@ -444,7 +444,6 @@ template_binary_outcome <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }

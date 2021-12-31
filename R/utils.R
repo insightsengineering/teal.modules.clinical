@@ -82,7 +82,6 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' )
 #'
 #' teal.modules.clinical:::h_concat_expr(expr)
-#'
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
   paste(expr, collapse = " ")
@@ -108,7 +107,6 @@ h_concat_expr <- function(expr) {
 #'   )
 #' )
 #' result
-#'
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -139,7 +137,6 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' )
 #'
 #' teal.modules.clinical:::styled_expr(expr)
-#'
 styled_expr <- function(expr) { # nolint nousage
   styler::style_text(text = deparse(expr))
 }
@@ -179,7 +176,6 @@ styled_expr <- function(expr) { # nolint nousage
 #' )
 #' lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
 #' teal.modules.clinical:::pipe_expr(lyt)
-#'
 add_expr <- function(expr_ls, new_expr) {
   assertthat::assert_that(
     is.list(expr_ls),
@@ -232,7 +228,6 @@ add_expr <- function(expr_ls, new_expr) {
 #' res <- teal.modules.clinical:::bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
-#'
 bracket_expr <- function(exprs) {
   expr <- lapply(exprs, deparse)
 

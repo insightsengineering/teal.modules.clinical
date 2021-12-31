@@ -213,7 +213,6 @@ template_g_ipp <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
