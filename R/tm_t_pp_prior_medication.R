@@ -97,7 +97,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMTRT <- ADCM$CMCAT
@@ -112,7 +112,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication"
 #'          )',
-#'     keys = adcm_keys
+#'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -271,13 +271,14 @@ srv_t_prior_medication <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -343,10 +344,11 @@ srv_t_prior_medication <- function(input,
     pmed_stack
   })
 
-  output$prior_medication_table <- DT::renderDataTable({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(pmed_call())
-    teal.devel::chunks_get_var("result")
+  output$prior_medication_table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(pmed_call())
+      teal.devel::chunks_get_var("result")
     },
     options = list(pageLength = input$prior_medication_table_rows)
   )

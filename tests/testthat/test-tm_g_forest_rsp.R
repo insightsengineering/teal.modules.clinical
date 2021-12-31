@@ -20,14 +20,12 @@ testthat::test_that("template_forest_rsp generates correct expressions", {
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
         dplyr::mutate(is_rsp = AVALC %in% c("CR", "PR")) %>%
-        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
-        )
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
       parent <- adsl %>%
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
         dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
         dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
-        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C"))
-        )
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", "ARM C")))
     }),
     summary = quote({
       df <- extract_rsp_subgroups(
@@ -41,8 +39,9 @@ testthat::test_that("template_forest_rsp generates correct expressions", {
     ),
     plot = quote({
       p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL),
-                         titles = "Forest plot of best overall response for ",
-                         footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
+        titles = "Forest plot of best overall response for ",
+        footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)
+      )
       grid::grid.newpage()
       grid::grid.draw(p)
     })

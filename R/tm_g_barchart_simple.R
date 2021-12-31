@@ -36,7 +36,8 @@
 #'               ADAE <- ADAE %>%
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
 #'               ADAE <- do.call(rtables::var_relabel,
-#'                 append(list(x = ADAE), as.list(adae_labels)))"),
+#'                 append(list(x = ADAE), as.list(adae_labels)))"
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -45,9 +46,12 @@
 #'       x = data_extract_spec(
 #'         dataname = "ADSL",
 #'         select = select_spec(
-#'           choices = variable_choices(ADSL,
-#'                                      c("ARM", "ACTARM", "SEX",
-#'                                        "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'           choices = variable_choices(
+#'             ADSL,
+#'             c(
+#'               "ARM", "ACTARM", "SEX",
+#'               "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'             )
 #'           ),
 #'           selected = "ACTARM",
 #'           multiple = FALSE
@@ -57,9 +61,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = "SEX",
 #'             multiple = FALSE
@@ -86,9 +93,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -107,9 +117,12 @@
 #'         data_extract_spec(
 #'           dataname = "ADSL",
 #'           select = select_spec(
-#'             choices = variable_choices(ADSL,
-#'                                        c("ARM", "ACTARM", "SEX",
-#'                                          "RACE", "ITTFL", "SAFFL", "STRATA2")
+#'             choices = variable_choices(
+#'               ADSL,
+#'               c(
+#'                 "ARM", "ACTARM", "SEX",
+#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'               )
 #'             ),
 #'             selected = NULL,
 #'             multiple = FALSE
@@ -141,12 +154,12 @@ tm_g_barchart_simple <- function(x = NULL,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
   fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
@@ -159,8 +172,10 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+    .var.name = "plot_width"
+  )
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   plot_options <- utils::modifyList(
@@ -323,7 +338,7 @@ srv_g_barchart_simple <- function(input,
     groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
     # count
-    n_names <- c() #nolintr
+    n_names <- c()
     count_by_group <- function(groupby_vars, ...) {
       # chunk and n_names are modified
       n_name <- get_n_name(groupby_vars)
@@ -335,7 +350,7 @@ srv_g_barchart_simple <- function(input,
 
     if (input$show_n) {
       # count for each group
-      #x_name: more complicated, done below
+      # x_name: more complicated, done below
       if (!is.null(groupby_vars_l$fill_name)) count_by_group(groupby_vars_l$fill_name)
       if (!is.null(groupby_vars_l$x_facet_name)) count_by_group(groupby_vars_l$x_facet_name)
       if (!is.null(groupby_vars_l$y_facet_name)) count_by_group(groupby_vars_l$y_facet_name)
@@ -385,9 +400,13 @@ srv_g_barchart_simple <- function(input,
     all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
       user_plot = ggplot2_args,
       module_plot = teal.devel::ggplot2_args(
-        labs = list(title = quote(plot_title),
-                    y = substitute(utils.nest::column_annotation_label(counts, y_name),
-                                   list(y_name = get_n_name(groupby_vars)))),
+        labs = list(
+          title = quote(plot_title),
+          y = substitute(
+            utils.nest::column_annotation_label(counts, y_name),
+            list(y_name = get_n_name(groupby_vars))
+          )
+        ),
         theme = list(plot.title = quote(element_text(hjust = 0.5)))
       )
     )
@@ -410,8 +429,8 @@ srv_g_barchart_simple <- function(input,
 
     chunk$push(plot_call)
 
-    #explicitly calling print on the plot inside the chunk evaluates
-    #the ggplot call and therefore catches errors
+    # explicitly calling print on the plot inside the chunk evaluates
+    # the ggplot call and therefore catches errors
     chunk$push(quote(print(plot)))
 
     teal.devel::chunks_safe_eval(chunk)
@@ -558,13 +577,14 @@ make_barchart_simple_call <- function(y_name,
   plot_args <- list(quote(ggplot(counts)))
 
   # aesthetic variables
-  x_val_var <- if (is.null(x_name)) 0 else x_name #nolintr
-  plot_args <- c(plot_args,
-                 if (is.null(fill_name)) {
-                   bquote(aes_string(x = .(x_val_var)))
-                 } else {
-                   bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
-                 }
+  x_val_var <- if (is.null(x_name)) 0 else x_name
+  plot_args <- c(
+    plot_args,
+    if (is.null(fill_name)) {
+      bquote(aes_string(x = .(x_val_var)))
+    } else {
+      bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
+    }
   )
 
   if (!(is.null(x_facet_name) && is.null(y_facet_name))) {
@@ -602,19 +622,19 @@ make_barchart_simple_call <- function(y_name,
     # see https://stackoverflow.com/questions/7263849/what-do-hjust-and-vjust-do-when-making-a-plot-using-ggplot
     if (isTRUE(flip_axis)) {
       hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
-      vjust <- 0.5 #nolintr
+      vjust <- 0.5
     } else {
-      hjust <- 0.5 #nolintr
+      hjust <- 0.5
       vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
     }
 
     plot_args <- c(plot_args, bquote(
       geom_text(aes_string(y = .(y_name), label = .(y_name)),
-                stat = "identity",
-                angle = .(if (rotate_bar_labels) 45 else 0),
-                position = .(position),
-                # hjust, vjust are respective to position, i.e. top, center etc. alignment
-                hjust = .(hjust), vjust = .(vjust)
+        stat = "identity",
+        angle = .(if (rotate_bar_labels) 45 else 0),
+        position = .(position),
+        # hjust, vjust are respective to position, i.e. top, center etc. alignment
+        hjust = .(hjust), vjust = .(vjust)
       )
     ))
   }
@@ -638,8 +658,10 @@ make_barchart_simple_call <- function(y_name,
   if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(element_text(angle = 45, hjust = 1))
   if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
-    ggplot2_args$labs[["x"]] <- substitute(utils.nest::column_annotation_label(counts, x_name),
-                                                                   list(x_name = x_name))
+    ggplot2_args$labs[["x"]] <- substitute(
+      expr = utils.nest::column_annotation_label(counts, x_name),
+      env = list(x_name = x_name)
+    )
   } else {
     ggplot2_args$theme[["axis.text.x"]] <- quote(element_blank())
     ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())

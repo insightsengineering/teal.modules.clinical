@@ -154,7 +154,7 @@ app <- init(
   modules = root_modules(
     tm_a_mmrm(
       label = "MMRM",
-      dataname = 'ADQS',
+      dataname = "ADQS",
       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),

@@ -12,7 +12,7 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
 
   expected <- list(
     data = quote({
-      anl <- adae # nolintr
+      anl <- adae
       anl <- anl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       arm_levels <- levels(anl[["ACTARM"]])
       adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
@@ -30,7 +30,8 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
         rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
-          grade_groups = grade_groups) %>%
+          grade_groups = grade_groups
+        ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
@@ -42,7 +43,8 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
-          grade_groups = grade_groups) %>%
+          grade_groups = grade_groups
+        ) %>%
         rtables::split_rows_by(
           "AEDECOD",
           child_labels = "visible",
@@ -55,7 +57,8 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
-          .labels = c("- Any Intensity -")) %>%
+          .labels = c("- Any Intensity -")
+        ) %>%
         count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
@@ -74,7 +77,8 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
-          decreasing = TRUE) %>%
+          decreasing = TRUE
+        ) %>%
         sort_at_path(
           path = c("AEBODSYS", "*", "AEDECOD"),
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
@@ -88,7 +92,6 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
 })
 
 testthat::test_that("template_events_by_grade generates standard expressions with pruning conditions", {
-
   result <- template_events_by_grade(
     dataname = "adae",
     parentname = "adsl",
@@ -122,7 +125,8 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
         rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
-          grade_groups = grade_groups) %>%
+          grade_groups = grade_groups
+        ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
@@ -134,7 +138,8 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
-          grade_groups = grade_groups) %>%
+          grade_groups = grade_groups
+        ) %>%
         rtables::split_rows_by(
           "AEDECOD",
           child_labels = "visible",
@@ -147,7 +152,8 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
-          .labels = c("- Any Intensity -")) %>%
+          .labels = c("- Any Intensity -")
+        ) %>%
         count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
@@ -170,7 +176,8 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
         sort_at_path(
           path = "AEBODSYS",
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
-          decreasing = TRUE) %>%
+          decreasing = TRUE
+        ) %>%
         sort_at_path(
           path = c("AEBODSYS", "*", "AEDECOD"),
           scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 1),
@@ -240,7 +247,8 @@ testthat::test_that("template_events_by_grade without adding total column option
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
-          .labels = c("- Any Intensity -")) %>%
+          .labels = c("- Any Intensity -")
+        ) %>%
         count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
         append_varlabels(adae, "AESEV", indent = 2L)
     ),
@@ -305,7 +313,8 @@ testthat::test_that("template_events_by_grade with hlt only works", {
         rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
-          grade_groups = grade_groups) %>%
+          grade_groups = grade_groups
+        ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
           child_labels = "visible",
@@ -318,9 +327,10 @@ testthat::test_that("template_events_by_grade with hlt only works", {
         summarize_num_patients(
           var = "USUBJID",
           .stats = "unique",
-          .labels = c("- Any Intensity -")) %>%
+          .labels = c("- Any Intensity -")
+        ) %>%
         count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>%
-        append_varlabels(adae,  "AESEV", indent = 1L)
+        append_varlabels(adae, "AESEV", indent = 1L)
     ),
     table = quote(
       result <- rtables::build_table(
@@ -395,7 +405,10 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
           )
         ) %>%
         rtables::split_rows_by(
-          "AEBODSYS", child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group("AEDECOD")
+          "AEBODSYS",
+          child_labels = "visible",
+          nested = FALSE,
+          split_fun = trim_levels_in_group("AEDECOD")
         ) %>%
         append_varlabels(df = anl, vars = "AEBODSYS") %>%
         summarize_num_patients(

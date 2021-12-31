@@ -35,7 +35,8 @@ testthat::test_that("template_fit_mmrm works as expected when not combining comp
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
         optimizer = "automatic",
-        parallel = FALSE)
+        parallel = FALSE
+      )
     )
   )
   testthat::expect_equal(result, expected)
@@ -173,8 +174,10 @@ testthat::test_that("template_mmrm_plots works as expected", {
           width = 0.6,
           show_pval = FALSE,
           titles = if (is.null(fit_mmrm$vars$arm)) {
-            c(estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
-              contrasts = " ")
+            c(
+              estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
+              contrasts = " "
+            )
           } else {
             c(
               estimates = paste(

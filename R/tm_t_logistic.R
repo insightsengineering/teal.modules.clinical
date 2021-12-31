@@ -87,7 +87,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe, #nolint
+        expr = ANL <- data_pipe, # nolint
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -96,7 +96,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>% #nolint
+      expr = ANL <- df %>% # nolint
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = ""),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -193,8 +193,8 @@ template_logistic <- function(dataname,
       expr_basic_table_args = parsed_basic_table_args,
       conf_level = conf_level,
       topleft = topleft
-      )
     )
+  )
 
   y
 }
@@ -224,7 +224,7 @@ template_logistic <- function(dataname,
 #' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
 #'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
@@ -323,7 +323,6 @@ tm_t_logistic <- function(label,
 #' @noRd
 #'
 ui_t_logistic <- function(id, ...) {
-
   a <- list(...)
   if (!is.null(a$arm_var)) {
     is_single_dataset_value <- teal.devel::is_single_dataset(

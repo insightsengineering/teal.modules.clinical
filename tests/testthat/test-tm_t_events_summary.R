@@ -55,7 +55,8 @@ testthat::test_that("template_events_summary generates minimal table", {
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),
-          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>%
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one"
+        ) %>%
         count_values(
           "STUDYID",
           values = study_id,
@@ -140,7 +141,8 @@ testthat::test_that("template_events_summary generates table with multiple flags
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),
-          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>%
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one"
+        ) %>%
         count_values(
           "STUDYID",
           values = study_id,

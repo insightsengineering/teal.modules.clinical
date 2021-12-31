@@ -42,7 +42,6 @@ template_events_summary <- function(anl_name,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
-
   assertthat::assert_that(
     assertthat::is.string(anl_name),
     assertthat::is.string(parentname),
@@ -89,7 +88,7 @@ template_events_summary <- function(anl_name,
   )
 
 
-  #Create dummy variable for counting patients with an AE
+  # Create dummy variable for counting patients with an AE
   data_list <- add_expr(
     data_list,
     quote(anl$tmp_aefl <- "Y")
@@ -134,13 +133,15 @@ template_events_summary <- function(anl_name,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -233,7 +234,7 @@ template_events_summary <- function(anl_name,
         denom = "N_col",
         .stats = "count_fraction",
         .labels = c(
-          count_fraction = "Total number of patients with at least one adverse event" #nolint
+          count_fraction = "Total number of patients with at least one adverse event"
         ),
         .indent_mods = c(count_fraction = 0L),
         table_names = "total_pts_at_least_one"
@@ -401,7 +402,6 @@ template_events_summary <- function(anl_name,
   )
 
   if (any(all_conditions)) {
-
     table_list <- add_expr(
       table_list,
       quote(
@@ -412,9 +412,7 @@ template_events_summary <- function(anl_name,
         )
       )
     )
-
   } else {
-
     table_list <- add_expr(
       table_list,
       quote(
@@ -456,7 +454,7 @@ template_events_summary <- function(anl_name,
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'   mutate(
-#'     DTHFL = case_when(  # nolint
+#'     DTHFL = case_when( # nolint
 #'       !is.na(DTHDT) ~ "Y",
 #'       TRUE ~ ""
 #'     )
@@ -495,8 +493,9 @@ template_events_summary <- function(anl_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code =
-#'           'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code =
+#'         'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
 #'             mutate(
 #'               DTHFL = case_when(  # nolint
 #'                 !is.na(DTHDT) ~ "Y",
@@ -505,31 +504,34 @@ template_events_summary <- function(anl_name,
 #'             ) %>%
 #'             rtables::var_relabel(
 #'               DTHFL = "Subject Death Flag"
-#'             )'),
-#'     cdisc_dataset("ADAE", ADAE, code =
-#'           'ADAE <- synthetic_cdisc_data("latest")$adae
+#'             )'
+#'     ),
+#'     cdisc_dataset("ADAE", ADAE,
+#'       code =
+#'         "ADAE <- synthetic_cdisc_data('latest')$adae
 #'           add_event_flags <- function(dat) {
 #'             dat %>%
 #'               dplyr::mutate(
-#'                 TMPFL_SER = AESER == "Y",
-#'                 TMPFL_REL = AEREL == "Y",
-#'                 TMPFL_GR5 = AETOXGR == "5",
+#'                 TMPFL_SER = AESER == 'Y',
+#'                 TMPFL_REL = AEREL == 'Y',
+#'                 TMPFL_GR5 = AETOXGR == '5',
 #'                 TMP_SMQ01 = !is.na(SMQ01NAM),
 #'                 TMP_SMQ02 = !is.na(SMQ02NAM),
 #'                 TMP_CQ01 = !is.na(CQ01NAM)
 #'               ) %>%
 #'               rtables::var_relabel(
-#'                 TMPFL_SER = "Serious AE",
-#'                 TMPFL_REL = "Related AE",
-#'                 TMPFL_GR5 = "Grade 5 AE",
-#'                 TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'                 TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'                 TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
+#'                 TMPFL_SER = 'Serious AE',
+#'                 TMPFL_REL = 'Related AE',
+#'                 TMPFL_GR5 = 'Grade 5 AE',
+#'                 TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),
+#'                 TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
+#'                 TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
 #'               )
 #'           }
 #'           # Generating user-defined event flags.
-#'           ADAE <- ADAE %>% add_event_flags()')
-#'     ),
+#'           ADAE <- ADAE %>% add_event_flags()"
+#'     )
+#'   ),
 #'   modules = root_modules(
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
@@ -569,16 +571,20 @@ tm_t_events_summary <- function(label,
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
                                 dthfl_var = choices_selected(
-                                  variable_choices(parentname, "DTHFL"), "DTHFL", fixed = TRUE
+                                  variable_choices(parentname, "DTHFL"), "DTHFL",
+                                  fixed = TRUE
                                 ),
                                 dcsreas_var = choices_selected(
-                                  variable_choices(parentname, "DCSREAS"), "DCSREAS", fixed = TRUE
+                                  variable_choices(parentname, "DCSREAS"), "DCSREAS",
+                                  fixed = TRUE
                                 ),
                                 llt = choices_selected(
-                                  variable_choices(dataname, "AEDECOD"), "AEDECOD", fixed = TRUE
+                                  variable_choices(dataname, "AEDECOD"), "AEDECOD",
+                                  fixed = TRUE
                                 ),
                                 aeseq_var = choices_selected(
-                                  variable_choices(dataname, "AESEQ"), "AESEQ", fixed = TRUE
+                                  variable_choices(dataname, "AESEQ"), "AESEQ",
+                                  fixed = TRUE
                                 ),
                                 add_total = TRUE,
                                 count_subj = TRUE,
@@ -648,7 +654,6 @@ tm_t_events_summary <- function(label,
 
 #' @noRd
 ui_t_events_summary <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
 
@@ -696,20 +701,24 @@ ui_t_events_summary <- function(id, ...) {
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total),
+        value = a$add_total
+      ),
       tags$label("Table Settings"),
       checkboxInput(
         ns("count_subj"),
         "Count patients",
-        value = a$count_subj),
+        value = a$count_subj
+      ),
       checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
-        value = a$count_pt),
+        value = a$count_pt
+      ),
       checkboxInput(
         ns("count_events"),
         "Count events",
-        value = a$count_events),
+        value = a$count_events
+      ),
       teal.devel::panel_group(
         teal.devel::panel_item(
           "Additional Variables Info",
@@ -859,16 +868,21 @@ srv_t_events_summary <- function(input,
     mapply(expression = my_calls, teal.devel::chunks_push)
 
     all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args)
-    teal.devel::chunks_push(substitute({
-      rtables::main_title(result) <- title
-      rtables::main_footer(result) <- footer
-      rtables::prov_footer(result) <- p_footer
-      rtables::subtitles(result) <- subtitle
-      result
-    }, env = list(title = `if`(is.null(all_basic_table_args$title), "", all_basic_table_args$title),
-                  footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-                  p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-                  subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
+    teal.devel::chunks_push(substitute(
+      expr = {
+        rtables::main_title(result) <- title
+        rtables::main_footer(result) <- footer
+        rtables::prov_footer(result) <- p_footer
+        rtables::subtitles(result) <- subtitle
+        result
+      },
+      env = list(
+        title = `if`(is.null(all_basic_table_args$title), "", all_basic_table_args$title),
+        footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+        p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+        subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+      )
+    ))
   })
 
   # Outputs to render.
@@ -893,5 +907,4 @@ srv_t_events_summary <- function(input,
     modal_title = "Adverse Event Summary Table",
     code_header = label
   )
-
 }

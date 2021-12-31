@@ -60,19 +60,22 @@ template_events_by_grade <- function(dataname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name(dataname)))
+      env = list(dataname = as.name(dataname))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   data_list <- add_expr(
@@ -237,7 +240,6 @@ template_events_by_grade <- function(dataname,
     )
 
     if (prune_freq > 0 && prune_diff == 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -245,9 +247,7 @@ template_events_by_grade <- function(dataname,
           env = list(prune_freq = prune_freq)
         )
       )
-
     } else if (prune_freq == 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -255,9 +255,7 @@ template_events_by_grade <- function(dataname,
           env = list(prune_diff = prune_diff)
         )
       )
-
     } else if (prune_freq > 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -300,7 +298,7 @@ template_events_by_grade <- function(dataname,
       substitute(
         expr = {
           pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path =  term_var, scorefun = scorefun, decreasing = TRUE)
+            sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
           pruned_and_sorted_result
         },
         env = list(
@@ -740,7 +738,7 @@ template_events_col_by_grade <- function(dataname,
 #'   modules = root_modules(
 #'     tm_t_events_by_grade(
 #'       label = "Adverse Events by Grade Table",
-#'       dataname = 'ADAE',
+#'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       llt = choices_selected(
 #'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
@@ -799,12 +797,12 @@ tm_t_events_by_grade <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
@@ -838,14 +836,13 @@ tm_t_events_by_grade <- function(label,
 
 #' @noRd
 ui_t_events_by_grade <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
-    encoding =  div(
+    encoding = div(
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
       teal.devel::data_extract_ui(
@@ -875,11 +872,13 @@ ui_t_events_by_grade <- function(id, ...) {
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total),
+        value = a$add_total
+      ),
       checkboxInput(
         ns("col_by_grade"),
         "Display grade groupings in nested columns",
-        value = a$col_by_grade),
+        value = a$col_by_grade
+      ),
       teal.devel::panel_group(
         teal.devel::panel_item(
           "Additional table settings",
@@ -967,7 +966,7 @@ srv_t_events_by_grade <- function(input,
     )
     teal.devel::validate_has_elements(
       input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" #nolint
+      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
     )
     validate(
       need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
@@ -977,7 +976,7 @@ srv_t_events_by_grade <- function(input,
         need(
           is.factor(anl_filtered[[input_grade]]) &&
             all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
-          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." #nolint
+          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
         )
       )
     } else {

@@ -24,7 +24,8 @@ template_coxreg_u <- function(dataname,
                               control = control_coxreg(),
                               append = FALSE,
                               basic_table_args = teal.devel::basic_table_args(
-                                title = paste0("Multi-Variable Cox Regression for ", paramcd))) {
+                                title = paste0("Multi-Variable Cox Regression for ", paramcd)
+                              )) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -196,7 +197,8 @@ template_coxreg_m <- function(dataname,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
                               basic_table_args = teal.devel::basic_table_args(
-                                title = paste0("Cox Regression for ", paramcd))) {
+                                title = paste0("Cox Regression for ", paramcd)
+                              )) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -378,9 +380,9 @@ template_coxreg_m <- function(dataname,
 #'
 #' library(scda)
 #'
-#' ADSL  <- synthetic_cdisc_data("latest")$adsl
+#' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
@@ -409,7 +411,7 @@ template_coxreg_m <- function(dataname,
 #'       strata_var = choices_selected(
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
 #'       ),
-#'       cov_var    = choices_selected(
+#'       cov_var = choices_selected(
 #'         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
 #'       ),
 #'       multivariate = TRUE
@@ -431,18 +433,19 @@ template_coxreg_m <- function(dataname,
 #'
 #' ADTTE <- data.frame(
 #'   STUDYID = "LUNG",
-#'   AVAL    = c(        4,   3,   1,   1,   2,   2,   3,   1,   2),
-#'   CNSR    = c(        1,   1,   1,   0,   1,   1,   0,   0,   0),
-#'   ARMCD   = factor(
-#'     c(                0,   1,   1,   1,   1,   0,   0,   0,   0),
+#'   AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
+#'   CNSR = c(1, 1, 1, 0, 1, 1, 0, 0, 0),
+#'   ARMCD = factor(
+#'     c(0, 1, 1, 1, 1, 0, 0, 0, 0),
 #'     labels = c("ARM A", "ARM B")
 #'   ),
-#'   SEX     = factor(
-#'     c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
+#'   SEX = factor(
+#'     c(0, 0, 0, 0, 1, 1, 1, 1, 1),
 #'     labels = c("F", "M")
 #'   ),
-#'   INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
-#' stringsAsFactors = FALSE)
+#'   INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
+#'   stringsAsFactors = FALSE
+#' )
 #' ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
 #' ADTTE <- dplyr::as_tibble(ADTTE)
 #' set.seed(1)
@@ -451,7 +454,8 @@ template_coxreg_m <- function(dataname,
 #' ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
 #' ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
 #' ADSL <- subset(
-#'   ADTTE, select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
+#'   ADTTE,
+#'   select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
 #' )
 #'
 #' ## Teal application
@@ -460,7 +464,7 @@ template_coxreg_m <- function(dataname,
 #' ## preprocessing. You will need to create the dataset as above before
 #' ## running the exported R code.
 #'
-#' arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+#' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset(
@@ -557,7 +561,6 @@ tm_t_coxreg <- function(label,
 
 #' @noRd
 ui_t_coxreg <- function(id, ...) {
-
   a <- list(...) # module args
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
@@ -759,9 +762,7 @@ srv_t_coxreg <- function(input,
   output$interaction_input <- renderUI({
     # exclude cases when increments are not necessary and
     # finally accessing the UI-rendering function defined above.
-    if (!is.null(input$interactions) &&
-        input$interactions) {
-
+    if (!is.null(input$interactions) && input$interactions) {
       anl_m <- anl_merged()
       input_cov_var <- as.vector(anl_m$columns_source$cov_var)
 
@@ -901,7 +902,8 @@ srv_t_coxreg <- function(input,
             vec <- strsplit(cov, split = ",")
             as.numeric(unlist(vec))
           }
-        })
+        }
+      )
       stats::setNames(res, interaction_var)
     }
   })
@@ -914,7 +916,7 @@ srv_t_coxreg <- function(input,
     cov_var <- if (length(cov_var) > 0) cov_var else NULL
 
     at <- if (!is.null(input$interactions) && input$interactions) at() else list()
-    arm_var <-  as.vector(anl$columns_source$arm_var)
+    arm_var <- as.vector(anl$columns_source$arm_var)
     cnsr_var <- as.vector(anl$columns_source$cnsr_var)
     aval_var <- as.vector(anl$columns_source$aval_var)
     ref_arm <- input$ref_arm
@@ -979,7 +981,7 @@ srv_t_coxreg <- function(input,
       main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
       all_basic_table_args <- teal.devel::resolve_basic_table_args(
         user_table = basic_table_args,
-        module_table =  teal.devel::basic_table_args(title = main_title)
+        module_table = teal.devel::basic_table_args(title = main_title)
       )
       mapply(
         expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args),
@@ -989,26 +991,33 @@ srv_t_coxreg <- function(input,
       teal.devel::chunks_get_var("result")
     } else {
       main_title <- paste0("Cox Regression for ", paramcd)
-      all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args,
-                                                       module_table =  teal.devel::basic_table_args(title = main_title))
+      all_basic_table_args <- teal.devel::resolve_basic_table_args(
+        user_table = basic_table_args,
+        module_table = teal.devel::basic_table_args(title = main_title)
+      )
       teal.devel::chunks_push(quote(result <- list()))
-      lapply(input$comp_arm, function(x)
-        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.devel::chunks_push))
-      teal.devel::chunks_push(substitute({
-        final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
-        rtables::main_title(final_table) <- title
-        rtables::main_footer(final_table) <- footer
-        rtables::prov_footer(final_table) <- p_footer
-        rtables::subtitles(final_table) <- subtitle
-        final_table
-      }, env = list(title = all_basic_table_args$title,
-                    footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-                    p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-                    subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles))))
+      lapply(input$comp_arm, function(x) {
+        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.devel::chunks_push)
+      })
+      teal.devel::chunks_push(substitute(
+        expr = {
+          final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
+          rtables::main_title(final_table) <- title
+          rtables::main_footer(final_table) <- footer
+          rtables::prov_footer(final_table) <- p_footer
+          rtables::subtitles(final_table) <- subtitle
+          final_table
+        },
+        env = list(
+          title = all_basic_table_args$title,
+          footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+          p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+          subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+        )
+      ))
       teal.devel::chunks_safe_eval()
       teal.devel::chunks_get_var("final_table")
     }
-
   })
 
   callModule(

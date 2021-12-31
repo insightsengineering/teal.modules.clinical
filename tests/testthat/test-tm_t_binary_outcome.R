@@ -28,8 +28,8 @@ testthat::test_that("template_binary_outcome generates standard expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-          title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
-        ) %>%
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         rtables::add_colcounts() %>%
         estimate_proportion(
@@ -117,7 +117,7 @@ testthat::test_that("template_binary_outcome generates right expressions with no
           conf_level = 0.95,
           method = "waldcc",
           table_names = "u_prop_diff"
-          ) %>%
+        ) %>%
         test_proportion_diff(
           vars = "is_rsp",
           method = "schouten",
@@ -157,14 +157,14 @@ testthat::test_that("template_binary_outcome generates expression without arm co
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)")))
-      ADSL <- ADSL %>%  # nolint
+      ADSL <- ADSL %>% # nolint
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na()
     }),
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
-        ) %>%
+      ) %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         estimate_proportion(
@@ -212,15 +212,15 @@ testthat::test_that("template_binary_outcome generates expression with non-defau
         dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)")))
       ADSL <- ADSL %>% # nolint
-        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% # nolint
         dplyr::mutate(ARM = stats::relevel(ARM, ref = "B: Placebo")) %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na()
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-          title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
-        ) %>%
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         rtables::add_colcounts() %>%
         estimate_proportion(
@@ -311,8 +311,8 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
     ),
     layout = quote(
       lyt <- rtables::basic_table(
-          title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
-        )  %>%
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
         ) %>%
@@ -401,8 +401,8 @@ testthat::test_that("template_binary_outcome can combine refs", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-          title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
-        ) %>%
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         rtables::add_colcounts() %>%
         estimate_proportion(

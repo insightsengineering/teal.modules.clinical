@@ -230,19 +230,20 @@ srv_t_medical_history <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
-      } else {
-        intersect(patient_id(), patient_data_base())
-      }
-    )
-  },
-  ignoreInit = TRUE
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
+      )
+    },
+    ignoreInit = TRUE
   )
 
   # Medical history tab ----

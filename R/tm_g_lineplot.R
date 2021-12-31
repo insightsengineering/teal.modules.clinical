@@ -90,13 +90,15 @@ template_g_lineplot <- function(dataname = "ANL",
     "n" = "n",
     "Mean" = "mean",
     "Standard Deviation" = "sd",
-    "Median" = "median")
+    "Median" = "median"
+  )
 
   interval_choices <- c(
     "Mean Confidence Interval" = "mean_ci",
     "Median Confidence Interval" = "median_ci",
     "25% and 75% Quantiles" = "quantiles",
-    "Range" = "range")
+    "Range" = "range"
+  )
 
   graph_list <- list()
 
@@ -146,19 +148,24 @@ template_g_lineplot <- function(dataname = "ANL",
       ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
         "Plot of ", names(which(mid_choices == mid)), " and ",
         ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
-        names(which(interval_choices == interval)), " by Visit")),
+        names(which(interval_choices == interval)), " by Visit"
+      )),
       ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
       ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
-      ggplot2_args_ylab = utils.nest::if_null(all_ggplot2_args$labs$y,
-                                              paste(y, names(which(mid_choices == mid)), "Values for")),
+      ggplot2_args_ylab = utils.nest::if_null(
+        all_ggplot2_args$labs$y,
+        paste(y, names(which(mid_choices == mid)), "Values for")
+      ),
       ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
     )
   )
 
   graph_list <- add_expr(
     graph_list,
-    substitute(result <- plot_call,
-               list(plot_call = plot_call))
+    substitute(
+      result <- plot_call,
+      list(plot_call = plot_call)
+    )
   )
 
   z$graph <- bracket_expr(graph_list)
@@ -224,7 +231,8 @@ tm_g_lineplot <- function(label,
                           strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
                           x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
                           y = choices_selected(
-                            variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
+                            variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"
+                          ),
                           y_unit = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
                           paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed = TRUE),
                           param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
@@ -262,8 +270,10 @@ tm_g_lineplot <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -301,7 +311,6 @@ tm_g_lineplot <- function(label,
 #' User Interface for Line Plot Module
 #' @noRd
 ui_g_lineplot <- function(id, ...) {
-
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$strata,
@@ -473,7 +482,6 @@ srv_g_lineplot <- function(input,
                            plot_height,
                            plot_width,
                            ggplot2_args) {
-
   stopifnot(is_cdisc_data(datasets))
   teal.devel::init_chunks()
 
@@ -484,7 +492,6 @@ srv_g_lineplot <- function(input,
   )
 
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -524,7 +531,6 @@ srv_g_lineplot <- function(input,
   })
 
   call_preparation <- reactive({
-
     validate_checks()
 
     teal.devel::chunks_reset()
@@ -589,5 +595,4 @@ srv_g_lineplot <- function(input,
     ),
     modal_title = label
   )
-
 }

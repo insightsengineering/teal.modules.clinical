@@ -16,7 +16,7 @@ template_summary <- function(dataname,
                              show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
                              var_labels = character(),
-                             na.rm = FALSE,  #nolint
+                             na.rm = FALSE, # nolint
                              na_level = "<Missing>",
                              numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
                              denominator = c("N", "n", "omit"),
@@ -77,7 +77,8 @@ template_summary <- function(dataname,
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -310,12 +311,10 @@ tm_t_summary <- function(label,
     ),
     filters = dataname
   )
-
 }
 
 #' @noRd
 ui_summary <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
 
@@ -323,73 +322,73 @@ ui_summary <- function(id, ...) {
 
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
-      encoding =  div(
-        tags$label("Encodings", class = "text-primary"),
-        teal.devel::datanames_input(a[c("arm_var", "summarize_vars")]),
-        teal.devel::data_extract_ui(
-          id = ns("arm_var"),
-          label = "Select Treatment Variable",
-          data_extract_spec = a$arm_var,
-          is_single_dataset = is_single_dataset_value
-        ),
-        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-        teal.devel::data_extract_ui(
-          id = ns("summarize_vars"),
-          label = "Summarize Variables",
-          data_extract_spec = a$summarize_vars,
-          is_single_dataset = is_single_dataset_value
-        ),
-        teal.devel::panel_group(
-          teal.devel::panel_item(
-            "Additional table settings",
-            radioButtons(
-              ns("useNA"),
-              label = "Display NA counts",
-              choices = c("ifany", "no"),
-              selected = a$useNA
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      teal.devel::datanames_input(a[c("arm_var", "summarize_vars")]),
+      teal.devel::data_extract_ui(
+        id = ns("arm_var"),
+        label = "Select Treatment Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      teal.devel::data_extract_ui(
+        id = ns("summarize_vars"),
+        label = "Summarize Variables",
+        data_extract_spec = a$summarize_vars,
+        is_single_dataset = is_single_dataset_value
+      ),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          "Additional table settings",
+          radioButtons(
+            ns("useNA"),
+            label = "Display NA counts",
+            choices = c("ifany", "no"),
+            selected = a$useNA
+          ),
+          checkboxGroupInput(
+            ns("numeric_stats"),
+            label = "Choose the statistics to display for numeric variables",
+            choices = c(
+              "n" = "n",
+              "Mean (SD)" = "mean_sd",
+              "Mean 95% CI" = "mean_ci",
+              "Median" = "median",
+              "Median 95% CI" = "median_ci",
+              "25% and 75%-ile" = "quantiles",
+              "Min - Max" = "range"
             ),
-            checkboxGroupInput(
-              ns("numeric_stats"),
-              label = "Choose the statistics to display for numeric variables",
-              choices = c(
-                "n" = "n",
-                "Mean (SD)" = "mean_sd",
-                "Mean 95% CI" = "mean_ci",
-                "Median" = "median",
-                "Median 95% CI" = "median_ci",
-                "25% and 75%-ile" = "quantiles",
-                "Min - Max" = "range"
-              ),
-              selected = a$numeric_stats
-            ),
-            radioButtons(
-              ns("denominator"),
-              label = "Denominator choice",
-              choices = c("N", "n", "omit"),
-              selected = a$denominator
-            ),
-            if (a$dataname == a$parentname) {
-              shinyjs::hidden(
-                checkboxInput(
-                  ns("drop_arm_levels"),
-                  label = "it's a BUG if you see this",
-                  value = TRUE
-                )
-              )
-            } else {
+            selected = a$numeric_stats
+          ),
+          radioButtons(
+            ns("denominator"),
+            label = "Denominator choice",
+            choices = c("N", "n", "omit"),
+            selected = a$denominator
+          ),
+          if (a$dataname == a$parentname) {
+            shinyjs::hidden(
               checkboxInput(
                 ns("drop_arm_levels"),
-                label = sprintf("Drop columns not in filtered %s", a$dataname),
-                value = a$drop_arm_levels
+                label = "it's a BUG if you see this",
+                value = TRUE
               )
-            }
-          )
+            )
+          } else {
+            checkboxInput(
+              ns("drop_arm_levels"),
+              label = sprintf("Drop columns not in filtered %s", a$dataname),
+              value = a$drop_arm_levels
+            )
+          }
         )
-      ),
-      forms = teal.devel::get_rcode_ui(ns("rcode")),
-      pre_output = a$pre_output,
-      post_output = a$post_output
-    )
+      )
+    ),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    pre_output = a$pre_output,
+    post_output = a$post_output
+  )
 }
 
 #' @noRd
@@ -429,7 +428,6 @@ srv_summary <- function(input,
 
   # validate inputs
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 

@@ -101,7 +101,7 @@ library(scda)
 adsl <- synthetic_cdisc_data("latest")$adsl
 adqs <- synthetic_cdisc_data("latest")$adqs
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")

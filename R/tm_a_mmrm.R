@@ -32,73 +32,71 @@ template_fit_mmrm <- function(parentname,
   data_list <- list()
   parent_list <- list()
 
-if (!is.null(arm_var)) {
-  ref_arm_val <- paste(ref_arm, collapse = "/")
+  if (!is.null(arm_var)) {
+    ref_arm_val <- paste(ref_arm, collapse = "/")
 
-  data_list <- add_expr(
-    data_list,
-    prepare_arm(
-      dataname = dataname,
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm,
-      ref_arm_val = ref_arm_val
-    )
-  )
-
-
-  parent_list <- add_expr(
-    parent_list,
-    prepare_arm(
-      dataname = parentname,
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm,
-      ref_arm_val = ref_arm_val
-    )
-  )
-
-  if (combine_comp_arms) {
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm)
+      prepare_arm(
+        dataname = dataname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val
       )
     )
+
+
     parent_list <- add_expr(
       parent_list,
-      utils.nest::substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm)
+      prepare_arm(
+        dataname = parentname,
+        arm_var = arm_var,
+        ref_arm = ref_arm,
+        comp_arm = comp_arm,
+        ref_arm_val = ref_arm_val
+      )
+    )
+
+    if (combine_comp_arms) {
+      data_list <- add_expr(
+        data_list,
+        utils.nest::substitute_names(
+          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(comp_arm = comp_arm)
+        )
+      )
+      parent_list <- add_expr(
+        parent_list,
+        utils.nest::substitute_names(
+          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(comp_arm = comp_arm)
+        )
+      )
+    }
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = dataname,
+        env = list(
+          dataname = as.name(dataname)
+        )
+      )
+    )
+
+    parent_list <- add_expr(
+      parent_list,
+      substitute(
+        expr = parentname,
+        env = list(
+          parentname = as.name(parentname)
+        )
       )
     )
   }
-} else {
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = dataname,
-      env = list(
-        dataname = as.name(dataname)
-      )
-    )
-  )
-
-  parent_list <- add_expr(
-    parent_list,
-    substitute(
-      expr = parentname,
-      env = list(
-        parentname = as.name(parentname)
-      )
-    )
-  )
-
-}
   data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
   parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
 
@@ -151,7 +149,6 @@ if (!is.null(arm_var)) {
   )
 
   y
-
 }
 
 #' @describeIn template_fit_mmrm
@@ -172,7 +169,6 @@ template_mmrm_tables <- function(parentname,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
                                  basic_table_args = teal.devel::basic_table_args()) {
-
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -181,8 +177,10 @@ template_mmrm_tables <- function(parentname,
   # Build layout.
   layout_list <- list()
   layout_list <- layout_list %>%
-    add_expr(substitute(expr_basic_table_args,
-                        env = list(expr_basic_table_args = teal.devel::parse_basic_table_args(all_basic_table_args))))
+    add_expr(substitute(
+      expr = expr_basic_table_args,
+      env = list(expr_basic_table_args = teal.devel::parse_basic_table_args(all_basic_table_args))
+    ))
 
   if (!is.null(arm_var)) {
     layout_list <- add_expr(
@@ -190,8 +188,8 @@ template_mmrm_tables <- function(parentname,
       substitute(
         expr = rtables::split_cols_by(var = arm_var, ref_group = ref_arm),
         env = list(arm_var = arm_var, ref_arm = ref_arm_val)
-        )
       )
+    )
     show_relative <- match.arg(show_relative)
 
     if (show_relative == "none") {
@@ -231,17 +229,18 @@ template_mmrm_tables <- function(parentname,
         )
       )
     }
-
   } else {
     layout_list <- add_expr(
       layout_list,
       substitute(
         expr =
           rtables::split_rows_by(visit_var) %>%
-          summarize_lsmeans(arms = FALSE) %>%
-          rtables::append_topleft(paste0("  ", paramcd)),
-        env = list(visit_var = visit_var,
-                   paramcd = paramcd)
+            summarize_lsmeans(arms = FALSE) %>%
+            rtables::append_topleft(paste0("  ", paramcd)),
+        env = list(
+          visit_var = visit_var,
+          paramcd = paramcd
+        )
       )
     )
   }
@@ -251,15 +250,15 @@ template_mmrm_tables <- function(parentname,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
 
-  switch(
-    table_type,
+  switch(table_type,
     t_mmrm_lsmeans = {
       y$lsmeans_table <- substitute(
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
             df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
-            alt_counts_df = parentname)
+            alt_counts_df = parentname
+          )
           lsmeans_table
         },
         env = list(
@@ -342,8 +341,10 @@ template_mmrm_plots <- function(fit_name,
           width = width,
           show_pval = show_pval,
           titles = if (is.null(fit_mmrm$vars$arm)) {
-            c(estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
-              contrasts = " ")
+            c(
+              estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
+              contrasts = " "
+            )
           } else {
             c(
               estimates = paste(
@@ -478,7 +479,7 @@ template_mmrm_plots <- function(fit_name,
 #'   modules = root_modules(
 #'     tm_a_mmrm(
 #'       label = "MMRM",
-#'       dataname = 'ADQS',
+#'       dataname = "ADQS",
 #'       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
 #'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
@@ -526,18 +527,20 @@ tm_a_mmrm <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
   plot_choices <- c("lsmeans", "diagnostic")
@@ -588,7 +591,6 @@ tm_a_mmrm <- function(label,
 
 #' @noRd
 ui_mmrm <- function(id, ...) {
-
   a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.devel::is_single_dataset(
@@ -657,25 +659,24 @@ ui_mmrm <- function(id, ...) {
             choices = NULL,
             selected = NULL,
             multiple = TRUE
+          )),
+          shinyjs::hidden(
+            helpText(id = ns("help_text"), "Multiple reference groups are automatically combined into a single group.")
+          ),
+          shinyjs::hidden(
+            selectInput(
+              ns("comp_arm"),
+              "Comparison Group",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
             )
           ),
           shinyjs::hidden(
-          helpText(id = ns("help_text"), "Multiple reference groups are automatically combined into a single group.")
-          ),
-          shinyjs::hidden(
-          selectInput(
-            ns("comp_arm"),
-            "Comparison Group",
-            choices = NULL,
-            selected = NULL,
-            multiple = TRUE
-            )
-          ),
-          shinyjs::hidden(
-          checkboxInput(
-            ns("combine_comp_arms"),
-            "Combine all comparison groups?",
-            value = FALSE
+            checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
             )
           ),
           teal.devel::data_extract_ui(
@@ -730,7 +731,7 @@ ui_mmrm <- function(id, ...) {
           ),
           # Show here which automatic optimizer was used in the end.
           textOutput(ns("optimizer_selected")),
-          collapsed = FALSE  # Start with having this panel opened.
+          collapsed = FALSE # Start with having this panel opened.
         )
       ),
       tags$style(".btn.disabled { color: grey; background-color: white; }"),
@@ -817,7 +818,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms =  teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -918,8 +919,8 @@ srv_mmrm <- function(input,
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
 
-observeEvent(adsl_merged()$columns_source$arm_var, {
-  arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
+  observeEvent(adsl_merged()$columns_source$arm_var, {
+    arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
     if (utils.nest::is_empty(arm_var)) {
       shinyjs::hide("ref_arm")
       shinyjs::hide("comp_arm")
@@ -933,11 +934,11 @@ observeEvent(adsl_merged()$columns_source$arm_var, {
     }
   })
 
-teal.devel::arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),  # From UI.
+    id_arm_var = extract_input("arm_var", parentname), # From UI.
     datasets = datasets,
     dataname = parentname,
     arm_ref_comp = arm_ref_comp,
@@ -951,7 +952,7 @@ teal.devel::arm_ref_comp_observer(
     if (isTRUE(grepl("^t_", output_function))) {
       show_plot_rv(FALSE)
       shinyjs::show("mmrm_table")
-    } else if (isTRUE(grepl("^g_", output_function)))  {
+    } else if (isTRUE(grepl("^g_", output_function))) {
       shinyjs::hide("mmrm_table")
       show_plot_rv(TRUE)
     } else {
@@ -1051,7 +1052,8 @@ teal.devel::arm_ref_comp_observer(
       need(encoding_inputs[[extract_input("aval_var", dataname)]], "`Analysis Variable` field is not selected"),
       need(
         encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
-        "`Select Endpoint` field is not selected"),
+        "`Select Endpoint` field is not selected"
+      ),
       need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
       need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
       need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
@@ -1101,10 +1103,11 @@ teal.devel::arm_ref_comp_observer(
         }
         any(sort(state$input[[x]]) != sort(displayed_state[[x]]))
       },
-      FUN.VALUE = logical(1))
+      FUN.VALUE = logical(1)
+    )
 
     # all_equal function either returns TRUE or a character scalar to describe where there is inequality
-    any(c(is.character(equal_ADSL), is.character(equal_dataname),  true_means_change))
+    any(c(is.character(equal_ADSL), is.character(equal_dataname), true_means_change))
   })
 
   # Event handler:
@@ -1234,14 +1237,12 @@ teal.devel::arm_ref_comp_observer(
     g_mmrm_diagnostic_type <- input$g_mmrm_diagnostic_type
     g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
 
-    output_title <- switch(
-      output_function,
+    output_title <- switch(output_function,
       "t_mmrm_cov" = "Residual covariance matrix estimate",
       "t_mmrm_diagnostic" = "Model fit statistics",
       "t_mmrm_fixed" = "Fixed effects estimates",
       "t_mmrm_lsmeans" = "LS means and contrasts estimates",
-      "g_mmrm_diagnostic" = switch(
-        g_mmrm_diagnostic_type,
+      "g_mmrm_diagnostic" = switch(g_mmrm_diagnostic_type,
         "fit-residual" = "Marginal fitted values vs. residuals",
         "q-q-residual" = "Q-Q normal plot for standardized residuals"
       ),
@@ -1267,7 +1268,9 @@ teal.devel::arm_ref_comp_observer(
     output_function <- input$output_function
 
     # If the output is not a table, stop here.
-    if (!isTRUE(grepl("^t_", output_function))) return(NULL)
+    if (!isTRUE(grepl("^t_", output_function))) {
+      return(NULL)
+    }
     # Reset global chunks. Needs to be done here so nothing yet in environment.
     teal.devel::chunks_reset()
     # Get the fit stack while evaluating the fit code at the same time.
@@ -1308,8 +1311,7 @@ teal.devel::arm_ref_comp_observer(
     mmrm_table(output_function)
 
     # Depending on the table function type, produce different code
-    switch(
-      output_function,
+    switch(output_function,
       t_mmrm_lsmeans = teal.devel::chunks_get_var("lsmeans_table"),
       t_mmrm_diagnostic = teal.devel::chunks_get_var("diagnostic_table"),
       t_mmrm_fixed = teal.devel::chunks_get_var("fixed_effects"),
@@ -1330,7 +1332,9 @@ teal.devel::arm_ref_comp_observer(
     output_function <- input$output_function
 
     # Stop here if the output is not a plot.
-    if (!isTRUE(grepl("^g_", output_function))) return(NULL)
+    if (!isTRUE(grepl("^g_", output_function))) {
+      return(NULL)
+    }
     teal.devel::chunks_reset()
     fit_stack <- mmrm_fit()
     fit <- teal.devel::chunks_get_var("fit", fit_stack)
@@ -1353,7 +1357,6 @@ teal.devel::arm_ref_comp_observer(
 
     mmrm_plot <- function(lsmeans_plot = lsmeans_args,
                           diagnostic_plot = diagnostic_args) {
-
       res <- template_mmrm_plots(
         "fit",
         lsmeans_plot = lsmeans_plot,
@@ -1366,8 +1369,7 @@ teal.devel::arm_ref_comp_observer(
     }
     teal.devel::chunks_push_chunks(fit_stack)
     # Depending on the plot function type, produce different code.
-    switch(
-      output_function,
+    switch(output_function,
       g_mmrm_lsmeans = {
         mmrm_plot(diagnostic_plot = NULL)
         teal.devel::chunks_get_var("lsmeans_plot")
@@ -1413,8 +1415,10 @@ teal.devel::arm_ref_comp_observer(
       state$optimizer <- result
       result
     } else if (currnt_state) {
-        isolate(state$optimizer)
-    } else NULL
+      isolate(state$optimizer)
+    } else {
+      NULL
+    }
 
     return(what_to_return)
   })

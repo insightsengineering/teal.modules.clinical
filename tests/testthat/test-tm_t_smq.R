@@ -11,7 +11,7 @@ testthat::test_that("template_smq generates correct expressions with default arg
     smq_varlabel = "Standardized MedDRA Query",
     baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
     sort_criteria = c("freq_desc")
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -26,7 +26,7 @@ testthat::test_that("template_smq generates correct expressions with default arg
         df = anl, baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
         smq_varlabel = "Standardized MedDRA Query",
         keys = unique(c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD"))
-        )
+      )
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
@@ -40,8 +40,8 @@ testthat::test_that("template_smq generates correct expressions with default arg
           .stats = c("unique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event"
-            )
-          ) %>%
+          )
+        ) %>%
         rtables::split_rows_by(
           "SMQ",
           child_labels = "visible",
@@ -49,14 +49,16 @@ testthat::test_that("template_smq generates correct expressions with default arg
           split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]
+        ) %>%
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event",
-            nonunique = "Total number of events")
-          ) %>%
+            nonunique = "Total number of events"
+          )
+        ) %>%
         count_occurrences(vars = "AEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "AEDECOD", indent = 1L)
     ),
@@ -126,13 +128,15 @@ testthat::test_that("template_smq generates correct expressions with custom argu
           split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["SMQ"]]) %>%
+          split_label = rtables::var_labels(anl)[["SMQ"]]
+        ) %>%
         summarize_num_patients(
           var = "myUSUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(
             unique = "Total number of patients with at least one adverse event",
-            nonunique = "Total number of events")
+            nonunique = "Total number of events"
+          )
         ) %>%
         count_occurrences(vars = "myAEDECOD", drop = FALSE) %>%
         append_varlabels(anl, "myAEDECOD", indent = 1L)

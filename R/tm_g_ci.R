@@ -80,8 +80,7 @@ template_g_ci <- function(dataname, # nousage # nolint
           position = position_dodge(width = .5)
         ),
         env = list(
-          fun = switch(
-            stat,
+          fun = switch(stat,
             mean = substitute(stat_mean_ci),
             median = substitute(stat_median_ci)
           )
@@ -99,8 +98,7 @@ template_g_ci <- function(dataname, # nousage # nolint
           position = position_dodge(width = .5)
         ),
         env = list(
-          fun = switch(
-            stat,
+          fun = switch(stat,
             mean = substitute(
               expr = function(x) stat_mean_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
@@ -124,8 +122,7 @@ template_g_ci <- function(dataname, # nousage # nolint
         position = position_dodge(width = .5)
       ),
       env = list(
-        fun = switch(
-          stat,
+        fun = switch(stat,
           mean = quote(mean),
           median = quote(median)
         )
@@ -137,12 +134,19 @@ template_g_ci <- function(dataname, # nousage # nolint
     teal.devel::resolve_ggplot2_args(
       user_plot = ggplot2_args,
       module_plot = teal.devel::ggplot2_args(
-        labs = list(title = "Confidence Interval Plot by Treatment Group",
-                    caption = sprintf("%s and %i%% CIs for %s are displayed.",
-                                      switch(stat, mean = "Mean", median = "Median"),
-                                      100 * conf_level,
-                                      stat),
-                    x = "Treatment Group"),
+        labs = list(
+          title = "Confidence Interval Plot by Treatment Group",
+          caption = sprintf(
+            "%s and %i%% CIs for %s are displayed.",
+            switch(stat,
+              mean = "Mean",
+              median = "Median"
+            ),
+            100 * conf_level,
+            stat
+          ),
+          x = "Treatment Group"
+        ),
         theme = list()
       )
     )
@@ -164,10 +168,9 @@ template_g_ci <- function(dataname, # nousage # nolint
     expr = {
       gg <- graph_expr
       print(gg)
-      },
+    },
     env = list(graph_expr = pipe_expr(graph_list, pipe_str = "+"))
   )
-
 }
 
 #' Teal Module: Confidence Interval Plot (`CIG01`)
@@ -200,7 +203,7 @@ template_g_ci <- function(dataname, # nousage # nolint
 #'         dataname = "ADSL",
 #'         select = select_spec(
 #'           choices = c("ARMCD", "BMRKR2"),
-#'           selected = c("ARMCD" ),
+#'           selected = c("ARMCD"),
 #'           multiple = FALSE,
 #'           fixed = FALSE
 #'         )
@@ -283,8 +286,12 @@ tm_g_ci <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 

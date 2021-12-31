@@ -24,8 +24,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
                 layout.pos.col = 1
               )
             )
-          }
-          else {
+          } else {
             g_km(
               df = df_i, variables = variables, font_size = 8,
               xlab = paste0(
@@ -41,7 +40,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
               ), yval = "Survival", xticks = NULL, newpage = FALSE,
               title = paste(
                 "KM Plot", ",", quote(SEX), "=", as.character(unique(df_i$SEX))
-                ),
+              ),
               ggtheme = theme_minimal(), annot_surv_med = TRUE,
               annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
               control_coxph_pw = control_coxph(

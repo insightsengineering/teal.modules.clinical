@@ -145,7 +145,10 @@ template_vitals <- function(dataname = "ANL",
           alpha = 1,
           nudge_y = 2.2,
           size = font_size_var / 3.5
-        ) + labs + ggthemes + themes
+        ) +
+        labs +
+        ggthemes +
+        themes
 
       print(result_plot)
     }, env = list(
@@ -257,8 +260,13 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -369,13 +377,14 @@ srv_g_vitals <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }

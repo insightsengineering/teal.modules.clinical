@@ -35,34 +35,35 @@ template_laboratory <- function(dataname = "ANL",
 
   table_lab_list <- add_expr(
     list(),
-    substitute({
-      dataname[, aval_char] <- round(dataname[, aval_char], round_value)
-      labor_table_base <- dataname %>%
-        dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
-        dplyr::arrange(timepoints) %>%
-        dplyr::select(-timepoints) %>%
-        dplyr::group_by(paramcd, param) %>%
-        dplyr::mutate(INDEX = dplyr::row_number()) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
-        dplyr::select(-c(aval, anrind))
+    substitute(
+      expr = {
+        dataname[, aval_char] <- round(dataname[, aval_char], round_value)
+        labor_table_base <- dataname %>%
+          dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
+          dplyr::arrange(timepoints) %>%
+          dplyr::select(-timepoints) %>%
+          dplyr::group_by(paramcd, param) %>%
+          dplyr::mutate(INDEX = dplyr::row_number()) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
+          dplyr::select(-c(aval, anrind))
 
-      labor_table_html <- labor_table_base %>%
-        dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
-        dplyr::select(-aval_anrind) %>%
-        tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
-        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+        labor_table_html <- labor_table_base %>%
+          dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
+          dplyr::select(-aval_anrind) %>%
+          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
+          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
-      labor_table_raw <- labor_table_base %>%
-        tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
-        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+        labor_table_raw <- labor_table_base %>%
+          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
+          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
-      labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
-      labor_table_html_dt$dependencies <- c(
-        labor_table_html_dt$dependencies,
-        list(rmarkdown::html_dependency_bootstrap("default"))
-      )
-      labor_table_html_dt
+        labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
+        labor_table_html_dt$dependencies <- c(
+          labor_table_html_dt$dependencies,
+          list(rmarkdown::html_dependency_bootstrap("default"))
+        )
+        labor_table_html_dt
       },
       env = list(
         dataname = as.name(dataname),
@@ -299,13 +300,14 @@ srv_g_laboratory <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -402,10 +404,11 @@ srv_g_laboratory <- function(input,
     labor_stack
   })
 
-  output$lab_values_table <- DT::renderDataTable({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(labor_calls())
-    teal.devel::chunks_get_var("labor_table_html")
+  output$lab_values_table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(labor_calls())
+      teal.devel::chunks_get_var("labor_table_html")
     },
     escape = FALSE,
     options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)

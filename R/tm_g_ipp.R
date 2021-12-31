@@ -30,7 +30,6 @@ template_g_ipp <- function(dataname = "ANL",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.devel::ggplot2_args()) {
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
@@ -42,7 +41,7 @@ template_g_ipp <- function(dataname = "ANL",
     assertthat::is.string(base_var),
     assertthat::is.flag(add_baseline_hline),
     assertthat::is.flag(separate_by_obs)
-    )
+  )
 
   y <- list()
   # Data preprocessing
@@ -53,7 +52,7 @@ template_g_ipp <- function(dataname = "ANL",
   )
 
   all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
-    user_plot =  ggplot2_args,
+    user_plot = ggplot2_args,
     module_plot = teal.devel::ggplot2_args(
       labs = list(
         title = sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
@@ -73,7 +72,7 @@ template_g_ipp <- function(dataname = "ANL",
       expr = {
         plot <- h_g_ipp(
           df = anl,
-          xvar  = visit,
+          xvar = visit,
           yvar = aval,
           xlab = xlab_val,
           ylab = ylab_val,
@@ -156,7 +155,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' adsl <- df_explicit_na(adsl)
 #' adlb <- df_explicit_na(adlb) %>%
-#'  dplyr::filter(AVISIT != "SCREENING")
+#'   dplyr::filter(AVISIT != "SCREENING")
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -205,9 +204,9 @@ template_g_ipp <- function(dataname = "ANL",
 #'         "AVISIT"
 #'       ),
 #'       base_var = choices_selected(
-#'          variable_choices(adlb, c("BASE")),
-#'          "BASE",
-#'          fixed = TRUE
+#'         variable_choices(adlb, c("BASE")),
+#'         "BASE",
+#'         fixed = TRUE
 #'       ),
 #'       add_baseline_hline = FALSE,
 #'       separate_by_obs = FALSE
@@ -225,34 +224,34 @@ tm_g_ipp <- function(label,
                        inherits(arm_var, "data_extract_spec"),
                        teal.devel::datanames_input(arm_var),
                        "ADSL"
-                       ),
+                     ),
                      arm_var,
                      paramcd,
                      id_var = choices_selected(
                        variable_choices(dataname, "USUBJID"),
                        "USUBJID",
                        fixed = TRUE
-                       ),
+                     ),
                      visit_var = choices_selected(
                        variable_choices(dataname, "AVISIT"),
                        "AVISIT",
                        fixed = TRUE
-                       ),
+                     ),
                      aval_var = choices_selected(
                        variable_choices(dataname, "AVAL"),
                        "AVAL",
                        fixed = TRUE
-                       ),
+                     ),
                      avalu_var = choices_selected(
                        variable_choices(dataname, "AVALU"),
                        "AVALU",
                        fixed = TRUE
-                       ),
+                     ),
                      base_var = choices_selected(
                        variable_choices(dataname, "BASE"),
                        "BASE",
                        fixed = TRUE
-                       ),
+                     ),
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
                      plot_height = c(1200L, 400L, 5000L),
@@ -280,8 +279,12 @@ tm_g_ipp <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -387,12 +390,12 @@ ui_g_ipp <- function(id, ...) {
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",
             value = a$add_baseline_hline
-            ),
+          ),
           checkboxInput(
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
-            )
+          )
         )
       )
     ),
@@ -479,7 +482,7 @@ srv_g_ipp <- function(input,
 
     validate(
       need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
-      )
+    )
 
     validate(
       need(utils.nest::is_character_single(input_visit_var), "Please select a timepoint variable.")

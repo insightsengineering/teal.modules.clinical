@@ -12,7 +12,6 @@
 #' @seealso [tm_t_binary_outcome()]
 #'
 #' @examples
-#'
 #' \dontrun{
 #' # Preparation of the test case.
 #' library(dplyr)
@@ -425,15 +424,22 @@ template_binary_outcome <- function(dataname,
 #'       default_responses = list(
 #'         BESRSPI = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)",
-#'                      "Stable Disease (SD)", "Progressive Disease (PD)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Partial Response (PR)",
+#'             "Stable Disease (SD)", "Progressive Disease (PD)"
+#'           )
+#'         ),
 #'         INVET = list(
 #'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'             "Progressive Disease (PD)", "Stable Disease (SD)"
+#'           )
+#'         ),
 #'         OVRINV = list(
 #'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+#'         )
 #'       )
 #'     )
 #'   )
@@ -456,7 +462,8 @@ tm_t_binary_outcome <- function(label,
                                 strata_var,
                                 aval_var = choices_selected(
                                   choices = variable_choices(dataname, c("AVALC", "SEX")),
-                                  selected = "AVALC", fixed = FALSE),
+                                  selected = "AVALC", fixed = FALSE
+                                ),
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
@@ -638,21 +645,25 @@ ui_t_binary_outcome <- function(id, ...) {
             optionalSelectInput(
               ns("s_diff_ci"),
               label = "Method for Difference of Proportions CI",
-              choices = c("Wald, without correction" = "wald",
-                          "Wald, with correction" = "waldcc",
-                          "Anderson-Hauck" = "ha",
-                          "Newcombe" = "newcombe",
-                          "CMH, without correction" = "cmh"),
+              choices = c(
+                "Wald, without correction" = "wald",
+                "Wald, with correction" = "waldcc",
+                "Anderson-Hauck" = "ha",
+                "Newcombe" = "newcombe",
+                "CMH, without correction" = "cmh"
+              ),
               selected = "cmh",
               multiple = FALSE
             ),
             optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
-              choices = c("Chi-Squared Test with Schouten Correction" = "schouten",
-                          "Chi-Squared Test" = "chisq",
-                          "Cochran-Mantel-Haenszel Test" = "cmh",
-                          "Fisher's Exact Test" = "fisher"),
+              choices = c(
+                "Chi-Squared Test with Schouten Correction" = "schouten",
+                "Chi-Squared Test" = "chisq",
+                "Cochran-Mantel-Haenszel Test" = "cmh",
+                "Fisher's Exact Test" = "fisher"
+              ),
               selected = "cmh",
               multiple = FALSE
             )
@@ -756,30 +767,42 @@ srv_t_binary_outcome <- function(input,
   )
 
   observeEvent(
-    c(input[[extract_input("aval_var", "ADRS")]],
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
-        aval_var <- anl_merged()$columns_source$aval_var
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-        } else default_responses
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else sel_param
-        responder_choices <- if (utils.nest::is_empty(aval_var)) {
-          character(0)
+    c(
+      input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+    ),
+    handlerExpr = {
+      aval_var <- anl_merged()$columns_source$aval_var
+      sel_param <- if (is.list(default_responses)) {
+        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+      } else {
+        default_responses
+      }
+      common_rsp <- if (is.list(sel_param)) {
+        sel_param$rsp
+      } else {
+        sel_param
+      }
+      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
+          } else {
+            union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          }
         } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
-          } else unique(anl_merged()$data()[[aval_var]])
+          unique(anl_merged()$data()[[aval_var]])
         }
-        updateSelectInput(
-          session, "responders",
-          choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
-        )
-    })
+      }
+      updateSelectInput(
+        session, "responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp)
+      )
+    }
+  )
 
   validate_check <- reactive({
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
@@ -832,29 +855,34 @@ srv_t_binary_outcome <- function(input,
         need(
           sum(summary(
             anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
-            ) > 0) > 1L,
-            "After filtering at least one combination of strata variable levels
-            has too few observations to calculate the odds ratio.")
+          ) > 0) > 1L,
+          "After filtering at least one combination of strata variable levels
+            has too few observations to calculate the odds ratio."
+        )
       }
     )
 
     validate(
       need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty"))
+      need(input$responders, "`Responders` field is empty")
+    )
 
     if (is.list(default_responses)) {
       validate(
-        need(all(
-          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-            gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)),
-          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+        need(
+          all(
+            grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+              gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)
+          ),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+        )
       )
     }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1")
-    )
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     NULL
   })

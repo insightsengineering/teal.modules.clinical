@@ -124,7 +124,8 @@ template_adverse_events <- function(dataname = "ANL",
         scale_y_discrete(expand = expansion(add = 1.2)) +
         xlim(1, 1.2 * max(dataname[[time_var]])) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        labs + themes,
+        labs +
+        themes,
       env = list(
         dataname = as.name(dataname),
         aeterm = as.name(aeterm),
@@ -257,8 +258,13 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -411,16 +417,17 @@ srv_g_adverse_events <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
-      } else {
-        intersect(patient_id(), patient_data_base())
-      }
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
       )
     },
     ignoreInit = TRUE
@@ -507,10 +514,11 @@ srv_g_adverse_events <- function(input,
     teal.devel::chunks_safe_eval(chunks = stack)
     stack
   })
-  output$table <- DT::renderDataTable({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(calls())
-    teal.devel::chunks_get_var("table")
+  output$table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(calls())
+      teal.devel::chunks_get_var("table")
     },
     options = list(pageLength = input$table_rows)
   )

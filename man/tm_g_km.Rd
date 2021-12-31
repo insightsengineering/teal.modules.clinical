@@ -103,7 +103,7 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")

@@ -85,7 +85,8 @@ template_mult_events <- function(dataname,
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -145,7 +146,7 @@ template_mult_events <- function(dataname,
       substitute(
         expr =
           count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = 0L),
+            append_varlabels(dataname, llt, indent = 0L),
         env = list(
           dataname = as.name(dataname), llt = llt
         )
@@ -209,8 +210,8 @@ template_mult_events <- function(dataname,
               nonunique = nonunique_label
             )
           ) %>%
-          count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = indent_space),
+            count_occurrences(vars = llt, .indent_mods = -1L) %>%
+            append_varlabels(dataname, llt, indent = indent_space),
         env = list(
           dataname = as.name(dataname), llt = llt,
           unique_label = unique_label, nonunique_label = nonunique_label,

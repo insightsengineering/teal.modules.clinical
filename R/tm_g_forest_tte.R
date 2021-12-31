@@ -126,7 +126,7 @@ template_forest_tte <- function(dataname = "ANL",
           arm = arm_var,
           subgroups = subgroup_var,
           strat = strata_var
-          ),
+        ),
         control = control_coxph(conf_level = conf_level),
         data = anl
       ),
@@ -176,7 +176,7 @@ template_forest_tte <- function(dataname = "ANL",
   )
 
   plot_call <- substitute(
-    env  = list(plot_call = plot_call),
+    env = list(plot_call = plot_call),
     expr = {
       p <- plot_call
       grid::grid.newpage()
@@ -214,7 +214,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ARM = list(
 #'     ref = "B: Placebo",
 #'     comp = c("A: Drug X", "C: Combination")
@@ -227,34 +227,37 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_data("latest")$adsl
-#'               ADSL$RACE <- droplevels(ADSL$RACE)'),
+#'     cdisc_dataset(
+#'       "ADSL",
+#'       ADSL,
+#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl
+#'         ADSL$RACE <- droplevels(ADSL$RACE)"
+#'     ),
 #'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_forest_tte(
-#'        label = "Forest Survival",
-#'        dataname = "ADTTE",
-#'        arm_var = choices_selected(
-#'          variable_choices(ADSL, c("ARM", "ARMCD")),
-#'          "ARMCD"
-#'        ),
-#'        arm_ref_comp = arm_ref_comp,
-#'        paramcd = choices_selected(
-#'          value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'          "OS"
-#'        ),
-#'        subgroup_var = choices_selected(
-#'          variable_choices(ADSL, names(ADSL)),
-#'          c("BMRKR2", "SEX")
-#'        ),
-#'        strata_var = choices_selected(
-#'          variable_choices(ADSL, c("STRATA1", "STRATA2")),
-#'          "STRATA2"
-#'        ),
-#'        plot_height = c(600, 200, 2000)
+#'       label = "Forest Survival",
+#'       dataname = "ADTTE",
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD")),
+#'         "ARMCD"
+#'       ),
+#'       arm_ref_comp = arm_ref_comp,
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         "OS"
+#'       ),
+#'       subgroup_var = choices_selected(
+#'         variable_choices(ADSL, names(ADSL)),
+#'         c("BMRKR2", "SEX")
+#'       ),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'         "STRATA2"
+#'       ),
+#'       plot_height = c(600, 200, 2000)
 #'     )
 #'   )
 #' )
@@ -279,7 +282,8 @@ tm_g_forest_tte <- function(label,
                             cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
                             conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             time_unit_var = choices_selected(
-                              variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                              variable_choices(dataname, "AVALU"), "AVALU",
+                              fixed = TRUE
                             ),
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
@@ -297,18 +301,22 @@ tm_g_forest_tte <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -392,8 +400,10 @@ ui_g_forest_tte <- function(id, ...) {
         ns("ref_arm"),
         div(
           "Reference Group",
-          title = paste("Multiple reference groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple reference groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
@@ -404,8 +414,10 @@ ui_g_forest_tte <- function(id, ...) {
         ns("comp_arm"),
         div(
           "Comparison Group",
-          title = paste("Multiple comparison groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple comparison groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
@@ -540,15 +552,19 @@ srv_g_forest_tte <- function(input,
 
     if (length(input_subgroup_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
-             "Not all subgroup variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+          "Not all subgroup variables are factors."
+        )
       )
     }
 
     if (length(input_strata_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
-             "Not all stratification variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+          "Not all stratification variables are factors."
+        )
       )
     }
 
@@ -585,7 +601,7 @@ srv_g_forest_tte <- function(input,
     ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <-  anl_selectors()$subgroup_var()$select_ordered
+    subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
 
     obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 

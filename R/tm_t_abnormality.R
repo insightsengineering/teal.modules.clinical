@@ -75,14 +75,16 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
-      env = list(dataname = as.name("anl"), na_level = na_level))
+      env = list(dataname = as.name("anl"), na_level = na_level)
+    )
   )
 
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level))
+      env = list(parentname = as.name(parentname), na_level = na_level)
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -295,16 +297,20 @@ tm_t_abnormality <- function(label,
                              grade,
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
                              id_var = choices_selected(
-                               variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
+                               variable_choices(dataname, subset = "USUBJID"),
+                               selected = "USUBJID", fixed = TRUE
                              ),
                              baseline_var = choices_selected(
-                               variable_choices(dataname, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+                               variable_choices(dataname, subset = "BNRIND"),
+                               selected = "BNRIND", fixed = TRUE
                              ),
                              treatment_flag_var = choices_selected(
-                               variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE
+                               variable_choices(dataname, subset = "ONTRTFL"),
+                               selected = "ONTRTFL", fixed = TRUE
                              ),
                              treatment_flag = choices_selected(
-                               value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
+                               value_choices(dataname, "ONTRTFL"),
+                               selected = "Y", fixed = TRUE
                              ),
                              add_total = TRUE,
                              exclude_base_abn = FALSE,
@@ -330,12 +336,12 @@ tm_t_abnormality <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -364,15 +370,14 @@ tm_t_abnormality <- function(label,
         label = label,
         na_level = na_level,
         basic_table_args = basic_table_args
-        )
-      ),
+      )
+    ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_t_abnormality <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...) # module args
 
@@ -384,7 +389,7 @@ ui_t_abnormality <- function(id, ...) {
     a$baseline_var,
     a$treatment_flag_var,
     a$treatment_flag
-    )
+  )
 
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
@@ -600,7 +605,7 @@ srv_t_abnormality <- function(input,
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
       list(arm_var, id_var, by_vars, grade)
-      ),
+    ),
     modal_title = "R Code for Abnormality Table",
     code_header = label
   )

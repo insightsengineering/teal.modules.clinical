@@ -9,22 +9,20 @@
 #' @param surv_timepoint (`list`)\cr
 #'   parameters for comparison, specified using [tern::control_surv_timepoint].
 #'
-control_tte <- function(
-  surv_time = list(
-    conf_level = 0.95,
-    conf_type = "plain",
-    quantiles = c(0.25, 0.75)
-  ),
-  coxph = list(
-    pval_method = "log-rank",
-    ties = "efron",
-    conf_level = 0.95
-  ),
-  surv_timepoint = control_surv_timepoint(
-    conf_level = 0.95,
-    conf_type = c("plain", "none", "log", "log-log")
-  )
-) {
+control_tte <- function(surv_time = list(
+                          conf_level = 0.95,
+                          conf_type = "plain",
+                          quantiles = c(0.25, 0.75)
+                        ),
+                        coxph = list(
+                          pval_method = "log-rank",
+                          ties = "efron",
+                          conf_level = 0.95
+                        ),
+                        surv_timepoint = control_surv_timepoint(
+                          conf_level = 0.95,
+                          conf_type = c("plain", "none", "log", "log-log")
+                        )) {
   list(
     surv_time = do.call("control_surv_time", surv_time),
     coxph = do.call("control_coxph", coxph),
@@ -375,44 +373,48 @@ template_tte <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
 #'   ),
-#'    ARM = list(
+#'   ARM = list(
 #'     ref = "B: Placebo",
 #'     comp = c("A: Drug X", "C: Combination")
 #'   )
 #' )
 #'
 #' app <- init(
-#'     data = cdisc_data(
-#'       cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'       cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-#'       check = TRUE
-#'     ),
-#'     modules = root_modules(
-#'         tm_t_tte(
-#'             label = "Time To Event Table",
-#'             dataname = 'ADTTE',
-#'             arm_var = choices_selected(
-#'               variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-#'               "ARM"),
-#'             arm_ref_comp = arm_ref_comp,
-#'             paramcd = choices_selected(
-#'               value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'               "OS"),
-#'             strata_var = choices_selected(
-#'               variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'               "SEX"),
-#'             time_points = choices_selected(c(182, 243), 182),
-#'             event_desc_var = choices_selected(
-#'               variable_choices(ADTTE, "EVNTDESC"),
-#'               "EVNTDESC",
-#'               fixed = TRUE)
-#'         )
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
+#'     check = TRUE
+#'   ),
+#'   modules = root_modules(
+#'     tm_t_tte(
+#'       label = "Time To Event Table",
+#'       dataname = "ADTTE",
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'         "ARM"
+#'       ),
+#'       arm_ref_comp = arm_ref_comp,
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         "OS"
+#'       ),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         "SEX"
+#'       ),
+#'       time_points = choices_selected(c(182, 243), 182),
+#'       event_desc_var = choices_selected(
+#'         variable_choices(ADTTE, "EVNTDESC"),
+#'         "EVNTDESC",
+#'         fixed = TRUE
+#'       )
 #'     )
+#'   )
 #' )
 #'
 #' \dontrun{
@@ -436,7 +438,8 @@ tm_t_tte <- function(label,
                      conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      time_points,
                      time_unit_var = choices_selected(
-                       variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                       variable_choices(dataname, "AVALU"), "AVALU",
+                       fixed = TRUE
                      ),
                      event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
@@ -455,12 +458,12 @@ tm_t_tte <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
@@ -497,7 +500,6 @@ tm_t_tte <- function(label,
 
 #' @noRd
 ui_t_tte <- function(id, ...) {
-
   a <- list(...) # module args
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
@@ -582,14 +584,14 @@ ui_t_tte <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-          checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       optionalSelectInput(ns("time_points"),
-                          "Time Points",
-                          a$time_points$choices,
-                          a$time_points$selected,
-                          multiple = TRUE,
-                          fixed = a$time_points$fixed
+        "Time Points",
+        a$time_points$choices,
+        a$time_points$selected,
+        multiple = TRUE,
+        fixed = a$time_points$fixed
       ),
       teal.devel::data_extract_ui(
         id = ns("event_desc_var"),
@@ -606,7 +608,7 @@ ui_t_tte <- function(id, ...) {
             label = HTML(
               paste(
                 "p-value method for ",
-                tags$span(style="color:darkblue", "Coxph"), # nolint
+                tags$span(style = "color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -619,7 +621,7 @@ ui_t_tte <- function(id, ...) {
             label = HTML(
               paste(
                 "Ties for ",
-                tags$span(style="color:darkblue", "Coxph"), # nolint
+                tags$span(style = "color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -632,8 +634,9 @@ ui_t_tte <- function(id, ...) {
             label = HTML(
               paste(
                 "Confidence Level for ",
-                tags$span(style="color:darkblue", "Coxph"), # nolint
-                " (Hazard Ratio)", sep = ""
+                tags$span(style = "color:darkblue", "Coxph"), # nolint
+                " (Hazard Ratio)",
+                sep = ""
               )
             ),
             a$conf_level_coxph$choices,
@@ -650,7 +653,7 @@ ui_t_tte <- function(id, ...) {
           label = HTML(
             paste(
               "Confidence Level for ",
-              tags$span(style="color:darkblue", "Survfit"), # nolint
+              tags$span(style = "color:darkblue", "Survfit"), # nolint
               " (KM Median Estimate & Event Free Rate)",
               sep = ""
             )
@@ -733,7 +736,8 @@ srv_t_tte <- function(input,
       cnsr_var = cnsr_var,
       strata_var = strata_var,
       event_desc_var = event_desc_var,
-      time_unit_var = time_unit_var),
+      time_unit_var = time_unit_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 
@@ -804,8 +808,8 @@ srv_t_tte <- function(input,
 
     validate(need(
       !utils.nest::is_empty(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]),
-      "`Select Endpoint` field is NULL")
-    )
+      "`Select Endpoint` field is NULL"
+    ))
 
     NULL
   })
@@ -886,5 +890,4 @@ srv_t_tte <- function(input,
     ),
     modal_title = label
   )
-
 }

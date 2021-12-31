@@ -82,7 +82,7 @@ app <- init(
         dataname = "ADSL",
         select = select_spec(
           choices = c("ARMCD", "BMRKR2"),
-          selected = c("ARMCD" ),
+          selected = c("ARMCD"),
           multiple = FALSE,
           fixed = FALSE
         )

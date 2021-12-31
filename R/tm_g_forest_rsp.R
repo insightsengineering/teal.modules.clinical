@@ -31,7 +31,6 @@ template_forest_rsp <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 ggplot2_args = teal.devel::ggplot2_args()) {
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -131,7 +130,8 @@ template_forest_rsp <- function(dataname = "ANL",
     substitute(
       expr = df <- extract_rsp_subgroups(
         variables = list(
-          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var),
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var
+        ),
         data = anl,
         conf_level = conf_level
       ),
@@ -170,14 +170,17 @@ template_forest_rsp <- function(dataname = "ANL",
 
   plot_call <- substitute(
     decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
-    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p =  plot_call)
+    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
   )
 
-   plot_call <- substitute({
-     p <- plot_call
-     grid::grid.newpage()
-     grid::grid.draw(p)
-   }, env  = list(plot_call = plot_call))
+  plot_call <- substitute(
+    expr = {
+      p <- plot_call
+      grid::grid.newpage()
+      grid::grid.draw(p)
+    },
+    env = list(plot_call = plot_call)
+  )
 
   # Plot output.
   y$plot <- plot_call
@@ -216,7 +219,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ARM = list(
 #'     ref = "B: Placebo",
 #'     comp = c("A: Drug X", "C: Combination")
@@ -263,15 +266,22 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       default_responses = list(
 #'         BESRSPI = list(
 #'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
-#'                      "Progressive Disease (PD)", "Not Evaluable (NE)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+#'             "Progressive Disease (PD)", "Not Evaluable (NE)"
+#'           )
+#'         ),
 #'         INVET = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'             "Progressive Disease (PD)", "Stable Disease (SD)"
+#'           )
+#'         ),
 #'         OVRINV = list(
 #'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+#'         )
 #'       )
 #'     )
 #'   )
@@ -312,18 +322,22 @@ tm_g_forest_rsp <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -369,7 +383,6 @@ tm_g_forest_rsp <- function(label,
 
 #' @noRd
 ui_g_forest_rsp <- function(id, ...) {
-
   a <- list(...) # module args
   is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
 
@@ -409,8 +422,10 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("ref_arm"),
         div(
           "Reference Group",
-          title = paste("Multiple reference groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple reference groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
@@ -421,8 +436,10 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("comp_arm"),
         div(
           "Comparison Group",
-          title = paste("Multiple comparison groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple comparison groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
@@ -520,30 +537,42 @@ srv_g_forest_rsp <- function(input,
   )
 
   observeEvent(
-    c(input[[extract_input("aval_var", "ADRS")]],
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
-        aval_var <- anl_merged()$columns_source$aval_var
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-        } else default_responses
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else sel_param
-        responder_choices <- if (utils.nest::is_empty(aval_var)) {
-          character(0)
+    eventExpr = c(
+      input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+    ),
+    handlerExpr = {
+      aval_var <- anl_merged()$columns_source$aval_var
+      sel_param <- if (is.list(default_responses)) {
+        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+      } else {
+        default_responses
+      }
+      common_rsp <- if (is.list(sel_param)) {
+        sel_param$rsp
+      } else {
+        sel_param
+      }
+      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
+          } else {
+            union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          }
         } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
-          } else unique(anl_merged()$data()[[aval_var]])
+          unique(anl_merged()$data()[[aval_var]])
         }
-        updateSelectInput(
-          session, "responders",
-          choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
-        )
-    })
+      }
+      updateSelectInput(
+        session, "responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp)
+      )
+    }
+  )
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
@@ -573,52 +602,64 @@ srv_g_forest_rsp <- function(input,
 
     if (length(input_subgroup_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
-             "Not all subgroup variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+          "Not all subgroup variables are factors."
+        )
       )
     }
     if (length(input_strata_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
-             "Not all stratification variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+          "Not all stratification variables are factors."
+        )
       )
     }
 
     if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
       validate(
-        need(all(unlist(lapply(default_responses, function(x) {
-          if (is.list(x) & "levels" %in% names(x)) {
-            lvls <- x$levels
-            all(x$rsp %in% lvls)
-          } else {
-            lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
-            if ("rsp" %in% names(x)) {
+        need(
+          all(unlist(lapply(default_responses, function(x) {
+            if (is.list(x) & "levels" %in% names(x)) {
+              lvls <- x$levels
               all(x$rsp %in% lvls)
-            } else all(x %in% lvls)
-          }
+            } else {
+              lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+              if ("rsp" %in% names(x)) {
+                all(x$rsp %in% lvls)
+              } else {
+                all(x %in% lvls)
+              }
+            }
           }))),
-          "All selected default responses must be in the levels of AVAL.")
+          "All selected default responses must be in the levels of AVAL."
+        )
       )
     }
 
     if (is.list(default_responses)) {
       validate(
-        need(all(
-          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-            names(unlist(default_responses)) %in% names(default_responses)),
-          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+        need(
+          all(
+            grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+              names(unlist(default_responses)) %in% names(default_responses)
+          ),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+        )
       )
     }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1")
-    )
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     validate(
       need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty."),
-      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+      need(
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected."
       )
     )
@@ -642,7 +683,7 @@ srv_g_forest_rsp <- function(input,
     ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
+    subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
 
     obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 
@@ -655,8 +696,11 @@ srv_g_forest_rsp <- function(input,
       obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
-      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0)
-        anl_selectors()$subgroup_var()$select_ordered else NULL,
+      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0) {
+        anl_selectors()$subgroup_var()$select_ordered
+      } else {
+        NULL
+      },
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
       col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),

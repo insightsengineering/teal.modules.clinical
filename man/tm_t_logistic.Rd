@@ -85,7 +85,7 @@ ADSL <- synthetic_cdisc_data("latest")$adsl
 ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
   filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")

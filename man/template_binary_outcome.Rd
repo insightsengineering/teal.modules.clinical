@@ -70,7 +70,6 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 Creates a valid expression for binary outcome analysis.
 }
 \examples{
-
 \dontrun{
 # Preparation of the test case.
 library(dplyr)

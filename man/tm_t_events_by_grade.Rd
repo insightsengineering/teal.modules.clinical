@@ -98,7 +98,7 @@ app <- init(
   modules = root_modules(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
-      dataname = 'ADAE',
+      dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
         choices = variable_choices(adae, c("AETERM", "AEDECOD")),

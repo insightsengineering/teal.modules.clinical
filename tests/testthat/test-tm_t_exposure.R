@@ -28,14 +28,15 @@ testthat::test_that("template_exposure generates correct expressions with defaul
           .labels = c(
             n_patients = "Patients",
             sum_exposure = paste("Sum of", "TDURD", sprintf("(%s)", "Days"))
-            )
-          ) %>%
+          )
+        ) %>%
         rtables::split_rows_by(
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
           split_label = rtables::var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE) %>%
+          nested = FALSE
+        ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
     ),
     table = quote({
@@ -83,7 +84,8 @@ testthat::test_that("template_exposure generates correct expressions with custom
           label_pos = "topleft",
           split_fun = split_fun,
           split_label = rtables::var_labels(myadex["myRACE"], fill = TRUE),
-          nested = FALSE) %>%
+          nested = FALSE
+        ) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
     ),
     table = quote({

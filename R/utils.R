@@ -39,11 +39,12 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
     utils.nest::is_character_single(column)
   )
 
-  chunk$push(substitute({
+  chunk$push(substitute(
     counts <- counts %>% dplyr::mutate(
       column_name := paste0(column_name, " (n = ", n_column_name, ")")
-    )
-  }, env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))))
+    ),
+    env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
+  ))
 }
 
 #' Get variable labels
@@ -56,9 +57,9 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
-   labels <- datasets$get_varlabels(dataname, vars)
-   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
-   return(labels)
+  labels <- datasets$get_varlabels(dataname, vars)
+  labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
+  return(labels)
 }
 
 #' Expression Deparsing
@@ -73,11 +74,11 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' @examples
 #' expr <- quote(
 #'   rtables::basic_table() %>%
-#'   rtables::split_cols_by(var = "ARMCD") %>%
-#'   test_proportion_diff(
-#'     vars = "rsp", method = "cmh", variables = list(strata = "strat")
-#'   ) %>%
-#'   rtables::build_table(df = dta)
+#'     rtables::split_cols_by(var = "ARMCD") %>%
+#'     test_proportion_diff(
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'     ) %>%
+#'     rtables::build_table(df = dta)
 #' )
 #'
 #' teal.modules.clinical:::h_concat_expr(expr)
@@ -180,7 +181,6 @@ styled_expr <- function(expr) { # nolint nousage
 #' teal.modules.clinical:::pipe_expr(lyt)
 #'
 add_expr <- function(expr_ls, new_expr) {
-
   assertthat::assert_that(
     is.list(expr_ls),
     is.call(new_expr) || is.name(new_expr)
@@ -234,7 +234,6 @@ add_expr <- function(expr_ls, new_expr) {
 #' table(anl$rsp_lab, anl$is_rsp)
 #'
 bracket_expr <- function(exprs) {
-
   expr <- lapply(exprs, deparse)
 
   # Because `deparse` returns a vector accounting for line break attempted
@@ -415,8 +414,7 @@ is.cs_or_des <- function(x) { # nolint
 #'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
-
-  if  (compare & combine) {
+  if (compare & combine) {
     substitute(
       expr = split_cols_by_groups(
         var = arm_var,
@@ -609,7 +607,7 @@ prepare_arm <- function(dataname,
         others = list(ref_arm_val = ref_arm_val)
       )
     )
-  }  else {
+  } else {
     data_list <- add_expr(
       data_list,
       substitute(
@@ -662,7 +660,6 @@ prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
                                drop_arm_levels = TRUE) {
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -724,7 +721,6 @@ prepare_arm_levels <- function(dataname,
         )
       )
     )
-
   } else {
 
     # Keep only levels that exist in `parentname` dataset
@@ -789,8 +785,6 @@ color_lab_values <- function(x,
                                HIGH = "glyphicon glyphicon-arrow-up",
                                LOW = "glyphicon glyphicon-arrow-down"
                              )) {
-
-
   is_character <- is.character(x) && is.vector(x)
 
   if ((!is_character) || !any(grepl(sprintf("(?:%s)", paste0(classes, collapse = "|")), x, perl = TRUE))) {
@@ -850,8 +844,10 @@ clean_description <- function(x) {
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   choices <- paramcd$filter[[filter_idx]]$choices
-  input_obj <- paste0("paramcd-dataset_", paramcd$dataname,
-  "_singleextract-filter", filter_idx, "-vals")
+  input_obj <- paste0(
+    "paramcd-dataset_", paramcd$dataname,
+    "_singleextract-filter", filter_idx, "-vals"
+  )
   current_selected <- input[[input_obj]]
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name

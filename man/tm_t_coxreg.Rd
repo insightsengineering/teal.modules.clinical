@@ -130,9 +130,9 @@ Wald test will be substituted.
 
 library(scda)
 
-ADSL  <- synthetic_cdisc_data("latest")$adsl
+ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")
@@ -161,7 +161,7 @@ app <- init(
       strata_var = choices_selected(
         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
       ),
-      cov_var    = choices_selected(
+      cov_var = choices_selected(
         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
       ),
       multivariate = TRUE
@@ -183,18 +183,19 @@ shinyApp(app$ui, app$server)
 
 ADTTE <- data.frame(
   STUDYID = "LUNG",
-  AVAL    = c(        4,   3,   1,   1,   2,   2,   3,   1,   2),
-  CNSR    = c(        1,   1,   1,   0,   1,   1,   0,   0,   0),
-  ARMCD   = factor(
-    c(                0,   1,   1,   1,   1,   0,   0,   0,   0),
+  AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
+  CNSR = c(1, 1, 1, 0, 1, 1, 0, 0, 0),
+  ARMCD = factor(
+    c(0, 1, 1, 1, 1, 0, 0, 0, 0),
     labels = c("ARM A", "ARM B")
   ),
-  SEX     = factor(
-    c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
+  SEX = factor(
+    c(0, 0, 0, 0, 1, 1, 1, 1, 1),
     labels = c("F", "M")
   ),
-  INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
-stringsAsFactors = FALSE)
+  INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
+  stringsAsFactors = FALSE
+)
 ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
 ADTTE <- dplyr::as_tibble(ADTTE)
 set.seed(1)
@@ -203,7 +204,8 @@ ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
 ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
 ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
 ADSL <- subset(
-  ADTTE, select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
+  ADTTE,
+  select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
 )
 
 ## Teal application
@@ -212,7 +214,7 @@ ADSL <- subset(
 ## preprocessing. You will need to create the dataset as above before
 ## running the exported R code.
 
-arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 app <- init(
   data = cdisc_data(
     cdisc_dataset(

@@ -9,7 +9,8 @@ testthat::test_that("template_g_lineplot works as expected with default argument
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -31,7 +32,8 @@ testthat::test_that("template_g_lineplot works as expected with default argument
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.95),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
   testthat::expect_equal(result, expected)
@@ -52,11 +54,14 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
   )
   expected <- list(
     data = quote({
-      anl <- ANL %>% dplyr::filter(AVISIT != "SCREENING") %>% dplyr::mutate(AVISIT = droplevels(AVISIT))
+      anl <- ANL %>%
+        dplyr::filter(AVISIT != "SCREENING") %>%
+        dplyr::mutate(AVISIT = droplevels(AVISIT))
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -77,7 +82,8 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.9),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
   testthat::expect_equal(result, expected)

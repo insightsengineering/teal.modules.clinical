@@ -18,22 +18,23 @@ testthat::test_that("template_logistic generates correct expressions", {
   expected <- list(
     arm_lab = quote(arm_var_lab <- rtables::var_labels(ANL["ARMCD"])),
     data = quote({
-    ANL <- ANL %>% #nolint
-      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = droplevels(ARMCD))
-    ANL <- ANL %>% #nolint
-      dplyr::mutate(Response = AVALC %in% "CR") %>%
-      df_explicit_na(na_level = "")
+      ANL <- ANL %>% # nolint
+        dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
+        dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD))
+      ANL <- ANL %>% # nolint
+        dplyr::mutate(Response = AVALC %in% "CR") %>%
+        df_explicit_na(na_level = "")
     }),
     relabel = quote(rtables::var_labels(ANL["ARMCD"]) <- arm_var_lab), # nolint
     model = quote(
-    mod <- fit_logistic(
-      ANL, variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")
-    ) %>%
-      broom::tidy(conf_level = 0.95, at = c(30, 40)) %>%
-      df_explicit_na(na_level = "")
+      mod <- fit_logistic(
+        ANL,
+        variables = list(response = "Response", arm = "ARMCD", covariates = c("AGE", "SEX"), interaction = "AGE")
+      ) %>%
+        broom::tidy(conf_level = 0.95, at = c(30, 40)) %>%
+        df_explicit_na(na_level = "")
     ),
     table = quote({
       result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
@@ -64,13 +65,14 @@ testthat::test_that("template_logistic generates correct expressions for no arm 
 
   expected <- list(
     data = quote({
-      ANL <- ANL %>% #nolint
+      ANL <- ANL %>% # nolint
         dplyr::mutate(Response = AVALC %in% "CR") %>%
         df_explicit_na(na_level = "")
     }),
     model = quote(
       mod <- fit_logistic(
-        ANL, variables = list(response = "Response", arm = NULL, covariates = c("AGE", "SEX"), interaction = "AGE")
+        ANL,
+        variables = list(response = "Response", arm = NULL, covariates = c("AGE", "SEX"), interaction = "AGE")
       ) %>%
         broom::tidy(conf_level = 0.95, at = c(30, 40)) %>%
         df_explicit_na(na_level = "")

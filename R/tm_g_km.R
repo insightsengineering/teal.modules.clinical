@@ -160,7 +160,7 @@ template_g_km <- function(dataname = "ANL",
                   title = paste(
                     title, ",", quote(facet_var),
                     "=", as.character(unique(df_i$facet_var))
-                    ),
+                  ),
                   ggtheme = theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
@@ -270,7 +270,7 @@ template_g_km <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
@@ -355,8 +355,12 @@ tm_g_km <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -393,7 +397,6 @@ tm_g_km <- function(label,
 #' User Interface for KM Module
 #' @noRd
 ui_g_km <- function(id, ...) {
-
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
@@ -633,7 +636,6 @@ srv_g_km <- function(input,
   )
 
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -672,8 +674,7 @@ srv_g_km <- function(input,
     # validate xticks
     if (length(input_xticks) == 0) {
       input_xticks <- NULL
-    }
-    else {
+    } else {
       validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
       validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
       validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
@@ -768,5 +769,4 @@ srv_g_km <- function(input,
     ),
     modal_title = label
   )
-
 }

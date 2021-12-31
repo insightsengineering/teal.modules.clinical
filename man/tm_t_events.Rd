@@ -101,11 +101,11 @@ app <- teal::init(
       llt = choices_selected(
         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
-       ),
+      ),
       hlt = choices_selected(
         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
-       ),
+      ),
       add_total = TRUE,
       event_type = "adverse event"
     )

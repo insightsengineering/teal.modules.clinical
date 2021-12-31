@@ -107,19 +107,24 @@ app <- init(
       label = "Shift by Arm Table",
       dataname = "ADEG",
       arm_var = choices_selected(
-        variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+        variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        selected = "ARM"
       ),
       paramcd = choices_selected(
-      value_choices(adeg, "PARAMCD"), selected = "HR"
+        value_choices(adeg, "PARAMCD"),
+        selected = "HR"
       ),
       visit_var = choices_selected(
-      value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+        value_choices(adeg, "AVISIT"),
+        selected = "POST-BASELINE MINIMUM"
       ),
       aval_var = choices_selected(
-      variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+        variable_choices(adeg, subset = "ANRIND"),
+        selected = "ANRIND", fixed = TRUE
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+        variable_choices(adeg, subset = "BNRIND"),
+        selected = "BNRIND", fixed = TRUE
       ),
       useNA = "ifany"
     )

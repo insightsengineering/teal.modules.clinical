@@ -123,44 +123,48 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")
   ),
-   ARM = list(
+  ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
   )
 )
 
 app <- init(
-    data = cdisc_data(
-      cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-      cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-      check = TRUE
-    ),
-    modules = root_modules(
-        tm_t_tte(
-            label = "Time To Event Table",
-            dataname = 'ADTTE',
-            arm_var = choices_selected(
-              variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-              "ARM"),
-            arm_ref_comp = arm_ref_comp,
-            paramcd = choices_selected(
-              value_choices(ADTTE, "PARAMCD", "PARAM"),
-              "OS"),
-            strata_var = choices_selected(
-              variable_choices(ADSL, c("SEX", "BMRKR2")),
-              "SEX"),
-            time_points = choices_selected(c(182, 243), 182),
-            event_desc_var = choices_selected(
-              variable_choices(ADTTE, "EVNTDESC"),
-              "EVNTDESC",
-              fixed = TRUE)
-        )
+  data = cdisc_data(
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
+    check = TRUE
+  ),
+  modules = root_modules(
+    tm_t_tte(
+      label = "Time To Event Table",
+      dataname = "ADTTE",
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+        "ARM"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        "OS"
+      ),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
+        "SEX"
+      ),
+      time_points = choices_selected(c(182, 243), 182),
+      event_desc_var = choices_selected(
+        variable_choices(ADTTE, "EVNTDESC"),
+        "EVNTDESC",
+        fixed = TRUE
+      )
     )
+  )
 )
 
 \dontrun{

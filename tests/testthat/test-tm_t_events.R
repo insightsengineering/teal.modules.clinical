@@ -30,8 +30,10 @@ testthat::test_that("template_events generates correct expressions", {
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
@@ -45,12 +47,14 @@ testthat::test_that("template_events generates correct expressions", {
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
         append_varlabels(adae, "AEDECOD", indent = 1L)
-      ),
+    ),
     table = quote(
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
     ),
@@ -64,7 +68,7 @@ testthat::test_that("template_events generates correct expressions", {
           scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
-          path =  c("AEBODSYS", "*", "AEDECOD"),
+          path = c("AEBODSYS", "*", "AEDECOD"),
           scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       pruned_and_sorted_result
@@ -110,8 +114,10 @@ testthat::test_that("template_events generates correct expressions for nested co
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
@@ -125,8 +131,10 @@ testthat::test_that("template_events generates correct expressions for nested co
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
         append_varlabels(adae, "AEDECOD", indent = 1L)
@@ -144,7 +152,7 @@ testthat::test_that("template_events generates correct expressions for nested co
           scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
-          path =  c("AEBODSYS", "*", "AEDECOD"),
+          path = c("AEBODSYS", "*", "AEDECOD"),
           scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       pruned_and_sorted_result
@@ -183,8 +191,10 @@ testthat::test_that("template_events can generate customized table", {
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one treatment",
-                      nonunique = "Overall total number of treatments")
+          .labels = c(
+            unique = "Total number of patients with at least one treatment",
+            nonunique = "Overall total number of treatments"
+          )
         ) %>%
         count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>%
         append_varlabels(adcm, "CMDECOD")
@@ -197,7 +207,7 @@ testthat::test_that("template_events can generate customized table", {
     }),
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
-        sort_at_path(path =  c("CMDECOD"), scorefun = score_occurrences)
+        sort_at_path(path = c("CMDECOD"), scorefun = score_occurrences)
       pruned_and_sorted_result
     })
   )
@@ -240,8 +250,10 @@ testthat::test_that("template_events can generate customized table with alphabet
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
@@ -255,8 +267,10 @@ testthat::test_that("template_events can generate customized table with alphabet
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
         append_varlabels(adae, "AEDECOD", indent = 1L)
@@ -310,8 +324,10 @@ testthat::test_that("template_events can generate customized table with pruning"
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
@@ -325,8 +341,10 @@ testthat::test_that("template_events can generate customized table with pruning"
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
         append_varlabels(adae, "AEDECOD", indent = 1L)
@@ -344,12 +362,12 @@ testthat::test_that("template_events can generate customized table with pruning"
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
-          path =  c("AEBODSYS"),
+          path = c("AEBODSYS"),
           scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
-          path =  c("AEBODSYS", "*", "AEDECOD"),
-          scorefun =  score_occurrences_cols(col_indices = seq(1, ncol(result)))
+          path = c("AEBODSYS", "*", "AEDECOD"),
+          scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       criteria_fun <- function(tr) {
         inherits(tr, "ContentRow")
@@ -401,8 +419,10 @@ testthat::test_that("template_events can generate customized table with pruning 
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         rtables::split_rows_by(
           "AEBODSYS",
@@ -416,8 +436,10 @@ testthat::test_that("template_events can generate customized table with pruning 
         summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
-          .labels = c(unique = "Total number of patients with at least one event",
-                      nonunique = "Overall total number of events")
+          .labels = c(
+            unique = "Total number of patients with at least one event",
+            nonunique = "Overall total number of events"
+          )
         ) %>%
         count_occurrences(vars = "AEDECOD", .indent_mods = -1L) %>%
         append_varlabels(adae, "AEDECOD", indent = 1L)
@@ -435,11 +457,11 @@ testthat::test_that("template_events can generate customized table with pruning 
     sort = quote({
       pruned_and_sorted_result <- pruned_result %>%
         sort_at_path(
-          path =  c("AEBODSYS"),
+          path = c("AEBODSYS"),
           scorefun = cont_n_onecol(ncol(result))
         ) %>%
         sort_at_path(
-          path =  c("AEBODSYS", "*", "AEDECOD"),
+          path = c("AEBODSYS", "*", "AEDECOD"),
           scorefun = score_occurrences_cols(col_indices = seq(1, ncol(result)))
         )
       criteria_fun <- function(tr) {

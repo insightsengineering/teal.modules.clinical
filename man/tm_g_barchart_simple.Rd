@@ -84,7 +84,8 @@ app <- init(
               ADAE <- ADAE \%>\%
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
               ADAE <- do.call(rtables::var_relabel,
-                append(list(x = ADAE), as.list(adae_labels)))"),
+                append(list(x = ADAE), as.list(adae_labels)))"
+    ),
     check = TRUE
   ),
   modules = root_modules(
@@ -93,9 +94,12 @@ app <- init(
       x = data_extract_spec(
         dataname = "ADSL",
         select = select_spec(
-          choices = variable_choices(ADSL,
-                                     c("ARM", "ACTARM", "SEX",
-                                       "RACE", "ITTFL", "SAFFL", "STRATA2")
+          choices = variable_choices(
+            ADSL,
+            c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
+            )
           ),
           selected = "ACTARM",
           multiple = FALSE
@@ -105,9 +109,12 @@ app <- init(
         data_extract_spec(
           dataname = "ADSL",
           select = select_spec(
-            choices = variable_choices(ADSL,
-                                       c("ARM", "ACTARM", "SEX",
-                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
+            choices = variable_choices(
+              ADSL,
+              c(
+                "ARM", "ACTARM", "SEX",
+                "RACE", "ITTFL", "SAFFL", "STRATA2"
+              )
             ),
             selected = "SEX",
             multiple = FALSE
@@ -134,9 +141,12 @@ app <- init(
         data_extract_spec(
           dataname = "ADSL",
           select = select_spec(
-            choices = variable_choices(ADSL,
-                                       c("ARM", "ACTARM", "SEX",
-                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
+            choices = variable_choices(
+              ADSL,
+              c(
+                "ARM", "ACTARM", "SEX",
+                "RACE", "ITTFL", "SAFFL", "STRATA2"
+              )
             ),
             selected = NULL,
             multiple = FALSE
@@ -155,9 +165,12 @@ app <- init(
         data_extract_spec(
           dataname = "ADSL",
           select = select_spec(
-            choices = variable_choices(ADSL,
-                                       c("ARM", "ACTARM", "SEX",
-                                         "RACE", "ITTFL", "SAFFL", "STRATA2")
+            choices = variable_choices(
+              ADSL,
+              c(
+                "ARM", "ACTARM", "SEX",
+                "RACE", "ITTFL", "SAFFL", "STRATA2"
+              )
             ),
             selected = NULL,
             multiple = FALSE

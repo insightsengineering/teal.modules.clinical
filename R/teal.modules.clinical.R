@@ -24,5 +24,7 @@ if (getRversion() >= "2.15.1") {
   ))
 }
 
-# Avoiding R CMD check notes
+#' Avoiding R CMD check notes
+#' @importFrom methods is
+#' @noRd
 NULL

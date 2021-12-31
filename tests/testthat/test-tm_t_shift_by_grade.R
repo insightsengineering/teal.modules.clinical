@@ -15,7 +15,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
     add_total = FALSE,
     na_level = "<Missing>",
     code_missing_baseline = FALSE
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -35,17 +35,17 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
             ATOXGR == -1 ~ "1", ATOXGR == -2 ~ "2",
             ATOXGR == -3 ~ "3", ATOXGR == -4 ~ "4",
             ATOXGR == "<Missing>" ~ "Missing"
-            )
-          ),
+          )
+        ),
         BTOXGR_GP = factor(
           dplyr::case_when(
             BTOXGR %in% c(0, 1, 2, 3, 4) ~ "Not Low",
             BTOXGR == -1 ~ "1", BTOXGR == -2 ~ "2",
             BTOXGR == -3 ~ "3", BTOXGR == -4 ~ "4",
             BTOXGR == "<Missing>" ~ "Missing"
-            )
           )
         )
+      )
 
       anl <- dplyr::mutate(
         anl,
@@ -53,15 +53,17 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           ATOXGR_GP,
           levels = c(
             dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "Missing")
-          ),
+            "1", "2", "3", "4", "Missing"
+          )
+        ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
             dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "Missing")
+            "1", "2", "3", "4", "Missing"
           )
         )
+      )
       anl <- var_relabel(
         anl,
         PARAMCD = rtables::var_labels(anl)[["PARAMCD"]],
@@ -78,16 +80,17 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
         rtables::split_rows_by(
           var = "PARAMCD", split_fun = split_fun, label_pos = "topleft",
           split_label = rtables::var_labels(anl)[["PARAMCD"]]
-          ) %>%
+        ) %>%
         rtables::split_rows_by(
-          "AVISIT", split_fun = split_fun, label_pos = "topleft",
+          "AVISIT",
+          split_fun = split_fun, label_pos = "topleft",
           split_label = rtables::var_labels(anl)[["AVISIT"]]
-          ) %>%
+        ) %>%
         rtables::split_rows_by(
           var = "ATOXGR_GP", split_fun = split_fun,
           label_pos = "topleft",
           split_label = rtables::var_labels(anl)[["ATOXGR_GP"]]
-          ) %>%
+        ) %>%
         summarize_num_patients(var = "USUBJID", .stats = c("unique_count")) %>%
         count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
@@ -145,8 +148,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
             MYBTOXGR == -1 ~ "1", MYBTOXGR == -2 ~ "2",
             MYBTOXGR == -3 ~ "3", MYBTOXGR == -4 ~ "4",
             MYBTOXGR == "<MYMissing>" ~ "Missing"
-            )
           )
+        )
       )
       anl <- dplyr::mutate(
         anl,
@@ -165,7 +168,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           BTOXGR_GP,
           levels = c(
             dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"),
-            "1", "2", "3", "4", "Missing")
+            "1", "2", "3", "4", "Missing"
+          )
         )
       )
       anl <- var_relabel(
@@ -186,7 +190,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           split_label = rtables::var_labels(anl)[["PARAMCD"]]
         ) %>%
         rtables::split_rows_by(
-          "AVISIT", split_fun = split_fun, label_pos = "topleft",
+          "AVISIT",
+          split_fun = split_fun, label_pos = "topleft",
           split_label = rtables::var_labels(anl)[["AVISIT"]]
         ) %>%
         rtables::split_rows_by(
@@ -207,8 +212,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
   testthat::expect_equal(result, expected)
 })
 
-testthat::test_that(
-  "template_shift_by_grade throws an error when worst_flag_var
+testthat::test_that("template_shift_by_grade throws an error when worst_flag_var
   is not one of “WGRLOVFL”, “WGRLOFL”, “WGRHIVFL”, “WGRHIFL”", {
   testthat::expect_error(
     result <- template_shift_by_grade(
@@ -231,36 +235,34 @@ testthat::test_that(
 })
 
 
-testthat::test_that(
-  "template_shift_by_grade is keeping the same number of missing data
+testthat::test_that("template_shift_by_grade is keeping the same number of missing data
   (as 'Missing') at the end of preprocessing steps", {
-    adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
-    adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
-    adlb <- adlb %>% dplyr::filter(WGRLOVFL == "Y")
-    adlb$ATOXGR[1] <- NA
-    adlb <- df_explicit_na(adlb)
-    expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")
-    template <- template_shift_by_grade(
-      parentname = "adsl",
-      dataname = "adlb",
-      arm_var = "ARM",
-      id_var = "USUBJID",
-      visit_var = "AVISIT",
-      worst_flag_var = c(c("WGRLOVFL")),
-      worst_flag_indicator = "Y",
-      anl_toxgrade_var = "ATOXGR",
-      base_toxgrade_var = "BTOXGR",
-      paramcd = "PARAMCD",
-      drop_arm_levels = TRUE,
-      add_total = FALSE,
-      na_level = "<Missing>",
-      code_missing_baseline = FALSE
-    )
+  adsl <- synthetic_cdisc_data("rcd_2021_05_05")$adsl
+  adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
+  adlb <- adlb %>% dplyr::filter(WGRLOVFL == "Y")
+  adlb$ATOXGR[1] <- NA
+  adlb <- df_explicit_na(adlb)
+  expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")
+  template <- template_shift_by_grade(
+    parentname = "adsl",
+    dataname = "adlb",
+    arm_var = "ARM",
+    id_var = "USUBJID",
+    visit_var = "AVISIT",
+    worst_flag_var = c(c("WGRLOVFL")),
+    worst_flag_indicator = "Y",
+    anl_toxgrade_var = "ATOXGR",
+    base_toxgrade_var = "BTOXGR",
+    paramcd = "PARAMCD",
+    drop_arm_levels = TRUE,
+    add_total = FALSE,
+    na_level = "<Missing>",
+    code_missing_baseline = FALSE
+  )
 
-    template_data <- template$data
-    data <- eval(template_data)
-    result_missing_n <- sum(data$ATOXGR_GP == "Missing")
+  template_data <- template$data
+  data <- eval(template_data)
+  result_missing_n <- sum(data$ATOXGR_GP == "Missing")
 
-    testthat::expect_equal(expected_missing_n, result_missing_n)
-  }
-)
+  testthat::expect_equal(expected_missing_n, result_missing_n)
+})

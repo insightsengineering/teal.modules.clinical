@@ -9,7 +9,7 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
-template_abnormality_by_worst_grade <- function(parentname, #nolint
+template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 dataname,
                                                 arm_var,
                                                 id_var = "USUBJID",
@@ -21,9 +21,6 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
                                                 add_total = FALSE,
                                                 drop_arm_levels = TRUE,
                                                 basic_table_args = teal.devel::basic_table_args()) {
-
-
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -57,8 +54,8 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     substitute(
       expr = anl <- df %>%
         dplyr::mutate(
-          #Changed the following prepo step methodology as not
-          #all cases have grade = 4 (realized with nsdl real data)
+          # Changed the following prepo step methodology as not
+          # all cases have grade = 4 (realized with nsdl real data)
           GRADE_DIR = factor(
             case_when(
               as.numeric(as.character(atoxgr_var)) < 0 ~ "LOW",
@@ -67,19 +64,19 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
             ),
             levels = c("LOW", "ZERO", "HIGH")
           ),
-          #Changed the following prepo step methodology as not
-          #all cases have grade = 4 (realized with nsdl real data)
+          # Changed the following prepo step methodology as not
+          # all cases have grade = 4 (realized with nsdl real data)
           GRADE_ANL = factor(
             abs(
               as.numeric(
                 as.character(atoxgr_var)
-                )
               )
             )
-          ) %>%
+          )
+        ) %>%
         dplyr::filter(worst_low_flag_var == worst_flag_indicator | worst_high_flag_var == worst_flag_indicator) %>%
         droplevels(),
-      env  = list(
+      env = list(
         df = as.name(dataname),
         worst_low_flag_var = as.name(worst_low_flag_var),
         worst_high_flag_var = as.name(worst_high_flag_var),
@@ -93,8 +90,8 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     data_list,
     quote(
       expr = rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
-      )
     )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -108,7 +105,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 
   y$data <- bracket_expr(data_list)
 
-# map creation
+  # map creation
 
   prep_list <- list()
 
@@ -117,7 +114,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     substitute(
       expr = map <- unique(
         anl[anl[["GRADE_DIR"]] != "ZERO", c(paramcd, "GRADE_DIR", "GRADE_ANL")]
-        ) %>%
+      ) %>%
         lapply(as.character) %>%
         as.data.frame() %>%
         dplyr::arrange(paramcd, desc(GRADE_DIR), GRADE_ANL),
@@ -133,7 +130,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
     teal.devel::resolve_basic_table_args(user_table = basic_table_args)
   )
 
-# layout start
+  # layout start
   layout_list <- list()
   layout_list <- add_expr(
     layout_list,
@@ -164,7 +161,7 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
         paramcd,
         label_pos = "topleft",
         split_label = obj_label(anl[[paramcd]])
-        ) %>%
+      ) %>%
         summarize_num_patients(
           var = id_var,
           required = "GRADE_ANL",
@@ -175,10 +172,10 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map),
           split_label = obj_label(anl$GRADE_DIR)
-          ) %>%
+        ) %>%
         count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
-          variables = list(id = id_var, param  = paramcd, grade_dir = "GRADE_DIR")
+          variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR")
         ) %>%
         rtables::append_topleft("    Highest Grade"),
       env = list(
@@ -202,7 +199,6 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
   )
 
   y
-
 }
 
 #' Teal Module: Laboratory test results with highest grade post-baseline
@@ -229,14 +225,15 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 #'
 #' adsl <- synthetic_cdisc_data("latest")$adsl
 #' adlb <- synthetic_cdisc_data("latest")$adlb %>%
-#' filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADLB", adlb,
-#'                   code = 'ADLB <- synthetic_cdisc_data("latest")$adlb %>%
-#' filter(!AVISIT %in% c("SCREENING", "BASELINE"))'),
+#'       code = "ADLB <- synthetic_cdisc_data('latest')$adlb %>%
+#'         filter(!AVISIT %in% c('SCREENING', 'BASELINE'))"
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -252,21 +249,20 @@ template_abnormality_by_worst_grade <- function(parentname, #nolint
 #'         selected = c("ALT", "CRP", "IGA")
 #'       ),
 #'       add_total = FALSE
-#'    )
-#'  ),
-#'  filter = (
-#'  list(
-#'  ADSL = list(SAFFL = "Y"),
-#'  ADLB = list(ONTRTFL = "Y")
-#'  )
-#'  )
+#'     )
+#'   ),
+#'   filter = (
+#'     list(
+#'       ADSL = list(SAFFL = "Y"),
+#'       ADLB = list(ONTRTFL = "Y")
+#'     )
+#'   )
 #' )
-#'
-#'  \dontrun{
+#' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 #'
-tm_t_abnormality_by_worst_grade <- function(label, #nolint
+tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             dataname,
                                             parentname = ifelse(
                                               inherits(arm_var, "data_extract_spec"),
@@ -276,7 +272,8 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
                                             arm_var,
                                             id_var = choices_selected(
                                               variable_choices(
-                                                dataname, subset = "USUBJID"
+                                                dataname,
+                                                subset = "USUBJID"
                                               ),
                                               selected = "USUBJID", fixed = TRUE
                                             ),
@@ -363,11 +360,10 @@ tm_t_abnormality_by_worst_grade <- function(label, #nolint
     ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
   )
-
 }
 
 #' @noRd
-ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
+ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
   ns <- NS(id)
   a <- list(...) # module args
@@ -455,7 +451,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { #nolint
 }
 
 #' @noRd
-srv_t_abnormality_by_worst_grade <- function(input, #nolint
+srv_t_abnormality_by_worst_grade <- function(input, # nolint
                                              output,
                                              session,
                                              datasets,
@@ -471,7 +467,6 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
                                              drop_arm_levels,
                                              label,
                                              basic_table_args) {
-
   stopifnot(is_cdisc_data(datasets))
 
   teal.devel::init_chunks()
@@ -507,8 +502,8 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
     validate(
       need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
       need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-      need(!utils.nest::is_empty(
-        anl_m$data()[[input_paramcd_var]]),
+      need(
+        !utils.nest::is_empty(anl_m$data()[[input_paramcd_var]]),
         "Please select at least one Laboratory parameter."
       ),
       need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
@@ -555,12 +550,12 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       paramcd = as.vector(anl_m$columns_source$paramcd),
       atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
       worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
-      worst_low_flag_var =  as.vector(anl_m$columns_source$worst_low_flag_var),
+      worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
       worst_flag_indicator = input$worst_flag_indicator,
       add_total = input$add_total,
       drop_arm_levels = input$drop_arm_levels,
       basic_table_args = basic_table_args
-      )
+    )
     mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
@@ -586,7 +581,7 @@ srv_t_abnormality_by_worst_grade <- function(input, #nolint
       list(
         arm_var, id_var, paramcd,
         atoxgr_var, worst_high_flag_var, worst_low_flag_var
-        )
+      )
     ),
     modal_title = "R Code for Grade Laboratory Abnormalities",
     code_header = label

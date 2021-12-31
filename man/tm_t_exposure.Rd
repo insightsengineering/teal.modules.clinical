@@ -96,13 +96,15 @@ adex <- synthetic_cdisc_data("latest")$adex
 set.seed(1, kind = "Mersenne-Twister")
 labels <- rtables::var_labels(adex)
 adex <- adex \%>\%
- distinct(USUBJID, .keep_all = TRUE) \%>\%
-  mutate(PARAMCD = "TDURD",
-         PARAM = "Overall duration (days)",
-         AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-         AVALU = "Days") \%>\%
-         bind_rows(adex)
- rtables::var_labels(adex) <- labels
+  distinct(USUBJID, .keep_all = TRUE) \%>\%
+  mutate(
+    PARAMCD = "TDURD",
+    PARAM = "Overall duration (days)",
+    AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
+    AVALU = "Days"
+  ) \%>\%
+  bind_rows(adex)
+rtables::var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
@@ -118,7 +120,7 @@ app <- init(
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
               AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      rtables::var_labels(ADEX) <- labels'  #nolint
+      rtables::var_labels(ADEX) <- labels' # nolint
     ),
     check = TRUE
   ),
@@ -145,9 +147,9 @@ app <- init(
       add_total = FALSE
     )
   ),
- filter = list(
-   ADSL = list(SAFFL = "Y")
- )
+  filter = list(
+    ADSL = list(SAFFL = "Y")
+  )
 )
 
 \dontrun{

@@ -38,22 +38,24 @@ testthat::test_that("template_forest_tte generates correct expressions", {
           arm = "ARMCD",
           subgroups = c("SEX", "BMRKR2"),
           strat = "STRATA2"
-          ),
+        ),
         control = control_coxph(conf_level = 0.9),
         data = anl
-        )
+      )
     }),
     table = quote({
       result <- rtables::basic_table() %>%
         tabulate_survival_subgroups(
-          df, vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
+          df,
+          vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
           time_unit = as.character(anl$AVALU[1])
         )
     }),
     plot = quote({
       p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL),
-                         titles = "Forest plot of survival duration for ", footnotes = "",
-                         gp_footnotes = grid::gpar(fontsize = 12))
+        titles = "Forest plot of survival duration for ", footnotes = "",
+        gp_footnotes = grid::gpar(fontsize = 12)
+      )
       grid::grid.newpage()
       grid::grid.draw(p)
     })

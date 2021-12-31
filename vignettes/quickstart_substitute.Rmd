@@ -293,7 +293,7 @@ rtables_expr <- substitute(
     df = substitute(adlb_f),
     arm = "ARM",
     visit = "AVISIT"
-    )
+  )
 )
 ```
 
@@ -325,7 +325,6 @@ styled_expr <- function(expr) {
 }
 #'
 #' @examples
-#'
 styled_expr(rtables_expr)
 ```
 
@@ -399,11 +398,10 @@ pipe_expr <- function(...) {
 }
 
 #' @examples
-#'
 result <- pipe_expr(
   expr1 = substitute(df),
   expr2 = substitute(head)
-  )
+)
 result
 ```
 

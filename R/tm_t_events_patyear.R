@@ -6,16 +6,15 @@
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
-template_events_patyear <- function(
-  dataname,
-  parentname,
-  arm_var,
-  events_var,
-  aval_var = "AVAL",
-  add_total = TRUE,
-  control = control_incidence_rate(),
-  drop_arm_levels = TRUE,
-  basic_table_args = teal.devel::basic_table_args()) {
+template_events_patyear <- function(dataname,
+                                    parentname,
+                                    arm_var,
+                                    events_var,
+                                    aval_var = "AVAL",
+                                    add_total = TRUE,
+                                    control = control_incidence_rate(),
+                                    drop_arm_levels = TRUE,
+                                    basic_table_args = teal.devel::basic_table_args()) {
   # initialize
   y <- list()
   # data
@@ -41,13 +40,15 @@ template_events_patyear <- function(
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl")))
+      env = list(dataname = as.name("anl"))
+    )
   )
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   y$data <- bracket_expr(data_list)
@@ -115,7 +116,6 @@ template_events_patyear <- function(
   )
 
   y
-
 }
 
 #' Teal module: Event rates adjusted for patient-years
@@ -157,15 +157,18 @@ template_events_patyear <- function(
 #'       dataname = "ADAETTE",
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
-#'         selected = "ARMCD"),
+#'         selected = "ARMCD"
+#'       ),
 #'       add_total = TRUE,
 #'       events_var = choices_selected(
 #'         choices = variable_choices(adaette, "n_events"),
-#'        selected = "n_events",
-#'        fixed = TRUE),
+#'         selected = "n_events",
+#'         fixed = TRUE
+#'       ),
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adaette, "PARAMCD", "PARAM"),
-#'         selected = "AETTE1")
+#'         selected = "AETTE1"
+#'       )
 #'     )
 #'   )
 #' )
@@ -185,10 +188,12 @@ tm_t_events_patyear <- function(label,
                                 events_var,
                                 paramcd,
                                 aval_var = choices_selected(
-                                  variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE
+                                  variable_choices(dataname, "AVAL"), "AVAL",
+                                  fixed = TRUE
                                 ),
                                 avalu_var = choices_selected(
-                                  variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE
+                                  variable_choices(dataname, "AVALU"), "AVALU",
+                                  fixed = TRUE
                                 ),
                                 add_total = TRUE,
                                 conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -211,12 +216,12 @@ tm_t_events_patyear <- function(label,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
       is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
@@ -424,10 +429,14 @@ srv_events_patyear <- function(input,
       need(utils.nest::is_character_single(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected."),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
-      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select an Event Type Parameter is not selected."),
-      need(!any(is.na(anl_m$data()[[input_events_var]])),
-        "`Event Variable` for selected parameter includes NA values.")
+      need(
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+        "`Select an Event Type Parameter is not selected."
+      ),
+      need(
+        !any(is.na(anl_m$data()[[input_events_var]])),
+        "`Event Variable` for selected parameter includes NA values."
+      )
     )
 
     NULL
@@ -468,7 +477,7 @@ srv_events_patyear <- function(input,
           "day"
         } else if (as.character(input$time_unit_input) == "MONTHS") {
           "month"
-        } else{
+        } else {
           "year"
         },
         time_unit_output = as.numeric(input$time_unit_output)

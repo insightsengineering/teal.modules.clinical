@@ -36,9 +36,9 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
           ties = "efron",
           conf_level = 0.95,
           interaction = FALSE
-          ),
+        ),
         at = list(AGE = c(35, 45))
-        )
+      )
       df <- broom::tidy(model)
     }),
     layout = quote(
@@ -142,8 +142,8 @@ testthat::test_that("template_coxreg generates correct multivariate cox regressi
           ties = "exact",
           conf_level = 0.95,
           interaction = FALSE
-          )
         )
+      )
       df <- broom::tidy(model)
     }),
     layout = quote(

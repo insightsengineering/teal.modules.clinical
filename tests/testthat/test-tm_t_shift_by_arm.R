@@ -8,7 +8,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
     aval_var = "ANRIND",
     base_var = "BNRIND",
     na_level = "<Missing>"
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -17,7 +17,6 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
       lyt <- rtables::basic_table() %>%
         rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
@@ -60,7 +59,6 @@ testthat::test_that("template_shift_by_arm generates correct expressions with ad
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
       lyt <- rtables::basic_table() %>%
         rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
@@ -103,7 +101,6 @@ testthat::test_that("template_shift_by_arm generates correct expressions with na
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
       lyt <- rtables::basic_table() %>%
         rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%

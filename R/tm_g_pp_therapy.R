@@ -175,7 +175,7 @@ template_therapy <- function(dataname = "ANL",
             data %>%
               dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
               dplyr::distinct(),
-            aes(x = CMSTDY, label = CMDECOD), color = "black",
+          aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",
           nudge_y = 0.1,
@@ -183,34 +183,38 @@ template_therapy <- function(dataname = "ANL",
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
-        labs + ggtheme + theme
+        labs +
+        ggtheme +
+        theme
 
       print(therapy_plot)
-    }, env = c(list(
-      dataname = as.name(dataname),
-      atirel = as.name(atirel),
-      cmdecod = as.name(cmdecod),
-      cmindc = as.name(cmindc),
-      cmdose = as.name(cmdose),
-      cmtrt = as.name(cmtrt),
-      cmdosu = as.name(cmdosu),
-      cmroute = as.name(cmroute),
-      cmdosfrq = as.name(cmdosfrq),
-      cmstdy = as.name(cmstdy),
-      cmendy = as.name(cmendy),
-      cmdecod_char = cmdecod,
-      cmindc_char = cmindc,
-      cmdose_char = cmdose,
-      cmtrt_char = cmtrt,
-      cmdosu_char = cmdosu,
-      cmroute_char = cmroute,
-      cmdosfrq_char = cmdosfrq,
-      cmstdy_char = cmstdy,
-      cmendy_char = cmendy,
-      patient_id = patient_id,
-      font_size_var = font_size),
-      parsed_ggplot2_args)
-    )
+    }, env = c(
+      list(
+        dataname = as.name(dataname),
+        atirel = as.name(atirel),
+        cmdecod = as.name(cmdecod),
+        cmindc = as.name(cmindc),
+        cmdose = as.name(cmdose),
+        cmtrt = as.name(cmtrt),
+        cmdosu = as.name(cmdosu),
+        cmroute = as.name(cmroute),
+        cmdosfrq = as.name(cmdosfrq),
+        cmstdy = as.name(cmstdy),
+        cmendy = as.name(cmendy),
+        cmdecod_char = cmdecod,
+        cmindc_char = cmindc,
+        cmdose_char = cmdose,
+        cmtrt_char = cmtrt,
+        cmdosu_char = cmdosu,
+        cmroute_char = cmroute,
+        cmdosfrq_char = cmdosfrq,
+        cmstdy_char = cmstdy,
+        cmendy_char = cmendy,
+        patient_id = patient_id,
+        font_size_var = font_size
+      ),
+      parsed_ggplot2_args
+    ))
   )
   y$table_list <- bracket_expr(table_list)
   y$plot_list <- bracket_expr(plot_list)
@@ -275,7 +279,7 @@ template_therapy <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMTRT <- ADCM$CMCAT
@@ -290,7 +294,7 @@ template_therapy <- function(dataname = "ANL",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication",
 #'           "Study Day of End of Medication")',
-#'                   keys = adcm_keys
+#'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -386,8 +390,13 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
@@ -564,13 +573,14 @@ srv_g_therapy <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -672,17 +682,18 @@ srv_g_therapy <- function(input,
       patient_id = patient_id(),
       font_size = input[["font_size"]],
       ggplot2_args = ggplot2_args
-      )
+    )
 
     lapply(my_calls, therapy_stack_push)
     teal.devel::chunks_safe_eval(chunks = therapy_stack)
     therapy_stack
   })
 
-  output$therapy_table <- DT::renderDataTable({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(therapy_call())
-    teal.devel::chunks_get_var("therapy_table")
+  output$therapy_table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(therapy_call())
+      teal.devel::chunks_get_var("therapy_table")
     },
     options = list(pageLength = input$therapy_table_rows)
   )

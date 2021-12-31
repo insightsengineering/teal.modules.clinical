@@ -119,7 +119,7 @@ testthat::test_that("template_abnormality generates correct expressions with cus
           abnormal = list(Low = "LOW", Medium = "MEDIUM"),
           variables = list(id = "USUBJID", baseline = "MYBASELINE"),
           exclude_base_abn = TRUE
-      ) %>%
+        ) %>%
         append_varlabels(adlb, "MYANRIND", indent = 2L)
     ),
     table = quote({
@@ -176,9 +176,9 @@ testthat::test_that("template_abnormality generates correct expressions with cus
           split_fun = trim_levels_to_map(map = map)
         ) %>%
         rtables::split_rows_by("PARAM",
-                      split_label = rtables::var_labels(adlb)[["PARAM"]],
-                      label_pos = "topleft",
-                      split_fun = trim_levels_to_map(map = map)
+          split_label = rtables::var_labels(adlb)[["PARAM"]],
+          label_pos = "topleft",
+          split_fun = trim_levels_to_map(map = map)
         ) %>%
         count_abnormal(
           var = "ANRIND",

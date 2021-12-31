@@ -98,7 +98,7 @@ tm_t_pp_basic_info <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname,  multiple = TRUE))
+    vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
   )
 
   module(
@@ -169,13 +169,14 @@ srv_t_basic_info <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -224,10 +225,11 @@ srv_t_basic_info <- function(input,
     call_stack
   })
 
-  output$basic_info_table <- DT::renderDataTable({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(basic_info_call())
-    teal.devel::chunks_get_var("result")
+  output$basic_info_table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(basic_info_call())
+      teal.devel::chunks_get_var("result")
     },
     options = list(pageLength = input$basic_info_table_rows)
   )

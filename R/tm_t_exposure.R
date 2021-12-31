@@ -24,7 +24,6 @@ template_exposure <- function(parentname,
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.devel::basic_table_args()) {
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -56,14 +55,15 @@ template_exposure <- function(parentname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
-      env = list(dataname = as.name("anl"),
-                 na_level = na_level
+      env = list(
+        dataname = as.name("anl"),
+        na_level = na_level
       )
     )
   )
   y$data <- bracket_expr(data_list)
 
-  #layout start
+  # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
@@ -115,8 +115,8 @@ template_exposure <- function(parentname,
         .labels = c(
           n_patients = "Patients",
           sum_exposure = paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
-          )
-        ),
+        )
+      ),
       env = list(
         aval_var = aval_var,
         avalu_var = avalu_var,
@@ -138,8 +138,12 @@ template_exposure <- function(parentname,
       layout_list,
       substitute(
         rtables::split_rows_by(
-          row_by_var, label_pos = "topleft", split_fun = split_fun, split_label = split_label, nested = FALSE
-          ),
+          row_by_var,
+          label_pos = "topleft",
+          split_fun = split_fun,
+          split_label = split_label,
+          nested = FALSE
+        ),
         env = list(
           row_by_var = row_by_var,
           split_label = split_label
@@ -151,7 +155,10 @@ template_exposure <- function(parentname,
       layout_list,
       substitute(
         rtables::split_rows_by(
-          row_by_var, label_pos = "topleft", split_label = split_label, nested = FALSE
+          row_by_var,
+          label_pos = "topleft",
+          split_label = split_label,
+          nested = FALSE
         ),
         env = list(
           row_by_var = row_by_var,
@@ -166,7 +173,8 @@ template_exposure <- function(parentname,
     substitute(
       summarize_patients_exposure_in_cols(
         var = aval_var,
-        col_split = FALSE),
+        col_split = FALSE
+      ),
       env = list(
         aval_var = aval_var
       )
@@ -217,13 +225,15 @@ template_exposure <- function(parentname,
 #' set.seed(1, kind = "Mersenne-Twister")
 #' labels <- rtables::var_labels(adex)
 #' adex <- adex %>%
-#'  distinct(USUBJID, .keep_all = TRUE) %>%
-#'   mutate(PARAMCD = "TDURD",
-#'          PARAM = "Overall duration (days)",
-#'          AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-#'          AVALU = "Days") %>%
-#'          bind_rows(adex)
-#'  rtables::var_labels(adex) <- labels
+#'   distinct(USUBJID, .keep_all = TRUE) %>%
+#'   mutate(
+#'     PARAMCD = "TDURD",
+#'     PARAM = "Overall duration (days)",
+#'     AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
+#'     AVALU = "Days"
+#'   ) %>%
+#'   bind_rows(adex)
+#' rtables::var_labels(adex) <- labels
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -239,7 +249,7 @@ template_exposure <- function(parentname,
 #'               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
 #'               AVALU = "Days") %>%
 #'               bind_rows(ADEX)
-#'       rtables::var_labels(ADEX) <- labels'  #nolint
+#'       rtables::var_labels(ADEX) <- labels' # nolint
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -266,23 +276,22 @@ template_exposure <- function(parentname,
 #'       add_total = FALSE
 #'     )
 #'   ),
-#'  filter = list(
-#'    ADSL = list(SAFFL = "Y")
-#'  )
+#'   filter = list(
+#'     ADSL = list(SAFFL = "Y")
+#'   )
 #' )
 #'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 #'
-
 tm_t_exposure <- function(label,
                           dataname,
                           parentname = ifelse(
                             inherits(col_by_var, "data_extract_spec"),
                             teal.devel::datanames_input(col_by_var),
                             "ADSL"
-                            ),
+                          ),
                           row_by_var,
                           col_by_var,
                           paramcd = choices_selected(
@@ -367,7 +376,6 @@ tm_t_exposure <- function(label,
 
 #' @noRd
 ui_t_exposure <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...) # module args
 
@@ -387,7 +395,7 @@ ui_t_exposure <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
-        )]),
+      )]),
       teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select the Parameter",
@@ -505,11 +513,11 @@ srv_t_exposure <- function(input,
       need(
         input[[extract_input("parcat", parcat$filter[[1]]$dataname, filter = TRUE)]],
         "Please select a parameter category value."
-        ),
+      ),
       need(
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "Please select a parameter value."
-        ),
+      ),
       teal.devel::validate_no_intersection(
         input[[extract_input("col_by_var", parentname)]],
         input[[extract_input("row_by_var", dataname)]],
@@ -524,7 +532,7 @@ srv_t_exposure <- function(input,
       anlvars = c(
         "USUBJID", "STUDYID", input_id_var, input_paramcd,
         input_row_by_var, input_parcat, input_aval_var, input_avalu_var
-        ),
+      ),
       arm_var = NULL,
       need_arm = FALSE
     )
@@ -544,10 +552,10 @@ srv_t_exposure <- function(input,
 
     input_avalu_var <- as.character(
       unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
-      )
+    )
     input_paramcd <- as.character(
       unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
-      )
+    )
     my_calls <- template_exposure(
       parentname = "ANL_ADSL",
       dataname = "ANL",

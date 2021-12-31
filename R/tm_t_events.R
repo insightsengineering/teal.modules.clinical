@@ -75,11 +75,11 @@ template_events <- function(dataname,
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname)))
+      env = list(parentname = as.name(parentname))
+    )
   )
 
   if (sort_criteria == "alpha") {
-
     if (!is.null(hlt)) {
       data_list <- add_expr(
         data_list,
@@ -99,7 +99,6 @@ template_events <- function(dataname,
         )
       )
     }
-
   }
 
   term_vars <- c(hlt, llt)
@@ -175,7 +174,8 @@ template_events <- function(dataname,
         .labels = c(
           unique = unique_label,
           nonunique = nonunique_label
-        )),
+        )
+      ),
       env = list(unique_label = unique_label, nonunique_label = nonunique_label)
     )
   )
@@ -214,15 +214,16 @@ template_events <- function(dataname,
             label_pos = "topleft",
             split_label = rtables::var_labels(dataname[hlt], fill = TRUE)
           ) %>%
-          summarize_num_patients(
-            var = "USUBJID",
-            .stats = c("unique", "nonunique"),
-            .labels = c(
-              unique = unique_label,
-              nonunique = nonunique_label
-            )) %>%
-          count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = 1L),
+            summarize_num_patients(
+              var = "USUBJID",
+              .stats = c("unique", "nonunique"),
+              .labels = c(
+                unique = unique_label,
+                nonunique = nonunique_label
+              )
+            ) %>%
+            count_occurrences(vars = llt, .indent_mods = -1L) %>%
+            append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),
           hlt = hlt,
@@ -265,8 +266,7 @@ template_events <- function(dataname,
       )
     )
 
-  if (prune_freq > 0 && prune_diff == 0) {
-
+    if (prune_freq > 0 && prune_diff == 0) {
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -274,9 +274,7 @@ template_events <- function(dataname,
           env = list(prune_freq = prune_freq)
         )
       )
-
     } else if (prune_freq == 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -284,9 +282,7 @@ template_events <- function(dataname,
           env = list(prune_diff = prune_diff)
         )
       )
-
     } else if (prune_freq > 0 && prune_diff > 0) {
-
       prune_list <- add_expr(
         prune_list,
         substitute(
@@ -312,7 +308,6 @@ template_events <- function(dataname,
   sort_list <- list()
 
   if (sort_criteria == "alpha") {
-
     if (prune_freq == 0 && prune_diff == 0) {
 
       # This is just a dummy step to get the right variable result.
@@ -326,9 +321,7 @@ template_events <- function(dataname,
           pruned_and_sorted_result
         })
       )
-
     } else {
-
       sort_list <- add_expr(
         sort_list,
         quote(
@@ -346,7 +339,6 @@ template_events <- function(dataname,
         })
       )
     }
-
   } else {
     # Sort by decreasing frequency.
 
@@ -370,7 +362,7 @@ template_events <- function(dataname,
         substitute(
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path =  c(term_var), scorefun = scorefun_llt)
+              sort_at_path(path = c(term_var), scorefun = scorefun_llt)
             pruned_and_sorted_result
           },
           env = list(
@@ -379,7 +371,6 @@ template_events <- function(dataname,
           )
         )
       )
-
     } else {
       sort_list <- add_expr(
         sort_list,
@@ -399,7 +390,6 @@ template_events <- function(dataname,
       )
 
       if (prune_freq > 0 || prune_diff > 0) {
-
         sort_list <- add_expr(
           sort_list,
           quote(
@@ -422,12 +412,10 @@ template_events <- function(dataname,
         quote(pruned_and_sorted_result)
       )
     }
-
   }
   y$sort <- bracket_expr(sort_list)
 
   y
-
 }
 
 #' Teal Module: Events by Term
@@ -457,11 +445,11 @@ template_events <- function(dataname,
 #'       llt = choices_selected(
 #'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
-#'        ),
+#'       ),
 #'       hlt = choices_selected(
 #'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
-#'        ),
+#'       ),
 #'       add_total = TRUE,
 #'       event_type = "adverse event"
 #'     )
@@ -543,7 +531,6 @@ tm_t_events <- function(label,
 
 #' @noRd
 ui_t_events_byterm <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$hlt, a$llt)
@@ -584,8 +571,9 @@ ui_t_events_byterm <- function(id, ...) {
         selectInput(
           inputId = ns("sort_criteria"),
           label = "Sort Criteria",
-          choices = c("Decreasing frequency" = "freq_desc",
-                      "Alphabetically" = "alpha"
+          choices = c(
+            "Decreasing frequency" = "freq_desc",
+            "Alphabetically" = "alpha"
           ),
           selected = a$sort_criteria,
           multiple = FALSE

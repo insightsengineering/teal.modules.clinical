@@ -110,7 +110,8 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADLB", adlb,
-                  code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
+      code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'
+    ),
     check = TRUE
   ),
   modules = root_modules(
@@ -130,7 +131,8 @@ app <- init(
         selected = c("WGRLOVFL")
       ),
       worst_flag_indicator = choices_selected(
-        value_choices(adlb, "WGRLOVFL"), selected = "Y", fixed = TRUE
+        value_choices(adlb, "WGRLOVFL"),
+        selected = "Y", fixed = TRUE
       ),
       anl_toxgrade_var = choices_selected(
         choices = variable_choices(adlb, subset = c("ATOXGR")),
@@ -143,14 +145,14 @@ app <- init(
         fixed = TRUE
       ),
       add_total = FALSE
-   )
- ),
+    )
+  ),
   filter = list(
     ADSL = list(SAFFL = "Y")
   )
 )
-
- \dontrun{
+\dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }

@@ -58,13 +58,21 @@ template_patient_timeline <- function(dataname = "ANL",
         user_plot = ggplot2_args,
         module_plot = teal.devel::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
-          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
-                                               list(font_size_var = font_size)),
-                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                              list(font_size_var = font_size)),
-                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                               list(font_size_var = font_size)),
-                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)))
+          theme = list(
+            plot.title = substitute(
+              element_text(hjust = 0, size = font_size_var),
+              list(font_size_var = font_size)
+            ),
+            axis.text = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            axis.title = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size))
+          )
         )
       )
     )
@@ -163,20 +171,27 @@ template_patient_timeline <- function(dataname = "ANL",
       )
     )
   } else {
-
     parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
       teal.devel::resolve_ggplot2_args(
         user_plot = ggplot2_args,
         module_plot = teal.devel::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
-          theme = list(plot.title = substitute(element_text(hjust = 0, size = font_size_var),
-                                               list(font_size_var = font_size)),
-                       axis.text = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                              list(font_size_var = font_size)),
-                       axis.title = substitute(element_text(size = font_size_var, face = "bold", colour = "black"),
-                                               list(font_size_var = font_size)),
-                       text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
-                       legend.position = "none")
+          theme = list(
+            plot.title = substitute(
+              element_text(hjust = 0, size = font_size_var),
+              list(font_size_var = font_size)
+            ),
+            axis.text = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            axis.title = substitute(
+              element_text(size = font_size_var, face = "bold", colour = "black"),
+              list(font_size_var = font_size)
+            ),
+            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
+            legend.position = "none"
+          )
         )
       ),
       ggtheme = "classic"
@@ -231,11 +246,16 @@ template_patient_timeline <- function(dataname = "ANL",
               geom_label() +
               theme_void()
           } else {
-            patient_timeline_plot <- ggplot(vistime_data,
-                                            aes(x = start, y = event, xend = end, yend = event, color = color)) +
+            patient_timeline_plot <- ggplot(
+              vistime_data,
+              aes(x = start, y = event, xend = end, yend = event, color = color)
+            ) +
               geom_segment(size = 4) +
               facet_grid(group ~ ., scales = "free", space = "free") +
-              scale_x_continuous(breaks = scales::pretty_breaks())  + labs + ggthemes + themes
+              scale_x_continuous(breaks = scales::pretty_breaks()) +
+              labs +
+              ggthemes +
+              themes
           }
           patient_timeline_plot
         },
@@ -328,7 +348,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'                   code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
 #'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'       ADCM$CMDOSE <- 1
 #'       ADCM$CMDOSU <- "U"
@@ -348,7 +368,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'           "Reported Name of Drug, Med, or Therapy",
 #'           "Study Day of Start of Medication",
 #'           "Study Day of End of Medication")',
-#'                   keys = adcm_keys
+#'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -435,10 +455,10 @@ tm_g_pp_patient_timeline <- function(label,
   assertthat::assert_that(utils.nest::is_character_single(parentname))
   assertthat::assert_that(utils.nest::is_character_single(patient_col))
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-              msg = "pre_output should be either null or shiny.tag type of object"
+    msg = "pre_output should be either null or shiny.tag type of object"
   )
   assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-              msg = "post_output should be either null or shiny.tag type of object"
+    msg = "post_output should be either null or shiny.tag type of object"
   )
 
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
@@ -446,8 +466,13 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
   assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
   assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
@@ -526,7 +551,8 @@ ui_g_patient_timeline <- function(id, ...) {
         ui_args[c(
           "aeterm", "cmdecod",
           "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end")]
+          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
+        )]
       ),
       optionalSelectInput(
         ns("patient_id"),
@@ -662,19 +688,20 @@ srv_g_patient_timeline <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
-      } else {
-        intersect(patient_id(), patient_data_base())
-      }
-    )
-  },
-  ignoreInit = TRUE
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
+      )
+    },
+    ignoreInit = TRUE
   )
 
   # Patient timeline tab ----
@@ -714,7 +741,7 @@ srv_g_patient_timeline <- function(input,
       need(
         input$relday_x_axis ||
           (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-          sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+            sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(
@@ -750,7 +777,7 @@ srv_g_patient_timeline <- function(input,
       need(
         !input$relday_x_axis ||
           (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
-          sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
+            sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
         "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
       ),
       need(

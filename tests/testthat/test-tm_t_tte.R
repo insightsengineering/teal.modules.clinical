@@ -38,7 +38,7 @@ testthat::test_that("template_tte produces healthy standard output", {
           EVNTDESC = factor(EVNTDESC)
         ) %>%
         df_explicit_na()
-      ANL_ADSL <- ANL_ADSL %>%# nolint
+      ANL_ADSL <- ANL_ADSL %>% # nolint
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na()
     }),
@@ -133,13 +133,14 @@ testthat::test_that("template_tte produces correct data expression when not comp
         is_not_event = CNSR == 1,
         EVNT1 = factor(dplyr::case_when(
           is_event == TRUE ~ "Patients with event (%)",
-          is_event == FALSE ~ "Patients without event (%)"),
-          levels = c("Patients with event (%)", "Patients without event (%)")
+          is_event == FALSE ~ "Patients without event (%)"
+        ),
+        levels = c("Patients with event (%)", "Patients without event (%)")
         ),
         EVNTDESC = factor(EVNTDESC)
       ) %>%
       df_explicit_na()
-    ANL_ADSL <- ANL_ADSL %>% #nolint
+    ANL_ADSL <- ANL_ADSL %>% # nolint
       dplyr::mutate(ARM = droplevels(ARM)) %>%
       df_explicit_na()
   })

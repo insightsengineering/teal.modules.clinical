@@ -110,15 +110,18 @@ app <- init(
       dataname = "ADAETTE",
       arm_var = choices_selected(
         choices = variable_choices(adsl, c("ARM", "ARMCD")),
-        selected = "ARMCD"),
+        selected = "ARMCD"
+      ),
       add_total = TRUE,
       events_var = choices_selected(
         choices = variable_choices(adaette, "n_events"),
-       selected = "n_events",
-       fixed = TRUE),
+        selected = "n_events",
+        fixed = TRUE
+      ),
       paramcd = choices_selected(
         choices = value_choices(adaette, "PARAMCD", "PARAM"),
-        selected = "AETTE1")
+        selected = "AETTE1"
+      )
     )
   )
 )

@@ -28,7 +28,7 @@ testthat::test_that("pipe_expr concatenate expressions into a single pipeline (%
       expr2 = substitute(head)
     )
   )
-  expected <- quote(df %>% head)
+  expected <- quote(df %>% head) # styler: off
   testthat::expect_identical(result, expected)
 })
 
@@ -268,7 +268,6 @@ testthat::test_that("color_lab_values main", {
       `0 LOW` = "<span style='color:blue!important'>0<i class='glyphicon glyphicon-arrow-down'></i></span>"
     )
   )
-
 })
 
 testthat::test_that("color_lab_values neutral for none characters", {
@@ -277,7 +276,6 @@ testthat::test_that("color_lab_values neutral for none characters", {
   testthat::expect_identical(color_lab_values(vals), vals)
 
   testthat::expect_identical(color_lab_values(letters), letters)
-
 })
 
 testthat::test_that("clean_description", {
@@ -288,10 +286,7 @@ testthat::test_that("clean_description", {
   vals2 <- 1:10
 
   testthat::expect_identical(clean_description(vals2), as.character(vals2))
-
 })
-
-
 
 testthat::test_that("get_g_forest_obj_var_name", {
   paramcd <- data_extract_spec(
@@ -304,14 +299,8 @@ testthat::test_that("get_g_forest_obj_var_name", {
       multiple = FALSE
     )
   )
-
-  input <- list("paramcd-dataset_ADSL_singleextract-filter1-vals" =
-                  c("OS-1")
-                  )
-
+  input <- list("paramcd-dataset_ADSL_singleextract-filter1-vals" = c("OS-1"))
   result <- get_g_forest_obj_var_name(paramcd, input)
-
   expected <- "os1"
-
   testthat::expect_equal(result, expected)
 })

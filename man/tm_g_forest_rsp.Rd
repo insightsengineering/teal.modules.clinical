@@ -117,7 +117,7 @@ ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
   mutate(AVALC = d_onco_rsp_label(AVALC)) \%>\%
   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
@@ -164,15 +164,22 @@ app <- init(
       default_responses = list(
         BESRSPI = list(
           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-          levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
-                     "Progressive Disease (PD)", "Not Evaluable (NE)")),
+          levels = c(
+            "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+            "Progressive Disease (PD)", "Not Evaluable (NE)"
+          )
+        ),
         INVET = list(
           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+          levels = c(
+            "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+            "Progressive Disease (PD)", "Stable Disease (SD)"
+          )
+        ),
         OVRINV = list(
           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+        )
       )
     )
   )

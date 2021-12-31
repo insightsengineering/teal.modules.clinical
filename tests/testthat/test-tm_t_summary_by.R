@@ -105,7 +105,7 @@ testthat::test_that("template_summary_by generates correct expressions when `par
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
-        )
+      )
       result
     })
   )
@@ -144,10 +144,10 @@ testthat::test_that("template_summary_by generates correct expressions when `row
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout_cfun = quote(
-      cfun_unique <- function(x, labelstr = "", .N_col) { #nolint
+      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint
         y <- length(unique(x))
         rcell(
-          c(y , y / .N_col), #nolint
+          c(y, y / .N_col), # nolint
           label = labelstr
         )
       }
@@ -284,8 +284,9 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
     ),
     table = quote({
       all_zero <- function(tr) {
-        if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow"))
+        if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow")) {
           return(FALSE)
+        }
         rvs <- unlist(unname(row_values(tr)))
         all(rvs == 0)
       }

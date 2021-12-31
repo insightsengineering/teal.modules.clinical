@@ -25,8 +25,6 @@ template_shift_by_grade <- function(parentname,
                                     na_level = "<Missing>",
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.devel::basic_table_args()) {
-
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -75,20 +73,22 @@ template_shift_by_grade <- function(parentname,
     data_list,
     substitute(
       dataname <- df_explicit_na(dataname, na_level = na_level),
-      env = list(dataname = as.name("anl"),
-                 na_level = na_level
-                )
+      env = list(
+        dataname = as.name("anl"),
+        na_level = na_level
       )
+    )
   )
 
   data_list <- add_expr(
     data_list,
     substitute(
       parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname),
-                 na_level = na_level
-                )
+      env = list(
+        parentname = as.name(parentname),
+        na_level = na_level
       )
+    )
   )
 
   by_visit_fl <- dplyr::if_else(worst_flag_var %in% c("WGRLOVFL", "WGRHIVFL"), TRUE, FALSE)
@@ -156,7 +156,7 @@ template_shift_by_grade <- function(parentname,
               BTOXGR == 3 ~ "3",
               BTOXGR == 4 ~ "4",
               BTOXGR == na_level ~ "Missing"
-              ))
+            ))
           ),
           env = list(
             dataname = as.name("anl"),
@@ -238,9 +238,10 @@ template_shift_by_grade <- function(parentname,
           ATOXGR_GP,
           levels = c(
             dplyr::if_else(
-              worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", "4", "Missing"
-            )
-          ),
+              worst_flag_var %in% c("WGRLOVFL", "WGRLOFL"), "Not Low", "Not High"
+            ), "1", "2", "3", "4", "Missing"
+          )
+        ),
         BTOXGR_GP = factor(
           BTOXGR_GP,
           levels = c(
@@ -281,7 +282,7 @@ template_shift_by_grade <- function(parentname,
 
   y$data <- bracket_expr(data_list)
 
-  #layout start
+  # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
@@ -474,7 +475,8 @@ template_shift_by_grade <- function(parentname,
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADLB", adlb,
-#'                   code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
+#'       code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'
+#'     ),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -494,7 +496,8 @@ template_shift_by_grade <- function(parentname,
 #'         selected = c("WGRLOVFL")
 #'       ),
 #'       worst_flag_indicator = choices_selected(
-#'         value_choices(adlb, "WGRLOVFL"), selected = "Y", fixed = TRUE
+#'         value_choices(adlb, "WGRLOVFL"),
+#'         selected = "Y", fixed = TRUE
 #'       ),
 #'       anl_toxgrade_var = choices_selected(
 #'         choices = variable_choices(adlb, subset = c("ATOXGR")),
@@ -507,17 +510,16 @@ template_shift_by_grade <- function(parentname,
 #'         fixed = TRUE
 #'       ),
 #'       add_total = FALSE
-#'    )
-#'  ),
+#'     )
+#'   ),
 #'   filter = list(
 #'     ADSL = list(SAFFL = "Y")
 #'   )
 #' )
-#'
-#'  \dontrun{
+#' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-
+#'
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -527,27 +529,31 @@ tm_t_shift_by_grade <- function(label,
                                 ),
                                 arm_var,
                                 visit_var = choices_selected(
-                                  variable_choices(dataname, subset = "AVISIT"), selected = "AVISIT", fixed = TRUE
+                                  variable_choices(dataname, subset = "AVISIT"),
+                                  selected = "AVISIT", fixed = TRUE
                                 ),
                                 paramcd,
                                 worst_flag_var = choices_selected(
                                   variable_choices(dataname, subset = c(
                                     "WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"
-                                    )
-                                  ),
+                                  )),
                                   selected = "WGRLOVFL"
                                 ),
                                 worst_flag_indicator = choices_selected(
-                                  value_choices(dataname, "WGRLOVFL"), selected = "Y", fixed = TRUE
+                                  value_choices(dataname, "WGRLOVFL"),
+                                  selected = "Y", fixed = TRUE
                                 ),
                                 anl_toxgrade_var = choices_selected(
-                                  variable_choices(dataname, subset = c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE
+                                  variable_choices(dataname, subset = c("ATOXGR")),
+                                  selected = c("ATOXGR"), fixed = TRUE
                                 ),
                                 base_toxgrade_var = choices_selected(
-                                  variable_choices(dataname, subset = c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE
+                                  variable_choices(dataname, subset = c("BTOXGR")),
+                                  selected = c("BTOXGR"), fixed = TRUE
                                 ),
                                 id_var = choices_selected(
-                                  variable_choices(dataname, subset = "USUBJID"), selected = "USUBJID", fixed = TRUE
+                                  variable_choices(dataname, subset = "USUBJID"),
+                                  selected = "USUBJID", fixed = TRUE
                                 ),
                                 add_total = FALSE,
                                 drop_arm_levels = TRUE,
@@ -616,7 +622,6 @@ tm_t_shift_by_grade <- function(label,
 
 #' @noRd
 ui_t_shift_by_grade <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...) # module args
 
@@ -637,7 +642,7 @@ ui_t_shift_by_grade <- function(id, ...) {
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
-        ),
+      ),
       teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -794,10 +799,9 @@ srv_t_shift_by_grade <- function(input,
       anlvars = c(
         "USUBJID", "STUDYID", input_visit_var, input_paramcd, input_worst_flag_var,
         input_anl_toxgrade_var, input_base_toxgrade_var
-        ),
+      ),
       arm_var = input_arm_var
     )
-
   })
 
   call_preparation <- reactive({
@@ -850,8 +854,10 @@ srv_t_shift_by_grade <- function(input,
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
-      list(arm_var, id_var, paramcd, worst_flag_var,
-           anl_toxgrade_var, base_toxgrade_var)
+      list(
+        arm_var, id_var, paramcd, worst_flag_var,
+        anl_toxgrade_var, base_toxgrade_var
+      )
     ),
     modal_title = "R Code for Grade Laboratory Abnormalities",
     code_header = label

@@ -17,11 +17,10 @@ template_shift_by_arm <- function(dataname,
                                   treatment_flag = "Y",
                                   aval_var = "ANRIND",
                                   base_var = "BNRIND",
-                                  na.rm = FALSE, #nolint
+                                  na.rm = FALSE, # nolint
                                   na_level = "<Missing>",
                                   add_total = FALSE,
                                   basic_table_args = teal.devel::basic_table_args()) {
-
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -92,7 +91,8 @@ template_shift_by_arm <- function(dataname,
             arm_var,
             split_fun = add_overall_level("All Patients", first = FALSE),
             label_pos = "topleft",
-            split_label = obj_label(dataname$arm_var)) %>%
+            split_label = obj_label(dataname$arm_var)
+          ) %>%
           add_rowcounts() %>%
           summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
@@ -119,7 +119,8 @@ template_shift_by_arm <- function(dataname,
             arm_var,
             split_fun = drop_split_levels,
             label_pos = "topleft",
-            split_label = obj_label(dataname$arm_var)) %>%
+            split_label = obj_label(dataname$arm_var)
+          ) %>%
           add_rowcounts() %>%
           summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
@@ -152,7 +153,6 @@ template_shift_by_arm <- function(dataname,
   )
 
   y
-
 }
 
 #' Teal Module: Shift by Arm
@@ -183,19 +183,24 @@ template_shift_by_arm <- function(dataname,
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
 #'       arm_var = choices_selected(
-#'         variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+#'         variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'         selected = "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'       value_choices(adeg, "PARAMCD"), selected = "HR"
+#'         value_choices(adeg, "PARAMCD"),
+#'         selected = "HR"
 #'       ),
 #'       visit_var = choices_selected(
-#'       value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+#'         value_choices(adeg, "AVISIT"),
+#'         selected = "POST-BASELINE MINIMUM"
 #'       ),
 #'       aval_var = choices_selected(
-#'       variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+#'         variable_choices(adeg, subset = "ANRIND"),
+#'         selected = "ANRIND", fixed = TRUE
 #'       ),
 #'       base_var = choices_selected(
-#'         variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+#'         variable_choices(adeg, subset = "BNRIND"),
+#'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       useNA = "ifany"
 #'     )
@@ -219,10 +224,12 @@ tm_t_shift_by_arm <- function(label,
                               aval_var,
                               base_var,
                               treatment_flag_var = choices_selected(
-                                variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE
+                                variable_choices(dataname, subset = "ONTRTFL"),
+                                selected = "ONTRTFL", fixed = TRUE
                               ),
                               treatment_flag = choices_selected(
-                                value_choices(dataname, "ONTRTFL"), selected = "Y", fixed = TRUE
+                                value_choices(dataname, "ONTRTFL"),
+                                selected = "Y", fixed = TRUE
                               ),
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
@@ -280,12 +287,10 @@ tm_t_shift_by_arm <- function(label,
     ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
   )
-
 }
 
 #' @noRd
 ui_shift_by_arm <- function(id, ...) {
-
   ns <- NS(id)
   a <- list(...)
 
@@ -302,7 +307,7 @@ ui_shift_by_arm <- function(id, ...) {
 
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
-    encoding =  div(
+    encoding = div(
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
@@ -387,7 +392,6 @@ srv_shift_by_arm <- function(input,
                              na_level,
                              add_total,
                              basic_table_args) {
-
   stopifnot(is_cdisc_data(datasets))
 
   teal.devel::init_chunks()
@@ -400,7 +404,8 @@ srv_shift_by_arm <- function(input,
       visit_var = visit_var,
       aval_var = aval_var,
       base_var = base_var,
-      treatment_flag_var = treatment_flag_var),
+      treatment_flag_var = treatment_flag_var
+    ),
     merge_function = "dplyr::inner_join"
   )
 
@@ -429,8 +434,8 @@ srv_shift_by_arm <- function(input,
         paste0(
           "Please make sure the analysis dataset is not empty or\n",
           "endpoint parameter and analysis visit are selected."
-          )
-        ),
+        )
+      ),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),
       need(input$treatment_flag, "Please select indicator value for on treatment records.")
     )

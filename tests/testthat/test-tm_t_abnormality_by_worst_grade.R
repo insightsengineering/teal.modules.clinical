@@ -1,6 +1,5 @@
 library(scda)
 testthat::test_that("template_abnormality_by_worst_grade generates correct expressions with default arguments", {
-
   result <- template_abnormality_by_worst_grade(
     parentname = "adsl",
     dataname = "adlb",
@@ -13,7 +12,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
     worst_flag_indicator = "Y",
     add_total = FALSE,
     drop_arm_levels = TRUE
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -29,7 +28,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             levels = c("LOW", "ZERO", "HIGH")
           ),
           GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
-      ) %>%
+        ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
       rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
@@ -41,7 +40,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
     layout_prep = quote({
       map <- unique(
         anl[anl[["GRADE_DIR"]] != "ZERO", c("PARAMCD", "GRADE_DIR", "GRADE_ANL")]
-        ) %>%
+      ) %>%
         lapply(as.character) %>%
         as.data.frame() %>%
         dplyr::arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
@@ -53,11 +52,13 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         rtables::split_rows_by(
           "PARAMCD",
           label_pos = "topleft",
-          split_label = obj_label(anl[["PARAMCD"]])) %>%
+          split_label = obj_label(anl[["PARAMCD"]])
+        ) %>%
         summarize_num_patients(
           var = "USUBJID",
           required = "GRADE_ANL",
-          .stats = "unique_count") %>%
+          .stats = "unique_count"
+        ) %>%
         rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
@@ -111,7 +112,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             levels = c("LOW", "ZERO", "HIGH")
           ),
           GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))
-      ) %>%
+        ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
       rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
@@ -135,11 +136,13 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         rtables::split_rows_by(
           "myPARAMCD",
           label_pos = "topleft",
-          split_label = obj_label(anl[["myPARAMCD"]])) %>%
+          split_label = obj_label(anl[["myPARAMCD"]])
+        ) %>%
         summarize_num_patients(
           var = "USUBJID",
           required = "GRADE_ANL",
-          .stats = "unique_count") %>%
+          .stats = "unique_count"
+        ) %>%
         rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
@@ -154,7 +157,8 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             grade_dir = "GRADE_DIR"
           )
         ) %>%
-        rtables::append_topleft("    Highest Grade")),
+        rtables::append_topleft("    Highest Grade")
+    ),
     table = quote({
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
       result
@@ -184,5 +188,4 @@ testthat::test_that("template_abnormality_by_worst_grade throws an error when AT
   )
 
   testthat::expect_error(mapply(eval, template))
-
 })
