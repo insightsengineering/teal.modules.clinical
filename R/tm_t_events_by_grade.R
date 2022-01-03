@@ -788,13 +788,13 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(col_by_grade)
   utils.nest::stop_if_not(
-    utils.nest::is_logical_single(add_total),
-    utils.nest::is_logical_single(col_by_grade),
     utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
-    utils.nest::is_logical_single(drop_arm_levels)
+    utils.nest::is_numeric_single(prune_diff)
   )
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

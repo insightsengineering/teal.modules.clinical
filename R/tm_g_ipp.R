@@ -262,11 +262,8 @@ tm_g_ipp <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  utils.nest::stop_if_not(
-    utils.nest::is_logical_single(add_baseline_hline),
-    utils.nest::is_logical_single(separate_by_obs)
-  )
-
+  checkmate::assert_flag(add_baseline_hline)
+  checkmate::assert_flag(separate_by_obs)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)

@@ -315,8 +315,8 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_flag(fixed_symbol_size)
   utils.nest::stop_if_not(
-    utils.nest::is_logical_single(fixed_symbol_size),
     is.choices_selected(conf_level)
   )
   assertthat::assert_that(

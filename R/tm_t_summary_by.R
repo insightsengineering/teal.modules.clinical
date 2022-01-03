@@ -399,12 +399,12 @@ tm_t_summary_by <- function(label,
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_zero_levels),
-    utils.nest::is_logical_single(parallel_vars),
-    utils.nest::is_logical_single(row_groups),
     is.choices_selected(denominator),
-    denominator$choices %in% c("n", "N", "omit"),
-    utils.nest::is_logical_single(drop_arm_levels)
+    denominator$choices %in% c("n", "N", "omit")
   )
+  checkmate::assert_flag(parallel_vars)
+  checkmate::assert_flag(row_groups)
+  checkmate::assert_flag(drop_arm_levels)
   numeric_stats <- match.arg(numeric_stats)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)

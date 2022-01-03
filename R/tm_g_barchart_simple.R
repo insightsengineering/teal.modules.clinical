@@ -537,7 +537,7 @@ make_barchart_simple_call <- function(y_name,
                                       x_facet_name = NULL,
                                       y_facet_name = NULL,
                                       label_bars = TRUE, # whether to also draw numbers as text, i.e. label bars
-                                      barlayout = "stacked",
+                                      barlayout = c("side_by_side", "stacked"),
                                       flip_axis = FALSE,
                                       rotate_bar_labels = FALSE,
                                       rotate_x_label = FALSE,
@@ -557,15 +557,15 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_string(fill_name, null.ok = TRUE)
   checkmate::assert_string(x_facet_name, null.ok = TRUE)
   checkmate::assert_string(y_facet_name, null.ok = TRUE)
+  checkmate::assert_flag(label_bars)
   stopifnot(
     length(plot_vars) > 0,
-    utils.nest::is_logical_single(label_bars),
-    barlayout %in% c("side_by_side", "stacked"),
-    is.null(flip_axis) || utils.nest::is_logical_single(flip_axis),
-    is.null(rotate_x_label) || utils.nest::is_logical_single(rotate_x_label),
-    is.null(rotate_y_label) || utils.nest::is_logical_single(rotate_y_label),
     utils.nest::is_numeric_single(expand_y_range)
   )
+  barlayout <- match.arg(barlayout)
+  checkmate::assert_flag(flip_axis, null.ok = TRUE)
+  checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
+  checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
   plot_args <- list(quote(ggplot(counts)))
 

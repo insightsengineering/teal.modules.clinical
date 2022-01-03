@@ -483,12 +483,12 @@ tm_t_events <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(event_type)
+  checkmate::assert_flag(add_total)
   utils.nest::stop_if_not(
-    utils.nest::is_logical_single(add_total),
     utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
-    assertthat::is.flag(drop_arm_levels)
+    utils.nest::is_numeric_single(prune_diff)
   )
+  checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)

@@ -265,12 +265,10 @@ tm_t_summary <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  utils.nest::stop_if_not(
-    utils.nest::is_logical_single(drop_arm_levels)
-  )
   useNA <- match.arg(useNA) # nolint
   numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

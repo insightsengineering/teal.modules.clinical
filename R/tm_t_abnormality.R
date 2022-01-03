@@ -333,9 +333,9 @@ tm_t_abnormality <- function(label,
     is.choices_selected(baseline_var),
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
-    utils.nest::is_logical_single(exclude_base_abn),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_flag(exclude_base_abn)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

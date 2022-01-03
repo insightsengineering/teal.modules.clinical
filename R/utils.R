@@ -256,7 +256,7 @@ bracket_expr <- function(exprs) {
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(utils.nest::is_logical_single(multiple))
+  checkmate::assert_flag(multiple)
 
   select_spec(
     choices = cs$choices,
@@ -274,7 +274,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   stopifnot(is.choices_selected(cs))
-  stopifnot(utils.nest::is_logical_single(multiple))
+  checkmate::assert_flag(multiple)
 
   vars <- if (inherits(cs, "delayed_choices_selected")) {
     cs$choices$var_choices
@@ -303,12 +303,12 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
   checkmate::assert_string(dataname)
+  checkmate::assert_flag(multiple)
   utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
-    ),
-    utils.nest::is_logical_single(multiple)
+    )
   )
   if (!multiple) {
     utils.nest::stop_if_not(
@@ -342,12 +342,12 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
   checkmate::assert_string(dataname)
+  checkmate::assert_flag(multiple)
   utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
-    ),
-    utils.nest::is_logical_single(multiple)
+    )
   )
   if (!multiple) {
     utils.nest::stop_if_not(

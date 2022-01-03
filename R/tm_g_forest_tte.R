@@ -295,10 +295,9 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    is.choices_selected(conf_level),
-    utils.nest::is_logical_single(fixed_symbol_size)
+    is.choices_selected(conf_level)
   )
-
+  checkmate::assert_flag(fixed_symbol_size)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
