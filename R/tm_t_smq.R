@@ -387,18 +387,14 @@ tm_t_smq <- function(label,
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels),
     is.choices_selected(id_var),
-    is.choices_selected(llt),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    is.choices_selected(llt)
   )
-
   sort_criteria <- match.arg(sort_criteria)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  args <- as.list(environment())
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
@@ -407,10 +403,6 @@ tm_t_smq <- function(label,
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
-
-  args <- as.list(environment())
 
   module(
     label = label,

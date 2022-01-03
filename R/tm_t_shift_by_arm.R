@@ -244,16 +244,13 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
     is.choices_selected(treatment_flag),
-    is.choices_selected(treatment_flag_var),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    is.choices_selected(treatment_flag_var)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  args <- as.list(environment())
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -263,10 +260,6 @@ tm_t_shift_by_arm <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     base_var = cs_to_des_select(base_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
-
-  args <- as.list(environment())
 
   module(
     label = label,

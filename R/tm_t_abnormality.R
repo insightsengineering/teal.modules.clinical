@@ -334,16 +334,11 @@ tm_t_abnormality <- function(label,
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
     utils.nest::is_logical_single(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -353,8 +348,6 @@ tm_t_abnormality <- function(label,
     baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 

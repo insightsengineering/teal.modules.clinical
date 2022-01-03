@@ -577,16 +577,13 @@ tm_t_shift_by_grade <- function(label,
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels),
-    assertthat::is.flag(code_missing_baseline),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    assertthat::is.flag(code_missing_baseline)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  args <- as.list(environment())
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -597,10 +594,6 @@ tm_t_shift_by_grade <- function(label,
     anl_toxgrade_var = cs_to_des_select(anl_toxgrade_var, dataname = dataname),
     base_toxgrade_var = cs_to_des_select(base_toxgrade_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
-
-  args <- as.list(environment())
 
   module(
     label = label,

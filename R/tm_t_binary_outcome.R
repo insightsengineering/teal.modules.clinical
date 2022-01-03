@@ -477,20 +477,14 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
     is.choices_selected(conf_level),
-    assertthat::is.flag(add_total),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    assertthat::is.flag(add_total)
   )
   assertthat::assert_that(
     inherits(default_responses, c("list", "character", "numeric", "NULL")),
     msg = "`default_responses` must be a named list or an array."
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

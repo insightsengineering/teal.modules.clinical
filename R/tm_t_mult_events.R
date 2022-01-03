@@ -338,19 +338,12 @@ tm_t_mult_events <- function(label, # nolint
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(event_type)
-
   utils.nest::stop_if_not(
     utils.nest::is_logical_single(add_total),
-    utils.nest::is_logical_single(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    utils.nest::is_logical_single(drop_arm_levels)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

@@ -601,17 +601,10 @@ tm_t_events_summary <- function(label,
     utils.nest::is_logical_single(add_total),
     utils.nest::is_logical_single(count_subj),
     utils.nest::is_logical_single(count_pt),
-    utils.nest::is_logical_single(count_events),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    utils.nest::is_logical_single(count_events)
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))

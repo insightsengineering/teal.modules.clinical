@@ -322,16 +322,11 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
     is.choices_selected(atoxgr_var),
     is.choices_selected(worst_high_flag_var),
     is.choices_selected(worst_low_flag_var),
-    is.choices_selected(worst_flag_indicator),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    is.choices_selected(worst_flag_indicator)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -341,8 +336,6 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
     worst_high_flag_var = cs_to_des_select(worst_high_flag_var, dataname = dataname),
     worst_low_flag_var = cs_to_des_select(worst_low_flag_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 

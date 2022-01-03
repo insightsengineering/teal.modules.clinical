@@ -331,16 +331,11 @@ tm_t_exposure <- function(label,
     is.choices_selected(id_var),
     is.choices_selected(parcat),
     is.choices_selected(aval_var),
-    is.choices_selected(avalu_var),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+    is.choices_selected(avalu_var)
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
@@ -351,8 +346,6 @@ tm_t_exposure <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
   module(
