@@ -240,7 +240,7 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  useNA <- match.arg(useNA)
+  useNA <- match.arg(useNA) # nolint
   checkmate::assert_string(na_level)
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
