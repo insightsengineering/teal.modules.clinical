@@ -446,10 +446,10 @@ tm_t_tte <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_tte")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     is.choices_selected(time_points),
     is.choices_selected(conf_level_coxph),
     is.choices_selected(conf_level_survfit),

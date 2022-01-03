@@ -319,8 +319,11 @@ tm_t_abnormality <- function(label,
                              na_level = "<Missing>",
                              basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
     assertthat::is.flag(add_total),
     is.choices_selected(by_vars),

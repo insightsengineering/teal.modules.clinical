@@ -785,10 +785,10 @@ tm_t_events_by_grade <- function(label,
                                  post_output = NULL,
                                  basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_by_grade")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     utils.nest::is_logical_single(add_total),
     utils.nest::is_logical_single(col_by_grade),
     utils.nest::is_numeric_single(prune_freq),

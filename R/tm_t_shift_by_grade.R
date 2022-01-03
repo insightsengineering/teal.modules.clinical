@@ -563,8 +563,11 @@ tm_t_shift_by_grade <- function(label,
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
     is.choices_selected(arm_var),
     is.choices_selected(paramcd),
     is.choices_selected(worst_flag_var),
@@ -574,7 +577,6 @@ tm_t_shift_by_grade <- function(label,
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(na_level),
     assertthat::is.flag(code_missing_baseline),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),

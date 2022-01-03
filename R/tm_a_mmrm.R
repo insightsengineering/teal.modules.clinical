@@ -520,8 +520,9 @@ tm_a_mmrm <- function(label,
                       ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),

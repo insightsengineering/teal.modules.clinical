@@ -449,18 +449,17 @@ tm_g_pp_patient_timeline <- function(label,
                                      post_output = NULL,
                                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname_adcm))
-  assertthat::assert_that(utils.nest::is_character_single(dataname_adae))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname_adcm)
+  checkmate::assert_string(dataname_adae)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
   assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
   assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
-
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)

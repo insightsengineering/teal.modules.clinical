@@ -254,18 +254,18 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
-                         numeric_stats = c("n", "mean_sd", "median", "range"),
+                         numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
                          basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    useNA %in% c("ifany", "no"), # nolint,
-    utils.nest::is_character_single(na_level),
     utils.nest::is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -277,13 +277,8 @@ tm_t_summary <- function(label,
     )
   )
   useNA <- match.arg(useNA) # nolint
+  numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)
-
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
-  if (!all(numeric_stats %in% allowed_numeric_stats)) {
-    stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
-  }
-
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

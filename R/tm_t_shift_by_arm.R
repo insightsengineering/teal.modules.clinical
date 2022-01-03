@@ -237,13 +237,14 @@ tm_t_shift_by_arm <- function(label,
                               post_output = NULL,
                               basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_arm")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  useNA <- match.arg(useNA)
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     is.choices_selected(treatment_flag),
     is.choices_selected(treatment_flag_var),
-    utils.nest::is_character_single(na_level),
-    useNA %in% c("ifany", "no"), # nolint,
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
@@ -253,8 +254,6 @@ tm_t_shift_by_arm <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
-
-  useNA <- match.arg(useNA) # nolint
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),

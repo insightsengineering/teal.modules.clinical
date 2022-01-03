@@ -312,10 +312,10 @@ tm_g_forest_rsp <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     utils.nest::is_logical_single(fixed_symbol_size),
     is.choices_selected(conf_level),
     list(

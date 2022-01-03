@@ -515,8 +515,10 @@ tm_t_coxreg <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_coxreg")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    length(dataname) == 1,
     is.choices_selected(conf_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),

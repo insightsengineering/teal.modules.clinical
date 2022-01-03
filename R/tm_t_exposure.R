@@ -319,8 +319,11 @@ tm_t_exposure <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
     assertthat::is.flag(add_total),
     is.choices_selected(paramcd),
     is.choices_selected(row_by_var),
@@ -329,7 +332,6 @@ tm_t_exposure <- function(label,
     is.choices_selected(parcat),
     is.choices_selected(aval_var),
     is.choices_selected(avalu_var),
-    assertthat::is.string(na_level),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

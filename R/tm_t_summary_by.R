@@ -389,17 +389,17 @@ tm_t_summary_by <- function(label,
                             post_output = NULL,
                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   useNA <- match.arg(useNA) # nolint
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_zero_levels),
     utils.nest::is_logical_single(parallel_vars),
     utils.nest::is_logical_single(row_groups),
-    useNA %in% c("ifany", "no"), # nolint
     utils.nest::is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
@@ -413,12 +413,7 @@ tm_t_summary_by <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
-
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
-  if (!all(numeric_stats %in% allowed_numeric_stats)) {
-    stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
-  }
-
+  numeric_stats <- match.arg(numeric_stats)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))

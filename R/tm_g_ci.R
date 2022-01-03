@@ -267,9 +267,9 @@ tm_g_ci <- function(label,
                     post_output = NULL,
                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ci")
+  checkmate::assert_string(label, len = 1)
   stat <- match.arg(stat)
   utils.nest::stop_if_not(
-    is.character(label),
     utils.nest::is_class_list("data_extract_spec")(list(y_var, x_var, color)),
     is.choices_selected(conf_level),
     list(

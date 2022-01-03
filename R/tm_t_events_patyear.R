@@ -201,9 +201,10 @@ tm_t_events_patyear <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
     is.choices_selected(arm_var),
     is.choices_selected(events_var),
     is.choices_selected(paramcd),

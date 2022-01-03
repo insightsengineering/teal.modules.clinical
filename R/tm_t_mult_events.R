@@ -334,11 +334,13 @@ tm_t_mult_events <- function(label, # nolint
                              post_output = NULL,
                              basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_mult_events")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(event_type)
+
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
     utils.nest::is_logical_single(add_total),
-    utils.nest::is_character_single(event_type),
     utils.nest::is_logical_single(drop_arm_levels),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
@@ -349,7 +351,6 @@ tm_t_mult_events <- function(label, # nolint
       "post_output should be either null or shiny.tag type of object"
     )
   )
-
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

@@ -283,11 +283,9 @@ tm_t_logistic <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_logistic")
-  stopifnot(
-    length(dataname) == 1,
-    is.choices_selected(conf_level)
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

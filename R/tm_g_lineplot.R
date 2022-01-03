@@ -249,13 +249,15 @@ tm_g_lineplot <- function(label,
                           post_output = NULL,
                           ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_lineplot")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(mid)
+  checkmate::assert_string(interval)
+  checkmate::assert_string(whiskers)
+
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
     is.choices_selected(conf_level),
-    utils.nest::is_character_single(mid),
-    utils.nest::is_character_single(interval),
-    utils.nest::is_character_vector(whiskers),
     list(
       is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"

@@ -147,8 +147,8 @@ tm_g_barchart_simple <- function(x = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
+  checkmate::assert_string(label)
   utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
     is.null(plot_options) || is.list(plot_options),
     !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
     list(

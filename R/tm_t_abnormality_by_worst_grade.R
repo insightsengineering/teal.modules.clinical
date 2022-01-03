@@ -312,8 +312,10 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             post_output = NULL,
                                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
     is.choices_selected(id_var),
     is.choices_selected(arm_var),
     is.choices_selected(paramcd),
