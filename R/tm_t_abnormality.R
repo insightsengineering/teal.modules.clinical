@@ -324,20 +324,20 @@ tm_t_abnormality <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_list(abnormal, types = "character", len = 2)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(by_vars, "choices_selected")
+  checkmate::assert_class(grade, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
+  checkmate::assert_class(treatment_flag_var, "choices_selected")
   utils.nest::stop_if_not(
-    is.choices_selected(arm_var),
     assertthat::is.flag(add_total),
-    is.choices_selected(by_vars),
-    is.choices_selected(grade),
-    is.choices_selected(id_var),
-    is.choices_selected(baseline_var),
-    is.choices_selected(treatment_flag),
-    is.choices_selected(treatment_flag_var),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_flag(exclude_base_abn)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(

@@ -567,20 +567,20 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(worst_flag_var, "choices_selected")
+  checkmate::assert_class(worst_flag_indicator, "choices_selected")
+  checkmate::assert_class(anl_toxgrade_var, "choices_selected")
+  checkmate::assert_class(base_toxgrade_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
   utils.nest::stop_if_not(
-    is.choices_selected(arm_var),
-    is.choices_selected(paramcd),
-    is.choices_selected(worst_flag_var),
-    is.choices_selected(worst_flag_indicator),
-    is.choices_selected(anl_toxgrade_var),
-    is.choices_selected(base_toxgrade_var),
-    is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.flag(code_missing_baseline)
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

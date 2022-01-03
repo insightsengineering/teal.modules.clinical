@@ -323,18 +323,18 @@ tm_t_exposure <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(row_by_var, "choices_selected")
+  checkmate::assert_class(col_by_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(parcat, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(avalu_var, "choices_selected")
   utils.nest::stop_if_not(
-    assertthat::is.flag(add_total),
-    is.choices_selected(paramcd),
-    is.choices_selected(row_by_var),
-    is.choices_selected(col_by_var),
-    is.choices_selected(id_var),
-    is.choices_selected(parcat),
-    is.choices_selected(aval_var),
-    is.choices_selected(avalu_var)
+    assertthat::is.flag(add_total)
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(

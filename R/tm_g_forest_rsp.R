@@ -316,9 +316,7 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
-  utils.nest::stop_if_not(
-    is.choices_selected(conf_level)
-  )
+  checkmate::assert_class(conf_level, "choices_selected")
   assertthat::assert_that(
     inherits(default_responses, c("list", "character", "numeric", "NULL")),
     msg = "`default_responses` must be a named list or an array."
@@ -330,7 +328,7 @@ tm_g_forest_rsp <- function(label,
     plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())

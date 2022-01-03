@@ -168,7 +168,7 @@ tm_g_barchart_simple <- function(x = NULL,
     plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   plot_options <- utils::modifyList(
@@ -675,7 +675,7 @@ get_n_name <- function(groupby_vars) {
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
-  checkmate::assert_character(x$choices)
+  checkmate::assert_character(groupby_vars)
 
   n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
   chunk$push(bquote({

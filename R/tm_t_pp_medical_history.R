@@ -130,7 +130,7 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(

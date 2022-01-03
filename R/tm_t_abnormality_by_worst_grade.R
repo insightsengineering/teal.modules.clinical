@@ -315,17 +315,15 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  utils.nest::stop_if_not(
-    is.choices_selected(id_var),
-    is.choices_selected(arm_var),
-    is.choices_selected(paramcd),
-    is.choices_selected(atoxgr_var),
-    is.choices_selected(worst_high_flag_var),
-    is.choices_selected(worst_low_flag_var),
-    is.choices_selected(worst_flag_indicator)
-  )
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(atoxgr_var, "choices_selected")
+  checkmate::assert_class(worst_high_flag_var, "choices_selected")
+  checkmate::assert_class(worst_low_flag_var, "choices_selected")
+  checkmate::assert_class(worst_flag_indicator, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(

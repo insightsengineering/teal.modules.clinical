@@ -242,12 +242,10 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA)
   checkmate::assert_string(na_level)
-  utils.nest::stop_if_not(
-    is.choices_selected(treatment_flag),
-    is.choices_selected(treatment_flag_var)
-  )
+  checkmate::assert_class(treatment_flag, "choices_selected")
+  checkmate::assert_class(treatment_flag_var, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

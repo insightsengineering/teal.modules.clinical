@@ -255,7 +255,7 @@ bracket_expr <- function(exprs) {
 #' @export
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
+  checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
 
   select_spec(
@@ -273,7 +273,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @export
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
+  checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
 
   vars <- if (inherits(cs, "delayed_choices_selected")) {
@@ -319,7 +319,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
     )
   }
 
-  if (is.choices_selected(cs)) {
+  if (inherits(cs, "choices_selected")) {
     data_extract_spec(
       dataname = dataname,
       select = cs_to_select_spec(cs, multiple = multiple)
@@ -358,7 +358,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
     )
   }
 
-  if (is.choices_selected(cs)) {
+  if (inherits(cs, "choices_selected")) {
     vars <- if (inherits(cs, "delayed_choices_selected")) {
       cs$choices$var_choices
     } else {
@@ -391,7 +391,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #' @export
 #' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
-  is.choices_selected(x) || inherits(x, "data_extract_spec")
+  inherits(x, c("data_extract_spec", "choices_selected"))
 }
 
 #' Split-Column Expression
@@ -446,7 +446,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @export
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
-  stopifnot(is.choices_selected(x))
+  checkmate::assert_class(x, "choices_selected")
   checkmate::assert_character(x$choices, min.len = 1)
 
   split_x <- x
