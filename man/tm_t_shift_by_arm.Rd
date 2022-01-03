@@ -7,8 +7,8 @@
 tm_t_shift_by_arm(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   paramcd,
   visit_var,
@@ -22,12 +22,13 @@ tm_t_shift_by_arm(
   na_level = "<Missing>",
   add_total = FALSE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -76,6 +77,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Shift by Arm
@@ -100,25 +107,29 @@ app <- init(
       label = "Shift by Arm Table",
       dataname = "ADEG",
       arm_var = choices_selected(
-        variable_choices(adsl, subset = c("ARM", "ARMCD")), selected = "ARM"
+        variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        selected = "ARM"
       ),
       paramcd = choices_selected(
-      value_choices(adeg, "PARAMCD"), selected = "HR"
+        value_choices(adeg, "PARAMCD"),
+        selected = "HR"
       ),
       visit_var = choices_selected(
-      value_choices(adeg, "AVISIT"), selected = "POST-BASELINE MINIMUM"
+        value_choices(adeg, "AVISIT"),
+        selected = "POST-BASELINE MINIMUM"
       ),
       aval_var = choices_selected(
-      variable_choices(adeg, subset = "ANRIND"), selected = "ANRIND", fixed = TRUE
+        variable_choices(adeg, subset = "ANRIND"),
+        selected = "ANRIND", fixed = TRUE
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BNRIND"), selected = "BNRIND", fixed = TRUE
+        variable_choices(adeg, subset = "BNRIND"),
+        selected = "BNRIND", fixed = TRUE
       ),
       useNA = "ifany"
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

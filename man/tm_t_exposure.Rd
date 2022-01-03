@@ -7,8 +7,8 @@
 tm_t_exposure(
   label,
   dataname,
-  parentname = ifelse(is(col_by_var, "data_extract_spec"), datanames_input(col_by_var),
-    "ADSL"),
+  parentname = ifelse(inherits(col_by_var, "data_extract_spec"),
+    teal.devel::datanames_input(col_by_var), "ADSL"),
   row_by_var,
   col_by_var,
   paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),
@@ -23,12 +23,13 @@ tm_t_exposure(
   add_total,
   na_level = "<Missing>",
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -74,6 +75,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal module: Exposure Table for Risk management plan
@@ -87,15 +94,17 @@ adsl <- synthetic_cdisc_data("latest")$adsl
 adex <- synthetic_cdisc_data("latest")$adex
 
 set.seed(1, kind = "Mersenne-Twister")
-labels <- var_labels(adex)
+labels <- rtables::var_labels(adex)
 adex <- adex \%>\%
- distinct(USUBJID, .keep_all = TRUE) \%>\%
-  mutate(PARAMCD = "TDURD",
-         PARAM = "Overall duration (days)",
-         AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-         AVALU = "Days") \%>\%
-         bind_rows(adex)
- var_labels(adex) <- labels
+  distinct(USUBJID, .keep_all = TRUE) \%>\%
+  mutate(
+    PARAMCD = "TDURD",
+    PARAM = "Overall duration (days)",
+    AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
+    AVALU = "Days"
+  ) \%>\%
+  bind_rows(adex)
+rtables::var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
@@ -103,7 +112,7 @@ app <- init(
     cdisc_dataset("ADEX", adex,
       code = 'set.seed(1, kind = "Mersenne-Twister")
       ADEX <- synthetic_cdisc_data("latest")$adex
-      labels <- var_labels(ADEX)
+      labels <- rtables::var_labels(ADEX)
       ADEX <- ADEX \%>\%
        distinct(USUBJID, .keep_all = TRUE) \%>\%
        mutate(PARAMCD = "TDURD",
@@ -111,7 +120,7 @@ app <- init(
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
               AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      var_labels(ADEX) <- labels'  #nolint
+      rtables::var_labels(ADEX) <- labels' # nolint
     ),
     check = TRUE
   ),
@@ -138,11 +147,10 @@ app <- init(
       add_total = FALSE
     )
   ),
- filter = list(
-   ADSL = list(SAFFL = "Y")
- )
+  filter = list(
+    ADSL = list(SAFFL = "Y")
+  )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

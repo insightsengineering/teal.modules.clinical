@@ -14,12 +14,13 @@ tm_g_ci(
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
 
@@ -51,6 +52,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 The module generates the R code and returns the corresponding output.
@@ -75,7 +82,7 @@ app <- init(
         dataname = "ADSL",
         select = select_spec(
           choices = c("ARMCD", "BMRKR2"),
-          selected = c("ARMCD" ),
+          selected = c("ARMCD"),
           multiple = FALSE,
           fixed = FALSE
         )
@@ -123,7 +130,6 @@ app <- init(
     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

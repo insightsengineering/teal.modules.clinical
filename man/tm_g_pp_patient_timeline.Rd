@@ -24,21 +24,22 @@ tm_g_pp_patient_timeline(
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
-\item{dataname_adcm}{(\code{character}) name of ADCM dataset or equivalent.}
+\item{dataname_adcm}{(\code{character})\cr name of ADCM dataset or equivalent.}
 
-\item{dataname_adae}{(\code{character}) name of ADAE dataset or equivalent.}
+\item{dataname_adae}{(\code{character})\cr name of ADAE dataset or equivalent.}
 
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character}) value patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{aeterm}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AETERM} column of the
 ADAE dataset.}
@@ -89,6 +90,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 This teal module produces a patient profile timeline plot using ADaM datasets.
@@ -128,7 +135,7 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
     cdisc_dataset("ADCM", ADCM,
-                  code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
       ADCM$CMDOSE <- 1
       ADCM$CMDOSU <- "U"
@@ -148,7 +155,7 @@ app <- init(
           "Reported Name of Drug, Med, or Therapy",
           "Study Day of Start of Medication",
           "Study Day of End of Medication")',
-                  keys = adcm_keys
+      keys = adcm_keys
     ),
     check = TRUE
   ),

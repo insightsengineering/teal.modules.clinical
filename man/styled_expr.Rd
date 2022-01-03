@@ -18,14 +18,13 @@ hence the warning.
 }
 \examples{
 expr <- quote(
-  basic_table() \%>\%
-    split_cols_by(var = "ARMCD") \%>\%
+  rtables::basic_table() \%>\%
+    rtables::split_cols_by(var = "ARMCD") \%>\%
     test_proportion_diff(
       vars = "rsp", method = "cmh", variables = list(strata = "strat")
     ) \%>\%
-    build_table(df = dta)
+    rtables::build_table(df = dta)
 )
 
 teal.modules.clinical:::styled_expr(expr)
-
 }

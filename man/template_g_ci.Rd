@@ -11,7 +11,8 @@ template_g_ci(
   grp_var = NULL,
   stat = c("mean", "median"),
   conf_level = 0.95,
-  unit_var = "AVALU"
+  unit_var = "AVALU",
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -32,6 +33,12 @@ value for the confidence level within the range of (0, 1).}
 
 \item{unit_var}{(\code{character})\cr variable name in \code{dataname} where the unit is
 read.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 Writes the expressions to filter data and draw confidence interval

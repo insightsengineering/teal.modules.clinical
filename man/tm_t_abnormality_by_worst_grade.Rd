@@ -7,8 +7,8 @@
 tm_t_abnormality_by_worst_grade(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
@@ -24,12 +24,13 @@ tm_t_abnormality_by_worst_grade(
   add_total = TRUE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -76,9 +77,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
-}
-\value{
 
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Laboratory test results with highest grade post-baseline
@@ -90,14 +94,15 @@ library(dplyr)
 
 adsl <- synthetic_cdisc_data("latest")$adsl
 adlb <- synthetic_cdisc_data("latest")$adlb \%>\%
-filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
+  filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADLB", adlb,
-                  code = 'ADLB <- synthetic_cdisc_data("latest")$adlb \%>\%
-filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
+      code = "ADLB <- synthetic_cdisc_data('latest')$adlb \%>\%
+        filter(!AVISIT \%in\% c('SCREENING', 'BASELINE'))"
+    ),
     check = TRUE
   ),
   modules = root_modules(
@@ -113,17 +118,16 @@ filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'),
         selected = c("ALT", "CRP", "IGA")
       ),
       add_total = FALSE
-   )
- ),
- filter = (
- list(
- ADSL = list(SAFFL = "Y"),
- ADLB = list(ONTRTFL = "Y")
- )
- )
+    )
+  ),
+  filter = (
+    list(
+      ADSL = list(SAFFL = "Y"),
+      ADLB = list(ONTRTFL = "Y")
+    )
+  )
 )
-
- \dontrun{
+\dontrun{
 shinyApp(app$ui, app$server)
 }
 

@@ -10,8 +10,8 @@ table, with the option to match the STREAM template \code{RSPT01}.}
 tm_t_binary_outcome(
   label,
   dataname,
-  parentname = ifelse(test = is(arm_var, "data_extract_spec"), yes =
-    datanames_input(arm_var), no = "ADSL"),
+  parentname = ifelse(test = inherits(arm_var, "data_extract_spec"), yes =
+    teal.devel::datanames_input(arm_var), no = "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
@@ -24,12 +24,13 @@ tm_t_binary_outcome(
   rsp_table = FALSE,
   add_total = FALSE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -84,6 +85,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \value{
 an \code{\link[teal:module]{teal::module()}} object
@@ -155,20 +162,26 @@ app <- init(
       default_responses = list(
         BESRSPI = list(
           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-          levels = c("Complete Response (CR)", "Partial Response (PR)",
-                     "Stable Disease (SD)", "Progressive Disease (PD)")),
+          levels = c(
+            "Complete Response (CR)", "Partial Response (PR)",
+            "Stable Disease (SD)", "Progressive Disease (PD)"
+          )
+        ),
         INVET = list(
           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-          levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-                     "Progressive Disease (PD)", "Stable Disease (SD)")),
+          levels = c(
+            "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+            "Progressive Disease (PD)", "Stable Disease (SD)"
+          )
+        ),
         OVRINV = list(
           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+        )
       )
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

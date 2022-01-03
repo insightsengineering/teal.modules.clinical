@@ -7,8 +7,8 @@
 tm_g_ipp(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   paramcd,
   id_var = choices_selected(variable_choices(dataname, "USUBJID"), "USUBJID", fixed =
@@ -25,12 +25,13 @@ tm_g_ipp(
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -42,20 +43,16 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 object with all available choices
 and preselected option for variable values that can be used as \code{arm_var}.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
-\item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object specifying the variable name for subject id.}
+\item{id_var}{(\code{character})\cr
+the variable name for subject id.}
 
-\item{visit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices and preselected option
-for variable names that can be used as \code{visit} variable. Must be a factor
-in \code{dataname}.}
+\item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis variable.}
 
 \item{avalu_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object with all available choices
@@ -88,6 +85,13 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{subtitle}, \code{x}, \code{y}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 This teal module produces grid style Individual patient plot(s) that show
@@ -104,7 +108,7 @@ adlb <- adlb \%>\% filter(USUBJID \%in\% adsl$USUBJID)
 
 adsl <- df_explicit_na(adsl)
 adlb <- df_explicit_na(adlb) \%>\%
- dplyr::filter(AVISIT != "SCREENING")
+  dplyr::filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(
@@ -153,16 +157,15 @@ app <- init(
         "AVISIT"
       ),
       base_var = choices_selected(
-         variable_choices(adlb, c("BASE")),
-         "BASE",
-         fixed = TRUE
+        variable_choices(adlb, c("BASE")),
+        "BASE",
+        fixed = TRUE
       ),
       add_baseline_hline = FALSE,
       separate_by_obs = FALSE
     )
   )
 )
-
 \dontrun{
 shinyApp(ui = app$ui, server = app$server)
 }

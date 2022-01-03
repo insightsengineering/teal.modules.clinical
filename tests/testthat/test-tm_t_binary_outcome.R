@@ -1,4 +1,4 @@
-test_that("template_binary_outcome generates standard expressions", {
+testthat::test_that("template_binary_outcome generates standard expressions", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
@@ -27,14 +27,11 @@ test_that("template_binary_outcome generates standard expressions", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI",
-                      "for", paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
-                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
-                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
       ) %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -66,15 +63,15 @@ test_that("template_binary_outcome generates standard expressions", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates right expressions with non-default", {
+testthat::test_that("template_binary_outcome generates right expressions with non-default", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -104,14 +101,9 @@ test_that("template_binary_outcome generates right expressions with non-default"
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("PR", "SD"), -1), collapse = ", "),
-                      ifelse(length(c("PR", "SD")) > 1,
-                             "and", ""), tail(c("PR", "SD"), 1), "Responders")
-        ) %>%
-        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table(title = "Table of BESRSPI for PR and SD Responders") %>%
+        rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -125,7 +117,7 @@ test_that("template_binary_outcome generates right expressions with non-default"
           conf_level = 0.95,
           method = "waldcc",
           table_names = "u_prop_diff"
-          ) %>%
+        ) %>%
         test_proportion_diff(
           vars = "is_rsp",
           method = "schouten",
@@ -138,15 +130,15 @@ test_that("template_binary_outcome generates right expressions with non-default"
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates expression without arm comparison", {
+testthat::test_that("template_binary_outcome generates expression without arm comparison", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -165,19 +157,16 @@ test_that("template_binary_outcome generates expression without arm comparison",
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)")))
-      ADSL <- ADSL %>%  # nolint
+      ADSL <- ADSL %>% # nolint
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI",
-                      "for", paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
-                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
-                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
-        ) %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -186,15 +175,15 @@ test_that("template_binary_outcome generates expression without arm comparison",
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome generates expression with non-default controls and strata.", {
+testthat::test_that("template_binary_outcome generates expression with non-default controls and strata.", {
   result <- template_binary_outcome(
     dataname = "ADRS",
     parentname = "ADSL",
@@ -223,20 +212,17 @@ test_that("template_binary_outcome generates expression with non-default control
         dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", "Partial Response (PR)")) %>%
         dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", "Partial Response (PR)")))
       ADSL <- ADSL %>% # nolint
-        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% #nolint
+        dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", "C: Combination")) %>% # nolint
         dplyr::mutate(ARM = stats::relevel(ARM, ref = "B: Placebo")) %>%
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
-                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
-                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
-        ) %>%
-        split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
+        rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.8,
@@ -284,15 +270,15 @@ test_that("template_binary_outcome generates expression with non-default control
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome can combine comparison arms", {
+testthat::test_that("template_binary_outcome can combine comparison arms", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "ADSL",
@@ -324,16 +310,13 @@ test_that("template_binary_outcome can combine comparison arms", {
       groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
     ),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
-                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
-                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
-        ) %>%
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
         ) %>%
-        add_colcounts() %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -363,15 +346,15 @@ test_that("template_binary_outcome can combine comparison arms", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("split_col_expr prepare the right four possible expressions", {
+testthat::test_that("split_col_expr prepare the right four possible expressions", {
   result <- list(
     split_col_expr(compare = TRUE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
     split_col_expr(compare = TRUE, combine = FALSE, arm_var = "ARMCD", ref = "ARM C"),
@@ -380,14 +363,14 @@ test_that("split_col_expr prepare the right four possible expressions", {
   )
   expected <- list(
     quote(split_cols_by_groups(var = "ARMCD", groups_list = groups, ref_group = names(groups)[1])),
-    quote(split_cols_by(var = "ARMCD", ref_group = "ARM C")),
-    quote(split_cols_by(var = "ARMCD")),
-    quote(split_cols_by(var = "ARMCD"))
+    quote(rtables::split_cols_by(var = "ARMCD", ref_group = "ARM C")),
+    quote(rtables::split_cols_by(var = "ARMCD")),
+    quote(rtables::split_cols_by(var = "ARMCD"))
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_binary_outcome can combine refs", {
+testthat::test_that("template_binary_outcome can combine refs", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "adsl",
@@ -417,14 +400,11 @@ test_that("template_binary_outcome can combine refs", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- basic_table(
-        title = paste("Table of", "BESRSPI", "for",
-                      paste(head(c("Complete Response (CR)", "Partial Response (PR)"), -1), collapse = ", "),
-                      ifelse(length(c("Complete Response (CR)", "Partial Response (PR)")) > 1, "and",
-                             ""), tail(c("Complete Response (CR)", "Partial Response (PR)"), 1), "Responders")
-        ) %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
+        rtables::add_colcounts() %>%
         estimate_proportion(
           vars = "is_rsp",
           conf_level = 0.95,
@@ -454,10 +434,10 @@ test_that("template_binary_outcome can combine refs", {
         )
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

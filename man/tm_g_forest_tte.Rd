@@ -7,8 +7,8 @@
 tm_g_forest_tte(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   subgroup_var,
@@ -23,12 +23,13 @@ tm_g_forest_tte(
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -75,8 +76,9 @@ level, each within range of (0, 1).}
 object with all available choices and preselected option for the time unit
 variable.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each
-estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
+\item{fixed_symbol_size}{(\code{logical})\cr
+When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
@@ -95,6 +97,13 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{caption}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 }
 \description{
 This teal module produces a grid style Forest plot for time-to-event data
@@ -108,7 +117,7 @@ ADTTE <- synthetic_cdisc_data("latest")$adtte
 
 ADSL$RACE <- droplevels(ADSL$RACE)
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
@@ -121,38 +130,40 @@ arm_ref_comp = list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- synthetic_cdisc_data("latest")$adsl
-              ADSL$RACE <- droplevels(ADSL$RACE)'),
+    cdisc_dataset(
+      "ADSL",
+      ADSL,
+      code = "ADSL <- synthetic_cdisc_data('latest')$adsl
+        ADSL$RACE <- droplevels(ADSL$RACE)"
+    ),
     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
     check = TRUE
   ),
   modules = root_modules(
     tm_g_forest_tte(
-       label = "Forest Survival",
-       dataname = "ADTTE",
-       arm_var = choices_selected(
-         variable_choices(ADSL, c("ARM", "ARMCD")),
-         "ARMCD"
-       ),
-       arm_ref_comp = arm_ref_comp,
-       paramcd = choices_selected(
-         value_choices(ADTTE, "PARAMCD", "PARAM"),
-         "OS"
-       ),
-       subgroup_var = choices_selected(
-         variable_choices(ADSL, names(ADSL)),
-         c("BMRKR2", "SEX")
-       ),
-       strata_var = choices_selected(
-         variable_choices(ADSL, c("STRATA1", "STRATA2")),
-         "STRATA2"
-       ),
-       plot_height = c(600, 200, 2000)
+      label = "Forest Survival",
+      dataname = "ADTTE",
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD")),
+        "ARMCD"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        "OS"
+      ),
+      subgroup_var = choices_selected(
+        variable_choices(ADSL, names(ADSL)),
+        c("BMRKR2", "SEX")
+      ),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
+        "STRATA2"
+      ),
+      plot_height = c(600, 200, 2000)
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

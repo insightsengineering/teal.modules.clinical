@@ -1,6 +1,6 @@
-test_that("template_events_summary generates minimal table", {
+testthat::test_that("template_events_summary generates minimal table", {
   result <- template_events_summary(
-    anl = "adae",
+    anl_name = "adae",
     parentname = "adsl",
     arm_var = "ARM"
   )
@@ -22,10 +22,10 @@ test_that("template_events_summary generates minimal table", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_parent = quote(
-      lyt_parent <- basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt_parent <- rtables::basic_table() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         count_values(
           "DTHFL",
           values = "Y",
@@ -42,20 +42,21 @@ test_that("template_events_summary generates minimal table", {
         )
     ),
     table_parent = quote(
-      result_parent <- build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
+      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
     ),
     layout_anl = quote(
-      lyt_anl <- basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt_anl <- rtables::basic_table() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
           filters = c("tmp_aefl" = "Y"),
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),
-          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>%
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one"
+        ) %>%
         count_values(
           "STUDYID",
           values = study_id,
@@ -65,20 +66,19 @@ test_that("template_events_summary generates minimal table", {
         )
     ),
     table_anl = quote(
-      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
     ),
     table = quote({
-      col_info(result_parent) <- col_info(result_anl)
-      result <- rbind(result_anl, result_parent)
-      result
+      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
+      result <- rtables::rbind(result_anl, result_parent)
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_summary generates table with multiple flags", {
+testthat::test_that("template_events_summary generates table with multiple flags", {
   result <- template_events_summary(
-    anl = "adae",
+    anl_name = "adae",
     parentname = "adsl",
     arm_var = "ARM",
     add_total = TRUE,
@@ -102,16 +102,16 @@ test_that("template_events_summary generates table with multiple flags", {
           AEDECOD = as.character(AEDECOD),
           USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
         )
-      flag_var_anl_label <- var_labels(anl[, c("A", "B", "C")])
-      flag_var_aesi_label <- var_labels(anl[, c("X", "Y")])
+      flag_var_anl_label <- rtables::var_labels(anl[, c("A", "B", "C")])
+      flag_var_aesi_label <- rtables::var_labels(anl[, c("X", "Y")])
       anl <- df_explicit_na(anl, na_level = "")
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout_parent = quote(
-      lyt_parent <- basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt_parent <- rtables::basic_table() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         count_values(
           "DTHFL",
           values = "Y",
@@ -128,20 +128,21 @@ test_that("template_events_summary generates table with multiple flags", {
         )
     ),
     table_parent = quote(
-      result_parent <- build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
+      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, alt_counts_df = adsl)
     ),
     layout_anl = quote(
-      lyt_anl <- basic_table() %>%
-        split_cols_by("ARM") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt_anl <- rtables::basic_table() %>%
+        rtables::split_cols_by("ARM") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
           vars = "USUBJID",
           filters = c("tmp_aefl" = "Y"),
           denom = "N_col",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"),
-          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>%
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one"
+        ) %>%
         count_values(
           "STUDYID",
           values = study_id,
@@ -207,13 +208,12 @@ test_that("template_events_summary generates table with multiple flags", {
         )
     ),
     table_anl = quote(
-      result_anl <- build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
     ),
     table = quote({
-      col_info(result_parent) <- col_info(result_anl)
-      result <- rbind(result_anl[1:2, ], result_parent, result_anl[3:nrow(result_anl), ])
-      result
+      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
+      result <- rtables::rbind(result_anl[1:2, ], result_parent, result_anl[3:nrow(result_anl), ])
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

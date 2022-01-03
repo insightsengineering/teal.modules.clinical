@@ -7,8 +7,8 @@
 tm_t_tte(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
@@ -23,12 +23,13 @@ tm_t_tte(
   event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   add_total = FALSE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -90,6 +91,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Time To Event Table Teal Module
@@ -116,46 +123,49 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
 
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")
   ),
-   ARM = list(
+  ARM = list(
     ref = "B: Placebo",
     comp = c("A: Drug X", "C: Combination")
   )
 )
 
 app <- init(
-    data = cdisc_data(
-      cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-      cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-      check = TRUE
-    ),
-    modules = root_modules(
-        tm_t_tte(
-            label = "Time To Event Table",
-            dataname = 'ADTTE',
-            arm_var = choices_selected(
-              variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-              "ARM"),
-            arm_ref_comp = arm_ref_comp,
-            paramcd = choices_selected(
-              value_choices(ADTTE, "PARAMCD", "PARAM"),
-              "OS"),
-            strata_var = choices_selected(
-              variable_choices(ADSL, c("SEX", "BMRKR2")),
-              "SEX"),
-            time_points = choices_selected(c(182, 243), 182),
-            event_desc_var = choices_selected(
-              variable_choices(ADTTE, "EVNTDESC"),
-              "EVNTDESC",
-              fixed = TRUE)
-        )
+  data = cdisc_data(
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
+    check = TRUE
+  ),
+  modules = root_modules(
+    tm_t_tte(
+      label = "Time To Event Table",
+      dataname = "ADTTE",
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+        "ARM"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        "OS"
+      ),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
+        "SEX"
+      ),
+      time_points = choices_selected(c(182, 243), 182),
+      event_desc_var = choices_selected(
+        variable_choices(ADTTE, "EVNTDESC"),
+        "EVNTDESC",
+        fixed = TRUE
+      )
     )
+  )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

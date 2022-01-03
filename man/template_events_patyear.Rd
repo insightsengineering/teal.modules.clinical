@@ -12,7 +12,8 @@ template_events_patyear(
   aval_var = "AVAL",
   add_total = TRUE,
   control = control_incidence_rate(),
-  drop_arm_levels = TRUE
+  drop_arm_levels = TRUE,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
@@ -38,6 +39,12 @@ whether to include column with total number of patients.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Template: Event rates adjusted for patient-years

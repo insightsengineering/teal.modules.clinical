@@ -35,5 +35,4 @@ expr3 <- substitute(
 res <- teal.modules.clinical:::bracket_expr(list(expr1, expr2, expr3))
 eval(res)
 table(anl$rsp_lab, anl$is_rsp)
-
 }

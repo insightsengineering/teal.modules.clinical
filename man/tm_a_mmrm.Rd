@@ -7,8 +7,8 @@
 tm_a_mmrm(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   aval_var,
   id_var,
   arm_var,
@@ -20,12 +20,14 @@ tm_a_mmrm(
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args(),
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -86,6 +88,19 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args}) \cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
+objects for plot-specific settings. List names should match the following:\cr \code{ c("default", "lsmeans", "diagnostic")}.
+The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom ggplot2 arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
@@ -139,7 +154,7 @@ app <- init(
   modules = root_modules(
     tm_a_mmrm(
       label = "MMRM",
-      dataname = 'ADQS',
+      dataname = "ADQS",
       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
@@ -153,7 +168,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

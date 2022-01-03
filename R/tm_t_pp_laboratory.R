@@ -19,14 +19,14 @@ template_laboratory <- function(dataname = "ANL",
                                 aval = "AVAL",
                                 avalu = "AVALU",
                                 round_value = 0L) {
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(param),
-    is.string(anrind),
-    is.string(timepoints),
-    is.string(aval),
-    is.string(avalu),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(param),
+    assertthat::is.string(anrind),
+    assertthat::is.string(timepoints),
+    assertthat::is.string(aval),
+    assertthat::is.string(avalu),
     is.integer(round_value) && round_value >= 0
   )
 
@@ -35,34 +35,35 @@ template_laboratory <- function(dataname = "ANL",
 
   table_lab_list <- add_expr(
     list(),
-    substitute({
-      dataname[, aval_char] <- round(dataname[, aval_char], round_value)
-      labor_table_base <- dataname %>%
-        dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
-        dplyr::arrange(timepoints) %>%
-        dplyr::select(-timepoints) %>%
-        dplyr::group_by(paramcd, param) %>%
-        dplyr::mutate(INDEX = dplyr::row_number()) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
-        dplyr::select(-c(aval, anrind))
+    substitute(
+      expr = {
+        dataname[, aval_char] <- round(dataname[, aval_char], round_value)
+        labor_table_base <- dataname %>%
+          dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
+          dplyr::arrange(timepoints) %>%
+          dplyr::select(-timepoints) %>%
+          dplyr::group_by(paramcd, param) %>%
+          dplyr::mutate(INDEX = dplyr::row_number()) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
+          dplyr::select(-c(aval, anrind))
 
-      labor_table_html <- labor_table_base %>%
-        dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
-        dplyr::select(-aval_anrind) %>%
-        tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
-        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+        labor_table_html <- labor_table_base %>%
+          dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
+          dplyr::select(-aval_anrind) %>%
+          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
+          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
-      labor_table_raw <- labor_table_base %>%
-        tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
-        dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+        labor_table_raw <- labor_table_base %>%
+          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
+          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
-      labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
-      labor_table_html_dt$dependencies <- c(
-        labor_table_html_dt$dependencies,
-        list(rmarkdown::html_dependency_bootstrap("default"))
-      )
-      labor_table_html_dt
+        labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
+        labor_table_html_dt$dependencies <- c(
+          labor_table_html_dt$dependencies,
+          list(rmarkdown::html_dependency_bootstrap("default"))
+        )
+        labor_table_html_dt
       },
       env = list(
         dataname = as.name(dataname),
@@ -88,7 +89,7 @@ template_laboratory <- function(dataname = "ANL",
 #' This teal module produces a patient profile laboratory table using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
 #' ADLB dataset.
 #' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADLB dataset.
@@ -162,25 +163,25 @@ tm_t_pp_laboratory <- function(label,
                                pre_output = NULL,
                                post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_laboratory")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 
   args <- as.list(environment())
   data_extract_list <- list(
-    timepoints = if_not_null(timepoints, cs_to_des_select(timepoints, dataname = dataname)),
-    aval = if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    avalu = if_not_null(avalu, cs_to_des_select(avalu, dataname = dataname)),
-    param = if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    anrind = if_not_null(anrind, cs_to_des_select(anrind, dataname = dataname))
+    timepoints = utils.nest::if_not_null(timepoints, cs_to_des_select(timepoints, dataname = dataname)),
+    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
+    avalu = utils.nest::if_not_null(avalu, cs_to_des_select(avalu, dataname = dataname)),
+    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
+    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
+    anrind = utils.nest::if_not_null(anrind, cs_to_des_select(anrind, dataname = dataname))
   )
 
   module(
@@ -203,7 +204,7 @@ tm_t_pp_laboratory <- function(label,
 
 ui_g_laboratory <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     ui_args$timepoints,
     ui_args$aval,
     ui_args$avalu,
@@ -213,51 +214,51 @@ ui_g_laboratory <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
+  teal.devel::standard_layout(
     output = div(
-      get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
+      teal.devel::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
+      teal.devel::datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("param"),
         label = "Select PARAM variable:",
         data_extract_spec = ui_args$param,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("timepoints"),
         label = "Select timepoints variable:",
         data_extract_spec = ui_args$timepoints,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("avalu"),
         label = "Select AVALU variable:",
         data_extract_spec = ui_args$avalu,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("anrind"),
         label = "Select ANRIND variable:",
         data_extract_spec = ui_args$anrind,
@@ -269,7 +270,7 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -291,7 +292,7 @@ srv_g_laboratory <- function(input,
                              label) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -299,13 +300,14 @@ srv_g_laboratory <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -327,7 +329,7 @@ srv_g_laboratory <- function(input,
   )
 
   # Laboratory values tab ----
-  labor_merged_data <- data_merge_module(
+  labor_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       timepoints = timepoints,
@@ -369,13 +371,13 @@ srv_g_laboratory <- function(input,
       )
     )
 
-    labor_stack <- chunks$new()
+    labor_stack <- teal.devel::chunks$new()
     labor_stack$reset()
     labor_stack_push <- function(...) {
-      chunks_push(..., chunks = labor_stack)
+      teal.devel::chunks_push(..., chunks = labor_stack)
     }
 
-    chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
+    teal.devel::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
 
     labor_stack_push(substitute(
       expr = {
@@ -398,24 +400,25 @@ srv_g_laboratory <- function(input,
     )
 
     lapply(labor_calls, labor_stack_push)
-    chunks_safe_eval(chunks = labor_stack)
+    teal.devel::chunks_safe_eval(chunks = labor_stack)
     labor_stack
   })
 
-  output$lab_values_table <- DT::renderDataTable({
-    chunks_reset()
-    chunks_push_chunks(labor_calls())
-    chunks_get_var("labor_table_html")
+  output$lab_values_table <- DT::renderDataTable(
+    expr = {
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(labor_calls())
+      teal.devel::chunks_get_var("labor_table_html")
     },
     escape = FALSE,
     options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
+    datanames = teal.devel::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
     modal_title = label
   )
 }

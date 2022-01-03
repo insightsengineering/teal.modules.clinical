@@ -1,4 +1,4 @@
-test_that("template_fit_mmrm works as expected when not combining comparison arms", {
+testthat::test_that("template_fit_mmrm works as expected when not combining comparison arms", {
   result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
@@ -6,7 +6,7 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
-    combine_comp_arm = FALSE,
+    combine_comp_arms = FALSE,
     id_var = "USUBJID",
     visit_var = "AVISIT",
     cov_var = c()
@@ -35,13 +35,14 @@ test_that("template_fit_mmrm works as expected when not combining comparison arm
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
         optimizer = "automatic",
-        parallel = FALSE)
+        parallel = FALSE
+      )
     )
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_fit_mmrm works as expected when combining combination arms", {
+testthat::test_that("template_fit_mmrm works as expected when combining combination arms", {
   result <- template_fit_mmrm(
     parentname = "adsl",
     dataname = "adqs",
@@ -91,10 +92,10 @@ test_that("template_fit_mmrm works as expected when combining combination arms",
       )
     )
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_tables works as expected", {
+testthat::test_that("template_mmrm_tables works as expected", {
   result <- template_mmrm_tables(
     parentname = "ADSL",
     dataname = "ANL",
@@ -107,23 +108,23 @@ test_that("template_mmrm_tables works as expected", {
   )
   expected <- list(
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
-        add_colcounts() %>%
-        split_rows_by("AVISIT") %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by("AVISIT") %>%
         append_varlabels(ANL, "AVISIT") %>%
         summarize_lsmeans(show_relative = "increase") %>%
-        append_topleft(paste0("  ", "ALBUMIN"))
+        rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")
       cov_matrix
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_tables works as expected when arm is not considered in the model", {
+testthat::test_that("template_mmrm_tables works as expected when arm is not considered in the model", {
   result <- template_mmrm_tables(
     parentname = "ADSL",
     dataname = "ANL",
@@ -136,22 +137,22 @@ test_that("template_mmrm_tables works as expected when arm is not considered in 
   )
   expected <- list(
     layout = quote(
-      lyt <- basic_table() %>%
-        split_rows_by("AVISIT") %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_rows_by("AVISIT") %>%
         summarize_lsmeans(
           arms = FALSE
         ) %>%
-        append_topleft(paste0("  ", "ALBUMIN"))
+        rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
       cov_matrix <- as.rtable(fit_mmrm, type = "cov")
       cov_matrix
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_mmrm_plots works as expected", {
+testthat::test_that("template_mmrm_plots works as expected", {
   result <- template_mmrm_plots(
     "fit_mmrm",
     lsmeans_plot = list(
@@ -173,8 +174,10 @@ test_that("template_mmrm_plots works as expected", {
           width = 0.6,
           show_pval = FALSE,
           titles = if (is.null(fit_mmrm$vars$arm)) {
-            c(estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
-              contrasts = " ")
+            c(
+              estimates = paste("Adjusted mean of", fit_mmrm$labels$response, " at visits"),
+              contrasts = " "
+            )
           } else {
             c(
               estimates = paste(
@@ -203,5 +206,5 @@ test_that("template_mmrm_plots works as expected", {
       diagnostic_plot
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

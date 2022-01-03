@@ -1,4 +1,4 @@
-test_that("template_shift_by_arm generates correct expressions with default arguments", {
+testthat::test_that("template_shift_by_arm generates correct expressions with default arguments", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -8,7 +8,7 @@ test_that("template_shift_by_arm generates correct expressions with default argu
     aval_var = "ANRIND",
     base_var = "BNRIND",
     na_level = "<Missing>"
-    )
+  )
 
   expected <- list(
     data = quote({
@@ -17,12 +17,11 @@ test_that("template_shift_by_arm generates correct expressions with default argu
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = drop_split_levels,
           label_pos = "topleft",
@@ -33,14 +32,14 @@ test_that("template_shift_by_arm generates correct expressions with default argu
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_shift_by_arm generates correct expressions with add_total being TRUE", {
+testthat::test_that("template_shift_by_arm generates correct expressions with add_total being TRUE", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -60,12 +59,11 @@ test_that("template_shift_by_arm generates correct expressions with add_total be
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = add_overall_level("All Patients", first = FALSE),
           label_pos = "topleft",
@@ -76,14 +74,14 @@ test_that("template_shift_by_arm generates correct expressions with add_total be
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_shift_by_arm generates correct expressions with na.rm being TRUE", {
+testthat::test_that("template_shift_by_arm generates correct expressions with na.rm being TRUE", {
   result <- template_shift_by_arm(
     parentname = "adsl",
     dataname = "adeg",
@@ -103,12 +101,11 @@ test_that("template_shift_by_arm generates correct expressions with na.rm being 
         dplyr::filter(ONTRTFL == "Y")
       attr(adeg$BNRIND, "label") <- "Baseline Assessment"
     }),
-
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
-        split_cols_by("ANRIND") %>%
-        split_rows_by(
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by("AVISIT", split_fun = drop_split_levels) %>%
+        rtables::split_cols_by("ANRIND") %>%
+        rtables::split_rows_by(
           "ARM",
           split_fun = drop_split_levels,
           label_pos = "topleft",
@@ -119,9 +116,9 @@ test_that("template_shift_by_arm generates correct expressions with na.rm being 
         append_varlabels(adeg, "BNRIND", indent = 1L)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = adeg)
+      result <- rtables::build_table(lyt = lyt, df = adeg)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

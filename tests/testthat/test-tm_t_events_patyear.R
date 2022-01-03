@@ -1,4 +1,4 @@
-test_that("template_events_patyear generates standard expressions", {
+testthat::test_that("template_events_patyear generates standard expressions", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -21,10 +21,10 @@ test_that("template_events_patyear generates standard expressions", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         estimate_incidence_rate(
           vars = "AVAL",
           n_events = "n_events",
@@ -37,7 +37,7 @@ test_that("template_events_patyear generates standard expressions", {
         )
     ),
     table = quote({
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -46,10 +46,10 @@ test_that("template_events_patyear generates standard expressions", {
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_patyear generates right expressions with non-default", {
+testthat::test_that("template_events_patyear generates right expressions with non-default", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -71,9 +71,9 @@ test_that("template_events_patyear generates right expressions with non-default"
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARM") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by(var = "ARM") %>%
+        rtables::add_colcounts() %>%
         estimate_incidence_rate(
           vars = "AVAL",
           n_events = "n_events",
@@ -86,7 +86,7 @@ test_that("template_events_patyear generates right expressions with non-default"
         )
     ),
     table = quote({
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -95,10 +95,10 @@ test_that("template_events_patyear generates right expressions with non-default"
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_events_patyear generates right expressions with non-default controls", {
+testthat::test_that("template_events_patyear generates right expressions with non-default controls", {
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
@@ -126,10 +126,10 @@ test_that("template_events_patyear generates right expressions with non-default 
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by(var = "ARMCD") %>%
-        add_colcounts() %>%
-        add_overall_col(label = "All Patients") %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::add_colcounts() %>%
+        rtables::add_overall_col(label = "All Patients") %>%
         estimate_incidence_rate(
           vars = "AVAL",
           n_events = "n_events",
@@ -142,7 +142,7 @@ test_that("template_events_patyear generates right expressions with non-default 
         )
     ),
     table = quote({
-      result <- build_table(
+      result <- rtables::build_table(
         lyt = lyt,
         df = anl,
         alt_counts_df = adsl
@@ -151,5 +151,5 @@ test_that("template_events_patyear generates right expressions with non-default 
     })
   )
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

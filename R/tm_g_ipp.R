@@ -7,12 +7,22 @@
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
 #' @param suppress_legend (`flag`)\cr allow user to suppress legend
-#'
-#' @importFrom grid grid.newpage grid.draw
+#' @param arm_levels (`character`)\cr vector of all arm variable levels.
+#' @param avalu_first (`string`)\cr `avalu` value.
+#' @param paramcd_first (`string`)\cr `paramcd` value.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
                            arm_var,
+                           arm_levels,
+                           avalu_first,
+                           paramcd_first,
                            aval_var = "AVAL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
@@ -20,31 +30,43 @@ template_g_ipp <- function(dataname = "ANL",
                            base_var = "BASE",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
+                           ggplot2_args = teal.devel::ggplot2_args(),
                            suppress_legend = FALSE) {
-
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(avalu_var),
-    is.string(id_var),
-    is.string(visit_var),
-    is.string(base_var),
-    is.flag(add_baseline_hline),
-    is.flag(separate_by_obs),
-    is.flag(suppress_legend)
-    )
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(avalu_var),
+    assertthat::is.string(id_var),
+    assertthat::is.string(visit_var),
+    assertthat::is.string(base_var),
+    assertthat::is.flag(add_baseline_hline),
+    assertthat::is.flag(separate_by_obs),
+    assertthat::is.flag(suppress_legend)
+  )
 
   y <- list()
   # Data preprocessing
 
   y$data <- substitute(
-    expr = {
-      anl <- df %>% droplevels()
-      },
+    expr = anl <- df %>% droplevels(),
     env = list(df = as.name(dataname))
   )
+
+  all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
+    user_plot = ggplot2_args,
+    module_plot = teal.devel::ggplot2_args(
+      labs = list(
+        title = sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
+        x = "Visit",
+        y = sprintf("%s (%s)", paramcd_first, avalu_first),
+        subtitle = paste(arm_levels, collapse = ", ")
+      )
+    )
+  )
+
+
 
   graph_list <- list()
   graph_list <- add_expr(
@@ -53,32 +75,22 @@ template_g_ipp <- function(dataname = "ANL",
       expr = {
         plot <- h_g_ipp(
           df = anl,
-          xvar  = visit,
+          xvar = visit,
           yvar = aval,
-          xlab = "Visit",
-          ylab = paste0(
-            anl[[paramcd]][1],
-            " (",
-            anl[[avalu]][1],
-            ")"
-            ),
-          title = paste0(
-            "Individual Patient Plot for ",
-            anl[[paramcd]][1],
-            " Values ",
-            "(",
-            anl[[avalu]][1],
-            ")",
-            " over Time"
-          ),
-          subtitle = paste(levels(anl[[arm]]), collapse = ", "),
+          xlab = xlab_val,
+          ylab = ylab_val,
+          title = title_val,
+          subtitle = subtitle_val,
           id_var = id,
           add_baseline_hline = add_baseline_hline,
           yvar_baseline = base
         )
-
       },
       env = list(
+        xlab_val = all_ggplot2_args$labs$x,
+        ylab_val = all_ggplot2_args$labs$y,
+        title_val = all_ggplot2_args$labs$title,
+        subtitle_val = all_ggplot2_args$labs$subtitle,
         paramcd = paramcd,
         visit = visit_var,
         aval = aval_var,
@@ -95,12 +107,10 @@ template_g_ipp <- function(dataname = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = {
-          plot <- plot + ggplot2::facet_grid(rows = vars(id))
-          },
+        expr = plot <- plot + ggplot2::facet_grid(rows = vars(id)),
         env = list(id = as.name(id_var))
-        )
       )
+    )
   }
 
   if (suppress_legend) {
@@ -117,18 +127,13 @@ template_g_ipp <- function(dataname = "ANL",
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.newpage()
-      )
-    )
+    quote(grid::grid.newpage())
+  )
 
   graph_list <- add_expr(
     graph_list,
-    quote(
-      grid::grid.draw(plot)
-    )
+    quote(grid::grid.draw(plot))
   )
-
 
   y$graph <- bracket_expr(graph_list)
 
@@ -141,8 +146,8 @@ template_g_ipp <- function(dataname = "ANL",
 #' trends in parameter values over time for each patient using data with
 #' ADaM structure.
 #'
-#' @inheritParams module_arguments
 #' @inheritParams template_g_ipp
+#' @inheritParams module_arguments
 #' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.
@@ -165,7 +170,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' adsl <- df_explicit_na(adsl)
 #' adlb <- df_explicit_na(adlb) %>%
-#'  dplyr::filter(AVISIT != "SCREENING")
+#'   dplyr::filter(AVISIT != "SCREENING")
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -214,16 +219,15 @@ template_g_ipp <- function(dataname = "ANL",
 #'         "AVISIT"
 #'       ),
 #'       base_var = choices_selected(
-#'          variable_choices(adlb, c("BASE")),
-#'          "BASE",
-#'          fixed = TRUE
+#'         variable_choices(adlb, c("BASE")),
+#'         "BASE",
+#'         fixed = TRUE
 #'       ),
 #'       add_baseline_hline = FALSE,
 #'       separate_by_obs = FALSE
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
@@ -231,58 +235,60 @@ template_g_ipp <- function(dataname = "ANL",
 tm_g_ipp <- function(label,
                      dataname,
                      parentname = ifelse(
-                       is(arm_var, "data_extract_spec"),
-                       datanames_input(arm_var),
+                       inherits(arm_var, "data_extract_spec"),
+                       teal.devel::datanames_input(arm_var),
                        "ADSL"
-                       ),
+                     ),
                      arm_var,
                      paramcd,
                      id_var = choices_selected(
                        variable_choices(dataname, "USUBJID"),
                        "USUBJID",
                        fixed = TRUE
-                       ),
+                     ),
                      visit_var = choices_selected(
                        variable_choices(dataname, "AVISIT"),
                        "AVISIT",
                        fixed = TRUE
-                       ),
+                     ),
                      aval_var = choices_selected(
                        variable_choices(dataname, "AVAL"),
                        "AVAL",
                        fixed = TRUE
-                       ),
+                     ),
                      avalu_var = choices_selected(
                        variable_choices(dataname, "AVALU"),
                        "AVALU",
                        fixed = TRUE
-                       ),
+                     ),
                      base_var = choices_selected(
                        variable_choices(dataname, "BASE"),
                        "BASE",
                        fixed = TRUE
-                       ),
+                     ),
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
                      suppress_legend = FALSE,
                      plot_height = c(1200L, 400L, 5000L),
                      plot_width = NULL,
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ipp")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(add_baseline_hline),
-    is_logical_single(separate_by_obs),
-    is_logical_single(suppress_legend),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(add_baseline_hline),
+    utils.nest::is_logical_single(separate_by_obs),
+    utils.nest::is_logical_single(suppress_legend),
+
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
@@ -290,8 +296,14 @@ tm_g_ipp <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -316,17 +328,18 @@ tm_g_ipp <- function(label,
         label = label,
         parentname = parentname,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 
 ui_g_ipp <- function(id, ...) {
   a <- list(...) # module args
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$aval_var,
     a$avalu_var,
@@ -338,61 +351,63 @@ ui_g_ipp <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot")),
+  teal.devel::standard_layout(
+    output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(
+        a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]
+      ),
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Arm",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("visit_var"),
         label = "Timepoint Variable",
         data_extract_spec = a$visit_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Parameter values over Time",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("id_var"),
         label = "Patient ID",
         data_extract_spec = a$id_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("avalu_var"),
         label = "Analysis Variable Unit",
         data_extract_spec = a$avalu_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("base_var"),
         label = "Baseline Parameter Values",
         data_extract_spec = a$base_var,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           checkboxInput(
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",
             value = a$add_baseline_hline
-            ),
+          ),
           checkboxInput(
             ns("separate_by_obs"),
             "Separate plots by ID",
@@ -406,7 +421,7 @@ ui_g_ipp <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -427,12 +442,13 @@ srv_g_ipp <- function(input,
                       base_var,
                       plot_height,
                       plot_width,
-                      label) {
+                      label,
+                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       arm_var = arm_var,
@@ -446,7 +462,7 @@ srv_g_ipp <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, id_var = id_var),
     anl_name = "ANL_ADSL"
@@ -487,11 +503,11 @@ srv_g_ipp <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(
-      need(is_character_single(input_aval_var), "Analysis variable should be a single column.")
-      )
+      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
+    )
 
     validate(
-      need(is_character_single(input_visit_var), "Please select a timepoint variable.")
+      need(utils.nest::is_character_single(input_visit_var), "Please select a timepoint variable.")
     )
 
     NULL
@@ -501,44 +517,56 @@ srv_g_ipp <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 2)
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+    teal.devel::validate_has_data(ANL, 2)
+
+    arm_var <- unlist(arm_var$filter)["vars_selected"]
+    avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+    paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+    avalu_first <- as.character(ANL[[avalu_var]][1])
+    paramcd_first <- as.character(ANL[[paramcd]][1])
+    arm_levels <- levels(droplevels(ANL[[arm_var]]))
 
     my_calls <- template_g_ipp(
       dataname = "ANL",
       aval_var = as.vector(anl_m$columns_source$aval_var),
-      avalu_var = as.vector(anl_m$columns_source$avalu_var),
+      avalu_var = avalu_var,
+      avalu_first = avalu_first,
       id_var = as.vector(anl_m$columns_source$id_var),
       visit_var = as.vector(anl_m$columns_source$visit_var),
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
       suppress_legend = input$suppress_legend,
-      paramcd <- unlist(paramcd$filter)["vars_selected"],
-      arm_var <-  unlist(arm_var$filter)["vars_selected"]
+      paramcd = paramcd,
+      paramcd_first = paramcd_first,
+      arm_var = arm_var,
+      arm_levels = arm_levels,
+      ggplot2_args = ggplot2_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Outputs to render.
   get_plot <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("plot")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("plot")
   })
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = get_plot,
     height = plot_height,
@@ -546,10 +574,10 @@ srv_g_ipp <- function(input,
   )
 
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, aval_var, avalu_var, id_var, paramcd, base_var, visit_var)
     ),
     modal_title = label

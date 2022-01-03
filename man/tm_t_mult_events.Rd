@@ -7,8 +7,8 @@
 tm_t_mult_events(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   seq_var,
   hlt,
@@ -17,12 +17,13 @@ tm_t_mult_events(
   event_type = "event",
   drop_arm_levels = TRUE,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -62,6 +63,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Multiple Events by Term
@@ -70,15 +77,15 @@ Teal Module: Multiple Events by Term
 library(dplyr)
 library(scda)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adcm <- synthetic_cdisc_data("latest")$adcm
+ADSL <- synthetic_cdisc_data("latest")$adsl
+ADCM <- synthetic_cdisc_data("latest")$adcm
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- teal::init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADCM", adcm,
-      code = 'adcm <- synthetic_cdisc_data("latest")$adcm',
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADCM", ADCM,
+      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm',
       keys = adcm_keys
     )
   ),
@@ -89,11 +96,11 @@ app <- teal::init(
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
       hlt = choices_selected(
-        choices = variable_choices(adcm, c("ATC1", "ATC2", "ATC3", "ATC4")),
+        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
       llt = choices_selected(
-        choices = variable_choices(adcm, c("CMDECOD")),
+        choices = variable_choices(ADCM, c("CMDECOD")),
         selected = c("CMDECOD")
       ),
       add_total = TRUE,

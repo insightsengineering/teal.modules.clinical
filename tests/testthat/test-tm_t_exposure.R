@@ -1,4 +1,4 @@
-test_that("template_exposure generates correct expressions with default arguments", {
+testthat::test_that("template_exposure generates correct expressions with default arguments", {
   result <- template_exposure(
     parentname = "adsl",
     dataname = "adex",
@@ -19,34 +19,35 @@ test_that("template_exposure generates correct expressions with default argument
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by("SEX") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by("SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
           var = "AVAL",
           col_split = TRUE,
           .labels = c(
             n_patients = "Patients",
             sum_exposure = paste("Sum of", "TDURD", sprintf("(%s)", "Days"))
-            )
-          ) %>%
-        split_rows_by(
+          )
+        ) %>%
+        rtables::split_rows_by(
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE) %>%
+          split_label = rtables::var_labels(adex["RACE"], fill = TRUE),
+          nested = FALSE
+        ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_exposure generates correct expressions with custom arguments", {
+testthat::test_that("template_exposure generates correct expressions with custom arguments", {
   result <- template_exposure(
     parentname = "myadsl",
     dataname = "myadex",
@@ -67,9 +68,9 @@ test_that("template_exposure generates correct expressions with custom arguments
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table() %>%
-        split_cols_by("SEX") %>%
-        add_colcounts() %>%
+      lyt <- rtables::basic_table() %>%
+        rtables::split_cols_by("SEX") %>%
+        rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
           var = "myAVAL",
           col_split = TRUE,
@@ -78,18 +79,19 @@ test_that("template_exposure generates correct expressions with custom arguments
             sum_exposure = paste("Sum of", "myTDURD", sprintf("(%s)", "Days"))
           )
         ) %>%
-        split_rows_by(
+        rtables::split_rows_by(
           "myRACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = var_labels(myadex["myRACE"], fill = TRUE),
-          nested = FALSE) %>%
+          split_label = rtables::var_labels(myadex["myRACE"], fill = TRUE),
+          nested = FALSE
+        ) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
     ),
     table = quote({
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
       result
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

@@ -18,7 +18,6 @@
 #'
 #' @seealso [tm_t_logistic()]
 #'
-#' @importFrom broom tidy
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
@@ -31,15 +30,16 @@ template_logistic <- function(dataname,
                               conf_level = 0.95,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
-                              at = NULL) {
+                              at = NULL,
+                              basic_table_args = teal.devel::basic_table_args()) {
   # Common assertion no matter if arm_var is NULL or not.
-  assert_that(
-    is.string(dataname),
-    is.string(aval_var),
-    is.string(paramcd),
-    is.string(topleft) || is.null(topleft),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
-    is.string(interaction_var) || is.null(interaction_var)
+    assertthat::is.string(interaction_var) || is.null(interaction_var)
   )
 
   y <- list()
@@ -49,15 +49,15 @@ template_logistic <- function(dataname,
 
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
-    assert_that(
-      is.string(arm_var),
-      is.flag(combine_comp_arms)
+    assertthat::assert_that(
+      assertthat::is.string(arm_var),
+      assertthat::is.flag(combine_comp_arms)
     )
 
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- var_labels(anl[arm_var]),
+      expr = arm_var_lab <- rtables::var_labels(anl[arm_var]),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -76,7 +76,7 @@ template_logistic <- function(dataname,
     if (combine_comp_arms) {
       data_pipe <- add_expr(
         data_pipe,
-        substitute_names(
+        utils.nest::substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
@@ -87,7 +87,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe, #nolint
+        expr = ANL <- data_pipe, # nolint
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -96,7 +96,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>% #nolint
+      expr = ANL <- df %>% # nolint
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = ""),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -107,7 +107,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab,
+      expr = rtables::var_labels(ANL[arm_var]) <- arm_var_lab, # nolint
       env = list(arm_var = arm_var)
     )
   }
@@ -165,27 +165,36 @@ template_logistic <- function(dataname,
     env = list(model_pipe = pipe_expr(model_list))
   )
 
+  table_title <- if (length(responder_val) > 1) {
+    paste(
+      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "and", utils::tail(responder_val, 1), "Responders"
+    )
+  } else {
+    paste("Table of", paramcd, "for", responder_val, "Responders")
+  }
+
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = table_title)
+    )
+  )
+
   y$table <- substitute(
     expr = {
-      result <- basic_table(
-        title = paste(
-          "Table of", paramcd, "for", paste(head(responder_val, -1), collapse = ", "),
-          ifelse(length(responder_val) > 1, "and", ""),
-          tail(responder_val, 1), "Responders"
-          )
-      ) %>%
+      result <- expr_basic_table_args %>%
         summarize_logistic(conf_level = conf_level) %>%
-        append_topleft(topleft) %>%
-        build_table(df = mod)
+        rtables::append_topleft(topleft) %>%
+        rtables::build_table(df = mod)
       result
     },
     env = list(
+      expr_basic_table_args = parsed_basic_table_args,
       conf_level = conf_level,
-      topleft = topleft,
-      paramcd = paramcd,
-      responder_val = responder_val
-      )
+      topleft = topleft
     )
+  )
 
   y
 }
@@ -215,7 +224,7 @@ template_logistic <- function(dataname,
 #' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
 #'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
 #'     comp = c("ARM A", "ARM C")
@@ -253,14 +262,17 @@ template_logistic <- function(dataname,
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_t_logistic <- function(label,
                           dataname,
-                          parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                          parentname = ifelse(
+                            inherits(arm_var, "data_extract_spec"),
+                            teal.devel::datanames_input(arm_var),
+                            "ADSL"
+                          ),
                           arm_var = NULL,
                           arm_ref_comp = NULL,
                           paramcd,
@@ -268,12 +280,15 @@ tm_t_logistic <- function(label,
                           avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
                           conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
-                          post_output = NULL) {
+                          post_output = NULL,
+                          basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_logistic")
   stopifnot(
     length(dataname) == 1,
     is.choices_selected(conf_level)
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -295,10 +310,11 @@ tm_t_logistic <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         dataname = dataname,
-        parentname = parentname
+        parentname = parentname,
+        basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -306,17 +322,16 @@ tm_t_logistic <- function(label,
 #' @noRd
 #'
 ui_t_logistic <- function(id, ...) {
-
   a <- list(...)
   if (!is.null(a$arm_var)) {
-    is_single_dataset_value <- is_single_dataset(
+    is_single_dataset_value <- teal.devel::is_single_dataset(
       a$arm_var,
       a$paramcd,
       a$avalc_var,
       a$cov_var
     )
   } else {
-    is_single_dataset_value <- is_single_dataset(
+    is_single_dataset_value <- teal.devel::is_single_dataset(
       a$paramcd,
       a$avalc_var,
       a$cov_var
@@ -325,20 +340,20 @@ ui_t_logistic <- function(id, ...) {
 
 
   ns <- NS(id)
-  standard_layout(
-    output = white_small_well(
-      table_with_settings_ui(ns("table"))
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
+      teal.devel::table_with_settings_ui(ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("avalc_var"),
         label = "Analysis Variable",
         data_extract_spec = a$avalc_var,
@@ -353,7 +368,7 @@ ui_t_logistic <- function(id, ...) {
       ),
       if (!is.null(a$arm_var)) {
         div(
-          data_extract_ui(
+          teal.devel::data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
@@ -378,7 +393,7 @@ ui_t_logistic <- function(id, ...) {
           )
         )
       },
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,
@@ -400,7 +415,7 @@ ui_t_logistic <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -408,7 +423,6 @@ ui_t_logistic <- function(id, ...) {
 
 #' Server Function for `tm_t_logistic`
 #' @noRd
-#' @importFrom stats median
 #'
 srv_t_logistic <- function(input,
                            output,
@@ -421,14 +435,15 @@ srv_t_logistic <- function(input,
                            paramcd,
                            avalc_var,
                            cov_var,
-                           label) {
+                           label,
+                           basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Observer to update reference and comparison arm input options.
   if (!is.null(arm_var)) {
-    arm_ref_comp_observer(
+    teal.devel::arm_ref_comp_observer(
       session,
       input,
       id_ref = "ref_arm",
@@ -441,14 +456,14 @@ srv_t_logistic <- function(input,
     )
   }
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, paramcd = paramcd, avalc_var = avalc_var, cov_var = cov_var),
     merge_function = "dplyr::inner_join"
   )
 
   if (!is.null(arm_var)) {
-    adsl_merged <- data_merge_module(
+    adsl_merged <- teal.devel::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
@@ -497,7 +512,7 @@ srv_t_logistic <- function(input,
           textInput(
             session$ns("interaction_values"),
             label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
-            value = as.character(median(anl_m$data()[[interaction_var]]))
+            value = as.character(stats::median(anl_m$data()[[interaction_var]]))
           )
         )
       }
@@ -564,7 +579,7 @@ srv_t_logistic <- function(input,
     }
 
     validate(
-      need(is_character_single(input_avalc_var), "Analysis variable should be a single column."),
+      need(utils.nest::is_character_single(input_avalc_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty")
     )
 
@@ -596,18 +611,18 @@ srv_t_logistic <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     if (!is.null(arm_var)) {
       anl_adsl <- adsl_merged()
-      chunks_push_data_merge(anl_adsl)
-      chunks_push_new_line()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
     }
 
-    ANL <- chunks_get_var("ANL") # nolint
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
     interaction_var <- input$interaction_var
@@ -635,29 +650,30 @@ srv_t_logistic <- function(input,
       topleft = paramcd,
       conf_level = as.numeric(input$conf_level),
       at = if (at_flag) at_values else NULL,
-      responder_val = input$responders
+      responder_val = input$responders,
+      basic_table_args = basic_table_args
     )
 
-    mapply(expression = calls, chunks_push)
+    mapply(expression = calls, teal.devel::chunks_push)
   })
 
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   callModule(
-    module = get_rcode_srv,
+    module = teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, avalc_var, cov_var)
     ),
     modal_title = "R Code for the Current Logistic Regression",

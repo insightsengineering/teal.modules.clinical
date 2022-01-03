@@ -7,8 +7,8 @@
 tm_t_coxreg(
   label,
   dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
-    "ADSL"),
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.devel::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
@@ -19,12 +19,13 @@ tm_t_coxreg(
   multivariate = TRUE,
   conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  basic_table_args = teal.devel::basic_table_args()
 )
 }
 \arguments{
 \item{label}{(\code{character})\cr
-menu item label of the module in the teal app}
+menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
@@ -79,6 +80,12 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
 }
 \description{
 Teal module to fit Cox univariate or multivariate models consistent with
@@ -123,9 +130,9 @@ Wald test will be substituted.
 
 library(scda)
 
-ADSL  <- synthetic_cdisc_data("latest")$adsl
+ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
-arm_ref_comp = list(
+arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
     comp = c("ARM A", "ARM C")
@@ -154,7 +161,7 @@ app <- init(
       strata_var = choices_selected(
         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
       ),
-      cov_var    = choices_selected(
+      cov_var = choices_selected(
         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
       ),
       multivariate = TRUE
@@ -176,18 +183,19 @@ shinyApp(app$ui, app$server)
 
 ADTTE <- data.frame(
   STUDYID = "LUNG",
-  AVAL    = c(        4,   3,   1,   1,   2,   2,   3,   1,   2),
-  CNSR    = c(        1,   1,   1,   0,   1,   1,   0,   0,   0),
-  ARMCD   = factor(
-    c(                0,   1,   1,   1,   1,   0,   0,   0,   0),
+  AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
+  CNSR = c(1, 1, 1, 0, 1, 1, 0, 0, 0),
+  ARMCD = factor(
+    c(0, 1, 1, 1, 1, 0, 0, 0, 0),
     labels = c("ARM A", "ARM B")
   ),
-  SEX     = factor(
-    c(                0,   0,   0,   0,   1,   1,   1,   1,   1),
+  SEX = factor(
+    c(0, 0, 0, 0, 1, 1, 1, 1, 1),
     labels = c("F", "M")
   ),
-  INST    = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
-stringsAsFactors = FALSE)
+  INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
+  stringsAsFactors = FALSE
+)
 ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
 ADTTE <- dplyr::as_tibble(ADTTE)
 set.seed(1)
@@ -196,7 +204,8 @@ ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
 ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
 ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
 ADSL <- subset(
-  ADTTE, select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
+  ADTTE,
+  select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
 )
 
 ## Teal application
@@ -205,7 +214,7 @@ ADSL <- subset(
 ## preprocessing. You will need to create the dataset as above before
 ## running the exported R code.
 
-arm_ref_comp = list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 app <- init(
   data = cdisc_data(
     cdisc_dataset(
@@ -232,7 +241,6 @@ app <- init(
     )
   )
 )
-
 \dontrun{
 shinyApp(app$ui, app$server)
 }

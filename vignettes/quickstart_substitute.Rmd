@@ -280,7 +280,6 @@ And the `rtables` expression is obtained as:
 
 ```{r}
 rtables_expr <- substitute(
-  
   expr = basic_table() %>%
     split_cols_by(arm, split_fun = drop_split_levels) %>%
     split_rows_by(visit, split_fun = drop_split_levels) %>%
@@ -290,12 +289,11 @@ rtables_expr <- substitute(
     ) %>%
     summarize_colvars() %>%
     build_table(df = df),
-  
   env = list(
     df = substitute(adlb_f),
     arm = "ARM",
     visit = "AVISIT"
-    )
+  )
 )
 ```
 
@@ -327,7 +325,6 @@ styled_expr <- function(expr) {
 }
 #'
 #' @examples
-#'
 styled_expr(rtables_expr)
 ```
 
@@ -342,7 +339,6 @@ rtables_expr <- function(df,
                          arm,
                          visit) {
   substitute(
-    
     expr = basic_table() %>%
       split_cols_by(arm, split_fun = drop_split_levels) %>%
       split_rows_by(visit, split_fun = drop_split_levels) %>%
@@ -352,7 +348,6 @@ rtables_expr <- function(df,
       ) %>%
       summarize_colvars() %>%
       build_table(df = df),
-    
     env = list(
       df = substitute(df),
       arm = arm,
@@ -385,7 +380,6 @@ might be chained in a pipeline.
 #' Expressions as a pipeline
 #'
 #' Accepts expressions to be chained using the `magrittr` pipeline-flavor.
-#' 
 #' @param ... (`call`)\cr or object which can be interpreted as so.
 #'    (e.g. `name`)
 #'
@@ -404,11 +398,10 @@ pipe_expr <- function(...) {
 }
 
 #' @examples
-#'
 result <- pipe_expr(
   expr1 = substitute(df),
   expr2 = substitute(head)
-  )
+)
 result
 ```
 
@@ -425,13 +418,10 @@ rtables_expr <- function(df,
                          arm,
                          visit,
                          .stats = NULL) {
-  
   # The rtables layout is decomposed into a list of expressions.
   lyt <- list()
-  
   # 1. First the columns and rows:
   lyt$structure <- substitute(
-    
     expr = basic_table() %>%
       split_cols_by(arm, split_fun = drop_split_levels) %>%
       split_rows_by(visit, split_fun = drop_split_levels) %>%
@@ -439,13 +429,11 @@ rtables_expr <- function(df,
         vars = c("AVAL", "CHG"),
         varlabels = c("Value", "Change")
       ),
-    
     env = list(
       arm = arm,
       visit = visit
     )
   )
-  
   # 2. The analyze layer which depends on the use of .stats.
   lyt$analyze <- if (is.null(.stats)) {
     substitute(
@@ -457,13 +445,11 @@ rtables_expr <- function(df,
       list(.stats = .stats)
     )
   }
-  
   # 3. And finishing with rtables::build_table.
   lyt$build <- substitute(
     build_table(df = df),
     list(df = substitute(df))
   )
-  
   # As previously demonstrated, expressions can be manipulated and
   # chained in a pipeline.
   pipe_expr(lyt)
@@ -503,12 +489,10 @@ rtables_expr <- function(df,
                          arm,
                          visit,
                          .stats = NULL) {
-  
   # y is a list which will collect two expressions:
   # 1. y$data with the preprocessing steps.
   # 2. y$rtables the table layout and build.
   y <- list()
-  
   # 1. Preprocessing ---
   y$data <- substitute(
     df <- df %>%
@@ -521,11 +505,9 @@ rtables_expr <- function(df,
       paramcd = paramcd
     )
   )
-  
   # 2. rtables layout ---
   lyt <- list()
   lyt$structure <- substitute(
-    
     expr = basic_table() %>%
       split_cols_by(arm, split_fun = drop_split_levels) %>%
       split_rows_by(visit, split_fun = drop_split_levels) %>%
@@ -533,13 +515,11 @@ rtables_expr <- function(df,
         vars = c("AVAL", "CHG"),
         varlabels = c("Value", "Change")
       ),
-    
     env = list(
       arm = arm,
       visit = visit
     )
   )
-  
   lyt$analyze <- if (is.null(.stats)) {
     substitute(
       summarize_colvars()
@@ -555,7 +535,6 @@ rtables_expr <- function(df,
     list(df = substitute(df))
   )
   y$rtables <- pipe_expr(lyt)
-  
   # Finally returns y as a list with two expressions.
   y
 }

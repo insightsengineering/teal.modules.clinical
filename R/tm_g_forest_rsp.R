@@ -3,18 +3,21 @@
 #' Creates a valid expression for response forest plot.
 #'
 #' @inheritParams template_arguments
-#' @param obj_var_name (`character`)\cr additional text string append to output title
+#' @param obj_var_name (`character`)\cr additional text string append to output title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
-#'
-#' @importFrom grid grid.newpage grid.draw
-#'
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,
@@ -26,14 +29,14 @@ template_forest_rsp <- function(dataname = "ANL",
                                 subgroup_var,
                                 strata_var = NULL,
                                 conf_level = 0.95,
-                                col_symbol_size = NULL) {
-
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(obj_var_name),
+                                col_symbol_size = NULL,
+                                ggplot2_args = teal.devel::ggplot2_args()) {
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(obj_var_name),
     is.null(subgroup_var) || is.character(subgroup_var)
   )
 
@@ -69,7 +72,7 @@ template_forest_rsp <- function(dataname = "ANL",
 
   anl_list <- add_expr(
     anl_list,
-    substitute_names(
+    utils.nest::substitute_names(
       expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
@@ -100,7 +103,7 @@ template_forest_rsp <- function(dataname = "ANL",
 
   parent_list <- add_expr(
     parent_list,
-    substitute_names(
+    utils.nest::substitute_names(
       expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
@@ -127,7 +130,8 @@ template_forest_rsp <- function(dataname = "ANL",
     substitute(
       expr = df <- extract_rsp_subgroups(
         variables = list(
-          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var),
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var
+        ),
         data = anl,
         conf_level = conf_level
       ),
@@ -145,37 +149,41 @@ template_forest_rsp <- function(dataname = "ANL",
 
   # Table output.
   y$table <- quote(
-    result <- basic_table() %>%
+    result <- rtables::basic_table() %>%
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
-  title <- paste0("Forest plot of best overall response for ", obj_var_name)
+  all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
+    user_plot = ggplot2_args,
+    module_plot = teal.devel::ggplot2_args(
+      labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name), caption = "")
+    )
+  )
 
-  # Plot output.
-  y$plot <- substitute(
+  plot_call <- substitute(
+    expr = g_forest(
+      tbl = result,
+      col_symbol_size = col_s_size
+    ),
+    env = list(col_s_size = col_symbol_size)
+  )
+
+  plot_call <- substitute(
+    decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
+    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
+  )
+
+  plot_call <- substitute(
     expr = {
-      p <- g_forest(
-        tbl = result,
-        col_symbol_size = col_symbol_size
-      )
-      if (!is.null(footnotes(p))) {
-        p <- decorate_grob(p, title = title, footnotes = footnotes(p),
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      } else {
-        p <- decorate_grob(p, title = title, footnotes = "",
-                           gp_footnotes = grid::gpar(fontsize = 12))
-      }
-
+      p <- plot_call
       grid::grid.newpage()
       grid::grid.draw(p)
     },
-    env = list(
-      anl = as.name(dataname),
-      arm_var = arm_var,
-      col_symbol_size = col_symbol_size,
-      title = title
-    )
+    env = list(plot_call = plot_call)
   )
+
+  # Plot output.
+  y$plot <- plot_call
 
   y
 }
@@ -186,8 +194,16 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_binary_outcome
-#' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each
-#' estimate. Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param fixed_symbol_size (`logical`)\cr
+#' When (`TRUE`), the same symbol size is used for plotting each estimate.
+#' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body). \cr For more details, see the help vignette:\cr
+#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#'
 #'
 #' @export
 #'
@@ -203,7 +219,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ARM = list(
 #'     ref = "B: Placebo",
 #'     comp = c("A: Drug X", "C: Combination")
@@ -250,27 +266,37 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       default_responses = list(
 #'         BESRSPI = list(
 #'           rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-#'           levels = c("Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
-#'                      "Progressive Disease (PD)", "Not Evaluable (NE)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+#'             "Progressive Disease (PD)", "Not Evaluable (NE)"
+#'           )
+#'         ),
 #'         INVET = list(
 #'           rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-#'           levels = c("Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-#'                      "Progressive Disease (PD)", "Stable Disease (SD)")),
+#'           levels = c(
+#'             "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+#'             "Progressive Disease (PD)", "Stable Disease (SD)"
+#'           )
+#'         ),
 #'         OVRINV = list(
 #'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)"))
+#'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
+#'         )
 #'       )
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                            parentname = ifelse(
+                              inherits(arm_var, "data_extract_spec"),
+                              teal.devel::datanames_input(arm_var),
+                              "ADSL"
+                            ),
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,
@@ -283,31 +309,38 @@ tm_g_forest_rsp <- function(label,
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
-                            post_output = NULL) {
+                            post_output = NULL,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
-  stop_if_not(
-    is_character_single(label),
-    is_character_single(dataname),
-    is_character_single(parentname),
-    is_logical_single(fixed_symbol_size),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(label),
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
+    utils.nest::is_logical_single(fixed_symbol_size),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
-      ),
+    ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
-      )
     )
+  )
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
 
-  assert_that(
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
+
+  assertthat::assert_that(
     is.list(default_responses) ||
       is.null(default_responses) ||
       is.character(default_responses) ||
@@ -339,33 +372,33 @@ tm_g_forest_rsp <- function(label,
         label = label,
         default_responses = default_responses,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_g_forest_rsp <- function(id, ...) {
-
   a <- list(...) # module args
-  is_single_dataset_value <- is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
+  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
 
   ns <- NS(id)
 
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("myplot")),
+  teal.devel::standard_layout(
+    output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
@@ -378,7 +411,7 @@ ui_g_forest_rsp <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -388,8 +421,10 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("ref_arm"),
         div(
           "Reference Group",
-          title = paste("Multiple reference groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple reference groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
@@ -400,28 +435,30 @@ ui_g_forest_rsp <- function(id, ...) {
         ns("comp_arm"),
         div(
           "Comparison Group",
-          title = paste("Multiple comparison groups are automatically combined into a single group when more than one",
-          "value selected."),
+          title = paste(
+            "Multiple comparison groups are automatically combined into a single group when more than one",
+            "value selected."
+          ),
           icon("info-circle")
         ),
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
         data_extract_spec = a$subgroup_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           optionalSelectInput(
             inputId = ns("conf_level"),
@@ -435,7 +472,7 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -456,14 +493,15 @@ srv_g_forest_rsp <- function(input,
                              plot_height,
                              plot_width,
                              label,
-                             default_responses) {
+                             default_responses,
+                             ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
@@ -474,7 +512,7 @@ srv_g_forest_rsp <- function(input,
     module = "tm_t_tte"
   )
 
-  anl_selectors <- data_extract_multiple_srv(
+  anl_selectors <- teal.devel::data_extract_multiple_srv(
     list(
       arm_var = arm_var,
       subgroup_var = subgroup_var,
@@ -485,43 +523,55 @@ srv_g_forest_rsp <- function(input,
     datasets = datasets
   )
 
-  anl_merged <- data_merge_srv(
+  anl_merged <- teal.devel::data_merge_srv(
     selector_list = anl_selectors,
     datasets = datasets,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
     anl_name = "ANL_ADSL"
   )
 
   observeEvent(
-    c(input[[extract_input("aval_var", "ADRS")]],
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]), {
-        aval_var <- anl_merged()$columns_source$aval_var
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-        } else default_responses
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else sel_param
-        responder_choices <- if (is_empty(aval_var)) {
-          character(0)
+    eventExpr = c(
+      input[[extract_input("aval_var", "ADRS")]],
+      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+    ),
+    handlerExpr = {
+      aval_var <- anl_merged()$columns_source$aval_var
+      sel_param <- if (is.list(default_responses)) {
+        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+      } else {
+        default_responses
+      }
+      common_rsp <- if (is.list(sel_param)) {
+        sel_param$rsp
+      } else {
+        sel_param
+      }
+      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
+          } else {
+            union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+          }
         } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
-          } else unique(anl_merged()$data()[[aval_var]])
+          unique(anl_merged()$data()[[aval_var]])
         }
-        updateSelectInput(
-          session, "responders",
-          choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
-        )
-    })
+      }
+      updateSelectInput(
+        session, "responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp)
+      )
+    }
+  )
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
@@ -547,56 +597,68 @@ srv_g_forest_rsp <- function(input,
 
     do.call(what = "validate_standard_inputs", validate_args)
 
-    validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+    teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
     if (length(input_subgroup_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
-             "Not all subgroup variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+          "Not all subgroup variables are factors."
+        )
       )
     }
     if (length(input_strata_var) > 0) {
       validate(
-        need(all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
-             "Not all stratification variables are factors.")
+        need(
+          all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+          "Not all stratification variables are factors."
+        )
       )
     }
 
     if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
       validate(
-        need(all(unlist(lapply(default_responses, function(x) {
-          if (is.list(x) & "levels" %in% names(x)) {
-            lvls <- x$levels
-            all(x$rsp %in% lvls)
-          } else {
-            lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
-            if ("rsp" %in% names(x)) {
+        need(
+          all(unlist(lapply(default_responses, function(x) {
+            if (is.list(x) & "levels" %in% names(x)) {
+              lvls <- x$levels
               all(x$rsp %in% lvls)
-            } else all(x %in% lvls)
-          }
+            } else {
+              lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+              if ("rsp" %in% names(x)) {
+                all(x$rsp %in% lvls)
+              } else {
+                all(x %in% lvls)
+              }
+            }
           }))),
-          "All selected default responses must be in the levels of AVAL.")
+          "All selected default responses must be in the levels of AVAL."
+        )
       )
     }
 
     if (is.list(default_responses)) {
       validate(
-        need(all(
-          grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-            names(unlist(default_responses)) %in% names(default_responses)),
-          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'.")
+        need(
+          all(
+            grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+              names(unlist(default_responses)) %in% names(default_responses)
+          ),
+          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+        )
       )
     }
 
     validate(need(
       input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1")
-    )
+      "Please choose a confidence level between 0 and 1"
+    ))
 
     validate(
-      need(is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty."),
-      need(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+      need(
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected."
       )
     )
@@ -608,19 +670,19 @@ srv_g_forest_rsp <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
     strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <-  as.vector(anl_m$columns_source$subgroup_var)
+    subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
 
     obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 
@@ -633,24 +695,24 @@ srv_g_forest_rsp <- function(input,
       obj_var_name = obj_var_name,
       aval_var = as.vector(anl_m$columns_source$aval_var),
       responders = input$responders,
-      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0)
-        anl_selectors()$subgroup_var()$select_ordered else NULL,
+      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0) {
+        anl_selectors()$subgroup_var()$select_ordered
+      } else {
+        NULL
+      },
       strata_var = if (length(strata_var) != 0) strata_var else NULL,
       conf_level = as.numeric(input$conf_level),
-      col_symbol_size = if (input$fixed_symbol_size) {
-        NULL
-      } else {
-        1
-      }
+      col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
+      ggplot2_args = ggplot2_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
 
-    chunks_safe_eval()
-    chunks_get_var("p")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("p")
   })
 
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = call_preparation,
     height = plot_height,
@@ -658,10 +720,10 @@ srv_g_forest_rsp <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, subgroup_var, strata_var)
     ),
     modal_title = label

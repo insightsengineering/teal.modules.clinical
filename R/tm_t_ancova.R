@@ -3,9 +3,11 @@
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable levels for the studied parameter.
 #' @param paramcd_var (`character`)\cr
-#'   levels variable value designating the studied parameter.
+#'   variable name for the studied parameter.
+#' @param visit_levels (`character`)\cr
+#'   variable levels for studied visits.
 #'
 #' @seealso [tm_t_ancova()]
 #'
@@ -18,18 +20,18 @@ template_ancova <- function(dataname = "ANL",
                             combine_comp_arms = FALSE,
                             aval_var,
                             cov_var,
-                            paramcd_levels = "EXAMPLE",
+                            paramcd_levels = "",
                             paramcd_var = "PARAMCD",
+                            visit_levels = "",
                             visit_var = "AVISIT",
-                            conf_level = 0.95
-) {
-
-  assert_that(
-    is.string(dataname),
-    is.string(parentname),
-    is.string(arm_var),
-    is.flag(combine_comp_arms),
-    is.string(aval_var),
+                            conf_level = 0.95,
+                            basic_table_args = teal.devel::basic_table_args()) {
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.flag(combine_comp_arms),
+    assertthat::is.string(aval_var),
     is.character(cov_var)
   )
 
@@ -70,7 +72,7 @@ template_ancova <- function(dataname = "ANL",
   if (combine_comp_arms) {
     anl_list <- add_expr(
       anl_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -78,7 +80,7 @@ template_ancova <- function(dataname = "ANL",
     )
     parent_list <- add_expr(
       parent_list,
-      substitute_names(
+      utils.nest::substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -114,49 +116,55 @@ template_ancova <- function(dataname = "ANL",
   y$data <- bracket_expr(data_list)
 
   # Build layout.
+  visits_title <- if (length(visit_levels) > 1) {
+    paste(
+      "visits", paste(utils::head(visit_levels, -1), collapse = ", "),
+      "and", utils::tail(visit_levels, 1)
+    )
+  } else if (length(visit_levels) == 1) {
+    paste("visit", visit_levels)
+  } else {
+    "visit"
+  }
+
+  table_title <- if (length(paramcd_levels) > 1) {
+    paste(
+      "Table of", paste(utils::head(paramcd_levels, -1), collapse = ", "),
+      "and", utils::tail(paramcd_levels, 1),
+      "parameters", "at", visits_title, "for", aval_var
+    )
+  } else {
+    visits_title
+    paste(
+      "Table of", paramcd_levels,
+      "parameter", "at", visits_title, "for", aval_var
+    )
+  }
+
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = table_title)
+    )
+  )
+
   y$layout_prep <- quote(split_fun <- drop_split_levels)
-
   layout_list <- list()
+  layout_list <- add_expr(
+    layout_list,
+    parsed_basic_table_args
+  )
 
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = basic_table(
-        title = paste(
-          "Table of",
-          paste(head(paramcd_levels, -1), collapse = ", "),
-          ifelse(length(paramcd_levels) > 1, "and", ""),
-          tail(paramcd_levels, 1),
-          ifelse(length(paramcd_levels) > 1, "parameters", "parameter"),
-          "at",
-          ifelse(length(unique(dataname[[visit_var]])) > 1, "visits", "visit"),
-          paste(head(unique(dataname[[visit_var]]), -1), collapse = ", "),
-          ifelse(length(unique(dataname[[visit_var]])) > 1, "and", ""),
-          tail(unique(dataname[[visit_var]]), 1),
-          "for",
-          aval_var
-        )
-      ),
-      env = list(
-        paramcd_levels = paramcd_levels,
-        dataname = as.name(dataname),
-        visit_var = visit_var,
-        paramcd_levels = paramcd_levels,
-        aval_var = aval_var
-      )
-    )
-    )
-
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        add_colcounts() %>%
-        split_rows_by(
+      expr = rtables::split_cols_by(var = arm_var, ref_group = ref_group) %>%
+        rtables::add_colcounts() %>%
+        rtables::split_rows_by(
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = var_labels(dataname[visit_var], fill = TRUE)
+          split_label = rtables::var_labels(dataname[visit_var], fill = TRUE)
         ),
       env = list(
         arm_var = arm_var,
@@ -168,24 +176,24 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (is_empty(cov_var)) {
+    if (utils.nest::is_empty(cov_var)) {
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_rows_by(
+          rtables::split_rows_by(
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
-            conf_level = conf_level,
-            var_labels = "Unadjusted mean",
-            show_labels = "hidden",
-            .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
-          ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = "Unadjusted mean",
+              show_labels = "hidden",
+              .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+            ),
           env = list(
             paramcd_var = paramcd_var,
             aval_var = aval_var,
@@ -200,19 +208,19 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-          split_rows_by(
+          rtables::split_rows_by(
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = var_labels(dataname[paramcd_var], fill = TRUE)
+            split_label = rtables::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
-            conf_level = conf_level,
-            var_labels = "Adjusted mean",
-            show_labels = "hidden"
-          ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = "Adjusted mean",
+              show_labels = "hidden"
+            ),
           env = list(
             paramcd_var = paramcd_var,
             aval_var = aval_var,
@@ -230,15 +238,15 @@ template_ancova <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        append_topleft(paste0("  ", paramcd_levels)) %>%
-        summarize_ancova(
-          vars = aval_var,
-          variables = list(arm = arm_var, covariates = NULL),
-          conf_level = conf_level,
-          var_labels = "Unadjusted comparison",
-          .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
-          table_names = "unadjusted_comparison"
-        ),
+        rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = NULL),
+            conf_level = conf_level,
+            var_labels = "Unadjusted comparison",
+            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+            table_names = "unadjusted_comparison"
+          ),
         env = list(
           paramcd_levels = paramcd_levels,
           aval_var = aval_var,
@@ -249,8 +257,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
 
-    if (!is_empty(cov_var)) {
-
+    if (!utils.nest::is_empty(cov_var)) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -283,7 +290,7 @@ template_ancova <- function(dataname = "ANL",
   # Build table.
   y$table <- substitute(
     expr = {
-      result <- build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       result
     },
     env = list(
@@ -322,7 +329,7 @@ template_ancova <- function(dataname = "ANL",
 #' adsl <- synthetic_cdisc_data("latest")$adsl
 #' adqs <- synthetic_cdisc_data("latest")$adqs
 #'
-#' arm_ref_comp = list(
+#' arm_ref_comp <- list(
 #'   ARM = list(
 #'     ref = "B: Placebo",
 #'     comp = c("A: Drug X", "C: Combination")
@@ -371,14 +378,17 @@ template_ancova <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#'
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_ancova <- function(label,
                         dataname,
-                        parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                        parentname = ifelse(
+                          inherits(arm_var, "data_extract_spec"),
+                          teal.devel::datanames_input(arm_var),
+                          "ADSL"
+                        ),
                         arm_var,
                         arm_ref_comp = NULL,
                         aval_var,
@@ -387,22 +397,24 @@ tm_t_ancova <- function(label,
                         paramcd,
                         conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
-                        post_output = NULL
-) {
+                        post_output = NULL,
+                        basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
-  stop_if_not(
-    is_character_single(dataname),
-    is_character_single(parentname),
+  utils.nest::stop_if_not(
+    utils.nest::is_character_single(dataname),
+    utils.nest::is_character_single(parentname),
     is.choices_selected(conf_level),
     list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
       "pre_output should be either null or shiny.tag type of object"
     ),
     list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
+      is.null(post_output) || inherits(post_output, "shiny.tag"),
       "post_output should be either null or shiny.tag type of object"
     )
   )
+
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
 
@@ -425,47 +437,47 @@ tm_t_ancova <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        label = label
+        label = label,
+        basic_table_args = basic_table_args
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_ancova <- function(id, ...) {
-
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
   )
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(table_with_settings_ui(ns("table"))),
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
-      data_extract_ui(
+      teal.devel::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      teal.devel::data_extract_ui(
         id = ns("avisit"),
         label = "Analysis Visit",
         data_extract_spec = a$avisit,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -491,7 +503,7 @@ ui_ancova <- function(id, ...) {
         "Combine all comparison groups?",
         value = FALSE
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,
@@ -506,7 +518,7 @@ ui_ancova <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -525,14 +537,15 @@ srv_ancova <- function(input,
                        cov_var,
                        paramcd,
                        avisit,
-                       label) {
+                       label,
+                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
   # comparison arms for encoding panel.
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm",
     id_comp = "comp_arm",
@@ -543,7 +556,7 @@ srv_ancova <- function(input,
     module = "tm_ancova"
   )
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(
       arm_var = arm_var,
@@ -555,7 +568,7 @@ srv_ancova <- function(input,
     merge_function = "dplyr::inner_join"
   )
 
-  adsl_merged <- data_merge_module(
+  adsl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(arm_var = arm_var),
     anl_name = "ANL_ADSL"
@@ -563,7 +576,6 @@ srv_ancova <- function(input,
 
   # Prepare the analysis environment (filter data, check data, populate envir).
   validate_checks <- reactive({
-
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -587,7 +599,7 @@ srv_ancova <- function(input,
 
     # Other validations.
     validate(need(
-      !is_empty(input_aval_var),
+      !utils.nest::is_empty(input_aval_var),
       "Analysis variable cannot be empty."
     ))
     validate(need(
@@ -626,10 +638,7 @@ srv_ancova <- function(input,
       input_cov_var_dataset <- anl_filtered[input_cov_var]
       validate(
         need(
-          all(vapply(input_cov_var_dataset, function(x) {
-            length(unique(x)) > 1L
-          },
-          logical(1))),
+          all(vapply(input_cov_var_dataset, function(col) length(unique(col)) > 1L, logical(1))),
           "Selected covariates should have more than one level for showing the adjusted analysis."
         )
       )
@@ -640,18 +649,19 @@ srv_ancova <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
     anl_adsl <- adsl_merged()
-    chunks_push_data_merge(anl_adsl)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_adsl)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
     paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
+    visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
     my_calls <- template_ancova(
       parentname = "ANL_ADSL",
@@ -664,31 +674,33 @@ srv_ancova <- function(input,
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
       paramcd_var = unlist(paramcd$filter)["vars_selected"],
+      visit_levels = visit_levels,
       visit_var = unlist(avisit$filter)["vars_selected"],
-      conf_level = as.numeric(input$conf_level)
+      conf_level = as.numeric(input$conf_level),
+      basic_table_args = basic_table_args
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   # Output to render.
   table <- reactive({
     call_preparation()
-    chunks_safe_eval()
-    chunks_get_var("result")
+    teal.devel::chunks_safe_eval()
+    teal.devel::chunks_get_var("result")
   })
 
   callModule(
-    table_with_settings_srv,
+    teal.devel::table_with_settings_srv,
     id = "table",
     table_r = table
   )
 
   # Render R code.
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, aval_var, cov_var, avisit, paramcd)
     ),
     modal_title = label

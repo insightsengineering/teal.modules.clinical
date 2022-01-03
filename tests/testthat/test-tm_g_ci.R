@@ -3,7 +3,7 @@ adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
 
 # Test correspond to sections in the TLG catalog.
-test_that("1. and 2. Mean and 95% CIs for mean", {
+testthat::test_that("1. and 2. Mean and 95% CIs for mean", {
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
@@ -31,7 +31,7 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
@@ -39,12 +39,12 @@ test_that("1. and 2. Mean and 95% CIs for mean", {
     print(gg)
   })
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })
 
-test_that("3. Confidence Interval Plot (using different stratification variable)", {
+testthat::test_that("3. Confidence Interval Plot (using different stratification variable)", {
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
@@ -72,7 +72,7 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 95% CIs for mean are displayed.",
         x = "Treatment Group"
@@ -80,12 +80,12 @@ test_that("3. Confidence Interval Plot (using different stratification variable)
     print(gg)
   })
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })
 
-test_that("4. Median and 95% CIs for median", {
+testthat::test_that("4. Median and 95% CIs for median", {
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
@@ -113,7 +113,7 @@ test_that("4. Median and 95% CIs for median", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Median and 95% CIs for median are displayed.",
         x = "Treatment Group"
@@ -121,12 +121,12 @@ test_that("4. Median and 95% CIs for median", {
     print(gg)
   })
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })
 
-test_that("5. Using different alpha level", {
+testthat::test_that("5. Using different alpha level", {
   result <- template_g_ci(
     dataname = "adlb",
     x_var = "ARMCD",
@@ -155,7 +155,7 @@ test_that("5. Using different alpha level", {
         geom = "point",
         position = position_dodge(width = 0.5)
       ) +
-      labs(
+      ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
         caption = "Mean and 90% CIs for mean are displayed.",
         x = "Treatment Group"
@@ -163,7 +163,7 @@ test_that("5. Using different alpha level", {
     print(gg)
   })
 
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
   # Check the output.
   # eval(result) ; gg # nolint
 })

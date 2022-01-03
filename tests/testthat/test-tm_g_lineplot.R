@@ -1,7 +1,7 @@
 adlb <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adlb
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT") # nolint
 
-test_that("template_g_lineplot works as expected with default arguments", {
+testthat::test_that("template_g_lineplot works as expected with default arguments", {
   result <- template_g_lineplot()
   expected <- list(
     data = quote({
@@ -9,7 +9,8 @@ test_that("template_g_lineplot works as expected with default arguments", {
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "AVAL", strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -24,31 +25,21 @@ test_that("template_g_lineplot works as expected with default arguments", {
         mid_point_size = 2,
         table_font_size = 4,
         newpage = FALSE,
-        title = paste0("Plot of ",
-                       names(which(c(n = "n",
-                                     Mean = "mean",
-                                     `Standard Deviation` = "sd",
-                                     Median = "median") == "mean")), " and ",
-                       ifelse("mean_ci" %in% c("mean_ci", "median_ci"),
-                              paste0(as.character(0.95 * 100), "% "), ""),
-                       names(which(c(`Mean Confidence Interval` = "mean_ci",
-                                     `Median Confidence Interval` = "median_ci",
-                                     `25% and 75% Quantiles` = "quantiles",
-                                     Range = "range") == "mean_ci")), " by Visit"),
-        y_lab = paste("AVAL", names(which(c(n = "n",
-                                            Mean = "mean",
-                                            `Standard Deviation` = "sd",
-                                            Median = "median") == "mean")), "Values for"),
+        title = "Plot of Mean and 95% Mean Confidence Interval by Visit",
+        subtitle = "", caption = NULL,
+        y_lab = "AVAL Mean Values for",
+        legend_title = NULL,
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.95),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })
 
-test_that("template_g_lineplot gives correct data expression with custom arguments", {
+testthat::test_that("template_g_lineplot gives correct data expression with custom arguments", {
   result <- template_g_lineplot(
     strata = "ARMCD",
     y = "CHG",
@@ -63,11 +54,14 @@ test_that("template_g_lineplot gives correct data expression with custom argumen
   )
   expected <- list(
     data = quote({
-      anl <- ANL %>% dplyr::filter(AVISIT != "SCREENING") %>% dplyr::mutate(AVISIT = droplevels(AVISIT))
+      anl <- ANL %>%
+        dplyr::filter(AVISIT != "SCREENING") %>%
+        dplyr::mutate(AVISIT = droplevels(AVISIT))
     }),
     variables = quote(
       variables <- control_lineplot_vars(
-        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU")
+        x = "AVISIT", y = "CHG", strata = "ARMCD", paramcd = "PARAMCD", y_unit = "AVALU"
+      )
     ),
     graph = quote({
       grid::grid.newpage()
@@ -82,26 +76,15 @@ test_that("template_g_lineplot gives correct data expression with custom argumen
         mid_point_size = 2,
         table_font_size = 4,
         newpage = FALSE,
-        title = paste0("Plot of ",
-                       names(which(c(n = "n",
-                                     Mean = "mean",
-                                     `Standard Deviation` = "sd",
-                                     Median = "median") == "median")), " and ",
-                       ifelse("median_ci" %in% c("mean_ci", "median_ci"),
-                              paste0(as.character(0.9 * 100), "% "), ""),
-                       names(which(c(`Mean Confidence Interval` = "mean_ci",
-                                     `Median Confidence Interval` = "median_ci",
-                                     `25% and 75% Quantiles` = "quantiles",
-                                     Range = "range") == "median_ci")), " by Visit"),
-        y_lab = paste("CHG", names(which(c(n = "n",
-                                           Mean = "mean",
-                                           `Standard Deviation` = "sd",
-                                           Median = "median") == "median")), "Values for"),
+        title = "Plot of Median and 90% Median Confidence Interval by Visit",
+        subtitle = "", caption = NULL, y_lab = "CHG Median Values for",
+        legend_title = NULL,
         ggtheme = theme_minimal(),
         control = control_summarize_vars(conf_level = 0.9),
         subtitle_add_paramcd = FALSE,
-        subtitle_add_unit = FALSE)
+        subtitle_add_unit = FALSE
+      )
     })
   )
-  expect_equal(result, expected)
+  testthat::expect_equal(result, expected)
 })

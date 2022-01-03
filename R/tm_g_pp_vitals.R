@@ -19,19 +19,47 @@ template_vitals <- function(dataname = "ANL",
                             xaxis = "ADY",
                             aval = "AVAL",
                             patient_id,
-                            font_size = 12L) {
-  assert_that(
-    is.string(dataname),
-    is.string(paramcd),
-    is.string(xaxis),
-    is.string(aval),
-    is.string(patient_id),
+                            font_size = 12L,
+                            ggplot2_args = teal.devel::ggplot2_args()) {
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(paramcd),
+    assertthat::is.string(xaxis),
+    assertthat::is.string(aval),
+    assertthat::is.string(patient_id),
     is.numeric(font_size)
   )
 
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
   y$plot <- list()
+
+  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
+    teal.devel::resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = teal.devel::ggplot2_args(
+        labs = list(title = paste0("Patient ID: ", patient_id)),
+        theme = list(
+          text = substitute(element_text(size = font), list(font = font_size)),
+          axis.text.y = quote(element_blank()),
+          axis.ticks.y = quote(element_blank()),
+          plot.title = substitute(element_text(size = font), list(font = font_size)),
+          legend.position = "top",
+          panel.grid.minor = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          )),
+          panel.grid.major = quote(element_line(
+            size = 0.5,
+            linetype = "dotted",
+            colour = "grey"
+          ))
+        )
+      )
+    ),
+    ggtheme = "minimal"
+  )
 
   vital_plot <- add_expr(
     list(),
@@ -40,28 +68,28 @@ template_vitals <- function(dataname = "ANL",
         dataname %>%
         dplyr::group_by(paramcd, xaxis) %>%
         dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
-        dplyr::summarise(AVAL = max(aval, na.rm = T)) %>%
+        dplyr::summarise(AVAL = max(aval, na.rm = TRUE)) %>%
         dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
 
-      max_day <- max(vitals[[xaxis_char]], na.rm = T)
-      max_aval <- max(vitals[[aval_char]], na.rm = T)
+      max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
+      max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
       max_aval_seq <- seq(0, max_aval, 10)
 
       full_vita <- levels(dataname[[paramcd_char]])
       provided_vita <- paramcd_levels_chars
       known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
-      paramcd_levels_e <- known_vita[na.omit(match(provided_vita, known_vita))]
+      paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
       len_paramcd_levels_e <- length(paramcd_levels_e)
 
-      all_colors <- setNames(color_palette(length(full_vita)), full_vita)
+      all_colors <- stats::setNames(color_palette(length(full_vita)), full_vita)
       vars_colors <- all_colors[provided_vita]
       names(vars_colors) <- provided_vita
 
-      base_stats <- setNames(c(140, 90, 38, 20, 94, 100), known_vita)
+      base_stats <- stats::setNames(c(140, 90, 38, 20, 94, 100), known_vita)
       paramcd_stats_e <- base_stats[paramcd_levels_e]
 
-      base_labels <- setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
+      base_labels <- stats::setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
       paramcd_labels_e <- base_labels[paramcd_levels_e]
 
       base_stats_df <- data.frame(
@@ -98,9 +126,9 @@ template_vitals <- function(dataname = "ANL",
           show.legend = FALSE
         ) +
         scale_y_continuous(
-          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = T), 50),
+          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
           name = "Vitals",
-          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = T), 10)
+          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
         geom_text(
           data = data.frame(
@@ -118,25 +146,9 @@ template_vitals <- function(dataname = "ANL",
           nudge_y = 2.2,
           size = font_size_var / 3.5
         ) +
-        theme_minimal() +
-        theme(
-          text = element_text(size = font_size_var),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          panel.grid.major = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          panel.grid.minor = element_line(
-            size = 0.5,
-            linetype = "dotted",
-            colour = "grey"
-          ),
-          legend.position = "top"
-        ) +
-        ggtitle(paste0("Patient ID: ", patient_id)) +
-        theme(plot.title = element_text(size = font_size_var))
+        labs +
+        ggthemes +
+        themes
 
       print(result_plot)
     }, env = list(
@@ -149,7 +161,10 @@ template_vitals <- function(dataname = "ANL",
       aval = as.name(aval),
       aval_char = aval,
       patient_id = patient_id,
-      font_size_var = font_size
+      font_size_var = font_size,
+      labs = parsed_ggplot2_args$labs,
+      ggthemes = parsed_ggplot2_args$ggtheme,
+      themes = parsed_ggplot2_args$theme
     ))
   )
 
@@ -162,7 +177,7 @@ template_vitals <- function(dataname = "ANL",
 #' This teal module produces a patient profile vitals plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`) value patient ID column to be used.
+#' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
 #' ADVS dataset.
 #' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADVS dataset.
@@ -226,16 +241,17 @@ tm_g_pp_vitals <- function(label,
                            plot_height = c(700L, 200L, 2000L),
                            plot_width = NULL,
                            pre_output = NULL,
-                           post_output = NULL) {
+                           post_output = NULL,
+                           ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
-  assert_that(is_character_single(label))
-  assert_that(is_character_single(dataname))
-  assert_that(is_character_single(parentname))
-  assert_that(is_character_single(patient_col))
-  assert_that(is.null(pre_output) || is(pre_output, "shiny.tag"),
+  assertthat::assert_that(utils.nest::is_character_single(label))
+  assertthat::assert_that(utils.nest::is_character_single(dataname))
+  assertthat::assert_that(utils.nest::is_character_single(parentname))
+  assertthat::assert_that(utils.nest::is_character_single(patient_col))
+  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
     msg = "pre_output should be either null or shiny.tag type of object"
   )
-  assert_that(is.null(post_output) || is(post_output, "shiny.tag"),
+  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
     msg = "post_output should be either null or shiny.tag type of object"
   )
 
@@ -244,15 +260,22 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-                            .var.name = "plot_width")
+  checkmate::assert_numeric(
+    plot_width[1],
+    lower = plot_width[2],
+    upper = plot_width[3],
+    null.ok = TRUE,
+    .var.name = "plot_width"
+  )
+
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
-    paramcd = if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    param = if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    aval = if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    xaxis = if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
+    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
+    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
+    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
+    xaxis = utils.nest::if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
   )
 
   module(
@@ -268,7 +291,8 @@ tm_g_pp_vitals <- function(label,
         label = label,
         patient_col = patient_col,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = "all"
@@ -277,7 +301,7 @@ tm_g_pp_vitals <- function(label,
 
 ui_g_vitals <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     ui_args$paramcd,
     ui_args$param,
     ui_args$aval,
@@ -285,43 +309,43 @@ ui_g_vitals <- function(id, ...) {
   )
 
   ns <- NS(id)
-  standard_layout(
-    output = plot_with_settings_ui(id = ns("vitals_plot")),
+  teal.devel::standard_layout(
+    output = teal.devel::plot_with_settings_ui(id = ns("vitals_plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
+      teal.devel::datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
       optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = T)
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
       uiOutput(ns("paramcd_levels")),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("xaxis"),
         label = "Select vital plot x-axis:",
         data_extract_spec = ui_args$xaxis,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_ui(
+      teal.devel::data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
         is_single_dataset = is_single_dataset_value
       ),
-      panel_item(
+      teal.devel::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
         optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -341,10 +365,11 @@ srv_g_vitals <- function(input,
                          xaxis,
                          plot_height,
                          plot_width,
-                         label) {
+                         label,
+                         ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
 
@@ -352,13 +377,14 @@ srv_g_vitals <- function(input,
   patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
   updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(), {
-    updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = if (length(patient_data_base()) == 1) {
-        patient_data_base()
+  observeEvent(patient_data_base(),
+    handlerExpr = {
+      updateOptionalSelectInput(
+        session,
+        "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
         } else {
           intersect(patient_id(), patient_data_base())
         }
@@ -368,7 +394,7 @@ srv_g_vitals <- function(input,
   )
 
   # Vitals tab ----
-  vitals_merged_data <- data_merge_module(
+  vitals_merged_data <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
     merge_function = "dplyr::left_join"
@@ -389,7 +415,7 @@ srv_g_vitals <- function(input,
 
     cur_selected <- isolate(input$paramcd_levels_vals)
 
-    selected <- if (!is_empty(cur_selected)) {
+    selected <- if (!utils.nest::is_empty(cur_selected)) {
       cur_selected
     } else {
       paramcd_col_levels
@@ -409,7 +435,7 @@ srv_g_vitals <- function(input,
   vitals_call <- reactive({
     validate(need(patient_id(), "Please select a patient."))
 
-    validate_has_data(vitals_merged_data()$data(), 1)
+    teal.devel::validate_has_data(vitals_merged_data()$data(), 1)
 
     validate(
       need(
@@ -434,11 +460,11 @@ srv_g_vitals <- function(input,
       )
     )
 
-    vitals_stack <- chunks$new()
+    vitals_stack <- teal.devel::chunks$new()
     vitals_stack_push <- function(...) {
-      chunks_push(..., chunks = vitals_stack)
+      teal.devel::chunks_push(..., chunks = vitals_stack)
     }
-    chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
+    teal.devel::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
 
     vitals_stack_push(substitute(
       expr = {
@@ -456,22 +482,23 @@ srv_g_vitals <- function(input,
       xaxis = input[[extract_input("xaxis", dataname)]],
       aval = input[[extract_input("aval", dataname)]],
       patient_id = patient_id(),
-      font_size = input$`font_size`
+      font_size = input$`font_size`,
+      ggplot2_args = ggplot2_args
     )
 
     lapply(my_calls, vitals_stack_push)
-    chunks_safe_eval(chunks = vitals_stack)
+    teal.devel::chunks_safe_eval(chunks = vitals_stack)
     vitals_stack
   })
 
   vitals_plot <- reactive({
-    chunks_reset()
-    chunks_push_chunks(vitals_call())
-    chunks_get_var("result_plot")
+    teal.devel::chunks_reset()
+    teal.devel::chunks_push_chunks(vitals_call())
+    teal.devel::chunks_get_var("result_plot")
   })
 
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "vitals_plot",
     plot_r = vitals_plot,
     height = plot_height,
@@ -479,10 +506,10 @@ srv_g_vitals <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(list(paramcd, param, aval, xaxis)),
+    datanames = teal.devel::get_extract_datanames(list(paramcd, param, aval, xaxis)),
     modal_title = label
   )
 }

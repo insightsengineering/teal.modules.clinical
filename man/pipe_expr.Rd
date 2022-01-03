@@ -24,5 +24,4 @@ result <- teal.modules.clinical:::pipe_expr(
   )
 )
 result
-
 }
