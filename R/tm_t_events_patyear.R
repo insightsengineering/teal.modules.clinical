@@ -418,8 +418,8 @@ srv_events_patyear <- function(input,
     ))
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(utils.nest::is_character_single(input_events_var), "Events variable should be a single column."),
+      need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
+      need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected."),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
       need(

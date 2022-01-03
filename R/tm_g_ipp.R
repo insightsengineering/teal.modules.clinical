@@ -470,11 +470,11 @@ srv_g_ipp <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
+      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
     )
 
     validate(
-      need(utils.nest::is_character_single(input_visit_var), "Please select a timepoint variable.")
+      need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
     )
 
     NULL

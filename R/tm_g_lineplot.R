@@ -515,8 +515,8 @@ srv_g_lineplot <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(utils.nest::is_character_single(input_y), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_x_var), "Time variable should be a single column."))
+    validate(need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
 
     NULL
   })

@@ -24,8 +24,8 @@
 #' eval(call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))))
 #' }
 call_concatenate <- function(args, bin_op = "+") {
+  checkmate::assert_string(bin_op)
   stopifnot(
-    utils.nest::is_character_single(bin_op),
     all(vapply(args, is.language, logical(1)))
   )
   # can be used for dplyr and ggplot2 to concatenate calls with +
@@ -35,9 +35,7 @@ call_concatenate <- function(args, bin_op = "+") {
 # needs columns like n_, n_ARM etc. to get count from
 add_count_str_to_column <- function(chunk, column, n_column = NULL) {
   n_column <- utils.nest::if_null(n_column, get_n_name(groupby_vars = column))
-  stopifnot(
-    utils.nest::is_character_single(column)
-  )
+  checkmate::assert_string(column)
 
   chunk$push(substitute(
     counts <- counts %>% dplyr::mutate(
@@ -304,12 +302,12 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
+  checkmate::assert_string(dataname)
   utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    utils.nest::is_character_single(dataname),
     utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {
@@ -343,12 +341,12 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
+  checkmate::assert_string(dataname)
   utils.nest::stop_if_not(
     list(
       is.cs_or_des(cs),
       paste(cs_name, "must be a choices selected object or a data extract spec")
     ),
-    utils.nest::is_character_single(dataname),
     utils.nest::is_logical_single(multiple)
   )
   if (!multiple) {

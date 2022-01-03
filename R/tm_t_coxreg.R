@@ -867,8 +867,8 @@ srv_t_coxreg <- function(input,
       ))
     }
 
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate covariate has at least two levels
     validate(

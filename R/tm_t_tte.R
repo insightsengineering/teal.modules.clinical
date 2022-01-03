@@ -785,10 +785,10 @@ srv_t_tte <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
     validate(need(
-      utils.nest::is_character_single(input_event_desc),
+      checkmate::test_string(input_event_desc),
       "Event description variable should be a single column."
     ))
 

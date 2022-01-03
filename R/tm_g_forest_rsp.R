@@ -640,7 +640,7 @@ srv_g_forest_rsp <- function(input,
     ))
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty."),
       need(
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],

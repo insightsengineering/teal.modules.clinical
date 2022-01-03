@@ -394,13 +394,13 @@ tm_t_summary_by <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   useNA <- match.arg(useNA) # nolint
+  checkmate::assert_string(na_level)
   utils.nest::stop_if_not(
     is.choices_selected(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_zero_levels),
     utils.nest::is_logical_single(parallel_vars),
     utils.nest::is_logical_single(row_groups),
-    utils.nest::is_character_single(na_level),
     is.choices_selected(denominator),
     denominator$choices %in% c("n", "N", "omit"),
     utils.nest::is_logical_single(drop_arm_levels)

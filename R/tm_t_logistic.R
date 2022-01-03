@@ -579,7 +579,7 @@ srv_t_logistic <- function(input,
     }
 
     validate(
-      need(utils.nest::is_character_single(input_avalc_var), "Analysis variable should be a single column."),
+      need(checkmate::test_string(input_avalc_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty")
     )
 

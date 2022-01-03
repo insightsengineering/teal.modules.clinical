@@ -552,12 +552,12 @@ make_barchart_simple_call <- function(y_name,
       paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
     )
   )
+  checkmate::assert_string(y_name)
+  checkmate::assert_string(x_name, null.ok = TRUE)
+  checkmate::assert_string(fill_name, null.ok = TRUE)
+  checkmate::assert_string(x_facet_name, null.ok = TRUE)
+  checkmate::assert_string(y_facet_name, null.ok = TRUE)
   stopifnot(
-    utils.nest::is_character_single(y_name),
-    is.null(x_name) || utils.nest::is_character_single(x_name),
-    is.null(fill_name) || utils.nest::is_character_single(fill_name),
-    is.null(x_facet_name) || utils.nest::is_character_single(x_facet_name),
-    is.null(y_facet_name) || utils.nest::is_character_single(y_facet_name),
     length(plot_vars) > 0,
     utils.nest::is_logical_single(label_bars),
     barlayout %in% c("side_by_side", "stacked"),
