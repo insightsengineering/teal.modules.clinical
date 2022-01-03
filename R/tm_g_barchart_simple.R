@@ -559,9 +559,9 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_string(y_facet_name, null.ok = TRUE)
   checkmate::assert_flag(label_bars)
   stopifnot(
-    length(plot_vars) > 0,
-    utils.nest::is_numeric_single(expand_y_range)
+    length(plot_vars) > 0
   )
+  checkmate::assert_scalar(expand_y_range)
   barlayout <- match.arg(barlayout)
   checkmate::assert_flag(flip_axis, null.ok = TRUE)
   checkmate::assert_flag(rotate_x_label, null.ok = TRUE)

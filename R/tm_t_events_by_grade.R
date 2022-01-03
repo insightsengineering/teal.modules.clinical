@@ -26,11 +26,11 @@ template_events_by_grade <- function(dataname,
     assertthat::is.string(llt) || is.null(llt),
     !is.null(hlt) || !is.null(llt),
     assertthat::is.string(grade),
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
 
   y <- list()
 
@@ -371,10 +371,11 @@ template_events_col_by_grade <- function(dataname,
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt),
     assertthat::is.string(grade),
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
+
 
   y <- list()
 
@@ -790,10 +791,8 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_total)
   checkmate::assert_flag(col_by_grade)
-  utils.nest::stop_if_not(
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff)
-  )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_outpput, classes = "shiny.tag", null.ok = TRUE)

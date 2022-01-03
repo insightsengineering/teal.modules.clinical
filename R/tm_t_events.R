@@ -30,10 +30,10 @@ template_events <- function(dataname,
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
     assertthat::is.string(event_type),
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -484,10 +484,8 @@ tm_t_events <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
-  utils.nest::stop_if_not(
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff)
-  )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
