@@ -7,10 +7,9 @@
 #'
 template_basic_info <- function(dataname = "ANL",
                                 vars) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    utils.nest::is_character_vector(vars)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_character(vars, min.len = 1)
+
   y <- list()
   y$table <- list()
 

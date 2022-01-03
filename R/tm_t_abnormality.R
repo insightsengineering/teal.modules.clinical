@@ -323,12 +323,12 @@ tm_t_abnormality <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
+  checkmate::assert_list(abnormal, types = "character", len = 2)
   utils.nest::stop_if_not(
     is.choices_selected(arm_var),
     assertthat::is.flag(add_total),
     is.choices_selected(by_vars),
     is.choices_selected(grade),
-    utils.nest::is_character_list(abnormal, min_length = 2, max_length = 2),
     is.choices_selected(id_var),
     is.choices_selected(baseline_var),
     is.choices_selected(treatment_flag),

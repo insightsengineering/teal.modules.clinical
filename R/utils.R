@@ -447,7 +447,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
   stopifnot(is.choices_selected(x))
-  stopifnot(utils.nest::is_character_vector(x$choices))
+  checkmate::assert_character(x$choices, min.len = 1)
 
   split_x <- x
   split_x$choices <- split_interactions(x$choices)

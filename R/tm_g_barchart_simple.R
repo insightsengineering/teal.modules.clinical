@@ -457,10 +457,10 @@ srv_g_barchart_simple <- function(input,
     y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
 
     # set to NULL when empty character
-    if (utils.nest::is_character_empty(x_name)) x_name <- NULL
-    if (utils.nest::is_character_empty(fill_name)) fill_name <- NULL
-    if (utils.nest::is_character_empty(x_facet_name)) x_facet_name <- NULL
-    if (utils.nest::is_character_empty(y_facet_name)) y_facet_name <- NULL
+    if (identical(x_name, character(0))) x_name <- NULL
+    if (identical(fill_name, character(0))) fill_name <- NULL
+    if (identical(x_facet_name, character(0))) x_facet_name <- NULL
+    if (identical(y_facet_name, character(0))) y_facet_name <- NULL
 
     res <- c(
       x_name = x_name, fill_name = fill_name,
@@ -675,7 +675,7 @@ get_n_name <- function(groupby_vars) {
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
-  stopifnot(utils.nest::is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
+  checkmate::assert_character(x$choices)
 
   n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
   chunk$push(bquote({
