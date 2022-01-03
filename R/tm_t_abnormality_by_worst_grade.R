@@ -498,7 +498,7 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
       need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
       need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
       need(
-        !utils.nest::is_empty(anl_m$data()[[input_paramcd_var]]),
+        length(anl_m$data()[[input_paramcd_var]]) > 0,
         "Please select at least one Laboratory parameter."
       ),
       need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),

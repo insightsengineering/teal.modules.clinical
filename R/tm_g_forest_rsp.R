@@ -537,7 +537,7 @@ srv_g_forest_rsp <- function(input,
       } else {
         sel_param
       }
-      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+      responder_choices <- if (length(aval_var) == 0) {
         character(0)
       } else {
         if ("levels" %in% names(sel_param)) {

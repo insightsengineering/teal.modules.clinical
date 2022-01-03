@@ -564,7 +564,7 @@ srv_g_forest_tte <- function(input,
     ))
 
     validate(need(
-      !utils.nest::is_empty(anl_m$data()[[input_paramcd]]),
+      length(anl_m$data()[[input_paramcd]]) > 0,
       "Value of the endpoint variable should not be empty."
     ))
     validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))

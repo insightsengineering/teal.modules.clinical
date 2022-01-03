@@ -176,7 +176,7 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (utils.nest::is_empty(cov_var)) {
+    if (length(cov_var) == 0) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -257,7 +257,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
 
-    if (!utils.nest::is_empty(cov_var)) {
+    if (length(cov_var) > 0) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -593,7 +593,7 @@ srv_ancova <- function(input,
 
     # Other validations.
     validate(need(
-      !utils.nest::is_empty(input_aval_var),
+      length(input_aval_var) > 0,
       "Analysis variable cannot be empty."
     ))
     validate(need(

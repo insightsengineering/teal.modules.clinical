@@ -28,13 +28,13 @@ template_exposure <- function(parentname,
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(row_by_var),
-    assertthat::is.string(col_by_var) || utils.nest::is_empty(col_by_var),
+    assertthat::is.string(col_by_var) || length(col_by_var) == 0,
     assertthat::is.string(paramcd),
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var) || utils.nest::is_empty(avalu_var),
+    assertthat::is.string(avalu_var) || length(avalu_var) == 0,
     assertthat::is.flag(drop_levels)
   )
 
@@ -78,7 +78,7 @@ template_exposure <- function(parentname,
     parsed_basic_table_args
   )
 
-  if (!utils.nest::is_empty(col_by_var)) {
+  if (length(col_by_var) > 0) {
     if (add_total) {
       layout_list <- add_expr(
         layout_list,

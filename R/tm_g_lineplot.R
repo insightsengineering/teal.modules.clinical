@@ -533,7 +533,7 @@ srv_g_lineplot <- function(input,
     teal.devel::validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    if (utils.nest::is_empty(whiskers_selected) | is.null(input$interval)) {
+    if (length(whiskers_selected) == 0 || is.null(input$interval)) {
       input_whiskers <- NULL
       input_interval <- NULL
     } else {

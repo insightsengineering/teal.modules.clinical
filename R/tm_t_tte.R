@@ -799,7 +799,7 @@ srv_t_tte <- function(input,
     ))
 
     validate(need(
-      !utils.nest::is_empty(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]),
+      length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
       "`Select Endpoint` field is NULL"
     ))
 

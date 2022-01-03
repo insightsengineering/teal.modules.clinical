@@ -905,7 +905,7 @@ srv_mmrm <- function(input,
 
   observeEvent(adsl_merged()$columns_source$arm_var, {
     arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
-    if (utils.nest::is_empty(arm_var)) {
+    if (length(arm_var) == 0) {
       shinyjs::hide("ref_arm")
       shinyjs::hide("comp_arm")
       shinyjs::hide("help_text")

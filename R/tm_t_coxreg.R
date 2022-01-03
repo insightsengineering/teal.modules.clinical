@@ -862,7 +862,7 @@ srv_t_coxreg <- function(input,
 
     if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
       validate(need(
-        (sum(sapply(at(), utils.nest::is_empty)) == 0),
+        all(vapply(at(), function(x) length(x) > 0, logical(1))),
         "Please specify all the interaction levels."
       ))
     }

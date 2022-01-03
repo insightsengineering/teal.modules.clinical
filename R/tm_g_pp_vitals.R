@@ -405,7 +405,7 @@ srv_g_vitals <- function(input,
 
     cur_selected <- isolate(input$paramcd_levels_vals)
 
-    selected <- if (!utils.nest::is_empty(cur_selected)) {
+    selected <- if (length(cur_selected) > 0) {
       cur_selected
     } else {
       paramcd_col_levels
