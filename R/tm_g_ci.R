@@ -269,8 +269,10 @@ tm_g_ci <- function(label,
   logger::log_info("Initializing tm_g_ci")
   checkmate::assert_string(label, len = 1)
   stat <- match.arg(stat)
+  checkmate::assert_list(y_var, types = "data_extract_spec")
+  checkmate::assert_list(x_var, types = "data_extract_spec")
+  checkmate::assert_list(color, types = "data_extract_spec")
   utils.nest::stop_if_not(
-    utils.nest::is_class_list("data_extract_spec")(list(y_var, x_var, color)),
     is.choices_selected(conf_level)
   )
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)

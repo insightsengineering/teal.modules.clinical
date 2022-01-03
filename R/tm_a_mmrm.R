@@ -539,7 +539,6 @@ tm_a_mmrm <- function(label,
   checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
   checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
 
-
   args <- as.list(environment())
 
   data_extract_list <- list(
