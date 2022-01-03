@@ -487,15 +487,10 @@ tm_t_binary_outcome <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
-
   assertthat::assert_that(
-    is.list(default_responses) ||
-      is.null(default_responses) ||
-      is.character(default_responses) ||
-      is.numeric(default_responses),
+    inherits(default_responses, c("list", "character", "numeric", "NULL")),
     msg = "`default_responses` must be a named list or an array."
   )
-
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

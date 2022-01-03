@@ -533,27 +533,18 @@ tm_a_mmrm <- function(label,
       "post_output should be either null or shiny.tag type of object"
     )
   )
-
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  plot_choices <- c("lsmeans", "diagnostic")
-  checkmate::assert(
-    checkmate::check_class(ggplot2_args, "ggplot2_args"),
-    checkmate::assert(
-      combine = "or",
-      checkmate::check_list(ggplot2_args, types = "ggplot2_args"),
-      checkmate::check_subset(names(ggplot2_args), c("default", plot_choices))
-    )
-  )
-  # Important step, so we could easily consume it later
   if (inherits(ggplot2_args, "ggplot2_args")) ggplot2_args <- list(default = ggplot2_args)
+  plot_choices <- c("lsmeans", "diagnostic")
+  checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
+  checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
+
 
   args <- as.list(environment())
 
