@@ -165,10 +165,10 @@ tm_t_pp_prior_medication <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    atirel = utils.nest::if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = utils.nest::if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
-    cmstdy = utils.nest::if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname))
+    atirel = `if`(is.null(atirel), NULL, cs_to_des_select(atirel, dataname = dataname)),
+    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname)),
+    cmindc = `if`(is.null(cmindc), NULL, cs_to_des_select(cmindc, dataname = dataname)),
+    cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname))
   )
 
   module(

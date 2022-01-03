@@ -415,8 +415,8 @@ tm_t_summary_by <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    paramcd = utils.nest::if_not_null(
-      paramcd,
+    paramcd = `if`(is.null(paramcd),
+      NULL,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
     ),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
@@ -466,8 +466,8 @@ ui_summary_by <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      utils.nest::if_not_null(
-        a$paramcd,
+      `if`(is.null(a$paramcd),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("paramcd"),
           label = "Select Endpoint",
@@ -610,7 +610,7 @@ srv_summary_by <- function(input,
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-    input_paramcd <- utils.nest::if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
+    input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
     # validate inputs
     validate(

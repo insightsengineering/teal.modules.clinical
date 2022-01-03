@@ -391,16 +391,16 @@ tm_g_pp_therapy <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    atirel = utils.nest::if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = utils.nest::if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
-    cmdose = utils.nest::if_not_null(cmdose, cs_to_des_select(cmdose, dataname = dataname)),
-    cmtrt = utils.nest::if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname)),
-    cmdosu = utils.nest::if_not_null(cmdosu, cs_to_des_select(cmdosu, dataname = dataname)),
-    cmdosfrq = utils.nest::if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = dataname)),
-    cmroute = utils.nest::if_not_null(cmroute, cs_to_des_select(cmroute, dataname = dataname)),
-    cmstdy = utils.nest::if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname)),
-    cmendy = utils.nest::if_not_null(cmendy, cs_to_des_select(cmendy, dataname = dataname))
+    atirel = `if`(is.null(atirel), NULL, cs_to_des_select(atirel, dataname = dataname)),
+    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname)),
+    cmindc = `if`(is.null(cmindc), NULL, cs_to_des_select(cmindc, dataname = dataname)),
+    cmdose = `if`(is.null(cmdose), NULL, cs_to_des_select(cmdose, dataname = dataname)),
+    cmtrt = `if`(is.null(cmtrt), NULL, cs_to_des_select(cmtrt, dataname = dataname)),
+    cmdosu = `if`(is.null(cmdosu), NULL, cs_to_des_select(cmdosu, dataname = dataname)),
+    cmdosfrq = `if`(is.null(cmdosfrq), NULL, cs_to_des_select(cmdosfrq, dataname = dataname)),
+    cmroute = `if`(is.null(cmroute), NULL, cs_to_des_select(cmroute, dataname = dataname)),
+    cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname)),
+    cmendy = `if`(is.null(cmendy), NULL, cs_to_des_select(cmendy, dataname = dataname))
   )
 
   module(

@@ -262,10 +262,10 @@ tm_g_pp_vitals <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    xaxis = utils.nest::if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
+    paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
+    param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
+    aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
+    xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
   )
 
   module(

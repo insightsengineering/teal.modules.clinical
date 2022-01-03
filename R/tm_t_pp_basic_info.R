@@ -93,7 +93,7 @@ tm_t_pp_basic_info <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
+    vars = `if`(is.null(vars), NULL, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
   )
 
   module(

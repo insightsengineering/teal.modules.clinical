@@ -134,9 +134,9 @@ tm_t_pp_medical_history <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    mhterm = utils.nest::if_not_null(mhterm, cs_to_des_select(mhterm, dataname = dataname)),
-    mhbodsys = utils.nest::if_not_null(mhbodsys, cs_to_des_select(mhbodsys, dataname = dataname)),
-    mhdistat = utils.nest::if_not_null(mhdistat, cs_to_des_select(mhdistat, dataname = dataname))
+    mhterm = `if`(is.null(mhterm), NULL, cs_to_des_select(mhterm, dataname = dataname)),
+    mhbodsys = `if`(is.null(mhbodsys), NULL, cs_to_des_select(mhbodsys, dataname = dataname)),
+    mhdistat = `if`(is.null(mhdistat), NULL, cs_to_des_select(mhdistat, dataname = dataname))
   )
 
   module(

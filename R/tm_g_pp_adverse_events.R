@@ -62,7 +62,7 @@ template_adverse_events <- function(dataname = "ANL",
         outcome = as.name(outcome),
         action = as.name(action),
         time = as.name(time),
-        decod = utils.nest::if_not_null(decod, as.name(decod)),
+        decod = `if`(is.null(decod), NULL, as.name(decod)),
         vars = c(aeterm, tox_grade, causality, outcome, action, time, decod)
       )
     )
@@ -260,13 +260,13 @@ tm_g_pp_adverse_events <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    aeterm = utils.nest::if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname)),
-    tox_grade = utils.nest::if_not_null(tox_grade, cs_to_des_select(tox_grade, dataname = dataname)),
-    causality = utils.nest::if_not_null(causality, cs_to_des_select(causality, dataname = dataname)),
-    outcome = utils.nest::if_not_null(outcome, cs_to_des_select(outcome, dataname = dataname)),
-    action = utils.nest::if_not_null(action, cs_to_des_select(action, dataname = dataname)),
-    time = utils.nest::if_not_null(time, cs_to_des_select(time, dataname = dataname)),
-    decod = utils.nest::if_not_null(decod, cs_to_des_select(decod, dataname = dataname))
+    aeterm = `if`(is.null(aeterm), NULL, cs_to_des_select(aeterm, dataname = dataname)),
+    tox_grade = `if`(is.null(tox_grade), NULL, cs_to_des_select(tox_grade, dataname = dataname)),
+    causality = `if`(is.null(causality), NULL, cs_to_des_select(causality, dataname = dataname)),
+    outcome = `if`(is.null(outcome), NULL, cs_to_des_select(outcome, dataname = dataname)),
+    action = `if`(is.null(action), NULL, cs_to_des_select(action, dataname = dataname)),
+    time = `if`(is.null(time), NULL, cs_to_des_select(time, dataname = dataname)),
+    decod = `if`(is.null(decod), NULL, cs_to_des_select(decod, dataname = dataname))
   )
 
   module(
@@ -357,8 +357,8 @@ ui_g_adverse_events <- function(id, ...) {
         data_extract_spec = ui_args$time,
         is_single_dataset = is_single_dataset_value
       ),
-      utils.nest::if_not_null(
-        ui_args$decod,
+      `if`(is.null(ui_args$decod),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("decod"),
           label = "Select DECOD variable:",

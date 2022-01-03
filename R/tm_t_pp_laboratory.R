@@ -172,12 +172,12 @@ tm_t_pp_laboratory <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    timepoints = utils.nest::if_not_null(timepoints, cs_to_des_select(timepoints, dataname = dataname)),
-    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    avalu = utils.nest::if_not_null(avalu, cs_to_des_select(avalu, dataname = dataname)),
-    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    anrind = utils.nest::if_not_null(anrind, cs_to_des_select(anrind, dataname = dataname))
+    timepoints = `if`(is.null(timepoints), NULL, cs_to_des_select(timepoints, dataname = dataname)),
+    aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
+    avalu = `if`(is.null(avalu), NULL, cs_to_des_select(avalu, dataname = dataname)),
+    param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
+    paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
+    anrind = `if`(is.null(anrind), NULL, cs_to_des_select(anrind, dataname = dataname))
   )
 
   module(
