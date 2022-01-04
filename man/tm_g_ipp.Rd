@@ -21,6 +21,7 @@ tm_g_ipp(
   base_var = choices_selected(variable_choices(dataname, "BASE"), "BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
+  suppress_legend = FALSE,
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -64,6 +65,8 @@ and preselected option for variable values that can be used as \code{base_var}.}
 \item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
 
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+
+\item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
