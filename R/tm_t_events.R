@@ -117,7 +117,8 @@ template_events <- function(dataname,
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = paste("Event Summary of", hlt, llt))
     )
   )
 
