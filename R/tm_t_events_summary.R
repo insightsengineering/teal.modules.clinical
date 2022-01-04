@@ -877,7 +877,7 @@ srv_t_events_summary <- function(input,
         result
       },
       env = list(
-        title = `if`(is.null(all_basic_table_args$title), "Adverse Events Summary", all_basic_table_args$title),
+        title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
         footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
         p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
         subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
