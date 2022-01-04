@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9040</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9041</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -92,7 +83,8 @@ Other releases
   base_var <span class="op">=</span> <span class="st">"BASE"</span>,
   add_baseline_hline <span class="op">=</span> <span class="cn">FALSE</span>,
   separate_by_obs <span class="op">=</span> <span class="cn">FALSE</span>,
-  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
+  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>,
+  suppress_legend <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -135,6 +127,8 @@ object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args
 For this module, this argument will only accept <code>labs</code> arguments such as: <code>title</code>, <code>subtitle</code>, <code>x</code>, <code>y</code>.
 <code>theme</code> arguments will be not taken into account. The argument is merged with option <code>teal.ggplot2_args</code> and
 with default module arguments (hard coded in the module body).<br> For more details, see the help vignette:<br><code>vignette("Custom ggplot2_args arguments module", package = "teal.devel")</code>.</p></dd>
+<dt>suppress_legend</dt>
+<dd><p>(<code>flag</code>)<br> allow user to suppress legend</p></dd>
 </dl></div>
 
   </div>
