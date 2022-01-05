@@ -25,9 +25,8 @@
 #' }
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
-  stopifnot(
-    all(vapply(args, is.language, logical(1)))
-  )
+  checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
+
   # can be used for dplyr and ggplot2 to concatenate calls with +
   Reduce(function(existing, new) call(bin_op, existing, new), args)
 }
@@ -304,19 +303,13 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 
   checkmate::assert_string(dataname)
   checkmate::assert_flag(multiple)
-  utils.nest::stop_if_not(
-    list(
-      is.cs_or_des(cs),
-      paste(cs_name, "must be a choices selected object or a data extract spec")
-    )
+  checkmate::assert(
+    checkmate::check_class(cs, classes = "data_extract_spec"),
+    checkmate::check_class(cs, classes = "choices_selected"),
+    .var.name = cs_name
   )
-  if (!multiple) {
-    utils.nest::stop_if_not(
-      list(
-        length(cs$selected) == 1 || is.null(cs$selected),
-        paste(cs_name, "must only have 1 selected value")
-      )
-    )
+  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, "must only have 1 selected value")
   }
 
   if (inherits(cs, "choices_selected")) {
@@ -343,19 +336,13 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 
   checkmate::assert_string(dataname)
   checkmate::assert_flag(multiple)
-  utils.nest::stop_if_not(
-    list(
-      is.cs_or_des(cs),
-      paste(cs_name, "must be a choices selected object or a data extract spec")
-    )
+  checkmate::assert(
+    checkmate::check_class(cs, classes = "data_extract_spec"),
+    checkmate::check_class(cs, classes = "choices_selected"),
+    .var.name = cs_name
   )
-  if (!multiple) {
-    utils.nest::stop_if_not(
-      list(
-        length(cs$selected) == 1 || is.null(cs$selected),
-        paste(cs_name, "must only have 1 selected value")
-      )
-    )
+  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, "must only have 1 selected value")
   }
 
   if (inherits(cs, "choices_selected")) {

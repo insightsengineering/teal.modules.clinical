@@ -476,12 +476,12 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_class(conf_level, "choices_selected")
-  utils.nest::stop_if_not(
-    assertthat::is.flag(add_total)
-  )
-  assertthat::assert_that(
-    inherits(default_responses, c("list", "character", "numeric", "NULL")),
-    msg = "`default_responses` must be a named list or an array."
+  checkmate::assert_flag(add_total)
+  checkmate::assert(
+    checkmate::check_class(default_responses, classes = "list"),
+    checkmate::check_class(default_responses, classes = "character"),
+    checkmate::check_class(default_responses, classes = "numeric"),
+    checkmate::check_class(default_responses, classes = "NULL")
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)

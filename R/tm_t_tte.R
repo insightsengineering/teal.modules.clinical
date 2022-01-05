@@ -452,9 +452,7 @@ tm_t_tte <- function(label,
   checkmate::assert_class(time_points, "choices_selected")
   checkmate::assert_class(conf_level_coxph, "choices_selected")
   checkmate::assert_class(conf_level_survfit, "choices_selected")
-  utils.nest::stop_if_not(
-    assertthat::is.flag(add_total)
-  )
+  checkmate::assert_flag(add_total)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

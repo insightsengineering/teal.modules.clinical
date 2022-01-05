@@ -148,11 +148,10 @@ tm_g_barchart_simple <- function(x = NULL,
                                  ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
-  utils.nest::stop_if_not(
-    is.null(plot_options) || is.list(plot_options),
-    !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))) # at least one must be specified
-  )
-
+  checkmate::assert_list(plot_options, null.ok = TRUE)
+  if (length(c(x, fill, x_facet, y_facet)) == 0) {
+    stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
+  }
   x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
   fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
   x_facet <- teal.devel::list_extract_spec(x_facet, allow_null = TRUE)
@@ -558,9 +557,7 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_string(x_facet_name, null.ok = TRUE)
   checkmate::assert_string(y_facet_name, null.ok = TRUE)
   checkmate::assert_flag(label_bars)
-  stopifnot(
-    length(plot_vars) > 0
-  )
+  checkmate::assert_character(plot_vars, min.len = 1)
   checkmate::assert_scalar(expand_y_range)
   barlayout <- match.arg(barlayout)
   checkmate::assert_flag(flip_axis, null.ok = TRUE)

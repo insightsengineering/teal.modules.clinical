@@ -31,9 +31,9 @@ template_summary <- function(dataname,
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels),
-    is.character(numeric_stats)
+    assertthat::is.flag(drop_arm_levels)
   )
+  match.arg(numeric_stats, several.ok = TRUE)
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -265,6 +265,8 @@ tm_t_summary <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
+  checkmate::assert_character(numeric_stats, min.len = 1)
+  match.arg(numeric_stats, several.ok = TRUE)
   useNA <- match.arg(useNA) # nolint
   numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)

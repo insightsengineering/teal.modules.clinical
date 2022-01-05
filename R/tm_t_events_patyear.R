@@ -210,10 +210,8 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(aval_var, "choices_selected")
   checkmate::assert_class(avalu_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
-  utils.nest::stop_if_not(
-    assertthat::is.flag(add_total),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

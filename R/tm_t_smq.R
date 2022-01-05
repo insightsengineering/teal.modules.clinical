@@ -385,10 +385,8 @@ tm_t_smq <- function(label,
   checkmate::assert_class(arm_var, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
-  utils.nest::stop_if_not(
-    assertthat::is.flag(add_total),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
