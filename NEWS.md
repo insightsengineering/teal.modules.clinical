@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9042
+# teal.modules.clinical 0.8.10.9043
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
