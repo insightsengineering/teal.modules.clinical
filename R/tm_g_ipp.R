@@ -6,6 +6,7 @@
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
+#' @param suppress_legend (`flag`)\cr allow user to suppress legend
 #' @param arm_levels (`character`)\cr vector of all arm variable levels.
 #' @param avalu_first (`string`)\cr `avalu` value.
 #' @param paramcd_first (`string`)\cr `paramcd` value.
@@ -29,7 +30,8 @@ template_g_ipp <- function(dataname = "ANL",
                            base_var = "BASE",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
-                           ggplot2_args = teal.devel::ggplot2_args()) {
+                           ggplot2_args = teal.devel::ggplot2_args(),
+                           suppress_legend = FALSE) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
@@ -40,7 +42,8 @@ template_g_ipp <- function(dataname = "ANL",
     assertthat::is.string(visit_var),
     assertthat::is.string(base_var),
     assertthat::is.flag(add_baseline_hline),
-    assertthat::is.flag(separate_by_obs)
+    assertthat::is.flag(separate_by_obs),
+    assertthat::is.flag(suppress_legend)
   )
 
   y <- list()
@@ -105,6 +108,18 @@ template_g_ipp <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = plot <- plot + ggplot2::facet_grid(rows = vars(id)),
+        env = list(id = as.name(id_var))
+      )
+    )
+  }
+
+  if (suppress_legend) {
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = {
+          plot <- plot + ggplot2::theme(legend.position = "none")
+        },
         env = list(id = as.name(id_var))
       )
     )
@@ -253,6 +268,7 @@ tm_g_ipp <- function(label,
                      ),
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
+                     suppress_legend = FALSE,
                      plot_height = c(1200L, 400L, 5000L),
                      plot_width = NULL,
                      pre_output = NULL,
@@ -264,6 +280,7 @@ tm_g_ipp <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_baseline_hline)
   checkmate::assert_flag(separate_by_obs)
+  checkmate::assert_flag(suppress_legend)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -381,6 +398,11 @@ ui_g_ipp <- function(id, ...) {
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
+            ),
+          checkboxInput(
+            ns("suppress_legend"),
+            "Suppress legend",
+            value = a$suppress_legend
           )
         )
       )
@@ -511,6 +533,7 @@ srv_g_ipp <- function(input,
       base_var = as.vector(anl_m$columns_source$base_var),
       add_baseline_hline = input$add_baseline_hline,
       separate_by_obs = input$separate_by_obs,
+      suppress_legend = input$suppress_legend,
       paramcd = paramcd,
       paramcd_first = paramcd_first,
       arm_var = arm_var,
