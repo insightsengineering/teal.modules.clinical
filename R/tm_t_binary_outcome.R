@@ -683,6 +683,7 @@ ui_t_binary_outcome <- function(id, ...) {
             "Wald, with correction" = "waldcc",
             "Clopper-Pearson" = "clopper-pearson",
             "Wilson" = "wilson",
+            "Wilson, with correction" = "wilsonc",
             "Jeffreys" = "jeffreys",
             "Agresti-Coull" = "agresti-coull"
           ),
