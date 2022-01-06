@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9043
+# teal.modules.clinical 0.8.10.9044
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
@@ -20,6 +20,7 @@
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 * Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in plot based modules.
 * Added support for custom arguments for `rtables::basic_table` in table based modules.
+* Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Wilson method. 
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
