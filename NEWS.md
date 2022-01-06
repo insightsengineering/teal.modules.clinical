@@ -28,6 +28,7 @@
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
 * Replaced calls to `utils.nest::check_slider_input` with `checkmate::assert_numeric`.
 * Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
+* Replaced calls to `utils.nest::is_<class>_...`, `utils.nest::if_<class>_...`, `utils.nest::stop_if_not` with `checkmate` equivalents.
 
 # teal.modules.clinical 0.8.10
 ### New features
