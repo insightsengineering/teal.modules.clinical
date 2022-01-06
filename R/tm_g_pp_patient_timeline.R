@@ -151,12 +151,12 @@ template_patient_timeline <- function(dataname = "ANL",
         },
         env = list(
           dataname = as.name(dataname),
-          aeterm = utils.nest::if_not_empty(aeterm, as.name(aeterm)),
-          aetime_start = utils.nest::if_not_empty(aetime_start, as.name(aetime_start)),
-          aetime_end = utils.nest::if_not_empty(aetime_end, as.name(aetime_end)),
-          dstime_start = utils.nest::if_not_empty(dstime_start, as.name(dstime_start)),
-          dstime_end = utils.nest::if_not_empty(dstime_end, as.name(dstime_end)),
-          cmdecod = utils.nest::if_not_empty(cmdecod, as.name(cmdecod)),
+          aeterm = `if`(length(aeterm), as.name(aeterm), aeterm),
+          aetime_start = `if`(length(aetime_start), as.name(aetime_start), aetime_start),
+          aetime_end = `if`(length(aetime_end), as.name(aetime_end), aetime_end),
+          dstime_start = `if`(length(dstime_start), as.name(dstime_start), dstime_start),
+          dstime_end = `if`(length(dstime_end), as.name(dstime_end), dstime_end),
+          cmdecod = `if`(length(cmdecod), as.name(cmdecod), cmdecod),
           aeterm_var = aeterm,
           aetime_start_var = aetime_start,
           aetime_end_var = aetime_end,
@@ -739,21 +739,25 @@ srv_g_patient_timeline <- function(input,
 
     # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
     # AENDY columns to data_merge_module call above.
-    aerelday_start_name <- utils.nest::if_not_empty(
-      aerelday_start,
-      p_timeline_merged_data()$columns_source$aerelday_start[[1]]
+    aerelday_start_name <- `if`(
+      length(aerelday_start),
+      p_timeline_merged_data()$columns_source$aerelday_start[[1]],
+      aerelday_start
     )
-    aerelday_end_name <- utils.nest::if_not_empty(
-      aerelday_end,
-      p_timeline_merged_data()$columns_source$aerelday_end[[1]]
+    aerelday_end_name <- `if`(
+      length(aerelday_end),
+      p_timeline_merged_data()$columns_source$aerelday_end[[1]],
+      aerelday_end
     )
-    dsrelday_start_name <- utils.nest::if_not_empty(
-      dsrelday_start,
-      p_timeline_merged_data()$columns_source$dsrelday_start[[1]]
+    dsrelday_start_name <- `if`(
+      length(dsrelday_start),
+      p_timeline_merged_data()$columns_source$dsrelday_start[[1]],
+      dsrelday_start
     )
-    dsrelday_end_name <- utils.nest::if_not_empty(
-      dsrelday_end,
-      p_timeline_merged_data()$columns_source$dsrelday_end[[1]]
+    dsrelday_end_name <- `if`(
+      length(dsrelday_end),
+      p_timeline_merged_data()$columns_source$dsrelday_end[[1]],
+      dsrelday_end
     )
 
     validate(

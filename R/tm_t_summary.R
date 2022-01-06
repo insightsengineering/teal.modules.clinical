@@ -33,7 +33,8 @@ template_summary <- function(dataname,
     assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels)
   )
-  match.arg(numeric_stats, several.ok = TRUE)
+  checkmate::assert_character(numeric_stats, min.len = 1)
+  checkmate::assert_subset(numeric_stats, c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"))
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -266,7 +267,7 @@ tm_t_summary <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  match.arg(numeric_stats, several.ok = TRUE)
+  checkmate::assert_subset(numeric_stats, c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"))
   useNA <- match.arg(useNA) # nolint
   numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)

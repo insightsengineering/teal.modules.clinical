@@ -172,7 +172,7 @@ tm_g_barchart_simple <- function(x = NULL,
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
-    utils.nest::if_null(plot_options, list())
+    `if`(is.null(plot_options), list(), plot_options)
   )
 
   ui_args <- as.list(environment())
@@ -253,32 +253,32 @@ ui_g_barchart_simple <- function(id, ...) {
           checkboxInput(
             ns("label_bars"),
             "Label bars",
-            value = utils.nest::if_null(args$plot_options$label_bars, TRUE)
+            value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
           ),
           checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
-            value = utils.nest::if_null(args$plot_options$rotate_bar_labels, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
           ),
           checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
-            value = utils.nest::if_null(args$plot_options$rotate_x_label, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
           ),
           checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
-            value = utils.nest::if_null(args$plot_options$rotate_y_label, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
           ),
           checkboxInput(
             ns("flip_axis"),
             "Flip axes",
-            value = utils.nest::if_null(args$plot_options$flip_axis, FALSE)
+            value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
           ),
           checkboxInput(
             ns("show_n"),
             "Show n",
-            value = utils.nest::if_null(args$plot_options$show_n, TRUE)
+            value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
           ),
           sliderInput(
             inputId = ns("expand_y_range"),
@@ -674,7 +674,7 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
   checkmate::assert_character(groupby_vars)
 
-  n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
+  n_name <- `if`(is.null(n_name), get_n_name(groupby_vars), n_name)
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
       dplyr::group_by_at(.(groupby_vars)) %>%

@@ -919,7 +919,7 @@ srv_t_coxreg <- function(input,
       pval_method = input$pval_method,
       ties = input$ties,
       conf_level = as.numeric(input$conf_level),
-      interaction = utils.nest::if_null(input$interactions, FALSE)
+      interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
     )
 
     if (multivariate) {

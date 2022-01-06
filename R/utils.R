@@ -33,7 +33,7 @@ call_concatenate <- function(args, bin_op = "+") {
 
 # needs columns like n_, n_ARM etc. to get count from
 add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- utils.nest::if_null(n_column, get_n_name(groupby_vars = column))
+  n_column <- `if`(is.null(n_column), get_n_name(groupby_vars = column), n_column)
   checkmate::assert_string(column)
 
   chunk$push(substitute(

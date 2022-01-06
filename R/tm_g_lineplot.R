@@ -108,7 +108,18 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
-    user_plot = ggplot2_args
+    user_plot = ggplot2_args,
+    module_plot = teal.devel::ggplot2_args(
+      labs = list(
+        title = sprintf("Plot of %s and %s %s by Visit",
+          names(which(mid_choices == mid)),
+          `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
+          names(which(interval_choices == interval))
+        ),
+        subtitle = "",
+        y = sprintf("%s %s Values for", y, names(which(mid_choices == mid)))
+      )
+    )
   )
 
   plot_call <- substitute(
@@ -145,18 +156,11 @@ template_g_lineplot <- function(dataname = "ANL",
       mid_point_size = mid_point_size,
       table_font_size = table_font_size,
       y = y,
-      ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
-        "Plot of ", names(which(mid_choices == mid)), " and ",
-        ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
-        names(which(interval_choices == interval)), " by Visit"
-      )),
-      ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
-      ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
-      ggplot2_args_ylab = utils.nest::if_null(
-        all_ggplot2_args$labs$y,
-        paste(y, names(which(mid_choices == mid)), "Values for")
-      ),
-      ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
+      ggplot2_args_title = all_ggplot2_args$labs$title,
+      ggplot2_args_subtitle = all_ggplot2_args$labs$subtitle,
+      ggplot2_args_caption = all_ggplot2_args$labs$caption,
+      ggplot2_args_ylab = all_ggplot2_args$labs$y,
+      ggplot2_args_legend_title = all_ggplot2_args$labs$lty
     )
   )
 
