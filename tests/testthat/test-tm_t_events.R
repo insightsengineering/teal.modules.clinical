@@ -21,9 +21,11 @@ testthat::test_that("template_events generates correct expressions", {
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
-    title = quote({title <- paste0(
-      "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
-    )}),
+    title = quote({
+      title <- paste0(
+        "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+      )
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
       lyt <- basic_table(title = title) %>%
