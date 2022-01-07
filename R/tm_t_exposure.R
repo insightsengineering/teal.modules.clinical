@@ -28,13 +28,13 @@ template_exposure <- function(parentname,
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(row_by_var),
-    assertthat::is.string(col_by_var) || utils.nest::is_empty(col_by_var),
+    assertthat::is.string(col_by_var) || length(col_by_var) == 0,
     assertthat::is.string(paramcd),
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var) || utils.nest::is_empty(avalu_var),
+    assertthat::is.string(avalu_var) || length(avalu_var) == 0,
     assertthat::is.flag(drop_levels)
   )
 
@@ -78,7 +78,7 @@ template_exposure <- function(parentname,
     parsed_basic_table_args
   )
 
-  if (!utils.nest::is_empty(col_by_var)) {
+  if (length(col_by_var) > 0) {
     if (add_total) {
       layout_list <- add_expr(
         layout_list,
@@ -319,26 +319,21 @@ tm_t_exposure <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
-  utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
-    assertthat::is.flag(add_total),
-    is.choices_selected(paramcd),
-    is.choices_selected(row_by_var),
-    is.choices_selected(col_by_var),
-    is.choices_selected(id_var),
-    is.choices_selected(parcat),
-    is.choices_selected(aval_var),
-    is.choices_selected(avalu_var),
-    assertthat::is.string(na_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(row_by_var, "choices_selected")
+  checkmate::assert_class(col_by_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(parcat, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
@@ -349,8 +344,6 @@ tm_t_exposure <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
   module(

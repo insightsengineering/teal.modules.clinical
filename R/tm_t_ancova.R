@@ -176,7 +176,7 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (utils.nest::is_empty(cov_var)) {
+    if (length(cov_var) == 0) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -257,7 +257,7 @@ template_ancova <- function(dataname = "ANL",
       )
     )
 
-    if (!utils.nest::is_empty(cov_var)) {
+    if (length(cov_var) > 0) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -400,20 +400,12 @@ tm_t_ancova <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
@@ -599,7 +591,7 @@ srv_ancova <- function(input,
 
     # Other validations.
     validate(need(
-      !utils.nest::is_empty(input_aval_var),
+      length(input_aval_var) > 0,
       "Analysis variable cannot be empty."
     ))
     validate(need(

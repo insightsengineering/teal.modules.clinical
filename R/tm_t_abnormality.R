@@ -319,28 +319,24 @@ tm_t_abnormality <- function(label,
                              na_level = "<Missing>",
                              basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
-  utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
-    is.choices_selected(arm_var),
-    assertthat::is.flag(add_total),
-    is.choices_selected(by_vars),
-    is.choices_selected(grade),
-    utils.nest::is_character_list(abnormal, min_length = 2, max_length = 2),
-    is.choices_selected(id_var),
-    is.choices_selected(baseline_var),
-    is.choices_selected(treatment_flag),
-    is.choices_selected(treatment_flag_var),
-    utils.nest::is_logical_single(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
+  checkmate::assert_list(abnormal, types = "character", len = 2)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(by_vars, "choices_selected")
+  checkmate::assert_class(grade, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
+  checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_flag(exclude_base_abn)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -350,8 +346,6 @@ tm_t_abnormality <- function(label,
     baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 

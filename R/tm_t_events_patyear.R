@@ -201,27 +201,19 @@ tm_t_events_patyear <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_patyear")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(arm_var),
-    is.choices_selected(events_var),
-    is.choices_selected(paramcd),
-    is.choices_selected(aval_var),
-    is.choices_selected(avalu_var),
-    assertthat::is.flag(add_total),
-    is.choices_selected(conf_level),
-    assertthat::is.flag(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(events_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
@@ -424,8 +416,8 @@ srv_events_patyear <- function(input,
     ))
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(utils.nest::is_character_single(input_events_var), "Events variable should be a single column."),
+      need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
+      need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
       need(input$conf_method, "`CI Method` field is not selected."),
       need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
       need(

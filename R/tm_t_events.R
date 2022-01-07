@@ -30,10 +30,10 @@ template_events <- function(dataname,
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
     assertthat::is.string(event_type),
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -479,26 +479,17 @@ tm_t_events <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_logical_single(add_total),
-    utils.nest::is_character_single(event_type),
-    utils.nest::is_numeric_single(prune_freq),
-    utils.nest::is_numeric_single(prune_diff),
-    assertthat::is.flag(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_scalar(prune_freq)
+  checkmate::assert_scalar(prune_diff)
+  checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())

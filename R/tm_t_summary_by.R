@@ -389,36 +389,22 @@ tm_t_summary_by <- function(label,
                             post_output = NULL,
                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(id_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.flag(drop_zero_levels),
-    utils.nest::is_logical_single(parallel_vars),
-    utils.nest::is_logical_single(row_groups),
-    useNA %in% c("ifany", "no"), # nolint
-    utils.nest::is_character_single(na_level),
-    is.choices_selected(denominator),
-    denominator$choices %in% c("n", "N", "omit"),
-    utils.nest::is_logical_single(drop_arm_levels),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
-  if (!all(numeric_stats %in% allowed_numeric_stats)) {
-    stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
-  }
-
+  checkmate::assert_string(na_level)
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(denominator, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_zero_levels)
+  checkmate::assert_subset(denominator$choices, choices = c("n", "N", "omit"))
+  checkmate::assert_flag(parallel_vars)
+  checkmate::assert_flag(row_groups)
+  checkmate::assert_flag(drop_arm_levels)
+  numeric_stats <- match.arg(numeric_stats)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
@@ -426,8 +412,8 @@ tm_t_summary_by <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    paramcd = utils.nest::if_not_null(
-      paramcd,
+    paramcd = `if`(is.null(paramcd),
+      NULL,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
     ),
     by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
@@ -477,8 +463,8 @@ ui_summary_by <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      utils.nest::if_not_null(
-        a$paramcd,
+      `if`(is.null(a$paramcd),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("paramcd"),
           label = "Select Endpoint",
@@ -621,7 +607,7 @@ srv_summary_by <- function(input,
     input_id_var <- as.vector(anl_m$columns_source$id_var)
     input_by_vars <- anl_selectors()$by_vars()$select_ordered
     input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-    input_paramcd <- utils.nest::if_not_null(paramcd, unlist(paramcd$filter)["vars_selected"])
+    input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
     # validate inputs
     validate(

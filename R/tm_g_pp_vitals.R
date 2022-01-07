@@ -244,38 +244,28 @@ tm_g_pp_vitals <- function(label,
                            post_output = NULL,
                            ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
-    paramcd = utils.nest::if_not_null(paramcd, cs_to_des_select(paramcd, dataname = dataname)),
-    param = utils.nest::if_not_null(param, cs_to_des_select(param, dataname = dataname)),
-    aval = utils.nest::if_not_null(aval, cs_to_des_select(aval, dataname = dataname)),
-    xaxis = utils.nest::if_not_null(xaxis, cs_to_des_select(xaxis, dataname = dataname))
+    paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
+    param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
+    aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
+    xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
   )
 
   module(
@@ -415,7 +405,7 @@ srv_g_vitals <- function(input,
 
     cur_selected <- isolate(input$paramcd_levels_vals)
 
-    selected <- if (!utils.nest::is_empty(cur_selected)) {
+    selected <- if (length(cur_selected) > 0) {
       cur_selected
     } else {
       paramcd_col_levels

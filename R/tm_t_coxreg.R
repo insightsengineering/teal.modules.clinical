@@ -515,18 +515,13 @@ tm_t_coxreg <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_coxreg")
-  utils.nest::stop_if_not(
-    length(dataname) == 1,
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -865,13 +860,13 @@ srv_t_coxreg <- function(input,
 
     if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
       validate(need(
-        (sum(sapply(at(), utils.nest::is_empty)) == 0),
+        all(vapply(at(), function(x) length(x) > 0, logical(1))),
         "Please specify all the interaction levels."
       ))
     }
 
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate covariate has at least two levels
     validate(
@@ -924,7 +919,7 @@ srv_t_coxreg <- function(input,
       pval_method = input$pval_method,
       ties = input$ties,
       conf_level = as.numeric(input$conf_level),
-      interaction = utils.nest::if_null(input$interactions, FALSE)
+      interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
     )
 
     if (multivariate) {

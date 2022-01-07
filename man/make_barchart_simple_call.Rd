@@ -11,7 +11,7 @@ make_barchart_simple_call(
   x_facet_name = NULL,
   y_facet_name = NULL,
   label_bars = TRUE,
-  barlayout = "stacked",
+  barlayout = c("side_by_side", "stacked"),
   flip_axis = FALSE,
   rotate_bar_labels = FALSE,
   rotate_x_label = FALSE,
