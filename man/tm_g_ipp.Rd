@@ -69,6 +69,8 @@ and preselected option for variable values that can be used as \code{base_var}.}
 
 \item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
 
+\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
+
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot

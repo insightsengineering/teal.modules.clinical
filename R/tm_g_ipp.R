@@ -10,6 +10,7 @@
 #' @param arm_levels (`character`)\cr vector of all arm variable levels.
 #' @param avalu_first (`string`)\cr `avalu` value.
 #' @param paramcd_first (`string`)\cr `paramcd` value.
+#' @param add_avalu (`flag`)\cr allow user to not display value unit in the plot.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.

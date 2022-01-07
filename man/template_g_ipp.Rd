@@ -63,6 +63,8 @@ with default module arguments (hard coded in the module body).\cr For more detai
 \code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 
 \item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
+
+\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
 }
 \description{
 Template: Individual Patient Plots
