@@ -312,41 +312,24 @@ tm_g_forest_rsp <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    utils.nest::is_logical_single(fixed_symbol_size),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_flag(fixed_symbol_size)
+  checkmate::assert_class(conf_level, "choices_selected")
+  assertthat::assert_that(
+    inherits(default_responses, c("list", "character", "numeric", "NULL")),
+    msg = "`default_responses` must be a named list or an array."
   )
-
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-
-  assertthat::assert_that(
-    is.list(default_responses) ||
-      is.null(default_responses) ||
-      is.character(default_responses) ||
-      is.numeric(default_responses),
-    msg = "`default_responses` must be a named list or an array."
-  )
 
   args <- as.list(environment())
 
@@ -552,7 +535,7 @@ srv_g_forest_rsp <- function(input,
       } else {
         sel_param
       }
-      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+      responder_choices <- if (length(aval_var) == 0) {
         character(0)
       } else {
         if ("levels" %in% names(sel_param)) {
@@ -655,7 +638,7 @@ srv_g_forest_rsp <- function(input,
     ))
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty."),
       need(
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],

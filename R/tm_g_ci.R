@@ -267,31 +267,20 @@ tm_g_ci <- function(label,
                     post_output = NULL,
                     ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ci")
+  checkmate::assert_string(label)
   stat <- match.arg(stat)
-  utils.nest::stop_if_not(
-    is.character(label),
-    utils.nest::is_class_list("data_extract_spec")(list(y_var, x_var, color)),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_class(y_var, classes = "data_extract_spec")
+  checkmate::assert_class(x_var, classes = "data_extract_spec")
+  checkmate::assert_class(color, classes = "data_extract_spec")
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())

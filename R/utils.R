@@ -24,20 +24,17 @@
 #' eval(call_concatenate(list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))))
 #' }
 call_concatenate <- function(args, bin_op = "+") {
-  stopifnot(
-    utils.nest::is_character_single(bin_op),
-    all(vapply(args, is.language, logical(1)))
-  )
+  checkmate::assert_string(bin_op)
+  checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
+
   # can be used for dplyr and ggplot2 to concatenate calls with +
   Reduce(function(existing, new) call(bin_op, existing, new), args)
 }
 
 # needs columns like n_, n_ARM etc. to get count from
 add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- utils.nest::if_null(n_column, get_n_name(groupby_vars = column))
-  stopifnot(
-    utils.nest::is_character_single(column)
-  )
+  n_column <- `if`(is.null(n_column), get_n_name(groupby_vars = column), n_column)
+  checkmate::assert_string(column)
 
   chunk$push(substitute(
     counts <- counts %>% dplyr::mutate(
@@ -257,8 +254,8 @@ bracket_expr <- function(exprs) {
 #' @export
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
-  stopifnot(utils.nest::is_logical_single(multiple))
+  checkmate::assert_class(cs, "choices_selected")
+  checkmate::assert_flag(multiple)
 
   select_spec(
     choices = cs$choices,
@@ -275,8 +272,8 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @export
 #' @return ([teal::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
-  stopifnot(is.choices_selected(cs))
-  stopifnot(utils.nest::is_logical_single(multiple))
+  checkmate::assert_class(cs, "choices_selected")
+  checkmate::assert_flag(multiple)
 
   vars <- if (inherits(cs, "delayed_choices_selected")) {
     cs$choices$var_choices
@@ -304,24 +301,18 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  utils.nest::stop_if_not(
-    list(
-      is.cs_or_des(cs),
-      paste(cs_name, "must be a choices selected object or a data extract spec")
-    ),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_logical_single(multiple)
+  checkmate::assert_string(dataname)
+  checkmate::assert_flag(multiple)
+  checkmate::assert(
+    checkmate::check_class(cs, classes = "data_extract_spec"),
+    checkmate::check_class(cs, classes = "choices_selected"),
+    .var.name = cs_name
   )
-  if (!multiple) {
-    utils.nest::stop_if_not(
-      list(
-        length(cs$selected) == 1 || is.null(cs$selected),
-        paste(cs_name, "must only have 1 selected value")
-      )
-    )
+  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, "must only have 1 selected value")
   }
 
-  if (is.choices_selected(cs)) {
+  if (inherits(cs, "choices_selected")) {
     data_extract_spec(
       dataname = dataname,
       select = cs_to_select_spec(cs, multiple = multiple)
@@ -343,24 +334,18 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
-  utils.nest::stop_if_not(
-    list(
-      is.cs_or_des(cs),
-      paste(cs_name, "must be a choices selected object or a data extract spec")
-    ),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_logical_single(multiple)
+  checkmate::assert_string(dataname)
+  checkmate::assert_flag(multiple)
+  checkmate::assert(
+    checkmate::check_class(cs, classes = "data_extract_spec"),
+    checkmate::check_class(cs, classes = "choices_selected"),
+    .var.name = cs_name
   )
-  if (!multiple) {
-    utils.nest::stop_if_not(
-      list(
-        length(cs$selected) == 1 || is.null(cs$selected),
-        paste(cs_name, "must only have 1 selected value")
-      )
-    )
+  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, "must only have 1 selected value")
   }
 
-  if (is.choices_selected(cs)) {
+  if (inherits(cs, "choices_selected")) {
     vars <- if (inherits(cs, "delayed_choices_selected")) {
       cs$choices$var_choices
     } else {
@@ -393,7 +378,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #' @export
 #' @return (`logical`)
 is.cs_or_des <- function(x) { # nolint
-  is.choices_selected(x) || inherits(x, "data_extract_spec")
+  inherits(x, c("data_extract_spec", "choices_selected"))
 }
 
 #' Split-Column Expression
@@ -448,8 +433,8 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @export
 #' @note uses the regex `\\*|:` to perform the split.
 split_choices <- function(x) {
-  stopifnot(is.choices_selected(x))
-  stopifnot(utils.nest::is_character_vector(x$choices))
+  checkmate::assert_class(x, "choices_selected")
+  checkmate::assert_character(x$choices, min.len = 1)
 
   split_x <- x
   split_x$choices <- split_interactions(x$choices)

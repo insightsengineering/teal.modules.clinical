@@ -125,22 +125,18 @@ tm_t_pp_medical_history <- function(label,
                                     pre_output = NULL,
                                     post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_medical_history")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
-    mhterm = utils.nest::if_not_null(mhterm, cs_to_des_select(mhterm, dataname = dataname)),
-    mhbodsys = utils.nest::if_not_null(mhbodsys, cs_to_des_select(mhbodsys, dataname = dataname)),
-    mhdistat = utils.nest::if_not_null(mhdistat, cs_to_des_select(mhdistat, dataname = dataname))
+    mhterm = `if`(is.null(mhterm), NULL, cs_to_des_select(mhterm, dataname = dataname)),
+    mhbodsys = `if`(is.null(mhbodsys), NULL, cs_to_des_select(mhbodsys, dataname = dataname)),
+    mhdistat = `if`(is.null(mhdistat), NULL, cs_to_des_select(mhdistat, dataname = dataname))
   )
 
   module(
@@ -221,7 +217,6 @@ srv_t_medical_history <- function(input,
                                   mhdistat,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
-
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)

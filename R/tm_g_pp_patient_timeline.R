@@ -151,12 +151,12 @@ template_patient_timeline <- function(dataname = "ANL",
         },
         env = list(
           dataname = as.name(dataname),
-          aeterm = utils.nest::if_not_empty(aeterm, as.name(aeterm)),
-          aetime_start = utils.nest::if_not_empty(aetime_start, as.name(aetime_start)),
-          aetime_end = utils.nest::if_not_empty(aetime_end, as.name(aetime_end)),
-          dstime_start = utils.nest::if_not_empty(dstime_start, as.name(dstime_start)),
-          dstime_end = utils.nest::if_not_empty(dstime_end, as.name(dstime_end)),
-          cmdecod = utils.nest::if_not_empty(cmdecod, as.name(cmdecod)),
+          aeterm = `if`(length(aeterm), as.name(aeterm), aeterm),
+          aetime_start = `if`(length(aetime_start), as.name(aetime_start), aetime_start),
+          aetime_end = `if`(length(aetime_end), as.name(aetime_end), aetime_end),
+          dstime_start = `if`(length(dstime_start), as.name(dstime_start), dstime_start),
+          dstime_end = `if`(length(dstime_end), as.name(dstime_end), dstime_end),
+          cmdecod = `if`(length(cmdecod), as.name(cmdecod), cmdecod),
           aeterm_var = aeterm,
           aetime_start_var = aetime_start,
           aetime_end_var = aetime_end,
@@ -449,31 +449,19 @@ tm_g_pp_patient_timeline <- function(label,
                                      post_output = NULL,
                                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname_adcm))
-  assertthat::assert_that(utils.nest::is_character_single(dataname_adae))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname_adcm)
+  checkmate::assert_string(dataname_adae)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
   assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
   assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
   assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
@@ -482,27 +470,22 @@ tm_g_pp_patient_timeline <- function(label,
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
       (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
-    aeterm = utils.nest::if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname_adae)),
-    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
-    aetime_start = utils.nest::if_not_null(aetime_start, cs_to_des_select(aetime_start, dataname = dataname_adae)),
-    aetime_end = utils.nest::if_not_null(aetime_end, cs_to_des_select(aetime_end, dataname = dataname_adae)),
-    dstime_start = utils.nest::if_not_null(dstime_start, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
-    dstime_end = utils.nest::if_not_null(dstime_end, cs_to_des_select(dstime_end, dataname = dataname_adcm)),
-    aerelday_start = utils.nest::if_not_null(
-      aerelday_start,
-      cs_to_des_select(aerelday_start, dataname = dataname_adae)
-    ),
-    aerelday_end = utils.nest::if_not_null(aerelday_end, cs_to_des_select(aerelday_end, dataname = dataname_adae)),
-    dsrelday_start = utils.nest::if_not_null(
-      dsrelday_start,
-      cs_to_des_select(dsrelday_start, dataname = dataname_adcm)
-    ),
-    dsrelday_end = utils.nest::if_not_null(dsrelday_end, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
+    aeterm = `if`(is.null(aeterm), NULL, cs_to_des_select(aeterm, dataname = dataname_adae)),
+    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
+    aetime_start = `if`(is.null(aetime_start), NULL, cs_to_des_select(aetime_start, dataname = dataname_adae)),
+    aetime_end = `if`(is.null(aetime_end), NULL, cs_to_des_select(aetime_end, dataname = dataname_adae)),
+    dstime_start = `if`(is.null(dstime_start), NULL, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
+    dstime_end = `if`(is.null(dstime_end), NULL, cs_to_des_select(dstime_end, dataname = dataname_adcm)),
+    aerelday_start = `if`(is.null(aerelday_start), NULL, cs_to_des_select(aerelday_start, dataname = dataname_adae)),
+    aerelday_end = `if`(is.null(aerelday_end), NULL, cs_to_des_select(aerelday_end, dataname = dataname_adae)),
+    dsrelday_start = `if`(is.null(dsrelday_start), NULL, cs_to_des_select(dsrelday_start, dataname = dataname_adcm)),
+    dsrelday_end = `if`(is.null(dsrelday_end), NULL, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
   )
 
   module(
@@ -756,21 +739,25 @@ srv_g_patient_timeline <- function(input,
 
     # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
     # AENDY columns to data_merge_module call above.
-    aerelday_start_name <- utils.nest::if_not_empty(
-      aerelday_start,
-      p_timeline_merged_data()$columns_source$aerelday_start[[1]]
+    aerelday_start_name <- `if`(
+      length(aerelday_start),
+      p_timeline_merged_data()$columns_source$aerelday_start[[1]],
+      aerelday_start
     )
-    aerelday_end_name <- utils.nest::if_not_empty(
-      aerelday_end,
-      p_timeline_merged_data()$columns_source$aerelday_end[[1]]
+    aerelday_end_name <- `if`(
+      length(aerelday_end),
+      p_timeline_merged_data()$columns_source$aerelday_end[[1]],
+      aerelday_end
     )
-    dsrelday_start_name <- utils.nest::if_not_empty(
-      dsrelday_start,
-      p_timeline_merged_data()$columns_source$dsrelday_start[[1]]
+    dsrelday_start_name <- `if`(
+      length(dsrelday_start),
+      p_timeline_merged_data()$columns_source$dsrelday_start[[1]],
+      dsrelday_start
     )
-    dsrelday_end_name <- utils.nest::if_not_empty(
-      dsrelday_end,
-      p_timeline_merged_data()$columns_source$dsrelday_end[[1]]
+    dsrelday_end_name <- `if`(
+      length(dsrelday_end),
+      p_timeline_merged_data()$columns_source$dsrelday_end[[1]],
+      dsrelday_end
     )
 
     validate(

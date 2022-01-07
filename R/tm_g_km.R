@@ -336,30 +336,19 @@ tm_g_km <- function(label,
                     pre_output = NULL,
                     post_output = NULL) {
   logger::log_info("Initializing tm_g_km")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
 
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -684,8 +673,8 @@ srv_g_km <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
     # validate font size
     validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))

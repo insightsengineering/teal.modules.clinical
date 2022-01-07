@@ -520,39 +520,22 @@ tm_a_mmrm <- function(label,
                       ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(dataname),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  plot_choices <- c("lsmeans", "diagnostic")
-  checkmate::assert(
-    checkmate::check_class(ggplot2_args, "ggplot2_args"),
-    checkmate::assert(
-      combine = "or",
-      checkmate::check_list(ggplot2_args, types = "ggplot2_args"),
-      checkmate::check_subset(names(ggplot2_args), c("default", plot_choices))
-    )
-  )
-  # Important step, so we could easily consume it later
   if (inherits(ggplot2_args, "ggplot2_args")) ggplot2_args <- list(default = ggplot2_args)
+  plot_choices <- c("lsmeans", "diagnostic")
+  checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
+  checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
 
   args <- as.list(environment())
 
@@ -920,7 +903,7 @@ srv_mmrm <- function(input,
 
   observeEvent(adsl_merged()$columns_source$arm_var, {
     arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
-    if (utils.nest::is_empty(arm_var)) {
+    if (length(arm_var) == 0) {
       shinyjs::hide("ref_arm")
       shinyjs::hide("comp_arm")
       shinyjs::hide("help_text")

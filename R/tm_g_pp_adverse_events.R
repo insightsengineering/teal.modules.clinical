@@ -62,7 +62,7 @@ template_adverse_events <- function(dataname = "ANL",
         outcome = as.name(outcome),
         action = as.name(action),
         time = as.name(time),
-        decod = utils.nest::if_not_null(decod, as.name(decod)),
+        decod = `if`(is.null(decod), NULL, as.name(decod)),
         vars = c(aeterm, tox_grade, causality, outcome, action, time, decod)
       )
     )
@@ -242,41 +242,31 @@ tm_g_pp_adverse_events <- function(label,
                                    post_output = NULL,
                                    ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_adverse_events")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
-    aeterm = utils.nest::if_not_null(aeterm, cs_to_des_select(aeterm, dataname = dataname)),
-    tox_grade = utils.nest::if_not_null(tox_grade, cs_to_des_select(tox_grade, dataname = dataname)),
-    causality = utils.nest::if_not_null(causality, cs_to_des_select(causality, dataname = dataname)),
-    outcome = utils.nest::if_not_null(outcome, cs_to_des_select(outcome, dataname = dataname)),
-    action = utils.nest::if_not_null(action, cs_to_des_select(action, dataname = dataname)),
-    time = utils.nest::if_not_null(time, cs_to_des_select(time, dataname = dataname)),
-    decod = utils.nest::if_not_null(decod, cs_to_des_select(decod, dataname = dataname))
+    aeterm = `if`(is.null(aeterm), NULL, cs_to_des_select(aeterm, dataname = dataname)),
+    tox_grade = `if`(is.null(tox_grade), NULL, cs_to_des_select(tox_grade, dataname = dataname)),
+    causality = `if`(is.null(causality), NULL, cs_to_des_select(causality, dataname = dataname)),
+    outcome = `if`(is.null(outcome), NULL, cs_to_des_select(outcome, dataname = dataname)),
+    action = `if`(is.null(action), NULL, cs_to_des_select(action, dataname = dataname)),
+    time = `if`(is.null(time), NULL, cs_to_des_select(time, dataname = dataname)),
+    decod = `if`(is.null(decod), NULL, cs_to_des_select(decod, dataname = dataname))
   )
 
   module(
@@ -367,8 +357,8 @@ ui_g_adverse_events <- function(id, ...) {
         data_extract_spec = ui_args$time,
         is_single_dataset = is_single_dataset_value
       ),
-      utils.nest::if_not_null(
-        ui_args$decod,
+      `if`(is.null(ui_args$decod),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("decod"),
           label = "Select DECOD variable:",
