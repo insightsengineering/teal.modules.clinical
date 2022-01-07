@@ -12,6 +12,7 @@
 * Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table. 
 * Enhanced `tm_g_forest_tte` to include selected parameter in title of the table. 
 * Enhanced `tm_g_pp_patient_timeline` with bold axes labels and integer values on the axis.
+* Enhanced `tm_g_ipp` to allow users not to display `AVALU` in the title nor in the y axis.  
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.

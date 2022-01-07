@@ -19,7 +19,8 @@ template_g_ipp(
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   ggplot2_args = teal.devel::ggplot2_args(),
-  suppress_legend = FALSE
+  suppress_legend = FALSE,
+  add_avalu = TRUE
 )
 }
 \arguments{
@@ -62,6 +63,8 @@ with default module arguments (hard coded in the module body).\cr For more detai
 \code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
 
 \item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
+
+\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
 }
 \description{
 Template: Individual Patient Plots
