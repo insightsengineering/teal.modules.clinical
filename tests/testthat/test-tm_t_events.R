@@ -28,7 +28,7 @@ testthat::test_that("template_events generates correct expressions", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -116,7 +116,7 @@ testthat::test_that("template_events generates correct expressions for nested co
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%
@@ -198,7 +198,7 @@ testthat::test_that("template_events can generate customized table", {
       title <- paste0("Event Summary by Term : ", rtables::var_labels(adcm)["CMDECOD"])
     }),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         summarize_num_patients(
@@ -261,7 +261,7 @@ testthat::test_that("template_events can generate customized table with alphabet
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -340,7 +340,7 @@ testthat::test_that("template_events can generate customized table with pruning"
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -439,7 +439,7 @@ testthat::test_that("template_events can generate customized table with pruning 
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- basic_table(title = title) %>%
+      lyt <- rtables::basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%

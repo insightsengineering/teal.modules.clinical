@@ -143,7 +143,7 @@ template_events <- function(dataname,
 
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(basic_table(title = title)))
+  layout_list <- add_expr(layout_list, quote(rtables::basic_table(title = title)))
   layout_list <- add_expr(
     layout_list,
     substitute(
