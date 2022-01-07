@@ -275,34 +275,20 @@ tm_g_ipp <- function(label,
                      post_output = NULL,
                      ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ipp")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    utils.nest::is_logical_single(add_baseline_hline),
-    utils.nest::is_logical_single(separate_by_obs),
-    utils.nest::is_logical_single(suppress_legend),
-
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_flag(add_baseline_hline)
+  checkmate::assert_flag(separate_by_obs)
+  checkmate::assert_flag(suppress_legend)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
@@ -503,11 +489,11 @@ srv_g_ipp <- function(input,
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column.")
+      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
     )
 
     validate(
-      need(utils.nest::is_character_single(input_visit_var), "Please select a timepoint variable.")
+      need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
     )
 
     NULL

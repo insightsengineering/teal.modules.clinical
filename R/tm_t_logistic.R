@@ -283,11 +283,13 @@ tm_t_logistic <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_logistic")
-  stopifnot(
-    length(dataname) == 1,
-    is.choices_selected(conf_level)
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(avalc_var, classes = "choices_selected")
+  checkmate::assert_class(conf_level, classes = "choices_selected")
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
@@ -579,7 +581,7 @@ srv_t_logistic <- function(input,
     }
 
     validate(
-      need(utils.nest::is_character_single(input_avalc_var), "Analysis variable should be a single column."),
+      need(checkmate::test_string(input_avalc_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty")
     )
 

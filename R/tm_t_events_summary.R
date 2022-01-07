@@ -594,24 +594,15 @@ tm_t_events_summary <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_summary")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    utils.nest::is_logical_single(add_total),
-    utils.nest::is_logical_single(count_subj),
-    utils.nest::is_logical_single(count_pt),
-    utils.nest::is_logical_single(count_events),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(count_subj)
+  checkmate::assert_flag(count_pt)
+  checkmate::assert_flag(count_events)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- c(as.list(environment()))
@@ -620,12 +611,12 @@ tm_t_events_summary <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = utils.nest::if_not_null(
-      flag_var_anl,
+    flag_var_anl = `if`(is.null(flag_var_anl),
+      NULL,
       cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
     ),
-    flag_var_aesi = utils.nest::if_not_null(
-      flag_var_aesi,
+    flag_var_aesi = `if`(is.null(flag_var_aesi),
+      NULL,
       cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
     ),
     aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
@@ -680,8 +671,8 @@ ui_t_events_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      utils.nest::if_not_null(
-        a$flag_var_anl,
+      `if`(is.null(a$flag_var_anl),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("flag_var_anl"),
           label = "Event Flag Variables",
@@ -689,8 +680,8 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      utils.nest::if_not_null(
-        a$flag_var_aesi,
+      `if`(is.null(a$flag_var_aesi),
+        NULL,
         teal.devel::data_extract_ui(
           id = ns("flag_var_aesi"),
           label = "AE Basket Flag Variables",

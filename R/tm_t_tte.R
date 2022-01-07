@@ -446,24 +446,15 @@ tm_t_tte <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_tte")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(time_points),
-    is.choices_selected(conf_level_coxph),
-    is.choices_selected(conf_level_survfit),
-    assertthat::is.flag(add_total),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(time_points, "choices_selected")
+  checkmate::assert_class(conf_level_coxph, "choices_selected")
+  checkmate::assert_class(conf_level_survfit, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
@@ -792,10 +783,10 @@ srv_t_tte <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
     validate(need(
-      utils.nest::is_character_single(input_event_desc),
+      checkmate::test_string(input_event_desc),
       "Event description variable should be a single column."
     ))
 
@@ -806,7 +797,7 @@ srv_t_tte <- function(input,
     ))
 
     validate(need(
-      !utils.nest::is_empty(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]),
+      length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
       "`Select Endpoint` field is NULL"
     ))
 

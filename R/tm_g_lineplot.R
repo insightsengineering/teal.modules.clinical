@@ -108,7 +108,18 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
-    user_plot = ggplot2_args
+    user_plot = ggplot2_args,
+    module_plot = teal.devel::ggplot2_args(
+      labs = list(
+        title = sprintf("Plot of %s and %s %s by Visit",
+          names(which(mid_choices == mid)),
+          `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
+          names(which(interval_choices == interval))
+        ),
+        subtitle = "",
+        y = sprintf("%s %s Values for", y, names(which(mid_choices == mid)))
+      )
+    )
   )
 
   plot_call <- substitute(
@@ -145,18 +156,11 @@ template_g_lineplot <- function(dataname = "ANL",
       mid_point_size = mid_point_size,
       table_font_size = table_font_size,
       y = y,
-      ggplot2_args_title = utils.nest::if_null(all_ggplot2_args$labs$title, paste0(
-        "Plot of ", names(which(mid_choices == mid)), " and ",
-        ifelse(interval %in% c("mean_ci", "median_ci"), paste0(as.character(conf_level * 100), "% "), ""),
-        names(which(interval_choices == interval)), " by Visit"
-      )),
-      ggplot2_args_subtitle = utils.nest::if_null(all_ggplot2_args$labs$subtitle, ""),
-      ggplot2_args_caption = utils.nest::if_null(all_ggplot2_args$labs$caption, NULL),
-      ggplot2_args_ylab = utils.nest::if_null(
-        all_ggplot2_args$labs$y,
-        paste(y, names(which(mid_choices == mid)), "Values for")
-      ),
-      ggplot2_args_legend_title = utils.nest::if_null(all_ggplot2_args$labs$lty, NULL)
+      ggplot2_args_title = all_ggplot2_args$labs$title,
+      ggplot2_args_subtitle = all_ggplot2_args$labs$subtitle,
+      ggplot2_args_caption = all_ggplot2_args$labs$caption,
+      ggplot2_args_ylab = all_ggplot2_args$labs$y,
+      ggplot2_args_legend_title = all_ggplot2_args$labs$lty
     )
   )
 
@@ -249,31 +253,21 @@ tm_g_lineplot <- function(label,
                           post_output = NULL,
                           ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_lineplot")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    is.choices_selected(conf_level),
-    utils.nest::is_character_single(mid),
-    utils.nest::is_character_single(interval),
-    utils.nest::is_character_vector(whiskers),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(mid)
+  checkmate::assert_string(interval)
+  whiskers <- match.arg(whiskers)
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
@@ -523,8 +517,8 @@ srv_g_lineplot <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(utils.nest::is_character_single(input_y), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_x_var), "Time variable should be a single column."))
+    validate(need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
+    validate(need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
 
     NULL
   })
@@ -541,7 +535,7 @@ srv_g_lineplot <- function(input,
     teal.devel::validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    if (utils.nest::is_empty(whiskers_selected) | is.null(input$interval)) {
+    if (length(whiskers_selected) == 0 || is.null(input$interval)) {
       input_whiskers <- NULL
       input_interval <- NULL
     } else {

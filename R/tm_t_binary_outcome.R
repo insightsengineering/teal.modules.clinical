@@ -472,30 +472,19 @@ tm_t_binary_outcome <- function(label,
                                 post_output = NULL,
                                 basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_binary_outcome")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    utils.nest::is_character_single(dataname),
-    utils.nest::is_character_single(parentname),
-    is.choices_selected(conf_level),
-    assertthat::is.flag(add_total),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert(
+    checkmate::check_class(default_responses, classes = "list"),
+    checkmate::check_class(default_responses, classes = "character"),
+    checkmate::check_class(default_responses, classes = "numeric"),
+    checkmate::check_class(default_responses, classes = "NULL")
   )
-
-  assertthat::assert_that(
-    is.list(default_responses) ||
-      is.null(default_responses) ||
-      is.character(default_responses) ||
-      is.numeric(default_responses),
-    msg = "`default_responses` must be a named list or an array."
-  )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
@@ -783,7 +772,7 @@ srv_t_binary_outcome <- function(input,
       } else {
         sel_param
       }
-      responder_choices <- if (utils.nest::is_empty(aval_var)) {
+      responder_choices <- if (length(aval_var) == 0) {
         character(0)
       } else {
         if ("levels" %in% names(sel_param)) {
@@ -863,7 +852,7 @@ srv_t_binary_outcome <- function(input,
     )
 
     validate(
-      need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."),
+      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
       need(input$responders, "`Responders` field is empty")
     )
 

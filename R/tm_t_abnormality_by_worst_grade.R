@@ -312,24 +312,19 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             post_output = NULL,
                                             basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
-  utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
-    is.choices_selected(id_var),
-    is.choices_selected(arm_var),
-    is.choices_selected(paramcd),
-    is.choices_selected(atoxgr_var),
-    is.choices_selected(worst_high_flag_var),
-    is.choices_selected(worst_low_flag_var),
-    is.choices_selected(worst_flag_indicator),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(atoxgr_var, "choices_selected")
+  checkmate::assert_class(worst_high_flag_var, "choices_selected")
+  checkmate::assert_class(worst_low_flag_var, "choices_selected")
+  checkmate::assert_class(worst_flag_indicator, "choices_selected")
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -339,8 +334,6 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
     worst_high_flag_var = cs_to_des_select(worst_high_flag_var, dataname = dataname),
     worst_low_flag_var = cs_to_des_select(worst_low_flag_var, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
 
   args <- as.list(environment())
 
@@ -503,7 +496,7 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
       need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
       need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
       need(
-        !utils.nest::is_empty(anl_m$data()[[input_paramcd_var]]),
+        length(anl_m$data()[[input_paramcd_var]]) > 0,
         "Please select at least one Laboratory parameter."
       ),
       need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),

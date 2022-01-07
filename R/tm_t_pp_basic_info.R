@@ -7,10 +7,9 @@
 #'
 template_basic_info <- function(dataname = "ANL",
                                 vars) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    utils.nest::is_character_vector(vars)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_character(vars, min.len = 1)
+
   y <- list()
   y$table <- list()
 
@@ -86,19 +85,15 @@ tm_t_pp_basic_info <- function(label,
                                pre_output = NULL,
                                post_output = NULL) {
   logger::log_info("Initializing tm_t_pp_basic_info")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(patient_col)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
-    vars = utils.nest::if_not_null(vars, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
+    vars = `if`(is.null(vars), NULL, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
   )
 
   module(

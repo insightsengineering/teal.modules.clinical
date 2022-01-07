@@ -147,20 +147,11 @@ tm_g_barchart_simple <- function(x = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
-  utils.nest::stop_if_not(
-    utils.nest::is_character_single(label),
-    is.null(plot_options) || is.list(plot_options),
-    !all(vapply(list(x, fill, x_facet, y_facet), is.null, logical(1))), # at least one must be specified
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_list(plot_options, null.ok = TRUE)
+  if (length(c(x, fill, x_facet, y_facet)) == 0) {
+    stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
+  }
   x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
   fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
   x_facet <- teal.devel::list_extract_spec(x_facet, allow_null = TRUE)
@@ -172,15 +163,16 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
-  checkmate::assert_numeric(plot_width[1],
-    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE,
-    .var.name = "plot_width"
+  checkmate::assert_numeric(
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
-    utils.nest::if_null(plot_options, list())
+    `if`(is.null(plot_options), list(), plot_options)
   )
 
   ui_args <- as.list(environment())
@@ -261,32 +253,32 @@ ui_g_barchart_simple <- function(id, ...) {
           checkboxInput(
             ns("label_bars"),
             "Label bars",
-            value = utils.nest::if_null(args$plot_options$label_bars, TRUE)
+            value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
           ),
           checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
-            value = utils.nest::if_null(args$plot_options$rotate_bar_labels, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
           ),
           checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
-            value = utils.nest::if_null(args$plot_options$rotate_x_label, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
           ),
           checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
-            value = utils.nest::if_null(args$plot_options$rotate_y_label, FALSE)
+            value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
           ),
           checkboxInput(
             ns("flip_axis"),
             "Flip axes",
-            value = utils.nest::if_null(args$plot_options$flip_axis, FALSE)
+            value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
           ),
           checkboxInput(
             ns("show_n"),
             "Show n",
-            value = utils.nest::if_null(args$plot_options$show_n, TRUE)
+            value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
           ),
           sliderInput(
             inputId = ns("expand_y_range"),
@@ -464,10 +456,10 @@ srv_g_barchart_simple <- function(input,
     y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
 
     # set to NULL when empty character
-    if (utils.nest::is_character_empty(x_name)) x_name <- NULL
-    if (utils.nest::is_character_empty(fill_name)) fill_name <- NULL
-    if (utils.nest::is_character_empty(x_facet_name)) x_facet_name <- NULL
-    if (utils.nest::is_character_empty(y_facet_name)) y_facet_name <- NULL
+    if (identical(x_name, character(0))) x_name <- NULL
+    if (identical(fill_name, character(0))) fill_name <- NULL
+    if (identical(x_facet_name, character(0))) x_facet_name <- NULL
+    if (identical(y_facet_name, character(0))) y_facet_name <- NULL
 
     res <- c(
       x_name = x_name, fill_name = fill_name,
@@ -544,7 +536,7 @@ make_barchart_simple_call <- function(y_name,
                                       x_facet_name = NULL,
                                       y_facet_name = NULL,
                                       label_bars = TRUE, # whether to also draw numbers as text, i.e. label bars
-                                      barlayout = "stacked",
+                                      barlayout = c("side_by_side", "stacked"),
                                       flip_axis = FALSE,
                                       rotate_bar_labels = FALSE,
                                       rotate_x_label = FALSE,
@@ -559,20 +551,18 @@ make_barchart_simple_call <- function(y_name,
       paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
     )
   )
-  stopifnot(
-    utils.nest::is_character_single(y_name),
-    is.null(x_name) || utils.nest::is_character_single(x_name),
-    is.null(fill_name) || utils.nest::is_character_single(fill_name),
-    is.null(x_facet_name) || utils.nest::is_character_single(x_facet_name),
-    is.null(y_facet_name) || utils.nest::is_character_single(y_facet_name),
-    length(plot_vars) > 0,
-    utils.nest::is_logical_single(label_bars),
-    barlayout %in% c("side_by_side", "stacked"),
-    is.null(flip_axis) || utils.nest::is_logical_single(flip_axis),
-    is.null(rotate_x_label) || utils.nest::is_logical_single(rotate_x_label),
-    is.null(rotate_y_label) || utils.nest::is_logical_single(rotate_y_label),
-    utils.nest::is_numeric_single(expand_y_range)
-  )
+  checkmate::assert_string(y_name)
+  checkmate::assert_string(x_name, null.ok = TRUE)
+  checkmate::assert_string(fill_name, null.ok = TRUE)
+  checkmate::assert_string(x_facet_name, null.ok = TRUE)
+  checkmate::assert_string(y_facet_name, null.ok = TRUE)
+  checkmate::assert_flag(label_bars)
+  checkmate::assert_character(plot_vars, min.len = 1)
+  checkmate::assert_scalar(expand_y_range)
+  barlayout <- match.arg(barlayout)
+  checkmate::assert_flag(flip_axis, null.ok = TRUE)
+  checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
+  checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
   plot_args <- list(quote(ggplot(counts)))
 
@@ -682,9 +672,9 @@ get_n_name <- function(groupby_vars) {
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
   groupby_vars <- as.vector(groupby_vars) # as.vector unnames
-  stopifnot(utils.nest::is_character_vector(groupby_vars, min_length = 0)) # also works for zero length
+  checkmate::assert_character(groupby_vars)
 
-  n_name <- utils.nest::if_null(n_name, get_n_name(groupby_vars))
+  n_name <- `if`(is.null(n_name), get_n_name(groupby_vars), n_name)
   chunk$push(bquote({
     counts <- .(as.symbol(data_name)) %>%
       dplyr::group_by_at(.(groupby_vars)) %>%

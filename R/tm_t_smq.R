@@ -379,24 +379,20 @@ tm_t_smq <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_smq")
-  utils.nest::stop_if_not(
-    assertthat::is.string(dataname),
-    is.choices_selected(arm_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.flag(drop_arm_levels),
-    is.choices_selected(id_var),
-    is.choices_selected(llt),
-    list(
-      is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || inherits(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  args <- as.list(environment())
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
@@ -405,10 +401,6 @@ tm_t_smq <- function(label,
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
-
-  checkmate::assert_class(basic_table_args, "basic_table_args")
-
-  args <- as.list(environment())
 
   module(
     label = label,

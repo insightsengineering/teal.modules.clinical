@@ -373,44 +373,34 @@ tm_g_pp_therapy <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
-  assertthat::assert_that(utils.nest::is_character_single(label))
-  assertthat::assert_that(utils.nest::is_character_single(dataname))
-  assertthat::assert_that(utils.nest::is_character_single(parentname))
-  assertthat::assert_that(utils.nest::is_character_single(patient_col))
-  assertthat::assert_that(is.null(pre_output) || inherits(pre_output, "shiny.tag"),
-    msg = "pre_output should be either null or shiny.tag type of object"
-  )
-  assertthat::assert_that(is.null(post_output) || inherits(post_output, "shiny.tag"),
-    msg = "post_output should be either null or shiny.tag type of object"
-  )
-
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
-    atirel = utils.nest::if_not_null(atirel, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = utils.nest::if_not_null(cmdecod, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = utils.nest::if_not_null(cmindc, cs_to_des_select(cmindc, dataname = dataname)),
-    cmdose = utils.nest::if_not_null(cmdose, cs_to_des_select(cmdose, dataname = dataname)),
-    cmtrt = utils.nest::if_not_null(cmtrt, cs_to_des_select(cmtrt, dataname = dataname)),
-    cmdosu = utils.nest::if_not_null(cmdosu, cs_to_des_select(cmdosu, dataname = dataname)),
-    cmdosfrq = utils.nest::if_not_null(cmdosfrq, cs_to_des_select(cmdosfrq, dataname = dataname)),
-    cmroute = utils.nest::if_not_null(cmroute, cs_to_des_select(cmroute, dataname = dataname)),
-    cmstdy = utils.nest::if_not_null(cmstdy, cs_to_des_select(cmstdy, dataname = dataname)),
-    cmendy = utils.nest::if_not_null(cmendy, cs_to_des_select(cmendy, dataname = dataname))
+    atirel = `if`(is.null(atirel), NULL, cs_to_des_select(atirel, dataname = dataname)),
+    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname)),
+    cmindc = `if`(is.null(cmindc), NULL, cs_to_des_select(cmindc, dataname = dataname)),
+    cmdose = `if`(is.null(cmdose), NULL, cs_to_des_select(cmdose, dataname = dataname)),
+    cmtrt = `if`(is.null(cmtrt), NULL, cs_to_des_select(cmtrt, dataname = dataname)),
+    cmdosu = `if`(is.null(cmdosu), NULL, cs_to_des_select(cmdosu, dataname = dataname)),
+    cmdosfrq = `if`(is.null(cmdosfrq), NULL, cs_to_des_select(cmdosfrq, dataname = dataname)),
+    cmroute = `if`(is.null(cmroute), NULL, cs_to_des_select(cmroute, dataname = dataname)),
+    cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname)),
+    cmendy = `if`(is.null(cmendy), NULL, cs_to_des_select(cmendy, dataname = dataname))
   )
 
   module(
