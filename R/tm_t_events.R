@@ -115,16 +115,35 @@ template_events <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = paste("Event Summary of", hlt, llt))
-    )
+  # Start title parsing
+  title_list <- list()
+
+  title_list <- add_expr(
+    title_list,
+    if (!is.null(hlt) & is.null(llt)) {
+      substitute(
+        expr = title <- paste0("Event Summary by Term : ", rtables::var_labels(dataname)[hlt]),
+        env = list(dataname = as.name(dataname), hlt = hlt)
+      )
+    } else if (is.null(hlt) & !is.null(llt)) {
+      substitute(
+        expr = title <- paste0("Event Summary by Term : ", rtables::var_labels(dataname)[llt]),
+        env = list(dataname = as.name(dataname), llt = llt)
+      )
+    } else if (!is.null(hlt) & !is.null(llt)) {
+      substitute(
+        expr = title <- paste0(
+          "Event Summary by Term : ", rtables::var_labels(dataname)[hlt], " and ", rtables::var_labels(dataname)[llt]
+        ),
+        env = list(dataname = as.name(dataname), hlt = hlt, llt = llt)
+      )
+    }
   )
+  y$title <- bracket_expr(title_list)
 
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, parsed_basic_table_args)
+  layout_list <- add_expr(layout_list, quote(basic_table(title = title)))
   layout_list <- add_expr(
     layout_list,
     substitute(
