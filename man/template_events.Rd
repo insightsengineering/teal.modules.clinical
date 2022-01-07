@@ -38,8 +38,9 @@ name of the variable with high level term for events.}
 name of the variable with low level term for events.}
 
 \item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
-module.
-#' @param label_llt (\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
 module.}
 
 \item{add_total}{(\code{logical})\cr
