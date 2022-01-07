@@ -22,6 +22,7 @@ tm_g_ipp(
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   suppress_legend = FALSE,
+  add_avalu = TRUE,
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,

@@ -19,7 +19,8 @@ template_g_ipp(
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   ggplot2_args = teal.devel::ggplot2_args(),
-  suppress_legend = FALSE
+  suppress_legend = FALSE,
+  add_avalu = FALSE
 )
 }
 \arguments{
