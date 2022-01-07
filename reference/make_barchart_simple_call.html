@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9043</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9044</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -85,7 +76,7 @@ Other releases
   x_facet_name <span class="op">=</span> <span class="cn">NULL</span>,
   y_facet_name <span class="op">=</span> <span class="cn">NULL</span>,
   label_bars <span class="op">=</span> <span class="cn">TRUE</span>,
-  barlayout <span class="op">=</span> <span class="st">"stacked"</span>,
+  barlayout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"side_by_side"</span>, <span class="st">"stacked"</span><span class="op">)</span>,
   flip_axis <span class="op">=</span> <span class="cn">FALSE</span>,
   rotate_bar_labels <span class="op">=</span> <span class="cn">FALSE</span>,
   rotate_x_label <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -149,7 +140,7 @@ name of the <code>xaxis</code> variable.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> plot &lt;- ggplot(counts) + aes_string(x = "x") + geom_col(aes_string(y = "y"), </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     position = position_dodge(0.9), fill = "#b6cae9") + geom_text(aes_string(y = "y", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     label = "y"), stat = "identity", angle = 0, position = position_dodge(0.9), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     hjust = 0.5, vjust = 0.5) + ggplot2::labs(x = utils.nest::column_annotation_label(counts, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     hjust = 0.5, vjust = -1) + ggplot2::labs(x = utils.nest::column_annotation_label(counts, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "x"))</span>
 </code></pre></div>
     </div>
