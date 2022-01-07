@@ -14,6 +14,8 @@ template_events <- function(dataname,
                             arm_var,
                             hlt,
                             llt,
+                            label_hlt = NULL,
+                            label_llt = NULL,
                             add_total = TRUE,
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
@@ -115,35 +117,27 @@ template_events <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
-  # Start title parsing
-  title_list <- list()
-
-  title_list <- add_expr(
-    title_list,
-    if (!is.null(hlt) & is.null(llt)) {
-      substitute(
-        expr = title <- paste0("Event Summary by Term : ", rtables::var_labels(dataname)[hlt]),
-        env = list(dataname = as.name(dataname), hlt = hlt)
-      )
-    } else if (is.null(hlt) & !is.null(llt)) {
-      substitute(
-        expr = title <- paste0("Event Summary by Term : ", rtables::var_labels(dataname)[llt]),
-        env = list(dataname = as.name(dataname), llt = llt)
-      )
-    } else if (!is.null(hlt) & !is.null(llt)) {
-      substitute(
-        expr = title <- paste0(
-          "Event Summary by Term : ", rtables::var_labels(dataname)[hlt], " and ", rtables::var_labels(dataname)[llt]
-        ),
-        env = list(dataname = as.name(dataname), hlt = hlt, llt = llt)
-      )
-    }
-  )
-  y$title <- bracket_expr(title_list)
-
   # Start layout steps.
   layout_list <- list()
-  layout_list <- add_expr(layout_list, quote(rtables::basic_table(title = title)))
+
+  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+    paste0("Event Summary by Term : ", label_llt)
+  } else if (!is.null(hlt) & is.null(llt)) {
+    paste0("Event Summary by Term : ", label_hlt)
+  } else if (!is.null(hlt) & !is.null(llt)) {
+    paste0("Event Summary by Term : ", label_hlt, " and ", label_llt)
+  } else {
+    NULL
+  }
+
+  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
+    )
+  )
+
+  layout_list <- add_expr(layout_list, parsed_basic_table_args)
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -716,6 +710,8 @@ srv_t_events_byterm <- function(input,
 
     input_hlt <- as.vector(anl_m$columns_source$hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
+    label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
+    label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
 
     my_calls <- template_events(
       dataname = "ANL",
@@ -723,6 +719,8 @@ srv_t_events_byterm <- function(input,
       arm_var = anl_selectors()$arm_var()$select_ordered,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
+      label_hlt = label_hlt,
+      label_llt = label_llt,
       add_total = input$add_total,
       event_type = event_type,
       sort_criteria = input$sort_criteria,
