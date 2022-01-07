@@ -32,7 +32,7 @@ template_g_ipp <- function(dataname = "ANL",
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.devel::ggplot2_args(),
                            suppress_legend = FALSE,
-                           add_avalu = FALSE) {
+                           add_avalu = TRUE) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
