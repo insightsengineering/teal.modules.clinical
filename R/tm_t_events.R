@@ -127,7 +127,7 @@ template_events <- function(dataname,
   } else if (!is.null(hlt) & !is.null(llt)) {
     paste0("Event Summary by Term : ", label_hlt, " and ", label_llt)
   } else {
-    NULL
+    "Event Summary by Term"
   }
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
