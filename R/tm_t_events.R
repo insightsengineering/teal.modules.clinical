@@ -21,6 +21,7 @@ template_events <- function(dataname,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
                             basic_table_args = teal.devel::basic_table_args()) {
+  # browser()
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -118,7 +119,7 @@ template_events <- function(dataname,
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = paste("Event Summary of", hlt, llt))
+      module_table = teal.devel::basic_table_args(title = paste("Event Summary of", names(hlt), "in", names(llt)))
     )
   )
 
@@ -704,8 +705,15 @@ srv_t_events_byterm <- function(input,
     teal.devel::chunks_push_data_merge(anl_adsl)
     teal.devel::chunks_push_new_line()
 
+    get_selected_label <- function(obj, current_selected){
+      name_list <- names(obj$select$choices)
+      name_list[obj$select$choices %in% current_selected]
+    }
+
     input_hlt <- as.vector(anl_m$columns_source$hlt)
+    names(input_hlt) <- get_selected_label(hlt, input_hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
+    names(input_llt) <- get_selected_label(llt, input_llt)
 
     my_calls <- template_events(
       dataname = "ANL",
