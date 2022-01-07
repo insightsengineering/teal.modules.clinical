@@ -10,6 +10,7 @@
 #' @param arm_levels (`character`)\cr vector of all arm variable levels.
 #' @param avalu_first (`string`)\cr `avalu` value.
 #' @param paramcd_first (`string`)\cr `paramcd` value.
+#' @param add_avalu (`flag`)\cr allow user to not display value unit in the plot.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
@@ -31,7 +32,8 @@ template_g_ipp <- function(dataname = "ANL",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.devel::ggplot2_args(),
-                           suppress_legend = FALSE) {
+                           suppress_legend = FALSE,
+                           add_avalu = TRUE) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
@@ -43,7 +45,8 @@ template_g_ipp <- function(dataname = "ANL",
     assertthat::is.string(base_var),
     assertthat::is.flag(add_baseline_hline),
     assertthat::is.flag(separate_by_obs),
-    assertthat::is.flag(suppress_legend)
+    assertthat::is.flag(suppress_legend),
+    assertthat::is.flag(add_avalu)
   )
 
   y <- list()
@@ -54,13 +57,24 @@ template_g_ipp <- function(dataname = "ANL",
     env = list(df = as.name(dataname))
   )
 
+  title <- ifelse(
+    add_avalu,
+    sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
+    sprintf("Individual Patient Plot for %s Values over Time", paramcd_first)
+    )
+  y_axis <- ifelse(
+    add_avalu,
+    sprintf("%s (%s)", paramcd_first, avalu_first),
+    paramcd_first
+  )
+
   all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = teal.devel::ggplot2_args(
       labs = list(
-        title = sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
+        title = title,
         x = "Visit",
-        y = sprintf("%s (%s)", paramcd_first, avalu_first),
+        y = y_axis,
         subtitle = paste(arm_levels, collapse = ", ")
       )
     )
@@ -269,6 +283,7 @@ tm_g_ipp <- function(label,
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
                      suppress_legend = FALSE,
+                     add_avalu = TRUE,
                      plot_height = c(1200L, 400L, 5000L),
                      plot_width = NULL,
                      pre_output = NULL,
@@ -333,7 +348,7 @@ ui_g_ipp <- function(id, ...) {
     a$visit_var,
     a$paramcd,
     a$base_var
-  )
+    )
 
   ns <- NS(id)
 
@@ -403,6 +418,11 @@ ui_g_ipp <- function(id, ...) {
             ns("suppress_legend"),
             "Suppress legend",
             value = a$suppress_legend
+          ),
+          checkboxInput(
+            ns("add_avalu"),
+            "Add unit value in title/y axis",
+            value = a$add_avalu
           )
         )
       )
@@ -538,7 +558,8 @@ srv_g_ipp <- function(input,
       paramcd_first = paramcd_first,
       arm_var = arm_var,
       arm_levels = arm_levels,
-      ggplot2_args = ggplot2_args
+      ggplot2_args = ggplot2_args,
+      add_avalu = input$add_avalu
     )
     mapply(expression = my_calls, teal.devel::chunks_push)
   })

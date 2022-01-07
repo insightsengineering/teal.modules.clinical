@@ -22,6 +22,7 @@ tm_g_ipp(
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   suppress_legend = FALSE,
+  add_avalu = TRUE,
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -67,6 +68,8 @@ and preselected option for variable values that can be used as \code{base_var}.}
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
 
 \item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
+
+\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
