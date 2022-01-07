@@ -21,9 +21,12 @@ testthat::test_that("template_events generates correct expressions", {
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    title = quote({title <- paste0(
+      "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+    )}),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of AEBODSYS AEDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -104,9 +107,14 @@ testthat::test_that("template_events generates correct expressions for nested co
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    title = quote({
+      title <- paste0(
+        "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+      )
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of AEBODSYS AEDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%
@@ -184,8 +192,11 @@ testthat::test_that("template_events can generate customized table", {
         omit_columns = setdiff(names(anl), "CMDECOD")
       )
     }),
+    title = quote({
+      title <- paste0("Event Summary by Term : ", rtables::var_labels(adcm)["CMDECOD"])
+    }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of  CMDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         summarize_num_patients(
@@ -241,9 +252,14 @@ testthat::test_that("template_events can generate customized table with alphabet
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    title = quote({
+      title <- paste0(
+        "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+      )
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of AEBODSYS AEDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -315,9 +331,14 @@ testthat::test_that("template_events can generate customized table with pruning"
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    title = quote({
+      title <- paste0(
+        "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+      )
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of AEBODSYS AEDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -409,9 +430,14 @@ testthat::test_that("template_events can generate customized table with pruning 
         omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
       )
     }),
+    title = quote({
+      title <- paste0(
+        "Event Summary by Term : ", rtables::var_labels(adae)["AEBODSYS"], " and ", rtables::var_labels(adae)["AEDECOD"]
+      )
+    }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Event Summary of AEBODSYS AEDECOD") %>%
+      lyt <- basic_table(title = title) %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         rtables::split_cols_by("ACTARMCD", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%
