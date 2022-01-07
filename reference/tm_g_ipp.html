@@ -25,7 +25,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9044</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9045</span>
       </span>
     </div>
 
@@ -46,15 +46,6 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -100,6 +91,7 @@ ADaM structure.</p>
   add_baseline_hline <span class="op">=</span> <span class="cn">FALSE</span>,
   separate_by_obs <span class="op">=</span> <span class="cn">FALSE</span>,
   suppress_legend <span class="op">=</span> <span class="cn">FALSE</span>,
+  add_avalu <span class="op">=</span> <span class="cn">TRUE</span>,
   plot_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1200L</span>, <span class="fl">400L</span>, <span class="fl">5000L</span><span class="op">)</span>,
   plot_width <span class="op">=</span> <span class="cn">NULL</span>,
   pre_output <span class="op">=</span> <span class="cn">NULL</span>,
@@ -148,6 +140,8 @@ and preselected option for variable values that can be used as <code>base_var</c
 <dd><p>(<code>flag</code>)<br> creates multi panel plots when TRUE</p></dd>
 <dt>suppress_legend</dt>
 <dd><p>(<code>flag</code>)<br> allow user to suppress legend</p></dd>
+<dt>add_avalu</dt>
+<dd><p>(<code>flag</code>)<br> allow user to not display value unit in the plot.</p></dd>
 <dt>plot_height</dt>
 <dd><p>optional, (<code>numeric</code>)<br>
 a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
@@ -243,7 +237,7 @@ with default module arguments (hard coded in the module body).<br> For more deta
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-01-07 07:23:03.7589 pid:2123 token: teal.modules.clinical fun:tm_g_ipp [INFO] Initializing tm_g_ipp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-01-07 14:10:13.3208 pid:2135 token: teal.modules.clinical fun:tm_g_ipp [INFO] Initializing tm_g_ipp</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">ui</span>, server <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
