@@ -1,6 +1,10 @@
 #' Template: Events by Term
 #'
 #' @inheritParams template_arguments
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' #' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
