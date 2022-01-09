@@ -1,6 +1,10 @@
 #' Template: Events by Term
 #'
 #' @inheritParams template_arguments
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
@@ -14,6 +18,8 @@ template_events <- function(dataname,
                             arm_var,
                             hlt,
                             llt,
+                            label_hlt = NULL,
+                            label_llt = NULL,
                             add_total = TRUE,
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
@@ -27,6 +33,8 @@ template_events <- function(dataname,
     is.character(arm_var) && length(arm_var) %in% c(1, 2),
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt) || is.null(llt),
+    assertthat::is.string(label_hlt) || is.null(label_hlt),
+    assertthat::is.string(label_llt) || is.null(label_llt),
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
     assertthat::is.string(event_type),
@@ -115,14 +123,26 @@ template_events <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  # Start layout steps.
+  layout_list <- list()
+
+  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+    paste0("Event Summary by Term : ", label_llt)
+  } else if (!is.null(hlt) & is.null(llt)) {
+    paste0("Event Summary by Term : ", label_hlt)
+  } else if (!is.null(hlt) & !is.null(llt)) {
+    paste0("Event Summary by Term : ", label_hlt, " and ", label_llt)
+  } else {
+    "Event Summary by Term"
+  }
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
     )
   )
 
-  # Start layout steps.
-  layout_list <- list()
   layout_list <- add_expr(layout_list, parsed_basic_table_args)
   layout_list <- add_expr(
     layout_list,
@@ -696,6 +716,8 @@ srv_t_events_byterm <- function(input,
 
     input_hlt <- as.vector(anl_m$columns_source$hlt)
     input_llt <- as.vector(anl_m$columns_source$llt)
+    label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
+    label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
 
     my_calls <- template_events(
       dataname = "ANL",
@@ -703,6 +725,8 @@ srv_t_events_byterm <- function(input,
       arm_var = anl_selectors()$arm_var()$select_ordered,
       hlt = if (length(input_hlt) != 0) input_hlt else NULL,
       llt = if (length(input_llt) != 0) input_llt else NULL,
+      label_hlt = label_hlt,
+      label_llt = label_llt,
       add_total = input$add_total,
       event_type = event_type,
       sort_criteria = input$sort_criteria,

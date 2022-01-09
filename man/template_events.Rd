@@ -10,6 +10,8 @@ template_events(
   arm_var,
   hlt,
   llt,
+  label_hlt = NULL,
+  label_llt = NULL,
   add_total = TRUE,
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
@@ -34,6 +36,12 @@ name of the variable with high level term for events.}
 
 \item{llt}{(\code{character})\cr
 name of the variable with low level term for events.}
+
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
