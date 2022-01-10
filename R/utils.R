@@ -134,7 +134,7 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' )
 #'
 #' teal.modules.clinical:::styled_expr(expr)
-styled_expr <- function(expr) { # nolint nousage
+styled_expr <- function(expr) { # nolint
   styler::style_text(text = deparse(expr))
 }
 

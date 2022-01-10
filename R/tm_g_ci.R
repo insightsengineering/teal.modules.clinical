@@ -14,7 +14,7 @@
 #'
 #' @seealso [tm_g_ci()]
 #'
-template_g_ci <- function(dataname, # nousage # nolint
+template_g_ci <- function(dataname, # nolint
                           x_var,
                           y_var,
                           grp_var = NULL,
@@ -303,7 +303,7 @@ tm_g_ci <- function(label,
   )
 }
 
-ui_g_ci <- function(id, ...) { # nousage # nolint
+ui_g_ci <- function(id, ...) { # nolint
   ns <- NS(id)
   args <- list(...)
 
@@ -348,7 +348,7 @@ ui_g_ci <- function(id, ...) { # nousage # nolint
   )
 }
 
-srv_g_ci <- function(input, # nousage # nolint
+srv_g_ci <- function(input, # nolint
                      output,
                      session,
                      datasets,
