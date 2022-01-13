@@ -5,7 +5,10 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
+    label_hlt = "Body System",
+    label_llt = "Dictionary-Derived Term",
     grade = "AESEV",
+    label_grade = "Analysis Toxicity Grade",
     add_total = TRUE,
     drop_arm_levels = TRUE
   )
@@ -24,7 +27,8 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Analysis Toxicity Grade): Body System or Organ Class and Dictionary-Derived Term") %>%
         rtables::split_cols_by("ACTARM") %>%
         rtables::add_overall_col(label = "All Patients") %>%
         rtables::add_colcounts() %>%
@@ -98,7 +102,10 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
+    label_hlt = "Body System or Organ Class",
+    label_llt = "Dictionary-Derived Term",
     grade = "AESEV",
+    label_grade = "Severity/Intensity",
     prune_freq = 0.4,
     prune_diff = 0.1,
     add_total = TRUE,
@@ -119,7 +126,8 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Severity/Intensity): Body System or Organ Class and Dictionary-Derived Term") %>%
         rtables::split_cols_by("ACTARM") %>%
         rtables::add_overall_col(label = "All Patients") %>%
         rtables::add_colcounts() %>%
@@ -197,7 +205,10 @@ testthat::test_that("template_events_by_grade without adding total column option
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
+    label_hlt = "Body System or Organ Class",
+    label_llt = "Dictionary-Derived Term",
     grade = "AESEV",
+    label_grade = "Severity/Intensity",
     add_total = FALSE,
     drop_arm_levels = FALSE
   )
@@ -215,7 +226,8 @@ testthat::test_that("template_events_by_grade without adding total column option
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Severity/Intensity): Body System or Organ Class and Dictionary-Derived Term") %>%
         rtables::split_cols_by("ACTARM") %>%
         rtables::add_colcounts() %>%
         summarize_occurrences_by_grade(
@@ -288,7 +300,10 @@ testthat::test_that("template_events_by_grade with hlt only works", {
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = NULL,
+    label_hlt = "Body System or Organ Class",
+    label_llt = NULL,
     grade = "AESEV",
+    label_grade = "Severity/Intensity",
     add_total = TRUE,
     drop_arm_levels = TRUE
   )
@@ -307,7 +322,8 @@ testthat::test_that("template_events_by_grade with hlt only works", {
     }),
     layout_prep = quote(split_fun <- trim_levels_in_group),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Severity/Intensity): Body System or Organ Class") %>%
         rtables::split_cols_by("ACTARM") %>%
         rtables::add_overall_col(label = "All Patients") %>%
         rtables::add_colcounts() %>%
@@ -363,7 +379,10 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
+    label_hlt = "Body System or Organ Class",
+    label_llt = "Dictionary-Derived Term",
     grade = "AETOXGR",
+    label_grade = "Analysis Toxicity Grade",
     add_total = TRUE,
     drop_arm_levels = TRUE
   )
@@ -393,7 +412,8 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Analysis Toxicity Grade): Body System or Organ Class and Dictionary-Derived Term") %>%
         rtables::split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -483,7 +503,10 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
     arm_var = "ACTARM",
     hlt = NULL,
     llt = "AEDECOD",
+    label_hlt = NULL,
+    label_llt = "Organ Class and Dictionary-Derived Term",
     grade = "AETOXGR",
+    label_grade = "Analysis Toxicity Grade",
     add_total = TRUE,
     drop_arm_levels = TRUE
   )
@@ -513,7 +536,8 @@ testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Analysis Toxicity Grade): Dictionary-Derived Term") %>%
         rtables::split_cols_by(var = "ACTARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -589,7 +613,10 @@ testthat::test_that("template_events_col_by_grade without adding total column op
     arm_var = "ACTARM",
     hlt = NULL,
     llt = "AEDECOD",
+    label_hlt = NULL,
+    label_llt = "Organ Class and Dictionary-Derived Term",
     grade = "AETOXGR",
+    label_grade = "Analysis Toxicity Grade",
     add_total = FALSE,
     drop_arm_levels = TRUE
   )
@@ -619,7 +646,8 @@ testthat::test_that("template_events_col_by_grade without adding total column op
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Analysis Toxicity Grade): Dictionary-Derived Term") %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
@@ -695,7 +723,10 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
     arm_var = "ACTARM",
     hlt = NULL,
     llt = "AEDECOD",
+    label_hlt = NULL,
+    label_llt = "Organ Class and Dictionary-Derived Term",
     grade = "AETOXGR",
+    label_grade = "Analysis Toxicity Grade",
     add_total = FALSE,
     drop_arm_levels = FALSE
   )
@@ -724,7 +755,8 @@ testthat::test_that("template_events_col_by_grade without dropping arm levels op
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        title = "Adverse Event summary by grade(Analysis Toxicity Grade): Dictionary-Derived Term") %>%
         rtables::split_cols_by(var = "ACTARM") %>%
         split_cols_by_groups(
           "MAXAETOXGR",
