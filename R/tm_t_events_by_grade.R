@@ -108,11 +108,12 @@ template_events_by_grade <- function(dataname,
   layout_list <- list()
 
   basic_title <- if (is.null(hlt) & !is.null(llt)) {
-    paste0("Adverse Event summary by grade(", label_grade, "): ", label_llt)
+    browser()
+    paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
   } else if (!is.null(hlt) & is.null(llt)) {
-    paste0("Adverse Event summary by grade(", label_grade, "): ", label_hlt)
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
   } else if (!is.null(hlt) & !is.null(llt)) {
-    paste0("Adverse Event summary by grade(", label_grade, "): ", label_hlt, " and ", label_llt)
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
     "Adverse Event summary by grade"
   }
@@ -363,7 +364,13 @@ template_events_by_grade <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param grade (`character`) \cr grade term which grading_groups is based on, default to "AETOXGR".
+#' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param grading_groups (`character`) \cr list of grading groups.
 #'
 #' @seealso [tm_t_events_by_grade()]
@@ -381,7 +388,10 @@ template_events_col_by_grade <- function(dataname,
                                          id = "USUBJID",
                                          hlt,
                                          llt,
+                                         label_hlt = NULL,
+                                         label_llt = NULL,
                                          grade = "AETOXGR",
+                                         label_grade = NULL,
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = TRUE,
@@ -396,6 +406,9 @@ template_events_col_by_grade <- function(dataname,
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt),
     assertthat::is.string(grade),
+    assertthat::is.string(label_hlt) || is.null(label_hlt),
+    assertthat::is.string(label_llt) || is.null(label_llt),
+    assertthat::is.string(label_grade) || is.null(label_grade),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
@@ -485,8 +498,21 @@ template_events_col_by_grade <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  layout_list <- list()
+  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
+  } else if (!is.null(hlt) & is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
+  } else if (!is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
+  } else {
+    "Adverse Event summary by grade"
+  }
+
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+    teal.devel::resolve_basic_table_args(user_table = basic_table_args,
+                                         module_table = teal.devel::basic_table_args(title = basic_title))
   )
 
   # Start layout steps.
