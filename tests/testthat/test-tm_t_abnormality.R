@@ -9,7 +9,8 @@ testthat::test_that("template_abnormality generates correct expressions with def
     grade = "ANRIND",
     add_total = FALSE,
     exclude_base_abn = FALSE,
-    drop_arm_levels = TRUE
+    drop_arm_levels = TRUE,
+    tbl_title = "my_title"
   )
 
   expected <- list(
@@ -32,7 +33,7 @@ testthat::test_that("template_abnormality generates correct expressions with def
       )
     }),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(title = tbl_title, main_footer = "by variables without observed abnormalities are excluded.") %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -77,7 +78,8 @@ testthat::test_that("template_abnormality generates correct expressions with cus
     treatment_flag = "YES",
     add_total = TRUE,
     exclude_base_abn = TRUE,
-    drop_arm_levels = FALSE
+    drop_arm_levels = FALSE,
+    tbl_title = "my_title"
   )
 
   expected <- list(
@@ -99,7 +101,7 @@ testthat::test_that("template_abnormality generates correct expressions with cus
       )
     }),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(title = tbl_title, main_footer = "by variables without observed abnormalities are excluded.") %>%
         rtables::split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -143,7 +145,8 @@ testthat::test_that("template_abnormality generates correct expressions with cus
     add_total = FALSE,
     exclude_base_abn = FALSE,
     drop_arm_levels = TRUE,
-    na_level = "NA"
+    na_level = "NA",
+    tbl_title = "my_title"
   )
 
   expected <- list(
@@ -166,7 +169,7 @@ testthat::test_that("template_abnormality generates correct expressions with cus
       )
     }),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "by variables without observed abnormalities are excluded.") %>%
+      lyt <- rtables::basic_table(title = tbl_title, main_footer = "by variables without observed abnormalities are excluded.") %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
