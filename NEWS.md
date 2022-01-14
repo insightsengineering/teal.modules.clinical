@@ -28,6 +28,7 @@
 * Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
 * Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
+* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
 * Removed `utils.nest` dependency and replaced calls with `checkmate` equivalents.
 
 # teal.modules.clinical 0.8.10
