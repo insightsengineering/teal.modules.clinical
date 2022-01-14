@@ -540,7 +540,7 @@ srv_t_logistic <- function(input,
     at_values <- if (is.null(input$interaction_values)) {
       NA
     } else {
-      unlist(utils.nest::as_num(input$interaction_values))
+      unlist(as_num(input$interaction_values))
     }
 
     # validate inputs
@@ -633,7 +633,7 @@ srv_t_logistic <- function(input,
     at_values <- if (is.null(input$interaction_values)) {
       NA
     } else {
-      unlist(utils.nest::as_num(input$interaction_values))
+      unlist(as_num(input$interaction_values))
     }
     at_flag <- interaction_flag && is.numeric(anl_m$data()[[interaction_var]])
 
