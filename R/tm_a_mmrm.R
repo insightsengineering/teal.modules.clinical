@@ -376,7 +376,7 @@ template_mmrm_plots <- function(fit_name,
         lsmeans_plot
       },
       env = list(
-        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
+        plot_call = teal::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
   }
@@ -409,7 +409,7 @@ template_mmrm_plots <- function(fit_name,
         diagnostic_plot
       },
       env = list(
-        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
+        plot_call = teal::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
   }
