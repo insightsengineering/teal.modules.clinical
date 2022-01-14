@@ -10,6 +10,7 @@ template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
                                     events_var,
+                                    label_paramcd,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
                                     control = control_incidence_rate(),
@@ -53,14 +54,18 @@ template_events_patyear <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  # layout
+  layout_list <- list()
+
+  basic_title <- paste0("Event rates adjusted for patient-years by ", label_paramcd)
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
     )
   )
 
-  # layout
-  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -357,11 +362,11 @@ srv_events_patyear <- function(input,
   # This reactiveVal and the observeEvent that listens to it are only run upon app launch
   # They are used in combination to avoid the use of observe, which is costly in terms of performance
   avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
-    dplyr::select(as.name(avalu_var$select$selected)) %>%
-    unique() %>%
-    dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-    dplyr::arrange() %>%
-    dplyr::pull())
+                                 dplyr::select(as.name(avalu_var$select$selected)) %>%
+                                 unique() %>%
+                                 dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
+                                 dplyr::arrange() %>%
+                                 dplyr::pull())
 
   observeEvent(avalu_choices(), {
     updateSelectInput(
@@ -446,12 +451,18 @@ srv_events_patyear <- function(input,
     teal.devel::chunks_push_data_merge(anl_adsl)
     teal.devel::chunks_push_new_line()
 
+    input_paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+    label_paramcd <- if (length(input_paramcd) != 0)
+      names(paramcd$filter[[1]]$choices)[grepl(input_paramcd, names(paramcd$filter[[1]]$choices))]
+    else NULL
+
     my_calls <- template_events_patyear(
       dataname = "ANL",
       parentname = "ANL_ADSL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$aval_var),
       events_var = as.vector(anl_m$columns_source$events_var),
+      label_paramcd = label_paramcd,
       add_total = input$add_total,
       control = control_incidence_rate(
         conf_level = as.numeric(input$conf_level), # nolint
