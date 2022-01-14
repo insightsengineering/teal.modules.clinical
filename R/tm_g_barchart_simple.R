@@ -395,7 +395,7 @@ srv_g_barchart_simple <- function(input,
         labs = list(
           title = quote(plot_title),
           y = substitute(
-            utils.nest::column_annotation_label(counts, y_name),
+            column_annotation_label(counts, y_name),
             list(y_name = get_n_name(groupby_vars))
           )
         ),
@@ -632,7 +632,7 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      guides(fill = guide_legend(title = utils.nest::column_annotation_label(counts, .(fill_name))))
+      guides(fill = guide_legend(title = column_annotation_label(counts, .(fill_name))))
     ))
   }
 
@@ -649,7 +649,7 @@ make_barchart_simple_call <- function(y_name,
   if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
     ggplot2_args$labs[["x"]] <- substitute(
-      expr = utils.nest::column_annotation_label(counts, x_name),
+      expr = column_annotation_label(counts, x_name),
       env = list(x_name = x_name)
     )
   } else {
