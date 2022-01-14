@@ -1,11 +1,3 @@
-test_that("glue_with_null works", {
-  expect_equal(glue_with_null("Keep null: {NULL}"), "Keep null: NULL")
-  expect_equal(glue_with_null("Keep null: {NULL}"), glue::glue("Keep null: {replace_null(NULL)}"))
-  expect_equal(glue_with_null("Keep null: {NULL}, 1, {NULL}"), "Keep null: NULL, 1, NULL")
-
-  expect_equal(glue_with_null("This is null: {NULL}", null_replacement = "NULL quoted"), "This is null: NULL quoted")
-})
-
 
 test_that(
   "`as_num` as a wide interpretation of input to extract numerics.",

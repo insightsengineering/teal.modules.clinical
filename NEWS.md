@@ -9,10 +9,10 @@
 * Enhanced `tm_t_ancova` to include selected parameter(s), visit(s) and the analysis variable in title of the table.
 * New module `tm_g_lineplot` was added for creating line plots.
 * Enhanced `tm_t_logistic` to include selected parameter in title of the table.
-* Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table. 
-* Enhanced `tm_g_forest_tte` to include selected parameter in title of the table. 
+* Enhanced `tm_g_forest_rsp` to include selected parameter in title of the table.
+* Enhanced `tm_g_forest_tte` to include selected parameter in title of the table.
 * Enhanced `tm_g_pp_patient_timeline` with bold axes labels and integer values on the axis.
-* Enhanced `tm_g_ipp` to allow users not to display `AVALU` in the title nor in the y axis.  
+* Enhanced `tm_g_ipp` to allow users not to display `AVALU` in the title nor in the y axis.
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
@@ -21,16 +21,14 @@
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 * Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in plot based modules.
 * Added support for custom arguments for `rtables::basic_table` in table based modules.
-* Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Wilson method. 
+* Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Wilson method.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
 * Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
 * Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
-* Replaced calls to `utils.nest::check_slider_input` with `checkmate::assert_numeric`.
-* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
-* Replaced calls to `utils.nest::is_<class>_...`, `utils.nest::if_<class>_...`, `utils.nest::stop_if_not` with `checkmate` equivalents.
+* Removed `utils.nest` dependency and replaced calls with `checkmate` equivalents.
 
 # teal.modules.clinical 0.8.10
 ### New features

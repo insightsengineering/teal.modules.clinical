@@ -12,11 +12,10 @@
 #' @note This is simplified from the package `pryr` to avoid another dependency.
 #' @seealso [call_with_colon()], [substitute_names()]
 #'
-#' @export
 #' @examples
 #' x <- quote(a + b)
 #' substitute(x, list(a = 1, b = 2))
-#' substitute_q(x, list(a = 1, b = 2))
+#' teal.modules.clinical:::substitute_q(x, list(a = 1, b = 2))
 substitute_q <- function(qexpr, env) {
   stopifnot(is.language(qexpr))
   call <- substitute(substitute(qexpr, env), list(qexpr = qexpr))
@@ -38,29 +37,27 @@ substitute_q <- function(qexpr, env) {
 #' @return The modified expression.
 #' @seealso [call_with_colon()], [substitute_q()]
 #'
-#' @export
 #' @examples
-#' substitute_names(
+#' teal.modules.clinical:::substitute_names(
 #'   mutate(a = a + b, b = c + d),
 #'   names = list(a = as.name("d"), b = as.name("e"))
 #' )
-#' substitute_names(
+#' teal.modules.clinical:::substitute_names(
 #'   c(a = fun(a), b = 3),
 #'   names = list(a = as.name("b"), b = as.name("c"))
 #' )
-#' substitute_names(
+#' teal.modules.clinical:::substitute_names(
 #'   c(a = fun(a), b = bla),
 #'   names = list(a = as.name("b"), b = as.name("c")),
 #'   others = list(bla = "foo")
 #' )
 substitute_names <- function(expr, names, others = list()) {
-  stopifnot(
-    is_fully_named_list(names),
-    all(sapply(names, is.name)),
-    length(names) > 0,
-    is_fully_named_list(others),
-    identical(length(intersect(names(names), names(others))), 0L)
-  )
+  checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
+  checkmate::assert_list(others, min.len = 0, names = "unique")
+  checkmate::assert_names(names(names),  disjunct.from = names(others))
+  if (length(others) > 0) {
+    checkmate::assert_names(names(others), disjunct.from = names(names))
+  }
   expr <- substitute(expr)
   expr <- substitute_rhs(expr, c(names, others))
   substitute_lhs_names(expr, names)

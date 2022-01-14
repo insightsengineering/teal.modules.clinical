@@ -1,45 +1,3 @@
-#' Replaces NULL values by the string "NULL" in the glue string interpolation
-#'
-#' This is useful for glue because glue returns an empty string whenever
-#' a value to replace is NULL
-#'
-#' @param ... arguments passed to \code{\link[glue]{glue}}
-#' @param null_replacement string to replace \code{NULL} by
-#' @param .envir to get the correct environment for evaluating the expression (best to leave as is)
-#'
-#' @return replaced element
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' glue_with_null("Keep null: {NULL}")
-#' # same as
-#' glue::glue("Keep null: {replace_null(NULL)}")
-#' # oppose this to
-#' glue::glue("Keep null: {NULL}")
-#' }
-glue_with_null <- function(..., null_replacement = "NULL", .envir = parent.frame()) {
-  # replace NULL by "NULL", keep all other values unchanged
-  replace_null <- function(elem) {
-    if (is.null(elem)) {
-      null_replacement
-    } else {
-      elem
-    }
-  }
-
-  # replace NULL by "NULL", keep all other values unchanged
-  replace_null_transformer <- function(text, envir) {
-    # this function is replaced each time glue encounters something in between {}
-    new_text <- paste0("replace_null(", text, ")") # replace_null(text) #nolint
-    extended_envir <- list2env(list(replace_null = replace_null), envir = envir)
-    eval(parse(text = new_text, keep.source = FALSE), extended_envir)
-  }
-
-  glue::glue(..., .envir = .envir, .transformer = replace_null_transformer)
-}
-
 #' Parse text input to numeric vector
 #'
 #' Generic to parse text into numeric vectors. This was initially designed
@@ -49,7 +7,6 @@ glue_with_null <- function(..., null_replacement = "NULL", .envir = parent.frame
 #' @details The function is intended to extract any numeric from a character
 #'   string, factor levels, boolean and return a vector of numeric.
 #'
-#' @export
 #' @md
 #'
 #' @return As vector of numeric if directly parsed from `numeric` or boolean.
@@ -63,7 +20,7 @@ glue_with_null <- function(..., null_replacement = "NULL", .envir = parent.frame
 #'   numeric   = c(1, -5e+2, NA),
 #'   logical   = c(TRUE, FALSE, NA)
 #' )
-#' lapply(dta, as_num)
+#' lapply(dta, teal.modules.clinical:::as_num)
 as_num <- function(str) { # nolint # nousage
   UseMethod("as_num")
 }
