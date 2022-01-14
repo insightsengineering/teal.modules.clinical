@@ -11,7 +11,10 @@ template_events_by_grade(
   id = "USUBJID",
   hlt,
   llt,
+  label_hlt = NULL,
+  label_llt = NULL,
   grade,
+  label_grade = NULL,
   prune_freq = 0,
   prune_diff = 0,
   add_total = TRUE,
@@ -37,7 +40,16 @@ name of the variable with high level term for events.}
 \item{llt}{(\code{character})\cr
 name of the variable with low level term for events.}
 
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
 \item{grade}{(\code{character}) \cr name of the severity level variable.}
+
+\item{label_grade}{(\code{string})\cr label of the \code{grade} variable from \code{dataname}. The label will be extracted from the
+module.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
