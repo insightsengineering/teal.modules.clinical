@@ -15,6 +15,7 @@
 #' \dontrun{
 #' teal.modules.clinical:::column_annotation_label(ANL, "ACTARM")
 #' }
+#' @keywords internal
 column_annotation_label <- function(dataset, column, omit_raw_name = FALSE) {
   checkmate::assert_data_frame(dataset)
   checkmate::assert_string(column)

@@ -16,6 +16,7 @@
 #' x <- quote(a + b)
 #' substitute(x, list(a = 1, b = 2))
 #' teal.modules.clinical:::substitute_q(x, list(a = 1, b = 2))
+#' @keywords internal
 substitute_q <- function(qexpr, env) {
   stopifnot(is.language(qexpr))
   call <- substitute(substitute(qexpr, env), list(qexpr = qexpr))
@@ -51,6 +52,7 @@ substitute_q <- function(qexpr, env) {
 #'   names = list(a = as.name("b"), b = as.name("c")),
 #'   others = list(bla = "foo")
 #' )
+#' @keywords internal
 substitute_names <- function(expr, names, others = list()) {
   checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
   checkmate::assert_list(others, min.len = 0, names = "unique")
@@ -67,7 +69,7 @@ substitute_names <- function(expr, names, others = list()) {
 #' @describeIn substitute_names Helper function to just substitute the top-level names on the left-hand side in a
 #'   quoted expression.
 #' @inheritParams substitute_q
-#'
+#' @keywords internal
 h_subst_lhs_names <- function(qexpr, names) {
   will_replace <- names(names)
   to_replace <- names(qexpr)
@@ -81,7 +83,7 @@ h_subst_lhs_names <- function(qexpr, names) {
 #' @md
 #' @describeIn substitute_names recursively substitutes all names on the left-hand sides in a quoted expression.
 #' @inheritParams substitute_q
-#'
+#' @keywords internal
 substitute_lhs_names <- function(qexpr, names) {
   if (length(qexpr) == 1L) {
     return(qexpr)
@@ -97,7 +99,7 @@ substitute_lhs_names <- function(qexpr, names) {
 #' @describeIn substitute_names substitutes on the right-hand side in a quoted expression.
 #'   Note that this is just a synonym for [substitute_q()].
 #' @inheritParams substitute_q
-#'
+#' @keywords internal
 substitute_rhs <- function(qexpr, env) {
   substitute_q(qexpr, env)
 }

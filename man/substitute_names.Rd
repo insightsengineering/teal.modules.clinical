@@ -63,3 +63,4 @@ teal.modules.clinical:::substitute_names(
 \seealso{
 \code{\link[=call_with_colon]{call_with_colon()}}, \code{\link[=substitute_q]{substitute_q()}}
 }
+\keyword{internal}

@@ -29,3 +29,4 @@ teal.modules.clinical:::column_annotation_label(data, "cyl", omit_raw_name = TRU
 teal.modules.clinical:::column_annotation_label(ANL, "ACTARM")
 }
 }
+\keyword{internal}

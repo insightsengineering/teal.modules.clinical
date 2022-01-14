@@ -21,6 +21,7 @@
 #'   logical   = c(TRUE, FALSE, NA)
 #' )
 #' lapply(dta, teal.modules.clinical:::as_num)
+#' @keywords internal
 as_num <- function(str) { # nolint # nousage
   UseMethod("as_num")
 }

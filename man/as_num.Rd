@@ -46,3 +46,4 @@ dta <- list(
 )
 lapply(dta, teal.modules.clinical:::as_num)
 }
+\keyword{internal}

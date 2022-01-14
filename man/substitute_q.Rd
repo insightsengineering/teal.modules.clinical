@@ -30,3 +30,4 @@ teal.modules.clinical:::substitute_q(x, list(a = 1, b = 2))
 \seealso{
 \code{\link[=call_with_colon]{call_with_colon()}}, \code{\link[=substitute_names]{substitute_names()}}
 }
+\keyword{internal}
