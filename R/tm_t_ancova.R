@@ -72,7 +72,7 @@ template_ancova <- function(dataname = "ANL",
   if (combine_comp_arms) {
     anl_list <- add_expr(
       anl_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -80,7 +80,7 @@ template_ancova <- function(dataname = "ANL",
     )
     parent_list <- add_expr(
       parent_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)

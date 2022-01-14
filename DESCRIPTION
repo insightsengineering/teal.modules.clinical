@@ -48,7 +48,6 @@ Imports:
     teal.devel (>= 0.2.12),
     tidyr,
     utils,
-    utils.nest (>= 0.2.11),
     vistime
 Suggests:
     knitr,
