@@ -91,7 +91,7 @@ template_events <- function(dataname,
     if (!is.null(hlt)) {
       data_list <- add_expr(
         data_list,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = anl <- anl %>% dplyr::mutate(a = as.character(a)),
           names = list(a = as.name(hlt))
         )
@@ -101,7 +101,7 @@ template_events <- function(dataname,
     if (!is.null(llt)) {
       data_list <- add_expr(
         data_list,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = anl <- anl %>% dplyr::mutate(a = as.character(a)),
           names = list(a = as.name(llt))
         )

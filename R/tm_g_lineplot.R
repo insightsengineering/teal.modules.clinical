@@ -60,7 +60,7 @@ template_g_lineplot <- function(dataname = "ANL",
   if (!incl_screen) {
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::filter(x != "SCREENING") %>%
           dplyr::mutate(x = droplevels(x)),
         names = list(x = as.name(x)),

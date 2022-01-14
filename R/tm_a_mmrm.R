@@ -61,7 +61,7 @@ template_fit_mmrm <- function(parentname,
     if (combine_comp_arms) {
       data_list <- add_expr(
         data_list,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
@@ -69,7 +69,7 @@ template_fit_mmrm <- function(parentname,
       )
       parent_list <- add_expr(
         parent_list,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
@@ -376,7 +376,7 @@ template_mmrm_plots <- function(fit_name,
         lsmeans_plot
       },
       env = list(
-        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
+        plot_call = teal::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
   }
@@ -409,7 +409,7 @@ template_mmrm_plots <- function(fit_name,
         diagnostic_plot
       },
       env = list(
-        plot_call = utils.nest::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
+        plot_call = teal::calls_combine_by("+", c(plot_call, parsed_ggplot2_args))
       )
     )
   }
