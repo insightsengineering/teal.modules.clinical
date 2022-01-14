@@ -115,7 +115,7 @@ template_events_by_grade <- function(dataname,
   } else if (!is.null(hlt) & !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
-    "Adverse Event summary by grade"
+    paste0("Adverse Event summary by ", label_grade)
   }
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
@@ -506,7 +506,7 @@ template_events_col_by_grade <- function(dataname,
   } else if (!is.null(hlt) & !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
-    "Adverse Event summary by grade"
+    paste0("Adverse Event summary by ", label_grade)
   }
 
 
