@@ -9,6 +9,7 @@ template_events_patyear(
   parentname,
   arm_var,
   events_var,
+  label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
   control = control_incidence_rate(),
@@ -45,6 +46,8 @@ object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_tab
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr
 \code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+
+\item{label_paramcd\cr}{title of table based on paramcd}
 }
 \description{
 Template: Event rates adjusted for patient-years
