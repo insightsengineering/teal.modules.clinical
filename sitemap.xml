@@ -28,6 +28,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/add_expr.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/as_num.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/bracket_expr.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/color_lab_values.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/column_annotation_label.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/control_tte.html</loc>
@@ -101,6 +107,12 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/styled_expr.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/substitute_names.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/substitute_q.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/teal.modules.clinical.html</loc>
