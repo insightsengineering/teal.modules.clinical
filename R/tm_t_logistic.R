@@ -76,7 +76,7 @@ template_logistic <- function(dataname,
     if (combine_comp_arms) {
       data_pipe <- add_expr(
         data_pipe,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)

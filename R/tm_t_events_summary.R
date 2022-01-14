@@ -96,7 +96,7 @@ template_events_summary <- function(anl_name,
 
   data_list <- add_expr(
     data_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = anl <- anl %>% dplyr::mutate(
         a = as.character(a),
         USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
