@@ -8,6 +8,7 @@
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
+#' @param tbl_title (`character`)\cr Title with label of variables from by bars
 #'
 #' @seealso [tm_t_abnormality()]
 #'
@@ -25,7 +26,8 @@ template_abnormality <- function(parentname,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
                                  na_level = "<Missing>",
-                                 basic_table_args = teal.devel::basic_table_args()) {
+                                 basic_table_args = teal.devel::basic_table_args(),
+                                 tbl_title) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(id_var),
@@ -39,7 +41,8 @@ template_abnormality <- function(parentname,
     assertthat::is.string(treatment_flag),
     assertthat::is.flag(add_total),
     assertthat::is.flag(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels)
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(tbl_title)
   )
 
   y <- list()
@@ -112,12 +115,15 @@ template_abnormality <- function(parentname,
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.devel::basic_table_args(
+        title = tbl_title,
         main_footer = "by variables without observed abnormalities are excluded."
       )
     )
   )
 
   layout_list <- list()
+
+
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
@@ -558,6 +564,16 @@ srv_t_abnormality <- function(input,
     teal.devel::chunks_push_data_merge(anl_adsl)
     teal.devel::chunks_push_new_line()
 
+    by_vars_names <- anl_selectors()$by_vars()$select_ordered
+    by_vars_labels <- as.character(sapply(by_vars_names, function(name) {
+      attributes(anl_m$data()[[name]])$label
+    }))
+
+    tbl_title <- ifelse(
+      length(by_vars_labels) == 1,
+      paste("Laboratory Abnormality summary by", by_vars_labels),
+      paste(paste("Laboratory Abnormality summary by", paste(by_vars_labels, collapse = ", ")))
+    )
     my_calls <- template_abnormality(
       parentname = "ANL_ADSL",
       dataname = "ANL",
@@ -573,7 +589,8 @@ srv_t_abnormality <- function(input,
       exclude_base_abn = input$exclude_base_abn,
       drop_arm_levels = input$drop_arm_levels,
       na_level = na_level,
-      basic_table_args = basic_table_args
+      basic_table_args = basic_table_args,
+      tbl_title = tbl_title
     )
     mapply(expression = my_calls, teal.devel::chunks_push)
   })
