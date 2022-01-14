@@ -57,9 +57,7 @@ substitute_names <- function(expr, names, others = list()) {
   checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
   checkmate::assert_list(others, min.len = 0, names = "unique")
   checkmate::assert_names(names(names),  disjunct.from = names(others))
-  if (length(others) > 0) {
-    checkmate::assert_names(names(others), disjunct.from = names(names))
-  }
+
   expr <- substitute(expr)
   expr <- substitute_rhs(expr, c(names, others))
   substitute_lhs_names(expr, names)
