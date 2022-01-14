@@ -72,7 +72,7 @@ template_mult_events <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = anl <- anl %>%
         dplyr::mutate(seq_var = as.factor(seq_var)),
       names = list(

@@ -17,9 +17,6 @@ upstream_repos:
   Roche/rtables:
     repo: Roche/rtables
     host: https://github.com
-  insightsengineering/utils.nest:
-    repo: insightsengineering/utils.nest
-    host: https://github.com
   insightsengineering/teal:
     repo: insightsengineering/teal
     host: https://github.com
