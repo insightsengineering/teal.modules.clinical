@@ -8,7 +8,7 @@
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
-#' @param tbl_title (`character`) Title with label of variables from by bars
+#' @param tbl_title (`character`)\cr Title with label of variables from by bars
 #'
 #' @seealso [tm_t_abnormality()]
 #'
@@ -565,12 +565,12 @@ srv_t_abnormality <- function(input,
     teal.devel::chunks_push_new_line()
 
     by_vars_names <- anl_selectors()$by_vars()$select_ordered
-    by_vars_labels <- as.character(sapply(by_vars_names, function(name){
+    by_vars_labels <- as.character(sapply(by_vars_names, function(name) {
       attributes(anl_m$data()[[name]])$label
     }))
 
     tbl_title <- ifelse(
-      length(by_vars_labels) ==1,
+      length(by_vars_labels) == 1,
       paste("Laboratory Abnormality summary by", by_vars_labels),
       paste(paste("Laboratory Abnormality summary by", paste(by_vars_labels, collapse = ", ")))
     )
