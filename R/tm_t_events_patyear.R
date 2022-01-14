@@ -363,11 +363,11 @@ srv_events_patyear <- function(input,
   # This reactiveVal and the observeEvent that listens to it are only run upon app launch
   # They are used in combination to avoid the use of observe, which is costly in terms of performance
   avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
-                                 dplyr::select(as.name(avalu_var$select$selected)) %>%
-                                 unique() %>%
-                                 dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-                                 dplyr::arrange() %>%
-                                 dplyr::pull())
+    dplyr::select(as.name(avalu_var$select$selected)) %>%
+    unique() %>%
+    dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
+    dplyr::arrange() %>%
+    dplyr::pull())
 
   observeEvent(avalu_choices(), {
     updateSelectInput(
