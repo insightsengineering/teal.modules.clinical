@@ -314,7 +314,24 @@ srv_g_barchart_simple <- function(input,
 
   data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
   data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
-  merged_data <- teal.devel::data_merge_module(datasets = datasets, data_extract = data_extract)
+
+  selector_list <- teal.devel::data_extract_multiple_srv(data_extract, datasets)
+
+  reactive_select_input <- reactive({
+    selectors <- selector_list()
+    extract_names <- names(selectors)
+    for (extract in extract_names) {
+      if (is.null(selectors[[extract]]) || length(selectors[[extract]]()$select) == 0) {
+        selectors <- selectors[-which(names(selectors) == extract)]
+      }
+    }
+    selectors
+  })
+
+  merged_data <- teal.devel::data_merge_srv(
+    selector_list = reactive_select_input,
+    datasets = datasets
+  )
 
   data_chunk <- reactive({
     ANL <- merged_data()$data() # nolint
