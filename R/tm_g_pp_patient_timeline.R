@@ -374,7 +374,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   ),
 #'   modules = root_modules(
 #'     tm_g_pp_patient_timeline(
-#'       label = "Vitals",
+#'       label = "Patient timeline",
 #'       dataname_adae = "ADAE",
 #'       dataname_adcm = "ADCM",
 #'       parentname = "ADSL",
