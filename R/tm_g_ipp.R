@@ -16,7 +16,7 @@
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
