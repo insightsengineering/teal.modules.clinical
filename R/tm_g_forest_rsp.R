@@ -15,7 +15,7 @@
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
 template_forest_rsp <- function(dataname = "ANL",
@@ -202,7 +202,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
 #' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body). \cr For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #'
 #' @export
