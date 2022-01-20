@@ -334,6 +334,9 @@ srv_g_barchart_simple <- function(input,
   )
 
   data_chunk <- reactive({
+    validate({
+      need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+    })
     ANL <- merged_data()$data() # nolint
     teal.devel::validate_has_data(ANL, 2)
     chunk <- teal.devel::chunks$new()
