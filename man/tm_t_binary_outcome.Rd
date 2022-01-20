@@ -157,7 +157,7 @@ app <- init(
       arm_ref_comp = arm_ref_comp,
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
-        select = NULL
+        select = "SEX"
       ),
       default_responses = list(
         BESRSPI = list(
