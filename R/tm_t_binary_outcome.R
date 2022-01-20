@@ -419,7 +419,7 @@ template_binary_outcome <- function(dataname,
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
 #'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
-#'         select = NULL
+#'         select = "SEX"
 #'       ),
 #'       default_responses = list(
 #'         BESRSPI = list(
@@ -842,11 +842,16 @@ srv_t_binary_outcome <- function(input,
     validate(
       if (length(input_strata_var) >= 1L) {
         need(
-          sum(summary(
-            anl_merged()$data()$ARM[!anl_merged()$data()[[input_aval_var]] %in% input$responders]
-          ) > 0) > 1L,
-          "After filtering at least one combination of strata variable levels
-            has too few observations to calculate the odds ratio."
+          all(
+            vapply(
+              anl_m$data()[input_strata_var],
+              FUN = function(strata) {
+                all(base::table(strata, anl_m$data()[[input_arm_var]]) != 0L)
+                },
+              FUN.VALUE = logical(1)
+              )
+            ),
+          "There is at least one strata variable with too few observations."
         )
       }
     )
