@@ -16,7 +16,7 @@
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
-* Added `default_responses` argument to `tm_t_binary_outcome`, `tm_t_rsp`, `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
+* Added `default_responses` argument to `tm_t_binary_outcome` and `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 * Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in plot based modules.
