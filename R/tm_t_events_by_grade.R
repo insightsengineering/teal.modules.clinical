@@ -108,7 +108,6 @@ template_events_by_grade <- function(dataname,
   layout_list <- list()
 
   basic_title <- if (is.null(hlt) & !is.null(llt)) {
-    browser()
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
   } else if (!is.null(hlt) & is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
