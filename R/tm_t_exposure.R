@@ -16,6 +16,7 @@ template_exposure <- function(parentname,
                               dataname,
                               id_var,
                               paramcd,
+                              paramcd_value = NULL,
                               row_by_var,
                               col_by_var,
                               add_total = FALSE,
@@ -114,13 +115,13 @@ template_exposure <- function(parentname,
         var = aval_var, col_split = TRUE,
         .labels = c(
           n_patients = "Patients",
-          sum_exposure = paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
+          sum_exposure = paste("Sum of", paramcd_value, sprintf("(%s)", avalu_var))
         )
       ),
       env = list(
         aval_var = aval_var,
         avalu_var = avalu_var,
-        paramcd = paramcd
+        paramcd_value = paramcd_value
       )
     )
   )
@@ -553,6 +554,7 @@ srv_t_exposure <- function(input,
       dataname = "ANL",
       id_var <- as.vector(anl_m$columns_source$id_var),
       paramcd <- as.vector(anl_m$columns_source$paramcd),
+      paramcd_value = input_paramcd,
       row_by_var <- as.vector(anl_m$columns_source$row_by_var),
       col_by_var <- as.vector(anl_m$columns_source$col_by_var),
       add_total = input$add_total,
