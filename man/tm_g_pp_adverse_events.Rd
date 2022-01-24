@@ -77,8 +77,9 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 This teal module produces a patient profile adverse events table and plot using ADaM datasets.
