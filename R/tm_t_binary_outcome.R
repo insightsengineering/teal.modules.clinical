@@ -837,7 +837,6 @@ srv_t_binary_outcome <- function(input,
             vapply(
               anl_m$data()[input_strata_var],
               FUN = function(strata) {
-                browser()
                 tab <- base::table(strata, anl_m$data()[[input_arm_var]])
                 tab_logic <- tab != 0L
                 sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
