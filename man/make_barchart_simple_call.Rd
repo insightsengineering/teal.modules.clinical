@@ -54,8 +54,9 @@ fraction of y-axis range to expand further up.}
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 
 \item{yname}{(\code{NULL}, \code{character(1)})\cr
 name of the \code{yaxis} variable.}
