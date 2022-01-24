@@ -418,8 +418,8 @@ template_binary_outcome <- function(dataname,
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
-#'         select = "SEX"
+#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
+#'         select = "RACE"
 #'       ),
 #'       default_responses = list(
 #'         BESRSPI = list(
@@ -833,16 +833,18 @@ srv_t_binary_outcome <- function(input,
     validate(
       if (length(input_strata_var) >= 1L) {
         need(
-          all(
+          sum(
             vapply(
               anl_m$data()[input_strata_var],
               FUN = function(strata) {
-                all(base::table(strata, anl_m$data()[[input_arm_var]]) != 0L)
+                tab <- base::table(strata, anl_m$data()[[input_arm_var]])
+                tab_logic <- tab != 0L
+                sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
                 },
               FUN.VALUE = logical(1)
               )
-            ),
-          "There is at least one strata variable with too few observations."
+            ) >= 0,
+          "At least one strata variable must have at least two levels with observation(s) in all of the arms."
         )
       }
     )
@@ -873,6 +875,7 @@ srv_t_binary_outcome <- function(input,
   })
 
   call_preparation <- reactive({
+
     validate_check()
     teal.devel::chunks_reset()
 
