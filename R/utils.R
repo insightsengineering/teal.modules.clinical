@@ -842,7 +842,7 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #' for generating the title.
 #'
 #'
-#' @param ANL
+#' @param anl
 #'
 #' @param paramcd
 #'

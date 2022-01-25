@@ -4,10 +4,10 @@
 \alias{get_paramcd_label}
 \title{Extract the associated param value for paramcd}
 \usage{
-get_paramcd_label(ANL, paramcd)
+get_paramcd_label(anl, paramcd)
 }
 \arguments{
-\item{ANL}{}
+\item{anl}{}
 
 \item{paramcd}{}
 }
