@@ -56,7 +56,7 @@ substitute_q <- function(qexpr, env) {
 substitute_names <- function(expr, names, others = list()) {
   checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
   checkmate::assert_list(others, min.len = 0, names = "unique")
-  checkmate::assert_names(names(names),  disjunct.from = names(others))
+  checkmate::assert_names(names(names), disjunct.from = names(others))
 
   expr <- substitute(expr)
   expr <- substitute_rhs(expr, c(names, others))

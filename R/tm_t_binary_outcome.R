@@ -838,10 +838,10 @@ srv_t_binary_outcome <- function(input,
               anl_m$data()[input_strata_var],
               FUN = function(strata) {
                 all(base::table(strata, anl_m$data()[[input_arm_var]]) != 0L)
-                },
+              },
               FUN.VALUE = logical(1)
-              )
-            ),
+            )
+          ),
           "There is at least one strata variable with too few observations."
         )
       }
