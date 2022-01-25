@@ -1078,6 +1078,7 @@ srv_t_events_by_grade <- function(input,
     label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
     label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
     label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
+    label_grade <- if (is.null(label_grade)) input_grade else NULL
 
     my_calls <- if (input$col_by_grade) {
       template_events_col_by_grade(
