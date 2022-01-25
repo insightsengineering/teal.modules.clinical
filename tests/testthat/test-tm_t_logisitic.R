@@ -4,6 +4,7 @@ testthat::test_that("template_logistic generates correct expressions", {
     arm_var = "ARMCD",
     aval_var = "AVALC",
     paramcd = "PARAMCD",
+    label_paramcd = "Best Confirmed Overall Response by Investigator",
     cov_var = c("AGE", "SEX"),
     interaction_var = "AGE",
     ref_arm = c("ARM A", "ARM B"),
@@ -37,7 +38,8 @@ testthat::test_that("template_logistic generates correct expressions", {
         df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
+      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders" # nolint
+                                     ) %>%
         summarize_logistic(conf_level = 0.95) %>%
         rtables::append_topleft("BESRSPI") %>%
         rtables::build_table(df = mod)
@@ -54,6 +56,7 @@ testthat::test_that("template_logistic generates correct expressions for no arm 
     arm_var = NULL,
     aval_var = "AVALC",
     paramcd = "PARAMCD",
+    label_paramcd = "Best Confirmed Overall Response by Investigator",
     cov_var = c("AGE", "SEX"),
     interaction_var = "AGE",
     conf_level = 0.95,
@@ -78,7 +81,8 @@ testthat::test_that("template_logistic generates correct expressions for no arm 
         df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- rtables::basic_table(title = "Table of PARAMCD for CR Responders") %>%
+      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders" # nolint
+                                     ) %>%
         summarize_logistic(conf_level = 0.95) %>%
         rtables::append_topleft("BESRSPI") %>%
         rtables::build_table(df = mod)
