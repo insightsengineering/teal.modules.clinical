@@ -354,21 +354,22 @@ srv_events_patyear <- function(input,
 
   teal.devel::init_chunks()
 
-  # This reactiveVal and the observeEvent that listens to it are only run upon app launch
-  # They are used in combination to avoid the use of observe, which is costly in terms of performance
-  avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
-    dplyr::select(as.name(avalu_var$select$selected)) %>%
-    unique() %>%
-    dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-    dplyr::arrange() %>%
-    dplyr::pull())
+  observeEvent(anl_merged(), {
+    if (avalu_var$select$selected %in% names(anl_merged()$data())) {
+      choices <- anl_merged()$data() %>%
+        dplyr::select(as.name(avalu_var$select$selected)) %>%
+        unique() %>%
+        dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
+        dplyr::arrange() %>%
+        dplyr::pull()
 
-  observeEvent(avalu_choices(), {
-    updateSelectInput(
-      session, "time_unit_input",
-      choices = avalu_choices(),
-      selected = avalu_choices()[1]
-    )
+      updateSelectInput(
+        session,
+        "time_unit_input",
+        choices = choices,
+        selected = choices[1]
+      )
+    }
   })
 
   anl_merged <- teal.devel::data_merge_module(
