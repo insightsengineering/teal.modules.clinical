@@ -569,7 +569,7 @@ srv_t_exposure <- function(input,
       paramcd <- as.vector(anl_m$columns_source$paramcd)
       paramcd_map_list <- c(paramcd, paramcd_label)
       paramcd_map <- unique(anl_filtered[paramcd_map_list])
-      input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd,2])
+      input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
     }
 
     my_calls <- template_exposure(
