@@ -460,7 +460,8 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
   assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
