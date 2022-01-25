@@ -68,7 +68,8 @@ template_exposure <- function(parentname,
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd))
     )
   )
 
@@ -113,7 +114,7 @@ template_exposure <- function(parentname,
       summarize_patients_exposure_in_cols(
         var = aval_var, col_split = TRUE,
         .labels = c(
-          n_patients = "Patients",
+          n_patients = "Patient time*",
           sum_exposure = paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
         )
       ),
