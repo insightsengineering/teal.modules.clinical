@@ -282,7 +282,7 @@ template_summary_by <- function(parentname,
             return(FALSE)
           }
           rvs <- unlist(unname(row_values(tr)))
-          all(rvs == 0)
+          isTRUE(all(rvs == 0))
         }
         result <- rtables::build_table(
           lyt = lyt,
