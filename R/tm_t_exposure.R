@@ -559,10 +559,14 @@ srv_t_exposure <- function(input,
       unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
     )
 
-    paramcd <- as.vector(anl_m$columns_source$paramcd)
-    paramcd_map_list <- c(paramcd, paramcd_label)
-    paramcd_map <- unique(anl_filtered[paramcd_map_list])
-    input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd,2])
+    if (is.null(paramcd_label)) {
+      input_paramcd_label <- input_paramcd
+    } else {
+      paramcd <- as.vector(anl_m$columns_source$paramcd)
+      paramcd_map_list <- c(paramcd, paramcd_label)
+      paramcd_map <- unique(anl_filtered[paramcd_map_list])
+      input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd,2])
+    }
 
     my_calls <- template_exposure(
       parentname = "ANL_ADSL",
