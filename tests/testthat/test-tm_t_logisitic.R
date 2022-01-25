@@ -38,8 +38,7 @@ testthat::test_that("template_logistic generates correct expressions", {
         df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders" # nolint
-                                     ) %>%
+      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% # nolint
         summarize_logistic(conf_level = 0.95) %>%
         rtables::append_topleft("BESRSPI") %>%
         rtables::build_table(df = mod)
@@ -81,8 +80,7 @@ testthat::test_that("template_logistic generates correct expressions for no arm 
         df_explicit_na(na_level = "")
     ),
     table = quote({
-      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders" # nolint
-                                     ) %>%
+      result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% # nolint
         summarize_logistic(conf_level = 0.95) %>%
         rtables::append_topleft("BESRSPI") %>%
         rtables::build_table(df = mod)

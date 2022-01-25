@@ -9,6 +9,7 @@ template_logistic(
   arm_var,
   aval_var,
   paramcd,
+  label_paramcd,
   cov_var,
   interaction_var,
   ref_arm,

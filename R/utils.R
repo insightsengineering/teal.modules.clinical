@@ -842,11 +842,11 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #' for generating the title.
 #'
 #'
-#' @param ANL [`teal.devel::chunks_get_var("ANL")`]
+#' @param ANL
 #'
 #' @param paramcd
 #'
-get_param_associated_with_paramcd <- function(ANL, paramcd){
+get_paramcd_label <- function(ANL, paramcd){
   pos <- grep(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]), names(unlist(paramcd$filter)))
 
   if(nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0){

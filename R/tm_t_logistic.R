@@ -171,7 +171,8 @@ template_logistic <- function(dataname,
 
   basic_title <- if (length(responder_val) > 1) {
     paste(
-      "Summary of Logistic Regression Analysis for", label_paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "Summary of Logistic Regression Analysis for", label_paramcd, "for",
+      paste(utils::head(responder_val, -1), collapse = ", "),
       "and", utils::tail(responder_val, 1), "Responders"
     )
   } else {
@@ -632,7 +633,7 @@ srv_t_logistic <- function(input,
 
     ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
-    label_paramcd <- get_param_associated_with_paramcd(ANL, paramcd)
+    label_paramcd <- get_paramcd_label(ANL, paramcd)
 
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
