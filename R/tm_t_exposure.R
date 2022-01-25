@@ -10,6 +10,8 @@
 #'   name of the analysis unit variable.
 #' @param drop_levels (`flag`)\cr
 #'   whether empty rows should be removed from the table.
+#' @param paramcd_label (`character`)\cr
+#'   the column from the dataset where the value will be used to label the argument `paramcd`.
 #' @seealso [tm_t_exposure()]
 
 template_exposure <- function(parentname,
@@ -217,6 +219,8 @@ template_exposure <- function(parentname,
 #'   parameter category values.
 #' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
 #'   object with the analysis unit variable.
+#' @param paramcd_label (`character`)\cr
+#'   the column from the dataset where the value will be used to label the argument `paramcd`.
 #'
 #' @export
 #'
