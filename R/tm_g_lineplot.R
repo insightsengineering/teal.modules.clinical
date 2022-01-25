@@ -87,9 +87,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   mid_choices <- c(
-    "n" = "n",
     "Mean" = "mean",
-    "Standard Deviation" = "sd",
     "Median" = "median"
   )
 
@@ -111,7 +109,8 @@ template_g_lineplot <- function(dataname = "ANL",
     user_plot = ggplot2_args,
     module_plot = teal.devel::ggplot2_args(
       labs = list(
-        title = sprintf("Plot of %s and %s %s by Visit",
+        title = sprintf(
+          "Plot of %s and %s %s by Visit",
           names(which(mid_choices == mid)),
           `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
           names(which(interval_choices == interval))
@@ -264,7 +263,8 @@ tm_g_lineplot <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -353,9 +353,7 @@ ui_g_lineplot <- function(id, ...) {
         ns("mid"),
         "Midpoint Statistic",
         choices = c(
-          "n" = "n",
           "Mean" = "mean",
-          "Standard deviation" = "sd",
           "Median" = "median"
         ),
         selected = "mean"
@@ -509,6 +507,9 @@ srv_g_lineplot <- function(input,
     if (length(input_strata) > 0 && length(unique(adsl_filtered[[input_strata]])) == 1) {
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
+
+    # Validate whiskers
+    validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
 
     do.call(what = "validate_standard_inputs", validate_args)
 
