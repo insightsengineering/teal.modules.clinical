@@ -412,7 +412,8 @@ tm_t_summary_by <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    paramcd = `if`(is.null(paramcd),
+    paramcd = `if`(
+      is.null(paramcd),
       NULL,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
     ),
@@ -463,7 +464,8 @@ ui_summary_by <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      `if`(is.null(a$paramcd),
+      `if`(
+        is.null(a$paramcd),
         NULL,
         teal.devel::data_extract_ui(
           id = ns("paramcd"),
