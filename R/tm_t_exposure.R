@@ -16,6 +16,7 @@ template_exposure <- function(parentname,
                               dataname,
                               id_var,
                               paramcd,
+                              paramcd_label = NULL,
                               row_by_var,
                               col_by_var,
                               add_total = FALSE,
@@ -66,10 +67,14 @@ template_exposure <- function(parentname,
   # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
+  if (is.null(paramcd_label)) {
+    paramcd_label <- paramcd
+  }
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd))
+      module_table = teal.devel::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd_label))
     )
   )
 
@@ -298,6 +303,7 @@ tm_t_exposure <- function(label,
                             choices = value_choices(dataname, "PARAMCD", "PARAM"),
                             selected = "TDURD"
                           ),
+                          paramcd_label = "PARAM",
                           id_var = choices_selected(
                             variable_choices(dataname, subset = "USUBJID"),
                             selected = "USUBJID",
@@ -359,7 +365,8 @@ tm_t_exposure <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        paramcd_label = paramcd_label
       )
     ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
@@ -452,6 +459,7 @@ srv_t_exposure <- function(input,
                            dataname,
                            parentname,
                            paramcd,
+                           paramcd_label,
                            id_var,
                            row_by_var,
                            col_by_var,
@@ -543,17 +551,25 @@ srv_t_exposure <- function(input,
     teal.devel::chunks_push_data_merge(anl_adsl)
     teal.devel::chunks_push_new_line()
 
+    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
     input_avalu_var <- as.character(
       unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
     )
     input_paramcd <- as.character(
       unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
     )
+
+    paramcd <- as.vector(anl_m$columns_source$paramcd)
+    paramcd_map_list <- c(paramcd, paramcd_label)
+    paramcd_map <- unique(anl_filtered[paramcd_map_list])
+    input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd,2])
+
     my_calls <- template_exposure(
       parentname = "ANL_ADSL",
       dataname = "ANL",
       id_var <- as.vector(anl_m$columns_source$id_var),
       paramcd <- input_paramcd,
+      paramcd_label = input_paramcd_label,
       row_by_var <- as.vector(anl_m$columns_source$row_by_var),
       col_by_var <- as.vector(anl_m$columns_source$col_by_var),
       add_total = input$add_total,
