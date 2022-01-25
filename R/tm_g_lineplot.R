@@ -87,9 +87,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   mid_choices <- c(
-    "n" = "n",
     "Mean" = "mean",
-    "Standard Deviation" = "sd",
     "Median" = "median"
   )
 
