@@ -14,6 +14,6 @@ get_paramcd_label(ANL, paramcd)
 \description{
 Utility function for extracting the param value that is associated
 with the paramcd value label. If there is no param value for
-the paramced label, the paramcd value is returned. This is used
+the paramcd label, the paramcd value is returned. This is used
 for generating the title.
 }
