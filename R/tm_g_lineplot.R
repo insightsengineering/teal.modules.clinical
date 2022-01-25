@@ -110,10 +110,11 @@ template_g_lineplot <- function(dataname = "ANL",
     module_plot = teal.devel::ggplot2_args(
       labs = list(
         title = sprintf(
-          "Plot of %s and %s %s by Visit",
+          "Plot of %s and %s %s of %s by Visit",
           names(which(mid_choices == mid)),
           `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
-          names(which(interval_choices == interval))
+          names(which(interval_choices == interval)),
+          y
         ),
         subtitle = "",
         y = sprintf("%s %s Values for", y, names(which(mid_choices == mid)))
