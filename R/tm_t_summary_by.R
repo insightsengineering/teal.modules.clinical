@@ -347,7 +347,7 @@ template_summary_by <- function(parentname,
 #'         selected = c("AVISIT")
 #'       ),
 #'       summarize_vars = choices_selected(
-#'         choices = variable_choices(adlb, c("AVAL", "CHG")),
+#'         choices = variable_choices(adlb, c("AVAL")),
 #'         selected = c("AVAL")
 #'       ),
 #'       useNA = "ifany",
