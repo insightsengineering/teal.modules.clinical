@@ -537,6 +537,7 @@ srv_t_abnormality <- function(input,
     validate(
       need(input_arm_var, "Please select a treatment variable."),
       need(input_grade, "Please select a grade variable."),
+      need(input_by_vars, "Please select a Row By Variable."),
       need(input_id_var, "Please select a subject identifier."),
       need(input_baseline_var, "Please select a baseline grade variable."),
       need(input_treatment_flag_var, "Please select an on treatment flag variable."),

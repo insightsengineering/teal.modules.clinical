@@ -108,7 +108,6 @@ template_events_by_grade <- function(dataname,
   layout_list <- list()
 
   basic_title <- if (is.null(hlt) & !is.null(llt)) {
-    browser()
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
   } else if (!is.null(hlt) & is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
@@ -511,8 +510,10 @@ template_events_col_by_grade <- function(dataname,
 
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(user_table = basic_table_args,
-                                         module_table = teal.devel::basic_table_args(title = basic_title))
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
+    )
   )
 
   # Start layout steps.
@@ -1077,6 +1078,7 @@ srv_t_events_by_grade <- function(input,
     label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
     label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
     label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
+    label_grade <- if (is.null(label_grade)) input_grade else NULL
 
     my_calls <- if (input$col_by_grade) {
       template_events_col_by_grade(
