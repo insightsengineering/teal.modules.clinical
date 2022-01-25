@@ -87,9 +87,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   mid_choices <- c(
-    "n" = "n",
     "Mean" = "mean",
-    "Standard Deviation" = "sd",
     "Median" = "median"
   )
 
@@ -355,9 +353,7 @@ ui_g_lineplot <- function(id, ...) {
         ns("mid"),
         "Midpoint Statistic",
         choices = c(
-          "n" = "n",
           "Mean" = "mean",
-          "Standard deviation" = "sd",
           "Median" = "median"
         ),
         selected = "mean"
