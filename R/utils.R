@@ -832,3 +832,30 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }
+
+
+#' Extract the associated param value for paramcd
+#'
+#' Utility function for extracting the param value that is associated
+#' with the paramcd value label. If there is no param value for
+#' the paramcd label, the paramcd value is returned. This is used
+#' for generating the title.
+#'
+#'
+#' @param anl
+#'
+#' @param paramcd
+#'
+get_paramcd_label <- function(anl, paramcd) {
+  positions <- grep(paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),
+                    names(unlist(paramcd$filter)))
+  label_paramcd <- sapply(positions, function(pos) {
+    if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
+      label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])
+    } else {
+      label_paramcd <- sub(":.*", "", names(unlist(paramcd$filter))[pos])
+      label_paramcd <- sub(".*\\.", "", label_paramcd)
+    }
+    label_paramcd
+  })
+}

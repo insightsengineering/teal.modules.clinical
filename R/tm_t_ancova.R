@@ -19,9 +19,11 @@ template_ancova <- function(dataname = "ANL",
                             comp_arm = NULL,
                             combine_comp_arms = FALSE,
                             aval_var,
+                            label_aval = NULL,
                             cov_var,
                             paramcd_levels = "",
                             paramcd_var = "PARAMCD",
+                            label_paramcd = NULL,
                             visit_levels = "",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
@@ -30,6 +32,7 @@ template_ancova <- function(dataname = "ANL",
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(arm_var),
+    assertthat::is.string(label_aval) || is.null(label_aval),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.string(aval_var),
     is.character(cov_var)
@@ -117,28 +120,24 @@ template_ancova <- function(dataname = "ANL",
 
   # Build layout.
   visits_title <- if (length(visit_levels) > 1) {
-    paste(
-      "visits", paste(utils::head(visit_levels, -1), collapse = ", "),
-      "and", utils::tail(visit_levels, 1)
+    paste(paste(utils::head(visit_levels, -1), collapse = ", "),
+          "and", utils::tail(visit_levels, 1)
     )
   } else if (length(visit_levels) == 1) {
-    paste("visit", visit_levels)
+    visit_levels
   } else {
-    "visit"
+    ""
   }
 
-  table_title <- if (length(paramcd_levels) > 1) {
+  table_title <- if (length(label_paramcd) > 1) {
     paste(
-      "Table of", paste(utils::head(paramcd_levels, -1), collapse = ", "),
-      "and", utils::tail(paramcd_levels, 1),
-      "parameters", "at", visits_title, "for", aval_var
+      "Summary of Analysis of Variance for", paste(label_paramcd, collapse = " and "),
+      "at", visits_title, "for", label_aval
     )
+  } else if (length(label_paramcd == 1)) {
+    paste("Summary of Analysis of Variance for", label_paramcd, "at", visits_title, "for", label_aval)
   } else {
-    visits_title
-    paste(
-      "Table of", paramcd_levels,
-      "parameter", "at", visits_title, "for", aval_var
-    )
+    ""
   }
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
@@ -651,7 +650,9 @@ srv_ancova <- function(input,
     teal.devel::chunks_push_new_line()
 
     ANL <- teal.devel::chunks_get_var("ANL") # nolint
-
+    label_paramcd <- get_paramcd_label(ANL, paramcd)
+    input_aval <- as.vector(anl_m$columns_source$aval_var)
+    label_aval <- if (length(input_aval) != 0) attributes(anl_m$data()[[input_aval]])$label else NULL
     paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
     visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
@@ -663,9 +664,11 @@ srv_ancova <- function(input,
       comp_arm = input$comp_arm,
       combine_comp_arms = input$combine_comp_arms,
       aval_var = as.vector(anl_m$columns_source$aval_var),
+      label_aval = label_aval,
       cov_var = as.vector(anl_m$columns_source$cov_var),
       paramcd_levels = paramcd_levels,
       paramcd_var = unlist(paramcd$filter)["vars_selected"],
+      label_paramcd = label_paramcd,
       visit_levels = visit_levels,
       visit_var = unlist(avisit$filter)["vars_selected"],
       conf_level = as.numeric(input$conf_level),
