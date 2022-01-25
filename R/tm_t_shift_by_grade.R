@@ -769,7 +769,6 @@ srv_t_shift_by_grade <- function(input,
     input_paramcd <- unlist(paramcd$filter)["vars_selected"]
     input_paramcd_var <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
     input_worst_flag_var <- as.vector(anl_m$columns_source$worst_flag_var)
-    input_worst_flag <- anl_m$data()[[as.vector(anl_m$columns_source$worst_flag_var)]]
     input_anl_toxgrade_var <- as.vector(anl_m$columns_source$anl_toxgrade_var)
     input_base_toxgrade_var <- as.vector(anl_m$columns_source$base_toxgrade_var)
 
@@ -778,11 +777,13 @@ srv_t_shift_by_grade <- function(input,
       need(input_paramcd_var, "Please select Laboratory parameter."),
       need(input_id_var, "Please select a subject identifier."),
       need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-      need(
-        any(input_worst_flag == input$worst_flag_indicator),
-        "There's no positive flag, please select another flag parameter."
-      )
     )
+
+    input_worst_flag <- anl_m$data()[[as.vector(anl_m$columns_source$worst_flag_var)]]
+    validate(need(
+      any(input_worst_flag == input$worst_flag_indicator),
+      "There's no positive flag, please select another flag parameter."
+    ))
 
     # validate inputs
     teal.devel::validate_standard_inputs(

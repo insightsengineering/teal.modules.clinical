@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.10.9050
+# teal.modules.clinical 0.8.10.9050.9
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
@@ -16,7 +16,7 @@
 
 ## Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
-* Added `default_responses` argument to `tm_t_binary_outcome`, `tm_t_rsp`, `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
+* Added `default_responses` argument to `tm_t_binary_outcome` and `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
 * Added `rsp_table` argument to `tm_t_binary_outcome` to allow the user to initialize the module matching the `RSPT01` STREAM template.
 * Added support for custom arguments for `ggplot2::labs` and `ggplot2::theme` in plot based modules.
@@ -26,10 +26,12 @@
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
 * Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
-* Updated modules to use new `data_merge_module` interface provided by teal.devel and removed usage of the now deprecated function `teal.devel::get_input_order`.
+* Updated modules to use new `data_merge_module` interface provided by `teal.devel` and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
-* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` the plot will not crash.
 * Removed `utils.nest` dependency and replaced calls with `checkmate` equivalents.
+
+### Bug Fixes
+* Fixed bug in `tm_g_pp_therapy` where if the `cmstdy` or `cmendy` argument is of type `integer` causes the plot to crash.
 
 # teal.modules.clinical 0.8.10
 ### New features

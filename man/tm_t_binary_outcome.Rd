@@ -89,8 +89,9 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \value{
 an \code{\link[teal:module]{teal::module()}} object
@@ -157,7 +158,7 @@ app <- init(
       arm_ref_comp = arm_ref_comp,
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2")),
-        select = NULL
+        select = "SEX"
       ),
       default_responses = list(
         BESRSPI = list(
