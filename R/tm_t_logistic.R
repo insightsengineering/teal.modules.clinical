@@ -15,6 +15,7 @@
 #' @param responder_val (`character`)\cr
 #'  values of the responder variable corresponding with a successful response.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
+#' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_logistic()]
 #'
@@ -22,6 +23,7 @@ template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
                               paramcd,
+                              label_paramcd,
                               cov_var,
                               interaction_var,
                               ref_arm,
@@ -37,6 +39,7 @@ template_logistic <- function(dataname,
     assertthat::is.string(dataname),
     assertthat::is.string(aval_var),
     assertthat::is.string(paramcd),
+    assertthat::is.string(label_paramcd) || is.null(label_paramcd),
     assertthat::is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
     assertthat::is.string(interaction_var) || is.null(interaction_var)
@@ -165,19 +168,24 @@ template_logistic <- function(dataname,
     env = list(model_pipe = pipe_expr(model_list))
   )
 
-  table_title <- if (length(responder_val) > 1) {
+  layout_list <- list()
+
+  basic_title <- if (length(responder_val) > 1) {
     paste(
-      "Table of", paramcd, "for", paste(utils::head(responder_val, -1), collapse = ", "),
+      "Summary of Logistic Regression Analysis for", label_paramcd, "for",
+      paste(utils::head(responder_val, -1), collapse = ", "),
       "and", utils::tail(responder_val, 1), "Responders"
     )
   } else {
-    paste("Table of", paramcd, "for", responder_val, "Responders")
+    paste("Summary of Logistic Regression Analysis for", label_paramcd, "for", responder_val, "Responders")
   }
+
+
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = table_title)
+      module_table = teal.devel::basic_table_args(title = basic_title)
     )
   )
 
@@ -625,6 +633,9 @@ srv_t_logistic <- function(input,
     }
 
     ANL <- teal.devel::chunks_get_var("ANL") # nolint
+
+    label_paramcd <- get_paramcd_label(ANL, paramcd)
+
     paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
 
     interaction_var <- input$interaction_var
@@ -644,6 +655,7 @@ srv_t_logistic <- function(input,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       aval_var = as.vector(anl_m$columns_source$avalc_var),
       paramcd = paramcd,
+      label_paramcd = label_paramcd,
       cov_var = if (length(cov_var) > 0) cov_var else NULL,
       interaction_var = if (interaction_flag) interaction_var else NULL,
       ref_arm = input$ref_arm,
