@@ -92,7 +92,7 @@
 #'   The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
 #'
-#'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
+#'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #' @name template_arguments
 #'
 NULL

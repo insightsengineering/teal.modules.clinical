@@ -776,7 +776,7 @@ srv_t_shift_by_grade <- function(input,
       need(input_worst_flag_var, "Please select the worst flag variable."),
       need(input_paramcd_var, "Please select Laboratory parameter."),
       need(input_id_var, "Please select a subject identifier."),
-      need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
+      need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
     )
 
     input_worst_flag <- anl_m$data()[[as.vector(anl_m$columns_source$worst_flag_var)]]
