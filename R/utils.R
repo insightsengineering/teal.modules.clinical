@@ -832,3 +832,27 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }
+
+
+#' Extract the associated param value for paramcd
+#'
+#' Utility function for extracting the param value that is associated
+#' with the paramcd value label. If there is no param value for
+#' the paramcd label, the paramcd value is returned. This is used
+#' for generating the title.
+#'
+#' @param anl Analysis dataset
+#'
+#' @param paramcd [`teal::data_extract_spec()`]
+#' variable value designating the studied parameter.
+#'
+get_paramcd_label <- function(anl, paramcd) {
+  pos <- grep(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), names(unlist(paramcd$filter)))
+  if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
+    label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])
+  } else{
+    label_paramcd <- sub(":.*", "", names(unlist(paramcd$filter))[pos])
+    label_paramcd <- sub(".*\\.", "", label_paramcd)
+  }
+  label_paramcd
+}
