@@ -15,6 +15,7 @@
 #' @param responder_val (`character`)\cr
 #'  values of the responder variable corresponding with a successful response.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
+#' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_logistic()]
 #'

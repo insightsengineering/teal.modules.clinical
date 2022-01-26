@@ -841,10 +841,10 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #' the paramcd label, the paramcd value is returned. This is used
 #' for generating the title.
 #'
+#' @param anl Analysis dataset
 #'
-#' @param anl
-#'
-#' @param paramcd
+#' @param paramcd [`teal::data_extract_spec()`]
+#' variable value designating the studied parameter.
 #'
 get_paramcd_label <- function(anl, paramcd) {
   pos <- grep(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), names(unlist(paramcd$filter)))

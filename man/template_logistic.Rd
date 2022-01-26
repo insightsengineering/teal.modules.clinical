@@ -35,6 +35,8 @@ name of the analysis variable.}
 
 \item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
+\item{label_paramcd}{(\code{character})\cr Label of response parameter value to use in the table title.}
+
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
