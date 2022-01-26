@@ -13,6 +13,7 @@ tm_t_exposure(
   col_by_var,
   paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),
     selected = "TDURD"),
+  paramcd_label = "PARAM",
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
   parcat,
@@ -47,6 +48,9 @@ variable names that can be used to split columns.}
 
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
+
+\item{paramcd_label}{(\code{character})\cr
+the column from the dataset where the value will be used to label the argument \code{paramcd}.}
 
 \item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object specifying the variable name for subject id.}

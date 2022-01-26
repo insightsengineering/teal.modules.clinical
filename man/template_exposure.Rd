@@ -9,6 +9,7 @@ template_exposure(
   dataname,
   id_var,
   paramcd,
+  paramcd_label = NULL,
   row_by_var,
   col_by_var,
   add_total = FALSE,
@@ -31,6 +32,9 @@ the variable name for subject id.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
+
+\item{paramcd_label}{(\code{character})\cr
+the column from the dataset where the value will be used to label the argument \code{paramcd}.}
 
 \item{row_by_var}{(\code{character})\cr
 variable name used to split the rows.}
