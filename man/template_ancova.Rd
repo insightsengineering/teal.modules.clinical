@@ -12,9 +12,11 @@ template_ancova(
   comp_arm = NULL,
   combine_comp_arms = FALSE,
   aval_var,
+  label_aval = NULL,
   cov_var,
   paramcd_levels = "",
   paramcd_var = "PARAMCD",
+  label_paramcd = NULL,
   visit_levels = "",
   visit_var = "AVISIT",
   conf_level = 0.95,
@@ -43,6 +45,9 @@ triggers the combination of comparison arms.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
+\item{label_aval}{(\code{character})\cr
+label of value variable used for title rendering.}
+
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
@@ -51,6 +56,9 @@ variable levels for the studied parameter.}
 
 \item{paramcd_var}{(\code{character})\cr
 variable name for the studied parameter.}
+
+\item{label_paramcd}{(\code{character})\cr
+variable label used for title rendering.}
 
 \item{visit_levels}{(\code{character})\cr
 variable levels for studied visits.}
