@@ -36,7 +36,7 @@ object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args(
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 Creates a vitals template.
