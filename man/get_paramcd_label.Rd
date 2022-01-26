@@ -7,9 +7,10 @@
 get_paramcd_label(anl, paramcd)
 }
 \arguments{
-\item{anl}{}
+\item{anl}{Analysis dataset}
 
-\item{paramcd}{}
+\item{paramcd}{\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
+variable value designating the studied parameter.}
 }
 \description{
 Utility function for extracting the param value that is associated
