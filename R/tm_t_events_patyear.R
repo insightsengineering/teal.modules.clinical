@@ -354,21 +354,20 @@ srv_events_patyear <- function(input,
 
   teal.devel::init_chunks()
 
-  # This reactiveVal and the observeEvent that listens to it are only run upon app launch
-  # They are used in combination to avoid the use of observe, which is costly in terms of performance
-  avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
-    dplyr::select(as.name(avalu_var$select$selected)) %>%
-    unique() %>%
-    dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-    dplyr::arrange() %>%
-    dplyr::pull())
+  observeEvent(anl_merged(), {
+    data <- anl_merged()$data()
+    aval_unit_var <- anl_merged()$columns_source$avalu_var
+    if (length(aval_unit_var) > 0) {
+      choices <- na.omit(unique(data[[aval_unit_var]]))
+      choices <- gsub("s$", "", tolower(choices))
 
-  observeEvent(avalu_choices(), {
-    updateSelectInput(
-      session, "time_unit_input",
-      choices = avalu_choices(),
-      selected = avalu_choices()[1]
-    )
+      updateSelectInput(
+        session,
+        "time_unit_input",
+        choices = choices,
+        selected = choices[1]
+      )
+    }
   })
 
   anl_merged <- teal.devel::data_merge_module(
@@ -464,10 +463,8 @@ srv_events_patyear <- function(input,
         } else {
           "byar"
         },
-        time_unit_input = if (as.character(input$time_unit_input) == "DAYS") {
-          "day"
-        } else if (as.character(input$time_unit_input) == "MONTHS") {
-          "month"
+        time_unit_input = if (input$time_unit_input %in% c("day", "week", "month", "year"))  {
+          input$time_unit_input
         } else {
           "year"
         },
