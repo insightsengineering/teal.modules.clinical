@@ -86,9 +86,9 @@ If it equals to \code{NULL}, then no label will be added.}
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).\cr
-For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+with default module arguments (hard coded in the module body).
+
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 Template: Line Plot
