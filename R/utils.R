@@ -847,12 +847,15 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #' variable value designating the studied parameter.
 #'
 get_paramcd_label <- function(anl, paramcd) {
-  pos <- grep(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), names(unlist(paramcd$filter)))
-  if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
-    label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])
-  } else{
-    label_paramcd <- sub(":.*", "", names(unlist(paramcd$filter))[pos])
-    label_paramcd <- sub(".*\\.", "", label_paramcd)
-  }
-  label_paramcd
+  positions <- grep(paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),
+                    names(unlist(paramcd$filter)))
+  label_paramcd <- sapply(positions, function(pos) {
+    if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
+      label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])
+    } else {
+      label_paramcd <- sub(":.*", "", names(unlist(paramcd$filter))[pos])
+      label_paramcd <- sub(".*\\.", "", label_paramcd)
+    }
+    label_paramcd
+  })
 }
