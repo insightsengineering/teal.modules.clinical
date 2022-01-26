@@ -512,6 +512,9 @@ srv_g_lineplot <- function(input,
     # Validate whiskers
     validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
 
+    # Validate interval
+    validate(need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
+
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(need(
@@ -537,13 +540,8 @@ srv_g_lineplot <- function(input,
     teal.devel::validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    if (length(whiskers_selected) == 0 || is.null(input$interval)) {
-      input_whiskers <- NULL
-      input_interval <- NULL
-    } else {
-      input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
-      input_interval <- input$interval
-    }
+    input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
+    input_interval <- input$interval
     input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
 
     my_calls <- template_g_lineplot(
