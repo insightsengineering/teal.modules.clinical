@@ -45,6 +45,9 @@ triggers the combination of comparison arms.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
+\item{label_aval}{(\code{character})\cr
+label of value variable used for title rendering.}
+
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
@@ -53,6 +56,9 @@ variable levels for the studied parameter.}
 
 \item{paramcd_var}{(\code{character})\cr
 variable name for the studied parameter.}
+
+\item{label_paramcd}{(\code{character})\cr
+variable label used for title rendering.}
 
 \item{visit_levels}{(\code{character})\cr
 variable levels for studied visits.}

@@ -8,6 +8,10 @@
 #'   variable name for the studied parameter.
 #' @param visit_levels (`character`)\cr
 #'   variable levels for studied visits.
+#' @param label_aval (`character`)\cr
+#'   label of value variable used for title rendering.
+#' @param label_paramcd (`character`)\cr
+#'   variable label used for title rendering.
 #'
 #' @seealso [tm_t_ancova()]
 #'
