@@ -7,10 +7,13 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     comp_arm = c("ARM B", "ARM C"),
     combine_comp_arms = FALSE,
     aval_var = "CHG",
+    label_aval = "Absolute Change from Baseline",
     cov_var = c("BASE", "STRATA1"),
-    paramcd_levels = c("FKSI-ALL", "BKWBXYZ"),
+    paramcd_levels = c("FKSI-FWB", "BFIALL"),
     paramcd_var = "PARAMCD",
-    visit_var = "AVISIT"
+    label_paramcd = c("Function/Well-Being (GF1,GF3,GF7)", "BFI All Questions"),
+    visit_var = "AVISIT",
+    visit_levels = "WEEK 1 DAY 8"
   )
   expected <- list(
     data = quote({
@@ -27,7 +30,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Table of FKSI-ALL and BKWBXYZ parameters at visit  for CHG") %>%
+      lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for Function/Well-Being (GF1,GF3,GF7) and BFI All Questions at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% # nolint
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -67,9 +70,12 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     combine_comp_arms = TRUE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
+    label_aval = "Absolute Change from Baseline",
     paramcd_levels = c("A", "B"),
     paramcd_var = "PARAMCD",
-    visit_var = "AVISIT"
+    label_paramcd = c("A", "B"),
+    visit_var = "AVISIT",
+    visit_levels = "WEEK 1 DAY 8"
   )
   expected <- list(
     data = quote({
@@ -88,7 +94,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Table of A and B parameters at visit  for CHG") %>%
+      lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for A and B at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% # nolint
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -128,9 +134,12 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
+    label_aval = "Absolute Change from Baseline",
     paramcd_levels = c("A", "B"),
     paramcd_var = "PARAMCD",
-    visit_var = "AVISIT"
+    label_paramcd = c("A", "B"),
+    visit_var = "AVISIT",
+    visit_levels = "WEEK 2 DAY 1"
   )
 
   expected <- list(
@@ -150,7 +159,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Table of A and B parameters at visit  for CHG") %>%
+      lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for A and B at WEEK 2 DAY 1 for Absolute Change from Baseline") %>% # nolint
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -190,9 +199,12 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
     combine_comp_arms = FALSE,
     cov_var = c("BASE", "STRATA1"),
     aval_var = "CHG",
+    label_aval = "Absolute Change from Baseline",
     paramcd_levels = c("MYFAVORITE"),
     paramcd_var = "PARAMCD",
-    visit_var = "AVISIT"
+    label_paramcd = c("MYFAVORITE"),
+    visit_var = "AVISIT",
+    visit_levels = ""
   )
 
   expected <- list(
@@ -210,7 +222,7 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Table of MYFAVORITE parameter at visit  for CHG") %>%
+      lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for MYFAVORITE at  for Absolute Change from Baseline") %>% # nolint
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
