@@ -184,6 +184,13 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `caption`, `y`, `lty`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr
+#' For more details, see the help vignette:\cr
+#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
