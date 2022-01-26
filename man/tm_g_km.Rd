@@ -22,7 +22,8 @@ tm_g_km(
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  ggplot2_args = teal.devel::ggplot2_args()
 )
 }
 \arguments{
@@ -91,6 +92,13 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+For this module, this argument will only accept \code{labs} arguments such as: \code{title}, \code{x}.
+\code{theme} arguments will be not taken into account. The argument is merged with option \code{teal.ggplot2_args} and
+with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 This teal module produces a grid style Kaplan-Meier plot for data with

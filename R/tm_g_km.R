@@ -260,6 +260,12 @@ template_g_km <- function(dataname = "ANL",
 #' @param facet_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `labs` arguments such as: `title`, `x`.
+#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
+#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -334,7 +340,8 @@ tm_g_km <- function(label,
                     plot_height = c(1200L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
-                    post_output = NULL) {
+                    post_output = NULL,
+                    ggplot2_args = teal.devel::ggplot2_args()) {
   logger::log_info("Initializing tm_g_km")
 
   checkmate::assert_string(label)
@@ -350,6 +357,7 @@ tm_g_km <- function(label,
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -375,7 +383,8 @@ tm_g_km <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        ggplot2_args = ggplot2_args
       )
     ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
@@ -591,7 +600,8 @@ srv_g_km <- function(input,
                      label,
                      time_unit_var,
                      plot_height,
-                     plot_width) {
+                     plot_width,
+                     ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
 
   teal.devel::init_chunks()
@@ -706,6 +716,16 @@ srv_g_km <- function(input,
     input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
     title <- paste("KM Plot of", input_paramcd)
 
+    all_plot_args <- teal.devel::resolve_ggplot2_args(
+      user_plot = ggplot2_args,
+      module_plot = teal.devel::ggplot2_args(
+        labs = list(
+          title = title,
+          x = input$xlab
+        )
+      )
+    )
+
     my_calls <- template_g_km(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
@@ -726,10 +746,10 @@ srv_g_km <- function(input,
       pval_method = input$pval_method_coxph,
       conf_level = as.numeric(input$conf_level),
       ties = input$ties_coxph,
-      xlab = input$xlab,
+      xlab = all_plot_args$labs$x,
       yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
       ci_ribbon = input$show_ci_ribbon,
-      title = title
+      title = all_plot_args$labs$title
     )
     mapply(expression = my_calls, teal.devel::chunks_push)
   })
