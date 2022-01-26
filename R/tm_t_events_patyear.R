@@ -355,13 +355,10 @@ srv_events_patyear <- function(input,
   teal.devel::init_chunks()
 
   observeEvent(anl_merged(), {
-    if (avalu_var$select$selected %in% names(anl_merged()$data())) {
-      choices <- anl_merged()$data() %>%
-        dplyr::select(as.name(avalu_var$select$selected)) %>%
-        unique() %>%
-        dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-        dplyr::arrange() %>%
-        dplyr::pull()
+    data <- anl_merged()$data()
+    aval_unit_var <- anl_merged()$columns_source$avalu_var
+    if (length(aval_unit_var) > 0) {
+      choices <- na.omit(unique(data[[aval_unit_var]]))
 
       updateSelectInput(
         session,
