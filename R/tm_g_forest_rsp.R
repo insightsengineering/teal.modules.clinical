@@ -12,10 +12,12 @@
 #'   names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `caption`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
 template_forest_rsp <- function(dataname = "ANL",
@@ -199,11 +201,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body). \cr For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `caption`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
 #'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -325,7 +328,8 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)

@@ -13,6 +13,7 @@ tm_t_exposure(
   col_by_var,
   paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),
     selected = "TDURD"),
+  paramcd_label = "PARAM",
   id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
     "USUBJID", fixed = TRUE),
   parcat,
@@ -48,6 +49,9 @@ variable names that can be used to split columns.}
 \item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 variable value designating the studied parameter.}
 
+\item{paramcd_label}{(\code{character})\cr
+the column from the dataset where the value will be used to label the argument \code{paramcd}.}
+
 \item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
 object specifying the variable name for subject id.}
 
@@ -79,8 +83,9 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Teal module: Exposure Table for Risk management plan

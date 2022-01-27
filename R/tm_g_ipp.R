@@ -13,10 +13,12 @@
 #' @param add_avalu (`flag`)\cr allow user to not display value unit in the plot.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `x`, `y`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `subtitle`, `x`, `y`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
@@ -61,7 +63,7 @@ template_g_ipp <- function(dataname = "ANL",
     add_avalu,
     sprintf("Individual Patient Plot for %s Values (%s) over Time", paramcd_first, avalu_first),
     sprintf("Individual Patient Plot for %s Values over Time", paramcd_first)
-    )
+  )
   y_axis <- ifelse(
     add_avalu,
     sprintf("%s (%s)", paramcd_first, avalu_first),
@@ -171,6 +173,14 @@ template_g_ipp <- function(dataname = "ANL",
 #' @param base_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `base_var`.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `subtitle`, `x`, `y`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -300,7 +310,8 @@ tm_g_ipp <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -348,7 +359,7 @@ ui_g_ipp <- function(id, ...) {
     a$visit_var,
     a$paramcd,
     a$base_var
-    )
+  )
 
   ns <- NS(id)
 
@@ -413,7 +424,7 @@ ui_g_ipp <- function(id, ...) {
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
-            ),
+          ),
           checkboxInput(
             ns("suppress_legend"),
             "Suppress legend",

@@ -252,7 +252,8 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -357,7 +358,8 @@ ui_g_adverse_events <- function(id, ...) {
         data_extract_spec = ui_args$time,
         is_single_dataset = is_single_dataset_value
       ),
-      `if`(is.null(ui_args$decod),
+      `if`(
+        is.null(ui_args$decod),
         NULL,
         teal.devel::data_extract_ui(
           id = ns("decod"),

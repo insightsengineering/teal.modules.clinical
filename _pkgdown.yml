@@ -1,3 +1,4 @@
+---
 url: https://insightsengineering.github.io/teal.modules.clinical
 
 template:
@@ -16,7 +17,7 @@ reference:
       - teal.modules.clinical
   - title: Tables
     contents:
-      -  starts_with("tm_t_")
+      - starts_with("tm_t_")
   - title: Graphs
     contents:
       - starts_with("tm_g_")
@@ -51,6 +52,7 @@ reference:
       - split_interactions
       - styled_expr
       - get_g_forest_obj_var_name
+      - get_paramcd_label
 
   - title: Unexported functions
     contents:

@@ -9,11 +9,12 @@
 #'   should the screening visit be included.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `subtitle`, `caption`, `y`, `lty`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).\cr
-#' For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `subtitle`, `caption`, `y`, `lty`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_lineplot()]
 template_g_lineplot <- function(dataname = "ANL",
@@ -87,9 +88,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   mid_choices <- c(
-    "n" = "n",
     "Mean" = "mean",
-    "Standard Deviation" = "sd",
     "Median" = "median"
   )
 
@@ -111,10 +110,12 @@ template_g_lineplot <- function(dataname = "ANL",
     user_plot = ggplot2_args,
     module_plot = teal.devel::ggplot2_args(
       labs = list(
-        title = sprintf("Plot of %s and %s %s by Visit",
+        title = sprintf(
+          "Plot of %s and %s %s of %s by Visit",
           names(which(mid_choices == mid)),
           `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
-          names(which(interval_choices == interval))
+          names(which(interval_choices == interval)),
+          y
         ),
         subtitle = "",
         y = sprintf("%s %s Values for", y, names(which(mid_choices == mid)))
@@ -185,6 +186,14 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `subtitle`, `caption`, `y`, `lty`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body)
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -264,7 +273,8 @@ tm_g_lineplot <- function(label,
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -353,9 +363,7 @@ ui_g_lineplot <- function(id, ...) {
         ns("mid"),
         "Midpoint Statistic",
         choices = c(
-          "n" = "n",
           "Mean" = "mean",
-          "Standard deviation" = "sd",
           "Median" = "median"
         ),
         selected = "mean"
@@ -510,6 +518,12 @@ srv_g_lineplot <- function(input,
       validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
     }
 
+    # Validate whiskers
+    validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
+
+    # Validate interval
+    validate(need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
+
     do.call(what = "validate_standard_inputs", validate_args)
 
     validate(need(
@@ -535,13 +549,8 @@ srv_g_lineplot <- function(input,
     teal.devel::validate_has_data(ANL, 2)
 
     whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    if (length(whiskers_selected) == 0 || is.null(input$interval)) {
-      input_whiskers <- NULL
-      input_interval <- NULL
-    } else {
-      input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
-      input_interval <- input$interval
-    }
+    input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
+    input_interval <- input$interval
     input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
 
     my_calls <- template_g_lineplot(
