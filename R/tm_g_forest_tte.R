@@ -453,9 +453,7 @@ ui_g_forest_tte <- function(id, ...) {
   )
 }
 
-srv_g_forest_tte <- function(input,
-                             output,
-                             session,
+srv_g_forest_tte <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -471,6 +469,7 @@ srv_g_forest_tte <- function(input,
                              plot_width,
                              ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -621,16 +620,14 @@ srv_g_forest_tte <- function(input,
     teal.devel::chunks_get_var("p")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "myplot",
     plot_r = get_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -639,4 +636,5 @@ srv_g_forest_tte <- function(input,
     modal_title = "R Code for the Current Time-to-Event Forest Plot",
     code_header = "Time-to-Event Forest Plot"
   )
+})
 }

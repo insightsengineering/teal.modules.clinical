@@ -808,9 +808,7 @@ ui_mmrm <- function(id, ...) {
 }
 
 #' @noRd
-srv_mmrm <- function(input,
-                     output,
-                     session,
+srv_mmrm <- function(id,
                      datasets,
                      dataname,
                      parentname,
@@ -828,6 +826,8 @@ srv_mmrm <- function(input,
                      basic_table_args,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+
 
   teal.devel::init_chunks()
 
@@ -1364,8 +1364,7 @@ srv_mmrm <- function(input,
     )
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "mmrm_plot",
     plot_r = mmrm_plot_reactive,
     height = plot_height,
@@ -1373,8 +1372,7 @@ srv_mmrm <- function(input,
     show_hide_signal = reactive(show_plot_rv())
   )
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "mmrm_table",
     table_r = mmrm_table,
     show_hide_signal = reactive(!show_plot_rv())
@@ -1407,8 +1405,7 @@ srv_mmrm <- function(input,
   })
 
   # Show R code once button is pressed.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
@@ -1416,4 +1413,5 @@ srv_mmrm <- function(input,
     code_header = label,
     disable_buttons = disable_r_code
   )
+})
 }

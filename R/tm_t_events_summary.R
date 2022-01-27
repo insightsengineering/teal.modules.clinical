@@ -751,9 +751,7 @@ ui_t_events_summary <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_summary <- function(input,
-                                 output,
-                                 session,
+srv_t_events_summary <- function(id,
                                  datasets,
                                  dataname,
                                  parentname,
@@ -767,7 +765,7 @@ srv_t_events_summary <- function(input,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   data_extract_vars <- list(
@@ -887,19 +885,18 @@ srv_t_events_summary <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(data_extract_vars),
     modal_title = "Adverse Event Summary Table",
     code_header = label
   )
+})
 }

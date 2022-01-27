@@ -245,9 +245,7 @@ ui_t_prior_medication <- function(id, ...) {
 }
 
 
-srv_t_prior_medication <- function(input,
-                                   output,
-                                   session,
+srv_t_prior_medication <- function(id,
                                    datasets,
                                    dataname,
                                    parentname,
@@ -258,7 +256,7 @@ srv_t_prior_medication <- function(input,
                                    cmstdy,
                                    label) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -349,11 +347,11 @@ srv_t_prior_medication <- function(input,
     options = list(pageLength = input$prior_medication_table_rows)
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
     modal_title = label
   )
+})
 }

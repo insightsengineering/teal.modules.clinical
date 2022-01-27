@@ -532,9 +532,7 @@ ui_g_therapy <- function(id, ...) {
 }
 
 
-srv_g_therapy <- function(input,
-                          output,
-                          session,
+srv_g_therapy <- function(id,
                           datasets,
                           dataname,
                           parentname,
@@ -554,7 +552,7 @@ srv_g_therapy <- function(input,
                           label,
                           ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -694,16 +692,14 @@ srv_g_therapy <- function(input,
     teal.devel::chunks_get_var("therapy_plot")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "therapy_plot",
     plot_r = therapy_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(
@@ -711,4 +707,5 @@ srv_g_therapy <- function(input,
     )),
     modal_title = label
   )
+})
 }

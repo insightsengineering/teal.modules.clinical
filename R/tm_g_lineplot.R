@@ -467,9 +467,7 @@ ui_g_lineplot <- function(id, ...) {
 #' Server for Line Plot Module
 #' @noRd
 #'
-srv_g_lineplot <- function(input,
-                           output,
-                           session,
+srv_g_lineplot <- function(id,
                            datasets,
                            dataname,
                            parentname,
@@ -484,6 +482,7 @@ srv_g_lineplot <- function(input,
                            plot_width,
                            ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   anl_merged <- teal.devel::data_merge_module(
@@ -580,16 +579,14 @@ srv_g_lineplot <- function(input,
   })
 
   # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  plot_with_settings_srv(
     id = "myplot",
     plot_r = line_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -597,4 +594,5 @@ srv_g_lineplot <- function(input,
     ),
     modal_title = label
   )
+})
 }

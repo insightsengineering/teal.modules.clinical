@@ -434,9 +434,7 @@ ui_t_logistic <- function(id, ...) {
 #' Server Function for `tm_t_logistic`
 #' @noRd
 #'
-srv_t_logistic <- function(input,
-                           output,
-                           session,
+srv_t_logistic <- function(id,
                            datasets,
                            dataname,
                            parentname,
@@ -448,7 +446,7 @@ srv_t_logistic <- function(input,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Observer to update reference and comparison arm input options.
@@ -677,14 +675,12 @@ srv_t_logistic <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -693,4 +689,5 @@ srv_t_logistic <- function(input,
     modal_title = "R Code for the Current Logistic Regression",
     code_header = label
   )
+})
 }

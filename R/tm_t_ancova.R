@@ -520,9 +520,7 @@ ui_ancova <- function(id, ...) {
 }
 
 #' @noRd
-srv_ancova <- function(input,
-                       output,
-                       session,
+srv_ancova <- function(id,
                        datasets,
                        dataname,
                        parentname,
@@ -535,7 +533,7 @@ srv_ancova <- function(input,
                        label,
                        basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -688,15 +686,13 @@ srv_ancova <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -704,4 +700,5 @@ srv_ancova <- function(input,
     ),
     modal_title = label
   )
+})
 }

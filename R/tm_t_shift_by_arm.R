@@ -365,9 +365,7 @@ ui_shift_by_arm <- function(id, ...) {
 }
 
 #' @noRd
-srv_shift_by_arm <- function(input,
-                             output,
-                             session,
+srv_shift_by_arm <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -382,7 +380,7 @@ srv_shift_by_arm <- function(input,
                              add_total,
                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   anl_merged <- teal.devel::data_merge_module(
@@ -475,19 +473,17 @@ srv_shift_by_arm <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(arm_var, paramcd, visit_var, aval_var, base_var)),
     modal_title = "R Code for Shift Table by Arm",
     code_header = label
   )
-}
+})}

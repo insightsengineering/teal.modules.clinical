@@ -556,9 +556,7 @@ ui_summary_by <- function(id, ...) {
 
 
 #' @noRd
-srv_summary_by <- function(input,
-                           output,
-                           session,
+srv_summary_by <- function(id,
                            datasets,
                            dataname,
                            parentname,
@@ -574,7 +572,7 @@ srv_summary_by <- function(input,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
@@ -682,15 +680,13 @@ srv_summary_by <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -699,4 +695,4 @@ srv_summary_by <- function(input,
     modal_title = "Summary by Row Groups Table",
     code_header = label
   )
-}
+})}

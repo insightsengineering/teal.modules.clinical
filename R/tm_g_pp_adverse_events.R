@@ -381,9 +381,7 @@ ui_g_adverse_events <- function(id, ...) {
 }
 
 
-srv_g_adverse_events <- function(input,
-                                 output,
-                                 session,
+srv_g_adverse_events <- function(id,
                                  datasets,
                                  dataname,
                                  parentname,
@@ -400,7 +398,7 @@ srv_g_adverse_events <- function(input,
                                  label,
                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -521,16 +519,14 @@ srv_g_adverse_events <- function(input,
     teal.devel::chunks_get_var("chart")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "chart",
     plot_r = chart,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(
@@ -538,4 +534,5 @@ srv_g_adverse_events <- function(input,
     )),
     modal_title = label
   )
+})
 }

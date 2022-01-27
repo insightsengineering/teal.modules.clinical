@@ -298,9 +298,7 @@ ui_g_barchart_simple <- function(id, ...) {
   )
 }
 
-srv_g_barchart_simple <- function(input,
-                                  output,
-                                  session,
+srv_g_barchart_simple <- function(id,
                                   datasets,
                                   x,
                                   fill,
@@ -310,6 +308,8 @@ srv_g_barchart_simple <- function(input,
                                   plot_width,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+
 
   teal.devel::init_chunks()
 
@@ -497,8 +497,7 @@ srv_g_barchart_simple <- function(input,
   }
 
   # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,
@@ -506,13 +505,13 @@ srv_g_barchart_simple <- function(input,
   )
 
 
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(x, fill, x_facet, y_facet)),
     modal_title = "Bar Chart"
   )
+})
 }
 
 

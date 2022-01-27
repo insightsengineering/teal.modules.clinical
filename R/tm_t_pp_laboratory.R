@@ -272,9 +272,7 @@ ui_g_laboratory <- function(id, ...) {
   )
 }
 
-srv_g_laboratory <- function(input,
-                             output,
-                             session,
+srv_g_laboratory <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -287,7 +285,7 @@ srv_g_laboratory <- function(input,
                              anrind,
                              label) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -410,11 +408,10 @@ srv_g_laboratory <- function(input,
     options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
     modal_title = label
   )
-}
+})}

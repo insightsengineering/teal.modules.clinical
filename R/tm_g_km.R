@@ -575,9 +575,7 @@ ui_g_km <- function(id, ...) {
 #' Server for KM Module
 #' @noRd
 #'
-srv_g_km <- function(input,
-                     output,
-                     session,
+srv_g_km <- function(id,
                      datasets,
                      dataname,
                      parentname,
@@ -593,7 +591,7 @@ srv_g_km <- function(input,
                      plot_height,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms and default
@@ -741,16 +739,14 @@ srv_g_km <- function(input,
 
 
   # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "myplot",
     plot_r = km_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -758,4 +754,5 @@ srv_g_km <- function(input,
     ),
     modal_title = label
   )
+})
 }

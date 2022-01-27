@@ -465,9 +465,7 @@ ui_g_forest_rsp <- function(id, ...) {
   )
 }
 
-srv_g_forest_rsp <- function(input,
-                             output,
-                             session,
+srv_g_forest_rsp <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -482,6 +480,7 @@ srv_g_forest_rsp <- function(input,
                              label,
                              default_responses,
                              ggplot2_args) {
+  moduleServer(id, function(input, output, session) {
   stopifnot(is_cdisc_data(datasets))
 
   teal.devel::init_chunks()
@@ -698,16 +697,14 @@ srv_g_forest_rsp <- function(input,
     teal.devel::chunks_get_var("p")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "myplot",
     plot_r = call_preparation,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -715,4 +712,4 @@ srv_g_forest_rsp <- function(input,
     ),
     modal_title = label
   )
-}
+})}

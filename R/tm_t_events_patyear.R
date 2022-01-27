@@ -335,9 +335,7 @@ ui_events_patyear <- function(id, ...) {
 }
 
 #' @noRd
-srv_events_patyear <- function(input,
-                               output,
-                               session,
+srv_events_patyear <- function(id,
                                datasets,
                                dataname,
                                parentname,
@@ -351,7 +349,7 @@ srv_events_patyear <- function(input,
                                label,
                                basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   observeEvent(anl_merged(), {
@@ -483,15 +481,13 @@ srv_events_patyear <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "patyear_table",
     table_r = patyear_table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -500,4 +496,5 @@ srv_events_patyear <- function(input,
     modal_title = "Event Rate adjusted for patient-year at risk",
     code_header = label
   )
+})
 }

@@ -616,9 +616,7 @@ ui_t_events_byterm <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_byterm <- function(input,
-                                output,
-                                session,
+srv_t_events_byterm <- function(id,
                                 datasets,
                                 dataname,
                                 parentname,
@@ -630,7 +628,7 @@ srv_t_events_byterm <- function(input,
                                 label,
                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   anl_selectors <- teal.devel::data_extract_multiple_srv(
@@ -745,19 +743,18 @@ srv_t_events_byterm <- function(input,
     teal.devel::chunks_get_var("pruned_and_sorted_result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(arm_var, hlt, llt)),
     modal_title = "Event Table",
     code_header = label
   )
+})
 }

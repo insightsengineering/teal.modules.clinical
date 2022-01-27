@@ -640,9 +640,7 @@ ui_g_patient_timeline <- function(id, ...) {
 }
 
 
-srv_g_patient_timeline <- function(input,
-                                   output,
-                                   session,
+srv_g_patient_timeline <- function(id,
                                    datasets,
                                    dataname_adae,
                                    dataname_adcm,
@@ -663,7 +661,7 @@ srv_g_patient_timeline <- function(input,
                                    label,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -820,16 +818,14 @@ srv_g_patient_timeline <- function(input,
     teal.devel::chunks_get_var("patient_timeline_plot")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "patient_timeline_plot",
     plot_r = patient_timeline_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(
@@ -837,4 +833,5 @@ srv_g_patient_timeline <- function(input,
     )),
     modal_title = label
   )
+})
 }

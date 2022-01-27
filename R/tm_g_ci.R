@@ -349,9 +349,7 @@ ui_g_ci <- function(id, ...) { # nolint
   )
 }
 
-srv_g_ci <- function(input, # nolint
-                     output,
-                     session,
+srv_g_ci <- function(id, # nolint
                      datasets,
                      x_var,
                      y_var,
@@ -361,6 +359,8 @@ srv_g_ci <- function(input, # nolint
                      plot_width,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+
 
   teal.devel::init_chunks()
 
@@ -419,19 +419,18 @@ srv_g_ci <- function(input, # nolint
     teal.devel::chunks_get_var("gg")
   })
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(x_var, y_var, color)),
     modal_title = label
   )
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "myplot",
     plot_r = plot_r,
     height = plot_height,
     width = plot_width
   )
+})
 }

@@ -715,9 +715,7 @@ ui_t_shift_by_grade <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_shift_by_grade <- function(input,
-                                 output,
-                                 session,
+srv_t_shift_by_grade <- function(id,
                                  datasets,
                                  dataname,
                                  parentname,
@@ -735,7 +733,7 @@ srv_t_shift_by_grade <- function(input,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   anl_merged <- teal.devel::data_merge_module(
@@ -836,15 +834,13 @@ srv_t_shift_by_grade <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -856,4 +852,4 @@ srv_t_shift_by_grade <- function(input,
     modal_title = "R Code for Grade Laboratory Abnormalities",
     code_header = label
   )
-}
+})}

@@ -444,9 +444,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 }
 
 #' @noRd
-srv_t_abnormality_by_worst_grade <- function(input, # nolint
-                                             output,
-                                             session,
+srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              datasets,
                                              dataname,
                                              parentname,
@@ -461,7 +459,7 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
                                              label,
                                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   anl_merged <- teal.devel::data_merge_module(
@@ -559,15 +557,13 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -579,4 +575,5 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
     modal_title = "R Code for Grade Laboratory Abnormalities",
     code_header = label
   )
+})
 }

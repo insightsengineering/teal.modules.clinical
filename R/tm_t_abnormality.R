@@ -468,9 +468,7 @@ ui_t_abnormality <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_abnormality <- function(input,
-                              output,
-                              session,
+srv_t_abnormality <- function(id,
                               datasets,
                               dataname,
                               parentname,
@@ -487,7 +485,7 @@ srv_t_abnormality <- function(input,
                               na_level,
                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Update UI choices depending on selection of previous options
@@ -603,15 +601,13 @@ srv_t_abnormality <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
   # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -621,3 +617,4 @@ srv_t_abnormality <- function(input,
     code_header = label
   )
 }
+  )}

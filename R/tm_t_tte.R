@@ -682,9 +682,7 @@ ui_t_tte <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_tte <- function(input,
-                      output,
-                      session,
+srv_t_tte <- function(id,
                       datasets,
                       arm_var,
                       paramcd,
@@ -700,7 +698,7 @@ srv_t_tte <- function(input,
                       label,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms, and default
@@ -865,14 +863,12 @@ srv_t_tte <- function(input,
     teal.devel::chunks_get_var("result")
   })
 
-  callModule(
-    teal.devel::table_with_settings_srv,
+  teal.devel::table_with_settings_srv(
     id = "table",
     table_r = table
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(
@@ -880,4 +876,4 @@ srv_t_tte <- function(input,
     ),
     modal_title = label
   )
-}
+})}

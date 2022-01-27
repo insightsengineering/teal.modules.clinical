@@ -343,9 +343,7 @@ ui_g_vitals <- function(id, ...) {
 }
 
 
-srv_g_vitals <- function(input,
-                         output,
-                         session,
+srv_g_vitals <- function(id,
                          datasets,
                          dataname,
                          parentname,
@@ -359,7 +357,7 @@ srv_g_vitals <- function(input,
                          label,
                          ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-
+  moduleServer(id, function(input, output, session) {
   teal.devel::init_chunks()
 
   patient_id <- reactive(input$patient_id)
@@ -488,19 +486,18 @@ srv_g_vitals <- function(input,
     teal.devel::chunks_get_var("result_plot")
   })
 
-  callModule(
-    teal.devel::plot_with_settings_srv,
+  teal.devel::plot_with_settings_srv(
     id = "vitals_plot",
     plot_r = vitals_plot,
     height = plot_height,
     width = plot_width
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
+  teal.devel::get_rcode_srv(
     id = "rcode",
     datasets = datasets,
     datanames = teal.devel::get_extract_datanames(list(paramcd, param, aval, xaxis)),
     modal_title = label
   )
+})
 }
