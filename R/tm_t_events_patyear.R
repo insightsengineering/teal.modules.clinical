@@ -358,7 +358,7 @@ srv_events_patyear <- function(input,
     data <- anl_merged()$data()
     aval_unit_var <- anl_merged()$columns_source$avalu_var
     if (length(aval_unit_var) > 0) {
-      choices <- na.omit(unique(data[[aval_unit_var]]))
+      choices <- stats::na.omit(unique(data[[aval_unit_var]]))
       choices <- gsub("s$", "", tolower(choices))
 
       updateSelectInput(
