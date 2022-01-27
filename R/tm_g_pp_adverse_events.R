@@ -399,140 +399,140 @@ srv_g_adverse_events <- function(id,
                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Adverse events tab ----
-  ae_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      aeterm = aeterm,
-      tox_grade = tox_grade,
-      causality = causality,
-      outcome = outcome,
-      action = action,
-      time = time,
-      decod = decod
-    )
-  )
-
-  calls <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-    teal.devel::validate_has_data(
-      ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
-      1
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    validate(
-      need(
-        input[[extract_input("aeterm", dataname)]],
-        "Please select AETERM variable."
-      ),
-      need(
-        input[[extract_input("tox_grade", dataname)]],
-        "Please select AETOXGR variable."
-      ),
-      need(
-        input[[extract_input("causality", dataname)]],
-        "Please select AEREL variable."
-      ),
-      need(
-        input[[extract_input("outcome", dataname)]],
-        "Please select AEOUT variable."
-      ),
-      need(
-        input[[extract_input("action", dataname)]],
-        "Please select AEACN variable."
-      ),
-      need(
-        input[[extract_input("time", dataname)]],
-        "Please select ASTDY variable."
+    # Adverse events tab ----
+    ae_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        aeterm = aeterm,
+        tox_grade = tox_grade,
+        causality = causality,
+        outcome = outcome,
+        action = action,
+        time = time,
+        decod = decod
       )
     )
 
-    stack <- teal.devel::chunks$new()
-    stack$reset()
+    calls <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+      teal.devel::validate_has_data(
+        ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
+        1
+      )
 
-    teal.devel::chunks_push_data_merge(ae_merged_data(), chunks = stack)
+      validate(
+        need(
+          input[[extract_input("aeterm", dataname)]],
+          "Please select AETERM variable."
+        ),
+        need(
+          input[[extract_input("tox_grade", dataname)]],
+          "Please select AETOXGR variable."
+        ),
+        need(
+          input[[extract_input("causality", dataname)]],
+          "Please select AEREL variable."
+        ),
+        need(
+          input[[extract_input("outcome", dataname)]],
+          "Please select AEOUT variable."
+        ),
+        need(
+          input[[extract_input("action", dataname)]],
+          "Please select AEACN variable."
+        ),
+        need(
+          input[[extract_input("time", dataname)]],
+          "Please select ASTDY variable."
+        )
+      )
 
-    stack$push(substitute(
+      stack <- teal.devel::chunks$new()
+      stack$reset()
+
+      teal.devel::chunks_push_data_merge(ae_merged_data(), chunks = stack)
+
+      stack$push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+
+      calls <- template_adverse_events(
+        dataname = "ANL",
+        aeterm = input[[extract_input("aeterm", dataname)]],
+        tox_grade = input[[extract_input("tox_grade", dataname)]],
+        causality = input[[extract_input("causality", dataname)]],
+        outcome = input[[extract_input("outcome", dataname)]],
+        action = input[[extract_input("action", dataname)]],
+        time = input[[extract_input("time", dataname)]],
+        decod = input[[extract_input("decod", dataname)]],
+        patient_id = patient_id(),
+        font_size = input[["font_size"]],
+        ggplot2_args = ggplot2_args
+      )
+
+      lapply(calls, teal.devel::chunks_push, chunks = stack)
+      teal.devel::chunks_safe_eval(chunks = stack)
+      stack
+    })
+    output$table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-
-    calls <- template_adverse_events(
-      dataname = "ANL",
-      aeterm = input[[extract_input("aeterm", dataname)]],
-      tox_grade = input[[extract_input("tox_grade", dataname)]],
-      causality = input[[extract_input("causality", dataname)]],
-      outcome = input[[extract_input("outcome", dataname)]],
-      action = input[[extract_input("action", dataname)]],
-      time = input[[extract_input("time", dataname)]],
-      decod = input[[extract_input("decod", dataname)]],
-      patient_id = patient_id(),
-      font_size = input[["font_size"]],
-      ggplot2_args = ggplot2_args
+        teal.devel::chunks_reset()
+        teal.devel::chunks_push_chunks(calls())
+        teal.devel::chunks_get_var("table")
+      },
+      options = list(pageLength = input$table_rows)
     )
 
-    lapply(calls, teal.devel::chunks_push, chunks = stack)
-    teal.devel::chunks_safe_eval(chunks = stack)
-    stack
-  })
-  output$table <- DT::renderDataTable(
-    expr = {
+    chart <- reactive({
       teal.devel::chunks_reset()
       teal.devel::chunks_push_chunks(calls())
-      teal.devel::chunks_get_var("table")
-    },
-    options = list(pageLength = input$table_rows)
-  )
+      teal.devel::chunks_get_var("chart")
+    })
 
-  chart <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(calls())
-    teal.devel::chunks_get_var("chart")
+    teal.devel::plot_with_settings_srv(
+      id = "chart",
+      plot_r = chart,
+      height = plot_height,
+      width = plot_width
+    )
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(
+        aeterm, tox_grade, causality, outcome, action, time, decod
+      )),
+      modal_title = label
+    )
   })
-
-  teal.devel::plot_with_settings_srv(
-    id = "chart",
-    plot_r = chart,
-    height = plot_height,
-    width = plot_width
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(
-      aeterm, tox_grade, causality, outcome, action, time, decod
-    )),
-    modal_title = label
-  )
-})
 }

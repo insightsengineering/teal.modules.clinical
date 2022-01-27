@@ -257,101 +257,101 @@ srv_t_prior_medication <- function(id,
                                    label) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Prior medication tab ----
-  pmed_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
-    merge_function = "dplyr::left_join"
-  )
-
-  pmed_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    validate(
-      need(
-        input[[extract_input("atirel", dataname)]],
-        "Please select ATIREL variable."
-      ),
-      need(
-        input[[extract_input("cmdecod", dataname)]],
-        "Please select Medication decoding variable."
-      ),
-      need(
-        input[[extract_input("cmindc", dataname)]],
-        "Please select CMINDC variable."
-      ),
-      need(
-        input[[extract_input("cmstdy", dataname)]],
-        "Please select CMSTDY variable."
-      )
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    pmed_stack <- teal.devel::chunks$new()
-    pmed_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = pmed_stack)
-    }
-    teal.devel::chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
+    # Prior medication tab ----
+    pmed_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
+      merge_function = "dplyr::left_join"
+    )
 
-    pmed_stack_push(substitute(
+    pmed_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+
+      validate(
+        need(
+          input[[extract_input("atirel", dataname)]],
+          "Please select ATIREL variable."
+        ),
+        need(
+          input[[extract_input("cmdecod", dataname)]],
+          "Please select Medication decoding variable."
+        ),
+        need(
+          input[[extract_input("cmindc", dataname)]],
+          "Please select CMINDC variable."
+        ),
+        need(
+          input[[extract_input("cmstdy", dataname)]],
+          "Please select CMSTDY variable."
+        )
+      )
+
+      pmed_stack <- teal.devel::chunks$new()
+      pmed_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = pmed_stack)
+      }
+      teal.devel::chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
+
+      pmed_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_prior_medication(
+        dataname = "ANL",
+        atirel = input[[extract_input("atirel", dataname)]],
+        cmdecod = input[[extract_input("cmdecod", dataname)]],
+        cmindc = input[[extract_input("cmindc", dataname)]],
+        cmstdy = input[[extract_input("cmstdy", dataname)]]
+      )
+
+      lapply(my_calls, pmed_stack_push)
+      teal.devel::chunks_safe_eval(pmed_stack)
+      pmed_stack
+    })
+
+    output$prior_medication_table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_prior_medication(
-      dataname = "ANL",
-      atirel = input[[extract_input("atirel", dataname)]],
-      cmdecod = input[[extract_input("cmdecod", dataname)]],
-      cmindc = input[[extract_input("cmindc", dataname)]],
-      cmstdy = input[[extract_input("cmstdy", dataname)]]
+        teal.devel::chunks_reset()
+        teal.devel::chunks_push_chunks(pmed_call())
+        teal.devel::chunks_get_var("result")
+      },
+      options = list(pageLength = input$prior_medication_table_rows)
     )
 
-    lapply(my_calls, pmed_stack_push)
-    teal.devel::chunks_safe_eval(pmed_stack)
-    pmed_stack
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
+      modal_title = label
+    )
   })
-
-  output$prior_medication_table <- DT::renderDataTable(
-    expr = {
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(pmed_call())
-      teal.devel::chunks_get_var("result")
-    },
-    options = list(pageLength = input$prior_medication_table_rows)
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
-    modal_title = label
-  )
-})
 }

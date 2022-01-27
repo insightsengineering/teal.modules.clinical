@@ -716,236 +716,235 @@ srv_t_binary_outcome <- function(id,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte",
-    on_off = reactive(input$compare_arms)
-  )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, strata_var = strata_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  observeEvent(
-    c(
-      input[[extract_input("aval_var", "ADRS")]],
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-    ),
-    handlerExpr = {
-      aval_var <- anl_merged()$columns_source$aval_var
-      sel_param <- if (is.list(default_responses)) {
-        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-      } else {
-        default_responses
-      }
-      common_rsp <- if (is.list(sel_param)) {
-        sel_param$rsp
-      } else {
-        sel_param
-      }
-      responder_choices <- if (length(aval_var) == 0) {
-        character(0)
-      } else {
-        if ("levels" %in% names(sel_param)) {
-          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-            sel_param$levels
-          } else {
-            union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
-          }
-        } else {
-          unique(anl_merged()$data()[[aval_var]])
-        }
-      }
-      updateSelectInput(
-        session, "responders",
-        choices = responder_choices,
-        selected = intersect(responder_choices, common_rsp)
-      )
-    }
-  )
-
-  validate_check <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
-      arm_var = input_arm_var
+    # Setup arm variable selection, default reference arms, and default
+    # comparison arms for encoding panel
+    teal.devel::arm_ref_comp_observer(
+      session, input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_tte",
+      on_off = reactive(input$compare_arms)
     )
 
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
-    }
-    if (input$compare_arms) {
-      validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    }
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
+      merge_function = "dplyr::inner_join"
+    )
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, strata_var = strata_var),
+      anl_name = "ANL_ADSL"
+    )
 
-    teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
-
-    validate(
-      if (length(input_strata_var) >= 1L) {
-        need(
-          sum(
-            vapply(
-              anl_m$data()[input_strata_var],
-              FUN = function(x) {
-                length(unique(x)) > 1
-              },
-              logical(1)
-            )
-          ) > 0,
-          "At least one strata variable must have more than one non-empty level after filtering."
+    observeEvent(
+      c(
+        input[[extract_input("aval_var", "ADRS")]],
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+      ),
+      handlerExpr = {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else {
+          default_responses
+        }
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else {
+          sel_param
+        }
+        responder_choices <- if (length(aval_var) == 0) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
+            } else {
+              union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+            }
+          } else {
+            unique(anl_merged()$data()[[aval_var]])
+          }
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
         )
       }
     )
 
-    validate(
-      if (length(input_strata_var) >= 1L) {
-        need(
-          sum(
-            vapply(
-              anl_m$data()[input_strata_var],
-              FUN = function(strata) {
-                tab <- base::table(strata, anl_m$data()[[input_arm_var]])
-                tab_logic <- tab != 0L
-                sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
+    validate_check <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
+        arm_var = input_arm_var
+      )
+
+      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+        validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
+      }
+      if (input$compare_arms) {
+        validate_args <- c(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      }
+
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+
+      validate(
+        if (length(input_strata_var) >= 1L) {
+          need(
+            sum(
+              vapply(
+                anl_m$data()[input_strata_var],
+                FUN = function(x) {
+                  length(unique(x)) > 1
                 },
-              FUN.VALUE = logical(1)
+                logical(1)
               )
             ) > 0,
-          "At least one strata variable must have at least two levels with observation(s) in all of the arms."
+            "At least one strata variable must have more than one non-empty level after filtering."
+          )
+        }
+      )
+
+      validate(
+        if (length(input_strata_var) >= 1L) {
+          need(
+            sum(
+              vapply(
+                anl_m$data()[input_strata_var],
+                FUN = function(strata) {
+                  tab <- base::table(strata, anl_m$data()[[input_arm_var]])
+                  tab_logic <- tab != 0L
+                  sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
+                },
+                FUN.VALUE = logical(1)
+              )
+            ) > 0,
+            "At least one strata variable must have at least two levels with observation(s) in all of the arms."
+          )
+        }
+      )
+
+      validate(
+        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
+        need(input$responders, "`Responders` field is empty")
+      )
+
+      if (is.list(default_responses)) {
+        validate(
+          need(
+            all(
+              grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+                gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)
+            ),
+            "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+          )
         )
       }
-    )
 
-    validate(
-      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty")
-    )
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
 
-    if (is.list(default_responses)) {
-      validate(
-        need(
-          all(
-            grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-              gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)
+      NULL
+    })
+
+    call_preparation <- reactive({
+      validate_check()
+      teal.devel::chunks_reset()
+
+      anl_m <- anl_merged()
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      req(input$responders %in% anl_m$data()[[input_aval_var]])
+
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      anl <- teal.devel::chunks_get_var("ANL") # nolint
+      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+
+      my_calls <- template_binary_outcome(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
+        ref_arm = input$ref_arm,
+        comp_arm = input$comp_arm,
+        compare_arm = input$compare_arms,
+        combine_comp_arms = input$combine_comp_arms,
+        aval_var = input_aval_var,
+        responder_val = input$responders,
+        show_rsp_cat = input$show_rsp_cat,
+        control = list(
+          global = list(
+            method = input$prop_ci_method,
+            conf_level = as.numeric(input$conf_level)
           ),
-          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
-        )
+          unstrat = list(
+            method_ci = input$u_diff_ci,
+            method_test = input$u_diff_test,
+            odds = input$u_odds_ratio
+          ),
+          strat = list(
+            method_ci = input$s_diff_ci,
+            method_test = input$s_diff_test,
+            strat = if (length(input_strata_var) != 0) input_strata_var else NULL
+          )
+        ),
+        add_total = input$add_total,
+        basic_table_args = basic_table_args
       )
-    }
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
 
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
 
-    NULL
-  })
-
-  call_preparation <- reactive({
-
-    validate_check()
-    teal.devel::chunks_reset()
-
-    anl_m <- anl_merged()
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    req(input$responders %in% anl_m$data()[[input_aval_var]])
-
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    anl <- teal.devel::chunks_get_var("ANL") # nolint
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-
-    my_calls <- template_binary_outcome(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      compare_arm = input$compare_arms,
-      combine_comp_arms = input$combine_comp_arms,
-      aval_var = input_aval_var,
-      responder_val = input$responders,
-      show_rsp_cat = input$show_rsp_cat,
-      control = list(
-        global = list(
-          method = input$prop_ci_method,
-          conf_level = as.numeric(input$conf_level)
-        ),
-        unstrat = list(
-          method_ci = input$u_diff_ci,
-          method_test = input$u_diff_test,
-          odds = input$u_odds_ratio
-        ),
-        strat = list(
-          method_ci = input$s_diff_ci,
-          method_test = input$s_diff_test,
-          strat = if (length(input_strata_var) != 0) input_strata_var else NULL
-        )
-      ),
-      add_total = input$add_total,
-      basic_table_args = basic_table_args
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, paramcd, aval_var, strata_var)
+      ),
+      modal_title = "Binary Outcome",
+      code_header = label
+    )
   })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  teal.devel::table_with_settings_srv(
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, aval_var, strata_var)
-    ),
-    modal_title = "Binary Outcome",
-    code_header = label
-  )
-})
 }

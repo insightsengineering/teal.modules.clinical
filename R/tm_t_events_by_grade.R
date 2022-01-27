@@ -975,171 +975,171 @@ srv_t_events_by_grade <- function(id,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    adsl_keys <- datasets$get_keys(parentname)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_level_term <- c(
-      as.vector(anl_m$columns_source$hlt),
-      as.vector(anl_m$columns_source$llt)
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
+      merge_function = "dplyr::inner_join"
     )
-    input_grade <- as.vector(anl_m$columns_source$grade)
 
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(input_grade, "Please select a grade variable")
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
     )
-    teal.devel::validate_has_elements(
-      input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
-    )
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
-    )
-    if (input$col_by_grade) {
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_keys <- datasets$get_keys(parentname)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_level_term <- c(
+        as.vector(anl_m$columns_source$hlt),
+        as.vector(anl_m$columns_source$llt)
+      )
+      input_grade <- as.vector(anl_m$columns_source$grade)
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable"),
+        need(input_grade, "Please select a grade variable")
+      )
+      teal.devel::validate_has_elements(
+        input_level_term,
+        "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
+      )
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      )
+      if (input$col_by_grade) {
+        validate(
+          need(
+            is.factor(anl_filtered[[input_grade]]) &&
+              all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
+            "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
+          )
+        )
+      } else {
+        validate(
+          need(
+            is.factor(anl_filtered[[input_grade]]),
+            "Event grade variable must be a factor."
+          )
+        )
+      }
       validate(
         need(
-          is.factor(anl_filtered[[input_grade]]) &&
-            all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
-          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
-        )
-      )
-    } else {
-      validate(
+          input$prune_freq >= 0 && input$prune_freq <= 100,
+          "Please provide an Incidence Rate between 0 and 100 (%)."
+        ),
         need(
-          is.factor(anl_filtered[[input_grade]]),
-          "Event grade variable must be a factor."
+          input$prune_diff >= 0 && input$prune_diff <= 100,
+          "Please provide a Difference Rate between 0 and 100 (%)."
         )
       )
-    }
-    validate(
-      need(
-        input$prune_freq >= 0 && input$prune_freq <= 100,
-        "Please provide an Incidence Rate between 0 and 100 (%)."
+      if (input$col_by_grade) {
+        validate(
+          need(
+            as.vector(anl_m$columns_source$llt),
+            "Low Level Term must be present for nested grade grouping display."
+          )
+        )
+      }
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c(adsl_keys, input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(adsl_keys, input_level_term, input_grade),
+        arm_var = input_arm_var
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+      input_grade <- as.vector(anl_m$columns_source$grade)
+      label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
+      label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
+      label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
+      label_grade <- if (is.null(label_grade)) input_grade else NULL
+
+      my_calls <- if (input$col_by_grade) {
+        template_events_col_by_grade(
+          dataname = "ANL",
+          parentname = "ANL_ADSL",
+          add_total = input$add_total,
+          grading_groups = grading_groups,
+          arm_var = as.vector(anl_m$columns_source$arm_var),
+          id = datasets$get_keys(parentname)[2],
+          hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+          llt = if (length(input_llt) != 0) input_llt else NULL,
+          label_hlt = label_hlt,
+          label_llt = label_llt,
+          grade = if (length(input_grade) != 0) input_grade else NULL,
+          label_grade = label_grade,
+          prune_freq = input$prune_freq / 100,
+          prune_diff = input$prune_diff / 100,
+          drop_arm_levels = input$drop_arm_levels,
+          basic_table_args = basic_table_args
+        )
+      } else {
+        template_events_by_grade(
+          dataname = "ANL",
+          parentname = "ANL_ADSL",
+          arm_var = as.vector(anl_m$columns_source$arm_var),
+          id = datasets$get_keys(parentname)[2],
+          hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+          llt = if (length(input_llt) != 0) input_llt else NULL,
+          label_hlt = label_hlt,
+          label_llt = label_llt,
+          grade = input_grade,
+          label_grade = label_grade,
+          prune_freq = input$prune_freq / 100,
+          prune_diff = input$prune_diff / 100,
+          add_total = input$add_total,
+          drop_arm_levels = input$drop_arm_levels,
+          basic_table_args = basic_table_args
+        )
+      }
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("pruned_and_sorted_result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, hlt, llt, grade)
       ),
-      need(
-        input$prune_diff >= 0 && input$prune_diff <= 100,
-        "Please provide a Difference Rate between 0 and 100 (%)."
-      )
-    )
-    if (input$col_by_grade) {
-      validate(
-        need(
-          as.vector(anl_m$columns_source$llt),
-          "Low Level Term must be present for nested grade grouping display."
-        )
-      )
-    }
-
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c(adsl_keys, input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(adsl_keys, input_level_term, input_grade),
-      arm_var = input_arm_var
+      modal_title = "AE by Grade Table",
+      code_header = label
     )
   })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-    input_hlt <- as.vector(anl_m$columns_source$hlt)
-    input_llt <- as.vector(anl_m$columns_source$llt)
-    input_grade <- as.vector(anl_m$columns_source$grade)
-    label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
-    label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
-    label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
-    label_grade <- if (is.null(label_grade)) input_grade else NULL
-
-    my_calls <- if (input$col_by_grade) {
-      template_events_col_by_grade(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        add_total = input$add_total,
-        grading_groups = grading_groups,
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        id = datasets$get_keys(parentname)[2],
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-        llt = if (length(input_llt) != 0) input_llt else NULL,
-        label_hlt = label_hlt,
-        label_llt = label_llt,
-        grade = if (length(input_grade) != 0) input_grade else NULL,
-        label_grade = label_grade,
-        prune_freq = input$prune_freq / 100,
-        prune_diff = input$prune_diff / 100,
-        drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args
-      )
-    } else {
-      template_events_by_grade(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        id = datasets$get_keys(parentname)[2],
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-        llt = if (length(input_llt) != 0) input_llt else NULL,
-        label_hlt = label_hlt,
-        label_llt = label_llt,
-        grade = input_grade,
-        label_grade = label_grade,
-        prune_freq = input$prune_freq / 100,
-        prune_diff = input$prune_diff / 100,
-        add_total = input$add_total,
-        drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args
-      )
-    }
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("pruned_and_sorted_result")
-  })
-
-  teal.devel::table_with_settings_srv(
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, hlt, llt, grade)
-    ),
-    modal_title = "AE by Grade Table",
-    code_header = label
-  )
 }
-)}

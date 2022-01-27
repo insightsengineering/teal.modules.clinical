@@ -662,176 +662,176 @@ srv_g_patient_timeline <- function(id,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Patient timeline tab ----
-  p_timeline_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
-      aerelday_start = aerelday_start, aerelday_end = aerelday_end,
-      aeterm = aeterm, aetime_start = aetime_start,
-      aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmdecod = cmdecod
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
-  )
 
-  patient_timeline_calls <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
+    # Patient timeline tab ----
+    p_timeline_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
+        aerelday_start = aerelday_start, aerelday_end = aerelday_end,
+        aeterm = aeterm, aetime_start = aetime_start,
+        aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmdecod = cmdecod
+      )
+    )
 
-    aeterm <- input[[extract_input("aeterm", dataname_adae)]]
-    aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
-    aetime_end <- input[[extract_input("aetime_end", dataname_adae)]]
-    dstime_start <- input[[extract_input("dstime_start", dataname_adcm)]]
-    dstime_end <- input[[extract_input("dstime_end", dataname_adcm)]]
-    cmdecod <- input[[extract_input("cmdecod", dataname_adcm)]]
-    aerelday_start <- input[[extract_input("aerelday_start", dataname_adae)]]
-    aerelday_end <- input[[extract_input("aerelday_end", dataname_adae)]]
-    dsrelday_start <- input[[extract_input("dsrelday_start", dataname_adcm)]]
-    dsrelday_end <- input[[extract_input("dsrelday_end", dataname_adcm)]]
-    font_size <- input[["font_size"]]
+    patient_timeline_calls <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
 
-    ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
-    ds_chart_vars_null <- any(vapply(list(dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
+      aeterm <- input[[extract_input("aeterm", dataname_adae)]]
+      aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
+      aetime_end <- input[[extract_input("aetime_end", dataname_adae)]]
+      dstime_start <- input[[extract_input("dstime_start", dataname_adcm)]]
+      dstime_end <- input[[extract_input("dstime_end", dataname_adcm)]]
+      cmdecod <- input[[extract_input("cmdecod", dataname_adcm)]]
+      aerelday_start <- input[[extract_input("aerelday_start", dataname_adae)]]
+      aerelday_end <- input[[extract_input("aerelday_end", dataname_adae)]]
+      dsrelday_start <- input[[extract_input("dsrelday_start", dataname_adcm)]]
+      dsrelday_end <- input[[extract_input("dsrelday_end", dataname_adcm)]]
+      font_size <- input[["font_size"]]
 
-    p_timeline_data <- p_timeline_merged_data()$data()
-    # time variables can not be NA
-    p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
+      ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
+      ds_chart_vars_null <- any(vapply(list(dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
-    validate(
-      need(
-        input$relday_x_axis ||
-          (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-            sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
-        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-      ),
-      need(
-        input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
-        "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+      p_timeline_data <- p_timeline_merged_data()$data()
+      # time variables can not be NA
+      p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
+
+      validate(
+        need(
+          input$relday_x_axis ||
+            (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
+              sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+        ),
+        need(
+          input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
+          "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
           Please select the appropriate input variables."
+        )
       )
-    )
 
-    aerel_chart_vars_null <- any(vapply(list(aeterm, aerelday_start, aerelday_end), is.null, FUN.VALUE = logical(1)))
-    dsrel_chart_vars_null <- any(vapply(list(cmdecod, dsrelday_start, dsrelday_end), is.null, FUN.VALUE = logical(1)))
+      aerel_chart_vars_null <- any(vapply(list(aeterm, aerelday_start, aerelday_end), is.null, FUN.VALUE = logical(1)))
+      dsrel_chart_vars_null <- any(vapply(list(cmdecod, dsrelday_start, dsrelday_end), is.null, FUN.VALUE = logical(1)))
 
-    # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
-    # AENDY columns to data_merge_module call above.
-    aerelday_start_name <- `if`(
-      length(aerelday_start),
-      p_timeline_merged_data()$columns_source$aerelday_start[[1]],
-      aerelday_start
-    )
-    aerelday_end_name <- `if`(
-      length(aerelday_end),
-      p_timeline_merged_data()$columns_source$aerelday_end[[1]],
-      aerelday_end
-    )
-    dsrelday_start_name <- `if`(
-      length(dsrelday_start),
-      p_timeline_merged_data()$columns_source$dsrelday_start[[1]],
-      dsrelday_start
-    )
-    dsrelday_end_name <- `if`(
-      length(dsrelday_end),
-      p_timeline_merged_data()$columns_source$dsrelday_end[[1]],
-      dsrelday_end
-    )
+      # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
+      # AENDY columns to data_merge_module call above.
+      aerelday_start_name <- `if`(
+        length(aerelday_start),
+        p_timeline_merged_data()$columns_source$aerelday_start[[1]],
+        aerelday_start
+      )
+      aerelday_end_name <- `if`(
+        length(aerelday_end),
+        p_timeline_merged_data()$columns_source$aerelday_end[[1]],
+        aerelday_end
+      )
+      dsrelday_start_name <- `if`(
+        length(dsrelday_start),
+        p_timeline_merged_data()$columns_source$dsrelday_start[[1]],
+        dsrelday_start
+      )
+      dsrelday_end_name <- `if`(
+        length(dsrelday_end),
+        p_timeline_merged_data()$columns_source$dsrelday_end[[1]],
+        dsrelday_end
+      )
 
-    validate(
-      need(
-        !input$relday_x_axis ||
-          (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
-            sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
-        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-      ),
-      need(
-        !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
-        "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+      validate(
+        need(
+          !input$relday_x_axis ||
+            (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
+              sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
+          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+        ),
+        need(
+          !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
+          "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
           Please select the appropriate input variables."
+        )
       )
+
+      patient_timeline_stack <- teal.devel::chunks$new()
+      time_line_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = patient_timeline_stack)
+      }
+
+      teal.devel::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
+
+      time_line_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      patient_timeline_calls <- template_patient_timeline(
+        dataname = "ANL",
+        aeterm = aeterm,
+        aetime_start = aetime_start,
+        aetime_end = aetime_end,
+        dstime_start = dstime_start,
+        dstime_end = dstime_end,
+        cmdecod = cmdecod,
+        aerelday_start = aerelday_start_name,
+        aerelday_end = aerelday_end_name,
+        dsrelday_start = dsrelday_start_name,
+        dsrelday_end = dsrelday_end_name,
+        font_size = font_size,
+        relative_day = input$relday_x_axis,
+        patient_id = patient_id(),
+        ggplot2_args = ggplot2_args
+      )
+
+      lapply(patient_timeline_calls, time_line_stack_push)
+      teal.devel::chunks_safe_eval(chunks = patient_timeline_stack)
+      patient_timeline_stack
+    })
+
+    patient_timeline_plot <- reactive({
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(patient_timeline_calls())
+      teal.devel::chunks_get_var("patient_timeline_plot")
+    })
+
+    teal.devel::plot_with_settings_srv(
+      id = "patient_timeline_plot",
+      plot_r = patient_timeline_plot,
+      height = plot_height,
+      width = plot_width
     )
 
-    patient_timeline_stack <- teal.devel::chunks$new()
-    time_line_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = patient_timeline_stack)
-    }
-
-    teal.devel::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
-
-    time_line_stack_push(substitute(
-      expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    patient_timeline_calls <- template_patient_timeline(
-      dataname = "ANL",
-      aeterm = aeterm,
-      aetime_start = aetime_start,
-      aetime_end = aetime_end,
-      dstime_start = dstime_start,
-      dstime_end = dstime_end,
-      cmdecod = cmdecod,
-      aerelday_start = aerelday_start_name,
-      aerelday_end = aerelday_end_name,
-      dsrelday_start = dsrelday_start_name,
-      dsrelday_end = dsrelday_end_name,
-      font_size = font_size,
-      relative_day = input$relday_x_axis,
-      patient_id = patient_id(),
-      ggplot2_args = ggplot2_args
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(
+        aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
+      )),
+      modal_title = label
     )
-
-    lapply(patient_timeline_calls, time_line_stack_push)
-    teal.devel::chunks_safe_eval(chunks = patient_timeline_stack)
-    patient_timeline_stack
   })
-
-  patient_timeline_plot <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(patient_timeline_calls())
-    teal.devel::chunks_get_var("patient_timeline_plot")
-  })
-
-  teal.devel::plot_with_settings_srv(
-    id = "patient_timeline_plot",
-    plot_r = patient_timeline_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(
-      aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
-    )),
-    modal_title = label
-  )
-})
 }

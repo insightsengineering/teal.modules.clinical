@@ -286,132 +286,133 @@ srv_g_laboratory <- function(id,
                              label) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Update round_values
-  aval_values <- datasets$get_data(dataname, filtered = TRUE)[, aval$select$selected]
-  decimal_nums <- aval_values[trunc(aval_values) != aval_values]
-  max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
-
-  updateSelectInput(
-    session,
-    "round_value",
-    choices = seq(0, max_decimal),
-    selected = min(4, max_decimal)
-  )
-
-  # Laboratory values tab ----
-  labor_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      timepoints = timepoints,
-      aval = aval,
-      avalu = avalu,
-      param = param,
-      paramcd = paramcd,
-      anrind = anrind
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
-  )
 
-  labor_calls <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
+    # Update round_values
+    aval_values <- datasets$get_data(dataname, filtered = TRUE)[, aval$select$selected]
+    decimal_nums <- aval_values[trunc(aval_values) != aval_values]
+    max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
-    validate(
-      need(
-        input[[extract_input("timepoints", dataname)]],
-        "Please select timepoints variable."
-      ),
-      need(
-        input[[extract_input("aval", dataname)]],
-        "Please select AVAL variable."
-      ),
-      need(
-        input[[extract_input("avalu", dataname)]],
-        "Please select AVALU variable."
-      ),
-      need(
-        input[[extract_input("param", dataname)]],
-        "Please select PARAM variable."
-      ),
-      need(
-        input[[extract_input("paramcd", dataname)]],
-        "Please select PARAMCD variable."
-      ),
-      need(
-        input[[extract_input("anrind", dataname)]],
-        "Please select ANRIND variable."
+    updateSelectInput(
+      session,
+      "round_value",
+      choices = seq(0, max_decimal),
+      selected = min(4, max_decimal)
+    )
+
+    # Laboratory values tab ----
+    labor_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        timepoints = timepoints,
+        aval = aval,
+        avalu = avalu,
+        param = param,
+        paramcd = paramcd,
+        anrind = anrind
       )
     )
 
-    labor_stack <- teal.devel::chunks$new()
-    labor_stack$reset()
-    labor_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = labor_stack)
-    }
+    labor_calls <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
 
-    teal.devel::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
+      validate(
+        need(
+          input[[extract_input("timepoints", dataname)]],
+          "Please select timepoints variable."
+        ),
+        need(
+          input[[extract_input("aval", dataname)]],
+          "Please select AVAL variable."
+        ),
+        need(
+          input[[extract_input("avalu", dataname)]],
+          "Please select AVALU variable."
+        ),
+        need(
+          input[[extract_input("param", dataname)]],
+          "Please select PARAM variable."
+        ),
+        need(
+          input[[extract_input("paramcd", dataname)]],
+          "Please select PARAMCD variable."
+        ),
+        need(
+          input[[extract_input("anrind", dataname)]],
+          "Please select ANRIND variable."
+        )
+      )
 
-    labor_stack_push(substitute(
+      labor_stack <- teal.devel::chunks$new()
+      labor_stack$reset()
+      labor_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = labor_stack)
+      }
+
+      teal.devel::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
+
+      labor_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      labor_calls <- template_laboratory(
+        dataname = "ANL",
+        timepoints = input[[extract_input("timepoints", dataname)]],
+        aval = input[[extract_input("aval", dataname)]],
+        avalu = input[[extract_input("avalu", dataname)]],
+        param = input[[extract_input("param", dataname)]],
+        paramcd = input[[extract_input("paramcd", dataname)]],
+        anrind = input[[extract_input("anrind", dataname)]],
+        round_value = as.integer(input$round_value)
+      )
+
+      lapply(labor_calls, labor_stack_push)
+      teal.devel::chunks_safe_eval(chunks = labor_stack)
+      labor_stack
+    })
+
+    output$lab_values_table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    labor_calls <- template_laboratory(
-      dataname = "ANL",
-      timepoints = input[[extract_input("timepoints", dataname)]],
-      aval = input[[extract_input("aval", dataname)]],
-      avalu = input[[extract_input("avalu", dataname)]],
-      param = input[[extract_input("param", dataname)]],
-      paramcd = input[[extract_input("paramcd", dataname)]],
-      anrind = input[[extract_input("anrind", dataname)]],
-      round_value = as.integer(input$round_value)
+        teal.devel::chunks_reset()
+        teal.devel::chunks_push_chunks(labor_calls())
+        teal.devel::chunks_get_var("labor_table_html")
+      },
+      escape = FALSE,
+      options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
     )
 
-    lapply(labor_calls, labor_stack_push)
-    teal.devel::chunks_safe_eval(chunks = labor_stack)
-    labor_stack
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
+      modal_title = label
+    )
   })
-
-  output$lab_values_table <- DT::renderDataTable(
-    expr = {
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(labor_calls())
-      teal.devel::chunks_get_var("labor_table_html")
-    },
-    escape = FALSE,
-    options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
-    modal_title = label
-  )
-})}
+}

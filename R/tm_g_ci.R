@@ -360,77 +360,75 @@ srv_g_ci <- function(id, # nolint
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
+    merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(x_var = x_var, y_var = y_var, color = color)
+    )
 
-  teal.devel::init_chunks()
+    validate_data <- reactive({
+      validate(
+        need(
+          length(merged_data()$columns_source$x_var) > 0,
+          "Select a treatment (x axis)."
+        )
+      )
+      validate(
+        need(
+          length(merged_data()$columns_source$y_var) > 0,
+          "Select an analyzed value (y axis)."
+        )
+      )
+      teal.devel::validate_has_data(merged_data()$data(), min_nrow = 2)
 
-  merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(x_var = x_var, y_var = y_var, color = color)
-  )
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+    })
 
-  validate_data <- reactive({
-    validate(
-      need(
-        length(merged_data()$columns_source$x_var) > 0,
-        "Select a treatment (x axis)."
+    list_calls <- reactive(
+      template_g_ci(
+        dataname = "ANL",
+        x_var = merged_data()$columns_source$x_var,
+        y_var = merged_data()$columns_source$y_var,
+        grp_var = if (length(merged_data()$columns_source$color) == 0) {
+          NULL
+        } else {
+          merged_data()$columns_source$color
+        },
+        stat = input$stat,
+        conf_level = as.numeric(input$conf_level),
+        ggplot2_args = ggplot2_args
       )
     )
-    validate(
-      need(
-        length(merged_data()$columns_source$y_var) > 0,
-        "Select an analyzed value (y axis)."
-      )
+
+    eval_call <- reactive({
+      validate_data()
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_data_merge(x = merged_data())
+      teal.devel::chunks_push(list_calls())
+    })
+
+    plot_r <- reactive({
+      eval_call()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("gg")
+    })
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(x_var, y_var, color)),
+      modal_title = label
     )
-    teal.devel::validate_has_data(merged_data()$data(), min_nrow = 2)
 
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-  })
-
-  list_calls <- reactive(
-    template_g_ci(
-      dataname = "ANL",
-      x_var = merged_data()$columns_source$x_var,
-      y_var = merged_data()$columns_source$y_var,
-      grp_var = if (length(merged_data()$columns_source$color) == 0) {
-        NULL
-      } else {
-        merged_data()$columns_source$color
-      },
-      stat = input$stat,
-      conf_level = as.numeric(input$conf_level),
-      ggplot2_args = ggplot2_args
+    teal.devel::plot_with_settings_srv(
+      id = "myplot",
+      plot_r = plot_r,
+      height = plot_height,
+      width = plot_width
     )
-  )
-
-  eval_call <- reactive({
-    validate_data()
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_data_merge(x = merged_data())
-    teal.devel::chunks_push(list_calls())
   })
-
-  plot_r <- reactive({
-    eval_call()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("gg")
-  })
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(x_var, y_var, color)),
-    modal_title = label
-  )
-
-  teal.devel::plot_with_settings_srv(
-    id = "myplot",
-    plot_r = plot_r,
-    height = plot_height,
-    width = plot_width
-  )
-})
 }

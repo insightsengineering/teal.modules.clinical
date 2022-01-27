@@ -699,181 +699,182 @@ srv_t_tte <- function(id,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", # from UI
-    id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte",
-    on_off = reactive(input$compare_arms)
-  )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      paramcd = paramcd,
-      aval_var = aval_var,
-      cnsr_var = cnsr_var,
-      strata_var = strata_var,
-      event_desc_var = event_desc_var,
-      time_unit_var = time_unit_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, strata_var = strata_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
-    input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "USUBJID", "STUDYID", input_paramcd, input_aval_var,
-        input_cnsr_var, input_event_desc, input_time_unit_var
-      ),
-      arm_var = input_arm_var
+    # Setup arm variable selection, default reference arms, and default
+    # comparison arms for encoding panel
+    teal.devel::arm_ref_comp_observer(
+      session, input,
+      id_ref = "ref_arm", # from UI
+      id_comp = "comp_arm", # from UI
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_tte",
+      on_off = reactive(input$compare_arms)
     )
 
-    # validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
-    if (input$compare_arms) {
-      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    }
-
-    do.call(what = "validate_standard_inputs", validate_args)
-
-    validate(need(
-      input$conf_level_coxph >= 0 && input$conf_level_coxph <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-
-    validate(need(
-      input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-
-    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-    validate(need(
-      checkmate::test_string(input_event_desc),
-      "Event description variable should be a single column."
-    ))
-
-    # check that there is at least one record with no missing data
-    validate(need(
-      !all(is.na(anl_m$data()[[input_aval_var]])),
-      "ANCOVA table cannot be calculated as all values are missing."
-    ))
-
-    validate(need(
-      length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
-      "`Select Endpoint` field is NULL"
-    ))
-
-    NULL
-  })
-
-  # The R-code corresponding to the analysis.
-
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-
-    strata_var <- as.vector(anl_m$columns_source$strata_var)
-
-    my_calls <- template_tte(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      compare_arm = input$compare_arms,
-      combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-      strata_var = if (length(strata_var) != 0) strata_var else NULL,
-      time_points = as.numeric(input$time_points),
-      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-      event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
-      control = control_tte(
-        coxph = control_coxph(
-          pval_method = input$pval_method_coxph,
-          ties = input$ties_coxph,
-          conf_level = as.numeric(input$conf_level_coxph)
-        ),
-        surv_time = control_surv_time(
-          conf_level = as.numeric(input$conf_level_survfit),
-          conf_type = input$conf_type_survfit,
-          quantiles = input$probs_survfit
-        ),
-        surv_timepoint = control_surv_timepoint(
-          conf_level = as.numeric(input$conf_level_survfit),
-          conf_type = input$conf_type_survfit
-        )
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        aval_var = aval_var,
+        cnsr_var = cnsr_var,
+        strata_var = strata_var,
+        event_desc_var = event_desc_var,
+        time_unit_var = time_unit_var
       ),
-      add_total = input$add_total,
-      basic_table_args = basic_table_args
+      merge_function = "dplyr::inner_join"
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, strata_var = strata_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+      input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
+      input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      # validate inputs
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd, input_aval_var,
+          input_cnsr_var, input_event_desc, input_time_unit_var
+        ),
+        arm_var = input_arm_var
+      )
+
+      # validate arm levels
+      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      }
+      if (input$compare_arms) {
+        validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      }
+
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      validate(need(
+        input$conf_level_coxph >= 0 && input$conf_level_coxph <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+
+      validate(need(
+        input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+
+      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      validate(need(
+        checkmate::test_string(input_event_desc),
+        "Event description variable should be a single column."
+      ))
+
+      # check that there is at least one record with no missing data
+      validate(need(
+        !all(is.na(anl_m$data()[[input_aval_var]])),
+        "ANCOVA table cannot be calculated as all values are missing."
+      ))
+
+      validate(need(
+        length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
+        "`Select Endpoint` field is NULL"
+      ))
+
+      NULL
+    })
+
+    # The R-code corresponding to the analysis.
+
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+
+      strata_var <- as.vector(anl_m$columns_source$strata_var)
+
+      my_calls <- template_tte(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
+        ref_arm = input$ref_arm,
+        comp_arm = input$comp_arm,
+        compare_arm = input$compare_arms,
+        combine_comp_arms = input$combine_comp_arms,
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+        strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        time_points = as.numeric(input$time_points),
+        time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
+        event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
+        control = control_tte(
+          coxph = control_coxph(
+            pval_method = input$pval_method_coxph,
+            ties = input$ties_coxph,
+            conf_level = as.numeric(input$conf_level_coxph)
+          ),
+          surv_time = control_surv_time(
+            conf_level = as.numeric(input$conf_level_survfit),
+            conf_type = input$conf_type_survfit,
+            quantiles = input$probs_survfit
+          ),
+          surv_timepoint = control_surv_timepoint(
+            conf_level = as.numeric(input$conf_level_survfit),
+            conf_type = input$conf_type_survfit
+          )
+        ),
+        add_total = input$add_total,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, paramcd, strata_var, event_desc_var)
+      ),
+      modal_title = label
+    )
   })
-
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  teal.devel::table_with_settings_srv(
-    id = "table",
-    table_r = table
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, strata_var, event_desc_var)
-    ),
-    modal_title = label
-  )
-})}
+}

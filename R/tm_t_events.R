@@ -629,132 +629,132 @@ srv_t_events_byterm <- function(id,
                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(arm_var = arm_var, hlt = hlt, llt = llt),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- anl_selectors()$arm_var()$select_ordered
-    input_level_term <- c(
-      as.vector(anl_m$columns_source$hlt),
-      as.vector(anl_m$columns_source$llt)
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(arm_var = arm_var, hlt = hlt, llt = llt),
+      datasets = datasets
     )
 
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
-      if (length(input_arm_var) >= 1) {
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
-      },
-      if (length(input_arm_var) == 2) {
-        need(
-          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-            "", NA
-          )),
-          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
-        )
-      }
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
     )
-    teal.devel::validate_has_elements(
-      input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
     )
-    validate(
-      need(
-        input$prune_freq >= 0 && input$prune_freq <= 100,
-        "Please provide an Incidence Rate between 0 and 100 (%)."
-      ),
-      need(
-        input$prune_diff >= 0 && input$prune_diff <= 100,
-        "Please provide a Difference Rate between 0 and 100 (%)."
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- anl_selectors()$arm_var()$select_ordered
+      input_level_term <- c(
+        as.vector(anl_m$columns_source$hlt),
+        as.vector(anl_m$columns_source$llt)
       )
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable"),
+        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+        if (length(input_arm_var) >= 1) {
+          need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
+        },
+        if (length(input_arm_var) == 2) {
+          need(
+            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+              "", NA
+            )),
+            "Please check nested treatment variable which needs to be a factor without NA or empty strings."
+          )
+        }
+      )
+      teal.devel::validate_has_elements(
+        input_level_term,
+        "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+      )
+      validate(
+        need(
+          input$prune_freq >= 0 && input$prune_freq <= 100,
+          "Please provide an Incidence Rate between 0 and 100 (%)."
+        ),
+        need(
+          input$prune_diff >= 0 && input$prune_diff <= 100,
+          "Please provide a Difference Rate between 0 and 100 (%)."
+        )
+      )
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_level_term),
+        arm_var = input_arm_var[[1]]
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+      label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
+      label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
+
+      my_calls <- template_events(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = anl_selectors()$arm_var()$select_ordered,
+        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        llt = if (length(input_llt) != 0) input_llt else NULL,
+        label_hlt = label_hlt,
+        label_llt = label_llt,
+        add_total = input$add_total,
+        event_type = event_type,
+        sort_criteria = input$sort_criteria,
+        prune_freq = input$prune_freq / 100,
+        prune_diff = input$prune_diff / 100,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("pruned_and_sorted_result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
     )
 
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_level_term),
-      arm_var = input_arm_var[[1]]
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(arm_var, hlt, llt)),
+      modal_title = "Event Table",
+      code_header = label
     )
   })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    input_hlt <- as.vector(anl_m$columns_source$hlt)
-    input_llt <- as.vector(anl_m$columns_source$llt)
-    label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
-    label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
-
-    my_calls <- template_events(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = anl_selectors()$arm_var()$select_ordered,
-      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-      llt = if (length(input_llt) != 0) input_llt else NULL,
-      label_hlt = label_hlt,
-      label_llt = label_llt,
-      add_total = input$add_total,
-      event_type = event_type,
-      sort_criteria = input$sort_criteria,
-      prune_freq = input$prune_freq / 100,
-      prune_diff = input$prune_diff / 100,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("pruned_and_sorted_result")
-  })
-
-  teal.devel::table_with_settings_srv(
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(arm_var, hlt, llt)),
-    modal_title = "Event Table",
-    code_header = label
-  )
-})
 }

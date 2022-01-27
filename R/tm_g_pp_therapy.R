@@ -553,159 +553,159 @@ srv_g_therapy <- function(id,
                           ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Therapy tab ----
-  therapy_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
-      cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
-      cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
-    ),
-    merge_function = "dplyr::left_join"
-  )
-
-  therapy_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    teal.devel::validate_has_data(therapy_merged_data()$data(), 1)
-
-    validate(
-      need(
-        input[[extract_input("atirel", dataname)]],
-        "Please select ATIREL variable."
-      ),
-      need(
-        input[[extract_input("cmdecod", dataname)]],
-        "Please select Medication decoding variable."
-      ),
-      need(
-        input[[extract_input("cmindc", dataname)]],
-        "Please select CMINDC variable."
-      ),
-      need(
-        input[[extract_input("cmdose", dataname)]],
-        "Please select CMDOSE variable."
-      ),
-      need(
-        input[[extract_input("cmtrt", dataname)]],
-        "Please select CMTRT variable."
-      ),
-      need(
-        input[[extract_input("cmdosu", dataname)]],
-        "Please select CMDOSU variable."
-      ),
-      need(
-        input[[extract_input("cmroute", dataname)]],
-        "Please select CMROUTE variable."
-      ),
-      need(
-        input[[extract_input("cmdosfrq", dataname)]],
-        "Please select CMDOSFRQ variable."
-      ),
-      need(
-        input[[extract_input("cmstdy", dataname)]],
-        "Please select CMSTDY variable."
-      ),
-      need(
-        input[[extract_input("cmendy", dataname)]],
-        "Please select CMENDY variable."
-      ),
-      need(
-        nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
-        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-      )
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    therapy_stack <- teal.devel::chunks$new()
-    therapy_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = therapy_stack)
-    }
-    teal.devel::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
+    # Therapy tab ----
+    therapy_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
+        cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
+        cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
+      ),
+      merge_function = "dplyr::left_join"
+    )
 
-    therapy_stack_push(substitute(
+    therapy_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+
+      teal.devel::validate_has_data(therapy_merged_data()$data(), 1)
+
+      validate(
+        need(
+          input[[extract_input("atirel", dataname)]],
+          "Please select ATIREL variable."
+        ),
+        need(
+          input[[extract_input("cmdecod", dataname)]],
+          "Please select Medication decoding variable."
+        ),
+        need(
+          input[[extract_input("cmindc", dataname)]],
+          "Please select CMINDC variable."
+        ),
+        need(
+          input[[extract_input("cmdose", dataname)]],
+          "Please select CMDOSE variable."
+        ),
+        need(
+          input[[extract_input("cmtrt", dataname)]],
+          "Please select CMTRT variable."
+        ),
+        need(
+          input[[extract_input("cmdosu", dataname)]],
+          "Please select CMDOSU variable."
+        ),
+        need(
+          input[[extract_input("cmroute", dataname)]],
+          "Please select CMROUTE variable."
+        ),
+        need(
+          input[[extract_input("cmdosfrq", dataname)]],
+          "Please select CMDOSFRQ variable."
+        ),
+        need(
+          input[[extract_input("cmstdy", dataname)]],
+          "Please select CMSTDY variable."
+        ),
+        need(
+          input[[extract_input("cmendy", dataname)]],
+          "Please select CMENDY variable."
+        ),
+        need(
+          nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
+          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+        )
+      )
+
+      therapy_stack <- teal.devel::chunks$new()
+      therapy_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = therapy_stack)
+      }
+      teal.devel::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
+
+      therapy_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_therapy(
+        dataname = "ANL",
+        atirel = input[[extract_input("atirel", dataname)]],
+        cmdecod = input[[extract_input("cmdecod", dataname)]],
+        cmtrt = input[[extract_input("cmtrt", dataname)]],
+        cmdosu = input[[extract_input("cmdosu", dataname)]],
+        cmroute = input[[extract_input("cmroute", dataname)]],
+        cmdosfrq = input[[extract_input("cmdosfrq", dataname)]],
+        cmstdy = input[[extract_input("cmstdy", dataname)]],
+        cmendy = input[[extract_input("cmendy", dataname)]],
+        cmindc = input[[extract_input("cmindc", dataname)]],
+        cmdose = input[[extract_input("cmdose", dataname)]],
+        patient_id = patient_id(),
+        font_size = input[["font_size"]],
+        ggplot2_args = ggplot2_args
+      )
+
+      lapply(my_calls, therapy_stack_push)
+      teal.devel::chunks_safe_eval(chunks = therapy_stack)
+      therapy_stack
+    })
+
+    output$therapy_table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_therapy(
-      dataname = "ANL",
-      atirel = input[[extract_input("atirel", dataname)]],
-      cmdecod = input[[extract_input("cmdecod", dataname)]],
-      cmtrt = input[[extract_input("cmtrt", dataname)]],
-      cmdosu = input[[extract_input("cmdosu", dataname)]],
-      cmroute = input[[extract_input("cmroute", dataname)]],
-      cmdosfrq = input[[extract_input("cmdosfrq", dataname)]],
-      cmstdy = input[[extract_input("cmstdy", dataname)]],
-      cmendy = input[[extract_input("cmendy", dataname)]],
-      cmindc = input[[extract_input("cmindc", dataname)]],
-      cmdose = input[[extract_input("cmdose", dataname)]],
-      patient_id = patient_id(),
-      font_size = input[["font_size"]],
-      ggplot2_args = ggplot2_args
+        teal.devel::chunks_reset()
+        teal.devel::chunks_push_chunks(therapy_call())
+        teal.devel::chunks_get_var("therapy_table")
+      },
+      options = list(pageLength = input$therapy_table_rows)
     )
 
-    lapply(my_calls, therapy_stack_push)
-    teal.devel::chunks_safe_eval(chunks = therapy_stack)
-    therapy_stack
-  })
-
-  output$therapy_table <- DT::renderDataTable(
-    expr = {
+    therapy_plot <- reactive({
       teal.devel::chunks_reset()
       teal.devel::chunks_push_chunks(therapy_call())
-      teal.devel::chunks_get_var("therapy_table")
-    },
-    options = list(pageLength = input$therapy_table_rows)
-  )
+      teal.devel::chunks_get_var("therapy_plot")
+    })
 
-  therapy_plot <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(therapy_call())
-    teal.devel::chunks_get_var("therapy_plot")
+    teal.devel::plot_with_settings_srv(
+      id = "therapy_plot",
+      plot_r = therapy_plot,
+      height = plot_height,
+      width = plot_width
+    )
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(
+        atirel, cmdecod, cmindc, cmdose, cmtrt, cmdosu, cmdosfrq, cmroute, cmstdy, cmendy
+      )),
+      modal_title = label
+    )
   })
-
-  teal.devel::plot_with_settings_srv(
-    id = "therapy_plot",
-    plot_r = therapy_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(
-      atirel, cmdecod, cmindc, cmdose, cmtrt, cmdosu, cmdosfrq, cmroute, cmstdy, cmendy
-    )),
-    modal_title = label
-  )
-})
 }

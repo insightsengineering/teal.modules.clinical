@@ -461,140 +461,140 @@ srv_g_ipp <- function(id,
                       ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      aval_var = aval_var,
-      avalu_var = avalu_var,
-      id_var = id_var,
-      paramcd = paramcd,
-      visit_var = visit_var,
-      base_var = base_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, id_var = id_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- unlist(arm_var$filter)["vars_selected"]
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_visit_var <- as.vector(anl_m$columns_source$visit_var)
-    input_base_var <- as.vector(anl_m$columns_source$base_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("STUDYID", input_id_var, input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "STUDYID",
-        input_id_var,
-        input_arm_var,
-        input_aval_var,
-        input_avalu_var,
-        input_paramcd,
-        input_visit_var,
-        input_base_var
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        aval_var = aval_var,
+        avalu_var = avalu_var,
+        id_var = id_var,
+        paramcd = paramcd,
+        visit_var = visit_var,
+        base_var = base_var
       ),
-      arm_var = input_arm_var
+      merge_function = "dplyr::inner_join"
     )
 
-    do.call(what = "validate_standard_inputs", validate_args)
-
-    validate(
-      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, id_var = id_var),
+      anl_name = "ANL_ADSL"
     )
 
-    validate(
-      need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- unlist(arm_var$filter)["vars_selected"]
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+      input_base_var <- as.vector(anl_m$columns_source$base_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      # validate inputs
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("STUDYID", input_id_var, input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "STUDYID",
+          input_id_var,
+          input_arm_var,
+          input_aval_var,
+          input_avalu_var,
+          input_paramcd,
+          input_visit_var,
+          input_base_var
+        ),
+        arm_var = input_arm_var
+      )
+
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      validate(
+        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+      )
+
+      validate(
+        need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
+      )
+
+      NULL
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      teal.devel::validate_has_data(ANL, 2)
+
+      arm_var <- unlist(arm_var$filter)["vars_selected"]
+      avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+      paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      avalu_first <- as.character(ANL[[avalu_var]][1])
+      paramcd_first <- as.character(ANL[[paramcd]][1])
+      arm_levels <- levels(droplevels(ANL[[arm_var]]))
+
+      my_calls <- template_g_ipp(
+        dataname = "ANL",
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        avalu_var = avalu_var,
+        avalu_first = avalu_first,
+        id_var = as.vector(anl_m$columns_source$id_var),
+        visit_var = as.vector(anl_m$columns_source$visit_var),
+        base_var = as.vector(anl_m$columns_source$base_var),
+        add_baseline_hline = input$add_baseline_hline,
+        separate_by_obs = input$separate_by_obs,
+        suppress_legend = input$suppress_legend,
+        paramcd = paramcd,
+        paramcd_first = paramcd_first,
+        arm_var = arm_var,
+        arm_levels = arm_levels,
+        ggplot2_args = ggplot2_args,
+        add_avalu = input$add_avalu
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    get_plot <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("plot")
+    })
+
+    # Insert the plot into a plot with settings module from teal.devel
+    teal.devel::plot_with_settings_srv(
+      id = "myplot",
+      plot_r = get_plot,
+      height = plot_height,
+      width = plot_width
     )
 
-    NULL
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, aval_var, avalu_var, id_var, paramcd, base_var, visit_var)
+      ),
+      modal_title = label
+    )
   })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-    teal.devel::validate_has_data(ANL, 2)
-
-    arm_var <- unlist(arm_var$filter)["vars_selected"]
-    avalu_var <- as.vector(anl_m$columns_source$avalu_var)
-    paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    avalu_first <- as.character(ANL[[avalu_var]][1])
-    paramcd_first <- as.character(ANL[[paramcd]][1])
-    arm_levels <- levels(droplevels(ANL[[arm_var]]))
-
-    my_calls <- template_g_ipp(
-      dataname = "ANL",
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      avalu_var = avalu_var,
-      avalu_first = avalu_first,
-      id_var = as.vector(anl_m$columns_source$id_var),
-      visit_var = as.vector(anl_m$columns_source$visit_var),
-      base_var = as.vector(anl_m$columns_source$base_var),
-      add_baseline_hline = input$add_baseline_hline,
-      separate_by_obs = input$separate_by_obs,
-      suppress_legend = input$suppress_legend,
-      paramcd = paramcd,
-      paramcd_first = paramcd_first,
-      arm_var = arm_var,
-      arm_levels = arm_levels,
-      ggplot2_args = ggplot2_args,
-      add_avalu = input$add_avalu
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  get_plot <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("plot")
-  })
-
-  # Insert the plot into a plot with settings module from teal.devel
-  teal.devel::plot_with_settings_srv(
-    id = "myplot",
-    plot_r = get_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, aval_var, avalu_var, id_var, paramcd, base_var, visit_var)
-    ),
-    modal_title = label
-  )
-})
 }

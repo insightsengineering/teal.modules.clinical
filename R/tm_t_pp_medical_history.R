@@ -216,95 +216,96 @@ srv_t_medical_history <- function(id,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Medical history tab ----
-  mhist_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
-    merge_function = "dplyr::left_join"
-  )
-
-  mhist_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    validate(
-      need(
-        input[[extract_input("mhterm", dataname)]],
-        "Please select MHTERM variable."
-      ),
-      need(
-        input[[extract_input("mhbodsys", dataname)]],
-        "Please select MHBODSYS variable."
-      ),
-      need(
-        input[[extract_input("mhdistat", dataname)]],
-        "Please select MHDISTAT variable."
-      ),
-      need(
-        nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
-        "Patient has no data about medical history."
-      )
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    mhist_stack <- teal.devel::chunks$new()
-    mhist_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = mhist_stack)
-    }
-    teal.devel::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
-
-    mhist_stack_push(substitute(
-      expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_medical_history(
-      dataname = "ANL",
-      mhterm = input[[extract_input("mhterm", dataname)]],
-      mhbodsys = input[[extract_input("mhbodsys", dataname)]],
-      mhdistat = input[[extract_input("mhdistat", dataname)]]
+    # Medical history tab ----
+    mhist_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
+      merge_function = "dplyr::left_join"
     )
-    lapply(my_calls, mhist_stack_push)
-    teal.devel::chunks_safe_eval(chunks = mhist_stack)
-    mhist_stack
-  })
 
-  output$medical_history_table <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(mhist_call())
-    teal.devel::chunks_get_var("result_kbl")
-  })
+    mhist_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
 
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
-    modal_title = label
-  )
-})}
+      validate(
+        need(
+          input[[extract_input("mhterm", dataname)]],
+          "Please select MHTERM variable."
+        ),
+        need(
+          input[[extract_input("mhbodsys", dataname)]],
+          "Please select MHBODSYS variable."
+        ),
+        need(
+          input[[extract_input("mhdistat", dataname)]],
+          "Please select MHDISTAT variable."
+        ),
+        need(
+          nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
+          "Patient has no data about medical history."
+        )
+      )
+
+      mhist_stack <- teal.devel::chunks$new()
+      mhist_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = mhist_stack)
+      }
+      teal.devel::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
+
+      mhist_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_medical_history(
+        dataname = "ANL",
+        mhterm = input[[extract_input("mhterm", dataname)]],
+        mhbodsys = input[[extract_input("mhbodsys", dataname)]],
+        mhdistat = input[[extract_input("mhdistat", dataname)]]
+      )
+      lapply(my_calls, mhist_stack_push)
+      teal.devel::chunks_safe_eval(chunks = mhist_stack)
+      mhist_stack
+    })
+
+    output$medical_history_table <- reactive({
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(mhist_call())
+      teal.devel::chunks_get_var("result_kbl")
+    })
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
+      modal_title = label
+    )
+  })
+}

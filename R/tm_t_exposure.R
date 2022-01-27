@@ -473,142 +473,142 @@ srv_t_exposure <- function(id,
                            basic_table_args = basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      id_var = id_var,
-      paramcd = paramcd,
-      row_by_var = row_by_var,
-      col_by_var = col_by_var,
-      parcat = parcat,
-      aval_var = aval_var,
-      avalu_var = avalu_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(col_by_var = col_by_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    anl_m <- anl_merged()
-    anl_adsl <- adsl_merged()
-
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_row_by_var <- as.vector(anl_m$columns_source$row_by_var)
-    input_col_by_var <- as.vector(anl_adsl$columns_source$col_by_var)
-    input_parcat <- unlist(parcat$filter)["vars_selected"]
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
-
-    validate(
-      need(input_row_by_var, "Please select a row by variable."),
-      need(input_aval_var, "Please select an analysis variable."),
-      need(input_avalu_var, "Please select an analysis unit variable."),
-      need(
-        input[[extract_input("parcat", parcat$filter[[1]]$dataname, filter = TRUE)]],
-        "Please select a parameter category value."
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        id_var = id_var,
+        paramcd = paramcd,
+        row_by_var = row_by_var,
+        col_by_var = col_by_var,
+        parcat = parcat,
+        aval_var = aval_var,
+        avalu_var = avalu_var
       ),
-      need(
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "Please select a parameter value."
-      ),
-      teal.devel::validate_no_intersection(
-        input[[extract_input("col_by_var", parentname)]],
-        input[[extract_input("row_by_var", dataname)]],
-        "Column by and row by variables should not be the same."
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(col_by_var = col_by_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      anl_m <- anl_merged()
+      anl_adsl <- adsl_merged()
+
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_row_by_var <- as.vector(anl_m$columns_source$row_by_var)
+      input_col_by_var <- as.vector(anl_adsl$columns_source$col_by_var)
+      input_parcat <- unlist(parcat$filter)["vars_selected"]
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+
+      validate(
+        need(input_row_by_var, "Please select a row by variable."),
+        need(input_aval_var, "Please select an analysis variable."),
+        need(input_avalu_var, "Please select an analysis unit variable."),
+        need(
+          input[[extract_input("parcat", parcat$filter[[1]]$dataname, filter = TRUE)]],
+          "Please select a parameter category value."
+        ),
+        need(
+          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+          "Please select a parameter value."
+        ),
+        teal.devel::validate_no_intersection(
+          input[[extract_input("col_by_var", parentname)]],
+          input[[extract_input("row_by_var", dataname)]],
+          "Column by and row by variables should not be the same."
+        )
       )
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_col_by_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_id_var, input_paramcd,
+          input_row_by_var, input_parcat, input_aval_var, input_avalu_var
+        ),
+        arm_var = NULL,
+        need_arm = FALSE
+      )
+      NULL
+    })
+
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      input_avalu_var <- as.character(
+        unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
+      )
+      input_paramcd <- as.character(
+        unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
+      )
+
+      if (is.null(paramcd_label)) {
+        input_paramcd_label <- input_paramcd
+      } else {
+        paramcd <- as.vector(anl_m$columns_source$paramcd)
+        paramcd_map_list <- c(paramcd, paramcd_label)
+        paramcd_map <- unique(anl_filtered[paramcd_map_list])
+        input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
+      }
+
+      my_calls <- template_exposure(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        id_var <- as.vector(anl_m$columns_source$id_var),
+        paramcd <- input_paramcd,
+        paramcd_label = input_paramcd_label,
+        row_by_var <- as.vector(anl_m$columns_source$row_by_var),
+        col_by_var <- as.vector(anl_m$columns_source$col_by_var),
+        add_total = input$add_total,
+        drop_levels = TRUE,
+        na_level = na_level,
+        aval_var <- as.vector(anl_m$columns_source$aval_var),
+        avalu_var <- input_avalu_var,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
     )
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_col_by_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "USUBJID", "STUDYID", input_id_var, input_paramcd,
-        input_row_by_var, input_parcat, input_aval_var, input_avalu_var
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(id_var, paramcd, row_by_var, col_by_var, parcat, aval_var, avalu_var)
       ),
-      arm_var = NULL,
-      need_arm = FALSE
+      modal_title = "R Code for Risk Management Plan Table",
+      code_header = label
     )
-    NULL
   })
-
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    input_avalu_var <- as.character(
-      unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
-    )
-    input_paramcd <- as.character(
-      unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
-    )
-
-    if (is.null(paramcd_label)) {
-      input_paramcd_label <- input_paramcd
-    } else {
-      paramcd <- as.vector(anl_m$columns_source$paramcd)
-      paramcd_map_list <- c(paramcd, paramcd_label)
-      paramcd_map <- unique(anl_filtered[paramcd_map_list])
-      input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
-    }
-
-    my_calls <- template_exposure(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      id_var <- as.vector(anl_m$columns_source$id_var),
-      paramcd <- input_paramcd,
-      paramcd_label = input_paramcd_label,
-      row_by_var <- as.vector(anl_m$columns_source$row_by_var),
-      col_by_var <- as.vector(anl_m$columns_source$col_by_var),
-      add_total = input$add_total,
-      drop_levels = TRUE,
-      na_level = na_level,
-      aval_var <- as.vector(anl_m$columns_source$aval_var),
-      avalu_var <- input_avalu_var,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  teal.devel::table_with_settings_srv(
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  teal.devel::get_rcode_srv(
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(id_var, paramcd, row_by_var, col_by_var, parcat, aval_var, avalu_var)
-    ),
-    modal_title = "R Code for Risk Management Plan Table",
-    code_header = label
-  )
-})
 }
