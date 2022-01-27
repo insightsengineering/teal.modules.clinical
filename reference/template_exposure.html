@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.10.9049</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -83,6 +74,7 @@ Other releases
   <span class="va">dataname</span>,
   <span class="va">id_var</span>,
   <span class="va">paramcd</span>,
+  paramcd_label <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">row_by_var</span>,
   <span class="va">col_by_var</span>,
   add_total <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -108,6 +100,9 @@ the variable name for subject id.</p></dd>
 <dt>paramcd</dt>
 <dd><p>(<code>character</code>)<br>
 variable value designating the studied parameter.</p></dd>
+<dt>paramcd_label</dt>
+<dd><p>(<code>character</code>)<br>
+the column from the dataset where the value will be used to label the argument <code>paramcd</code>.</p></dd>
 <dt>row_by_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable name used to split the rows.</p></dd>
@@ -133,7 +128,8 @@ name of the analysis unit variable.</p></dd>
 <dd><p>optional, (<code>basic_table_args</code>)<br>
 object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code> with settings for the module table.
 The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
-(hard coded in the module body).<br> For more details, see the help vignette:<br><code>vignette("Custom basic_table arguments module", package = "teal.devel")</code>.</p></dd>
+(hard coded in the module body).</p>
+<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.devel")</code>.</p></dd>
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -152,7 +148,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
