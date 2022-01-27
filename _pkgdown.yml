@@ -1,3 +1,4 @@
+---
 url: https://insightsengineering.github.io/teal.modules.clinical
 
 template:
@@ -16,7 +17,7 @@ reference:
       - teal.modules.clinical
   - title: Tables
     contents:
-      -  starts_with("tm_t_")
+      - starts_with("tm_t_")
   - title: Graphs
     contents:
       - starts_with("tm_g_")
