@@ -365,9 +365,7 @@ ui_shift_by_arm <- function(id, ...) {
 }
 
 #' @noRd
-srv_shift_by_arm <- function(input,
-                             output,
-                             session,
+srv_shift_by_arm <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -382,112 +380,111 @@ srv_shift_by_arm <- function(input,
                              add_total,
                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      paramcd = paramcd,
-      visit_var = visit_var,
-      aval_var = aval_var,
-      base_var = base_var,
-      treatment_flag_var = treatment_flag_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # validate inputs
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    anl_m_rowcount <- NROW(anl_m$data())
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_base_var <- as.vector(anl_m$columns_source$base_var)
-    input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
-
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(
-        anl_m_rowcount > 0,
-        paste0(
-          "Please make sure the analysis dataset is not empty or\n",
-          "endpoint parameter and analysis visit are selected."
-        )
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        visit_var = visit_var,
+        aval_var = aval_var,
+        base_var = base_var,
+        treatment_flag_var = treatment_flag_var
       ),
-      need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-      need(input$treatment_flag, "Please select indicator value for on treatment records.")
+      merge_function = "dplyr::inner_join"
     )
 
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_aval_var, input_base_var),
-      arm_var = input_arm_var
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    # validate inputs
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      anl_m_rowcount <- NROW(anl_m$data())
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_base_var <- as.vector(anl_m$columns_source$base_var)
+      input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable"),
+        need(
+          anl_m_rowcount > 0,
+          paste0(
+            "Please make sure the analysis dataset is not empty or\n",
+            "endpoint parameter and analysis visit are selected."
+          )
+        ),
+        need(input_treatment_flag_var, "Please select an on treatment flag variable."),
+        need(input$treatment_flag, "Please select indicator value for on treatment records.")
+      )
+
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_aval_var, input_base_var),
+        arm_var = input_arm_var
+      )
+    })
+
+    # generate r code for the analysis
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      my_calls <- template_shift_by_arm(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        paramcd = unlist(paramcd$filter)["vars_selected"],
+        treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
+        treatment_flag = input$treatment_flag,
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        base_var = as.vector(anl_m$columns_source$base_var),
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na_level = na_level,
+        add_total = input$add_total,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(arm_var, paramcd, visit_var, aval_var, base_var)),
+      modal_title = "R Code for Shift Table by Arm",
+      code_header = label
     )
   })
-
-  # generate r code for the analysis
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_shift_by_arm(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      paramcd = unlist(paramcd$filter)["vars_selected"],
-      treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
-      treatment_flag = input$treatment_flag,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      base_var = as.vector(anl_m$columns_source$base_var),
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
-      na_level = na_level,
-      add_total = input$add_total,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(arm_var, paramcd, visit_var, aval_var, base_var)),
-    modal_title = "R Code for Shift Table by Arm",
-    code_header = label
-  )
 }

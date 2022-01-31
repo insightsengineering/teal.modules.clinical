@@ -343,9 +343,7 @@ ui_g_vitals <- function(id, ...) {
 }
 
 
-srv_g_vitals <- function(input,
-                         output,
-                         session,
+srv_g_vitals <- function(id,
                          datasets,
                          dataname,
                          parentname,
@@ -359,148 +357,147 @@ srv_g_vitals <- function(input,
                          label,
                          ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
+    patient_id <- reactive(input$patient_id)
 
-  patient_id <- reactive(input$patient_id)
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
-
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Vitals tab ----
-  vitals_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
-    merge_function = "dplyr::left_join"
-  )
-
-
-  vitals_dat <- vitals_merged_data()$data()
-
-  output$paramcd_levels <- renderUI({
-    paramcd_var <- input[[extract_input("paramcd", dataname)]]
-
-    req(paramcd_var)
-    req(input$patient_id)
-
-    vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
-    paramcd_col <- vitals_dat_sub[[paramcd_var]]
-    paramcd_col_levels <- unique(paramcd_col)
-
-    cur_selected <- isolate(input$paramcd_levels_vals)
-
-    selected <- if (length(cur_selected) > 0) {
-      cur_selected
-    } else {
-      paramcd_col_levels
-    }
-
-    tagList(
-      selectInput(
-        session$ns("paramcd_levels_vals"),
-        "Select PARAMCD variable levels:",
-        selected = selected,
-        choices = paramcd_col_levels,
-        multiple = TRUE
-      )
-    )
-  })
-
-  vitals_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    teal.devel::validate_has_data(vitals_merged_data()$data(), 1)
-
-    validate(
-      need(
-        input[[extract_input("paramcd", dataname)]],
-        "Please select PARAMCD variable."
-      ),
-      need(
-        input[["paramcd_levels_vals"]],
-        "Please select PARAMCD variable levels."
-      ),
-      need(
-        input[[extract_input("xaxis", dataname)]],
-        "Please select Vitals x-axis variable."
-      ),
-      need(
-        input[[extract_input("aval", dataname)]],
-        "Please select AVAL variable."
-      ),
-      need(
-        nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
-        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-      )
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    vitals_stack <- teal.devel::chunks$new()
-    vitals_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = vitals_stack)
-    }
-    teal.devel::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
-
-    vitals_stack_push(substitute(
-      expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_vitals(
-      dataname = "ANL",
-      paramcd = input[[extract_input("paramcd", dataname)]],
-      paramcd_levels = input[["paramcd_levels_vals"]],
-      xaxis = input[[extract_input("xaxis", dataname)]],
-      aval = input[[extract_input("aval", dataname)]],
-      patient_id = patient_id(),
-      font_size = input$`font_size`,
-      ggplot2_args = ggplot2_args
+    # Vitals tab ----
+    vitals_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
+      merge_function = "dplyr::left_join"
     )
 
-    lapply(my_calls, vitals_stack_push)
-    teal.devel::chunks_safe_eval(chunks = vitals_stack)
-    vitals_stack
+
+    vitals_dat <- vitals_merged_data()$data()
+
+    output$paramcd_levels <- renderUI({
+      paramcd_var <- input[[extract_input("paramcd", dataname)]]
+
+      req(paramcd_var)
+      req(input$patient_id)
+
+      vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
+      paramcd_col <- vitals_dat_sub[[paramcd_var]]
+      paramcd_col_levels <- unique(paramcd_col)
+
+      cur_selected <- isolate(input$paramcd_levels_vals)
+
+      selected <- if (length(cur_selected) > 0) {
+        cur_selected
+      } else {
+        paramcd_col_levels
+      }
+
+      tagList(
+        selectInput(
+          session$ns("paramcd_levels_vals"),
+          "Select PARAMCD variable levels:",
+          selected = selected,
+          choices = paramcd_col_levels,
+          multiple = TRUE
+        )
+      )
+    })
+
+    vitals_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+
+      teal.devel::validate_has_data(vitals_merged_data()$data(), 1)
+
+      validate(
+        need(
+          input[[extract_input("paramcd", dataname)]],
+          "Please select PARAMCD variable."
+        ),
+        need(
+          input[["paramcd_levels_vals"]],
+          "Please select PARAMCD variable levels."
+        ),
+        need(
+          input[[extract_input("xaxis", dataname)]],
+          "Please select Vitals x-axis variable."
+        ),
+        need(
+          input[[extract_input("aval", dataname)]],
+          "Please select AVAL variable."
+        ),
+        need(
+          nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
+          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+        )
+      )
+
+      vitals_stack <- teal.devel::chunks$new()
+      vitals_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = vitals_stack)
+      }
+      teal.devel::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
+
+      vitals_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_vitals(
+        dataname = "ANL",
+        paramcd = input[[extract_input("paramcd", dataname)]],
+        paramcd_levels = input[["paramcd_levels_vals"]],
+        xaxis = input[[extract_input("xaxis", dataname)]],
+        aval = input[[extract_input("aval", dataname)]],
+        patient_id = patient_id(),
+        font_size = input$`font_size`,
+        ggplot2_args = ggplot2_args
+      )
+
+      lapply(my_calls, vitals_stack_push)
+      teal.devel::chunks_safe_eval(chunks = vitals_stack)
+      vitals_stack
+    })
+
+    vitals_plot <- reactive({
+      teal.devel::chunks_reset()
+      teal.devel::chunks_push_chunks(vitals_call())
+      teal.devel::chunks_get_var("result_plot")
+    })
+
+    teal.devel::plot_with_settings_srv(
+      id = "vitals_plot",
+      plot_r = vitals_plot,
+      height = plot_height,
+      width = plot_width
+    )
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(paramcd, param, aval, xaxis)),
+      modal_title = label
+    )
   })
-
-  vitals_plot <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(vitals_call())
-    teal.devel::chunks_get_var("result_plot")
-  })
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "vitals_plot",
-    plot_r = vitals_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(paramcd, param, aval, xaxis)),
-    modal_title = label
-  )
 }

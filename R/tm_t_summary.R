@@ -381,9 +381,7 @@ ui_summary <- function(id, ...) {
 }
 
 #' @noRd
-srv_summary <- function(input,
-                        output,
-                        session,
+srv_summary <- function(id,
                         datasets,
                         dataname,
                         parentname,
@@ -395,112 +393,111 @@ srv_summary <- function(input,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(arm_var = arm_var, summarize_vars = summarize_vars),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # validate inputs
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- anl_selectors()$arm_var()$select_ordered
-    input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(input_summarize_vars, "Please select a summarize variable"),
-      need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
-      if (length(input_arm_var) == 2) {
-        need(
-          is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-            "", NA
-          )),
-          "Please check nested treatment variable which needs to be a factor without NA or empty strings."
-        )
-      },
-      need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(arm_var = arm_var, summarize_vars = summarize_vars),
+      datasets = datasets
     )
 
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_summarize_vars),
-      arm_var = input_arm_var[[1]]
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    # validate inputs
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- anl_selectors()$arm_var()$select_ordered
+      input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable"),
+        need(input_summarize_vars, "Please select a summarize variable"),
+        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+        if (length(input_arm_var) == 2) {
+          need(
+            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+              "", NA
+            )),
+            "Please check nested treatment variable which needs to be a factor without NA or empty strings."
+          )
+        },
+        need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+      )
+
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_summarize_vars),
+        arm_var = input_arm_var[[1]]
+      )
+    })
+
+    # generate r code for the analysis
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      sum_vars <- anl_selectors()$summarize_vars()$select_ordered
+
+      my_calls <- template_summary(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = anl_selectors()$arm_var()$select_ordered,
+        sum_vars = sum_vars,
+        show_labels = "visible",
+        add_total = input$add_total,
+        var_labels = get_var_labels(datasets, dataname, sum_vars),
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na_level = na_level,
+        numeric_stats = input$numeric_stats,
+        denominator = input$denominator,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(arm_var, summarize_vars)),
+      modal_title = "R Code for the current Summary Table",
+      code_header = label
     )
   })
-
-  # generate r code for the analysis
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    sum_vars <- anl_selectors()$summarize_vars()$select_ordered
-
-    my_calls <- template_summary(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = anl_selectors()$arm_var()$select_ordered,
-      sum_vars = sum_vars,
-      show_labels = "visible",
-      add_total = input$add_total,
-      var_labels = get_var_labels(datasets, dataname, sum_vars),
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
-      na_level = na_level,
-      numeric_stats = input$numeric_stats,
-      denominator = input$denominator,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(arm_var, summarize_vars)),
-    modal_title = "R Code for the current Summary Table",
-    code_header = label
-  )
 }
