@@ -58,7 +58,7 @@ template_events_patyear <- function(dataname,
   # layout
   layout_list <- list()
 
-  basic_title <- paste0("Event rates adjusted for patient-years by ", label_paramcd)
+  basic_title <- paste0("Event rates adjusted for patient-years by: ", label_paramcd)
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
@@ -451,10 +451,9 @@ srv_events_patyear <- function(input,
     teal.devel::chunks_push_data_merge(anl_adsl)
     teal.devel::chunks_push_new_line()
 
-    input_paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-    label_paramcd <- if (length(input_paramcd) != 0)
-      names(paramcd$filter[[1]]$choices)[grepl(input_paramcd, names(paramcd$filter[[1]]$choices))]
-    else NULL
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+
+    label_paramcd <- get_paramcd_label(ANL, paramcd)
 
     my_calls <- template_events_patyear(
       dataname = "ANL",
