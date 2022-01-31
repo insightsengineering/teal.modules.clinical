@@ -9,6 +9,7 @@ template_logistic(
   arm_var,
   aval_var,
   paramcd,
+  label_paramcd,
   cov_var,
   interaction_var,
   ref_arm,
@@ -33,6 +34,8 @@ being \code{NULL}.}
 name of the analysis variable.}
 
 \item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
+
+\item{label_paramcd}{(\code{character})\cr Label of response parameter value to use in the table title.}
 
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
@@ -64,8 +67,9 @@ values for the interaction variable. Otherwise the median is used.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Creates an expression for logistic regressions.

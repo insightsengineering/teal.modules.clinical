@@ -9,6 +9,7 @@ template_exposure(
   dataname,
   id_var,
   paramcd,
+  paramcd_label = NULL,
   row_by_var,
   col_by_var,
   add_total = FALSE,
@@ -31,6 +32,9 @@ the variable name for subject id.}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
+
+\item{paramcd_label}{(\code{character})\cr
+the column from the dataset where the value will be used to label the argument \code{paramcd}.}
 
 \item{row_by_var}{(\code{character})\cr
 variable name used to split the rows.}
@@ -56,8 +60,9 @@ name of the analysis unit variable.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Template: Exposure Table for Risk management plan

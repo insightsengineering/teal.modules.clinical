@@ -12,9 +12,11 @@ template_ancova(
   comp_arm = NULL,
   combine_comp_arms = FALSE,
   aval_var,
+  label_aval = NULL,
   cov_var,
   paramcd_levels = "",
   paramcd_var = "PARAMCD",
+  label_paramcd = NULL,
   visit_levels = "",
   visit_var = "AVISIT",
   conf_level = 0.95,
@@ -43,6 +45,9 @@ triggers the combination of comparison arms.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
+\item{label_aval}{(\code{character})\cr
+label of value variable used for title rendering.}
+
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
@@ -51,6 +56,9 @@ variable levels for the studied parameter.}
 
 \item{paramcd_var}{(\code{character})\cr
 variable name for the studied parameter.}
+
+\item{label_paramcd}{(\code{character})\cr
+variable label used for title rendering.}
 
 \item{visit_levels}{(\code{character})\cr
 variable levels for studied visits.}
@@ -64,8 +72,9 @@ value for the confidence level within the range of (0, 1).}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Creates a valid expression for analysis of variance summary table.

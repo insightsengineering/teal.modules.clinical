@@ -288,7 +288,7 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
           return(FALSE)
         }
         rvs <- unlist(unname(row_values(tr)))
-        all(rvs == 0)
+        isTRUE(all(rvs == 0))
       }
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>%
         rtables::trim_rows(criteria = all_zero)
