@@ -467,9 +467,7 @@ ui_g_lineplot <- function(id, ...) {
 #' Server for Line Plot Module
 #' @noRd
 #'
-srv_g_lineplot <- function(input,
-                           output,
-                           session,
+srv_g_lineplot <- function(id,
                            datasets,
                            dataname,
                            parentname,
@@ -484,117 +482,117 @@ srv_g_lineplot <- function(input,
                            plot_width,
                            ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  teal.devel::init_chunks()
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
-    merge_function = "dplyr::inner_join"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_strata <- as.vector(anl_m$columns_source$strata)
-    input_x_var <- as.vector(anl_m$columns_source$x)
-    input_y <- as.vector(anl_m$columns_source$y)
-    input_param <- unlist(param$filter)["vars_selected"]
-    input_paramcd <- as.vector(anl_m$columns_source$paramcd)
-    input_y_unit <- as.vector(anl_m$columns_source$y_unit)
-
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_strata),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit, input_param),
-      arm_var = input_strata
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
+      merge_function = "dplyr::inner_join"
     )
 
-    # validate arm levels
-    if (length(input_strata) > 0 && length(unique(adsl_filtered[[input_strata]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    # Validate whiskers
-    validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
+      anl_m <- anl_merged()
+      input_strata <- as.vector(anl_m$columns_source$strata)
+      input_x_var <- as.vector(anl_m$columns_source$x)
+      input_y <- as.vector(anl_m$columns_source$y)
+      input_param <- unlist(param$filter)["vars_selected"]
+      input_paramcd <- as.vector(anl_m$columns_source$paramcd)
+      input_y_unit <- as.vector(anl_m$columns_source$y_unit)
 
-    # Validate interval
-    validate(need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
+      # validate inputs
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_strata),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit, input_param),
+        arm_var = input_strata
+      )
 
-    do.call(what = "validate_standard_inputs", validate_args)
+      # validate arm levels
+      if (length(input_strata) > 0 && length(unique(adsl_filtered[[input_strata]])) == 1) {
+        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      }
 
-    validate(need(
-      input$conf_level > 0 && input$conf_level < 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+      # Validate whiskers
+      validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
 
-    validate(need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
-    validate(need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
+      # Validate interval
+      validate(need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
 
-    NULL
-  })
+      do.call(what = "validate_standard_inputs", validate_args)
 
-  call_preparation <- reactive({
-    validate_checks()
+      validate(need(
+        input$conf_level > 0 && input$conf_level < 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
 
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
+      validate(need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
+      validate(need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
 
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-    teal.devel::validate_has_data(ANL, 2)
+      NULL
+    })
 
-    whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-    input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
-    input_interval <- input$interval
-    input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
+    call_preparation <- reactive({
+      validate_checks()
 
-    my_calls <- template_g_lineplot(
-      dataname = "ANL",
-      strata = as.vector(anl_m$columns_source$strata),
-      y = as.vector(anl_m$columns_source$y),
-      x = as.vector(anl_m$columns_source$x),
-      paramcd = as.vector(anl_m$columns_source$paramcd),
-      y_unit = as.vector(anl_m$columns_source$y_unit),
-      conf_level = as.numeric(input$conf_level),
-      incl_screen = input$incl_screen,
-      mid = input$mid,
-      interval = input_interval,
-      whiskers = input_whiskers,
-      table = input$table,
-      mid_type = input$mid_type,
-      mid_point_size = input$mid_point_size,
-      table_font_size = input$table_font_size,
-      ggplot2_args = ggplot2_args
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      teal.devel::validate_has_data(ANL, 2)
+
+      whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
+      input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
+      input_interval <- input$interval
+      input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
+
+      my_calls <- template_g_lineplot(
+        dataname = "ANL",
+        strata = as.vector(anl_m$columns_source$strata),
+        y = as.vector(anl_m$columns_source$y),
+        x = as.vector(anl_m$columns_source$x),
+        paramcd = as.vector(anl_m$columns_source$paramcd),
+        y_unit = as.vector(anl_m$columns_source$y_unit),
+        conf_level = as.numeric(input$conf_level),
+        incl_screen = input$incl_screen,
+        mid = input$mid,
+        interval = input_interval,
+        whiskers = input_whiskers,
+        table = input$table,
+        mid_type = input$mid_type,
+        mid_point_size = input$mid_point_size,
+        table_font_size = input$table_font_size,
+        ggplot2_args = ggplot2_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    line_plot <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+    })
+
+    # Insert the plot into a plot with settings module from teal.devel
+    plot_with_settings_srv(
+      id = "myplot",
+      plot_r = line_plot,
+      height = plot_height,
+      width = plot_width
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+    get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(strata, paramcd, y, x, y_unit, param)
+      ),
+      modal_title = label
+    )
   })
-
-  line_plot <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-  })
-
-  # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = line_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(strata, paramcd, y, x, y_unit, param)
-    ),
-    modal_title = label
-  )
 }

@@ -1,4 +1,8 @@
-# teal.modules.clinical 0.8.11.9000
+# teal.modules.clinical 0.8.11.9001
+
+* Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
+
+# teal.modules.clinical 0.8.11
 
 ### Breaking changes
 * Updated `tm_t_abnormality` due to changes in `count_abnormal` that `abnormal` argument is taking list as input now.
