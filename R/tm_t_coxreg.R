@@ -696,9 +696,7 @@ ui_t_coxreg <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_coxreg <- function(input,
-                         output,
-                         session,
+srv_t_coxreg <- function(id,
                          datasets,
                          dataname,
                          parentname,
@@ -712,322 +710,321 @@ srv_t_coxreg <- function(input,
                          label,
                          basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  # Observer to update reference and comparison arm input options.
-  teal.devel::arm_ref_comp_observer(
-    session,
-    input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_coxreg"
-  )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      paramcd = paramcd,
-      strata_var = strata_var,
-      aval_var = aval_var,
-      cnsr_var = cnsr_var,
-      cov_var = cov_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  ## render conditional strata levels input UI  ----
-  open_textinput <- function(x, anl) {
-    # For every numeric covariate, the numeric level for the Hazard Ration
-    # estimation is proposed only if the covariate is included in the model:
-    # for this purpose, a function and a UI-rendered output.
-    textInput(
-      session$ns(paste0("interact_", x)),
-      label = paste("Hazard Ratios for", x, "at (comma delimited):"),
-      value = as.character(stats::median(anl$data()[[x]]))
+    # Observer to update reference and comparison arm input options.
+    teal.devel::arm_ref_comp_observer(
+      session,
+      input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_coxreg"
     )
-  }
 
-  output$interaction_input <- renderUI({
-    # exclude cases when increments are not necessary and
-    # finally accessing the UI-rendering function defined above.
-    if (!is.null(input$interactions) && input$interactions) {
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        strata_var = strata_var,
+        aval_var = aval_var,
+        cnsr_var = cnsr_var,
+        cov_var = cov_var
+      ),
+      merge_function = "dplyr::inner_join"
+    )
+
+    ## render conditional strata levels input UI  ----
+    open_textinput <- function(x, anl) {
+      # For every numeric covariate, the numeric level for the Hazard Ration
+      # estimation is proposed only if the covariate is included in the model:
+      # for this purpose, a function and a UI-rendered output.
+      textInput(
+        session$ns(paste0("interact_", x)),
+        label = paste("Hazard Ratios for", x, "at (comma delimited):"),
+        value = as.character(stats::median(anl$data()[[x]]))
+      )
+    }
+
+    output$interaction_input <- renderUI({
+      # exclude cases when increments are not necessary and
+      # finally accessing the UI-rendering function defined above.
+      if (!is.null(input$interactions) && input$interactions) {
+        anl_m <- anl_merged()
+        input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+
+        anl <- datasets$get_data(dataname, filtered = FALSE)
+        cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+        interaction_var <- input_cov_var[cov_is_numeric]
+        if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
+          lapply(interaction_var, open_textinput, anl = anl_m)
+        }
+      }
+    })
+
+    ## Prepare the call evaluation environment ----
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      anl <- datasets$get_data(dataname, filtered = FALSE)
+      cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+      interaction_var <- input_cov_var[cov_is_numeric]
+
+      # validate inputs
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
+        arm_var = input_arm_var,
+        ref_arm = input$ref_arm,
+        comp_arm = input$comp_arm,
+        min_nrow = 4
+      )
+
+      #  validate arm levels
+      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+      }
+
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+
+      teal.devel::validate_no_intersection(
+        input_arm_var,
+        input_strata_var,
+        "`Treatment` and `Strata` variables should not be overlapped."
+      )
+      teal.devel::validate_no_intersection(
+        input_arm_var,
+        input_cov_var,
+        "`Treatment` and `Covariate` variables should not be overlapped."
+      )
+      teal.devel::validate_no_intersection(
+        input_strata_var,
+        input_cov_var,
+        "`Strata` and `Covariate` variables should not be overlapped."
+      )
+
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      arm_n <- base::table(anl_m$data()[[input_arm_var]])
+      anl_arm_n <- if (input$combine_comp_arms) {
+        c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+      } else {
+        c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+      }
+      validate(need(
+        all(anl_arm_n >= 2),
+        "Each treatment group should have at least 2 records."
+      ))
+
+      # validate p-value method
+      if (length(input_strata_var) > 0) {
+        validate(need(
+          input$pval_method == "wald",
+          "Only Wald tests are supported for models with strata."
+        ))
+      }
+
+      if (input$type == "Multivariate") {
+        validate(need(
+          input$interactions == FALSE,
+          "Interaction is only supported for univariate models."
+        ))
+      }
+
+      if (!is.null(input$interactions) && input$interactions) {
+        validate(need(
+          (length(input_cov_var) > 0),
+          "If interactions are selected at least one covariate should be specified."
+        ))
+      }
+
+      if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
+        validate(need(
+          all(vapply(at(), function(x) length(x) > 0, logical(1))),
+          "Please specify all the interaction levels."
+        ))
+      }
+
+      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+
+      # validate covariate has at least two levels
+      validate(
+        need(
+          all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
+            length(unique(x)) > 1
+          }, logical(1))),
+          "All covariate needs to have at least two levels"
+        )
+      )
+
+      NULL
+    })
+
+    at <- reactive({
       anl_m <- anl_merged()
       input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-
       anl <- datasets$get_data(dataname, filtered = FALSE)
       cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
       if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-        lapply(interaction_var, open_textinput, anl = anl_m)
+        res <- lapply(
+          interaction_var,
+          function(x) {
+            cov <- input[[paste0("interact_", x)]]
+            if (!is.null(cov)) {
+              vec <- strsplit(cov, split = ",")
+              as.numeric(unlist(vec))
+            }
+          }
+        )
+        stats::setNames(res, interaction_var)
+      }
+    })
+
+
+    call_template <- function(comp_arm, anl, paramcd, multivariate, basic_table_args = NULL) {
+      strata_var <- as.vector(anl$columns_source$strata_var)
+      strata_var <- if (length(strata_var) != 0) strata_var else NULL
+      cov_var <- as.vector(anl$columns_source$cov_var)
+      cov_var <- if (length(cov_var) > 0) cov_var else NULL
+
+      at <- if (!is.null(input$interactions) && input$interactions) at() else list()
+      arm_var <- as.vector(anl$columns_source$arm_var)
+      cnsr_var <- as.vector(anl$columns_source$cnsr_var)
+      aval_var <- as.vector(anl$columns_source$aval_var)
+      ref_arm <- input$ref_arm
+      combine_comp_arms <- input$combine_comp_arms
+      control <- control_coxreg(
+        pval_method = input$pval_method,
+        ties = input$ties,
+        conf_level = as.numeric(input$conf_level),
+        interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
+      )
+
+      if (multivariate) {
+        template_coxreg_m(
+          dataname = "ANL",
+          cov_var = cov_var,
+          at = at,
+          arm_var = arm_var,
+          cnsr_var = cnsr_var,
+          aval_var = aval_var,
+          ref_arm = ref_arm,
+          comp_arm = comp_arm,
+          paramcd = paramcd,
+          strata_var = strata_var,
+          combine_comp_arms = combine_comp_arms,
+          control = control,
+          basic_table_args = basic_table_args
+        )
+      } else {
+        template_coxreg_u(
+          dataname = "ANL",
+          cov_var = cov_var,
+          at = at,
+          arm_var = arm_var,
+          cnsr_var = cnsr_var,
+          aval_var = aval_var,
+          ref_arm = ref_arm,
+          comp_arm = comp_arm,
+          paramcd = paramcd,
+          strata_var = strata_var,
+          combine_comp_arms = combine_comp_arms,
+          control = control,
+          append = TRUE,
+          basic_table_args = basic_table_args
+        )
       }
     }
-  })
 
-  ## Prepare the call evaluation environment ----
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    ## generate table call with template and render table ----
+    table <- reactive({
+      validate_checks()
 
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    anl <- datasets$get_data(dataname, filtered = FALSE)
-    cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
-    interaction_var <- input_cov_var[cov_is_numeric]
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
 
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
-      arm_var = input_arm_var,
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      min_nrow = 4
-    )
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
+      multivariate <- input$type == "Multivariate"
 
-    #  validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
-
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-
-    teal.devel::validate_no_intersection(
-      input_arm_var,
-      input_strata_var,
-      "`Treatment` and `Strata` variables should not be overlapped."
-    )
-    teal.devel::validate_no_intersection(
-      input_arm_var,
-      input_cov_var,
-      "`Treatment` and `Covariate` variables should not be overlapped."
-    )
-    teal.devel::validate_no_intersection(
-      input_strata_var,
-      input_cov_var,
-      "`Strata` and `Covariate` variables should not be overlapped."
-    )
-
-    do.call(what = "validate_standard_inputs", validate_args)
-
-    arm_n <- base::table(anl_m$data()[[input_arm_var]])
-    anl_arm_n <- if (input$combine_comp_arms) {
-      c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
-    } else {
-      c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
-    }
-    validate(need(
-      all(anl_arm_n >= 2),
-      "Each treatment group should have at least 2 records."
-    ))
-
-    # validate p-value method
-    if (length(input_strata_var) > 0) {
-      validate(need(
-        input$pval_method == "wald",
-        "Only Wald tests are supported for models with strata."
-      ))
-    }
-
-    if (input$type == "Multivariate") {
-      validate(need(
-        input$interactions == FALSE,
-        "Interaction is only supported for univariate models."
-      ))
-    }
-
-    if (!is.null(input$interactions) && input$interactions) {
-      validate(need(
-        (length(input_cov_var) > 0),
-        "If interactions are selected at least one covariate should be specified."
-      ))
-    }
-
-    if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
-      validate(need(
-        all(vapply(at(), function(x) length(x) > 0, logical(1))),
-        "Please specify all the interaction levels."
-      ))
-    }
-
-    validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-
-    # validate covariate has at least two levels
-    validate(
-      need(
-        all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
-          length(unique(x)) > 1
-        }, logical(1))),
-        "All covariate needs to have at least two levels"
-      )
-    )
-
-    NULL
-  })
-
-  at <- reactive({
-    anl_m <- anl_merged()
-    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    anl <- datasets$get_data(dataname, filtered = FALSE)
-    cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
-    interaction_var <- input_cov_var[cov_is_numeric]
-    if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-      res <- lapply(
-        interaction_var,
-        function(x) {
-          cov <- input[[paste0("interact_", x)]]
-          if (!is.null(cov)) {
-            vec <- strsplit(cov, split = ",")
-            as.numeric(unlist(vec))
-          }
-        }
-      )
-      stats::setNames(res, interaction_var)
-    }
-  })
-
-
-  call_template <- function(comp_arm, anl, paramcd, multivariate, basic_table_args = NULL) {
-    strata_var <- as.vector(anl$columns_source$strata_var)
-    strata_var <- if (length(strata_var) != 0) strata_var else NULL
-    cov_var <- as.vector(anl$columns_source$cov_var)
-    cov_var <- if (length(cov_var) > 0) cov_var else NULL
-
-    at <- if (!is.null(input$interactions) && input$interactions) at() else list()
-    arm_var <- as.vector(anl$columns_source$arm_var)
-    cnsr_var <- as.vector(anl$columns_source$cnsr_var)
-    aval_var <- as.vector(anl$columns_source$aval_var)
-    ref_arm <- input$ref_arm
-    combine_comp_arms <- input$combine_comp_arms
-    control <- control_coxreg(
-      pval_method = input$pval_method,
-      ties = input$ties,
-      conf_level = as.numeric(input$conf_level),
-      interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
-    )
-
-    if (multivariate) {
-      template_coxreg_m(
-        dataname = "ANL",
-        cov_var = cov_var,
-        at = at,
-        arm_var = arm_var,
-        cnsr_var = cnsr_var,
-        aval_var = aval_var,
-        ref_arm = ref_arm,
-        comp_arm = comp_arm,
-        paramcd = paramcd,
-        strata_var = strata_var,
-        combine_comp_arms = combine_comp_arms,
-        control = control,
-        basic_table_args = basic_table_args
-      )
-    } else {
-      template_coxreg_u(
-        dataname = "ANL",
-        cov_var = cov_var,
-        at = at,
-        arm_var = arm_var,
-        cnsr_var = cnsr_var,
-        aval_var = aval_var,
-        ref_arm = ref_arm,
-        comp_arm = comp_arm,
-        paramcd = paramcd,
-        strata_var = strata_var,
-        combine_comp_arms = combine_comp_arms,
-        control = control,
-        append = TRUE,
-        basic_table_args = basic_table_args
-      )
-    }
-  }
-
-  ## generate table call with template and render table ----
-  table <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-    paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
-    multivariate <- input$type == "Multivariate"
-
-    if (input$type == "Multivariate") {
-      main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
-      all_basic_table_args <- teal.devel::resolve_basic_table_args(
-        user_table = basic_table_args,
-        module_table = teal.devel::basic_table_args(title = main_title)
-      )
-      mapply(
-        expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args),
-        teal.devel::chunks_push
-      )
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("result")
-    } else {
-      main_title <- paste0("Cox Regression for ", paramcd)
-      all_basic_table_args <- teal.devel::resolve_basic_table_args(
-        user_table = basic_table_args,
-        module_table = teal.devel::basic_table_args(title = main_title)
-      )
-      teal.devel::chunks_push(quote(result <- list()))
-      lapply(input$comp_arm, function(x) {
-        mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.devel::chunks_push)
-      })
-      teal.devel::chunks_push(substitute(
-        expr = {
-          final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
-          rtables::main_title(final_table) <- title
-          rtables::main_footer(final_table) <- footer
-          rtables::prov_footer(final_table) <- p_footer
-          rtables::subtitles(final_table) <- subtitle
-          final_table
-        },
-        env = list(
-          title = all_basic_table_args$title,
-          footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-          p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-          subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+      if (input$type == "Multivariate") {
+        main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
+        all_basic_table_args <- teal.devel::resolve_basic_table_args(
+          user_table = basic_table_args,
+          module_table = teal.devel::basic_table_args(title = main_title)
         )
-      ))
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("final_table")
-    }
+        mapply(
+          expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args),
+          teal.devel::chunks_push
+        )
+        teal.devel::chunks_safe_eval()
+        teal.devel::chunks_get_var("result")
+      } else {
+        main_title <- paste0("Cox Regression for ", paramcd)
+        all_basic_table_args <- teal.devel::resolve_basic_table_args(
+          user_table = basic_table_args,
+          module_table = teal.devel::basic_table_args(title = main_title)
+        )
+        teal.devel::chunks_push(quote(result <- list()))
+        lapply(input$comp_arm, function(x) {
+          mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.devel::chunks_push)
+        })
+        teal.devel::chunks_push(substitute(
+          expr = {
+            final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
+            rtables::main_title(final_table) <- title
+            rtables::main_footer(final_table) <- footer
+            rtables::prov_footer(final_table) <- p_footer
+            rtables::subtitles(final_table) <- subtitle
+            final_table
+          },
+          env = list(
+            title = all_basic_table_args$title,
+            footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+            p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+            subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+          )
+        ))
+        teal.devel::chunks_safe_eval()
+        teal.devel::chunks_get_var("final_table")
+      }
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
+      ),
+      modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
+      code_header = label
+    )
   })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
-    ),
-    modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
-    code_header = label
-  )
 }
