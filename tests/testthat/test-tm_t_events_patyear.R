@@ -4,7 +4,7 @@ testthat::test_that("template_events_patyear generates standard expressions", {
     parentname = "adsl",
     arm_var = "ARMCD",
     events_var = "n_events",
-    label_paramcd = "AETTE1: Time to first occurrence of any adverse event",
+    label_paramcd = "Time to first occurrence of any adverse event",
     aval_var = "AVAL",
     add_total = TRUE,
     drop_arm_levels = TRUE,
@@ -23,7 +23,7 @@ testthat::test_that("template_events_patyear generates standard expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by AETTE1: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -57,7 +57,7 @@ testthat::test_that("template_events_patyear generates right expressions with no
     parentname = "adsl",
     arm_var = "ARM",
     events_var = "n_events",
-    label_paramcd = "AETTE1: Time to first occurrence of any adverse event",
+    label_paramcd = "Time to first occurrence of any adverse event",
     aval_var = "AVAL",
     add_total = FALSE,
     drop_arm_levels = FALSE,
@@ -75,7 +75,7 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by AETTE1: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         estimate_incidence_rate(
@@ -109,7 +109,7 @@ testthat::test_that("template_events_patyear generates right expressions with no
     arm_var = "ARMCD",
     aval_var = "AVAL",
     events_var = "n_events",
-    label_paramcd = "AETTE1: Time to first occurrence of any adverse event",
+    label_paramcd = "Time to first occurrence of any adverse event",
     add_total = TRUE,
     drop_arm_levels = TRUE,
     control = control_incidence_rate(
@@ -132,7 +132,7 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by AETTE1: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
