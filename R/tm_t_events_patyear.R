@@ -3,7 +3,7 @@
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param events_var (`integer`)\cr number of observed events.
-#' @param label_paramcd\cr title of table based on paramcd
+#' @param label_paramcd (`string`)\cr title of table based on paramcd
 #'
 #' @seealso [tm_t_events_patyear()]
 #'
