@@ -20,6 +20,8 @@
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
+#' @keywords internal
+#'
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,

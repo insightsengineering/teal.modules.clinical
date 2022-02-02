@@ -11,6 +11,7 @@
 #' @param tbl_title (`character`)\cr Title with label of variables from by bars
 #'
 #' @seealso [tm_t_abnormality()]
+#' @keywords internal
 #'
 template_abnormality <- function(parentname,
                                  dataname,

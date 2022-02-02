@@ -4,6 +4,7 @@
 #'
 #' @inheritParams template_arguments
 #' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @keywords internal
 #'
 template_basic_info <- function(dataname = "ANL",
                                 vars) {

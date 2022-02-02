@@ -48,3 +48,4 @@ estimation.
 \seealso{
 \code{\link[=tm_g_ci]{tm_g_ci()}}
 }
+\keyword{internal}

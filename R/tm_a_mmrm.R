@@ -11,6 +11,7 @@
 #'   machine (not default).
 #'
 #' @seealso [tm_a_mmrm()]
+#' @keywords internal
 #'
 template_fit_mmrm <- function(parentname,
                               dataname,

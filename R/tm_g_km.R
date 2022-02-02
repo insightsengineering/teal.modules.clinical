@@ -8,6 +8,8 @@
 #'   for variable names that can be used for facet plotting.
 #'
 #' @seealso [tm_g_km()]
+#' @keywords internal
+#'
 template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
                           ref_arm = NULL,

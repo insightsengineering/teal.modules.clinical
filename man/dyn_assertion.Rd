@@ -38,3 +38,4 @@ expect_error(assertthat::assert_that(teal_enough_rows(data = iris, min_nrow = 15
 armcd <- NULL
 expect_error(assertthat::assert_that(teal_has_element(str = armcd, "ARMCD")))
 }
+\keyword{internal}

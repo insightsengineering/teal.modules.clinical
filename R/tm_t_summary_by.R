@@ -11,6 +11,7 @@
 #' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
 #'
 #' @seealso [tm_t_summary_by()]
+#' @keywords internal
 #'
 template_summary_by <- function(parentname,
                                 dataname,
