@@ -395,7 +395,7 @@ tm_t_smq <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     baskets = cs_to_des_select(baskets, dataname = dataname, multiple = TRUE),
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
@@ -547,7 +547,7 @@ srv_t_smq <- function(id,
       anl_m <- anl_merged()
       anl_adsl <- adsl_merged()
 
-      input_arm_var <- anl_selectors()$arm_var()$select_ordered
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_id_var <- as.vector(anl_m$columns_source$id_var)
       input_baskets <- as.vector(anl_m$columns_source$baskets)
       input_scopes <- as.vector(anl_m$columns_source$scopes)
@@ -588,7 +588,7 @@ srv_t_smq <- function(id,
       my_calls <- template_smq(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = anl_selectors()$arm_var()$select_ordered,
+        arm_var = anl_m$columns_source$arm_var,
         llt = as.vector(anl_m$columns_source$llt),
         add_total = input$add_total,
         sort_criteria = input$sort_criteria,

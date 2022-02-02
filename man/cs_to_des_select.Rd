@@ -4,7 +4,7 @@
 \alias{cs_to_des_select}
 \title{Convert choices_selected to data_extract_spec with only select_spec}
 \usage{
-cs_to_des_select(cs, dataname, multiple = FALSE)
+cs_to_des_select(cs, dataname, multiple = FALSE, ordered = FALSE)
 }
 \arguments{
 \item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}

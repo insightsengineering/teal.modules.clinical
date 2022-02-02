@@ -253,7 +253,7 @@ bracket_expr <- function(exprs) {
 #'
 #' @export
 #' @return ([teal::select_spec()])
-cs_to_select_spec <- function(cs, multiple = FALSE) {
+cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
 
@@ -261,7 +261,8 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
     choices = cs$choices,
     selected = cs$selected,
     fixed = cs$fixed,
-    multiple = multiple
+    multiple = multiple,
+    ordered = ordered
   )
 }
 
@@ -297,7 +298,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #'
 #' @export
 #' @return ([teal::data_extract_spec()])
-cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
+cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -315,7 +316,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   if (inherits(cs, "choices_selected")) {
     data_extract_spec(
       dataname = dataname,
-      select = cs_to_select_spec(cs, multiple = multiple)
+      select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered)
     )
   } else {
     return(cs)

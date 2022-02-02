@@ -4,7 +4,7 @@
 \alias{cs_to_select_spec}
 \title{Convert choices_selected to select_spec}
 \usage{
-cs_to_select_spec(cs, multiple = FALSE)
+cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE)
 }
 \arguments{
 \item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
