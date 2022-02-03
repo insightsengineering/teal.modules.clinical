@@ -248,14 +248,14 @@ bracket_expr <- function(exprs) {
 
 #' Convert choices_selected to select_spec
 #'
-#' @param cs ([teal::choices_selected()]) object to be transformed
-#' @param multiple (`logical`) whether allow multiple selection in the select input
-#'
+#' @param cs (`choices_selected`) object to be transformed. See [teal::choices_selected()] for details.
+#' @inheritParams teal::select_spec
 #' @export
 #' @return ([teal::select_spec()])
 cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
+  checkmate::assert_flag(ordered)
 
   select_spec(
     choices = cs$choices,
