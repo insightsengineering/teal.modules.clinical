@@ -194,6 +194,14 @@ template_shift_by_arm <- function(dataname,
 #'         value_choices(adeg, "AVISIT"),
 #'         selected = "POST-BASELINE MINIMUM"
 #'       ),
+#'       worst_flag_var = choices_selected(
+#'         choices = variable_choices(adeg, subset = c("WORS01FL", "WORS02FL")),
+#'         selected = c("WORS01FL")
+#'       ),
+#'       worst_flag_indicator = choices_selected(
+#'         value_choices(adlb, "WORS01FL"),
+#'         selected = "Y", fixed = TRUE
+#'       ),
 #'       aval_var = choices_selected(
 #'         variable_choices(adeg, subset = "ANRIND"),
 #'         selected = "ANRIND", fixed = TRUE
@@ -219,6 +227,11 @@ tm_t_shift_by_arm <- function(label,
                               ),
                               arm_var,
                               paramcd,
+                              worst_flag_var,
+                              worst_flag_indicator = choices_selected(
+                                value_choices(dataname, "WORS01FL"),
+                                selected = "Y", fixed = TRUE
+                              ),
                               visit_var,
                               aval_var,
                               base_var,
@@ -255,6 +268,7 @@ tm_t_shift_by_arm <- function(label,
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     visit_var = cs_to_des_filter(visit_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
+    worst_flag_var = cs_to_des_select(worst_flag_var, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     base_var = cs_to_des_select(base_var, dataname = dataname)
   )
@@ -288,6 +302,7 @@ ui_shift_by_arm <- function(id, ...) {
     a$arm_var,
     a$paramcd,
     a$visit_var,
+    a$worst_flag_var,
     a$treatment_flag_var,
     a$treatment_flag,
     a$aval_var,
@@ -299,7 +314,7 @@ ui_shift_by_arm <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(a[c(
-        "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
+        "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "worst_flag_var", "treamtment_flag_var"
       )]),
       teal.devel::data_extract_ui(
         id = ns("arm_var"),
@@ -313,12 +328,35 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
-        id = ns("visit_var"),
-        label = "Select Visit",
-        data_extract_spec = a$visit_var,
-        is_single_dataset = is_single_dataset_value
+      radioButtons(
+        ns("anl_type"),
+        label = "Post baseline min/max analysis OR by worst flag",
+        choices = c("Postbaseline min/max" = "postbase", "By worst flag" = "worstfl"),
+        selected = "postbase"
       ),
+      div(id = ns("visit_var"),
+        teal.devel::data_extract_ui(
+          id = ns("visit_var"),
+          label = "Select Visit",
+          data_extract_spec = a$visit_var,
+          is_single_dataset = is_single_dataset_value
+        )),
+      div(id = ns("worst_flag_var"),
+        teal.devel::data_extract_ui(
+          id = ns("worst_flag_var"),
+          label = "Select the worst flag variable",
+          data_extract_spec = a$worst_flag_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        optionalSelectInput(
+          ns("worst_flag_indicator"),
+          label = "Value Indicating Worst Grade",
+          choices = a$worst_flag_indicator$choices,
+          selected = a$worst_flag_indicator$selected,
+          multiple = FALSE,
+          fixed = a$worst_flag_indicator$fixed
+        )
+        ),
       teal.devel::data_extract_ui(
         id = ns("aval_var"),
         label = "Select Analysis Range Indicator Variable",
@@ -372,6 +410,7 @@ srv_shift_by_arm <- function(id,
                              arm_var,
                              paramcd,
                              visit_var,
+                             worst_flag_var,
                              treatment_flag_var,
                              aval_var,
                              base_var,
@@ -382,6 +421,19 @@ srv_shift_by_arm <- function(id,
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
     teal.devel::init_chunks()
+
+
+    observeEvent(input$anl_type, {
+      if (input$anl_type == "postbase") {
+        shinyjs::hide("worst_flag_var")
+        shinyjs::hide("worst_flag_indicator")
+        shinyjs::show("visit_var")
+      } else {
+        shinyjs::show("worst_flag_var")
+        shinyjs::show("worst_flag_indicator")
+        shinyjs::hide("visit_var")
+      }
+    })
 
     anl_merged <- teal.devel::data_merge_module(
       datasets = datasets,
