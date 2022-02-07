@@ -5,6 +5,7 @@
 #' @param events_var (`integer`)\cr number of observed events.
 #'
 #' @seealso [tm_t_events_patyear()]
+#' @keywords internal
 #'
 template_events_patyear <- function(dataname,
                                     parentname,

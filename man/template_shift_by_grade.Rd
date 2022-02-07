@@ -75,3 +75,4 @@ Template: Grade Summary Table
 \seealso{
 \code{\link[=tm_t_shift_by_grade]{tm_t_shift_by_grade()}}
 }
+\keyword{internal}

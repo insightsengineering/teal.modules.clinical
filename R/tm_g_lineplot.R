@@ -17,6 +17,8 @@
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_lineplot()]
+#' @keywords internal
+#'
 template_g_lineplot <- function(dataname = "ANL",
                                 strata = "ARM",
                                 x = "AVISIT",

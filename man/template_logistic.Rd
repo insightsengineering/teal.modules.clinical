@@ -77,3 +77,4 @@ Creates an expression for logistic regressions.
 \seealso{
 \code{\link[=tm_t_logistic]{tm_t_logistic()}}
 }
+\keyword{internal}

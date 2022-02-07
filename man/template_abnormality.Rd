@@ -78,3 +78,4 @@ Template: Abnormality Summary Table
 \seealso{
 \code{\link[=tm_t_abnormality]{tm_t_abnormality()}}
 }
+\keyword{internal}

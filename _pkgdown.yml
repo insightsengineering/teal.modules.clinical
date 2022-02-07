@@ -27,13 +27,11 @@ reference:
   - title: Patient profile modules
     contents:
       - starts_with("tm_[g|t]_pp_")
-  - title: Templates
-    contents:
-      - starts_with("template_")
   - title: Helper functions
     contents:
       - add_expr
       - bracket_expr
+      - call_concatenate
       - clean_description
       - color_lab_values
       - cs_to_des_filter
@@ -51,12 +49,3 @@ reference:
       - split_col_expr
       - split_interactions
       - styled_expr
-      - get_g_forest_obj_var_name
-      - get_paramcd_label
-
-  - title: Unexported functions
-    contents:
-      - call_concatenate
-      - control_tte
-      - dyn_assertion
-      - module_arguments

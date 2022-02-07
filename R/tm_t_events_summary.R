@@ -28,6 +28,7 @@
 #'   are provided.
 #'
 #' @seealso [tm_t_events_summary()]
+#' @keywords internal
 #'
 template_events_summary <- function(anl_name,
                                     parentname,

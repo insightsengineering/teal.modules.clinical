@@ -37,3 +37,4 @@ the laboratory table.}
 \description{
 Creates a laboratory template.
 }
+\keyword{internal}

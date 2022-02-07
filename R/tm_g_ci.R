@@ -13,6 +13,7 @@
 #'  read.
 #'
 #' @seealso [tm_g_ci()]
+#' @keywords internal
 #'
 template_g_ci <- function(dataname, # nolint
                           x_var,

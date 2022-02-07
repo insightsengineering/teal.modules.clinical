@@ -16,6 +16,7 @@
 #' @param relative_day (`logical`)\cr whether to use relative days or absolute dates
 #' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @keywords internal
 #'
 template_patient_timeline <- function(dataname = "ANL",
                                       aeterm = "AETERM",

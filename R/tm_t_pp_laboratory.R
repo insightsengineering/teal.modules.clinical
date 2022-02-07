@@ -10,6 +10,7 @@
 #' @param aval (`character`)\cr name of the analysis value variable.
 #' @param avalu (`character`)\cr name of the analysis value unit variable.
 #' @param round_value (`numeric`)\cr number of decimal places to be used when rounding.
+#' @keywords internal
 #'
 template_laboratory <- function(dataname = "ANL",
                                 paramcd = "PARAMCD",
