@@ -284,7 +284,7 @@ tm_t_summary <- function(label,
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
   )
 
-    module(
+  module(
     label = label,
     server = srv_summary,
     ui = ui_summary,
