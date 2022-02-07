@@ -11,6 +11,7 @@
 #' module.
 #'
 #' @seealso [tm_t_events_by_grade()]
+#' @keywords internal
 #'
 template_events_by_grade <- function(dataname,
                                      parentname,
@@ -373,6 +374,7 @@ template_events_by_grade <- function(dataname,
 #' @param grading_groups (`character`) \cr list of grading groups.
 #'
 #' @seealso [tm_t_events_by_grade()]
+#' @keywords internal
 #'
 template_events_col_by_grade <- function(dataname,
                                          parentname,

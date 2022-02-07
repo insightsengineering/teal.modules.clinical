@@ -18,6 +18,7 @@
 #' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_logistic()]
+#' @keywords internal
 #'
 template_logistic <- function(dataname,
                               arm_var,

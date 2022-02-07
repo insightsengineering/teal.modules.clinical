@@ -7,7 +7,8 @@
 #' @param cmdecod (`character`)\cr name of standardized medication name variable.
 #' @param cmindc (`character`)\cr name of indication variable.
 #' @param cmstdy (`character`)\cr name of study day of start of medication variable.
-
+#' @keywords internal
+#'
 template_prior_medication <- function(dataname = "ANL",
                                       atirel = "ATIREL",
                                       cmdecod = "CMDECOD",

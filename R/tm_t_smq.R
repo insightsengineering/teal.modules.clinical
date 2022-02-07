@@ -10,6 +10,7 @@
 #' variable names of the selected Standardized/Customized queries
 #'
 #' @seealso [tm_t_smq()]
+#' @keywords internal
 #'
 template_smq <- function(dataname,
                          parentname,

@@ -6,6 +6,7 @@
 #' @param seq_var (`numeric`) \cr Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @seealso [tm_t_mult_events()]
+#' @keywords internal
 #'
 template_mult_events <- function(dataname,
                                  parentname,

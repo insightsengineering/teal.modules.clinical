@@ -77,3 +77,4 @@ Template: Summary of Variables
 \seealso{
 \code{\link[=tm_t_summary]{tm_t_summary()}}
 }
+\keyword{internal}

@@ -8,6 +8,7 @@
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
+#' @keywords internal
 #'
 template_summary <- function(dataname,
                              parentname,

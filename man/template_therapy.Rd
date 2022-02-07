@@ -59,3 +59,4 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \description{
 Creates a therapy template call.
 }
+\keyword{internal}

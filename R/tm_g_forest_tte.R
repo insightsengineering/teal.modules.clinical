@@ -14,6 +14,8 @@
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_tte()]
+#' @keywords internal
+#'
 template_forest_tte <- function(dataname = "ANL",
                                 parentname = "ANL_ADSL",
                                 arm_var,

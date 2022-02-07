@@ -10,7 +10,7 @@
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_binary_outcome()]
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' # Preparation of the test case.

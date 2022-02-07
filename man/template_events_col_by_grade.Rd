@@ -80,3 +80,4 @@ Template: Adverse Events grouped by Grade with threshold
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}
 }
+\keyword{internal}

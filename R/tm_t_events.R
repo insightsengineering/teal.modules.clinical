@@ -12,6 +12,7 @@
 #'   alphabetically.
 #'
 #' @seealso [tm_t_events()]
+#' @keywords internal
 #'
 template_events <- function(dataname,
                             parentname,

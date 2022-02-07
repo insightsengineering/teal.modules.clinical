@@ -154,3 +154,4 @@ commonly and consistently used in the framework. For the developer it adds a
 single reference point to import the \code{roxygen} argument description with:
 \verb{@inheritParams module_arguments}
 }
+\keyword{internal}

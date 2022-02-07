@@ -101,3 +101,4 @@ b$table
 \seealso{
 \code{\link[=tm_t_binary_outcome]{tm_t_binary_outcome()}}
 }
+\keyword{internal}

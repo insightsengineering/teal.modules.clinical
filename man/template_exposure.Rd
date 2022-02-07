@@ -70,3 +70,4 @@ Template: Exposure Table for Risk management plan
 \seealso{
 \code{\link[=tm_t_exposure]{tm_t_exposure()}}
 }
+\keyword{internal}

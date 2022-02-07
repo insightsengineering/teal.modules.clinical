@@ -58,3 +58,4 @@ Template: Events by Term
 \seealso{
 \code{\link[=tm_t_mult_events]{tm_t_mult_events()}}
 }
+\keyword{internal}
