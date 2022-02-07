@@ -3,10 +3,7 @@
 ### Enhancements
 
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
-
-### Bug fixes
-* Fixed tracking of the selection order in `data_extract_ui`. All selectors can return ordered selection if one specifies `ordered = TRUE` in `select_spec`.
-
+* Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.   
 
 # teal.modules.clinical 0.8.11
 

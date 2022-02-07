@@ -344,7 +344,7 @@ testthat::test_that("cs_to_select_spec accepts ordered as flag only", {
   )
 })
 
-testthat::test_that("cs_to_filter_spec fails if choices_selected is not a choices_labeled", {
+testthat::test_that("cs_to_filter_spec fails if doesn't have var_choices", {
   testthat::expect_error(
     cs_to_filter_spec(teal::choices_selected(letters, "a"))
   )
