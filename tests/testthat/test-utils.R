@@ -350,7 +350,7 @@ testthat::test_that("cs_to_filter_spec fails if doesn't have var_choices", {
   )
 })
 
-testthat::test_that("cs_to_des_select fails if choices_selected is not a choices_labeled", {
+testthat::test_that("cs_to_filter_spec creates filter_spec from choices_selected", {
   data <- data.frame(a = letters, b = LETTERS)
   testthat::expect_identical(
     cs_to_filter_spec(
