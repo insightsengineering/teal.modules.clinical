@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.11.9002
+# teal.modules.clinical 0.8.11.9003
 
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
 
