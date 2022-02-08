@@ -450,8 +450,8 @@ srv_events_patyear <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-    label_paramcd <- get_paramcd_label(ANL, paramcd)
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      label_paramcd <- get_paramcd_label(ANL, paramcd)
 
       my_calls <- template_events_patyear(
         dataname = "ANL",
