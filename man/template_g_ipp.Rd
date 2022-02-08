@@ -71,3 +71,4 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \description{
 Template: Individual Patient Plots
 }
+\keyword{internal}

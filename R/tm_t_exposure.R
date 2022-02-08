@@ -13,7 +13,8 @@
 #' @param paramcd_label (`character`)\cr
 #'   the column from the dataset where the value will be used to label the argument `paramcd`.
 #' @seealso [tm_t_exposure()]
-
+#' @keywords internal
+#'
 template_exposure <- function(parentname,
                               dataname,
                               id_var,

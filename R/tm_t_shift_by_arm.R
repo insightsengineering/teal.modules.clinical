@@ -7,6 +7,7 @@
 #'   whether to include row with total number of patients.
 #'
 #' @seealso [tm_t_shift_by_arm()]
+#' @keywords internal
 #'
 template_shift_by_arm <- function(dataname,
                                   parentname,

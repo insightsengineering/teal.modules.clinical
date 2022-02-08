@@ -821,6 +821,7 @@ clean_description <- function(x) {
 #' @param input shinyapp input
 #'
 #' @param filter_idx filter section index (default 1)
+#' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   choices <- paramcd$filter[[filter_idx]]$choices
@@ -845,7 +846,7 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #'
 #' @param paramcd [`teal::data_extract_spec()`]
 #' variable value designating the studied parameter.
-#'
+#' @keywords internal
 get_paramcd_label <- function(anl, paramcd) {
   positions <- grep(
     paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),

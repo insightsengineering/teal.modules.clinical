@@ -9,6 +9,7 @@
 #' as grade 0.
 #'
 #' @seealso [tm_t_shift_by_grade()]
+#' @keywords internal
 #'
 template_shift_by_grade <- function(parentname,
                                     dataname,

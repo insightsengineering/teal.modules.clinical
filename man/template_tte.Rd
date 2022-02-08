@@ -84,3 +84,4 @@ Creates a valid expression for time-to-event analysis.
 \seealso{
 \code{\link[=tm_t_tte]{tm_t_tte()}}
 }
+\keyword{internal}

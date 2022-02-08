@@ -9,6 +9,7 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
+#' @keywords internal
 template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 dataname,
                                                 arm_var,

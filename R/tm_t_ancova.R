@@ -14,7 +14,7 @@
 #'   variable label used for title rendering.
 #'
 #' @seealso [tm_t_ancova()]
-#'
+#' @keywords internal
 #'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL_FILTERED",

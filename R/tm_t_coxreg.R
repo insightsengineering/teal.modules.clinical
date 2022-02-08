@@ -9,6 +9,7 @@
 #' @param append (`logical`)\cr if the result should be appended to the previous one.
 #'
 #' @seealso [tm_t_coxreg()]
+#' @keywords internal
 #'
 template_coxreg_u <- function(dataname,
                               cov_var,
@@ -183,6 +184,7 @@ template_coxreg_u <- function(dataname,
 #'  effect should be estimated.
 #'
 #' @seealso [tm_t_coxreg()]
+#' @keywords internal
 #'
 template_coxreg_m <- function(dataname,
                               cov_var,

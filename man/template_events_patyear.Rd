@@ -56,3 +56,4 @@ Template: Event rates adjusted for patient-years
 \seealso{
 \code{\link[=tm_t_events_patyear]{tm_t_events_patyear()}}
 }
+\keyword{internal}

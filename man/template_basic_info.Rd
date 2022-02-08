@@ -15,3 +15,4 @@ analysis data used in teal module.}
 \description{
 Creates a basic info template.
 }
+\keyword{internal}

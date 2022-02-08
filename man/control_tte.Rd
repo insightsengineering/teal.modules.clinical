@@ -24,3 +24,4 @@ parameters for comparison, specified using \link[tern:control_surv_timepoint]{te
 \description{
 Controls the arguments for Cox regressions and Survival analysis results.
 }
+\keyword{internal}

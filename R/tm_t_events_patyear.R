@@ -6,6 +6,7 @@
 #' @param label_paramcd (`string`)\cr title of table based on paramcd
 #'
 #' @seealso [tm_t_events_patyear()]
+#' @keywords internal
 #'
 template_events_patyear <- function(dataname,
                                     parentname,
