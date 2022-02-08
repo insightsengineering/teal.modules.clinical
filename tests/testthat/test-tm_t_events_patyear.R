@@ -23,7 +23,8 @@ testthat::test_that("template_events_patyear generates standard expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+      ) %>% # nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
@@ -75,7 +76,8 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+      ) %>% # nolint
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         estimate_incidence_rate(
@@ -132,7 +134,8 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event") %>% #nolint
+        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+      ) %>% # nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
