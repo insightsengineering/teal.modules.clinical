@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9003</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -73,9 +64,13 @@ Other releases
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.11.9002" id="tealmodulesclinical-08119002">teal.modules.clinical 0.8.11.9002<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119002"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.11.9003" id="tealmodulesclinical-08119003">teal.modules.clinical 0.8.11.9003<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119003"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-0-8-11-9003">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11-9003"></a></h4>
 <ul><li>Rewrote modules to use <code>moduleServer</code> and updated calls to <code>teal.devel</code> modules which have also been written to use <code>moduleServer</code>.</li>
+<li>Changed the way of obtaining of selection ordered after changes in <code>teal.devel</code>. Use <code>ordered = TRUE</code> in <code>cs_to_des_select</code> or <code>cs_to_select_spec</code> to return ordered selection.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.11" id="tealmodulesclinical-0811">teal.modules.clinical 0.8.11<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0811"></a></h2>
 <div class="section level4">
@@ -94,8 +89,8 @@ Other releases
 <li>Enhanced <code>tm_g_pp_patient_timeline</code> with bold axes labels and integer values on the axis.</li>
 <li>Enhanced <code>tm_g_ipp</code> to allow users not to display <code>AVALU</code> in the title nor in the y axis.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="enhancements-0-8-11">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11"></a></h3>
+<div class="section level4">
+<h4 id="enhancements-0-8-11">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11"></a></h4>
 <ul><li>Added support for logging with the <code>logger</code> package and added info level logs upon initialization of a module.</li>
 <li>Added <code>default_responses</code> argument to <code>tm_t_binary_outcome</code> and <code>tm_g_forest_rsp</code> to allow the user to specify default selected responses and possible response levels.</li>
 <li>Updated <code>tm_t_binary_outcome</code> to show only the selected responses in the output table when “Show All Selected Response Categories” is checked.</li>
@@ -103,7 +98,8 @@ Other releases
 <li>Added support for custom arguments for <code><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggplot2::labs</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme</a></code> in plot based modules.</li>
 <li>Added support for custom arguments for <code><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">rtables::basic_table</a></code> in table based modules.</li>
 <li>Updated <code>tm_t_binary_outcome</code> to enable an option to apply a continuity correction in the Wilson method.</li>
-</ul><div class="section level4">
+</ul></div>
+<div class="section level4">
 <h4 id="miscellaneous-0-8-11">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-11"></a></h4>
 <ul><li>Updated R version requirement to &gt;= 3.6.</li>
 <li>Refactored calls to the defunct <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_input.html" class="external-link">teal.devel::data_extract_input</a></code> into calls to its replacement <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_ui.html" class="external-link">teal.devel::data_extract_ui</a></code>.</li>
@@ -115,7 +111,6 @@ Other releases
 <h4 id="bug-fixes-0-8-11">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-11"></a></h4>
 <ul><li>Fixed bug in <code>tm_g_pp_therapy</code> where if the <code>cmstdy</code> or <code>cmendy</code> argument is of type <code>integer</code> causes the plot to crash.</li>
 </ul></div>
-</div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.10" id="tealmodulesclinical-0810">teal.modules.clinical 0.8.10<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0810"></a></h2>
