@@ -319,7 +319,7 @@ tm_g_forest_tte <- function(label,
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
@@ -521,7 +521,7 @@ srv_g_forest_tte <- function(id,
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-      input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
+      input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
@@ -592,7 +592,7 @@ srv_g_forest_tte <- function(id,
       ANL <- teal.devel::chunks_get_var("ANL") # nolint
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
-      subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
+      subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
 
       obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
 

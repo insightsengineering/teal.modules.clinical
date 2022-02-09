@@ -615,12 +615,12 @@ tm_t_events_summary <- function(label,
     flag_var_anl = `if`(
       is.null(flag_var_anl),
       NULL,
-      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
+      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE, ordered = TRUE)
     ),
     flag_var_aesi = `if`(
       is.null(flag_var_aesi),
       NULL,
-      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
+      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE, ordered = TRUE)
     ),
     aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
@@ -807,8 +807,16 @@ srv_t_events_summary <- function(id,
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
       input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-      input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
-      input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
+      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_anl)
+      } else {
+        NULL
+      }
+      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_aesi)
+      } else {
+        NULL
+      }
       input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
@@ -840,8 +848,16 @@ srv_t_events_summary <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
-      input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
-      input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
+      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_anl)
+      } else {
+        NULL
+      }
+      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_aesi)
+      } else {
+        NULL
+      }
 
       my_calls <- template_events_summary(
         anl_name = "ANL",

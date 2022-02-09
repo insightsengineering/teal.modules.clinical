@@ -343,7 +343,7 @@ tm_g_forest_rsp <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
@@ -569,7 +569,7 @@ srv_g_forest_rsp <- function(id,
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
+      input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -683,11 +683,7 @@ srv_g_forest_rsp <- function(id,
         obj_var_name = obj_var_name,
         aval_var = as.vector(anl_m$columns_source$aval_var),
         responders = input$responders,
-        subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0) {
-          anl_selectors()$subgroup_var()$select_ordered
-        } else {
-          NULL
-        },
+        subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),

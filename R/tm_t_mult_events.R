@@ -350,7 +350,7 @@ tm_t_mult_events <- function(label, # nolint
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     seq_var = cs_to_des_select(seq_var, dataname = dataname),
-    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE),
+    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE, ordered = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
@@ -481,7 +481,7 @@ srv_t_mult_events_byterm <- function(id,
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_seq_var <- as.vector(anl_m$columns_source$seq_var)
 
-      input_hlt <- anl_selectors()$hlt()$select_ordered
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
       validate(need(input_arm_var, "Please select a treatment variable"))
@@ -517,7 +517,7 @@ srv_t_mult_events_byterm <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
-      input_hlt <- anl_selectors()$hlt()$select_ordered
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
       my_calls <- template_mult_events(
