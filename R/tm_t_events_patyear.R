@@ -459,6 +459,7 @@ srv_events_patyear <- function(id,
         arm_var = as.vector(anl_m$columns_source$arm_var),
         aval_var = as.vector(anl_m$columns_source$aval_var),
         events_var = as.vector(anl_m$columns_source$events_var),
+        label_paramcd = label_paramcd,
         add_total = input$add_total,
         control = control_incidence_rate(
           conf_level = as.numeric(input$conf_level), # nolint
