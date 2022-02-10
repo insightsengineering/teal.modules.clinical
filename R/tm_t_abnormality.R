@@ -348,7 +348,7 @@ tm_t_abnormality <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
+    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE, ordered = TRUE),
     grade = cs_to_des_select(grade, dataname = dataname),
     baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
@@ -528,7 +528,7 @@ srv_t_abnormality <- function(id,
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_by_vars <- anl_selectors()$by_vars()$select_ordered
+      input_by_vars <- as.vector(anl_m$columns_source$by_vars)
       input_grade <- as.vector(anl_m$columns_source$grade)
       input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
       input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
@@ -564,7 +564,7 @@ srv_t_abnormality <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
-      by_vars_names <- anl_selectors()$by_vars()$select_ordered
+      by_vars_names <- anl_m$columns_source$by_vars
       by_vars_labels <- as.character(sapply(by_vars_names, function(name) {
         attributes(anl_m$data()[[name]])$label
       }))
@@ -578,7 +578,7 @@ srv_t_abnormality <- function(id,
         parentname = "ANL_ADSL",
         dataname = "ANL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        by_vars = anl_selectors()$by_vars()$select_ordered,
+        by_vars = anl_m$columns_source$by_vars,
         id_var = as.vector(anl_m$columns_source$id_var),
         abnormal = abnormal,
         grade = as.vector(anl_m$columns_source$grade),

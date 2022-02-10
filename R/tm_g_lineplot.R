@@ -581,14 +581,14 @@ srv_g_lineplot <- function(id,
     })
 
     # Insert the plot into a plot with settings module from teal.devel
-    plot_with_settings_srv(
+    teal.devel::plot_with_settings_srv(
       id = "myplot",
       plot_r = line_plot,
       height = plot_height,
       width = plot_width
     )
 
-    get_rcode_srv(
+    teal.devel::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
       datanames = teal.devel::get_extract_datanames(

@@ -304,3 +304,105 @@ testthat::test_that("get_g_forest_obj_var_name", {
   expected <- "os1"
   testthat::expect_equal(result, expected)
 })
+
+testthat::test_that("cs_to_select_spec single choices_selected is converted to select_spec", {
+  testthat::expect_identical(
+    cs_to_select_spec(teal::choices_selected(letters, "a")),
+    teal::select_spec(letters, "a")
+  )
+})
+
+testthat::test_that("cs_to_select_spec single choices_selected is converted to select_spec with multiple = TRUE", {
+  testthat::expect_identical(
+    cs_to_select_spec(teal::choices_selected(letters, "a"), multiple = TRUE),
+    teal::select_spec(letters, "a", multiple = TRUE)
+  )
+})
+
+testthat::test_that("cs_to_select_spec single choices_selected is converted to select_spec with ordered = TRUE", {
+  testthat::expect_identical(
+    cs_to_select_spec(teal::choices_selected(letters, "a"), ordered = TRUE),
+    teal::select_spec(letters, "a", ordered = TRUE)
+  )
+})
+
+testthat::test_that("cs_to_select_spec accepts choices_selected only", {
+  testthat::expect_error(
+    cs_to_select_spec(c("a", "b"))
+  )
+})
+
+testthat::test_that("cs_to_select_spec accepts multiple as flag only", {
+  testthat::expect_error(
+    cs_to_select_spec(teal::choices_selected(letters, "a"), multiple = 1L)
+  )
+})
+
+testthat::test_that("cs_to_select_spec accepts ordered as flag only", {
+  testthat::expect_error(
+    cs_to_select_spec(teal::choices_selected(letters, "a"), ordered = 1L)
+  )
+})
+
+testthat::test_that("cs_to_filter_spec fails if doesn't have var_choices", {
+  testthat::expect_error(
+    cs_to_filter_spec(teal::choices_selected(letters, "a"))
+  )
+})
+
+testthat::test_that("cs_to_filter_spec creates filter_spec from choices_selected", {
+  data <- data.frame(a = letters, b = LETTERS)
+  testthat::expect_identical(
+    cs_to_filter_spec(
+      teal::choices_selected(value_choices(data, "a"), "a")
+    ),
+    teal::filter_spec(
+      vars = "a",
+      choices = teal::choices_selected(value_choices(data, "a"), "a")$choices,
+      selected = "a"
+    )
+  )
+})
+
+testthat::test_that("cs_to_des_select creates data_extract_spec with single select and no filter", {
+  testthat::expect_identical(
+    cs_to_des_select(
+      teal::choices_selected(letters, "a"),
+      dataname = "test"
+    ),
+    teal::data_extract_spec(
+      dataname = "test",
+      select = select_spec(choices = letters, selected = "a")
+    )
+  )
+})
+
+testthat::test_that("cs_to_des_select returns the input if data_extract_spec is provided", {
+  testthat::expect_identical(
+    cs_to_des_select(
+      teal::data_extract_spec(
+        dataname = "test",
+        select = select_spec(choices = letters, selected = "a")
+      ),
+      dataname = "test"
+    ),
+    teal::data_extract_spec(
+      dataname = "test",
+      select = select_spec(choices = letters, selected = "a")
+    )
+  )
+})
+
+testthat::test_that("cs_to_des_select creates data_extract_spec with multiple = TRUE", {
+  testthat::expect_identical(
+    cs_to_des_select(teal::choices_selected(letters, "a"), dataname = "test", multiple = TRUE),
+    teal::data_extract_spec(dataname = "test", select = select_spec(choices = letters, selected = "a", multiple = TRUE))
+  )
+})
+
+testthat::test_that("cs_to_des_select creates data_extract_spec with ordered = TRUE", {
+  testthat::expect_identical(
+    cs_to_des_select(teal::choices_selected(letters, "a"), dataname = "test", ordered = TRUE),
+    teal::data_extract_spec(dataname = "test", select = select_spec(choices = letters, selected = "a", ordered = TRUE))
+  )
+})

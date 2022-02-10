@@ -1,6 +1,9 @@
-# teal.modules.clinical 0.8.11.9003
+# teal.modules.clinical 0.8.11.9005
+
+### Enhancements
 
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
+* Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.   
 
 # teal.modules.clinical 0.8.11
 
@@ -18,7 +21,7 @@
 * Enhanced `tm_g_pp_patient_timeline` with bold axes labels and integer values on the axis.
 * Enhanced `tm_g_ipp` to allow users not to display `AVALU` in the title nor in the y axis.
 
-## Enhancements
+### Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
 * Added `default_responses` argument to `tm_t_binary_outcome` and `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.
