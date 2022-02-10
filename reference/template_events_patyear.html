@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9005</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -83,6 +74,7 @@ Other releases
   <span class="va">parentname</span>,
   <span class="va">arm_var</span>,
   <span class="va">events_var</span>,
+  <span class="va">label_paramcd</span>,
   aval_var <span class="op">=</span> <span class="st">"AVAL"</span>,
   add_total <span class="op">=</span> <span class="cn">TRUE</span>,
   control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tern/man/control_incidence_rate.html" class="external-link">control_incidence_rate</a></span><span class="op">(</span><span class="op">)</span>,
@@ -104,6 +96,8 @@ parent analysis data used in teal module, usually this refers to <code>ADSL</cod
 variable names that can be used as <code>arm_var</code>.</p></dd>
 <dt>events_var</dt>
 <dd><p>(<code>integer</code>)<br> number of observed events.</p></dd>
+<dt>label_paramcd</dt>
+<dd><p>(<code>string</code>)<br> title of table based on paramcd</p></dd>
 <dt>aval_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the analysis variable.</p></dd>
