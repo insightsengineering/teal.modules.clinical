@@ -152,7 +152,7 @@ app <- init(
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",

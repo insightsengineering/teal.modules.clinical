@@ -458,7 +458,7 @@ template_events <- function(dataname,
 #'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",

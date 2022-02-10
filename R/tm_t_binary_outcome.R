@@ -404,7 +404,7 @@ template_binary_outcome <- function(dataname,
 #'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",

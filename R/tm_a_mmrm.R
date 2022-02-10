@@ -477,7 +477,7 @@ template_mmrm_plots <- function(fit_name,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",

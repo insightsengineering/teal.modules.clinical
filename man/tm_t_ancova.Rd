@@ -123,7 +123,7 @@ app <- init(
       adqs <- synthetic_cdisc_data("latest")$adqs
       '
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_ancova(
       label = "ANCOVA table",
       dataname = "ADQS",

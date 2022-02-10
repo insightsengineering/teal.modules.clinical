@@ -401,7 +401,7 @@ template_coxreg_m <- function(dataname,
 #'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_coxreg(
 #'       label = "Cox Reg.",
 #'       dataname = "ADTTE",
@@ -478,7 +478,7 @@ template_coxreg_m <- function(dataname,
 #'       x = ADTTE
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_coxreg(
 #'       label = "Cox Reg.",
 #'       dataname = "ADTTE",

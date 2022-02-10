@@ -103,7 +103,7 @@ app <- init(
     cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",

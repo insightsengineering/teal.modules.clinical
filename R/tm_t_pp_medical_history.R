@@ -91,7 +91,7 @@ template_medical_history <- function(dataname = "ANL",
 #'                    rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_medical_history(
 #'       label = "Medical history",
 #'       dataname = "ADMH",

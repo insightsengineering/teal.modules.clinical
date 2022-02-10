@@ -241,7 +241,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",
 #'       dataname = "ADTTE",
