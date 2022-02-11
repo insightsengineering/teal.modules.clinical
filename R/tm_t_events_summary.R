@@ -611,11 +611,13 @@ tm_t_events_summary <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = `if`(is.null(flag_var_anl),
+    flag_var_anl = `if`(
+      is.null(flag_var_anl),
       NULL,
       cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
     ),
-    flag_var_aesi = `if`(is.null(flag_var_aesi),
+    flag_var_aesi = `if`(
+      is.null(flag_var_aesi),
       NULL,
       cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
     ),
@@ -671,7 +673,8 @@ ui_t_events_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      `if`(is.null(a$flag_var_anl),
+      `if`(
+        is.null(a$flag_var_anl),
         NULL,
         teal.devel::data_extract_ui(
           id = ns("flag_var_anl"),
@@ -680,7 +683,8 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      `if`(is.null(a$flag_var_aesi),
+      `if`(
+        is.null(a$flag_var_aesi),
         NULL,
         teal.devel::data_extract_ui(
           id = ns("flag_var_aesi"),
