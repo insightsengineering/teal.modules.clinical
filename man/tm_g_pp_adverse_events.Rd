@@ -95,7 +95,7 @@ app <- init(
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_pp_adverse_events(
       label = "Adverse events",
       dataname = "ADAE",

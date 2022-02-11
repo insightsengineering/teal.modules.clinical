@@ -251,7 +251,7 @@ template_logistic <- function(dataname,
 #'       filter(PARAMCD %in% c("BESRSPI", "INVET"))'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",

@@ -213,7 +213,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'       dplyr::filter(AVISIT != 'SCREENING')"
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",

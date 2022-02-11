@@ -84,7 +84,7 @@ app <- init(
     cdisc_dataset("ADVS", ADVS, code = 'ADVS <- synthetic_cdisc_data("latest")$advs'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_pp_vitals(
       label = "Vitals",
       dataname = "ADVS",

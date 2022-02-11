@@ -105,7 +105,7 @@ app <- init(
         dplyr::mutate(is_event = CNSR == 0) \%>\%
         dplyr::mutate(n_events = as.integer(is_event))"
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_events_patyear(
       label = "AE rate adjusted for patient-years at risk Table",
       dataname = "ADAETTE",

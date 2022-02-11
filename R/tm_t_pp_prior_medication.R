@@ -117,7 +117,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_prior_medication(
 #'       label = "Prior medication",
 #'       dataname = "ADCM",

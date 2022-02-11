@@ -237,7 +237,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory test results with highest grade post-baseline",
 #'       dataname = "ADLB",

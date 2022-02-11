@@ -264,7 +264,7 @@ template_exposure <- function(parentname,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_exposure(
 #'       label = "Duration of Exposure Table",
 #'       dataname = "ADEX",

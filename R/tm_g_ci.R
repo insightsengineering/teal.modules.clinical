@@ -197,7 +197,7 @@ template_g_ci <- function(dataname, # nolint
 #'     code = "ADSL <- synthetic_cdisc_data('latest')$adsl
 #'     ADLB <- synthetic_cdisc_data('latest')$adlb"
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_ci(
 #'       label = "Confidence Interval Plot",
 #'       x_var = data_extract_spec(

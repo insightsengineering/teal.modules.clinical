@@ -118,7 +118,7 @@ app <- init(
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_smq(
       label = "Adverse events by `SMQ` Table",
       dataname = "ADAE",

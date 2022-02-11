@@ -299,7 +299,7 @@ template_therapy <- function(dataname = "ANL",
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pp_therapy(
 #'       label = "Therapy",
 #'       dataname = "ADCM",
