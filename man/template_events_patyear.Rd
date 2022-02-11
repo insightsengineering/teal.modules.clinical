@@ -9,6 +9,7 @@ template_events_patyear(
   parentname,
   arm_var,
   events_var,
+  label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
   control = control_incidence_rate(),
@@ -27,6 +28,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 variable names that can be used as \code{arm_var}.}
 
 \item{events_var}{(\code{integer})\cr number of observed events.}
+
+\item{label_paramcd}{(\code{string})\cr title of table based on paramcd}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}

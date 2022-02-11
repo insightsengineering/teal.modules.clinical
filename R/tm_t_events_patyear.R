@@ -3,6 +3,7 @@
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param events_var (`integer`)\cr number of observed events.
+#' @param label_paramcd (`string`)\cr title of table based on paramcd
 #'
 #' @seealso [tm_t_events_patyear()]
 #' @keywords internal
@@ -11,6 +12,7 @@ template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
                                     events_var,
+                                    label_paramcd,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
                                     control = control_incidence_rate(),
@@ -54,14 +56,18 @@ template_events_patyear <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  # layout
+  layout_list <- list()
+
+  basic_title <- paste0("Event rates adjusted for patient-years by: ", label_paramcd)
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
     )
   )
 
-  # layout
-  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -444,12 +450,16 @@ srv_events_patyear <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      label_paramcd <- get_paramcd_label(ANL, paramcd)
+
       my_calls <- template_events_patyear(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
         aval_var = as.vector(anl_m$columns_source$aval_var),
         events_var = as.vector(anl_m$columns_source$events_var),
+        label_paramcd = label_paramcd,
         add_total = input$add_total,
         control = control_incidence_rate(
           conf_level = as.numeric(input$conf_level), # nolint
