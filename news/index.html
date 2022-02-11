@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9006</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -73,11 +64,12 @@ Other releases
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.11.9005" id="tealmodulesclinical-08119005">teal.modules.clinical 0.8.11.9005<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119005"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.11.9006" id="tealmodulesclinical-08119006">teal.modules.clinical 0.8.11.9006<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119006"></a></h2>
 <div class="section level4">
-<h4 id="enhancements-0-8-11-9005">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11-9005"></a></h4>
+<h4 id="enhancements-0-8-11-9006">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11-9006"></a></h4>
 <ul><li>Rewrote modules to use <code>moduleServer</code> and updated calls to <code>teal.devel</code> modules which have also been written to use <code>moduleServer</code>.</li>
-<li>Changed the way of obtaining of selection ordered after changes in <code>teal.devel</code>. Use <code>ordered = TRUE</code> in <code>cs_to_des_select</code> or <code>cs_to_select_spec</code> to return ordered selection.</li>
+<li>Changed the way of obtaining of selection ordered after changes in <code>teal.devel</code>. Use <code>ordered = TRUE</code> in <code>cs_to_des_select</code> or <code>cs_to_select_spec</code> to return ordered selection.<br></li>
+<li>Replaced calls to <code><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">teal::root_modules</a></code> with <code><a href="https://rdrr.io/pkg/teal/man/modules.html" class="external-link">teal::modules</a></code> following deprecation of <code><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">teal::root_modules</a></code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
