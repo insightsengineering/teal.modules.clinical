@@ -248,20 +248,21 @@ bracket_expr <- function(exprs) {
 
 #' Convert choices_selected to select_spec
 #'
-#' @param cs ([teal::choices_selected()]) object to be transformed
-#' @param multiple (`logical`) whether allow multiple selection in the select input
-#'
+#' @param cs (`choices_selected`) object to be transformed. See [teal::choices_selected()] for details.
+#' @inheritParams teal::select_spec
 #' @export
 #' @return ([teal::select_spec()])
-cs_to_select_spec <- function(cs, multiple = FALSE) {
+cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
+  checkmate::assert_flag(ordered)
 
   select_spec(
     choices = cs$choices,
     selected = cs$selected,
     fixed = cs$fixed,
-    multiple = multiple
+    multiple = multiple,
+    ordered = ordered
   )
 }
 
@@ -297,7 +298,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #'
 #' @export
 #' @return ([teal::data_extract_spec()])
-cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
+cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -315,7 +316,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   if (inherits(cs, "choices_selected")) {
     data_extract_spec(
       dataname = dataname,
-      select = cs_to_select_spec(cs, multiple = multiple)
+      select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered)
     )
   } else {
     return(cs)
@@ -570,7 +571,7 @@ prepare_arm <- function(dataname,
     if (length(ref_arm) > 1) {
       data_list <- add_expr(
         data_list,
-        utils.nest::substitute_names(
+        substitute_names(
           expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
@@ -581,7 +582,7 @@ prepare_arm <- function(dataname,
     # Reference level is explicit.
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = stats::relevel(arm_var, ref = ref_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(ref_arm_val = ref_arm_val)
@@ -601,7 +602,7 @@ prepare_arm <- function(dataname,
   if (drop) {
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = droplevels(arm_var)),
         names = list(arm_var = as.name(arm_var))
       )
@@ -654,7 +655,7 @@ prepare_arm_levels <- function(dataname,
     # Keep only levels that exist in `dataname` dataset
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -691,7 +692,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -706,7 +707,7 @@ prepare_arm_levels <- function(dataname,
     # Keep only levels that exist in `parentname` dataset
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)
         ),
@@ -730,7 +731,7 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dataname <- dataname %>% dplyr::mutate(
           arm_var = factor(arm_var, levels = arm_levels)
         ),
@@ -821,6 +822,7 @@ clean_description <- function(x) {
 #' @param input shinyapp input
 #'
 #' @param filter_idx filter section index (default 1)
+#' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   choices <- paramcd$filter[[filter_idx]]$choices
@@ -831,4 +833,33 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   current_selected <- input[[input_obj]]
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
+}
+
+
+#' Extract the associated param value for paramcd
+#'
+#' Utility function for extracting the param value that is associated
+#' with the paramcd value label. If there is no param value for
+#' the paramcd label, the paramcd value is returned. This is used
+#' for generating the title.
+#'
+#' @param anl Analysis dataset
+#'
+#' @param paramcd [`teal::data_extract_spec()`]
+#' variable value designating the studied parameter.
+#' @keywords internal
+get_paramcd_label <- function(anl, paramcd) {
+  positions <- grep(
+    paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),
+    names(unlist(paramcd$filter))
+  )
+  label_paramcd <- sapply(positions, function(pos) {
+    if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
+      label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])
+    } else {
+      label_paramcd <- sub(":.*", "", names(unlist(paramcd$filter))[pos])
+      label_paramcd <- sub(".*\\.", "", label_paramcd)
+    }
+    label_paramcd
+  })
 }

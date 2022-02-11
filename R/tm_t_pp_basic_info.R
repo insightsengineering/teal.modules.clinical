@@ -4,6 +4,7 @@
 #'
 #' @inheritParams template_arguments
 #' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @keywords internal
 #'
 template_basic_info <- function(dataname = "ANL",
                                 vars) {
@@ -62,7 +63,7 @@ template_basic_info <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_basic_info(
 #'       label = "Basic info",
 #'       dataname = "ADSL",
@@ -146,94 +147,92 @@ ui_t_basic_info <- function(id, ...) {
 }
 
 
-srv_t_basic_info <- function(input,
-                             output,
-                             session,
+srv_t_basic_info <- function(id,
                              datasets,
                              dataname,
                              patient_col,
                              vars,
                              label) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
+    patient_id <- reactive(input$patient_id)
 
-  patient_id <- reactive(input$patient_id)
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
+    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
-
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Basic Info tab ----
-  binf_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(vars = vars),
-    merge_function = "dplyr::left_join"
-  )
-
-  basic_info_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-    validate(
-      need(
-        input[[extract_input("vars", dataname)]],
-        "Please select basic info variables."
-      )
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
-    call_stack <- teal.devel::chunks$new()
-    call_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = call_stack)
-    }
-    teal.devel::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+    # Basic Info tab ----
+    binf_merged_data <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(vars = vars),
+      merge_function = "dplyr::left_join"
+    )
 
-    call_stack_push(substitute(
+    basic_info_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+      validate(
+        need(
+          input[[extract_input("vars", dataname)]],
+          "Please select basic info variables."
+        )
+      )
+
+      call_stack <- teal.devel::chunks$new()
+      call_stack_push <- function(...) {
+        teal.devel::chunks_push(..., chunks = call_stack)
+      }
+      teal.devel::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+
+      call_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_basic_info(
+        dataname = "ANL",
+        vars = input[[extract_input("vars", dataname)]]
+      )
+      lapply(my_calls, call_stack_push)
+      teal.devel::chunks_safe_eval(chunks = call_stack)
+      call_stack
+    })
+
+    output$basic_info_table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_basic_info(
-      dataname = "ANL",
-      vars = input[[extract_input("vars", dataname)]]
+        teal.devel::chunks_reset()
+        teal.devel::chunks_push_chunks(basic_info_call())
+        teal.devel::chunks_get_var("result")
+      },
+      options = list(pageLength = input$basic_info_table_rows)
     )
-    lapply(my_calls, call_stack_push)
-    teal.devel::chunks_safe_eval(chunks = call_stack)
-    call_stack
+
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(vars)),
+      modal_title = label
+    )
   })
-
-  output$basic_info_table <- DT::renderDataTable(
-    expr = {
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(basic_info_call())
-      teal.devel::chunks_get_var("result")
-    },
-    options = list(pageLength = input$basic_info_table_rows)
-  )
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(vars)),
-    modal_title = label
-  )
 }

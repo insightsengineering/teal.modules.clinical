@@ -28,6 +28,7 @@
 #'   are provided.
 #'
 #' @seealso [tm_t_events_summary()]
+#' @keywords internal
 #'
 template_events_summary <- function(anl_name,
                                     parentname,
@@ -96,7 +97,7 @@ template_events_summary <- function(anl_name,
 
   data_list <- add_expr(
     data_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = anl <- anl %>% dplyr::mutate(
         a = as.character(a),
         USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
@@ -532,7 +533,7 @@ template_events_summary <- function(anl_name,
 #'           ADAE <- ADAE %>% add_event_flags()"
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
 #'       dataname = "ADAE",
@@ -614,12 +615,12 @@ tm_t_events_summary <- function(label,
     flag_var_anl = `if`(
       is.null(flag_var_anl),
       NULL,
-      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE)
+      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE, ordered = TRUE)
     ),
     flag_var_aesi = `if`(
       is.null(flag_var_aesi),
       NULL,
-      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE)
+      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE, ordered = TRUE)
     ),
     aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
@@ -751,9 +752,7 @@ ui_t_events_summary <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_summary <- function(input,
-                                 output,
-                                 session,
+srv_t_events_summary <- function(id,
                                  datasets,
                                  dataname,
                                  parentname,
@@ -767,139 +766,154 @@ srv_t_events_summary <- function(input,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  data_extract_vars <- list(
-    arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
-    aeseq_var = aeseq_var, llt = llt
-  )
-
-  if (!is.null(flag_var_anl)) {
-    data_extract_vars[["flag_var_anl"]] <- flag_var_anl
-  }
-
-  if (!is.null(flag_var_aesi)) {
-    data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
-  }
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    data_extract_vars,
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
-    input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
-    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
-    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
-    input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    validate(need(input_arm_var, "Please select a treatment variable"))
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+    data_extract_vars <- list(
+      arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
+      aeseq_var = aeseq_var, llt = llt
     )
 
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
-      arm_var = input_arm_var
-    )
-  })
+    if (!is.null(flag_var_anl)) {
+      data_extract_vars[["flag_var_anl"]] <- flag_var_anl
+    }
 
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
+    if (!is.null(flag_var_aesi)) {
+      data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
+    }
 
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    input_flag_var_anl <- if (!is.null(flag_var_anl)) anl_selectors()$flag_var_anl()$select_ordered else NULL
-    input_flag_var_aesi <- if (!is.null(flag_var_aesi)) anl_selectors()$flag_var_aesi()$select_ordered else NULL
-
-    my_calls <- template_events_summary(
-      anl_name = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      dthfl_var = as.vector(anl_m$columns_source$dthfl_var),
-      dcsreas_var = as.vector(anl_m$columns_source$dcsreas_var),
-      flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
-      flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
-      aeseq_var = as.vector(anl_m$columns_source$aeseq_var),
-      llt = as.vector(anl_m$columns_source$llt),
-      add_total = input$add_total,
-      count_subj = input$count_subj,
-      count_pt = input$count_pt,
-      count_events = input$count_events
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      data_extract_vars,
+      datasets = datasets
     )
 
-    mapply(expression = my_calls, teal.devel::chunks_push)
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
 
-    all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args)
-    teal.devel::chunks_push(substitute(
-      expr = {
-        rtables::main_title(result) <- title
-        rtables::main_footer(result) <- footer
-        rtables::prov_footer(result) <- p_footer
-        rtables::subtitles(result) <- subtitle
-        result
-      },
-      env = list(
-        title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
-        footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-        p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-        subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
+      input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
+      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_anl)
+      } else {
+        NULL
+      }
+      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_aesi)
+      } else {
+        NULL
+      }
+      input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      validate(need(input_arm_var, "Please select a treatment variable"))
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
       )
-    ))
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
+        arm_var = input_arm_var
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_anl)
+      } else {
+        NULL
+      }
+      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+        as.vector(anl_m$columns_source$flag_var_aesi)
+      } else {
+        NULL
+      }
+
+      my_calls <- template_events_summary(
+        anl_name = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        dthfl_var = as.vector(anl_m$columns_source$dthfl_var),
+        dcsreas_var = as.vector(anl_m$columns_source$dcsreas_var),
+        flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
+        flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
+        aeseq_var = as.vector(anl_m$columns_source$aeseq_var),
+        llt = as.vector(anl_m$columns_source$llt),
+        add_total = input$add_total,
+        count_subj = input$count_subj,
+        count_pt = input$count_pt,
+        count_events = input$count_events
+      )
+
+      mapply(expression = my_calls, teal.devel::chunks_push)
+
+      all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+      teal.devel::chunks_push(substitute(
+        expr = {
+          rtables::main_title(result) <- title
+          rtables::main_footer(result) <- footer
+          rtables::prov_footer(result) <- p_footer
+          rtables::subtitles(result) <- subtitle
+          result
+        },
+        env = list(
+          title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
+          footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+          p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+          subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+        )
+      ))
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(data_extract_vars),
+      modal_title = "Adverse Event Summary Table",
+      code_header = label
+    )
   })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(data_extract_vars),
-    modal_title = "Adverse Event Summary Table",
-    code_header = label
-  )
 }

@@ -3,13 +3,16 @@
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param events_var (`integer`)\cr number of observed events.
+#' @param label_paramcd (`string`)\cr title of table based on paramcd
 #'
 #' @seealso [tm_t_events_patyear()]
+#' @keywords internal
 #'
 template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
                                     events_var,
+                                    label_paramcd,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
                                     control = control_incidence_rate(),
@@ -53,14 +56,18 @@ template_events_patyear <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  # layout
+  layout_list <- list()
+
+  basic_title <- paste0("Event rates adjusted for patient-years by: ", label_paramcd)
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
     teal.devel::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
     )
   )
 
-  # layout
-  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     substitute(
@@ -151,7 +158,7 @@ template_events_patyear <- function(dataname,
 #'         dplyr::mutate(is_event = CNSR == 0) %>%
 #'         dplyr::mutate(n_events = as.integer(is_event))"
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_events_patyear(
 #'       label = "AE rate adjusted for patient-years at risk Table",
 #'       dataname = "ADAETTE",
@@ -335,9 +342,7 @@ ui_events_patyear <- function(id, ...) {
 }
 
 #' @noRd
-srv_events_patyear <- function(input,
-                               output,
-                               session,
+srv_events_patyear <- function(id,
                                datasets,
                                dataname,
                                parentname,
@@ -351,156 +356,156 @@ srv_events_patyear <- function(input,
                                label,
                                basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
+    observeEvent(anl_merged(), {
+      data <- anl_merged()$data()
+      aval_unit_var <- anl_merged()$columns_source$avalu_var
+      if (length(aval_unit_var) > 0) {
+        choices <- stats::na.omit(unique(data[[aval_unit_var]]))
+        choices <- gsub("s$", "", tolower(choices))
 
-  # This reactiveVal and the observeEvent that listens to it are only run upon app launch
-  # They are used in combination to avoid the use of observe, which is costly in terms of performance
-  avalu_choices <- reactiveVal(datasets$get_data(dataname, filtered = FALSE) %>%
-    dplyr::select(as.name(avalu_var$select$selected)) %>%
-    unique() %>%
-    dplyr::filter(!is.na(.data[[avalu_var$select$selected]])) %>%
-    dplyr::arrange() %>%
-    dplyr::pull())
+        updateSelectInput(
+          session,
+          "time_unit_input",
+          choices = choices,
+          selected = choices[1]
+        )
+      }
+    })
 
-  observeEvent(avalu_choices(), {
-    updateSelectInput(
-      session, "time_unit_input",
-      choices = avalu_choices(),
-      selected = avalu_choices()[1]
-    )
-  })
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      paramcd = paramcd,
-      aval_var = aval_var,
-      avalu_var = avalu_var,
-      events_var = events_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
-    input_events_var <- as.vector(anl_m$columns_source$events_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
-      arm_var = input_arm_var
-    )
-
-    validate(need(
-      input$conf_level > 0 && input$conf_level < 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-
-    validate(
-      need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
-      need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
-      need(input$conf_method, "`CI Method` field is not selected."),
-      need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
-      need(
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select an Event Type Parameter is not selected."
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        aval_var = aval_var,
+        avalu_var = avalu_var,
+        events_var = events_var
       ),
-      need(
-        !any(is.na(anl_m$data()[[input_events_var]])),
-        "`Event Variable` for selected parameter includes NA values."
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+      input_events_var <- as.vector(anl_m$columns_source$events_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
+        arm_var = input_arm_var
       )
+
+      validate(need(
+        input$conf_level > 0 && input$conf_level < 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+
+      validate(
+        need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
+        need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
+        need(input$conf_method, "`CI Method` field is not selected."),
+        need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
+        need(
+          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+          "`Select an Event Type Parameter is not selected."
+        ),
+        need(
+          !any(is.na(anl_m$data()[[input_events_var]])),
+          "`Event Variable` for selected parameter includes NA values."
+        )
+      )
+
+      NULL
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      label_paramcd <- get_paramcd_label(ANL, paramcd)
+
+      my_calls <- template_events_patyear(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        events_var = as.vector(anl_m$columns_source$events_var),
+        label_paramcd = label_paramcd,
+        add_total = input$add_total,
+        control = control_incidence_rate(
+          conf_level = as.numeric(input$conf_level), # nolint
+          conf_type = if (input$conf_method == "Normal (rate)") {
+            "normal"
+          } else if (input$conf_method == "Normal (log rate)") {
+            "normal_log"
+          } else if (input$conf_method == "Exact") {
+            "exact"
+          } else {
+            "byar"
+          },
+          time_unit_input = if (input$time_unit_input %in% c("day", "week", "month", "year")) {
+            input$time_unit_input
+          } else {
+            "year"
+          },
+          time_unit_output = as.numeric(input$time_unit_output)
+        ),
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    patyear_table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "patyear_table",
+      table_r = patyear_table
     )
 
-    NULL
-  })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_events_patyear(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      events_var = as.vector(anl_m$columns_source$events_var),
-      add_total = input$add_total,
-      control = control_incidence_rate(
-        conf_level = as.numeric(input$conf_level), # nolint
-        conf_type = if (input$conf_method == "Normal (rate)") {
-          "normal"
-        } else if (input$conf_method == "Normal (log rate)") {
-          "normal_log"
-        } else if (input$conf_method == "Exact") {
-          "exact"
-        } else {
-          "byar"
-        },
-        time_unit_input = if (as.character(input$time_unit_input) == "DAYS") {
-          "day"
-        } else if (as.character(input$time_unit_input) == "MONTHS") {
-          "month"
-        } else {
-          "year"
-        },
-        time_unit_output = as.numeric(input$time_unit_output)
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, paramcd, aval_var, events_var)
       ),
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
+      modal_title = "Event Rate adjusted for patient-year at risk",
+      code_header = label
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
   })
-
-  # Outputs to render.
-  patyear_table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "patyear_table",
-    table_r = patyear_table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, aval_var, events_var)
-    ),
-    modal_title = "Event Rate adjusted for patient-year at risk",
-    code_header = label
-  )
 }

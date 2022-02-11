@@ -14,7 +14,10 @@ template_events_col_by_grade(
   id = "USUBJID",
   hlt,
   llt,
+  label_hlt = NULL,
+  label_llt = NULL,
   grade = "AETOXGR",
+  label_grade = NULL,
   prune_freq = 0.1,
   prune_diff = 0,
   drop_arm_levels = TRUE,
@@ -44,7 +47,16 @@ name of the variable with high level term for events.}
 \item{llt}{(\code{character})\cr
 name of the variable with low level term for events.}
 
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
 \item{grade}{(\code{character}) \cr grade term which grading_groups is based on, default to "AETOXGR".}
+
+\item{label_grade}{(\code{string})\cr label of the \code{grade} variable from \code{dataname}. The label will be extracted from the
+module.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
@@ -58,8 +70,9 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Template: Adverse Events grouped by Grade with threshold
@@ -67,3 +80,4 @@ Template: Adverse Events grouped by Grade with threshold
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}
 }
+\keyword{internal}

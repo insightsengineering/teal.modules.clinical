@@ -9,6 +9,7 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
+#' @keywords internal
 template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 dataname,
                                                 arm_var,
@@ -236,7 +237,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory test results with highest grade post-baseline",
 #'       dataname = "ADLB",
@@ -444,9 +445,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 }
 
 #' @noRd
-srv_t_abnormality_by_worst_grade <- function(input, # nolint
-                                             output,
-                                             session,
+srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              datasets,
                                              dataname,
                                              parentname,
@@ -461,122 +460,121 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
                                              label,
                                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var, id_var = id_var, paramcd = paramcd,
-      atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
-      worst_low_flag_var = worst_low_flag_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
-    input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
-    input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
-    input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
-
-    validate(
-      need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
-      need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-      need(
-        length(anl_m$data()[[input_paramcd_var]]) > 0,
-        "Please select at least one Laboratory parameter."
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var, id_var = id_var, paramcd = paramcd,
+        atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
+        worst_low_flag_var = worst_low_flag_var
       ),
-      need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
-      need(input_id_var, "Please select a Subject Identifier."),
-      need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-      need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-      need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-      need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
-      need(
-        all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
-        "All grade values should be within -4:4 range."
-      )
+      merge_function = "dplyr::inner_join"
     )
 
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "USUBJID", "STUDYID", input_paramcd_var,
-        input_atoxgr, input_worst_high_flag_var,
-        input_worst_low_flag_var
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
+      input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
+      input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
+      input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
+
+      validate(
+        need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
+        need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
+        need(
+          length(anl_m$data()[[input_paramcd_var]]) > 0,
+          "Please select at least one Laboratory parameter."
+        ),
+        need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
+        need(input_id_var, "Please select a Subject Identifier."),
+        need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
+        need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
+        need(
+          all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
+          "All grade values should be within -4:4 range."
+        )
+      )
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd_var,
+          input_atoxgr, input_worst_high_flag_var,
+          input_worst_low_flag_var
+        ),
+        arm_var = input_arm_var
+      )
+    })
+
+    call_preparation <- reactive({
+      validate_checks()
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      my_calls <- template_abnormality_by_worst_grade(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        id_var = as.vector(anl_m$columns_source$id_var),
+        paramcd = as.vector(anl_m$columns_source$paramcd),
+        atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
+        worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
+        worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
+        worst_flag_indicator = input$worst_flag_indicator,
+        add_total = input$add_total,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(
+          arm_var, id_var, paramcd,
+          atoxgr_var, worst_high_flag_var, worst_low_flag_var
+        )
       ),
-      arm_var = input_arm_var
+      modal_title = "R Code for Grade Laboratory Abnormalities",
+      code_header = label
     )
   })
-
-  call_preparation <- reactive({
-    validate_checks()
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_abnormality_by_worst_grade(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      id_var = as.vector(anl_m$columns_source$id_var),
-      paramcd = as.vector(anl_m$columns_source$paramcd),
-      atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
-      worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
-      worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
-      worst_flag_indicator = input$worst_flag_indicator,
-      add_total = input$add_total,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(
-        arm_var, id_var, paramcd,
-        atoxgr_var, worst_high_flag_var, worst_low_flag_var
-      )
-    ),
-    modal_title = "R Code for Grade Laboratory Abnormalities",
-    code_header = label
-  )
 }

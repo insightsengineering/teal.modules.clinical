@@ -8,8 +8,10 @@
 #' @param baseline_var (`character`)\cr
 #'   name of the variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
+#' @param tbl_title (`character`)\cr Title with label of variables from by bars
 #'
 #' @seealso [tm_t_abnormality()]
+#' @keywords internal
 #'
 template_abnormality <- function(parentname,
                                  dataname,
@@ -25,7 +27,8 @@ template_abnormality <- function(parentname,
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
                                  na_level = "<Missing>",
-                                 basic_table_args = teal.devel::basic_table_args()) {
+                                 basic_table_args = teal.devel::basic_table_args(),
+                                 tbl_title) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(id_var),
@@ -39,7 +42,8 @@ template_abnormality <- function(parentname,
     assertthat::is.string(treatment_flag),
     assertthat::is.flag(add_total),
     assertthat::is.flag(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels)
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(tbl_title)
   )
 
   y <- list()
@@ -112,12 +116,15 @@ template_abnormality <- function(parentname,
     teal.devel::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.devel::basic_table_args(
+        title = tbl_title,
         main_footer = "by variables without observed abnormalities are excluded."
       )
     )
   )
 
   layout_list <- list()
+
+
   layout_list <- add_expr(
     layout_list,
     if (add_total) {
@@ -256,7 +263,7 @@ template_abnormality <- function(parentname,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_abnormality(
 #'       label = "Abnormality Table",
 #'       dataname = "ADLB",
@@ -341,7 +348,7 @@ tm_t_abnormality <- function(label,
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
-    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
+    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE, ordered = TRUE),
     grade = cs_to_des_select(grade, dataname = dataname),
     baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
@@ -462,9 +469,7 @@ ui_t_abnormality <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_abnormality <- function(input,
-                              output,
-                              session,
+srv_t_abnormality <- function(id,
                               datasets,
                               dataname,
                               parentname,
@@ -481,125 +486,136 @@ srv_t_abnormality <- function(input,
                               na_level,
                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
+    # Update UI choices depending on selection of previous options
+    observeEvent(input$grade, {
+      anl <- datasets$get_data(dataname, filtered = FALSE)
 
-  # Update UI choices depending on selection of previous options
-  observeEvent(input$grade, {
-    anl <- datasets$get_data(dataname, filtered = FALSE)
+      validate_has_elements(input$grade, "Please select a grade variable")
+      choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
+    })
 
-    validate_has_elements(input$grade, "Please select a grade variable")
-    choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
-  })
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(
-      arm_var = arm_var,
-      id_var = id_var,
-      by_vars = by_vars,
-      grade = grade,
-      baseline_var = baseline_var,
-      treatment_flag_var = treatment_flag_var
-    ),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- anl_selectors()$by_vars()$select_ordered
-    input_grade <- as.vector(anl_m$columns_source$grade)
-    input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
-    input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
-
-    validate(
-      need(input_arm_var, "Please select a treatment variable."),
-      need(input_grade, "Please select a grade variable."),
-      need(input_id_var, "Please select a subject identifier."),
-      need(input_baseline_var, "Please select a baseline grade variable."),
-      need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-      need(input$treatment_flag, "Please select indicator value for on treatment records.")
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(
+        arm_var = arm_var,
+        id_var = id_var,
+        by_vars = by_vars,
+        grade = grade,
+        baseline_var = baseline_var,
+        treatment_flag_var = treatment_flag_var
+      ),
+      datasets = datasets
     )
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_id_var, input_by_vars, input_grade),
-      arm_var = input_arm_var
+
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_by_vars <- as.vector(anl_m$columns_source$by_vars)
+      input_grade <- as.vector(anl_m$columns_source$grade)
+      input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
+      input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable."),
+        need(input_grade, "Please select a grade variable."),
+        need(input_by_vars, "Please select a Row By Variable."),
+        need(input_id_var, "Please select a subject identifier."),
+        need(input_baseline_var, "Please select a baseline grade variable."),
+        need(input_treatment_flag_var, "Please select an on treatment flag variable."),
+        need(input$treatment_flag, "Please select indicator value for on treatment records.")
+      )
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_id_var, input_by_vars, input_grade),
+        arm_var = input_arm_var
+      )
+    })
+
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      by_vars_names <- anl_m$columns_source$by_vars
+      by_vars_labels <- as.character(sapply(by_vars_names, function(name) {
+        attributes(anl_m$data()[[name]])$label
+      }))
+
+      tbl_title <- ifelse(
+        length(by_vars_labels) == 1,
+        paste("Laboratory Abnormality summary by", by_vars_labels),
+        paste(paste("Laboratory Abnormality summary by", paste(by_vars_labels, collapse = ", ")))
+      )
+      my_calls <- template_abnormality(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        by_vars = anl_m$columns_source$by_vars,
+        id_var = as.vector(anl_m$columns_source$id_var),
+        abnormal = abnormal,
+        grade = as.vector(anl_m$columns_source$grade),
+        baseline_var = as.vector(anl_m$columns_source$baseline_var),
+        treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
+        treatment_flag = input$treatment_flag,
+        add_total = input$add_total,
+        exclude_base_abn = input$exclude_base_abn,
+        drop_arm_levels = input$drop_arm_levels,
+        na_level = na_level,
+        basic_table_args = basic_table_args,
+        tbl_title = tbl_title
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, id_var, by_vars, grade)
+      ),
+      modal_title = "R Code for Abnormality Table",
+      code_header = label
     )
   })
-
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_abnormality(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      by_vars = anl_selectors()$by_vars()$select_ordered,
-      id_var = as.vector(anl_m$columns_source$id_var),
-      abnormal = abnormal,
-      grade = as.vector(anl_m$columns_source$grade),
-      baseline_var = as.vector(anl_m$columns_source$baseline_var),
-      treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
-      treatment_flag = input$treatment_flag,
-      add_total = input$add_total,
-      exclude_base_abn = input$exclude_base_abn,
-      drop_arm_levels = input$drop_arm_levels,
-      na_level = na_level,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, id_var, by_vars, grade)
-    ),
-    modal_title = "R Code for Abnormality Table",
-    code_header = label
-  )
 }

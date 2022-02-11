@@ -10,6 +10,7 @@
 #' variable names of the selected Standardized/Customized queries
 #'
 #' @seealso [tm_t_smq()]
+#' @keywords internal
 #'
 template_smq <- function(dataname,
                          parentname,
@@ -333,7 +334,7 @@ template_smq <- function(dataname,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_smq(
 #'       label = "Adverse events by `SMQ` Table",
 #'       dataname = "ADAE",
@@ -395,7 +396,7 @@ tm_t_smq <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     baskets = cs_to_des_select(baskets, dataname = dataname, multiple = TRUE),
     scopes = cs_to_des_select(scopes, dataname = dataname, multiple = TRUE),
@@ -501,9 +502,7 @@ ui_t_smq <- function(id, ...) {
   )
 }
 
-srv_t_smq <- function(input,
-                      output,
-                      session,
+srv_t_smq <- function(id,
                       datasets,
                       dataname,
                       parentname,
@@ -516,115 +515,114 @@ srv_t_smq <- function(input,
                       label,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(
-      arm_var = arm_var,
-      id_var = id_var,
-      baskets = baskets,
-      scopes = scopes,
-      llt = llt
-    ),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var),
-    input_id = c("arm_var"),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    anl_m <- anl_merged()
-    anl_adsl <- adsl_merged()
-
-    input_arm_var <- anl_selectors()$arm_var()$select_ordered
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_baskets <- as.vector(anl_m$columns_source$baskets)
-    input_scopes <- as.vector(anl_m$columns_source$scopes)
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    validate(
-      need(input_id_var, "Please select a subject identifier."),
-      need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
-      need(input_baskets, "Please select the SMQ/CQ baskets."),
-      need(input_scopes, "Please select the scope variables."),
-      need(input_llt, "Please select the low level term."),
-      need(input_arm_var, "Please select the arm variable.")
-    )
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "USUBJID", "STUDYID", input_id_var, input_baskets,
-        input_scopes, input_llt
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(
+        arm_var = arm_var,
+        id_var = id_var,
+        baskets = baskets,
+        scopes = scopes,
+        llt = llt
       ),
-      arm_var = input_arm_var[[1]]
+      datasets = datasets
+    )
+
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var),
+      input_id = c("arm_var"),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      anl_m <- anl_merged()
+      anl_adsl <- adsl_merged()
+
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_baskets <- as.vector(anl_m$columns_source$baskets)
+      input_scopes <- as.vector(anl_m$columns_source$scopes)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      validate(
+        need(input_id_var, "Please select a subject identifier."),
+        need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
+        need(input_baskets, "Please select the SMQ/CQ baskets."),
+        need(input_scopes, "Please select the scope variables."),
+        need(input_llt, "Please select the low level term."),
+        need(input_arm_var, "Please select the arm variable.")
+      )
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_id_var, input_baskets,
+          input_scopes, input_llt
+        ),
+        arm_var = input_arm_var[[1]]
+      )
+    })
+
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      my_calls <- template_smq(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = anl_m$columns_source$arm_var,
+        llt = as.vector(anl_m$columns_source$llt),
+        add_total = input$add_total,
+        sort_criteria = input$sort_criteria,
+        drop_arm_levels = input$drop_arm_levels,
+        baskets = as.vector(anl_m$columns_source$baskets),
+        na_level = na_level,
+        id_var = as.vector(anl_m$columns_source$id_var),
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("pruned_and_sorted_result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, id_var, baskets, scopes, llt)
+      ),
+      modal_title = "R Code for SMQ tables",
+      code_header = label
     )
   })
-
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_smq(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = anl_selectors()$arm_var()$select_ordered,
-      llt = as.vector(anl_m$columns_source$llt),
-      add_total = input$add_total,
-      sort_criteria = input$sort_criteria,
-      drop_arm_levels = input$drop_arm_levels,
-      baskets = as.vector(anl_m$columns_source$baskets),
-      na_level = na_level,
-      id_var = as.vector(anl_m$columns_source$id_var),
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("pruned_and_sorted_result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, id_var, baskets, scopes, llt)
-    ),
-    modal_title = "R Code for SMQ tables",
-    code_header = label
-  )
 }

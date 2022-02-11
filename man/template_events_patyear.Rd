@@ -9,6 +9,7 @@ template_events_patyear(
   parentname,
   arm_var,
   events_var,
+  label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
   control = control_incidence_rate(),
@@ -28,6 +29,8 @@ variable names that can be used as \code{arm_var}.}
 
 \item{events_var}{(\code{integer})\cr number of observed events.}
 
+\item{label_paramcd}{(\code{string})\cr title of table based on paramcd}
+
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
@@ -43,8 +46,9 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 }
 \description{
 Template: Event rates adjusted for patient-years
@@ -52,3 +56,4 @@ Template: Event rates adjusted for patient-years
 \seealso{
 \code{\link[=tm_t_events_patyear]{tm_t_events_patyear()}}
 }
+\keyword{internal}

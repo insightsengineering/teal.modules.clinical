@@ -12,12 +12,16 @@
 #'   names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).\cr For more details, see the help vignette:
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `caption`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
+#' @keywords internal
+#'
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL_FILTERED",
                                 arm_var,
@@ -72,7 +76,7 @@ template_forest_rsp <- function(dataname = "ANL",
 
   anl_list <- add_expr(
     anl_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
@@ -103,7 +107,7 @@ template_forest_rsp <- function(dataname = "ANL",
 
   parent_list <- add_expr(
     parent_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
@@ -199,11 +203,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `labs` arguments such as: `title`, `caption`.
-#' `theme` arguments will be not taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body). \cr For more details, see the help vignette:\cr
-#' `vignette("Custom ggplot2_args arguments module", package = "teal.devel")`.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `caption`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
 #'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @export
 #'
@@ -241,7 +246,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
@@ -338,7 +343,7 @@ tm_g_forest_rsp <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE),
+    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
@@ -462,9 +467,7 @@ ui_g_forest_rsp <- function(id, ...) {
   )
 }
 
-srv_g_forest_rsp <- function(input,
-                             output,
-                             session,
+srv_g_forest_rsp <- function(id,
                              datasets,
                              dataname,
                              parentname,
@@ -479,237 +482,233 @@ srv_g_forest_rsp <- function(input,
                              label,
                              default_responses,
                              ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    stopifnot(is_cdisc_data(datasets))
 
-  teal.devel::init_chunks()
+    teal.devel::init_chunks()
 
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte"
-  )
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(
-      arm_var = arm_var,
-      subgroup_var = subgroup_var,
-      strata_var = strata_var,
-      paramcd = paramcd,
-      aval_var = aval_var
-    ),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  observeEvent(
-    eventExpr = c(
-      input[[extract_input("aval_var", "ADRS")]],
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-    ),
-    handlerExpr = {
-      aval_var <- anl_merged()$columns_source$aval_var
-      sel_param <- if (is.list(default_responses)) {
-        default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
-      } else {
-        default_responses
-      }
-      common_rsp <- if (is.list(sel_param)) {
-        sel_param$rsp
-      } else {
-        sel_param
-      }
-      responder_choices <- if (length(aval_var) == 0) {
-        character(0)
-      } else {
-        if ("levels" %in% names(sel_param)) {
-          if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
-            sel_param$levels
-          } else {
-            union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
-          }
-        } else {
-          unique(anl_merged()$data()[[aval_var]])
-        }
-      }
-      updateSelectInput(
-        session, "responders",
-        choices = responder_choices,
-        selected = intersect(responder_choices, common_rsp)
-      )
-    }
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_subgroup_var <- anl_selectors()$subgroup_var()$select_ordered
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
-      arm_var = input_arm_var
+    # Setup arm variable selection, default reference arms, and default
+    # comparison arms for encoding panel
+    teal.devel::arm_ref_comp_observer(
+      session, input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_tte"
     )
-    validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(
+        arm_var = arm_var,
+        subgroup_var = subgroup_var,
+        strata_var = strata_var,
+        paramcd = paramcd,
+        aval_var = aval_var
+      ),
+      datasets = datasets
+    )
 
-    teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
 
-    if (length(input_subgroup_var) > 0) {
-      validate(
-        need(
-          all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
-          "Not all subgroup variables are factors."
-        )
-      )
-    }
-    if (length(input_strata_var) > 0) {
-      validate(
-        need(
-          all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
-          "Not all stratification variables are factors."
-        )
-      )
-    }
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
+      anl_name = "ANL_ADSL"
+    )
 
-    if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
-      validate(
-        need(
-          all(unlist(lapply(default_responses, function(x) {
-            if (is.list(x) & "levels" %in% names(x)) {
-              lvls <- x$levels
-              all(x$rsp %in% lvls)
+    observeEvent(
+      eventExpr = c(
+        input[[extract_input("aval_var", "ADRS")]],
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+      ),
+      handlerExpr = {
+        aval_var <- anl_merged()$columns_source$aval_var
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        } else {
+          default_responses
+        }
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else {
+          sel_param
+        }
+        responder_choices <- if (length(aval_var) == 0) {
+          character(0)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+              sel_param$levels
             } else {
-              lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
-              if ("rsp" %in% names(x)) {
+              union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+            }
+          } else {
+            unique(anl_merged()$data()[[aval_var]])
+          }
+        }
+        updateSelectInput(
+          session, "responders",
+          choices = responder_choices,
+          selected = intersect(responder_choices, common_rsp)
+        )
+      }
+    )
+
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
+      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      # validate inputs
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
+        arm_var = input_arm_var
+      )
+      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+
+      do.call(what = "validate_standard_inputs", validate_args)
+
+      teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+
+      if (length(input_subgroup_var) > 0) {
+        validate(
+          need(
+            all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+            "Not all subgroup variables are factors."
+          )
+        )
+      }
+      if (length(input_strata_var) > 0) {
+        validate(
+          need(
+            all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+            "Not all stratification variables are factors."
+          )
+        )
+      }
+
+      if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
+        validate(
+          need(
+            all(unlist(lapply(default_responses, function(x) {
+              if (is.list(x) & "levels" %in% names(x)) {
+                lvls <- x$levels
                 all(x$rsp %in% lvls)
               } else {
-                all(x %in% lvls)
+                lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+                if ("rsp" %in% names(x)) {
+                  all(x$rsp %in% lvls)
+                } else {
+                  all(x %in% lvls)
+                }
               }
-            }
-          }))),
-          "All selected default responses must be in the levels of AVAL."
+            }))),
+            "All selected default responses must be in the levels of AVAL."
+          )
         )
-      )
-    }
+      }
 
-    if (is.list(default_responses)) {
+      if (is.list(default_responses)) {
+        validate(
+          need(
+            all(
+              grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
+                names(unlist(default_responses)) %in% names(default_responses)
+            ),
+            "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+          )
+        )
+      }
+
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+
       validate(
+        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
+        need(input$responders, "`Responders` field is empty."),
         need(
-          all(
-            grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-              names(unlist(default_responses)) %in% names(default_responses)
-          ),
-          "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
+          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+          "`Select Endpoint` is not selected."
         )
       )
-    }
 
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+      NULL
+    })
 
-    validate(
-      need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-      need(input$responders, "`Responders` field is empty."),
-      need(
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select Endpoint` is not selected."
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+
+      strata_var <- as.vector(anl_m$columns_source$strata_var)
+      subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
+
+      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+
+      my_calls <- template_forest_rsp(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        ref_arm = input$ref_arm,
+        comp_arm = input$comp_arm,
+        obj_var_name = obj_var_name,
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        responders = input$responders,
+        subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
+        strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        conf_level = as.numeric(input$conf_level),
+        col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
+        ggplot2_args = ggplot2_args
       )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("p")
+    })
+
+    teal.devel::plot_with_settings_srv(
+      id = "myplot",
+      plot_r = call_preparation,
+      height = plot_height,
+      width = plot_width
     )
 
-    NULL
-  })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-
-    strata_var <- as.vector(anl_m$columns_source$strata_var)
-    subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-    obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
-
-    my_calls <- template_forest_rsp(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      obj_var_name = obj_var_name,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      responders = input$responders,
-      subgroup_var = if (length(anl_selectors()$subgroup_var()$select_ordered) != 0) {
-        anl_selectors()$subgroup_var()$select_ordered
-      } else {
-        NULL
-      },
-      strata_var = if (length(strata_var) != 0) strata_var else NULL,
-      conf_level = as.numeric(input$conf_level),
-      col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
-      ggplot2_args = ggplot2_args
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, paramcd, subgroup_var, strata_var)
+      ),
+      modal_title = label
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("p")
   })
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = call_preparation,
-    height = plot_height,
-    width = plot_width
-  )
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, subgroup_var, strata_var)
-    ),
-    modal_title = label
-  )
 }

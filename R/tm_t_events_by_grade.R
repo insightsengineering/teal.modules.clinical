@@ -1,10 +1,17 @@
 #' Template: Events by Grade
 #'
 #' @inheritParams template_arguments
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
 #' @param grade (`character`) \cr name of the severity level variable.
+#' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
+#' module.
 #'
 #' @seealso [tm_t_events_by_grade()]
+#' @keywords internal
 #'
 template_events_by_grade <- function(dataname,
                                      parentname,
@@ -12,7 +19,10 @@ template_events_by_grade <- function(dataname,
                                      id = "USUBJID",
                                      hlt,
                                      llt,
+                                     label_hlt = NULL,
+                                     label_llt = NULL,
                                      grade,
+                                     label_grade = NULL,
                                      prune_freq = 0,
                                      prune_diff = 0,
                                      add_total = TRUE,
@@ -25,7 +35,10 @@ template_events_by_grade <- function(dataname,
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt) || is.null(llt),
     !is.null(hlt) || !is.null(llt),
+    assertthat::is.string(label_hlt) || is.null(label_hlt),
+    assertthat::is.string(label_llt) || is.null(label_llt),
     assertthat::is.string(grade),
+    assertthat::is.string(label_grade) || is.null(label_grade),
     assertthat::is.flag(add_total),
     assertthat::is.flag(drop_arm_levels)
   )
@@ -95,8 +108,21 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- list()
 
+  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
+  } else if (!is.null(hlt) & is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
+  } else if (!is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
+  } else {
+    paste0("Adverse Event summary by ", label_grade)
+  }
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
+    )
   )
 
   layout_list <- add_expr(
@@ -338,10 +364,17 @@ template_events_by_grade <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param grade (`character`) \cr grade term which grading_groups is based on, default to "AETOXGR".
+#' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param grading_groups (`character`) \cr list of grading groups.
 #'
 #' @seealso [tm_t_events_by_grade()]
+#' @keywords internal
 #'
 template_events_col_by_grade <- function(dataname,
                                          parentname,
@@ -356,7 +389,10 @@ template_events_col_by_grade <- function(dataname,
                                          id = "USUBJID",
                                          hlt,
                                          llt,
+                                         label_hlt = NULL,
+                                         label_llt = NULL,
                                          grade = "AETOXGR",
+                                         label_grade = NULL,
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = TRUE,
@@ -371,6 +407,9 @@ template_events_col_by_grade <- function(dataname,
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt),
     assertthat::is.string(grade),
+    assertthat::is.string(label_hlt) || is.null(label_hlt),
+    assertthat::is.string(label_llt) || is.null(label_llt),
+    assertthat::is.string(label_grade) || is.null(label_grade),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
@@ -460,8 +499,23 @@ template_events_col_by_grade <- function(dataname,
   )
   y$data <- bracket_expr(data_list)
 
+  layout_list <- list()
+  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
+  } else if (!is.null(hlt) & is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
+  } else if (!is.null(hlt) & !is.null(llt)) {
+    paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
+  } else {
+    paste0("Adverse Event summary by ", label_grade)
+  }
+
+
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+    teal.devel::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.devel::basic_table_args(title = basic_title)
+    )
   )
 
   # Start layout steps.
@@ -736,7 +790,7 @@ template_events_col_by_grade <- function(dataname,
 #'     cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADAE", adae, code = 'adae <- synthetic_cdisc_data("latest")$adae')
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_events_by_grade(
 #'       label = "Adverse Events by Grade Table",
 #'       dataname = "ADAE",
@@ -908,9 +962,7 @@ ui_t_events_by_grade <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_events_by_grade <- function(input,
-                                  output,
-                                  session,
+srv_t_events_by_grade <- function(id,
                                   datasets,
                                   dataname,
                                   parentname,
@@ -924,164 +976,172 @@ srv_t_events_by_grade <- function(input,
                                   drop_arm_levels,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-    adsl_keys <- datasets$get_keys(parentname)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_level_term <- c(
-      as.vector(anl_m$columns_source$hlt),
-      as.vector(anl_m$columns_source$llt)
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
+      merge_function = "dplyr::inner_join"
     )
-    input_grade <- as.vector(anl_m$columns_source$grade)
 
-    validate(
-      need(input_arm_var, "Please select a treatment variable"),
-      need(input_grade, "Please select a grade variable")
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
     )
-    teal.devel::validate_has_elements(
-      input_level_term,
-      "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
-    )
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
-    )
-    if (input$col_by_grade) {
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_keys <- datasets$get_keys(parentname)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_level_term <- c(
+        as.vector(anl_m$columns_source$hlt),
+        as.vector(anl_m$columns_source$llt)
+      )
+      input_grade <- as.vector(anl_m$columns_source$grade)
+
+      validate(
+        need(input_arm_var, "Please select a treatment variable"),
+        need(input_grade, "Please select a grade variable")
+      )
+      teal.devel::validate_has_elements(
+        input_level_term,
+        "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
+      )
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      )
+      if (input$col_by_grade) {
+        validate(
+          need(
+            is.factor(anl_filtered[[input_grade]]) &&
+              all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
+            "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
+          )
+        )
+      } else {
+        validate(
+          need(
+            is.factor(anl_filtered[[input_grade]]),
+            "Event grade variable must be a factor."
+          )
+        )
+      }
       validate(
         need(
-          is.factor(anl_filtered[[input_grade]]) &&
-            all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
-          "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
-        )
-      )
-    } else {
-      validate(
+          input$prune_freq >= 0 && input$prune_freq <= 100,
+          "Please provide an Incidence Rate between 0 and 100 (%)."
+        ),
         need(
-          is.factor(anl_filtered[[input_grade]]),
-          "Event grade variable must be a factor."
+          input$prune_diff >= 0 && input$prune_diff <= 100,
+          "Please provide a Difference Rate between 0 and 100 (%)."
         )
       )
-    }
-    validate(
-      need(
-        input$prune_freq >= 0 && input$prune_freq <= 100,
-        "Please provide an Incidence Rate between 0 and 100 (%)."
+      if (input$col_by_grade) {
+        validate(
+          need(
+            as.vector(anl_m$columns_source$llt),
+            "Low Level Term must be present for nested grade grouping display."
+          )
+        )
+      }
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c(adsl_keys, input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(adsl_keys, input_level_term, input_grade),
+        arm_var = input_arm_var
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+      input_grade <- as.vector(anl_m$columns_source$grade)
+      label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
+      label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
+      label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
+      label_grade <- if (is.null(label_grade)) input_grade else NULL
+
+      my_calls <- if (input$col_by_grade) {
+        template_events_col_by_grade(
+          dataname = "ANL",
+          parentname = "ANL_ADSL",
+          add_total = input$add_total,
+          grading_groups = grading_groups,
+          arm_var = as.vector(anl_m$columns_source$arm_var),
+          id = datasets$get_keys(parentname)[2],
+          hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+          llt = if (length(input_llt) != 0) input_llt else NULL,
+          label_hlt = label_hlt,
+          label_llt = label_llt,
+          grade = if (length(input_grade) != 0) input_grade else NULL,
+          label_grade = label_grade,
+          prune_freq = input$prune_freq / 100,
+          prune_diff = input$prune_diff / 100,
+          drop_arm_levels = input$drop_arm_levels,
+          basic_table_args = basic_table_args
+        )
+      } else {
+        template_events_by_grade(
+          dataname = "ANL",
+          parentname = "ANL_ADSL",
+          arm_var = as.vector(anl_m$columns_source$arm_var),
+          id = datasets$get_keys(parentname)[2],
+          hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+          llt = if (length(input_llt) != 0) input_llt else NULL,
+          label_hlt = label_hlt,
+          label_llt = label_llt,
+          grade = input_grade,
+          label_grade = label_grade,
+          prune_freq = input$prune_freq / 100,
+          prune_diff = input$prune_diff / 100,
+          add_total = input$add_total,
+          drop_arm_levels = input$drop_arm_levels,
+          basic_table_args = basic_table_args
+        )
+      }
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("pruned_and_sorted_result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, hlt, llt, grade)
       ),
-      need(
-        input$prune_diff >= 0 && input$prune_diff <= 100,
-        "Please provide a Difference Rate between 0 and 100 (%)."
-      )
-    )
-    if (input$col_by_grade) {
-      validate(
-        need(
-          as.vector(anl_m$columns_source$llt),
-          "Low Level Term must be present for nested grade grouping display."
-        )
-      )
-    }
-
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c(adsl_keys, input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(adsl_keys, input_level_term, input_grade),
-      arm_var = input_arm_var
+      modal_title = "AE by Grade Table",
+      code_header = label
     )
   })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    input_hlt <- as.vector(anl_m$columns_source$hlt)
-    input_llt <- as.vector(anl_m$columns_source$llt)
-    input_grade <- as.vector(anl_m$columns_source$grade)
-
-    my_calls <- if (input$col_by_grade) {
-      template_events_col_by_grade(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        add_total = input$add_total,
-        grading_groups = grading_groups,
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        id = datasets$get_keys(parentname)[2],
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-        llt = if (length(input_llt) != 0) input_llt else NULL,
-        grade = if (length(input_grade) != 0) input_grade else NULL,
-        prune_freq = input$prune_freq / 100,
-        prune_diff = input$prune_diff / 100,
-        drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args
-      )
-    } else {
-      template_events_by_grade(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        id = datasets$get_keys(parentname)[2],
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-        llt = if (length(input_llt) != 0) input_llt else NULL,
-        grade = input_grade,
-        prune_freq = input$prune_freq / 100,
-        prune_diff = input$prune_diff / 100,
-        add_total = input$add_total,
-        drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args
-      )
-    }
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("pruned_and_sorted_result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, hlt, llt, grade)
-    ),
-    modal_title = "AE by Grade Table",
-    code_header = label
-  )
 }

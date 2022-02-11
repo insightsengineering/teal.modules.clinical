@@ -8,9 +8,13 @@
 #'   variable name for the studied parameter.
 #' @param visit_levels (`character`)\cr
 #'   variable levels for studied visits.
+#' @param label_aval (`character`)\cr
+#'   label of value variable used for title rendering.
+#' @param label_paramcd (`character`)\cr
+#'   variable label used for title rendering.
 #'
 #' @seealso [tm_t_ancova()]
-#'
+#' @keywords internal
 #'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL_FILTERED",
@@ -19,9 +23,11 @@ template_ancova <- function(dataname = "ANL",
                             comp_arm = NULL,
                             combine_comp_arms = FALSE,
                             aval_var,
+                            label_aval = NULL,
                             cov_var,
                             paramcd_levels = "",
                             paramcd_var = "PARAMCD",
+                            label_paramcd = NULL,
                             visit_levels = "",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
@@ -30,6 +36,7 @@ template_ancova <- function(dataname = "ANL",
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(arm_var),
+    assertthat::is.string(label_aval) || is.null(label_aval),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.string(aval_var),
     is.character(cov_var)
@@ -72,7 +79,7 @@ template_ancova <- function(dataname = "ANL",
   if (combine_comp_arms) {
     anl_list <- add_expr(
       anl_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -80,7 +87,7 @@ template_ancova <- function(dataname = "ANL",
     )
     parent_list <- add_expr(
       parent_list,
-      utils.nest::substitute_names(
+      substitute_names(
         expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
@@ -118,27 +125,24 @@ template_ancova <- function(dataname = "ANL",
   # Build layout.
   visits_title <- if (length(visit_levels) > 1) {
     paste(
-      "visits", paste(utils::head(visit_levels, -1), collapse = ", "),
+      paste(utils::head(visit_levels, -1), collapse = ", "),
       "and", utils::tail(visit_levels, 1)
     )
   } else if (length(visit_levels) == 1) {
-    paste("visit", visit_levels)
+    visit_levels
   } else {
-    "visit"
+    ""
   }
 
-  table_title <- if (length(paramcd_levels) > 1) {
+  table_title <- if (length(label_paramcd) > 1) {
     paste(
-      "Table of", paste(utils::head(paramcd_levels, -1), collapse = ", "),
-      "and", utils::tail(paramcd_levels, 1),
-      "parameters", "at", visits_title, "for", aval_var
+      "Summary of Analysis of Variance for", paste(label_paramcd, collapse = " and "),
+      "at", visits_title, "for", label_aval
     )
+  } else if (length(label_paramcd == 1)) {
+    paste("Summary of Analysis of Variance for", label_paramcd, "at", visits_title, "for", label_aval)
   } else {
-    visits_title
-    paste(
-      "Table of", paramcd_levels,
-      "parameter", "at", visits_title, "for", aval_var
-    )
+    ""
   }
 
   parsed_basic_table_args <- teal.devel::parse_basic_table_args(
@@ -350,7 +354,7 @@ template_ancova <- function(dataname = "ANL",
 #'       adqs <- synthetic_cdisc_data("latest")$adqs
 #'       '
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",
@@ -517,9 +521,7 @@ ui_ancova <- function(id, ...) {
 }
 
 #' @noRd
-srv_ancova <- function(input,
-                       output,
-                       session,
+srv_ancova <- function(id,
                        datasets,
                        dataname,
                        parentname,
@@ -532,169 +534,172 @@ srv_ancova <- function(input,
                        label,
                        basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  # Setup arm variable selection, default reference arms, and default
-  # comparison arms for encoding panel.
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm",
-    id_comp = "comp_arm",
-    id_arm_var = extract_input("arm_var", parentname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_ancova"
-  )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var,
-      aval_var = aval_var,
-      cov_var = cov_var,
-      avisit = avisit,
-      paramcd = paramcd
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-    input_avisit <- unlist(avisit$filter)["vars_selected"]
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-
-    # Validate inputs.
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var),
-      arm_var = input_arm_var
+    # Setup arm variable selection, default reference arms, and default
+    # comparison arms for encoding panel.
+    teal.devel::arm_ref_comp_observer(
+      session, input,
+      id_ref = "ref_arm",
+      id_comp = "comp_arm",
+      id_arm_var = extract_input("arm_var", parentname),
+      datasets = datasets,
+      dataname = parentname,
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_ancova"
     )
-    validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    do.call(what = "validate_standard_inputs", validate_args)
 
-    # Other validations.
-    validate(need(
-      length(input_aval_var) > 0,
-      "Analysis variable cannot be empty."
-    ))
-    validate(need(
-      length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
-      "ANCOVA table needs at least 2 arm groups to make comparisons."
-    ))
-    # check that there is at least one record with no missing data
-    validate(need(
-      !all(is.na(anl_m$data()[[input_aval_var]])),
-      "ANCOVA table cannot be calculated as all values are missing."
-    ))
-    # check that for each visit there is at least one record with no missing data
-    all_NA_dataset <- anl_m$data() %>% # nolint
-      dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
-      dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
-    validate(need(
-      !any(all_NA_dataset$all_NA),
-      "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
-    ))
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        aval_var = aval_var,
+        cov_var = cov_var,
+        avisit = avisit,
+        paramcd = paramcd
+      ),
+      merge_function = "dplyr::inner_join"
+    )
 
-    validate(need(
-      input[[extract_input("avisit", avisit$filter[[1]]$dataname, filter = TRUE)]],
-      "`Analysis Visit` field cannot be empty"
-    ))
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
 
-    validate(need(
-      input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-      "`Select Endpoint` is not selected."
-    ))
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
-    if (length(input_cov_var >= 1L)) {
-      input_cov_var_dataset <- anl_filtered[input_cov_var]
-      validate(
-        need(
-          all(vapply(input_cov_var_dataset, function(col) length(unique(col)) > 1L, logical(1))),
-          "Selected covariates should have more than one level for showing the adjusted analysis."
-        )
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      input_avisit <- unlist(avisit$filter)["vars_selected"]
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+
+      # Validate inputs.
+      validate_args <- list(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var),
+        arm_var = input_arm_var
       )
-    }
-  })
+      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      do.call(what = "validate_standard_inputs", validate_args)
 
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
+      # Other validations.
+      validate(need(
+        length(input_aval_var) > 0,
+        "Analysis variable cannot be empty."
+      ))
+      validate(need(
+        length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
+        "ANCOVA table needs at least 2 arm groups to make comparisons."
+      ))
+      # check that there is at least one record with no missing data
+      validate(need(
+        !all(is.na(anl_m$data()[[input_aval_var]])),
+        "ANCOVA table cannot be calculated as all values are missing."
+      ))
+      # check that for each visit there is at least one record with no missing data
+      all_NA_dataset <- anl_m$data() %>% # nolint
+        dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
+        dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
+      validate(need(
+        !any(all_NA_dataset$all_NA),
+        "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
+      ))
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
 
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
+      validate(need(
+        input[[extract_input("avisit", avisit$filter[[1]]$dataname, filter = TRUE)]],
+        "`Analysis Visit` field cannot be empty"
+      ))
 
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
+      validate(need(
+        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+        "`Select Endpoint` is not selected."
+      ))
 
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      if (length(input_cov_var >= 1L)) {
+        input_cov_var_dataset <- anl_filtered[input_cov_var]
+        validate(
+          need(
+            all(vapply(input_cov_var_dataset, function(col) length(unique(col)) > 1L, logical(1))),
+            "Selected covariates should have more than one level for showing the adjusted analysis."
+          )
+        )
+      }
+    })
 
-    paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
-    visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
 
-    my_calls <- template_ancova(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      cov_var = as.vector(anl_m$columns_source$cov_var),
-      paramcd_levels = paramcd_levels,
-      paramcd_var = unlist(paramcd$filter)["vars_selected"],
-      visit_levels = visit_levels,
-      visit_var = unlist(avisit$filter)["vars_selected"],
-      conf_level = as.numeric(input$conf_level),
-      basic_table_args = basic_table_args
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      label_paramcd <- get_paramcd_label(ANL, paramcd)
+      input_aval <- as.vector(anl_m$columns_source$aval_var)
+      label_aval <- if (length(input_aval) != 0) attributes(anl_m$data()[[input_aval]])$label else NULL
+      paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
+      visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
+
+      my_calls <- template_ancova(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        ref_arm = input$ref_arm,
+        comp_arm = input$comp_arm,
+        combine_comp_arms = input$combine_comp_arms,
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        label_aval = label_aval,
+        cov_var = as.vector(anl_m$columns_source$cov_var),
+        paramcd_levels = paramcd_levels,
+        paramcd_var = unlist(paramcd$filter)["vars_selected"],
+        label_paramcd = label_paramcd,
+        visit_levels = visit_levels,
+        visit_var = unlist(avisit$filter)["vars_selected"],
+        conf_level = as.numeric(input$conf_level),
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Output to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(
+        list(arm_var, aval_var, cov_var, avisit, paramcd)
+      ),
+      modal_title = label
+    )
   })
-
-  # Output to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, aval_var, cov_var, avisit, paramcd)
-    ),
-    modal_title = label
-  )
 }

@@ -6,6 +6,7 @@
 #' @param seq_var (`numeric`) \cr Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @seealso [tm_t_mult_events()]
+#' @keywords internal
 #'
 template_mult_events <- function(dataname,
                                  parentname,
@@ -72,7 +73,7 @@ template_mult_events <- function(dataname,
 
   data_list <- add_expr(
     data_list,
-    utils.nest::substitute_names(
+    substitute_names(
       expr = anl <- anl %>%
         dplyr::mutate(seq_var = as.factor(seq_var)),
       names = list(
@@ -294,7 +295,7 @@ template_mult_events <- function(dataname,
 #'       keys = adcm_keys
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_mult_events(
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",
 #'       dataname = "ADCM",
@@ -349,7 +350,7 @@ tm_t_mult_events <- function(label, # nolint
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     seq_var = cs_to_des_select(seq_var, dataname = dataname),
-    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE),
+    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE, ordered = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
@@ -433,9 +434,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
 }
 
 #' @noRd
-srv_t_mult_events_byterm <- function(input,
-                                     output,
-                                     session,
+srv_t_mult_events_byterm <- function(id,
                                      datasets,
                                      dataname,
                                      parentname,
@@ -448,128 +447,113 @@ srv_t_mult_events_byterm <- function(input,
                                      label,
                                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.devel::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(
-      arm_var = arm_var,
-      seq_var = seq_var,
-      hlt = hlt,
-      llt = llt
-    ),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_seq_var <- as.vector(anl_m$columns_source$seq_var)
-
-    input_hlt <- anl_selectors()$hlt()$select_ordered
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    validate(need(input_arm_var, "Please select a treatment variable"))
-    validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
-
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
-    )
-    validate(
-      need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
-    )
-
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_seq_var, input_hlt, input_llt),
-      arm_var = input_arm_var
-    )
-  })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    input_hlt <- anl_selectors()$hlt()$select_ordered
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    hlt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_hlt)
-    llt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_llt)
-
-    basic_table_args$title <- ifelse(
-      is.null(basic_table_args$title),
-      paste(
-        "Concomitant Medications by",
-        paste(hlt_labels, collapse = ", "),
-        "and",
-        paste(llt_labels, collapse = ", ")
+    anl_selectors <- teal.devel::data_extract_multiple_srv(
+      list(
+        arm_var = arm_var,
+        seq_var = seq_var,
+        hlt = hlt,
+        llt = llt
       ),
-      basic_table_args$title
+      datasets = datasets
     )
 
-    my_calls <- template_mult_events(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      seq_var = as.vector(anl_m$columns_source$seq_var),
-      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-      llt = input_llt,
-      add_total = input$add_total,
-      event_type = event_type,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
+    anl_merged <- teal.devel::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+
+    adsl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_seq_var <- as.vector(anl_m$columns_source$seq_var)
+
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      validate(need(input_arm_var, "Please select a treatment variable"))
+      validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
+
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      )
+      validate(
+        need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
+      )
+
+      # validate inputs
+      teal.devel::validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_seq_var, input_hlt, input_llt),
+        arm_var = input_arm_var
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.devel::chunks_reset()
+      anl_m <- anl_merged()
+      teal.devel::chunks_push_data_merge(anl_m)
+      teal.devel::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.devel::chunks_push_data_merge(anl_adsl)
+      teal.devel::chunks_push_new_line()
+
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      my_calls <- template_mult_events(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        seq_var = as.vector(anl_m$columns_source$seq_var),
+        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        llt = input_llt,
+        add_total = input$add_total,
+        event_type = event_type,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.devel::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.devel::chunks_safe_eval()
+      teal.devel::chunks_get_var("result")
+    })
+
+    teal.devel::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal.devel::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.devel::get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
+      modal_title = "Event Table",
+      code_header = label
+    )
   })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
-    modal_title = "Event Table",
-    code_header = label
-  )
 }

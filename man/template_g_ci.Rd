@@ -37,8 +37,9 @@ read.}
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom ggplot2_args arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 Writes the expressions to filter data and draw confidence interval
@@ -47,3 +48,4 @@ estimation.
 \seealso{
 \code{\link[=tm_g_ci]{tm_g_ci()}}
 }
+\keyword{internal}

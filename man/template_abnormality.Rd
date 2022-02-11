@@ -19,7 +19,8 @@ template_abnormality(
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.devel::basic_table_args(),
+  tbl_title
 )
 }
 \arguments{
@@ -65,8 +66,11 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+
+\item{tbl_title}{(\code{character})\cr Title with label of variables from by bars}
 }
 \description{
 Template: Abnormality Summary Table
@@ -74,3 +78,4 @@ Template: Abnormality Summary Table
 \seealso{
 \code{\link[=tm_t_abnormality]{tm_t_abnormality()}}
 }
+\keyword{internal}

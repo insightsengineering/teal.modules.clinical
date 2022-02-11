@@ -4,12 +4,15 @@
 \alias{cs_to_select_spec}
 \title{Convert choices_selected to select_spec}
 \usage{
-cs_to_select_spec(cs, multiple = FALSE)
+cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE)
 }
 \arguments{
-\item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
+\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal:choices_selected]{teal::choices_selected()}} for details.}
 
-\item{multiple}{(\code{logical}) whether allow multiple selection in the select input}
+\item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
+shiny \code{\link[shiny]{selectInput}}.}
+
+\item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
 }
 \value{
 (\code{\link[teal:select_spec]{teal::select_spec()}})

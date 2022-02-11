@@ -92,15 +92,16 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom basic_table arguments module", package = "teal.devel")}.}
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args}) \cr
 object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
 objects for plot-specific settings. List names should match the following:\cr \code{ c("default", "lsmeans", "diagnostic")}.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("Custom ggplot2 arguments module", package = "teal.devel")}.}
+\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
 }
 \description{
 Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
@@ -151,7 +152,7 @@ app <- init(
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",

@@ -27,3 +27,4 @@ analysis data used in teal module.}
 \description{
 Creates a prior medication template.
 }
+\keyword{internal}

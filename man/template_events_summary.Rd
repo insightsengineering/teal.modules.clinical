@@ -75,3 +75,4 @@ Template: Adverse Events Summary
 \seealso{
 \code{\link[=tm_t_events_summary]{tm_t_events_summary()}}
 }
+\keyword{internal}
