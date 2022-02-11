@@ -520,6 +520,20 @@ srv_t_mult_events_byterm <- function(id,
       input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
+      hlt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_hlt)
+      llt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_llt)
+
+      basic_table_args$title <- ifelse(
+        is.null(basic_table_args$title),
+        paste(
+          "Concomitant Medications by",
+          paste(hlt_labels, collapse = ", "),
+          "and",
+          paste(llt_labels, collapse = ", ")
+        ),
+        basic_table_args$title
+      )
+
       my_calls <- template_mult_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
