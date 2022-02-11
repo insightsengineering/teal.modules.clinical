@@ -89,7 +89,7 @@ app <- init(
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
       x = data_extract_spec(

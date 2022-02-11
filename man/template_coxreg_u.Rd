@@ -73,3 +73,4 @@ Creates a valid expression for Cox regression analysis.
 \seealso{
 \code{\link[=tm_t_coxreg]{tm_t_coxreg()}}
 }
+\keyword{internal}

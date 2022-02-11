@@ -9,6 +9,7 @@
 #' as grade 0.
 #'
 #' @seealso [tm_t_shift_by_grade()]
+#' @keywords internal
 #'
 template_shift_by_grade <- function(parentname,
                                     dataname,
@@ -479,7 +480,7 @@ template_shift_by_grade <- function(parentname,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_shift_by_grade(
 #'       label = "Grade Laboratory Abnormality Table",
 #'       dataname = "ADLB",

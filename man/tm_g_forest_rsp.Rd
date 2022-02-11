@@ -141,7 +141,7 @@ app <- init(
        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_forest_rsp(
       label = "Forest Response",
       dataname = "ADRS",

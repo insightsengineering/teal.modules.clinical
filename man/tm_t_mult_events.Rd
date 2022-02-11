@@ -90,7 +90,7 @@ app <- teal::init(
       keys = adcm_keys
     )
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
       dataname = "ADCM",

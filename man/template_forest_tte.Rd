@@ -75,3 +75,4 @@ Creates a valid expression for survival forest plot.
 \seealso{
 \code{\link[=tm_g_forest_tte]{tm_g_forest_tte()}}
 }
+\keyword{internal}

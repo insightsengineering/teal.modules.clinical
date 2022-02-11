@@ -82,3 +82,4 @@ Creates a valid expression for analysis of variance summary table.
 \seealso{
 \code{\link[=tm_t_ancova]{tm_t_ancova()}}
 }
+\keyword{internal}

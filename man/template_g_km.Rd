@@ -107,3 +107,4 @@ Template: Kaplan-Meier
 \seealso{
 \code{\link[=tm_g_km]{tm_g_km()}}
 }
+\keyword{internal}

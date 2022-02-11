@@ -7,6 +7,7 @@
 #'   whether to include row with total number of patients.
 #'
 #' @seealso [tm_t_shift_by_arm()]
+#' @keywords internal
 #'
 template_shift_by_arm <- function(dataname,
                                   parentname,
@@ -178,7 +179,7 @@ template_shift_by_arm <- function(dataname,
 #'     cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",

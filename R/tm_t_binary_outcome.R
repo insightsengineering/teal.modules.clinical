@@ -10,7 +10,7 @@
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_binary_outcome()]
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' # Preparation of the test case.
@@ -404,7 +404,7 @@ template_binary_outcome <- function(dataname,
 #'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",

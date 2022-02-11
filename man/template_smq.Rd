@@ -68,3 +68,4 @@ Adverse Events Table by Standardized \code{MedDRA} Query
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}
 }
+\keyword{internal}

@@ -66,3 +66,4 @@ Template: Laboratory test results with highest grade post-baseline
 \seealso{
 \code{\link[=tm_t_abnormality_by_worst_grade]{tm_t_abnormality_by_worst_grade()}}
 }
+\keyword{internal}

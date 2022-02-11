@@ -19,7 +19,8 @@
 #' with default module arguments (hard coded in the module body).
 #'
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
-
+#' @keywords internal
+#'
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
                            arm_var,
@@ -212,7 +213,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'       dplyr::filter(AVISIT != 'SCREENING')"
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",

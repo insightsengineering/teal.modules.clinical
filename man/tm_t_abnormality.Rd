@@ -133,7 +133,7 @@ app <- init(
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",

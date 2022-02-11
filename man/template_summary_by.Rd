@@ -92,3 +92,4 @@ Template: Summarize Variables by Row Groups Module
 \seealso{
 \code{\link[=tm_t_summary_by]{tm_t_summary_by()}}
 }
+\keyword{internal}

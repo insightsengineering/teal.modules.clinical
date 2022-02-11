@@ -133,3 +133,4 @@ Template: Mixed Model Repeated Measurements (MMRM) analysis
 \seealso{
 \code{\link[=tm_a_mmrm]{tm_a_mmrm()}}
 }
+\keyword{internal}

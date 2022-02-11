@@ -11,6 +11,7 @@
 #'   machine (not default).
 #'
 #' @seealso [tm_a_mmrm()]
+#' @keywords internal
 #'
 template_fit_mmrm <- function(parentname,
                               dataname,
@@ -476,7 +477,7 @@ template_mmrm_plots <- function(fit_name,
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",

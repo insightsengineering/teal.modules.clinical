@@ -8,6 +8,7 @@
 #'   parameters for comparison, specified using [tern::control_surv_time].
 #' @param surv_timepoint (`list`)\cr
 #'   parameters for comparison, specified using [tern::control_surv_timepoint].
+#' @keywords internal
 #'
 control_tte <- function(surv_time = list(
                           conf_level = 0.95,
@@ -42,6 +43,7 @@ control_tte <- function(surv_time = list(
 #' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
 #' @seealso [tm_t_tte()]
+#' @keywords internal
 #'
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL_FILTERED",
@@ -390,7 +392,7 @@ template_tte <- function(dataname = "ANL",
 #'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",

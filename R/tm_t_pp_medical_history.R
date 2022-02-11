@@ -6,6 +6,7 @@
 #' @param mhterm (`character`)\cr name of the reported name for medical history variable.
 #' @param mhbodsys (`character`)\cr name of the body system or organ class variable.
 #' @param mhdistat (`character`)\cr name of the status of the disease variable.
+#' @keywords internal
 #'
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
@@ -90,7 +91,7 @@ template_medical_history <- function(dataname = "ANL",
 #'                    rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_medical_history(
 #'       label = "Medical history",
 #'       dataname = "ADMH",

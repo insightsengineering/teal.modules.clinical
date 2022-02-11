@@ -70,3 +70,4 @@ Creates a valid expression for response forest plot.
 \seealso{
 \code{\link[=tm_g_forest_rsp]{tm_g_forest_rsp()}}
 }
+\keyword{internal}

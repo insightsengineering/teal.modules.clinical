@@ -62,3 +62,4 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \description{
 Creates a patient timeline template call.
 }
+\keyword{internal}

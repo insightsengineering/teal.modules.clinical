@@ -3,7 +3,7 @@
 #' Verifies assertions for dynamic outputs.
 #'
 #' @name dyn_assertion
-#'
+#' @keywords internal
 NULL
 
 #' @describeIn dyn_assertion the dataset is large enough.

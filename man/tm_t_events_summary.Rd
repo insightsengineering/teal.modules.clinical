@@ -186,7 +186,7 @@ app <- init(
           ADAE <- ADAE \%>\% add_event_flags()"
     )
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_events_summary(
       label = "Adverse Events Summary",
       dataname = "ADAE",

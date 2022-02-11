@@ -67,3 +67,4 @@ Template: Shift by Arm
 \seealso{
 \code{\link[=tm_t_shift_by_arm]{tm_t_shift_by_arm()}}
 }
+\keyword{internal}

@@ -13,6 +13,7 @@
 #'
 #' @docType package
 #' @name teal.modules.clinical
+#' @keywords internal
 NULL
 
 # We need this to avoid R CMD check warning about missing global definitions.

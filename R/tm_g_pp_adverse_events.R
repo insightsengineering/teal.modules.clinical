@@ -12,6 +12,7 @@
 #' @param decod (`character`)\cr name of dictionary derived term variable.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @keywords internal
 #'
 template_adverse_events <- function(dataname = "ANL",
                                     aeterm = "AETERM",
@@ -185,7 +186,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'     cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pp_adverse_events(
 #'       label = "Adverse events",
 #'       dataname = "ADAE",

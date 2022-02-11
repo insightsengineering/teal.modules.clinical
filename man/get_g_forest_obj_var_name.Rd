@@ -17,3 +17,4 @@ variable value designating the studied parameter.}
 \description{
 Utility function for extracting paramcd for forest plots
 }
+\keyword{internal}

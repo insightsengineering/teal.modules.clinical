@@ -14,7 +14,7 @@
 #'   variable label used for title rendering.
 #'
 #' @seealso [tm_t_ancova()]
-#'
+#' @keywords internal
 #'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL_FILTERED",
@@ -354,7 +354,7 @@ template_ancova <- function(dataname = "ANL",
 #'       adqs <- synthetic_cdisc_data("latest")$adqs
 #'       '
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",

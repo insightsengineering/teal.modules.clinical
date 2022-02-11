@@ -68,7 +68,7 @@ app <- init(
     cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_pp_laboratory(
       label = "Vitals",
       dataname = "ADLB",

@@ -12,6 +12,7 @@
 #'   alphabetically.
 #'
 #' @seealso [tm_t_events()]
+#' @keywords internal
 #'
 template_events <- function(dataname,
                             parentname,
@@ -457,7 +458,7 @@ template_events <- function(dataname,
 #'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
@@ -515,7 +516,7 @@ tm_t_events <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     hlt = cs_to_des_select(hlt, dataname = dataname),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
@@ -653,7 +654,7 @@ srv_t_events_byterm <- function(id,
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
       anl_m <- anl_merged()
-      input_arm_var <- anl_selectors()$arm_var()$select_ordered
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_level_term <- c(
         as.vector(anl_m$columns_source$hlt),
         as.vector(anl_m$columns_source$llt)
@@ -720,7 +721,7 @@ srv_t_events_byterm <- function(id,
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = anl_selectors()$arm_var()$select_ordered,
+        arm_var = as.vector(anl_m$columns_source$arm_var),
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,

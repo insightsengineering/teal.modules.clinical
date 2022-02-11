@@ -45,7 +45,7 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_pp_basic_info(
       label = "Basic info",
       dataname = "ADSL",

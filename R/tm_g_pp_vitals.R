@@ -12,6 +12,7 @@
 #' @note
 #' The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
 #' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
+#' @keywords internal
 #'
 template_vitals <- function(dataname = "ANL",
                             paramcd = "PARAMCD",
@@ -199,7 +200,7 @@ template_vitals <- function(dataname = "ANL",
 #'     cdisc_dataset("ADVS", ADVS, code = 'ADVS <- synthetic_cdisc_data("latest")$advs'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pp_vitals(
 #'       label = "Vitals",
 #'       dataname = "ADVS",

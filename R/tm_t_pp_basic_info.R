@@ -4,6 +4,7 @@
 #'
 #' @inheritParams template_arguments
 #' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @keywords internal
 #'
 template_basic_info <- function(dataname = "ANL",
                                 vars) {
@@ -62,7 +63,7 @@ template_basic_info <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_basic_info(
 #'       label = "Basic info",
 #'       dataname = "ADSL",

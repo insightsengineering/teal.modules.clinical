@@ -97,3 +97,4 @@ Template: Line Plot
 \seealso{
 \code{\link[=tm_g_lineplot]{tm_g_lineplot()}}
 }
+\keyword{internal}

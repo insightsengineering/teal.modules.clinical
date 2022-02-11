@@ -17,6 +17,8 @@
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
 #'
 #' @seealso [tm_g_lineplot()]
+#' @keywords internal
+#'
 template_g_lineplot <- function(dataname = "ANL",
                                 strata = "ARM",
                                 x = "AVISIT",
@@ -210,7 +212,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_lineplot(
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
@@ -579,14 +581,14 @@ srv_g_lineplot <- function(id,
     })
 
     # Insert the plot into a plot with settings module from teal.devel
-    plot_with_settings_srv(
+    teal.devel::plot_with_settings_srv(
       id = "myplot",
       plot_r = line_plot,
       height = plot_height,
       width = plot_width
     )
 
-    get_rcode_srv(
+    teal.devel::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
       datanames = teal.devel::get_extract_datanames(

@@ -76,3 +76,4 @@ Template: Events by Grade
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}
 }
+\keyword{internal}

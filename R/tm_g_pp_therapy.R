@@ -15,7 +15,8 @@
 #' @param cmendy (`character`)\cr name of study day of end of medication variable.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-
+#' @keywords internal
+#'
 template_therapy <- function(dataname = "ANL",
                              atirel = "ATIREL",
                              cmdecod = "CMDECOD",
@@ -298,7 +299,7 @@ template_therapy <- function(dataname = "ANL",
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pp_therapy(
 #'       label = "Therapy",
 #'       dataname = "ADCM",
