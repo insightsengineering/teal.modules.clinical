@@ -348,7 +348,7 @@ ui_summary <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$numeric_stats
+            selected = c("n", "mean_sd", "median", "range")
           ),
           radioButtons(
             ns("denominator"),
