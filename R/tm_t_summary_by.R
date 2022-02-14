@@ -518,7 +518,7 @@ ui_summary_by <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$numeric_stats
+            selected = c("n", "mean_sd", "median", "range")
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
