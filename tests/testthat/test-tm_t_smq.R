@@ -49,7 +49,7 @@ testthat::test_that("template_smq generates correct expressions with default arg
           split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["SMQ"]]
+          split_label = teal::get_variable_labels(anl, fill = FALSE)[["SMQ"]]
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -128,7 +128,7 @@ testthat::test_that("template_smq generates correct expressions with custom argu
           split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE),
           indent_mod = -1L,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["SMQ"]]
+          split_label = teal::get_variable_labels(anl, fill = FALSE)[["SMQ"]]
         ) %>%
         summarize_num_patients(
           var = "myUSUBJID",

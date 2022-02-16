@@ -20,7 +20,7 @@
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
-#' adae_labels <- rtables::var_labels(ADAE)
+#' adae_labels <- teal::get_variable_labels(ADAE, fill = FALSE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' # reinstate labels
@@ -32,7 +32,7 @@
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-#'               adae_labels <- rtables::var_labels(ADAE)
+#'               adae_labels <- teal::get_variable_labels(ADAE, fill = FALSE)
 #'               ADAE <- ADAE %>%
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
 #'               ADAE <- do.call(rtables::var_relabel,
