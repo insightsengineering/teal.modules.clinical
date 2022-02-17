@@ -14,8 +14,6 @@ template_shift_by_arm <- function(dataname,
                                   arm_var = "ARM",
                                   paramcd = "PARAMCD",
                                   visit_var = "AVISIT",
-                                  worst_flag_var = NULL,
-                                  worst_flag = "Y",
                                   treatment_flag_var = "ONTRTFL",
                                   treatment_flag = "Y",
                                   aval_var = "ANRIND",
@@ -28,8 +26,7 @@ template_shift_by_arm <- function(dataname,
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
     assertthat::is.string(arm_var),
-    assertthat::is.string(visit_var) || is.null(visit_var),
-    is.null(worst_flag_var) || is.character(worst_flag_var),
+    assertthat::is.string(visit_var),
     assertthat::is.string(paramcd),
     assertthat::is.string(aval_var),
     assertthat::is.string(base_var),
@@ -51,39 +48,19 @@ template_shift_by_arm <- function(dataname,
       env = list(parentname = as.name(parentname), na_level = na_level)
     )
   )
-  if (is.null(worst_flag_var)) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
-          dplyr::filter(treatment_flag_var == treatment_flag),
-        env = list(
-          dataname = as.name(dataname),
-          na_level = na_level,
-          treatment_flag_var = as.name(treatment_flag_var),
-          treatment_flag = treatment_flag
-        )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
+        dplyr::filter(treatment_flag_var == treatment_flag),
+      env = list(
+        dataname = as.name(dataname),
+        na_level = na_level,
+        treatment_flag_var = as.name(treatment_flag_var),
+        treatment_flag = treatment_flag
       )
     )
-  } else {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
-          dplyr::filter(treatment_flag_var == treatment_flag, worst_flag_var == worst_flag) %>%
-          dplyr::mutate(postbaseline_label = "Post-Baseline"),
-        env = list(
-          dataname = as.name(dataname),
-          na_level = na_level,
-          treatment_flag_var = as.name(treatment_flag_var),
-          treatment_flag = treatment_flag,
-          worst_flag_var = as.name(worst_flag_var),
-          worst_flag = worst_flag
-        )
-      )
-    )
-  }
-
+  )
 
   data_list <- add_expr(
     data_list,
@@ -103,12 +80,6 @@ template_shift_by_arm <- function(dataname,
 
   # Start layout steps.
   layout_list <- list()
-
-  if (is.null(worst_flag_var)) {
-    visit_var <- visit_var
-  } else {
-    visit_var <- "postbaseline_label"
-  }
 
   if (add_total) {
     layout_list <- add_expr(
@@ -249,12 +220,9 @@ tm_t_shift_by_arm <- function(label,
                               ),
                               arm_var,
                               paramcd,
-                              visit_var = NULL,
+                              visit_var,
                               aval_var,
                               base_var,
-                              analysis_by_worst_flag = FALSE,
-                              worst_flag_var = NULL,
-                              worst_flag = NULL,
                               treatment_flag_var = choices_selected(
                                 variable_choices(dataname, subset = "ONTRTFL"),
                                 selected = "ONTRTFL", fixed = TRUE
@@ -283,32 +251,14 @@ tm_t_shift_by_arm <- function(label,
 
   args <- as.list(environment())
 
-  if (!analysis_by_worst_flag) {
-    data_extract_list <- list(
-      arm_var = cs_to_des_select(arm_var, dataname = parentname),
-      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-      visit_var = cs_to_des_filter(visit_var, dataname = dataname),
-      treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
-      aval_var = cs_to_des_select(aval_var, dataname = dataname),
-      base_var = cs_to_des_select(base_var, dataname = dataname)
-    )
-  } else {
-    data_extract_list <- list(
-      arm_var = cs_to_des_select(arm_var, dataname = parentname),
-      paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-      treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
-      worst_flag_var = cs_to_des_select(worst_flag_var, dataname = dataname),
-      aval_var = cs_to_des_select(aval_var, dataname = dataname),
-      base_var = cs_to_des_select(base_var, dataname = dataname)
-    )
-  }
-
-
-  if (!analysis_by_worst_flag) {
-    ui_shift_by_arm <- ui_shift_by_arm
-  } else {
-    ui_shift_by_arm <- ui_shift_by_arm_with_worst_flag
-  }
+  data_extract_list <- list(
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    visit_var = cs_to_des_filter(visit_var, dataname = dataname),
+    treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname),
+    base_var = cs_to_des_select(base_var, dataname = dataname)
+  )
 
   module(
     label = label,
@@ -322,8 +272,7 @@ tm_t_shift_by_arm <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        basic_table_args = basic_table_args,
-        analysis_by_worst_flag = analysis_by_worst_flag
+        basic_table_args = basic_table_args
       )
     ),
     filters = teal.devel::get_extract_datanames(data_extract_list)
@@ -417,100 +366,6 @@ ui_shift_by_arm <- function(id, ...) {
 }
 
 #' @noRd
-ui_shift_by_arm_with_worst_flag <- function(id, ...) {
-  ns <- NS(id)
-  a <- list(...)
-
-  is_single_dataset_value <- teal.devel::is_single_dataset(
-    a$id_var,
-    a$arm_var,
-    a$paramcd,
-    a$worst_flag_var,
-    a$treatment_flag_var,
-    a$treatment_flag,
-    a$aval_var,
-    a$base_var
-  )
-
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c(
-        "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "worst_flag_var", "treamtment_flag_var"
-      )]),
-      teal.devel::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_ui(
-        id = ns("worst_flag_var"),
-        label = "Select The worst flag",
-        data_extract_spec = a$worst_flag_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      optionalSelectInput(
-        ns("worst_flag"),
-        "Value of worst flag",
-        a$worst_flag$choices,
-        a$worst_flag$selected,
-        multiple = FALSE,
-        fixed = a$worst_flag$fixed
-      ),
-      teal.devel::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Select Analysis Value",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_ui(
-        id = ns("base_var"),
-        label = "Select Baseline Value",
-        data_extract_spec = a$base_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
-      radioButtons(
-        ns("useNA"),
-        label = "Display NA counts",
-        choices = c("ifany", "no"),
-        selected = a$useNA
-      ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
-          "Additional Variables Info",
-          teal.devel::data_extract_ui(
-            id = ns("treatment_flag_var"),
-            label = "On Treatment Flag Variable",
-            data_extract_spec = a$treatment_flag_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          optionalSelectInput(
-            ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
-            multiple = FALSE,
-            fixed = a$treatment_flag$fixed
-          )
-        )
-      )
-    ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
-    pre_output = a$pre_output,
-    post_output = a$post_output
-  )
-}
-
-#' @noRd
 srv_shift_by_arm <- function(id,
                              datasets,
                              dataname,
@@ -518,9 +373,7 @@ srv_shift_by_arm <- function(id,
                              arm_var,
                              paramcd,
                              visit_var,
-                             analysis_by_worst_flag,
                              treatment_flag_var,
-                             worst_flag_var,
                              aval_var,
                              base_var,
                              label,
@@ -531,33 +384,18 @@ srv_shift_by_arm <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.devel::init_chunks()
 
-    if (!analysis_by_worst_flag) {
-      anl_merged <- teal.devel::data_merge_module(
-        datasets = datasets,
-        data_extract = list(
-          arm_var = arm_var,
-          paramcd = paramcd,
-          visit_var = visit_var,
-          aval_var = aval_var,
-          base_var = base_var,
-          treatment_flag_var = treatment_flag_var
-        ),
-        merge_function = "dplyr::inner_join"
-      )
-    } else {
-      anl_merged <- teal.devel::data_merge_module(
-        datasets = datasets,
-        data_extract = list(
-          arm_var = arm_var,
-          paramcd = paramcd,
-          worst_flag_var = worst_flag_var,
-          aval_var = aval_var,
-          base_var = base_var,
-          treatment_flag_var = treatment_flag_var
-        ),
-        merge_function = "dplyr::inner_join"
-      )
-    }
+    anl_merged <- teal.devel::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        visit_var = visit_var,
+        aval_var = aval_var,
+        base_var = base_var,
+        treatment_flag_var = treatment_flag_var
+      ),
+      merge_function = "dplyr::inner_join"
+    )
 
     adsl_merged <- teal.devel::data_merge_module(
       datasets = datasets,
@@ -612,42 +450,20 @@ srv_shift_by_arm <- function(id,
       teal.devel::chunks_push_data_merge(anl_adsl)
       teal.devel::chunks_push_new_line()
 
-      if (!analysis_by_worst_flag) {
-        my_calls <- template_shift_by_arm(
-          dataname = "ANL",
-          parentname = "ANL_ADSL",
-          arm_var = as.vector(anl_m$columns_source$arm_var),
-          paramcd = unlist(paramcd$filter)["vars_selected"],
-          treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
-          treatment_flag = input$treatment_flag,
-          aval_var = as.vector(anl_m$columns_source$aval_var),
-          base_var = as.vector(anl_m$columns_source$base_var),
-          na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
-          na_level = na_level,
-          add_total = input$add_total,
-          basic_table_args = basic_table_args
-        )
-      } else {
-        my_calls <- template_shift_by_arm(
-          dataname = "ANL",
-          parentname = "ANL_ADSL",
-          arm_var = as.vector(anl_m$columns_source$arm_var),
-          paramcd = unlist(paramcd$filter)["vars_selected"],
-          visit_var = NULL,
-          worst_flag_var = as.vector(anl_m$columns_source$worst_flag_var),
-          worst_flag = input$worst_flag,
-          treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
-          treatment_flag = input$treatment_flag,
-          aval_var = as.vector(anl_m$columns_source$aval_var),
-          base_var = as.vector(anl_m$columns_source$base_var),
-          na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
-          na_level = na_level,
-          add_total = input$add_total,
-          basic_table_args = basic_table_args
-        )
-      }
-
-
+      my_calls <- template_shift_by_arm(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        paramcd = unlist(paramcd$filter)["vars_selected"],
+        treatment_flag_var = as.vector(anl_m$columns_source$treatment_flag_var),
+        treatment_flag = input$treatment_flag,
+        aval_var = as.vector(anl_m$columns_source$aval_var),
+        base_var = as.vector(anl_m$columns_source$base_var),
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na_level = na_level,
+        add_total = input$add_total,
+        basic_table_args = basic_table_args
+      )
       mapply(expression = my_calls, teal.devel::chunks_push)
     })
 
