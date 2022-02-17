@@ -10,19 +10,19 @@
 #' @keywords internal
 #'
 template_shift_by_arm_by_worst <- function(dataname,
-                                  parentname,
-                                  arm_var = "ARM",
-                                  paramcd = "PARAMCD",
-                                  worst_flag_var = "WORS02FL",
-                                  worst_flag = "Y",
-                                  treatment_flag_var = "ONTRTFL",
-                                  treatment_flag = "Y",
-                                  aval_var = "ANRIND",
-                                  base_var = "BNRIND",
-                                  na.rm = FALSE, # nolint
-                                  na_level = "<Missing>",
-                                  add_total = FALSE,
-                                  basic_table_args = teal.devel::basic_table_args()) {
+                                           parentname,
+                                           arm_var = "ARM",
+                                           paramcd = "PARAMCD",
+                                           worst_flag_var = "WORS02FL",
+                                           worst_flag = "Y",
+                                           treatment_flag_var = "ONTRTFL",
+                                           treatment_flag = "Y",
+                                           aval_var = "ANRIND",
+                                           base_var = "BNRIND",
+                                           na.rm = FALSE, # nolint
+                                           na_level = "<Missing>",
+                                           add_total = FALSE,
+                                           basic_table_args = teal.devel::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -178,8 +178,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' adeg <- synthetic_cdisc_data("latest")$adeg
 #'
 #' app <- init(
-#'  data = cdisc_data(
-#'    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
 #'     check = TRUE
 #'   ),
@@ -200,7 +200,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'         selected = "WORS02FL"
 #'       ),
 #'       worst_flag = choices_selected(
-#'        value_choices(adeg, "WORS02FL"),
+#'         value_choices(adeg, "WORS02FL"),
 #'         selected = "Y", fixed = TRUE
 #'       ),
 #'       aval_var = choices_selected(
@@ -215,38 +215,37 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'     )
 #'   )
 #' )
-
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
-
+#'
 tm_t_shift_by_arm_by_worst <- function(label,
-                                            dataname,
-                                            parentname = ifelse(
-                                              inherits(arm_var, "data_extract_spec"),
-                                              teal.devel::datanames_input(arm_var),
-                                              "ADSL"
-                                            ),
-                                            arm_var,
-                                            paramcd,
-                                            aval_var,
-                                            base_var,
-                                            worst_flag_var,
-                                            worst_flag,
-                                            treatment_flag_var = choices_selected(
-                                              variable_choices(dataname, subset = "ONTRTFL"),
-                                              selected = "ONTRTFL", fixed = TRUE
-                                            ),
-                                            treatment_flag = choices_selected(
-                                              value_choices(dataname, "ONTRTFL"),
-                                              selected = "Y", fixed = TRUE
-                                            ),
-                                            useNA = c("ifany", "no"), # nolint
-                                            na_level = "<Missing>",
-                                            add_total = FALSE,
-                                            pre_output = NULL,
-                                            post_output = NULL,
-                                            basic_table_args = teal.devel::basic_table_args()) {
+                                       dataname,
+                                       parentname = ifelse(
+                                         inherits(arm_var, "data_extract_spec"),
+                                         teal.devel::datanames_input(arm_var),
+                                         "ADSL"
+                                       ),
+                                       arm_var,
+                                       paramcd,
+                                       aval_var,
+                                       base_var,
+                                       worst_flag_var,
+                                       worst_flag,
+                                       treatment_flag_var = choices_selected(
+                                         variable_choices(dataname, subset = "ONTRTFL"),
+                                         selected = "ONTRTFL", fixed = TRUE
+                                       ),
+                                       treatment_flag = choices_selected(
+                                         value_choices(dataname, "ONTRTFL"),
+                                         selected = "Y", fixed = TRUE
+                                       ),
+                                       useNA = c("ifany", "no"), # nolint
+                                       na_level = "<Missing>",
+                                       add_total = FALSE,
+                                       pre_output = NULL,
+                                       post_output = NULL,
+                                       basic_table_args = teal.devel::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_arm_by_worst")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -387,19 +386,19 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
 
 #' @noRd
 srv_shift_by_arm_by_worst <- function(id,
-                             datasets,
-                             dataname,
-                             parentname,
-                             arm_var,
-                             paramcd,
-                             treatment_flag_var,
-                             worst_flag_var,
-                             aval_var,
-                             base_var,
-                             label,
-                             na_level,
-                             add_total,
-                             basic_table_args) {
+                                      datasets,
+                                      dataname,
+                                      parentname,
+                                      arm_var,
+                                      paramcd,
+                                      treatment_flag_var,
+                                      worst_flag_var,
+                                      aval_var,
+                                      base_var,
+                                      label,
+                                      na_level,
+                                      add_total,
+                                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
     teal.devel::init_chunks()
