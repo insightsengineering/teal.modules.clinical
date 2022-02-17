@@ -488,7 +488,7 @@ ui_summary_by <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
-      checkboxInput(ns("row_groups"), "Show summarize variables in row groups", value = a$row_groups),
+      checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
       teal.devel::panel_group(
         teal.devel::panel_item(
           "Additional table settings",
@@ -518,7 +518,7 @@ ui_summary_by <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$numeric_stats
+            selected = c("n", "mean_sd", "median", "range")
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
