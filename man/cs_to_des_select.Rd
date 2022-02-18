@@ -13,6 +13,8 @@ cs_to_des_select(cs, dataname, multiple = FALSE, ordered = FALSE)
 
 \item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
 shiny \code{\link[shiny]{selectInput}}.}
+
+\item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
 }
 \value{
 (\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})

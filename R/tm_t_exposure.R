@@ -135,7 +135,7 @@ template_exposure <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = teal::get_variable_labels(dataname[row_by_var]),
+    expr = teal::variable_labels(dataname[row_by_var]),
     env = list(
       dataname = as.name(dataname),
       row_by_var = row_by_var
@@ -234,7 +234,7 @@ template_exposure <- function(parentname,
 #' adex <- synthetic_cdisc_data("latest")$adex
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
-#' labels <- teal::get_variable_labels(adex, fill = FALSE)
+#' labels <- teal::variable_labels(adex, fill = FALSE)
 #' adex <- adex %>%
 #'   distinct(USUBJID, .keep_all = TRUE) %>%
 #'   mutate(
@@ -252,7 +252,7 @@ template_exposure <- function(parentname,
 #'     cdisc_dataset("ADEX", adex,
 #'       code = 'set.seed(1, kind = "Mersenne-Twister")
 #'       ADEX <- synthetic_cdisc_data("latest")$adex
-#'       labels <- teal::get_variable_labels(ADEX, fill = FALSE)
+#'       labels <- teal::variable_labels(ADEX, fill = FALSE)
 #'       ADEX <- ADEX %>%
 #'        distinct(USUBJID, .keep_all = TRUE) %>%
 #'        mutate(PARAMCD = "TDURD",

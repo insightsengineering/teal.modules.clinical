@@ -17,7 +17,7 @@ testthat::test_that("template_logistic generates correct expressions", {
   )
 
   expected <- list(
-    arm_lab = quote(arm_var_lab <- teal::get_variable_labels(ANL["ARMCD"], fill = FALSE)),
+    arm_lab = quote(arm_var_lab <- teal::variable_labels(ANL["ARMCD"], fill = FALSE)),
     data = quote({
       ANL <- ANL %>% # nolint
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%

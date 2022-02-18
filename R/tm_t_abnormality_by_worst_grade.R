@@ -43,7 +43,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl_labels <- teal::get_variable_labels(df, fill = FALSE),
+      expr = anl_labels <- teal::variable_labels(df, fill = FALSE),
       env = list(
         df = as.name(dataname)
       )

@@ -190,7 +190,7 @@ template_smq <- function(dataname,
   )
 
   split_label <- substitute(
-    expr = teal::get_variable_labels(dataname, fill = FALSE)[["SMQ"]],
+    expr = teal::variable_labels(dataname, fill = FALSE)[["SMQ"]],
     env = list(
       dataname = as.name("anl")
     )

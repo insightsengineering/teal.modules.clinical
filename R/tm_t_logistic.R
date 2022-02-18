@@ -61,7 +61,7 @@ template_logistic <- function(dataname,
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- teal::get_variable_labels(anl[arm_var], fill = FALSE),
+      expr = arm_var_lab <- teal::variable_labels(anl[arm_var], fill = FALSE),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 

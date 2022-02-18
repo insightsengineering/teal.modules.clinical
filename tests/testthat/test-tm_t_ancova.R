@@ -37,13 +37,13 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["AVISIT"])
+          split_label = teal::variable_labels(adqs["AVISIT"])
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["PARAMCD"])
+          split_label = teal::variable_labels(adqs["PARAMCD"])
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -101,13 +101,13 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["AVISIT"])
+          split_label = teal::variable_labels(adqs["AVISIT"])
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["PARAMCD"])
+          split_label = teal::variable_labels(adqs["PARAMCD"])
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -166,13 +166,13 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["AVISIT"])
+          split_label = teal::variable_labels(adqs["AVISIT"])
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["PARAMCD"])
+          split_label = teal::variable_labels(adqs["PARAMCD"])
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -229,7 +229,7 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::get_variable_labels(adqs["AVISIT"])
+          split_label = teal::variable_labels(adqs["AVISIT"])
         ) %>%
         rtables::append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(

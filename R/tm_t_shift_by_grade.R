@@ -267,8 +267,8 @@ template_shift_by_grade <- function(parentname,
     substitute(
       dataname <- var_relabel(
         dataname,
-        PARAMCD = teal::get_variable_labels(dataname, fill = FALSE)[[paramcd]],
-        AVISIT = teal::get_variable_labels(dataname, fill = FALSE)[[visit_var]],
+        PARAMCD = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
+        AVISIT = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
         ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       ),
@@ -316,7 +316,7 @@ template_shift_by_grade <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = teal::get_variable_labels(dataname, fill = FALSE)[[paramcd]],
+    expr = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -341,7 +341,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = teal::get_variable_labels(dataname, fill = FALSE)[[visit_var]],
+      expr = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -372,7 +372,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = teal::get_variable_labels(dataname, fill = FALSE)[[by_var_gp]],
+    expr = teal::variable_labels(dataname, fill = FALSE)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp

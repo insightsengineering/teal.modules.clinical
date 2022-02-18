@@ -16,7 +16,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- teal::get_variable_labels(adlb, fill = FALSE)
+      anl_labels <- teal::variable_labels(adlb, fill = FALSE)
       anl <- adlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
@@ -100,7 +100,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- teal::get_variable_labels(myadlb, fill = FALSE)
+      anl_labels <- teal::variable_labels(myadlb, fill = FALSE)
       anl <- myadlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
