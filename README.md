@@ -5,25 +5,25 @@ This package contains a set of standard `teal` modules to be used with CDISC dat
 These modules include, but are not limited to:
 
 - time-to-event endpoints:
-    * `tm_t_tte`: time-to-event table 
-    * `tm_t_coxreg`: Cox regression
-    * `tm_g_km`: Kaplan-Meier plot
-    * ...
+  * `tm_t_tte`: time-to-event table
+  * `tm_t_coxreg`: Cox regression
+  * `tm_g_km`: Kaplan-Meier plot
+  * ...
 - data models for other endpoint types:
-    * `tm_a_mmrm`: MMRM model fits
-    * `tm_t_ancova`: ANCOVA model
-    * `tm_t_logistic`: logistic regression
-    * ...
+  * `tm_a_mmrm`: MMRM model fits
+  * `tm_t_ancova`: ANCOVA model
+  * `tm_t_logistic`: logistic regression
+  * ...
 - adverse event summaries:
-    * `tm_t_events`: adverse events by term
-    * `tm_t_events_summary`: adverse events summary table
-    * `tm_t_events_by_grade`: adverse events by grade summary table
-    * ...
+  * `tm_t_events`: adverse events by term
+  * `tm_t_events_summary`: adverse events summary table
+  * `tm_t_events_by_grade`: adverse events by grade summary table
+  * ...
 - patient-level profile modules
-    * `tm_t_pp_basic_info`: table of basic information about chosen patient
-    * `tm_g_pp_vitals`: plot of patient vitals over time
-    * `tm_g_pp_patient_timeline`: general timeline for individual patients 
-    * ...
+  * `tm_t_pp_basic_info`: table of basic information about chosen patient
+  * `tm_g_pp_vitals`: plot of patient vitals over time
+  * `tm_g_pp_patient_timeline`: general timeline for individual patients
+  * ...
 
 Most of the modules in `teal.modules.clinical` use functions from the R package [tern](https://github.com/insightsengineering/tern) in order to produce their output.
 
