@@ -114,7 +114,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- rtables::var_labels(anl[, flag_var_anl]),
+        flag_var_anl_label <- teal::variable_labels(anl[, flag_var_anl], fill = FALSE),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -124,7 +124,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- rtables::var_labels(anl[, flag_var_aesi]),
+        flag_var_aesi_label <- teal::variable_labels(anl[, flag_var_aesi], fill = FALSE),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )

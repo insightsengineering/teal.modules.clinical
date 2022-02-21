@@ -66,8 +66,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
       )
       anl <- var_relabel(
         anl,
-        PARAMCD = rtables::var_labels(anl)[["PARAMCD"]],
-        AVISIT = rtables::var_labels(anl)[["AVISIT"]],
+        PARAMCD = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]],
+        AVISIT = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
@@ -79,17 +79,17 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           var = "PARAMCD", split_fun = split_fun, label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["PARAMCD"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]]
         ) %>%
         rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun, label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["AVISIT"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]]
         ) %>%
         rtables::split_rows_by(
           var = "ATOXGR_GP", split_fun = split_fun,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["ATOXGR_GP"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "USUBJID", .stats = c("unique_count")) %>%
         count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
@@ -174,8 +174,8 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
       )
       anl <- var_relabel(
         anl,
-        PARAMCD = rtables::var_labels(anl)[["PARAMCD"]],
-        AVISIT = rtables::var_labels(anl)[["AVISIT"]],
+        PARAMCD = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]],
+        AVISIT = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
@@ -187,17 +187,17 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           var = "PARAMCD", split_fun = split_fun, label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["PARAMCD"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]]
         ) %>%
         rtables::split_rows_by(
           "AVISIT",
           split_fun = split_fun, label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["AVISIT"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]]
         ) %>%
         rtables::split_rows_by(
           var = "ATOXGR_GP", split_fun = split_fun,
           label_pos = "topleft",
-          split_label = rtables::var_labels(anl)[["ATOXGR_GP"]]
+          split_label = teal::variable_labels(anl, fill = FALSE)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "MYUSUBJID", .stats = c("unique_count")) %>%
         count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
