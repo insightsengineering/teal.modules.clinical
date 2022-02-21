@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9010</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -142,13 +133,14 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMDOSFRQ</span> <span class="op">&lt;-</span> <span class="st">"CMDOSFRQ"</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMASTDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">ASTDTM</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMAENDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">AENDTM</span></span>
-<span class="r-in"><span class="fu">rtables</span><span class="fu">::</span><span class="fu"><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="fu">teal</span><span class="fu">::</span><span class="fu">variable_labels</span><span class="op">(</span></span>
 <span class="r-in">  <span class="va">ADCM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMINDC"</span>, <span class="st">"CMTRT"</span>, <span class="st">"ASTDY"</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="st">"Indication"</span>,</span>
 <span class="r-in">  <span class="st">"Reported Name of Drug, Med, or Therapy"</span>,</span>
 <span class="r-in">  <span class="st">"Study Day of Start of Medication"</span></span>
 <span class="r-in"><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'variable_labels&lt;-' is not an exported object from 'namespace:teal'</span>
 <span class="r-in"><span class="va">adcm_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"ASTDTM"</span>, <span class="st">"CMSEQ"</span>, <span class="st">"ATC1"</span>, <span class="st">"ATC2"</span>, <span class="st">"ATC3"</span>, <span class="st">"ATC4"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
@@ -164,7 +156,7 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in">      ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"</span>
 <span class="r-in">      ADCM$CMASTDTM &lt;- ADCM$ASTDTM</span>
 <span class="r-in">      ADCM$CMAENDTM &lt;- ADCM$AENDTM</span>
-<span class="r-in">      rtables::var_labels(</span>
+<span class="r-in">      teal::variable_labels(</span>
 <span class="r-in">        ADCM[c("CMINDC", "CMTRT", "ASTDY")]) &lt;- c(</span>
 <span class="r-in">          "Indication",</span>
 <span class="r-in">          "Reported Name of Drug, Med, or Therapy",</span>
@@ -199,7 +191,10 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-11 09:53:42.2906 pid:2153 token:[] teal.modules.clinical Initializing tm_t_pp_prior_medication</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> teal::variable_labels(ADCM[c("CMINDC", "CMTRT", "ASTDY")]) &lt;- c("Indication", "Reported Name of Drug, Med, or Therapy", "Study Day of Start of Medication")</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Evaluation of the code failed:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>  'variable_labels&lt;-' is not an exported object from 'namespace:teal'</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
