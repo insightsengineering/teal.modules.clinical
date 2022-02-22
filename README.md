@@ -33,10 +33,11 @@ This repository requires a personal access token to install see here [creating a
 
 ```r
 Sys.setenv(GITHUB_PAT = "your_access_token_here")
-install.packages("devtools")
-devtools::install_github("insightsengineering/teal.modules.clinical@*release")
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("insightsengineering/teal.modules.clinical@*release", dependencies = FALSE)
 ```
 
-Currently, it is necessary to manually install all of the packages dependencies found on Github (for example `teal`) before installing this package.  
+You might need to manually install all of the package dependencies before installing this package as without
+the `dependencies = FALSE` argument to `install_github` it may produce an error.
 
 See package vignettes `browseVignettes(package = "teal.modules.clinical")` for usage of this package.
