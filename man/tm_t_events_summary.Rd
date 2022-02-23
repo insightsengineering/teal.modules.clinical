@@ -118,7 +118,7 @@ attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
 ADAE <- synthetic_cdisc_data("latest")$adae
 
 add_event_flags <- function(dat) {
-  dat \%>\%
+  dat <- dat \%>\%
     dplyr::mutate(
       TMPFL_SER = AESER == "Y",
       TMPFL_REL = AEREL == "Y",
@@ -163,7 +163,7 @@ app <- init(
       code =
         "ADAE <- synthetic_cdisc_data('latest')$adae
         add_event_flags <- function(dat) {
-          dat \%>\%
+          dat <- dat \%>\%
             dplyr::mutate(
               TMPFL_SER = AESER == 'Y',
               TMPFL_REL = AEREL == 'Y',

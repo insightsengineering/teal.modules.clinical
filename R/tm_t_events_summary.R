@@ -465,7 +465,7 @@ template_events_summary <- function(anl_name,
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
 #' add_event_flags <- function(dat) {
-#'   dat %>%
+#'   dat <- dat %>%
 #'     dplyr::mutate(
 #'       TMPFL_SER = AESER == "Y",
 #'       TMPFL_REL = AEREL == "Y",
@@ -510,7 +510,7 @@ template_events_summary <- function(anl_name,
 #'       code =
 #'         "ADAE <- synthetic_cdisc_data('latest')$adae
 #'         add_event_flags <- function(dat) {
-#'           dat %>%
+#'           dat <- dat %>%
 #'             dplyr::mutate(
 #'               TMPFL_SER = AESER == 'Y',
 #'               TMPFL_REL = AEREL == 'Y',

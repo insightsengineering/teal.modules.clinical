@@ -273,6 +273,7 @@ template_shift_by_grade <- function(parentname,
           BTOXGR_GP = "Baseline Grade"
         )
         teal::variable_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        dataname
       },
       env = list(
         dataname = as.name("anl"),
