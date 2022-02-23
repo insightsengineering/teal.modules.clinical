@@ -233,7 +233,7 @@ template_events <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = rtables::var_labels(dataname[hlt], fill = TRUE)
+            split_label = teal::variable_labels(dataname[hlt])
           ) %>%
             summarize_num_patients(
               var = "USUBJID",

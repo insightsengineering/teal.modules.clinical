@@ -17,7 +17,7 @@ testthat::test_that("template_logistic generates correct expressions", {
   )
 
   expected <- list(
-    arm_lab = quote(arm_var_lab <- rtables::var_labels(ANL["ARMCD"])),
+    arm_lab = quote(arm_var_lab <- teal::variable_labels(ANL["ARMCD"], fill = FALSE)),
     data = quote({
       ANL <- ANL %>% # nolint
         dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
@@ -28,7 +28,7 @@ testthat::test_that("template_logistic generates correct expressions", {
         dplyr::mutate(Response = AVALC %in% "CR") %>%
         df_explicit_na(na_level = "")
     }),
-    relabel = quote(rtables::var_labels(ANL["ARMCD"]) <- arm_var_lab), # nolint
+    relabel = quote(teal::variable_labels(ANL["ARMCD"]) <- arm_var_lab), # nolint
     model = quote(
       mod <- fit_logistic(
         ANL,
