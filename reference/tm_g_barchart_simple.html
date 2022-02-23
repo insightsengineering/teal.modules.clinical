@@ -46,15 +46,6 @@ it is ignored."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -146,13 +137,11 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
 <span class="r-in"><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adae</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">adae_labels</span> <span class="op">&lt;-</span> <span class="fu">teal</span><span class="fu">::</span><span class="fu">variable_labels</span><span class="op">(</span><span class="va">ADAE</span>, fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'variable_labels' is not an exported object from 'namespace:teal'</span>
+<span class="r-in"><span class="va">adae_labels</span> <span class="op">&lt;-</span> <span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal/man/variable_labels.html" class="external-link">variable_labels</a></span><span class="op">(</span><span class="va">ADAE</span>, fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="va">ADAE</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="op">(</span><span class="va">AETOXGR</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">AESEV</span> <span class="op">==</span> <span class="st">"MILD"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">ARM</span> <span class="op">==</span> <span class="st">"A: Drug X"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># reinstate labels</span></span>
 <span class="r-in"><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="fu">rtables</span><span class="fu">::</span><span class="va"><a href="https://roche.github.io/rtables/reference/var_relabel.html" class="external-link">var_relabel</a></span>, <span class="fu"><a href="https://rdrr.io/r/base/append.html" class="external-link">append</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ADAE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">adae_labels</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.list(adae_labels):</span> object 'adae_labels' not found</span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
@@ -260,10 +249,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> adae_labels &lt;- teal::variable_labels(ADAE, fill = FALSE)</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Evaluation of the code failed:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>  'variable_labels' is not an exported object from 'namespace:teal'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-23 16:38:28.2281 pid:2205 token:[] teal.modules.clinical Initializing tm_g_barchart_simple</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
@@ -277,11 +263,13 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by NEST, Adrian Waddell, Heng Wang, Yuyao Song, Chendi Liao, Mark Rothe, Xiao Yu Mo, Roche.</p>
+  <p></p><p>Developed by NEST, Adrian Waddell, Heng Wang, Yuyao Song, Chendi
+Liao, Mark Rothe, Xiao Yu Mo, Roche.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>
