@@ -3,7 +3,7 @@
 This package contains a set of standard `teal` modules to be used with CDISC data in order to generate many of the standard outputs used in clinical trials.
 
 These modules include, but are not limited to:
-<!-- markdownlint-disable MD030 -->
+<!-- markdownlint-disable MD007 -->
 -    data visualizations:
      -    forest plots
      -    line plots
@@ -24,7 +24,7 @@ These modules include, but are not limited to:
      -    `tm_g_pp_vitals`: plot of patient vitals over time
      -    `tm_g_pp_patient_timeline`: general timeline for individual patients
      -    ...
-<!-- markdownlint-enable MD030 -->
+<!-- markdownlint-enable MD007 -->
 Most of the modules in `teal.modules.clinical` use functions from the R package [tern](https://github.com/insightsengineering/tern) in order to produce their output.
 
 ## Installation
