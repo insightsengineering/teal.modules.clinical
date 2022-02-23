@@ -265,7 +265,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      {
+      expr = {
         column_labels <- list(
           PARAMCD = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
           AVISIT = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
