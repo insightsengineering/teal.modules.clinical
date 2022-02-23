@@ -135,7 +135,7 @@ add_event_flags <- function(dat) {
     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
   )
-  tern::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+  teal::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
   dat
 }
 
@@ -180,7 +180,7 @@ app <- init(
               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
           )
-          tern::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+          teal::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
           dat
         }
         # Generating user-defined event flags.

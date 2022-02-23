@@ -272,7 +272,7 @@ template_shift_by_grade <- function(parentname,
           ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
           BTOXGR_GP = "Baseline Grade"
         )
-        tern::var_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        teal::variable_labels(dataname)[names(column_labels)] <- as.character(column_labels)
       },
       env = list(
         dataname = as.name("anl"),
