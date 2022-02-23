@@ -265,13 +265,15 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- var_relabel(
-        dataname,
-        PARAMCD = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
-        AVISIT = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
-        ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
-        BTOXGR_GP = "Baseline Grade"
-      ),
+      {
+        column_labels <- list(
+          PARAMCD = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
+          AVISIT = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
+          ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
+          BTOXGR_GP = "Baseline Grade"
+        )
+        tern::var_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+      },
       env = list(
         dataname = as.name("anl"),
         paramcd = paramcd,

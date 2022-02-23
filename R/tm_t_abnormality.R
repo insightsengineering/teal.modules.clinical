@@ -241,10 +241,8 @@ template_abnormality <- function(parentname,
 #'       AVISIT %in% c("SCREENING", "BASELINE") ~ "",
 #'       TRUE ~ "Y"
 #'     )
-#'   ) %>%
-#'   var_relabel(
-#'     ONTRTFL = "On Treatment Record Flag"
 #'   )
+#' attr(adlb[["ONTRTFL"]], "label") <- "On Treatment Record Flag"
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -256,10 +254,9 @@ template_abnormality <- function(parentname,
 #'                     AVISIT %in% c('SCREENING', 'BASELINE') ~ '',
 #'                     TRUE ~ 'Y'
 #'                   )
-#'                 ) %>%
-#'                 var_relabel(
-#'                   ONTRTFL = 'On Treatment Record Flag'
-#'                 )"
+#'                 )
+#'               attr(ADLB[['ONTRTFL']], 'label') <- 'On Treatment Record Flag'
+#'               ADLB"
 #'     ),
 #'     check = TRUE
 #'   ),

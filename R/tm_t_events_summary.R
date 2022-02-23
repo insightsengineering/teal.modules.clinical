@@ -459,10 +459,8 @@ template_events_summary <- function(anl_name,
 #'       !is.na(DTHDT) ~ "Y",
 #'       TRUE ~ ""
 #'     )
-#'   ) %>%
-#'   rtables::var_relabel(
-#'     DTHFL = "Subject Death Flag"
 #'   )
+#' attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
 #'
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
@@ -475,15 +473,17 @@ template_events_summary <- function(anl_name,
 #'       TMP_SMQ01 = !is.na(SMQ01NAM),
 #'       TMP_SMQ02 = !is.na(SMQ02NAM),
 #'       TMP_CQ01 = !is.na(CQ01NAM)
-#'     ) %>%
-#'     rtables::var_relabel(
-#'       TMPFL_SER = "Serious AE",
-#'       TMPFL_REL = "Related AE",
-#'       TMPFL_GR5 = "Grade 5 AE",
-#'       TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
+#'   column_labels <- list(
+#'     TMPFL_SER = "Serious AE",
+#'     TMPFL_REL = "Related AE",
+#'     TMPFL_GR5 = "Grade 5 AE",
+#'     TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
+#'     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+#'     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
+#'   )
+#'   tern::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'   dat
 #' }
 #'
 #' # Generating user-defined event flags.
@@ -502,35 +502,36 @@ template_events_summary <- function(anl_name,
 #'                 !is.na(DTHDT) ~ "Y",
 #'                 TRUE ~ ""
 #'               )
-#'             ) %>%
-#'             rtables::var_relabel(
-#'               DTHFL = "Subject Death Flag"
-#'             )'
+#'             )
+#'         attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
+#'         ADSL'
 #'     ),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code =
 #'         "ADAE <- synthetic_cdisc_data('latest')$adae
-#'           add_event_flags <- function(dat) {
-#'             dat %>%
-#'               dplyr::mutate(
-#'                 TMPFL_SER = AESER == 'Y',
-#'                 TMPFL_REL = AEREL == 'Y',
-#'                 TMPFL_GR5 = AETOXGR == '5',
-#'                 TMP_SMQ01 = !is.na(SMQ01NAM),
-#'                 TMP_SMQ02 = !is.na(SMQ02NAM),
-#'                 TMP_CQ01 = !is.na(CQ01NAM)
-#'               ) %>%
-#'               rtables::var_relabel(
-#'                 TMPFL_SER = 'Serious AE',
-#'                 TMPFL_REL = 'Related AE',
-#'                 TMPFL_GR5 = 'Grade 5 AE',
-#'                 TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),
-#'                 TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
-#'                 TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
-#'               )
-#'           }
-#'           # Generating user-defined event flags.
-#'           ADAE <- ADAE %>% add_event_flags()"
+#'         add_event_flags <- function(dat) {
+#'           dat %>%
+#'             dplyr::mutate(
+#'               TMPFL_SER = AESER == 'Y',
+#'               TMPFL_REL = AEREL == 'Y',
+#'               TMPFL_GR5 = AETOXGR == '5',
+#'               TMP_SMQ01 = !is.na(SMQ01NAM),
+#'               TMP_SMQ02 = !is.na(SMQ02NAM),
+#'               TMP_CQ01 = !is.na(CQ01NAM)
+#'             )
+#'           column_labels <- list(
+#'               TMPFL_SER = 'Serious AE',
+#'               TMPFL_REL = 'Related AE',
+#'               TMPFL_GR5 = 'Grade 5 AE',
+#'               TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),
+#'               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
+#'               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
+#'           )
+#'           tern::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'           dat
+#'         }
+#'         # Generating user-defined event flags.
+#'         ADAE <- ADAE %>% add_event_flags()"
 #'     )
 #'   ),
 #'   modules = modules(
