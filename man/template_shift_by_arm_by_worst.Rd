@@ -34,6 +34,10 @@ variable names that can be used as \code{arm_var}.}
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
 
+\item{worst_flag_var}{(\code{character})\cr Worst flag variable.}
+
+\item{worst_flag}{(\code{character})\cr Worst flag value.}
+
 \item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
@@ -49,8 +53,7 @@ whether \code{NA} values should be removed prior to analysis.}
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include row with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.

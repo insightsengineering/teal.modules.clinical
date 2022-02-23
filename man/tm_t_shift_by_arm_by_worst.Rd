@@ -52,6 +52,10 @@ variable.}
 
 \item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
 
+\item{worst_flag_var}{(\code{character})\cr Worst flag variable.}
+
+\item{worst_flag}{(\code{character})\cr Worst flag value.}
+
 \item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
 
 \item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
