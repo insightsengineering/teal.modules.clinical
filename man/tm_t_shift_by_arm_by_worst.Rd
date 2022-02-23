@@ -94,8 +94,8 @@ adsl <- synthetic_cdisc_data("latest")$adsl
 adeg <- synthetic_cdisc_data("latest")$adeg
 
 app <- init(
- data = cdisc_data(
-   cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+  data = cdisc_data(
+    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
     check = TRUE
   ),
@@ -116,7 +116,7 @@ app <- init(
         selected = "WORS02FL"
       ),
       worst_flag = choices_selected(
-       value_choices(adeg, "WORS02FL"),
+        value_choices(adeg, "WORS02FL"),
         selected = "Y", fixed = TRUE
       ),
       aval_var = choices_selected(
@@ -134,4 +134,5 @@ app <- init(
 \dontrun{
 shinyApp(app$ui, app$server)
 }
+
 }
