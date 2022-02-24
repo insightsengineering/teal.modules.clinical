@@ -208,6 +208,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_shift_by_arm.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_shift_by_arm_by_worst.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/template_shift_by_grade.html</loc>
   </url>
   <url>
@@ -314,6 +317,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_shift_by_arm.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_shift_by_arm_by_worst.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_shift_by_grade.html</loc>
