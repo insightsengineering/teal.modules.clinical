@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9011</span>
       </span>
     </div>
 
@@ -44,15 +44,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -187,10 +178,8 @@ excluded in accordance with GDSR specifications by using <code>exclude_base_abn<
 <span class="r-in">      <span class="va">AVISIT</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SCREENING"</span>, <span class="st">"BASELINE"</span><span class="op">)</span> <span class="op">~</span> <span class="st">""</span>,</span>
 <span class="r-in">      <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"Y"</span></span>
 <span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://roche.github.io/rtables/reference/var_relabel.html" class="external-link">var_relabel</a></span><span class="op">(</span></span>
-<span class="r-in">    ONTRTFL <span class="op">=</span> <span class="st">"On Treatment Record Flag"</span></span>
 <span class="r-in">  <span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">adlb</span><span class="op">[[</span><span class="st">"ONTRTFL"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"label"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"On Treatment Record Flag"</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span>
@@ -202,10 +191,9 @@ excluded in accordance with GDSR specifications by using <code>exclude_base_abn<
 <span class="r-in">                    AVISIT %in% c('SCREENING', 'BASELINE') ~ '',</span>
 <span class="r-in">                    TRUE ~ 'Y'</span>
 <span class="r-in">                  )</span>
-<span class="r-in">                ) %&gt;%</span>
-<span class="r-in">                var_relabel(</span>
-<span class="r-in">                  ONTRTFL = 'On Treatment Record Flag'</span>
-<span class="r-in">                )"</span></span>
+<span class="r-in">                )</span>
+<span class="r-in">              attr(ADLB[['ONTRTFL']], 'label') &lt;- 'On Treatment Record Flag'</span>
+<span class="r-in">              ADLB"</span></span>
 <span class="r-in">    <span class="op">)</span>,</span>
 <span class="r-in">    check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">  <span class="op">)</span>,</span>
@@ -233,7 +221,7 @@ excluded in accordance with GDSR specifications by using <code>exclude_base_abn<
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-23 16:39:14.6773 pid:2205 token:[] teal.modules.clinical Initializing tm_t_abnormality</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-24 11:34:17.5396 pid:2214 token:[] teal.modules.clinical Initializing tm_t_abnormality</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
