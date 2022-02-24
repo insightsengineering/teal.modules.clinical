@@ -64,13 +64,14 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           )
         )
       )
-      anl <- var_relabel(
-        anl,
+      column_labels <- list(
         PARAMCD = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]],
         AVISIT = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
+      teal::variable_labels(anl)[names(column_labels)] <- as.character(column_labels)
+      anl
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
@@ -172,13 +173,14 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           )
         )
       )
-      anl <- var_relabel(
-        anl,
+      column_labels <- list(
         PARAMCD = teal::variable_labels(anl, fill = FALSE)[["PARAMCD"]],
         AVISIT = teal::variable_labels(anl, fill = FALSE)[["AVISIT"]],
         ATOXGR_GP = dplyr::if_else(TRUE, "Grade at Visit", "Post-baseline Grade"),
         BTOXGR_GP = "Baseline Grade"
       )
+      teal::variable_labels(anl)[names(column_labels)] <- as.character(column_labels)
+      anl
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(

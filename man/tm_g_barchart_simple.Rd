@@ -73,7 +73,7 @@ adae_labels <- teal::variable_labels(ADAE, fill = FALSE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 # reinstate labels
-ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+teal::variable_labels(ADAE) <- adae_labels
 
 
 app <- init(
@@ -84,8 +84,8 @@ app <- init(
               adae_labels <- teal::variable_labels(ADAE, fill = FALSE)
               ADAE <- ADAE \%>\%
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-              ADAE <- do.call(rtables::var_relabel,
-                append(list(x = ADAE), as.list(adae_labels)))"
+              teal::variable_labels(ADAE) <- adae_labels
+              ADAE"
     ),
     check = TRUE
   ),

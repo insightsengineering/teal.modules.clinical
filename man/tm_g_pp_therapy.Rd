@@ -128,20 +128,21 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADCM", ADCM,
       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
-      ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-      ADCM$CMDOSE <- 1
-      ADCM$CMTRT <- ADCM$CMCAT
-      ADCM$CMDOSU <- "U"
-      ADCM$CMROUTE <- "CMROUTE"
-      ADCM$CMDOSFRQ <- "CMDOSFRQ"
-      ADCM$CMASTDTM <- ADCM$ASTDTM
-      ADCM$CMAENDTM <- ADCM$AENDTM
-      teal::variable_labels(
-        ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
-          "Indication",
-          "Reported Name of Drug, Med, or Therapy",
-          "Study Day of Start of Medication",
-          "Study Day of End of Medication")',
+        ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+        ADCM$CMDOSE <- 1
+        ADCM$CMTRT <- ADCM$CMCAT
+        ADCM$CMDOSU <- "U"
+        ADCM$CMROUTE <- "CMROUTE"
+        ADCM$CMDOSFRQ <- "CMDOSFRQ"
+        ADCM$CMASTDTM <- ADCM$ASTDTM
+        ADCM$CMAENDTM <- ADCM$AENDTM
+        teal::variable_labels(
+          ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
+            "Indication",
+            "Reported Name of Drug, Med, or Therapy",
+            "Study Day of Start of Medication",
+            "Study Day of End of Medication")
+        ADCM',
       keys = adcm_keys
     ),
     check = TRUE
