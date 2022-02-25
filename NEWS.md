@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.8.11.9013
 
+### New features
+* New module `tm_t_shift_by_arm_by_worst` was added for the analysis of grade laboratory abnormalities with worst flag.
+
 ### Enhancements
 
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
