@@ -4,10 +4,10 @@ author: "NEST CoreDev Team"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_document:
-        theme: "spacelab"
-        highlight: "kate"
-        toc: true
-        toc_float: true
+    theme: "spacelab"
+    highlight: "kate"
+    toc: true
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,8 +24,6 @@ specifically on how to launch a `teal` application and how to pass data into it.
 [`teal's README`](https://github.com/insightsengineering/teal).
 
 You can read more about `ADaM` [here](https://www.cdisc.org/standards/foundational/adam).
-
-
 ### Main features
 The package provides ready-to-use `teal` modules you can embed in your `teal` application. The modules
 generate highly customizable tables, plots and outputs often used in exploratory data analysis, e.g.:
@@ -46,7 +44,7 @@ their severity, the current therapy, their laboratory results and more.
 
 ### A simple application
 You need to embed a module inside a shiny application to interact with it. In case of `teal.modules.clinical`,
-we recommend launching the modules using `teal` because this package does not provide launching capabilities on its own.
+we recommend launching the modules using `teal` because `teal.modules.clinical` does not provide launching capabilities on its own.
 
 A simple application including a bar chart module could look like this:
 ```r
@@ -72,7 +70,7 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 ```
 
 Most of the functions used in the example come from `teal`, not `teal.modules.clinical`. As pointed out,
-`teal.modules.clinical` exports modules and needs support from other modules to provide its functionality. Actually,
+`teal.modules.clinical` exports modules and needs support from other libraries to flesh out its functionality. Actually,
 the only function from `teal.modules.clinical` in this example is `tm_g_barchart_simple`.
 
 Let's break it down:
@@ -110,7 +108,7 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 ```
 
 Some of `teal.modules.clinical` modules allow specifying arguments using `teal::choices_selected` and `teal::data_extract_spec`,
-e.g. `tm_g_barchart_simple`:
+e.g. `tm_t_summary`:
 ```r
 adsl <- scda::synthetic_cdisc_data("latest")$adsl
 app <- teal::init(
