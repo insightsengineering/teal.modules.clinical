@@ -22,7 +22,7 @@ analysis data used in teal module.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr ADSL columns to be shown in
+\item{vars}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr ADSL columns to be shown in
 Basic Info tab.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr

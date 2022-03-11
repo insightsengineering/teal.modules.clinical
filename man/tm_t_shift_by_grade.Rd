@@ -48,22 +48,22 @@ and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{visit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr object with all available
+\item{visit_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
 choices and preselected option for variable names that can be used as visit.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{worst_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr object with all available
+\item{worst_flag_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
 choices and preselected option for variable names that can be used as worst flag variable.}
 
-\item{worst_flag_indicator}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating
+\item{worst_flag_indicator}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr value indicating
 worst grade.}
 
-\item{anl_toxgrade_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{anl_toxgrade_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
 variable for analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{base_toxgrade_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
 variable for baseline toxicity grade.}
 
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr

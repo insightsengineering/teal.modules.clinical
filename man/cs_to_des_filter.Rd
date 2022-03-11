@@ -7,7 +7,7 @@
 cs_to_des_filter(cs, dataname, multiple = FALSE, include_vars = FALSE)
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal:choices_selected]{teal::choices_selected()}} for details.}
+\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal:reexports]{teal::choices_selected()}} for details.}
 
 \item{dataname}{(\code{character}) name of the data}
 
@@ -18,7 +18,7 @@ shiny \code{\link[shiny]{selectInput}}.}
 in the result. This can be useful for preserving for reuse in \code{rtables} code e.g.}
 }
 \value{
-(\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})
+(\code{\link[teal:reexports]{teal::data_extract_spec()}})
 }
 \description{
 Convert choices_selected to data_extract_spec with only filter_spec

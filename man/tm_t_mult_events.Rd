@@ -37,7 +37,7 @@ and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{seq_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{seq_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
 Analysis Sequence Number. Used for counting the unique number of events.}
 
 \item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr

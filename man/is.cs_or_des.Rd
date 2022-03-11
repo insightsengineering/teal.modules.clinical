@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is.cs_or_des}
 \alias{is.cs_or_des}
-\title{Whether object is of class \code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}}
+\title{Whether object is of class \code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}}}
 \usage{
 is.cs_or_des(x)
 }
@@ -13,5 +13,5 @@ is.cs_or_des(x)
 (\code{logical})
 }
 \description{
-Whether object is of class \code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
+Whether object is of class \code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}}
 }

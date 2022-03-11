@@ -50,7 +50,7 @@ second variable will be nested under the first variable.}
 object with all available choices and preselected option for variable names
 used to split the summary by rows.}
 
-\item{grade}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr object with all available
+\item{grade}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
 choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
 
@@ -59,7 +59,7 @@ specify the abnormality grade. Variable must be factor.}
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{baseline_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{baseline_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
 variable for baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}

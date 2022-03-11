@@ -39,7 +39,7 @@ and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{events_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{events_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
 object with all event counts.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
@@ -49,7 +49,7 @@ variable value designating the studied parameter.}
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{avalu_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{avalu_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr

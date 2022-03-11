@@ -64,10 +64,10 @@ in character or factor variables in the data.}
 \item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
 created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{baskets}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
 object with all available choices and preselected options for Standardized/Customized queries}
 
-\item{scopes}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{scopes}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
 object with all available choices for the scopes of Standardized queries.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
