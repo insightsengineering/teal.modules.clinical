@@ -15,7 +15,7 @@ shiny \code{\link[shiny]{selectInput}}.}
 \item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
 }
 \value{
-(\code{\link[teal:select_spec]{teal::select_spec()}})
+(\code{select_spec})
 }
 \description{
 Convert choices_selected to select_spec

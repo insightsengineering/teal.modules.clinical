@@ -46,7 +46,7 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 
 #' Get variable labels
 #'
-#' @param datasets ([`teal::FilteredData`]) Data built up by teal
+#' @param datasets (`teal::FilteredData`) Data built up by teal
 #' @param dataname (`character`) name of the dataset
 #' @param vars (`character`) Column names in the data
 #'
@@ -249,9 +249,11 @@ bracket_expr <- function(exprs) {
 #' Convert choices_selected to select_spec
 #'
 #' @param cs (`choices_selected`) object to be transformed. See [teal::choices_selected()] for details.
-#' @inheritParams teal::select_spec
+#' @param multiple (\code{logical}) Whether multiple values shall be allowed in the
+#'  shiny \code{\link[shiny]{selectInput}}.
+#' @param ordered (`logical(1)`) Flags whether selection order should be tracked.
 #' @export
-#' @return ([teal::select_spec()])
+#' @return (`select_spec`)
 cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
