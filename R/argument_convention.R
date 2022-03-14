@@ -110,7 +110,7 @@ NULL
 #' single reference point to import the `roxygen` argument description with:
 #' `@inheritParams module_arguments`
 #'
-#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param arm_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices
 #'   and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
@@ -121,11 +121,11 @@ NULL
 #'   with delayed [teal::variable_choices()] or delayed [teal::value_choices()]
 #'   with the elements named `ref` and `comp` that the defined the default
 #'   reference and comparison arms when the arm variable is changed.
-#' @param id_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param id_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object specifying the variable name for subject id.
-#' @param summarize_vars ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param summarize_vars (`choices_selected` or `data_extract_spec`)\cr
 #'   names of the variables that should be summarized.
-#' @param strata_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param strata_var (`choices_selected` or `data_extract_spec`)\cr
 #'   names of the variables for stratified analysis.
 #' @param parentname (`character`)\cr
 #'   parent analysis data used in teal module, usually this refers to `ADSL`.
@@ -133,7 +133,7 @@ NULL
 #'   analysis data used in teal module.
 #' @param label (`character`)\cr
 #'   menu item label of the module in the teal app.
-#' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param paramcd (`choices_selected` or `data_extract_spec`)\cr
 #'   variable value designating the studied parameter.
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
@@ -144,31 +144,31 @@ NULL
 #'   population from the column total is used as the denominator. With option
 #'   `n`, the number of non-missing records in this row and column intersection
 #'   is used as the denominator. If `omit` is chosen, then the percentage is omitted.
-#' @param avisit ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param avisit (`choices_selected` or `data_extract_spec`)\cr
 #'   value of analysis visit `AVISIT` of interest.
-#' @param cov_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param cov_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the covariates
 #'   variables.
-#' @param aval_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param aval_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the analysis
 #'   variable.
-#' @param cnsr_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the censoring
 #'   variable.
-#' @param conf_level ([teal::choices_selected()])\cr
+#' @param conf_level (`choices_selected`)\cr
 #'   object with all available choices and preselected option for the confidence
 #'   level, each within range of (0, 1).
 #' @param add_total (`logical`)\cr
 #'   whether to include column with total number of patients.
-#' @param hlt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param hlt (`choices_selected` or `data_extract_spec`)\cr
 #'   name of the variable with high level term for events.
-#' @param llt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param llt (`choices_selected` or `data_extract_spec`)\cr
 #'   name of the variable with low level term for events.
-#' @param visit_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param visit_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used as `visit` variable. Must be a factor
 #'   in `dataname`.
-#' @param by_vars ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param by_vars (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for variable names
 #'   used to split the summary by rows.
 #' @param plot_height optional, (`numeric`)\cr
@@ -179,10 +179,10 @@ NULL
 #'   a vector of length three with `c(value, min, max)`. Specifies the width of
 #'   the main plot and renders a slider on the plot to interactively adjust the plot
 #'   width.
-#' @param time_points ([teal::choices_selected()])\cr
+#' @param time_points (`choices_selected`)\cr
 #'   object with all available choices and preselected option for time points that
 #'   can be used in [tern::surv_timepoint()].
-#' @param time_unit_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param time_unit_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the time unit
 #'   variable.
 #' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
@@ -194,11 +194,11 @@ NULL
 #' @param post_output optional, (`shiny.tag`)\cr
 #'   with text placed after the output to put the output into context. For example
 #'   the [shiny::helpText()] elements are useful.
-#' @param subgroup_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param subgroup_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for variable names that can be used
 #'   as the default subgroups.
-#' @param treatment_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr on treatment flag variable.
-#' @param treatment_flag ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating on treatment
+#' @param treatment_flag_var (`choices_selected` or `data_extract_spec`)\cr on treatment flag variable.
+#' @param treatment_flag (`choices_selected`] or `data_extract_spec`)\cr value indicating on treatment
 #'   records in `treatment_flag_var`.
 #' @param basic_table_args optional, (`basic_table_args`)\cr
 #'   object created by [teal.devel::basic_table_args()] with settings for the module table.

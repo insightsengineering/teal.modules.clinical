@@ -37,7 +37,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
@@ -46,29 +46,29 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for variable names that can be used
 as the default subgroups.}
 
-\item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables for stratified analysis.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr
 When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
@@ -98,7 +98,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
 \code{title}, \code{caption}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and

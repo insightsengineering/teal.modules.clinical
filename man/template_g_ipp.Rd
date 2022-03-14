@@ -56,7 +56,7 @@ the variable name for subject id.}
 \item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
 \code{title}, \code{subtitle}, \code{x}, \code{y}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and

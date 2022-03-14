@@ -31,7 +31,7 @@ and point shape).}
 
 \item{stat}{(\code{character})\cr either \code{mean} or \code{median}.}
 
-\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
@@ -54,7 +54,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
