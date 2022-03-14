@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9014</span>
       </span>
     </div>
 
@@ -49,7 +49,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -58,20 +58,14 @@
 <li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
+    <li>
+      <a href="../articles/teal.modules.clinical.html">Getting started</a>
+    </li>
   </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -98,7 +92,7 @@ NSE</h1>
                         <h4 data-toc-skip class="author">Francois
 Collin</h4>
             
-            <h4 data-toc-skip class="date">2022-02-26</h4>
+            <h4 data-toc-skip class="date">29.10.2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/vignettes/quickstart_substitute.Rmd" class="external-link"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
       <div class="hidden name"><code>quickstart_substitute.Rmd</code></div>
@@ -383,6 +377,7 @@ analysis visit in rows.</p>
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/rtables" class="external-link">rtables</a></span><span class="op">)</span>
+<span class="co">## Loading required package: formatable</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">## Attaching package: 'dplyr'</span>
@@ -398,7 +393,7 @@ analysis visit in rows.</p>
 <span class="co">##   tidy.glm broom</span>
 <span class="co">## </span>
 <span class="co">## Attaching package: 'tern'</span>
-<span class="co">## The following objects are masked from 'package:rtables':</span>
+<span class="co">## The following objects are masked from 'package:formatable':</span>
 <span class="co">## </span>
 <span class="co">##     var_labels, var_labels&lt;-, with_label</span>
 <span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span>
@@ -433,7 +428,7 @@ analysis visit in rows.</p>
 <span class="co">## ————————————————————————————————————————————————————————————————————</span>
 <span class="co">## WEEK 1 DAY 8                                                        </span>
 <span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)     19.3 (4)     -0.5 (5.9)     20.2 (4)      0.1 (6)   </span>
+<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
 <span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
 <span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
 <p>… but not easily readable …:</p>
@@ -516,7 +511,7 @@ function, this way the <code>rtables</code> pipelines are
 <span class="co">## ————————————————————————————————————————————————————————————————————</span>
 <span class="co">## WEEK 1 DAY 8                                                        </span>
 <span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)     19.3 (4)     -0.5 (5.9)     20.2 (4)      0.1 (6)   </span>
+<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
 <span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
 <span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
 <ul>
@@ -535,7 +530,7 @@ panel.</li>
 <span class="co">## ———————————————————————————————————————————————————————————————————</span>
 <span class="co">## 1                                                                  </span>
 <span class="co">##   n              134           134           134           134     </span>
-<span class="co">##   Mean (SD)    19.3 (4)     -0.5 (5.9)     20.2 (4)      0.1 (6)   </span>
+<span class="co">##   Mean (SD)   19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
 <span class="co">##   Median         19.2          -0.5          20.1          -0.7    </span>
 <span class="co">##   Min - Max   8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span>
 <span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
@@ -654,7 +649,7 @@ code with <code>Show R Code</code>:</li>
 <span class="co">## ————————————————————————————————————————————————————————————————————</span>
 <span class="co">## WEEK 1 DAY 8                                                        </span>
 <span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)     19.3 (4)     -0.5 (5.9)     20.2 (4)      0.1 (6)   </span>
+<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
 <span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
 <span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
 <ul>
@@ -676,12 +671,12 @@ code with <code>Show R Code</code>:</li>
 <span class="co">##   summarize_colvars(.stats = c("n", "mean_sd")) %&gt;%</span>
 <span class="co">##   build_table(df = adlb_f)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">##                      A: Drug X             B: Placebo    </span>
-<span class="co">##                 Value       Change      Value     Change </span>
-<span class="co">## —————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                             </span>
-<span class="co">##   n              134         134         134        134  </span>
-<span class="co">##   Mean (SD)    19.3 (4)   -0.5 (5.9)   20.2 (4)   0.1 (6)</span></code></pre></div>
+<span class="co">##                       A: Drug X                B: Placebo      </span>
+<span class="co">##                  Value        Change       Value       Change  </span>
+<span class="co">## ———————————————————————————————————————————————————————————————</span>
+<span class="co">## WEEK 1 DAY 8                                                   </span>
+<span class="co">##   n               134          134          134          134   </span>
+<span class="co">##   Mean (SD)    19.3 (4.0)   -0.5 (5.9)   20.2 (4.0)   0.1 (6.0)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="including-pre-processing">Including pre-processing<a class="anchor" aria-label="anchor" href="#including-pre-processing"></a>
@@ -778,12 +773,12 @@ names.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result_exec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="va">eval</span>, <span class="va">result</span><span class="op">)</span>
 <span class="va">result_exec</span><span class="op">$</span><span class="va">rtables</span>
-<span class="co">##                     A: Drug X           B: Placebo    </span>
-<span class="co">##                 Value     Change      Value    Change </span>
-<span class="co">## ——————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                          </span>
-<span class="co">##   n              134        134        134       134  </span>
-<span class="co">##   Mean (SD)    1 (0.2)   0.1 (0.3)   1 (0.2)   0 (0.3)</span></code></pre></div>
+<span class="co">##                      A: Drug X              B: Placebo      </span>
+<span class="co">##                  Value      Change       Value      Change  </span>
+<span class="co">## ————————————————————————————————————————————————————————————</span>
+<span class="co">## WEEK 1 DAY 8                                                </span>
+<span class="co">##   n               134         134         134         134   </span>
+<span class="co">##   Mean (SD)    1.0 (0.2)   0.1 (0.3)   1.0 (0.2)   0.0 (0.3)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="in-a-nutshell-1">In a nutshell<a class="anchor" aria-label="anchor" href="#in-a-nutshell-1"></a>

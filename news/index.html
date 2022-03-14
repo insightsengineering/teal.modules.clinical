@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9014</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -40,19 +40,13 @@
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
+    <li>
+      <a href="../articles/teal.modules.clinical.html">Getting started</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -73,14 +67,14 @@ Other releases
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.11.9013" id="tealmodulesclinical-08119013">teal.modules.clinical 0.8.11.9013<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119013"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.11.9014" id="tealmodulesclinical-08119014">teal.modules.clinical 0.8.11.9014<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08119014"></a></h2>
 <div class="section level4">
-<h4 id="new-features-0-8-11-9013">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-11-9013"></a></h4>
+<h4 id="new-features-0-8-11-9014">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-11-9014"></a></h4>
 <ul><li>New module <code>tm_t_shift_by_arm_by_worst</code> was added for the
 analysis of grade laboratory abnormalities with worst flag.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="enhancements-0-8-11-9013">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11-9013"></a></h4>
+<h4 id="enhancements-0-8-11-9014">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11-9014"></a></h4>
 <ul><li>Rewrote modules to use <code>moduleServer</code> and updated calls
 to <code>teal.devel</code> modules which have also been written to use
 <code>moduleServer</code>.</li>
@@ -93,8 +87,8 @@ return ordered selection.</li>
 <code><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">teal::root_modules</a></code>.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-11-9013">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-11-9013"></a></h4>
-<ul><li>Replaced the deprecated <code><a href="https://roche.github.io/rtables/reference/var_labels.html" class="external-link">rtables::var_labels</a></code> calls in
+<h4 id="miscellaneous-0-8-11-9014">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-11-9014"></a></h4>
+<ul><li>Replaced the deprecated <code>rtables::var_labels</code> calls in
 the documentation examples.</li>
 </ul></div>
 </div>
@@ -154,7 +148,7 @@ apply a continuity correction in the Wilson method.</li>
 <ul><li>Updated R version requirement to &gt;= 3.6.</li>
 <li>Refactored calls to the defunct
 <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_input.html" class="external-link">teal.devel::data_extract_input</a></code> into calls to its
-replacement <code><a href="https://rdrr.io/pkg/teal.devel/man/data_extract_ui.html" class="external-link">teal.devel::data_extract_ui</a></code>.</li>
+replacement <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_ui.html" class="external-link">teal.devel::data_extract_ui</a></code>.</li>
 <li>Updated modules to use new <code>data_merge_module</code> interface
 provided by <code>teal.devel</code> and removed usage of the now
 deprecated function <code><a href="https://rdrr.io/pkg/teal.devel/man/get_input_order.html" class="external-link">teal.devel::get_input_order</a></code>.</li>
@@ -531,8 +525,8 @@ for patient-year at risk table.</li>
 <li>New <code>tm_t_abnormality</code> module.</li>
 <li>Removed <code>get_relabel_call</code> and
 <code>get_relabel_call2</code> in favor of
-<code><a href="https://rdrr.io/pkg/teal.devel/man/get_relabel_call.html" class="external-link">teal.devel::get_relabel_call</a></code> and
-<code><a href="https://rdrr.io/pkg/teal.devel/man/get_anl_relabel_call.html" class="external-link">teal.devel::get_anl_relabel_call</a></code>.</li>
+<code><a href="https://rdrr.io/pkg/teal.transform/man/get_relabel_call.html" class="external-link">teal.devel::get_relabel_call</a></code> and
+<code><a href="https://rdrr.io/pkg/teal.transform/man/get_anl_relabel_call.html" class="external-link">teal.devel::get_anl_relabel_call</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.2" id="tealmodulesclinical-082">teal.modules.clinical 0.8.2<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-082"></a></h2>
@@ -568,7 +562,7 @@ modules.</li>
 <ul><li>Package renamed to <code>teal.modules.clinical</code>.</li>
 <li>Rename <code>tm_t_summarize_variables</code> to
 <code>tm_t_summary</code>.</li>
-<li>Usage of <code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> function instead of
+<li>Usage of <code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> function instead of
 <code>*_var</code> and <code>*_var_choices</code> type of
 arguments.</li>
 </ul></div>

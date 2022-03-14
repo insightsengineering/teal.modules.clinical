@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9014</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -40,19 +40,13 @@
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
+    <li>
+      <a href="../articles/teal.modules.clinical.html">Getting started</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -106,16 +100,16 @@ parent analysis data used in teal module, usually this refers to <code>ADSL</cod
 <dt>patient_col</dt>
 <dd><p>(<code>character</code>)<br> patient ID column to be used.</p></dd>
 <dt>atirel</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>ATIREL</code> column of the
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>ATIREL</code> column of the
 ADCM dataset.</p></dd>
 <dt>cmdecod</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMDECOD</code> column of the
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMDECOD</code> column of the
 ADCM dataset.</p></dd>
 <dt>cmindc</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMINDC</code> column of the
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMINDC</code> column of the
 ADCM dataset.</p></dd>
 <dt>cmstdy</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMSTDY</code> column of the
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br><code>CMSTDY</code> column of the
 ADCM dataset.</p></dd>
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
@@ -142,7 +136,7 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMDOSFRQ</span> <span class="op">&lt;-</span> <span class="st">"CMDOSFRQ"</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMASTDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">ASTDTM</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMAENDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">AENDTM</span></span>
-<span class="r-in"><span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal/man/variable_labels.html" class="external-link">variable_labels</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/variable_labels.html" class="external-link">variable_labels</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="va">ADCM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMINDC"</span>, <span class="st">"CMTRT"</span>, <span class="st">"ASTDY"</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="st">"Indication"</span>,</span>
@@ -199,7 +193,7 @@ the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-26 00:55:04.1637 pid:2329 token:[] teal.modules.clinical Initializing tm_t_pp_prior_medication</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-14 10:39:52.2918 pid:2698 token:[] teal.modules.clinical Initializing tm_t_pp_prior_medication</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

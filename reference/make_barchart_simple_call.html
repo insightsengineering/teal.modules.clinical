@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9014</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -40,19 +40,13 @@
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
+    <li>
+      <a href="../articles/teal.modules.clinical.html">Getting started</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -91,7 +85,7 @@ Other releases
   rotate_x_label <span class="op">=</span> <span class="cn">FALSE</span>,
   rotate_y_label <span class="op">=</span> <span class="cn">FALSE</span>,
   expand_y_range <span class="op">=</span> <span class="fl">0</span>,
-  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
+  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -128,7 +122,7 @@ whether to rotate y-axis label by 45 degrees.</p></dd>
 fraction of y-axis range to expand further up.</p></dd>
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
 The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.devel")</code>.</p></dd>

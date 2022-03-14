@@ -24,7 +24,7 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9014</span>
       </span>
     </div>
 
@@ -33,7 +33,7 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -41,19 +41,13 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
+    <li>
+      <a href="../articles/teal.modules.clinical.html">Getting started</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -83,7 +77,7 @@ that are used repeatedly to express an analysis.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>arm_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices
 and preselected option for variable names that can be used as <code>arm_var</code>.
 It defines the grouping variable(s) in the results table. If there are two elements selected for <code>arm_var</code>,
@@ -92,17 +86,17 @@ second variable will be nested under the first variable.</p></dd>
 <dd><p>optional, (<code>list</code>)<br>
 If specified it must be a named list with each element corresponding to
 an arm variable in <code>ADSL</code> and the element must be another list (possibly
-with delayed <code><a href="https://rdrr.io/pkg/teal/man/variable_choices.html" class="external-link">teal::variable_choices()</a></code> or delayed <code><a href="https://rdrr.io/pkg/teal/man/value_choices.html" class="external-link">teal::value_choices()</a></code>
+with delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">teal::variable_choices()</a></code> or delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/value_choices.html" class="external-link">teal::value_choices()</a></code>
 with the elements named <code>ref</code> and <code>comp</code> that the defined the default
 reference and comparison arms when the arm variable is changed.</p></dd>
 <dt>id_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object specifying the variable name for subject id.</p></dd>
 <dt>summarize_vars</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 names of the variables that should be summarized.</p></dd>
 <dt>strata_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 names of the variables for stratified analysis.</p></dd>
 <dt>parentname</dt>
 <dd><p>(<code>character</code>)<br>
@@ -114,7 +108,7 @@ analysis data used in teal module.</p></dd>
 <dd><p>(<code>character</code>)<br>
 menu item label of the module in the teal app.</p></dd>
 <dt>paramcd</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 variable value designating the studied parameter.</p></dd>
 <dt>useNA</dt>
 <dd><p>(<code>character</code>)<br>
@@ -129,40 +123,40 @@ population from the column total is used as the denominator. With option
 <code>n</code>, the number of non-missing records in this row and column intersection
 is used as the denominator. If <code>omit</code> is chosen, then the percentage is omitted.</p></dd>
 <dt>avisit</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 value of analysis visit <code>AVISIT</code> of interest.</p></dd>
 <dt>cov_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for the covariates
 variables.</p></dd>
 <dt>aval_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for the analysis
 variable.</p></dd>
 <dt>cnsr_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for the censoring
 variable.</p></dd>
 <dt>conf_level</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code>)<br>
+<dd><p>(<code>choices_selected</code>)<br>
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).</p></dd>
 <dt>add_total</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to include column with total number of patients.</p></dd>
 <dt>hlt</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 name of the variable with high level term for events.</p></dd>
 <dt>llt</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 name of the variable with low level term for events.</p></dd>
 <dt>visit_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option
 for variable names that can be used as <code>visit</code> variable. Must be a factor
 in <code>dataname</code>.</p></dd>
 <dt>by_vars</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for variable names
 used to split the summary by rows.</p></dd>
 <dt>plot_height</dt>
@@ -176,11 +170,11 @@ a vector of length three with <code>c(value, min, max)</code>. Specifies the wid
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></dd>
 <dt>time_points</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code>)<br>
+<dd><p>(<code>choices_selected</code>)<br>
 object with all available choices and preselected option for time points that
 can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_timepoint.html" class="external-link">tern::surv_timepoint()</a></code>.</p></dd>
 <dt>time_unit_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for the time unit
 variable.</p></dd>
 <dt>drop_arm_levels</dt>
@@ -196,23 +190,23 @@ For example a title.</p></dd>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
 <dt>subgroup_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices and preselected option for variable names that can be used
 as the default subgroups.</p></dd>
 <dt>treatment_flag_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec</a>)<br> on treatment flag variable.</p></dd>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> on treatment flag variable.</p></dd>
 <dt>treatment_flag</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <a href="https://rdrr.io/pkg/teal/man/data_extract_spec.html" class="external-link">teal::data_extract_spec</a>)<br> value indicating on treatment
+<dd><p>(<code>choices_selected</code>] or <code>data_extract_spec</code>)<br> value indicating on treatment
 records in <code>treatment_flag_var</code>.</p></dd>
 <dt>basic_table_args</dt>
 <dd><p>optional, (<code>basic_table_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code> with settings for the module table.
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code> with settings for the module table.
 The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.devel")</code>.</p></dd>
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.devel/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for the module plot.
 The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.devel")</code>.</p></dd>
