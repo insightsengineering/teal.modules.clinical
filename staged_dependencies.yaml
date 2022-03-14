@@ -5,6 +5,9 @@ upstream_repos:
   insightsengineering/tern:
     repo: insightsengineering/tern
     host: https://github.com
+  insightsengineering/tern.mmrm:
+    repo: insightsengineering/tern.mmrm
+    host: https://github.com
   insightsengineering/teal.devel:
     repo: insightsengineering/teal.devel
     host: https://github.com
