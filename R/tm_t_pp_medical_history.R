@@ -223,7 +223,10 @@ srv_t_medical_history <- function(id,
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-    teal.widgets::updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(
+      session, "patient_id",
+      choices = patient_data_base(), selected = patient_data_base()[1]
+    )
 
     observeEvent(patient_data_base(),
       handlerExpr = {
