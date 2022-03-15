@@ -18,6 +18,8 @@
 #' @param on_off (`logical`) A reactive that can be used to
 #'   stop the whole observer if FALSE.
 #'
+#' @keywords internal
+#'
 #' @examples
 #' ds <- teal:::get_dummy_datasets()
 #'
@@ -125,7 +127,7 @@ arm_ref_comp_observer <- function(session,
 #' @param df_to_check (\code{data.frame}) table to check
 #' @param module \code{character} teal module the ref and comp are called in
 #'
-#' @export
+#' @keywords internal
 #'
 #' @return \code{TRUE} or \code{FALSE} whether the variable is in ref or comp
 check_arm_ref_comp <- function(x, df_to_check, module) {

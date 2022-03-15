@@ -524,7 +524,13 @@ ui_g_therapy <- function(id, ...) {
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
-        teal.widgets::optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        teal.widgets::optionalSliderInputValMinMax(
+          ns("font_size"),
+          "Font Size",
+          ui_args$font_size,
+          ticks = FALSE,
+          step = 1
+        )
       )
     ),
     forms = teal::get_rcode_ui(ns("rcode")),

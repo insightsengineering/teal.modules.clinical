@@ -13,6 +13,8 @@
 #'
 #' @return facet grid formula `formula(x_facet ~ y_facet)`
 #'
+#' @keywords internal
+#'
 #' @examples
 #' teal.modules.clinical:::facet_grid_formula("x", "y")
 facet_grid_formula <- function(x_facet, y_facet) {

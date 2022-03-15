@@ -392,7 +392,9 @@ ui_t_abnormality <- function(id, ...) {
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]),
+      teal.transform::datanames_input(
+        a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
+      ),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",

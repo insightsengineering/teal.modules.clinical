@@ -632,7 +632,13 @@ ui_g_patient_timeline <- function(id, ...) {
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
-        teal.widgets::optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        teal.widgets::optionalSliderInputValMinMax(
+          ns("font_size"),
+          "Font Size",
+          ui_args$font_size,
+          ticks = FALSE,
+          step = 1
+        )
       )
     ),
     forms = teal::get_rcode_ui(ns("rcode")),
@@ -670,7 +676,12 @@ srv_g_patient_timeline <- function(id,
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-    teal.widgets::updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = patient_data_base()[1]
+    )
 
     observeEvent(patient_data_base(),
       handlerExpr = {

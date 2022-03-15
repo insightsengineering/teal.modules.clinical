@@ -255,7 +255,9 @@ tm_t_events_patyear <- function(label,
 ui_events_patyear <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var)
+  is_single_dataset_value <- teal.transform::is_single_dataset(
+    a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var
+  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("patyear_table"))),

@@ -509,7 +509,9 @@ ui_t_tte <- function(id, ...) {
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]),
+      teal.transform::datanames_input(
+        a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]
+      ),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",

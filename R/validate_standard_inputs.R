@@ -16,6 +16,8 @@
 #'   Use \code{NULL} for no maximum.
 #' @param min_nrow minimum number of observations in \code{ADSL} and \code{ANL}
 #'
+#' @keywords internal
+#'
 #' @examples
 #'
 #'

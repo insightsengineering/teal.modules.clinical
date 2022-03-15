@@ -19,3 +19,4 @@ check_arm_ref_comp(x, df_to_check, module)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
+\keyword{internal}
