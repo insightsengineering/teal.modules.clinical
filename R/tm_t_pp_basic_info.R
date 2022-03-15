@@ -116,31 +116,31 @@ tm_t_pp_basic_info <- function(label,
 
 ui_t_basic_info <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(ui_args$vars)
+  is_single_dataset_value <- teal.transform::is_single_dataset(ui_args$vars)
 
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     output = div(
-      teal.devel::get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
+      teal.widgets::get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(ui_args[c("vars")]),
-      optionalSelectInput(
+      teal.transform::datanames_input(ui_args[c("vars")]),
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("vars"),
         label = "Select variable:",
         data_extract_spec = ui_args$vars,
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -155,17 +155,17 @@ srv_t_basic_info <- function(id,
                              label) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
-    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
     observeEvent(patient_data_base(),
       handlerExpr = {
-        updateOptionalSelectInput(
+        teal.widgets::updateOptionalSelectInput(
           session,
           "patient_id",
           choices = patient_data_base(),
@@ -180,7 +180,7 @@ srv_t_basic_info <- function(id,
     )
 
     # Basic Info tab ----
-    binf_merged_data <- teal.devel::data_merge_module(
+    binf_merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(vars = vars),
       merge_function = "dplyr::left_join"
@@ -195,11 +195,11 @@ srv_t_basic_info <- function(id,
         )
       )
 
-      call_stack <- teal.devel::chunks$new()
+      call_stack <- teal.code::chunks$new()
       call_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = call_stack)
+        teal.code::chunks_push(..., chunks = call_stack)
       }
-      teal.devel::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+      teal.code::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
 
       call_stack_push(substitute(
         expr = {
@@ -215,23 +215,23 @@ srv_t_basic_info <- function(id,
         vars = input[[extract_input("vars", dataname)]]
       )
       lapply(my_calls, call_stack_push)
-      teal.devel::chunks_safe_eval(chunks = call_stack)
+      teal.code::chunks_safe_eval(chunks = call_stack)
       call_stack
     })
 
     output$basic_info_table <- DT::renderDataTable(
       expr = {
-        teal.devel::chunks_reset()
-        teal.devel::chunks_push_chunks(basic_info_call())
-        teal.devel::chunks_get_var("result")
+        teal.code::chunks_reset()
+        teal.code::chunks_push_chunks(basic_info_call())
+        teal.code::chunks_get_var("result")
       },
       options = list(pageLength = input$basic_info_table_rows)
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(vars)),
+      datanames = teal.transform::get_extract_datanames(list(vars)),
       modal_title = label
     )
   })

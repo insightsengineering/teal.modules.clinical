@@ -310,7 +310,7 @@ rtables_expr
 ... but that can be arranged:
 
 ```{r, message = FALSE}
-library(teal.devel)
+library(teal)
 #' Stylish code
 #'
 #' Deparse an expression and display the code following NEST conventions.

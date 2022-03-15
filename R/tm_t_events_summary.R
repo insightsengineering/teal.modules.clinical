@@ -566,7 +566,7 @@ tm_t_events_summary <- function(label,
                                 dataname,
                                 parentname = ifelse(
                                   inherits(arm_var, "data_extract_spec"),
-                                  teal.devel::datanames_input(arm_var),
+                                  teal.transform::datanames_input(arm_var),
                                   "ADSL"
                                 ),
                                 arm_var,
@@ -594,7 +594,7 @@ tm_t_events_summary <- function(label,
                                 count_events = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.devel::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -641,7 +641,7 @@ tm_t_events_summary <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -652,7 +652,7 @@ ui_t_events_summary <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
 
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$dthfl_var,
     a$dcsreas_var,
@@ -662,14 +662,14 @@ ui_t_events_summary <- function(id, ...) {
     a$llt
   )
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(
+      teal.transform::datanames_input(
         a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -678,7 +678,7 @@ ui_t_events_summary <- function(id, ...) {
       `if`(
         is.null(a$flag_var_anl),
         NULL,
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("flag_var_anl"),
           label = "Event Flag Variables",
           data_extract_spec = a$flag_var_anl,
@@ -688,7 +688,7 @@ ui_t_events_summary <- function(id, ...) {
       `if`(
         is.null(a$flag_var_aesi),
         NULL,
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("flag_var_aesi"),
           label = "AE Basket Flag Variables",
           data_extract_spec = a$flag_var_aesi,
@@ -716,28 +716,28 @@ ui_t_events_summary <- function(id, ...) {
         "Count events",
         value = a$count_events
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional Variables Info",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("dthfl_var"),
             label = "Death Flag Variable",
             data_extract_spec = a$dthfl_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("dcsreas_var"),
             label = "Study Discontinuation Reason Variable",
             data_extract_spec = a$dcsreas_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("aeseq_var"),
             label = "AE Sequence Variable",
             data_extract_spec = a$aeseq_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("llt"),
             label = "AE Term Variable",
             data_extract_spec = a$llt,
@@ -746,7 +746,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -768,7 +768,7 @@ srv_t_events_summary <- function(id,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
@@ -783,18 +783,18 @@ srv_t_events_summary <- function(id,
       data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
     }
 
-    anl_selectors <- teal.devel::data_extract_multiple_srv(
+    anl_selectors <- teal.transform::data_extract_multiple_srv(
       data_extract_vars,
       datasets = datasets
     )
 
-    anl_merged <- teal.devel::data_merge_srv(
+    anl_merged <- teal.transform::data_merge_srv(
       selector_list = anl_selectors,
       datasets = datasets,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
       anl_name = "ANL_ADSL"
@@ -827,7 +827,7 @@ srv_t_events_summary <- function(id,
       )
 
       # validate inputs
-      teal.devel::validate_standard_inputs(
+      validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
         anl = anl_filtered,
@@ -840,14 +840,14 @@ srv_t_events_summary <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
 
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
 
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
         as.vector(anl_m$columns_source$flag_var_anl)
@@ -876,10 +876,10 @@ srv_t_events_summary <- function(id,
         count_events = input$count_events
       )
 
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
 
-      all_basic_table_args <- teal.devel::resolve_basic_table_args(user_table = basic_table_args)
-      teal.devel::chunks_push(substitute(
+      all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
+      teal.code::chunks_push(substitute(
         expr = {
           rtables::main_title(result) <- title
           rtables::main_footer(result) <- footer
@@ -899,20 +899,20 @@ srv_t_events_summary <- function(id,
     # Outputs to render.
     table <- reactive({
       call_preparation()
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("result")
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
     })
 
-    teal.devel::table_with_settings_srv(
+    teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table
     )
 
     # Render R code.
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(data_extract_vars),
+      datanames = teal.transform::get_extract_datanames(data_extract_vars),
       modal_title = "Adverse Event Summary Table",
       code_header = label
     )

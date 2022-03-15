@@ -27,7 +27,7 @@ template_exposure <- function(parentname,
                               na_level = "<Missing>",
                               aval_var,
                               avalu_var,
-                              basic_table_args = teal.devel::basic_table_args()) {
+                              basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -74,10 +74,10 @@ template_exposure <- function(parentname,
     paramcd_label <- paramcd
   }
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd_label))
+      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd_label))
     )
   )
 
@@ -299,7 +299,7 @@ tm_t_exposure <- function(label,
                           dataname,
                           parentname = ifelse(
                             inherits(col_by_var, "data_extract_spec"),
-                            teal.devel::datanames_input(col_by_var),
+                            teal.transform::datanames_input(col_by_var),
                             "ADSL"
                           ),
                           row_by_var,
@@ -329,7 +329,7 @@ tm_t_exposure <- function(label,
                           na_level = "<Missing>",
                           pre_output = NULL,
                           post_output = NULL,
-                          basic_table_args = teal.devel::basic_table_args()) {
+                          basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_exposure")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -374,7 +374,7 @@ tm_t_exposure <- function(label,
         paramcd_label = paramcd_label
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -384,7 +384,7 @@ ui_t_exposure <- function(id, ...) {
   ns <- NS(id)
   a <- list(...) # module args
 
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$paramcd,
     a$col_by_var,
     a$row_by_var,
@@ -394,54 +394,54 @@ ui_t_exposure <- function(id, ...) {
     a$avalu_var
   )
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c(
+      teal.transform::datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
       )]),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select the Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("parcat"),
         label = "Select the Parameter Category",
         data_extract_spec = a$parcat,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("col_by_var"),
         label = "Select Column by Variable",
         data_extract_spec = a$col_by_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("row_by_var"),
         label = "Select Row by Variable",
         data_extract_spec = a$row_by_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional Variables Info",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("aval_var"),
             label = "Analysis Value Variable",
             data_extract_spec = a$aval_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("avalu_var"),
             label = "Analysis Value Unit Variable",
             data_extract_spec = a$avalu_var,
@@ -450,7 +450,7 @@ ui_t_exposure <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -474,9 +474,9 @@ srv_t_exposure <- function(id,
                            basic_table_args = basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
-    anl_merged <- teal.devel::data_merge_module(
+    anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         id_var = id_var,
@@ -490,7 +490,7 @@ srv_t_exposure <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(col_by_var = col_by_var),
       anl_name = "ANL_ADSL"
@@ -522,14 +522,14 @@ srv_t_exposure <- function(id,
           input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
           "Please select a parameter value."
         ),
-        teal.devel::validate_no_intersection(
+        teal::validate_no_intersection(
           input[[extract_input("col_by_var", parentname)]],
           input[[extract_input("row_by_var", dataname)]],
           "Column by and row by variables should not be the same."
         )
       )
       # validate inputs
-      teal.devel::validate_standard_inputs(
+      validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_col_by_var),
         anl = anl_filtered,
@@ -546,13 +546,13 @@ srv_t_exposure <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
 
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
       input_avalu_var <- as.character(
@@ -586,26 +586,26 @@ srv_t_exposure <- function(id,
         avalu_var <- input_avalu_var,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
     })
 
     # Outputs to render.
     table <- reactive({
       call_preparation()
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("result")
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
     })
 
-    teal.devel::table_with_settings_srv(
+    teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table
     )
 
     # Render R code.
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(
+      datanames = teal.transform::get_extract_datanames(
         list(id_var, paramcd, row_by_var, col_by_var, parcat, aval_var, avalu_var)
       ),
       modal_title = "R Code for Risk Management Plan Table",

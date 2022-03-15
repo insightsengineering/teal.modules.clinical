@@ -41,7 +41,7 @@
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
-* Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.devel::data_extract_ui`.
+* Refactored calls to the defunct `teal.devel::data_extract_input` into calls to its replacement `teal.transform::data_extract_ui`.
 * Updated modules to use new `data_merge_module` interface provided by `teal.devel` and removed usage of the now deprecated function `teal.devel::get_input_order`.
 * Updated `tm_t_binary_outcome` module to add a template and removed the now deprecated module `tm_t_rsp`.
 * Removed `utils.nest` dependency and replaced calls with `checkmate` equivalents.

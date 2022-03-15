@@ -31,7 +31,7 @@ template_ancova <- function(dataname = "ANL",
                             visit_levels = "",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
-                            basic_table_args = teal.devel::basic_table_args()) {
+                            basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -145,10 +145,10 @@ template_ancova <- function(dataname = "ANL",
     ""
   }
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = table_title)
+      module_table = teal.widgets::basic_table_args(title = table_title)
     )
   )
 
@@ -390,7 +390,7 @@ tm_t_ancova <- function(label,
                         dataname,
                         parentname = ifelse(
                           inherits(arm_var, "data_extract_spec"),
-                          teal.devel::datanames_input(arm_var),
+                          teal.transform::datanames_input(arm_var),
                           "ADSL"
                         ),
                         arm_var,
@@ -402,7 +402,7 @@ tm_t_ancova <- function(label,
                         conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
-                        basic_table_args = teal.devel::basic_table_args()) {
+                        basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -437,43 +437,43 @@ tm_t_ancova <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_ancova <- function(id, ...) {
   a <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
   )
 
   ns <- NS(id)
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      teal.transform::data_extract_ui(
         id = ns("avisit"),
         label = "Analysis Visit",
         data_extract_spec = a$avisit,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -499,13 +499,13 @@ ui_ancova <- function(id, ...) {
         "Combine all comparison groups?",
         value = FALSE
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cov_var"),
         label = "Covariates",
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
         label = HTML(paste("Confidence Level")),
         a$conf_level$choices,
@@ -514,7 +514,7 @@ ui_ancova <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -535,11 +535,11 @@ srv_ancova <- function(id,
                        basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
-    teal.devel::arm_ref_comp_observer(
+    arm_ref_comp_observer(
       session, input,
       id_ref = "ref_arm",
       id_comp = "comp_arm",
@@ -550,7 +550,7 @@ srv_ancova <- function(id,
       module = "tm_ancova"
     )
 
-    anl_merged <- teal.devel::data_merge_module(
+    anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         arm_var = arm_var,
@@ -562,7 +562,7 @@ srv_ancova <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
@@ -643,16 +643,16 @@ srv_ancova <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
 
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
 
-      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      ANL <- teal.code::chunks_get_var("ANL") # nolint
       label_paramcd <- get_paramcd_label(ANL, paramcd)
       input_aval <- as.vector(anl_m$columns_source$aval_var)
       label_aval <- if (length(input_aval) != 0) attributes(anl_m$data()[[input_aval]])$label else NULL
@@ -677,26 +677,26 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
     })
 
     # Output to render.
     table <- reactive({
       call_preparation()
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("result")
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
     })
 
-    teal.devel::table_with_settings_srv(
+    teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table
     )
 
     # Render R code.
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(
+      datanames = teal.transform::get_extract_datanames(
         list(arm_var, aval_var, cov_var, avisit, paramcd)
       ),
       modal_title = label

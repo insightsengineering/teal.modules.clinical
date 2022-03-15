@@ -21,7 +21,7 @@ template_vitals <- function(dataname = "ANL",
                             aval = "AVAL",
                             patient_id,
                             font_size = 12L,
-                            ggplot2_args = teal.devel::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
@@ -35,10 +35,10 @@ template_vitals <- function(dataname = "ANL",
   y <- list()
   y$plot <- list()
 
-  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-    teal.devel::resolve_ggplot2_args(
+  parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+    teal.widgets::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = teal.devel::ggplot2_args(
+      module_plot = teal.widgets::ggplot2_args(
         labs = list(title = paste0("Patient ID: ", patient_id)),
         theme = list(
           text = substitute(element_text(size = font), list(font = font_size)),
@@ -243,7 +243,7 @@ tm_g_pp_vitals <- function(label,
                            plot_width = NULL,
                            pre_output = NULL,
                            post_output = NULL,
-                           ggplot2_args = teal.devel::ggplot2_args()) {
+                           ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_vitals")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -293,7 +293,7 @@ tm_g_pp_vitals <- function(label,
 
 ui_g_vitals <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$paramcd,
     ui_args$param,
     ui_args$aval,
@@ -301,43 +301,43 @@ ui_g_vitals <- function(id, ...) {
   )
 
   ns <- NS(id)
-  teal.devel::standard_layout(
-    output = teal.devel::plot_with_settings_ui(id = ns("vitals_plot")),
+  teal.widgets::standard_layout(
+    output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
-      optionalSelectInput(
+      teal.transform::datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
       uiOutput(ns("paramcd_levels")),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("xaxis"),
         label = "Select vital plot x-axis:",
         data_extract_spec = ui_args$xaxis,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::panel_item(
+      teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
-        optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        teal.widgets::optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -359,17 +359,17 @@ srv_g_vitals <- function(id,
                          ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
 
     observeEvent(patient_data_base(),
       handlerExpr = {
-        updateOptionalSelectInput(
+        teal.widgets::updateOptionalSelectInput(
           session,
           "patient_id",
           choices = patient_data_base(),
@@ -384,7 +384,7 @@ srv_g_vitals <- function(id,
     )
 
     # Vitals tab ----
-    vitals_merged_data <- teal.devel::data_merge_module(
+    vitals_merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
       merge_function = "dplyr::left_join"
@@ -425,7 +425,7 @@ srv_g_vitals <- function(id,
     vitals_call <- reactive({
       validate(need(patient_id(), "Please select a patient."))
 
-      teal.devel::validate_has_data(vitals_merged_data()$data(), 1)
+      teal::validate_has_data(vitals_merged_data()$data(), 1)
 
       validate(
         need(
@@ -450,11 +450,11 @@ srv_g_vitals <- function(id,
         )
       )
 
-      vitals_stack <- teal.devel::chunks$new()
+      vitals_stack <- teal.code::chunks$new()
       vitals_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = vitals_stack)
+        teal.code::chunks_push(..., chunks = vitals_stack)
       }
-      teal.devel::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
+      teal.code::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
 
       vitals_stack_push(substitute(
         expr = {
@@ -477,27 +477,27 @@ srv_g_vitals <- function(id,
       )
 
       lapply(my_calls, vitals_stack_push)
-      teal.devel::chunks_safe_eval(chunks = vitals_stack)
+      teal.code::chunks_safe_eval(chunks = vitals_stack)
       vitals_stack
     })
 
     vitals_plot <- reactive({
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(vitals_call())
-      teal.devel::chunks_get_var("result_plot")
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(vitals_call())
+      teal.code::chunks_get_var("result_plot")
     })
 
-    teal.devel::plot_with_settings_srv(
+    teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
       plot_r = vitals_plot,
       height = plot_height,
       width = plot_width
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(paramcd, param, aval, xaxis)),
+      datanames = teal.transform::get_extract_datanames(list(paramcd, param, aval, xaxis)),
       modal_title = label
     )
   })
