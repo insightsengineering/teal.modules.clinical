@@ -12,6 +12,7 @@
 
 ### Miscellaneous
 * Replaced the deprecated `rtables::var_labels` calls in the documentation examples.
+* Add import of `tern.mmrm` package and change some references after split of `tern`.
 
 # teal.modules.clinical 0.8.11
 

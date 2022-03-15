@@ -130,7 +130,7 @@ template_fit_mmrm <- function(parentname,
     )
   )
   y$fit <- substitute(
-    expr = fit <- fit_mmrm(
+    expr = fit <- tern.mmrm::fit_mmrm(
       vars = vars,
       data = anl,
       conf_level = conf_level,
@@ -199,7 +199,7 @@ template_mmrm_tables <- function(parentname,
         substitute(
           expr = rtables::add_colcounts() %>%
             rtables::split_rows_by(visit_var) %>%
-            summarize_lsmeans(
+            tern.mmrm::summarize_lsmeans(
               .stats = c(
                 "n",
                 "adj_mean_se",
@@ -219,7 +219,7 @@ template_mmrm_tables <- function(parentname,
           expr = rtables::add_colcounts() %>%
             rtables::split_rows_by(visit_var) %>%
             append_varlabels(dataname, visit_var) %>%
-            summarize_lsmeans(show_relative = show_relative) %>%
+            tern.mmrm::summarize_lsmeans(show_relative = show_relative) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
           env = list(
             dataname = as.name(dataname),
@@ -236,7 +236,7 @@ template_mmrm_tables <- function(parentname,
       substitute(
         expr =
           rtables::split_rows_by(visit_var) %>%
-            summarize_lsmeans(arms = FALSE) %>%
+            tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
           visit_var = visit_var,
@@ -271,7 +271,7 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_cov = {
       y$cov_matrix <- substitute(
         expr = {
-          cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+          cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
           cov_matrix
         },
         env = list(
@@ -282,7 +282,7 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_fixed = {
       y$fixed_effects <- substitute(
         expr = {
-          fixed_effects <- as.rtable(fit_mmrm, type = "fixed")
+          fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
           fixed_effects
         },
         env = list(
@@ -293,7 +293,7 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_diagnostic = {
       y$diagnostic_table <- substitute(
         expr = {
-          diagnostic_table <- as.rtable(fit_mmrm, type = "diagnostic")
+          diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
           diagnostic_table
         },
         env = list(
@@ -308,8 +308,8 @@ template_mmrm_tables <- function(parentname,
 #' @describeIn template_fit_mmrm
 #'
 #' @inheritParams template_arguments
-#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern::g_mmrm_lsmeans()]
-#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern::g_mmrm_diagnostic()]
+#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern.mmrm::g_mmrm_lsmeans()]
+#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern.mmrm::g_mmrm_diagnostic()]
 #'
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
@@ -336,7 +336,7 @@ template_mmrm_plots <- function(fit_name,
 
     plot_call <- substitute(
       expr =
-        g_mmrm_lsmeans(
+        tern.mmrm::g_mmrm_lsmeans(
           fit_mmrm,
           select = select,
           width = width,
@@ -392,7 +392,7 @@ template_mmrm_plots <- function(fit_name,
 
     plot_call <- substitute(
       expr =
-        g_mmrm_diagnostic(
+        tern.mmrm::g_mmrm_diagnostic(
           fit_mmrm,
           type = type,
           z_threshold = z_threshold

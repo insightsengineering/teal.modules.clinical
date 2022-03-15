@@ -109,9 +109,9 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
 
-\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern:g_mmrm_lsmeans]{tern::g_mmrm_lsmeans()}}}
+\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}}
 
-\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern:g_mmrm_diagnostic]{tern::g_mmrm_diagnostic()}}}
+\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
