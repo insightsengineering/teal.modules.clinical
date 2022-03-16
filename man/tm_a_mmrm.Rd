@@ -8,7 +8,7 @@ tm_a_mmrm(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   aval_var,
   id_var,
   arm_var,
@@ -21,8 +21,8 @@ tm_a_mmrm(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.devel::basic_table_args(),
-  ggplot2_args = teal.devel::ggplot2_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -90,18 +90,18 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:reexports]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args}) \cr
-object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
 objects for plot-specific settings. List names should match the following:\cr \code{ c("default", "lsmeans", "diagnostic")}.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+\code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis

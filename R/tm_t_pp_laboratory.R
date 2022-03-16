@@ -201,7 +201,7 @@ tm_t_pp_laboratory <- function(label,
 
 ui_g_laboratory <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$timepoints,
     ui_args$aval,
     ui_args$avalu,
@@ -211,51 +211,51 @@ ui_g_laboratory <- function(id, ...) {
   )
 
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     output = div(
-      teal.devel::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
+      teal.widgets::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
-      optionalSelectInput(
+      teal.transform::datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select PARAMCD variable:",
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("param"),
         label = "Select PARAM variable:",
         data_extract_spec = ui_args$param,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("timepoints"),
         label = "Select timepoints variable:",
         data_extract_spec = ui_args$timepoints,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aval"),
         label = "Select AVAL variable:",
         data_extract_spec = ui_args$aval,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("avalu"),
         label = "Select AVALU variable:",
         data_extract_spec = ui_args$avalu,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("anrind"),
         label = "Select ANRIND variable:",
         data_extract_spec = ui_args$anrind,
@@ -267,7 +267,7 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -287,17 +287,22 @@ srv_g_laboratory <- function(id,
                              label) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = patient_data_base()[1]
+    )
 
     observeEvent(patient_data_base(),
       handlerExpr = {
-        updateOptionalSelectInput(
+        teal.widgets::updateOptionalSelectInput(
           session,
           "patient_id",
           choices = patient_data_base(),
@@ -324,7 +329,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Laboratory values tab ----
-    labor_merged_data <- teal.devel::data_merge_module(
+    labor_merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         timepoints = timepoints,
@@ -366,13 +371,13 @@ srv_g_laboratory <- function(id,
         )
       )
 
-      labor_stack <- teal.devel::chunks$new()
+      labor_stack <- teal.code::chunks$new()
       labor_stack$reset()
       labor_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = labor_stack)
+        teal.code::chunks_push(..., chunks = labor_stack)
       }
 
-      teal.devel::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
+      teal.code::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
 
       labor_stack_push(substitute(
         expr = {
@@ -395,24 +400,24 @@ srv_g_laboratory <- function(id,
       )
 
       lapply(labor_calls, labor_stack_push)
-      teal.devel::chunks_safe_eval(chunks = labor_stack)
+      teal.code::chunks_safe_eval(chunks = labor_stack)
       labor_stack
     })
 
     output$lab_values_table <- DT::renderDataTable(
       expr = {
-        teal.devel::chunks_reset()
-        teal.devel::chunks_push_chunks(labor_calls())
-        teal.devel::chunks_get_var("labor_table_html")
+        teal.code::chunks_reset()
+        teal.code::chunks_push_chunks(labor_calls())
+        teal.code::chunks_get_var("labor_table_html")
       },
       escape = FALSE,
       options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
+      datanames = teal.transform::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
       modal_title = label
     )
   })

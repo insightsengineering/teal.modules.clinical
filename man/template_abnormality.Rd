@@ -19,7 +19,7 @@ template_abnormality(
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
-  basic_table_args = teal.devel::basic_table_args(),
+  basic_table_args = teal.widgets::basic_table_args(),
   tbl_title
 )
 }
@@ -64,11 +64,11 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:reexports]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{tbl_title}{(\code{character})\cr Title with label of variables from by bars}
 }

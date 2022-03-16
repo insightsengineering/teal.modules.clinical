@@ -32,7 +32,7 @@ template_patient_timeline <- function(dataname = "ANL",
                                       relative_day = FALSE,
                                       patient_id,
                                       font_size = 12L,
-                                      ggplot2_args = teal.devel::ggplot2_args()) {
+                                      ggplot2_args = teal.widgets::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
   assertthat::assert_that(
@@ -54,10 +54,10 @@ template_patient_timeline <- function(dataname = "ANL",
   y$chart <- list()
 
   chart_list <- if (!relative_day) {
-    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-      teal.devel::resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+      teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args,
-        module_plot = teal.devel::ggplot2_args(
+        module_plot = teal.widgets::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
           theme = list(
             plot.title = substitute(
@@ -172,10 +172,10 @@ template_patient_timeline <- function(dataname = "ANL",
       )
     )
   } else {
-    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-      teal.devel::resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+      teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args,
-        module_plot = teal.devel::ggplot2_args(
+        module_plot = teal.widgets::ggplot2_args(
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
           theme = list(
             plot.title = substitute(
@@ -449,7 +449,7 @@ tm_g_pp_patient_timeline <- function(label,
                                      plot_width = NULL,
                                      pre_output = NULL,
                                      post_output = NULL,
-                                     ggplot2_args = teal.devel::ggplot2_args()) {
+                                     ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_patient_timeline")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
@@ -515,7 +515,7 @@ tm_g_pp_patient_timeline <- function(label,
 
 ui_g_patient_timeline <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$aeterm,
     ui_args$cmdecod,
     ui_args$aetime_start,
@@ -529,30 +529,30 @@ ui_g_patient_timeline <- function(id, ...) {
   )
 
   ns <- NS(id)
-  teal.devel::standard_layout(
-    output = teal.devel::plot_with_settings_ui(id = ns("patient_timeline_plot")),
+  teal.widgets::standard_layout(
+    output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(
+      teal.transform::datanames_input(
         ui_args[c(
           "aeterm", "cmdecod",
           "aetime_start", "aetime_end", "dstime_start", "dstime_end",
           "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
         )]
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select CMDECOD variable:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aeterm"),
         label = "Select AETERM variable:",
         data_extract_spec = ui_args$aeterm,
@@ -566,13 +566,13 @@ ui_g_patient_timeline <- function(id, ...) {
             ns = ns,
             if (!is.null(ui_args$aerelday_start)) {
               shiny::tagList(
-                teal.devel::data_extract_ui(
+                teal.transform::data_extract_ui(
                   id = ns("aerelday_start"),
                   label = "Select AE relative start date variable:",
                   data_extract_spec = ui_args$aerelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                teal.devel::data_extract_ui(
+                teal.transform::data_extract_ui(
                   id = ns("aerelday_end"),
                   label = "Select AE relative end date variable:",
                   data_extract_spec = ui_args$aerelday_end,
@@ -582,13 +582,13 @@ ui_g_patient_timeline <- function(id, ...) {
             },
             if (!is.null(ui_args$dsrelday_start)) {
               shiny::tagList(
-                teal.devel::data_extract_ui(
+                teal.transform::data_extract_ui(
                   id = ns("dsrelday_start"),
                   label = "Select Medication relative start date variable:",
                   data_extract_spec = ui_args$dsrelday_start,
                   is_single_dataset = is_single_dataset_value
                 ),
-                teal.devel::data_extract_ui(
+                teal.transform::data_extract_ui(
                   id = ns("dsrelday_end"),
                   label = "Select Medication relative end date variable:",
                   data_extract_spec = ui_args$dsrelday_end,
@@ -604,38 +604,44 @@ ui_g_patient_timeline <- function(id, ...) {
       shiny::conditionalPanel(
         paste0("input.relday_x_axis == false"),
         ns = ns,
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("aetime_start"),
           label = "Select ASTDTM variable:",
           data_extract_spec = ui_args$aetime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("aetime_end"),
           label = "Select AENDTM variable:",
           data_extract_spec = ui_args$aetime_end,
           is_single_dataset = is_single_dataset_value
         ),
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("dstime_start"),
           label = "Select TRTSDTM variable:",
           data_extract_spec = ui_args$dstime_start,
           is_single_dataset = is_single_dataset_value
         ),
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("dstime_end"),
           label = "Select TRTEDTM variable:",
           data_extract_spec = ui_args$dstime_end,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      teal.devel::panel_item(
+      teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
-        optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        teal.widgets::optionalSliderInputValMinMax(
+          ns("font_size"),
+          "Font Size",
+          ui_args$font_size,
+          ticks = FALSE,
+          step = 1
+        )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -664,17 +670,22 @@ srv_g_patient_timeline <- function(id,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-    updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
+    teal.widgets::updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = patient_data_base()[1]
+    )
 
     observeEvent(patient_data_base(),
       handlerExpr = {
-        updateOptionalSelectInput(
+        teal.widgets::updateOptionalSelectInput(
           session,
           "patient_id",
           choices = patient_data_base(),
@@ -689,7 +700,7 @@ srv_g_patient_timeline <- function(id,
     )
 
     # Patient timeline tab ----
-    p_timeline_merged_data <- teal.devel::data_merge_module(
+    p_timeline_merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
@@ -775,12 +786,12 @@ srv_g_patient_timeline <- function(id,
         )
       )
 
-      patient_timeline_stack <- teal.devel::chunks$new()
+      patient_timeline_stack <- teal.code::chunks$new()
       time_line_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = patient_timeline_stack)
+        teal.code::chunks_push(..., chunks = patient_timeline_stack)
       }
 
-      teal.devel::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
+      teal.code::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
 
       time_line_stack_push(substitute(
         expr = {
@@ -810,27 +821,27 @@ srv_g_patient_timeline <- function(id,
       )
 
       lapply(patient_timeline_calls, time_line_stack_push)
-      teal.devel::chunks_safe_eval(chunks = patient_timeline_stack)
+      teal.code::chunks_safe_eval(chunks = patient_timeline_stack)
       patient_timeline_stack
     })
 
     patient_timeline_plot <- reactive({
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(patient_timeline_calls())
-      teal.devel::chunks_get_var("patient_timeline_plot")
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(patient_timeline_calls())
+      teal.code::chunks_get_var("patient_timeline_plot")
     })
 
-    teal.devel::plot_with_settings_srv(
+    teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
       plot_r = patient_timeline_plot,
       height = plot_height,
       width = plot_width
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(
+      datanames = teal.transform::get_extract_datanames(list(
         aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
       )),
       modal_title = label

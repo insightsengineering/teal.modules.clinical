@@ -27,7 +27,7 @@ template_events_by_grade <- function(dataname,
                                      prune_diff = 0,
                                      add_total = TRUE,
                                      drop_arm_levels = TRUE,
-                                     basic_table_args = teal.devel::basic_table_args()) {
+                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -118,10 +118,10 @@ template_events_by_grade <- function(dataname,
     paste0("Adverse Event summary by ", label_grade)
   }
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = basic_title)
+      module_table = teal.widgets::basic_table_args(title = basic_title)
     )
   )
 
@@ -396,7 +396,7 @@ template_events_col_by_grade <- function(dataname,
                                          prune_freq = 0.1,
                                          prune_diff = 0,
                                          drop_arm_levels = TRUE,
-                                         basic_table_args = teal.devel::basic_table_args()) {
+                                         basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -511,10 +511,10 @@ template_events_col_by_grade <- function(dataname,
   }
 
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.devel::basic_table_args(title = basic_title)
+      module_table = teal.widgets::basic_table_args(title = basic_title)
     )
   )
 
@@ -818,7 +818,7 @@ tm_t_events_by_grade <- function(label,
                                  dataname,
                                  parentname = ifelse(
                                    inherits(arm_var, "data_extract_spec"),
-                                   teal.devel::datanames_input(arm_var),
+                                   teal.transform::datanames_input(arm_var),
                                    "ADSL"
                                  ),
                                  arm_var,
@@ -838,7 +838,7 @@ tm_t_events_by_grade <- function(label,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 basic_table_args = teal.devel::basic_table_args()) {
+                                 basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_events_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -876,7 +876,7 @@ tm_t_events_by_grade <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -884,32 +884,32 @@ tm_t_events_by_grade <- function(label,
 ui_t_events_by_grade <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
+  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("grade"),
         label = "Event Grade",
         data_extract_spec = a$grade,
@@ -925,8 +925,8 @@ ui_t_events_by_grade <- function(id, ...) {
         "Display grade groupings in nested columns",
         value = a$col_by_grade
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
@@ -955,7 +955,7 @@ ui_t_events_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -977,15 +977,15 @@ srv_t_events_by_grade <- function(id,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
-    anl_merged <- teal.devel::data_merge_module(
+    anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
@@ -1008,7 +1008,7 @@ srv_t_events_by_grade <- function(id,
         need(input_arm_var, "Please select a treatment variable"),
         need(input_grade, "Please select a grade variable")
       )
-      teal.devel::validate_has_elements(
+      teal::validate_has_elements(
         input_level_term,
         "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
       )
@@ -1051,7 +1051,7 @@ srv_t_events_by_grade <- function(id,
       }
 
       # validate inputs
-      teal.devel::validate_standard_inputs(
+      validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c(adsl_keys, input_arm_var),
         anl = anl_filtered,
@@ -1064,14 +1064,14 @@ srv_t_events_by_grade <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
 
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
       input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
       input_grade <- as.vector(anl_m$columns_source$grade)
@@ -1118,26 +1118,26 @@ srv_t_events_by_grade <- function(id,
           basic_table_args = basic_table_args
         )
       }
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
     })
 
     # Outputs to render.
     table <- reactive({
       call_preparation()
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("pruned_and_sorted_result")
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("pruned_and_sorted_result")
     })
 
-    teal.devel::table_with_settings_srv(
+    teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table
     )
 
     # Render R code.
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(
+      datanames = teal.transform::get_extract_datanames(
         list(arm_var, hlt, llt, grade)
       ),
       modal_title = "AE by Grade Table",

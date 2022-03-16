@@ -169,18 +169,18 @@ template_mmrm_tables <- function(parentname,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
-                                 basic_table_args = teal.devel::basic_table_args()) {
+                                 basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
-  all_basic_table_args <- teal.devel::resolve_basic_table_args(basic_table_args)
+  all_basic_table_args <- teal.widgets::resolve_basic_table_args(basic_table_args)
 
   # Build layout.
   layout_list <- list()
   layout_list <- layout_list %>%
     add_expr(substitute(
       expr = expr_basic_table_args,
-      env = list(expr_basic_table_args = teal.devel::parse_basic_table_args(all_basic_table_args))
+      env = list(expr_basic_table_args = teal.widgets::parse_basic_table_args(all_basic_table_args))
     ))
 
   if (!is.null(arm_var)) {
@@ -321,14 +321,14 @@ template_mmrm_plots <- function(fit_name,
                                   type = "fit-residual",
                                   z_threshold = NULL
                                 ),
-                                ggplot2_args = teal.devel::ggplot2_args()) {
+                                ggplot2_args = teal.widgets::ggplot2_args()) {
   y <- list()
 
 
 
   if (!is.null(lsmeans_plot)) {
-    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-      teal.devel::resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+      teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args[["lsmeans"]],
         user_default = ggplot2_args[["default"]]
       )
@@ -383,8 +383,8 @@ template_mmrm_plots <- function(fit_name,
   }
 
   if (!is.null(diagnostic_plot)) {
-    parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-      teal.devel::resolve_ggplot2_args(
+    parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+      teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args[["diagnostic"]],
         user_default = ggplot2_args[["default"]]
       )
@@ -422,12 +422,12 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @inheritParams module_arguments
 #' @param ggplot2_args optional, (`ggplot2_args`) \cr
-#' object created by [`teal.devel::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
+#' object created by [`teal.widgets::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
 #' objects for plot-specific settings. List names should match the following:\cr `
 #' c("default", "lsmeans", "diagnostic")`.
 #' The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #' (hard coded in the module body).\cr For more details, see the help vignette:\cr
-#' `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
+#' `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @export
 #'
@@ -502,7 +502,7 @@ tm_a_mmrm <- function(label,
                       dataname,
                       parentname = ifelse(
                         inherits(arm_var, "data_extract_spec"),
-                        teal.devel::datanames_input(arm_var),
+                        teal.transform::datanames_input(arm_var),
                         "ADSL"
                       ),
                       aval_var,
@@ -517,8 +517,8 @@ tm_a_mmrm <- function(label,
                       plot_width = NULL,
                       pre_output = NULL,
                       post_output = NULL,
-                      basic_table_args = teal.devel::basic_table_args(),
-                      ggplot2_args = teal.devel::ggplot2_args()) {
+                      basic_table_args = teal.widgets::basic_table_args(),
+                      ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -569,7 +569,7 @@ tm_a_mmrm <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -577,7 +577,7 @@ tm_a_mmrm <- function(label,
 ui_mmrm <- function(id, ...) {
   a <- list(...) # module args
   ns <- NS(id)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$paramcd,
     a$id_var,
@@ -586,52 +586,52 @@ ui_mmrm <- function(id, ...) {
     a$aval_var
   )
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       textOutput(ns("null_input_msg")),
       h3(textOutput(ns("mmrm_title"))),
-      teal.devel::table_with_settings_ui(ns("mmrm_table")),
-      teal.devel::plot_with_settings_ui(id = ns("mmrm_plot"))
+      teal.widgets::table_with_settings_ui(ns("mmrm_table")),
+      teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Model Settings",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("aval_var"),
             label = "Analysis Variable",
             data_extract_spec = a$aval_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("paramcd"),
             label = "Select Endpoint",
             data_extract_spec = a$paramcd,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("visit_var"),
             label = "Visit Variable",
             data_extract_spec = a$visit_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("cov_var"),
             label = "Covariates",
             data_extract_spec = a$cov_var,
             is_single_dataset = is_single_dataset_value
           ),
           shinyjs::hidden(
-            teal.devel::data_extract_ui(
+            teal.transform::data_extract_ui(
               id = ns("split_covariates"),
               label = "Split Covariates",
               data_extract_spec = a$split_covariates,
               is_single_dataset = is_single_dataset_value
             )
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
@@ -663,7 +663,7 @@ ui_mmrm <- function(id, ...) {
               value = FALSE
             )
           ),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
@@ -683,7 +683,7 @@ ui_mmrm <- function(id, ...) {
             selected = "unstructured",
             multiple = FALSE
           ),
-          optionalSelectInput(
+          teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Confidence Level",
             a$conf_level$choices,
@@ -748,8 +748,8 @@ ui_mmrm <- function(id, ...) {
           "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
           "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
         ),
-        teal.devel::panel_group(
-          teal.devel::panel_item(
+        teal.widgets::panel_group(
+          teal.widgets::panel_item(
             "Output Settings",
             # Additional option for LS means table.
             selectInput(
@@ -802,7 +802,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -828,7 +828,7 @@ srv_mmrm <- function(id,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
@@ -844,14 +844,14 @@ srv_mmrm <- function(id,
       } else {
         split_covariates_selected <- split_interactions_values
       }
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         inputId = extract_input("split_covariates", dataname),
         selected = split_covariates_selected
       )
     })
 
-    anl_merged <- teal.devel::data_merge_module(
+    anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         arm_var = arm_var,
@@ -864,7 +864,7 @@ srv_mmrm <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
@@ -916,7 +916,7 @@ srv_mmrm <- function(id,
       }
     })
 
-    teal.devel::arm_ref_comp_observer(
+    arm_ref_comp_observer(
       session, input,
       id_ref = "ref_arm",
       id_comp = "comp_arm",
@@ -1041,7 +1041,7 @@ srv_mmrm <- function(id,
         need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
         need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
       )
-      teal.devel::validate_no_intersection(
+      teal::validate_no_intersection(
         encoding_inputs[["comp_arm"]],
         encoding_inputs[["ref_arm"]],
         "`Reference Group` and `Comparison Group` cannot have common values"
@@ -1139,7 +1139,7 @@ srv_mmrm <- function(id,
       adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
       anlvars <- unique(c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_visit_var, all_x_vars_in_anl))
 
-      teal.devel::validate_standard_inputs(
+      validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = adslvars,
         anl = anl_filtered,
@@ -1173,19 +1173,19 @@ srv_mmrm <- function(id,
     # Fit the MMRM, once the user clicks on the start button.
     mmrm_fit <- eventReactive(input$button_start, {
       # Create a private stack for this function only.
-      fit_stack <- teal.devel::chunks$new()
+      fit_stack <- teal.code::chunks$new()
       fit_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = fit_stack)
+        teal.code::chunks_push(..., chunks = fit_stack)
       }
 
-      teal.devel::chunks_reset(chunks = fit_stack)
+      teal.code::chunks_reset(chunks = fit_stack)
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m, chunks = fit_stack)
-      teal.devel::chunks_push_new_line(chunks = fit_stack)
+      teal.code::chunks_push_data_merge(anl_m, chunks = fit_stack)
+      teal.code::chunks_push_new_line(chunks = fit_stack)
 
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl, chunks = fit_stack)
-      teal.devel::chunks_push_new_line(chunks = fit_stack)
+      teal.code::chunks_push_data_merge(anl_adsl, chunks = fit_stack)
+      teal.code::chunks_push_new_line(chunks = fit_stack)
 
       my_calls <- template_fit_mmrm(
         parentname = "ANL_ADSL",
@@ -1205,7 +1205,7 @@ srv_mmrm <- function(id,
         parallel = input$parallel
       )
       mapply(expression = my_calls, fit_stack_push)
-      teal.devel::chunks_safe_eval(chunks = fit_stack)
+      teal.code::chunks_safe_eval(chunks = fit_stack)
       fit_stack
     })
 
@@ -1254,21 +1254,21 @@ srv_mmrm <- function(id,
         return(NULL)
       }
       # Reset global chunks. Needs to be done here so nothing yet in environment.
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       # Get the fit stack while evaluating the fit code at the same time.
       fit_stack <- mmrm_fit()
-      fit <- teal.devel::chunks_get_var("fit", chunks = fit_stack)
+      fit <- teal.code::chunks_get_var("fit", chunks = fit_stack)
       # Start new private stack for the table code.
-      table_stack <- teal.devel::chunks$new()
+      table_stack <- teal.code::chunks$new()
 
       table_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = table_stack)
+        teal.code::chunks_push(..., chunks = table_stack)
       }
 
       anl_m <- anl_merged()
 
-      ANL <- teal.devel::chunks_get_var("ANL", chunks = fit_stack) # nolint
-      ANL_ADSL <- teal.devel::chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
+      ANL <- teal.code::chunks_get_var("ANL", chunks = fit_stack) # nolint
+      ANL_ADSL <- teal.code::chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       mmrm_table <- function(table_type) {
@@ -1286,18 +1286,18 @@ srv_mmrm <- function(id,
         )
 
         mapply(expression = res, table_stack_push)
-        teal.devel::chunks_push_chunks(table_stack)
-        teal.devel::chunks_safe_eval()
+        teal.code::chunks_push_chunks(table_stack)
+        teal.code::chunks_safe_eval()
       }
-      teal.devel::chunks_push_chunks(fit_stack)
+      teal.code::chunks_push_chunks(fit_stack)
       mmrm_table(output_function)
 
       # Depending on the table function type, produce different code
       switch(output_function,
-        t_mmrm_lsmeans = teal.devel::chunks_get_var("lsmeans_table"),
-        t_mmrm_diagnostic = teal.devel::chunks_get_var("diagnostic_table"),
-        t_mmrm_fixed = teal.devel::chunks_get_var("fixed_effects"),
-        t_mmrm_cov = teal.devel::chunks_get_var("cov_matrix")
+        t_mmrm_lsmeans = teal.code::chunks_get_var("lsmeans_table"),
+        t_mmrm_diagnostic = teal.code::chunks_get_var("diagnostic_table"),
+        t_mmrm_fixed = teal.code::chunks_get_var("fixed_effects"),
+        t_mmrm_cov = teal.code::chunks_get_var("cov_matrix")
       )
     })
 
@@ -1317,14 +1317,14 @@ srv_mmrm <- function(id,
       if (!isTRUE(grepl("^g_", output_function))) {
         return(NULL)
       }
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       fit_stack <- mmrm_fit()
-      fit <- teal.devel::chunks_get_var("fit", fit_stack)
+      fit <- teal.code::chunks_get_var("fit", fit_stack)
 
       # Start new private stack for the plot code.
-      plot_stack <- teal.devel::chunks$new()
+      plot_stack <- teal.code::chunks$new()
       plot_stack_push <- function(...) {
-        teal.devel::chunks_push(..., chunks = plot_stack)
+        teal.code::chunks_push(..., chunks = plot_stack)
       }
 
       lsmeans_args <- list(
@@ -1346,24 +1346,24 @@ srv_mmrm <- function(id,
           ggplot2_args = ggplot2_args
         )
         mapply(expression = res, plot_stack_push)
-        teal.devel::chunks_push_chunks(plot_stack)
-        teal.devel::chunks_safe_eval()
+        teal.code::chunks_push_chunks(plot_stack)
+        teal.code::chunks_safe_eval()
       }
-      teal.devel::chunks_push_chunks(fit_stack)
+      teal.code::chunks_push_chunks(fit_stack)
       # Depending on the plot function type, produce different code.
       switch(output_function,
         g_mmrm_lsmeans = {
           mmrm_plot(diagnostic_plot = NULL)
-          teal.devel::chunks_get_var("lsmeans_plot")
+          teal.code::chunks_get_var("lsmeans_plot")
         },
         g_mmrm_diagnostic = {
           mmrm_plot(lsmeans_plot = NULL)
-          teal.devel::chunks_get_var("diagnostic_plot")
+          teal.code::chunks_get_var("diagnostic_plot")
         }
       )
     })
 
-    teal.devel::plot_with_settings_srv(
+    teal.widgets::plot_with_settings_srv(
       id = "mmrm_plot",
       plot_r = mmrm_plot_reactive,
       height = plot_height,
@@ -1371,7 +1371,7 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(show_plot_rv())
     )
 
-    teal.devel::table_with_settings_srv(
+    teal.widgets::table_with_settings_srv(
       id = "mmrm_table",
       table_r = mmrm_table,
       show_hide_signal = reactive(!show_plot_rv())
@@ -1383,7 +1383,7 @@ srv_mmrm <- function(id,
       # First reassign reactive sources:
       fit_stack <- try(mmrm_fit(), silent = TRUE)
       result <- if (!inherits(fit_stack, "try-error")) {
-        fit <- teal.devel::chunks_get_var("fit", chunks = fit_stack)
+        fit <- teal.code::chunks_get_var("fit", chunks = fit_stack)
         if (input$optimizer == "automatic") {
           selected <- attr(fit$fit, "optimizer")
           paste("Optimizer used:", selected)
@@ -1404,10 +1404,10 @@ srv_mmrm <- function(id,
     })
 
     # Show R code once button is pressed.
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
+      datanames = teal.transform::get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
       modal_title = "R Code for the Current MMRM Analysis",
       code_header = label,
       disable_buttons = disable_r_code

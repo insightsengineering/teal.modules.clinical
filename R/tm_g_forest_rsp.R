@@ -11,13 +11,13 @@
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
 #' `title`, `caption`.
 #' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
 #' @keywords internal
@@ -34,7 +34,7 @@ template_forest_rsp <- function(dataname = "ANL",
                                 strata_var = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
-                                ggplot2_args = teal.devel::ggplot2_args()) {
+                                ggplot2_args = teal.widgets::ggplot2_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -157,9 +157,9 @@ template_forest_rsp <- function(dataname = "ANL",
       tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
   )
 
-  all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
+  all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
     user_plot = ggplot2_args,
-    module_plot = teal.devel::ggplot2_args(
+    module_plot = teal.widgets::ggplot2_args(
       labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name), caption = "")
     )
   )
@@ -202,13 +202,13 @@ template_forest_rsp <- function(dataname = "ANL",
 #' When (`TRUE`), the same symbol size is used for plotting each estimate.
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.devel::ggplot2_args()] with settings for the module plot.
+#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
 #' `title`, `caption`.
 #' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
 #' with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.devel")`.
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @export
 #'
@@ -299,7 +299,7 @@ tm_g_forest_rsp <- function(label,
                             dataname,
                             parentname = ifelse(
                               inherits(arm_var, "data_extract_spec"),
-                              teal.devel::datanames_input(arm_var),
+                              teal.transform::datanames_input(arm_var),
                               "ADSL"
                             ),
                             arm_var,
@@ -315,7 +315,7 @@ tm_g_forest_rsp <- function(label,
                             plot_width = c(900L, 200L, 2000L),
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.devel::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_forest_rsp")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -365,29 +365,29 @@ tm_g_forest_rsp <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @noRd
 ui_g_forest_rsp <- function(id, ...) {
   a <- list(...) # module args
-  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
+  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
 
   ns <- NS(id)
 
-  teal.devel::standard_layout(
-    output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
+  teal.widgets::standard_layout(
+    output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
@@ -400,7 +400,7 @@ ui_g_forest_rsp <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -434,22 +434,22 @@ ui_g_forest_rsp <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("subgroup_var"),
         label = "Subgroup Variables",
         data_extract_spec = a$subgroup_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional plot settings",
-          optionalSelectInput(
+          teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
             label = "Confidence Level",
             a$conf_level$choices,
@@ -461,7 +461,7 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -485,11 +485,11 @@ srv_g_forest_rsp <- function(id,
   moduleServer(id, function(input, output, session) {
     stopifnot(is_cdisc_data(datasets))
 
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
-    teal.devel::arm_ref_comp_observer(
+    arm_ref_comp_observer(
       session, input,
       id_ref = "ref_arm",
       id_comp = "comp_arm",
@@ -500,7 +500,7 @@ srv_g_forest_rsp <- function(id,
       module = "tm_t_tte"
     )
 
-    anl_selectors <- teal.devel::data_extract_multiple_srv(
+    anl_selectors <- teal.transform::data_extract_multiple_srv(
       list(
         arm_var = arm_var,
         subgroup_var = subgroup_var,
@@ -511,13 +511,13 @@ srv_g_forest_rsp <- function(id,
       datasets = datasets
     )
 
-    anl_merged <- teal.devel::data_merge_srv(
+    anl_merged <- teal.transform::data_merge_srv(
       selector_list = anl_selectors,
       datasets = datasets,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.devel::data_merge_module(
+    adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
@@ -585,7 +585,7 @@ srv_g_forest_rsp <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal.devel::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
         validate(
@@ -658,16 +658,16 @@ srv_g_forest_rsp <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
 
       anl_adsl <- adsl_merged()
-      teal.devel::chunks_push_data_merge(anl_adsl)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
 
-      ANL <- teal.devel::chunks_get_var("ANL") # nolint
+      ANL <- teal.code::chunks_get_var("ANL") # nolint
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -689,23 +689,23 @@ srv_g_forest_rsp <- function(id,
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
 
-      teal.devel::chunks_safe_eval()
-      teal.devel::chunks_get_var("p")
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("p")
     })
 
-    teal.devel::plot_with_settings_srv(
+    teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = call_preparation,
       height = plot_height,
       width = plot_width
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(
+      datanames = teal.transform::get_extract_datanames(
         list(arm_var, paramcd, subgroup_var, strata_var)
       ),
       modal_title = label

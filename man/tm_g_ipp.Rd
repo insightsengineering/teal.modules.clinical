@@ -8,7 +8,7 @@ tm_g_ipp(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
   paramcd,
   id_var = choices_selected(variable_choices(dataname, "USUBJID"), "USUBJID", fixed =
@@ -27,7 +27,7 @@ tm_g_ipp(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -90,13 +90,13 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
 \code{title}, \code{subtitle}, \code{x}, \code{y}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
 with default module arguments (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces grid style Individual patient plot(s) that show

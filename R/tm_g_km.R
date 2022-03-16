@@ -321,7 +321,7 @@ tm_g_km <- function(label,
                     dataname,
                     parentname = ifelse(
                       inherits(arm_var, "data_extract_spec"),
-                      teal.devel::datanames_input(arm_var),
+                      teal.transform::datanames_input(arm_var),
                       "ADSL"
                     ),
                     arm_var,
@@ -380,7 +380,7 @@ tm_g_km <- function(label,
         plot_width = plot_width
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -389,7 +389,7 @@ tm_g_km <- function(label,
 #' @noRd
 ui_g_km <- function(id, ...) {
   a <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$paramcd,
     a$strata_var,
@@ -401,41 +401,41 @@ ui_g_km <- function(id, ...) {
 
   ns <- NS(id)
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      teal.devel::plot_with_settings_ui(
+      teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("facet_var"),
         label = "Facet Plots by",
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -472,7 +472,7 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            teal.devel::data_extract_ui(
+            teal.transform::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratify by",
               data_extract_spec = a$strata_var,
@@ -483,8 +483,8 @@ ui_g_km <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.devel::panel_group(
-          teal.devel::panel_item(
+        teal.widgets::panel_group(
+          teal.widgets::panel_item(
             "Comparison settings",
             radioButtons(
               ns("pval_method_coxph"),
@@ -515,8 +515,8 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
@@ -549,7 +549,7 @@ ui_g_km <- function(id, ...) {
             value = TRUE,
             width = "100%"
           ),
-          optionalSelectInput(
+          teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
             a$conf_level$choices,
@@ -558,7 +558,7 @@ ui_g_km <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
@@ -567,7 +567,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -594,11 +594,11 @@ srv_g_km <- function(id,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
-    teal.devel::arm_ref_comp_observer(
+    arm_ref_comp_observer(
       session, input,
       id_ref = "ref_arm", # from UI
       id_comp = "comp_arm", # from UI
@@ -610,7 +610,7 @@ srv_g_km <- function(id,
       on_off = reactive(input$compare_arms)
     )
 
-    anl_merged <- teal.devel::data_merge_module(
+    anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(
         aval_var = aval_var,
@@ -686,13 +686,13 @@ srv_g_km <- function(id,
     call_preparation <- reactive({
       validate_checks()
 
-      teal.devel::chunks_reset()
+      teal.code::chunks_reset()
       anl_m <- anl_merged()
-      teal.devel::chunks_push_data_merge(anl_m)
-      teal.devel::chunks_push_new_line()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
 
-      ANL <- teal.devel::chunks_get_var("ANL") # nolint
-      teal.devel::validate_has_data(ANL, 2)
+      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      teal::validate_has_data(ANL, 2)
 
       input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
         strsplit(",") %>%
@@ -731,27 +731,27 @@ srv_g_km <- function(id,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      mapply(expression = my_calls, teal.devel::chunks_push)
+      mapply(expression = my_calls, teal.code::chunks_push)
     })
 
     km_plot <- reactive({
       call_preparation()
-      teal.devel::chunks_safe_eval()
+      teal.code::chunks_safe_eval()
     })
 
 
-    # Insert the plot into a plot with settings module from teal.devel
-    teal.devel::plot_with_settings_srv(
+    # Insert the plot into a plot with settings module from teal.widgets
+    teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = km_plot,
       height = plot_height,
       width = plot_width
     )
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(
+      datanames = teal.transform::get_extract_datanames(
         list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
       ),
       modal_title = label

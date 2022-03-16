@@ -145,21 +145,21 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_width = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 ggplot2_args = teal.devel::ggplot2_args()) {
+                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
   if (length(c(x, fill, x_facet, y_facet)) == 0) {
     stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
   }
-  x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
-  fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
-  x_facet <- teal.devel::list_extract_spec(x_facet, allow_null = TRUE)
-  y_facet <- teal.devel::list_extract_spec(y_facet, allow_null = TRUE)
-  teal.devel::check_no_multiple_selection(x)
-  teal.devel::check_no_multiple_selection(fill)
-  teal.devel::check_no_multiple_selection(x_facet)
-  teal.devel::check_no_multiple_selection(y_facet)
+  x <- teal.transform::list_extract_spec(x, allow_null = TRUE)
+  fill <- teal.transform::list_extract_spec(fill, allow_null = TRUE)
+  x_facet <- teal.transform::list_extract_spec(x_facet, allow_null = TRUE)
+  y_facet <- teal.transform::list_extract_spec(y_facet, allow_null = TRUE)
+  teal.transform::check_no_multiple_selection(x)
+  teal.transform::check_no_multiple_selection(fill)
+  teal.transform::check_no_multiple_selection(x_facet)
+  teal.transform::check_no_multiple_selection(y_facet)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -198,17 +198,17 @@ tm_g_barchart_simple <- function(x = NULL,
 ui_g_barchart_simple <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
-      teal.devel::plot_with_settings_ui(id = ns("myplot")),
+  is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
+      teal.widgets::plot_with_settings_ui(id = ns("myplot")),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
+      teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("x"),
           label = "X variable",
           data_extract_spec = args$x,
@@ -216,7 +216,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$fill)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("fill"),
           label = "Fill",
           data_extract_spec = args$fill,
@@ -224,7 +224,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$x_facet)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("x_facet"),
           label = "Column facetting variable",
           data_extract_spec = args$x_facet,
@@ -232,15 +232,15 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$y_facet)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("y_facet"),
           label = "Row facetting variable",
           data_extract_spec = args$y_facet,
           is_single_dataset = is_single_dataset_value
         )
       },
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional plot settings",
           if (!is.null(args$fill)) {
             radioButtons(
@@ -292,7 +292,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
@@ -309,12 +309,12 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
   moduleServer(id, function(input, output, session) {
-    teal.devel::init_chunks()
+    teal.code::init_chunks()
 
     data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
 
-    selector_list <- teal.devel::data_extract_multiple_srv(data_extract, datasets)
+    selector_list <- teal.transform::data_extract_multiple_srv(data_extract, datasets)
 
     reactive_select_input <- reactive({
       selectors <- selector_list()
@@ -327,7 +327,7 @@ srv_g_barchart_simple <- function(id,
       selectors
     })
 
-    merged_data <- teal.devel::data_merge_srv(
+    merged_data <- teal.transform::data_merge_srv(
       selector_list = reactive_select_input,
       datasets = datasets
     )
@@ -337,9 +337,9 @@ srv_g_barchart_simple <- function(id,
         need("x" %in% names(reactive_select_input()), "Please select an x-variable")
       })
       ANL <- merged_data()$data() # nolint
-      teal.devel::validate_has_data(ANL, 2)
-      chunk <- teal.devel::chunks$new()
-      teal.devel::chunks_push_data_merge(merged_data(), chunks = chunk)
+      teal::validate_has_data(ANL, 2)
+      chunk <- teal.code::chunks$new()
+      teal.code::chunks_push_data_merge(merged_data(), chunks = chunk)
       chunk
     })
 
@@ -382,13 +382,13 @@ srv_g_barchart_simple <- function(id,
       }))
 
       # dplyr::select loses labels
-      chunk$push(teal.devel::get_anl_relabel_call(
+      chunk$push(teal.transform::get_anl_relabel_call(
         columns_source = merged_data()$columns_source,
         datasets = datasets,
         anl_name = "counts"
       ))
 
-      teal.devel::chunks_safe_eval(chunk)
+      teal.code::chunks_safe_eval(chunk)
       chunk
     })
 
@@ -408,9 +408,9 @@ srv_g_barchart_simple <- function(id,
         )
       )
 
-      all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
+      all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args,
-        module_plot = teal.devel::ggplot2_args(
+        module_plot = teal.widgets::ggplot2_args(
           labs = list(
             title = quote(plot_title),
             y = substitute(
@@ -444,14 +444,14 @@ srv_g_barchart_simple <- function(id,
       # the ggplot call and therefore catches errors
       chunk$push(quote(print(plot)))
 
-      teal.devel::chunks_safe_eval(chunk)
+      teal.code::chunks_safe_eval(chunk)
       chunk
     })
 
     generate_code <- reactive({
       chunk <- plot_chunk()
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(chunk) # set session chunks for ShowRCode
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(chunk) # set session chunks for ShowRCode
 
       chunk
     })
@@ -494,8 +494,8 @@ srv_g_barchart_simple <- function(id,
       res
     }
 
-    # Insert the plot into a plot with settings module from teal.devel
-    teal.devel::plot_with_settings_srv(
+    # Insert the plot into a plot with settings module from teal.widgets
+    teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = plot_r,
       height = plot_height,
@@ -503,10 +503,10 @@ srv_g_barchart_simple <- function(id,
     )
 
 
-    teal.devel::get_rcode_srv(
+    teal::get_rcode_srv(
       id = "rcode",
       datasets = datasets,
-      datanames = teal.devel::get_extract_datanames(list(x, fill, x_facet, y_facet)),
+      datanames = teal.transform::get_extract_datanames(list(x, fill, x_facet, y_facet)),
       modal_title = "Bar Chart"
     )
   })
@@ -560,7 +560,7 @@ make_barchart_simple_call <- function(y_name,
                                       rotate_x_label = FALSE,
                                       rotate_y_label = FALSE,
                                       expand_y_range = 0,
-                                      ggplot2_args = teal.devel::ggplot2_args()) {
+                                      ggplot2_args = teal.widgets::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
   validate(
@@ -599,7 +599,7 @@ make_barchart_simple_call <- function(y_name,
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      facet_grid(.(teal.devel::facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
     ))
   }
 
@@ -675,7 +675,7 @@ make_barchart_simple_call <- function(y_name,
     ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
   }
 
-  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(ggplot2_args)
+  parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(ggplot2_args)
   plot_args <- c(plot_args, parsed_ggplot2_args)
 
   bquote(plot <- .(call_concatenate(plot_args)))

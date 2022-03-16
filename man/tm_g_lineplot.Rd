@@ -8,7 +8,7 @@ tm_g_lineplot(
   label,
   dataname,
   parentname = ifelse(inherits(strata, "data_extract_spec"),
-    teal.devel::datanames_input(strata), "ADSL"),
+    teal.transform::datanames_input(strata), "ADSL"),
   strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD",
     "ACTARMCD")), "ARM"),
   x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
@@ -30,7 +30,7 @@ tm_g_lineplot(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -106,13 +106,13 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:reexports]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
 \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
 with default module arguments (hard coded in the module body)
 
-For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces a grid style Line Plot for data with
