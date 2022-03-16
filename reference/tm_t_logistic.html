@@ -48,15 +48,6 @@ STREAM template lgrt02."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -87,7 +78,7 @@ STREAM template <code>lgrt02</code>.</p>
   <span class="va">label</span>,
   <span class="va">dataname</span>,
   parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
-    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
+    <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   arm_var <span class="op">=</span> <span class="cn">NULL</span>,
   arm_ref_comp <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">paramcd</span>,
@@ -97,7 +88,7 @@ STREAM template <code>lgrt02</code>.</p>
   conf_level <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   pre_output <span class="op">=</span> <span class="cn">NULL</span>,
   post_output <span class="op">=</span> <span class="cn">NULL</span>,
-  basic_table_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>
+  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -150,10 +141,10 @@ with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
 <dt>basic_table_args</dt>
 <dd><p>optional, (<code>basic_table_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code> with settings for the module table.
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code> with settings for the module table.
 The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
 (hard coded in the module body).</p>
-<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.devel")</code>.</p></dd>
+<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
 </dl></div>
 
     <div id="ref-examples">
@@ -203,7 +194,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-15 12:01:06.4492 pid:2756 token:[] teal.modules.clinical Initializing tm_t_logistic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:19:37.2439 pid:2747 token:[] teal.modules.clinical Initializing tm_t_logistic</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">ui</span>, server <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

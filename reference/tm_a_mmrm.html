@@ -47,15 +47,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -85,7 +76,7 @@ Other releases
   <span class="va">label</span>,
   <span class="va">dataname</span>,
   parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
-    <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
+    <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">aval_var</span>,
   <span class="va">id_var</span>,
   <span class="va">arm_var</span>,
@@ -98,8 +89,8 @@ Other releases
   plot_width <span class="op">=</span> <span class="cn">NULL</span>,
   pre_output <span class="op">=</span> <span class="cn">NULL</span>,
   post_output <span class="op">=</span> <span class="cn">NULL</span>,
-  basic_table_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>,
-  ggplot2_args <span class="op">=</span> <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
+  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>,
+  ggplot2_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -170,16 +161,16 @@ with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
 <dt>basic_table_args</dt>
 <dd><p>optional, (<code>basic_table_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.devel::basic_table_args()</a></code> with settings for the module table.
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code> with settings for the module table.
 The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
 (hard coded in the module body).</p>
-<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.devel")</code>.</p></dd>
+<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>) <br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.devel::ggplot2_args()</a></code> with settings for all the plots or named list of <code>ggplot2_args</code>
+object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for all the plots or named list of <code>ggplot2_args</code>
 objects for plot-specific settings. List names should match the following:<br><code> c("default", "lsmeans", "diagnostic")</code>.
 The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
-(hard coded in the module body).<br> For more details, see the help vignette:<br><code>vignette("custom-ggplot2-arguments", package = "teal.devel")</code>.</p></dd>
+(hard coded in the module body).<br> For more details, see the help vignette:<br><code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
 </dl></div>
     <div id="note">
     <h2>Note</h2>
@@ -247,7 +238,7 @@ numerical precision.</p>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-15 11:59:43.3539 pid:2756 token:[] teal.modules.clinical Initializing tm_a_mmrm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:18:03.3789 pid:2747 token:[] teal.modules.clinical Initializing tm_a_mmrm</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

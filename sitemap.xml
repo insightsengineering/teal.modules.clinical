@@ -31,6 +31,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/add_expr.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/arm_ref_comp_observer.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/as_num.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/call_concatenate.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/check_arm_ref_comp.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/clean_description.html</loc>
@@ -68,6 +74,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/extract_input.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/facet_grid_formula.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/get_g_forest_obj_var_name.html</loc>
@@ -338,5 +347,8 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_tte.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/validate_standard_inputs.html</loc>
   </url>
 </urlset>
