@@ -335,7 +335,8 @@ ui_g_vitals <- function(id, ...) {
         title = "Plot settings",
         collapsed = TRUE,
         teal.widgets::optionalSliderInputValMinMax(
-          ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1
+          ns("font_size"), "Font Size", ui_args$font_size,
+          ticks = FALSE, step = 1
         )
       )
     ),
