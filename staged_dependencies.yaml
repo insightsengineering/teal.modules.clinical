@@ -17,11 +17,17 @@ upstream_repos:
   Roche/rtables:
     repo: Roche/rtables
     host: https://github.com
+  insightsengineering/teal.logger:
+    repo: insightsengineering/teal.logger
+    host: https://github.com
   insightsengineering/teal.widgets:
     repo: insightsengineering/teal.widgets
     host: https://github.com
   insightsengineering/teal.code:
     repo: insightsengineering/teal.code
+    host: https://github.com
+  insightsengineering/teal.data:
+    repo: insightsengineering/teal.data
     host: https://github.com
   insightsengineering/teal.transform:
     repo: insightsengineering/teal.transform
