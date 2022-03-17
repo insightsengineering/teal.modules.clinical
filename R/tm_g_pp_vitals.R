@@ -179,12 +179,14 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
-#' ADVS dataset.
-#' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADVS dataset.
-#' @param aval ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AVAL} column of the ADVS dataset.
-#' @param xaxis ([teal::choices_selected()] or [teal::data_extract_spec()])\cr time variable to be represented in
-#' the vitals plot x-axis.
+#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{PARAMCD} column of the ADVS dataset.
+#' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{PARAM} column of the ADVS dataset.
+#' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{AVAL} column of the ADVS dataset.
+#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' time variable to be represented in the vitals plot x-axis.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export
@@ -207,20 +209,20 @@ template_vitals <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       paramcd = choices_selected(
-#'         choices = variable_choices(ADVS, "PARAMCD"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADVS, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
-#'       param = choices_selected(
-#'         choices = variable_choices(ADVS, "PARAM"),
+#'       param = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADVS, "PARAM"),
 #'         selected = "PARAM"
 #'       ),
-#'       xaxis = choices_selected(
-#'         choices = variable_choices(ADVS, "ADY"),
+#'       xaxis = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
 #'       ),
-#'       aval = choices_selected(
-#'         choices = variable_choices(ADVS, "AVAL"),
+#'       aval = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADVS, "AVAL"),
 #'         selected = "AVAL"
 #'       )
 #'     )

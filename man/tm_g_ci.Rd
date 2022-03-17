@@ -10,7 +10,8 @@ tm_g_ci(
   y_var,
   color,
   stat = c("mean", "median"),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -79,26 +80,26 @@ app <- init(
   modules = modules(
     tm_g_ci(
       label = "Confidence Interval Plot",
-      x_var = data_extract_spec(
+      x_var = teal.transform::data_extract_spec(
         dataname = "ADSL",
-        select = select_spec(
+        select = teal.transform::select_spec(
           choices = c("ARMCD", "BMRKR2"),
           selected = c("ARMCD"),
           multiple = FALSE,
           fixed = FALSE
         )
       ),
-      y_var = data_extract_spec(
+      y_var = teal.transform::data_extract_spec(
         dataname = "ADLB",
         filter = list(
-          filter_spec(
+          teal.transform::filter_spec(
             vars = "PARAMCD",
             choices = levels(ADLB$PARAMCD),
             selected = levels(ADLB$PARAMCD)[1],
             multiple = FALSE,
             label = "Select lab:"
           ),
-          filter_spec(
+          teal.transform::filter_spec(
             vars = "AVISIT",
             choices = levels(ADLB$AVISIT),
             selected = levels(ADLB$AVISIT)[1],
@@ -106,7 +107,7 @@ app <- init(
             label = "Select visit:"
           )
         ),
-        select = select_spec(
+        select = teal.transform::select_spec(
           label = "Analyzed Value",
           choices = c("AVAL", "CHG"),
           selected = "AVAL",
@@ -114,9 +115,9 @@ app <- init(
           fixed = FALSE
         )
       ),
-      color = data_extract_spec(
+      color = teal.transform::data_extract_spec(
         dataname = "ADSL",
-        select = select_spec(
+        select = teal.transform::select_spec(
           label = "Color by variable",
           choices = c("SEX", "STRATA1", "STRATA2"),
           selected = c("STRATA1"),

@@ -22,8 +22,8 @@ analysis data used in teal module.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{vars}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr ADSL columns to be shown in
-Basic Info tab.}
+\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+ADSL columns to be shown in Basic Info tab.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -50,8 +50,8 @@ app <- init(
       label = "Basic info",
       dataname = "ADSL",
       patient_col = "USUBJID",
-      vars = choices_selected(
-        choices = variable_choices(ADSL),
+      vars = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADSL),
         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
       )
     )

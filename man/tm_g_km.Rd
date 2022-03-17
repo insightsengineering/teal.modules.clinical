@@ -14,11 +14,17 @@ tm_g_km(
   paramcd,
   strata_var,
   facet_var,
-  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
-    = TRUE),
-  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+ 
+    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALU"), "AVALU", fixed = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVAL"), "AVAL", fixed = TRUE),
+ 
+    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "CNSR"), "CNSR", fixed = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   plot_height = c(1200L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -44,7 +50,7 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
@@ -54,7 +60,7 @@ variable value designating the studied parameter.}
 \item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables for stratified analysis.}
 
-\item{facet_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{facet_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option
 for variable names that can be used for facet plotting.}
 
@@ -124,21 +130,21 @@ app <- init(
     tm_g_km(
       label = "KM PLOT",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+      arm_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
+      paramcd = teal.transform::choices_selected(
+        teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
         "OS"
       ),
       arm_ref_comp = arm_ref_comp,
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
+      strata_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
         "SEX"
       ),
-      facet_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
+      facet_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
         NULL
       )
     )

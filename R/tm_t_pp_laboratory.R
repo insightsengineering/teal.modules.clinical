@@ -91,15 +91,18 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param paramcd ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAMCD} column of the
-#' ADLB dataset.
-#' @param param ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{PARAM} column of the ADLB dataset.
-#' @param timepoints ([teal::choices_selected()] or [teal::data_extract_spec()])\cr Time variable to be represented in
-#' the laboratory table.
-#' @param anrind ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ANRIND} column of the ADLB dataset
-#' with 3 possible levels "HIGH", "LOW" and "NORMAL".
-#' @param aval ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AVAL} column of the ADLB dataset.
-#' @param avalu ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AVALU} column of the ADLB dataset.
+#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{PARAMCD} column of the ADLB dataset.
+#' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{PARAM} column of the ADLB dataset.
+#' @param timepoints ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' Time variable to be represented in the laboratory table.
+#' @param anrind ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ANRIND} column of the ADLB dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".
+#' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{AVAL} column of the ADLB dataset.
+#' @param avalu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{AVALU} column of the ADLB dataset.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -120,28 +123,28 @@ template_laboratory <- function(dataname = "ANL",
 #'       label = "Vitals",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
-#'       paramcd = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAMCD"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
-#'       param = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAM"),
+#'       param = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "PARAM"),
 #'         selected = "PARAM"
 #'       ),
-#'       timepoints = choices_selected(
-#'         choices = variable_choices(ADLB, "ADY"),
+#'       timepoints = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "ADY"),
 #'         selected = "ADY"
 #'       ),
-#'       anrind = choices_selected(
-#'         choices = variable_choices(ADLB, "ANRIND"),
+#'       anrind = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "ANRIND"),
 #'         selected = "ANRIND"
 #'       ),
-#'       aval = choices_selected(
-#'         choices = variable_choices(ADLB, "AVAL"),
+#'       aval = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "AVAL"),
 #'         selected = "AVAL"
 #'       ),
-#'       avalu = choices_selected(
-#'         choices = variable_choices(ADLB, "AVALU"),
+#'       avalu = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADLB, "AVALU"),
 #'         selected = "AVALU"
 #'       )
 #'     )

@@ -25,7 +25,7 @@ template_medical_history <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      labels <- teal::variable_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+      labels <- teal.data::variable_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
       result <-
@@ -68,11 +68,12 @@ template_medical_history <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param mhterm
-#' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
-#' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the
-#' ADMH dataset.
-#' @param mhdistat ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHDISTAT} column of the
-#' ADMH dataset.
+#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHTERM} column of the ADMH dataset.
+#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHBODSYS} column of the ADMH dataset.
+#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHDISTAT} column of the ADMH dataset.
 #'
 #' @export
 #'
@@ -81,14 +82,14 @@ template_medical_history <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADMH <- synthetic_cdisc_data("latest")$admh
 #' ADMH[["MHDISTAT"]] <- "ONGOING"
-#' teal::variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+#' teal.data::variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
 #'                    ADMH[['MHDISTAT']] <- 'ONGOING'
-#'                    teal::variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
+#'                    teal.data::variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
 #'     check = TRUE
 #'   ),
 #'   modules = modules(
@@ -97,16 +98,16 @@ template_medical_history <- function(dataname = "ANL",
 #'       dataname = "ADMH",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       mhterm = choices_selected(
-#'         choices = variable_choices(ADMH, c("MHTERM")),
+#'       mhterm = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADMH, c("MHTERM")),
 #'         selected = "MHTERM"
 #'       ),
-#'       mhbodsys = choices_selected(
-#'         choices = variable_choices(ADMH, "MHBODSYS"),
+#'       mhbodsys = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADMH, "MHBODSYS"),
 #'         selected = "MHBODSYS"
 #'       ),
-#'       mhdistat = choices_selected(
-#'         choices = variable_choices(ADMH, "MHDISTAT"),
+#'       mhdistat = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADMH, "MHDISTAT"),
 #'         selected = "MHDISTAT"
 #'       )
 #'     )

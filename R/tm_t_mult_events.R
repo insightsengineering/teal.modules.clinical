@@ -185,7 +185,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = teal::variable_labels(dataname[hlt_new])
+              split_label = teal.data::variable_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,
@@ -274,7 +274,7 @@ template_mult_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
 #'
-#' @param seq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @export
@@ -299,14 +299,14 @@ template_mult_events <- function(dataname,
 #'     tm_t_mult_events(
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",
 #'       dataname = "ADCM",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
+#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       seq_var = teal.transform::choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
+#'       hlt = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
 #'         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
 #'       ),
-#'       llt = choices_selected(
-#'         choices = variable_choices(ADCM, c("CMDECOD")),
+#'       llt = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, c("CMDECOD")),
 #'         selected = c("CMDECOD")
 #'       ),
 #'       add_total = TRUE,

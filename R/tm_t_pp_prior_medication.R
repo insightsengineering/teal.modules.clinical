@@ -60,14 +60,14 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ATIREL} column of the
-#' ADCM dataset.
-#' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDECOD} column of the
-#' ADCM dataset.
-#' @param cmindc ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMINDC} column of the
-#' ADCM dataset.
-#' @param cmstdy ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMSTDY} column of the
-#' ADCM dataset.
+#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ATIREL} column of the ADCM dataset.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDECOD} column of the ADCM dataset.
+#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMINDC} column of the ADCM dataset.
+#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMSTDY} column of the ADCM dataset.
 #'
 #' @export
 #'
@@ -85,7 +85,7 @@ template_prior_medication <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' teal::variable_labels(
+#' teal.data::variable_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY")]
 #' ) <- c(
 #'   "Indication",
@@ -107,7 +107,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
-#'       teal::variable_labels(
+#'       teal.data::variable_labels(
 #'         ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
 #'           "Indication",
 #'           "Reported Name of Drug, Med, or Therapy",
@@ -123,20 +123,20 @@ template_prior_medication <- function(dataname = "ANL",
 #'       dataname = "ADCM",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       atirel = choices_selected(
-#'         choices = variable_choices(ADCM, "ATIREL"),
+#'       atirel = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "ATIREL"),
 #'         selected = "ATIREL"
 #'       ),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'       cmdecod = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
 #'         selected = "CMDECOD"
 #'       ),
-#'       cmindc = choices_selected(
-#'         choices = variable_choices(ADCM, "CMINDC"),
+#'       cmindc = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMINDC"),
 #'         selected = "CMINDC"
 #'       ),
-#'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
+#'       cmstdy = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "ASTDY"),
 #'         selected = "ASTDY"
 #'       )
 #'     )

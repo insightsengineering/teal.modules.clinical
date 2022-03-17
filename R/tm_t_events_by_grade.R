@@ -166,7 +166,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[term_var])
+            split_label = teal.data::variable_labels(dataname[term_var])
           ) %>%
           summarize_num_patients(
             var = id,
@@ -200,7 +200,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[hlt])
+            split_label = teal.data::variable_labels(dataname[hlt])
           ) %>%
           summarize_occurrences_by_grade(
             var = grade,
@@ -213,7 +213,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[llt])
+            split_label = teal.data::variable_labels(dataname[llt])
           ) %>%
           summarize_num_patients(
             var = id,
@@ -794,17 +794,17 @@ template_events_col_by_grade <- function(dataname,
 #'     tm_t_events_by_grade(
 #'       label = "Adverse Events by Grade Table",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = choices_selected(
-#'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
+#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       llt = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
 #'       ),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
+#'       hlt = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adae, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
 #'       ),
-#'       grade = choices_selected(
-#'         choices = variable_choices(adae, c("AETOXGR", "AESEV")),
+#'       grade = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adae, c("AETOXGR", "AESEV")),
 #'         selected = "AETOXGR"
 #'       )
 #'     )

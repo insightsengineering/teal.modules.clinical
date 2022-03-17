@@ -183,24 +183,24 @@ template_shift_by_arm <- function(dataname,
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = choices_selected(
-#'         variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
-#'       paramcd = choices_selected(
-#'         value_choices(adeg, "PARAMCD"),
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(adeg, "PARAMCD"),
 #'         selected = "HR"
 #'       ),
-#'       visit_var = choices_selected(
-#'         value_choices(adeg, "AVISIT"),
+#'       visit_var = teal.transform::choices_selected(
+#'         teal.transform::value_choices(adeg, "AVISIT"),
 #'         selected = "POST-BASELINE MINIMUM"
 #'       ),
-#'       aval_var = choices_selected(
-#'         variable_choices(adeg, subset = "ANRIND"),
+#'       aval_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(adeg, subset = "ANRIND"),
 #'         selected = "ANRIND", fixed = TRUE
 #'       ),
-#'       base_var = choices_selected(
-#'         variable_choices(adeg, subset = "BNRIND"),
+#'       base_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(adeg, subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       useNA = "ifany"
@@ -223,12 +223,12 @@ tm_t_shift_by_arm <- function(label,
                               visit_var,
                               aval_var,
                               base_var,
-                              treatment_flag_var = choices_selected(
-                                variable_choices(dataname, subset = "ONTRTFL"),
+                              treatment_flag_var = teal.transform::choices_selected(
+                                teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                 selected = "ONTRTFL", fixed = TRUE
                               ),
-                              treatment_flag = choices_selected(
-                                value_choices(dataname, "ONTRTFL"),
+                              treatment_flag = teal.transform::choices_selected(
+                                teal.transform::value_choices(dataname, "ONTRTFL"),
                                 selected = "Y", fixed = TRUE
                               ),
                               useNA = c("ifany", "no"), # nolint

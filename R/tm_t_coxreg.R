@@ -405,15 +405,15 @@ template_coxreg_m <- function(dataname,
 #'     tm_t_coxreg(
 #'       label = "Cox Reg.",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
 #'       ),
-#'       strata_var = choices_selected(
+#'       strata_var = teal.transform::choices_selected(
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
 #'       ),
-#'       cov_var = choices_selected(
+#'       cov_var = teal.transform::choices_selected(
 #'         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
 #'       ),
 #'       multivariate = TRUE
@@ -482,13 +482,13 @@ template_coxreg_m <- function(dataname,
 #'     tm_t_coxreg(
 #'       label = "Cox Reg.",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(c("ARMCD"), "ARMCD"),
+#'       arm_var = teal.transform::choices_selected(c("ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
 #'       ),
-#'       strata_var = choices_selected(c("INST"), NULL),
-#'       cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
+#'       strata_var = teal.transform::choices_selected(c("INST"), NULL),
+#'       cov_var = teal.transform::choices_selected(c("SEX", "AGE"), "SEX"),
 #'       multivariate = TRUE
 #'     )
 #'   )
@@ -509,10 +509,16 @@ tm_t_coxreg <- function(label,
                         paramcd,
                         cov_var,
                         strata_var,
-                        aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                        cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
+                        aval_var = teal.transform::choices_selected(
+                          teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                          fixed = TRUE
+                        ),
+                        cnsr_var = teal.transform::choices_selected(
+                          teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                          fixed = TRUE
+                        ),
                         multivariate = TRUE,
-                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {

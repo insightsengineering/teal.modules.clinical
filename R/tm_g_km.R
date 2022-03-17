@@ -259,7 +259,7 @@ template_g_km <- function(dataname = "ANL",
 #' ADaM structure.
 #'
 #' @inheritParams module_arguments
-#' @param facet_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
 #'
@@ -293,21 +293,21 @@ template_g_km <- function(dataname = "ANL",
 #'     tm_g_km(
 #'       label = "KM PLOT",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       strata_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
-#'       facet_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       facet_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         NULL
 #'       )
 #'     )
@@ -329,10 +329,19 @@ tm_g_km <- function(label,
                     paramcd,
                     strata_var,
                     facet_var,
-                    time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
-                    aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                    cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                    time_unit_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
+                      fixed = TRUE
+                    ),
+                    aval_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                      fixed = TRUE
+                    ),
+                    cnsr_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                      fixed = TRUE
+                    ),
+                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(1200L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,

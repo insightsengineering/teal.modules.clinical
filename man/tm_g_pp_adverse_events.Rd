@@ -36,23 +36,26 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{aeterm}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AETERM} column of the ADAE dataset.}
+\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AETERM} column of the ADAE dataset.}
 
-\item{tox_grade}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AETOXGR} column of the
-ADAE dataset.}
+\item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AETOXGR} column of the ADAE dataset.}
 
-\item{causality}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AEREL} column of the
-ADAE dataset.}
+\item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEREL} column of the ADAE dataset.}
 
-\item{outcome}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AEOUT} column of the
-ADAE dataset.}
+\item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEOUT} column of the ADAE dataset.}
 
-\item{action}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AEACN} column of the ADAE dataset.}
+\item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEACN} column of the ADAE dataset.}
 
-\item{time}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{ASTDY} column of the ADAE dataset.}
+\item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ASTDY} column of the ADAE dataset.}
 
-\item{decod}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AEDECOD} column of the
-ADAE dataset.}
+\item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEDECOD} column of the ADAE dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -102,28 +105,28 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      aeterm = choices_selected(
-        choices = variable_choices(ADAE, "AETERM"),
+      aeterm = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "AETERM"),
         selected = "AETERM"
       ),
-      tox_grade = choices_selected(
-        choices = variable_choices(ADAE, "AETOXGR"),
+      tox_grade = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "AETOXGR"),
         selected = "AETOXGR"
       ),
-      causality = choices_selected(
-        choices = variable_choices(ADAE, "AEREL"),
+      causality = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "AEREL"),
         selected = "AEREL"
       ),
-      outcome = choices_selected(
-        choices = variable_choices(ADAE, "AEOUT"),
+      outcome = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "AEOUT"),
         selected = "AEOUT"
       ),
-      action = choices_selected(
-        choices = variable_choices(ADAE, "AEACN"),
+      action = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "AEACN"),
         selected = "AEACN"
       ),
-      time = choices_selected(
-        choices = variable_choices(ADAE, "ASTDY"),
+      time = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADAE, "ASTDY"),
         selected = "ASTDY"
       ),
       decod = NULL

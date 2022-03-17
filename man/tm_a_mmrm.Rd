@@ -16,7 +16,8 @@ tm_a_mmrm(
   cov_var,
   arm_ref_comp = NULL,
   paramcd,
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -60,7 +61,7 @@ variables.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
@@ -156,16 +157,16 @@ app <- init(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",
-      aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-      id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+      aval_var = teal.transform::choices_selected(c("AVAL", "CHG"), "AVAL"),
+      id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+      visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::value_choices(ADQS, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
-      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+      cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
     )
   )
 )

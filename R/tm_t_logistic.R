@@ -61,7 +61,7 @@ template_logistic <- function(dataname,
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- teal::variable_labels(anl[arm_var], fill = FALSE),
+      expr = arm_var_lab <- teal.data::variable_labels(anl[arm_var], fill = FALSE),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -111,7 +111,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = teal::variable_labels(ANL[arm_var]) <- arm_var_lab, # nolint
+      expr = teal.data::variable_labels(ANL[arm_var]) <- arm_var_lab, # nolint
       env = list(arm_var = arm_var)
     )
   }
@@ -215,13 +215,13 @@ template_logistic <- function(dataname,
 #'   STREAM template `lgrt02`.
 #'
 #' @inheritParams module_arguments
-#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()]) or `NULL`\cr
+#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]) or `NULL`\cr
 #'   object with all available choices
 #'   and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
 #'   arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.
-#' @param avalc_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'  object with all available choices and preselected option for the analysis variable (categorical).
 #'
 #' @export
@@ -255,16 +255,16 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("ARM", "ARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADRS, c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
-#'       cov_var = choices_selected(
+#'       cov_var = teal.transform::choices_selected(
 #'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
 #'         selected = "SEX"
 #'       )
@@ -286,8 +286,11 @@ tm_t_logistic <- function(label,
                           arm_ref_comp = NULL,
                           paramcd,
                           cov_var = NULL,
-                          avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
-                          conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                          avalc_var = teal.transform::choices_selected(
+                            teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
+                            fixed = TRUE
+                          ),
+                          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args()) {

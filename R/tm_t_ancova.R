@@ -168,7 +168,7 @@ template_ancova <- function(dataname = "ANL",
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(dataname[visit_var])
+          split_label = teal.data::variable_labels(dataname[visit_var])
         ),
       env = list(
         arm_var = arm_var,
@@ -188,7 +188,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[paramcd_var])
+            split_label = teal.data::variable_labels(dataname[paramcd_var])
           ) %>%
             summarize_ancova(
               vars = aval_var,
@@ -216,7 +216,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[paramcd_var])
+            split_label = teal.data::variable_labels(dataname[paramcd_var])
           ) %>%
             summarize_ancova(
               vars = aval_var,
@@ -358,25 +358,25 @@ template_ancova <- function(dataname = "ANL",
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",
-#'       avisit = choices_selected(
-#'         choices = value_choices(adqs, "AVISIT"),
+#'       avisit = teal.transform::choices_selected(
+#'         choices = teal.transform::value_choices(adqs, "AVISIT"),
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
 #'         selected = "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       aval_var = choices_selected(
-#'         choices = variable_choices(adqs, c("CHG", "AVAL")),
+#'       aval_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adqs, c("CHG", "AVAL")),
 #'         selected = "CHG"
 #'       ),
-#'       cov_var = choices_selected(
-#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+#'       cov_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
 #'         selected = "STRATA1"
 #'       ),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       )
 #'     )
@@ -399,7 +399,7 @@ tm_t_ancova <- function(label,
                         cov_var,
                         avisit,
                         paramcd,
-                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {

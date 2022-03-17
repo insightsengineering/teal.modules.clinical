@@ -9,16 +9,21 @@ tm_g_lineplot(
   dataname,
   parentname = ifelse(inherits(strata, "data_extract_spec"),
     teal.transform::datanames_input(strata), "ADSL"),
-  strata = choices_selected(variable_choices(parentname, c("ARM", "ARMCD",
-    "ACTARMCD")), "ARM"),
-  x = choices_selected(variable_choices(dataname, "AVISIT"), "AVISIT", fixed = TRUE),
-  y = choices_selected(variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")),
-    "AVAL"),
-  y_unit = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
-  paramcd = choices_selected(variable_choices(dataname, "PARAMCD"), "PARAMCD", fixed =
+ 
+    strata = teal.transform::choices_selected(teal.transform::variable_choices(parentname,
+    c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
+  x = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVISIT"), "AVISIT", fixed = TRUE),
+  y = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
+  y_unit = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALU"), "AVALU", fixed = TRUE),
+  paramcd = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "PARAMCD"), "PARAMCD", fixed = TRUE),
+  param = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    "PARAMCD", "PARAM"), "ALT"),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
-  param = choices_selected(value_choices(dataname, "PARAMCD", "PARAM"), "ALT"),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -135,16 +140,16 @@ app <- init(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
-      strata = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+      strata = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
-      y = choices_selected(
-        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
+      y = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
-      param = choices_selected(
-        value_choices(ADLB, "PARAMCD", "PARAM"),
+      param = teal.transform::choices_selected(
+        teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
         "ALT"
       )
     )

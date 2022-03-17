@@ -14,11 +14,17 @@ tm_g_forest_tte(
   subgroup_var,
   paramcd,
   strata_var,
-  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
-    = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVAL"), "AVAL", fixed = TRUE),
+ 
+    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "CNSR"), "CNSR", fixed = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
+ 
+    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALU"), "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
@@ -46,7 +52,7 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
@@ -145,21 +151,21 @@ app <- init(
     tm_g_forest_tte(
       label = "Forest Survival",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD")),
+      arm_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD")),
         "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
+      paramcd = teal.transform::choices_selected(
+        teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
         "OS"
       ),
-      subgroup_var = choices_selected(
-        variable_choices(ADSL, names(ADSL)),
+      subgroup_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, names(ADSL)),
         c("BMRKR2", "SEX")
       ),
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("STRATA1", "STRATA2")),
+      strata_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
       plot_height = c(600, 200, 2000)

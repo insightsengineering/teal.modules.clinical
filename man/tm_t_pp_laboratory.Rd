@@ -31,20 +31,23 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{timepoints}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr Time variable to be represented in
-the laboratory table.}
+\item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+Time variable to be represented in the laboratory table.}
 
-\item{aval}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AVAL} column of the ADLB dataset.}
+\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVAL} column of the ADLB dataset.}
 
-\item{avalu}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AVALU} column of the ADLB dataset.}
+\item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVALU} column of the ADLB dataset.}
 
-\item{param}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{PARAM} column of the ADLB dataset.}
+\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAM} column of the ADLB dataset.}
 
-\item{paramcd}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{PARAMCD} column of the
-ADLB dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAMCD} column of the ADLB dataset.}
 
-\item{anrind}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{ANRIND} column of the ADLB dataset
-with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+\item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ANRIND} column of the ADLB dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -73,28 +76,28 @@ app <- init(
       label = "Vitals",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      paramcd = choices_selected(
-        choices = variable_choices(ADLB, "PARAMCD"),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "PARAMCD"),
         selected = "PARAMCD"
       ),
-      param = choices_selected(
-        choices = variable_choices(ADLB, "PARAM"),
+      param = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "PARAM"),
         selected = "PARAM"
       ),
-      timepoints = choices_selected(
-        choices = variable_choices(ADLB, "ADY"),
+      timepoints = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "ADY"),
         selected = "ADY"
       ),
-      anrind = choices_selected(
-        choices = variable_choices(ADLB, "ANRIND"),
+      anrind = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "ANRIND"),
         selected = "ANRIND"
       ),
-      aval = choices_selected(
-        choices = variable_choices(ADLB, "AVAL"),
+      aval = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "AVAL"),
         selected = "AVAL"
       ),
-      avalu = choices_selected(
-        choices = variable_choices(ADLB, "AVALU"),
+      avalu = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADLB, "AVALU"),
         selected = "AVALU"
       )
     )

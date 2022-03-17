@@ -14,7 +14,7 @@ testthat::test_that("template_medical_history - non-default parameters", {
   testthat::expect_silent(res <- template_medical_history("anl", "mhterm", "mhbodsys", "mhdistat"))
   expected <- list(
     table = quote({
-      labels <- teal::variable_labels(anl, fill = FALSE)[c("mhbodsys", "mhterm", "mhdistat")]
+      labels <- teal.data::variable_labels(anl, fill = FALSE)[c("mhbodsys", "mhterm", "mhdistat")]
       mhbodsys_label <- labels["mhbodsys"]
       result <- anl %>%
         dplyr::select(mhbodsys, mhterm, mhdistat) %>%

@@ -408,17 +408,17 @@ template_binary_outcome <- function(dataname,
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       strata_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
+#'       strata_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
 #'         select = "RACE"
 #'       ),
 #'       default_responses = list(
@@ -459,11 +459,14 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                aval_var = choices_selected(
-                                  choices = variable_choices(dataname, c("AVALC", "SEX")),
+                                aval_var = teal.transform::choices_selected(
+                                  choices = teal.transform::variable_choices(dataname, c("AVALC", "SEX")),
                                   selected = "AVALC", fixed = FALSE
                                 ),
-                                conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                conf_level = teal.transform::choices_selected(
+                                  c(0.95, 0.9, 0.8), 0.95,
+                                  keep_order = TRUE
+                                ),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,

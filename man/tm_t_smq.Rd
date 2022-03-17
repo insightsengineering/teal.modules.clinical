@@ -10,8 +10,8 @@ tm_t_smq(
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
     teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   llt,
   add_total = TRUE,
   sort_criteria = c("freq_desc", "alpha"),
@@ -64,10 +64,10 @@ in character or factor variables in the data.}
 \item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
 created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{baskets}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected options for Standardized/Customized queries}
 
-\item{scopes}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{scopes}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices for the scopes of Standardized queries.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
@@ -97,13 +97,13 @@ adae <- synthetic_cdisc_data("latest")$adae
 names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
 
-cs_baskets <- choices_selected(
-  choices = variable_choices(adae, subset = names_baskets),
+cs_baskets <- teal.transform::choices_selected(
+  choices = teal.transform::variable_choices(adae, subset = names_baskets),
   selected = names_baskets
 )
 
-cs_scopes <- choices_selected(
-  choices = variable_choices(adae, subset = names_scopes),
+cs_scopes <- teal.transform::choices_selected(
+  choices = teal.transform::variable_choices(adae, subset = names_scopes),
   selected = names_scopes,
   fixed = TRUE
 )
@@ -122,15 +122,15 @@ app <- init(
     tm_t_smq(
       label = "Adverse events by `SMQ` Table",
       dataname = "ADAE",
-      arm_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("ARM", "SEX")),
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(adsl, subset = c("ARM", "SEX")),
         selected = "ARM"
       ),
       add_total = FALSE,
       baskets = cs_baskets,
       scopes = cs_scopes,
-      llt = choices_selected(
-        choices = variable_choices(adae, subset = c("AEDECOD")),
+      llt = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(adae, subset = c("AEDECOD")),
         selected = "AEDECOD"
       )
     )

@@ -250,21 +250,21 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADRS, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         "INVET"
 #'       ),
-#'       subgroup_var = choices_selected(
-#'         variable_choices(ADSL, names(ADSL)),
+#'       subgroup_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, names(ADSL)),
 #'         c("BMRKR2", "SEX")
 #'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'       strata_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
 #'       ),
 #'       plot_height = c(600L, 200L, 2000L),
@@ -305,11 +305,14 @@ tm_g_forest_rsp <- function(label,
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,
-                            aval_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed = TRUE),
+                            aval_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
+                              fixed = TRUE
+                            ),
                             subgroup_var,
                             strata_var,
                             fixed_symbol_size = TRUE,
-                            conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = c(900L, 200L, 2000L),

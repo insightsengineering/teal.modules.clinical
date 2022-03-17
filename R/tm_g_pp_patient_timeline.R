@@ -288,28 +288,28 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param aeterm ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AETERM} column of the
-#' ADAE dataset.
+#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{AETERM} column of the ADAE dataset.
 #' @param dataname_adcm (`character`)\cr name of ADCM dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of ADAE dataset or equivalent.
-#' @param aerelday_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDY}
+#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ASTDY} column of the ADAE dataset.
+#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
 #' column of the ADAE dataset.
-#' @param aerelday_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDY}
-#' column of the ADAE dataset.
-#' @param dsrelday_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDY}
+#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{ASTDY}
 #' column of the ADCM dataset.
-#' @param dsrelday_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDY}
+#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
 #' column of the ADCM dataset.
-#' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{cmdecod} column of the ADCM
-#' dataset.
-#' @param aetime_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ASTDTM} column of the AE
-#' start of the ADAE dataset.
-#' @param aetime_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{AENDTM} column of the AE
-#' end of the ADAE dataset.
-#' @param dstime_start ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMASTDTM} column of
-#' treatment start of the ADCM dataset.
-#' @param dstime_end ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMAENDTM} column of treatment
-#' end of the ADCM dataset.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{cmdecod} column of the ADCM dataset.
+#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ASTDTM} column of the AE start of the ADAE dataset.
+#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{AENDTM} column of the AE end of the ADAE dataset.
+#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMASTDTM} column of treatment start of the ADCM dataset.
+#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMAENDTM} column of treatment end of the ADCM dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export
@@ -334,7 +334,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' teal::variable_labels(
+#' teal.data::variable_labels(
 #'   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -363,7 +363,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'         ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #'         ADCM$CMASTDTM <- ADCM$ASTDTM
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         teal::variable_labels(
+#'         teal.data::variable_labels(
 #'           ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",
@@ -382,44 +382,44 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'       cmdecod = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
 #'         selected = "CMDECOD",
 #'       ),
-#'       aeterm = choices_selected(
-#'         choices = variable_choices(ADAE, "AETERM"),
+#'       aeterm = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADAE, "AETERM"),
 #'         selected = c("AETERM")
 #'       ),
-#'       aetime_start = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDTM"),
+#'       aetime_start = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADAE, "ASTDTM"),
 #'         selected = c("ASTDTM")
 #'       ),
-#'       aetime_end = choices_selected(
-#'         choices = variable_choices(ADAE, "AENDTM"),
+#'       aetime_end = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADAE, "AENDTM"),
 #'         selected = c("AENDTM")
 #'       ),
-#'       dstime_start = choices_selected(
-#'         choices = variable_choices(ADCM, "CMASTDTM"),
+#'       dstime_start = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMASTDTM"),
 #'         selected = c("CMASTDTM")
 #'       ),
-#'       dstime_end = choices_selected(
-#'         choices = variable_choices(ADCM, "CMAENDTM"),
+#'       dstime_end = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMAENDTM"),
 #'         selected = c("CMAENDTM")
 #'       ),
-#'       aerelday_start = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDY"),
+#'       aerelday_start = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADAE, "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
-#'       aerelday_end = choices_selected(
-#'         choices = variable_choices(ADAE, "AENDY"),
+#'       aerelday_end = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADAE, "AENDY"),
 #'         selected = c("AENDY")
 #'       ),
-#'       dsrelday_start = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
+#'       dsrelday_start = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
-#'       dsrelday_end = choices_selected(
-#'         choices = variable_choices(ADCM, "AENDY"),
+#'       dsrelday_end = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "AENDY"),
 #'         selected = c("AENDY")
 #'       )
 #'     )

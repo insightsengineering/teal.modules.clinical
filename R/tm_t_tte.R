@@ -396,22 +396,22 @@ template_tte <- function(dataname = "ANL",
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       strata_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
-#'       time_points = choices_selected(c(182, 243), 182),
-#'       event_desc_var = choices_selected(
-#'         variable_choices(ADTTE, "EVNTDESC"),
+#'       time_points = teal.transform::choices_selected(c(182, 243), 182),
+#'       event_desc_var = teal.transform::choices_selected(
+#'         teal.transform::variable_choices(ADTTE, "EVNTDESC"),
 #'         "EVNTDESC",
 #'         fixed = TRUE
 #'       )
@@ -433,16 +433,22 @@ tm_t_tte <- function(label,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
-                     aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                     cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                     conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     time_points,
-                     time_unit_var = choices_selected(
-                       variable_choices(dataname, "AVALU"), "AVALU",
+                     aval_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
                        fixed = TRUE
                      ),
-                     event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+                     cnsr_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                       fixed = TRUE
+                     ),
+                     conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     time_points,
+                     time_unit_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
+                       fixed = TRUE
+                     ),
+                     event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      pre_output = NULL,
                      post_output = NULL,

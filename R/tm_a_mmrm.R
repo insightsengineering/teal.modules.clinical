@@ -481,16 +481,16 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+#'       aval_var = teal.transform::choices_selected(c("AVAL", "CHG"), "AVAL"),
+#'       id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+#'       paramcd = teal.transform::choices_selected(
+#'         choices = teal.transform::value_choices(ADQS, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+#'       cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
 #'     )
 #'   )
 #' )
@@ -512,7 +512,7 @@ tm_a_mmrm <- function(label,
                       cov_var,
                       arm_ref_comp = NULL,
                       paramcd,
-                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
@@ -520,7 +520,7 @@ tm_a_mmrm <- function(label,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
-  cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
+  cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_class(conf_level, "choices_selected")

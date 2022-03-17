@@ -15,7 +15,8 @@ tm_t_ancova(
   cov_var,
   avisit,
   paramcd,
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -40,7 +41,7 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
@@ -127,25 +128,25 @@ app <- init(
     tm_t_ancova(
       label = "ANCOVA table",
       dataname = "ADQS",
-      avisit = choices_selected(
-        choices = value_choices(adqs, "AVISIT"),
+      avisit = teal.transform::choices_selected(
+        choices = teal.transform::value_choices(adqs, "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),
-      arm_var = choices_selected(
-        choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
         selected = "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      aval_var = choices_selected(
-        choices = variable_choices(adqs, c("CHG", "AVAL")),
+      aval_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(adqs, c("CHG", "AVAL")),
         selected = "CHG"
       ),
-      cov_var = choices_selected(
-        choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+      cov_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
         selected = "STRATA1"
       ),
-      paramcd = choices_selected(
-        choices = value_choices(adqs, "PARAMCD", "PARAM"),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::value_choices(adqs, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       )
     )

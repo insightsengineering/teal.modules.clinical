@@ -33,7 +33,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
@@ -108,9 +108,9 @@ app <- init(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
       add_total = TRUE,
-      summarize_vars = choices_selected(
+      summarize_vars = teal.transform::choices_selected(
         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         c("SEX", "RACE")
       ),

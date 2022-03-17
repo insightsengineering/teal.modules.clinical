@@ -37,7 +37,7 @@ and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{seq_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 Analysis Sequence Number. Used for counting the unique number of events.}
 
 \item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr
@@ -94,14 +94,14 @@ app <- teal::init(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
       dataname = "ADCM",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
-      hlt = choices_selected(
-        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
+      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+      seq_var = teal.transform::choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
+      hlt = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
-      llt = choices_selected(
-        choices = variable_choices(ADCM, c("CMDECOD")),
+      llt = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(ADCM, c("CMDECOD")),
         selected = c("CMDECOD")
       ),
       add_total = TRUE,

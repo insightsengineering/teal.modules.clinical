@@ -149,7 +149,7 @@ template_abnormality <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = teal::variable_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::variable_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -218,11 +218,11 @@ template_abnormality <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality
-#' @param grade ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
-#'   choices and preselected option for variable names that can be used to
+#' @param grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#'   object with all available choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param baseline_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
@@ -264,18 +264,18 @@ template_abnormality <- function(parentname,
 #'     tm_t_abnormality(
 #'       label = "Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'       arm_var = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       add_total = FALSE,
-#'       by_vars = choices_selected(
-#'         choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
+#'       by_vars = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
 #'         selected = c("LBCAT", "PARAM"),
 #'         keep_order = TRUE
 #'       ),
-#'       grade = choices_selected(
-#'         choices = variable_choices(adlb, subset = "ANRIND"),
+#'       grade = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(adlb, subset = "ANRIND"),
 #'         selected = "ANRIND",
 #'         fixed = TRUE
 #'       ),
@@ -299,20 +299,20 @@ tm_t_abnormality <- function(label,
                              by_vars,
                              grade,
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = choices_selected(
-                               variable_choices(dataname, subset = "USUBJID"),
+                             id_var = teal.transform::choices_selected(
+                               teal.transform::variable_choices(dataname, subset = "USUBJID"),
                                selected = "USUBJID", fixed = TRUE
                              ),
-                             baseline_var = choices_selected(
-                               variable_choices(dataname, subset = "BNRIND"),
+                             baseline_var = teal.transform::choices_selected(
+                               teal.transform::variable_choices(dataname, subset = "BNRIND"),
                                selected = "BNRIND", fixed = TRUE
                              ),
-                             treatment_flag_var = choices_selected(
-                               variable_choices(dataname, subset = "ONTRTFL"),
+                             treatment_flag_var = teal.transform::choices_selected(
+                               teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                selected = "ONTRTFL", fixed = TRUE
                              ),
-                             treatment_flag = choices_selected(
-                               value_choices(dataname, "ONTRTFL"),
+                             treatment_flag = teal.transform::choices_selected(
+                               teal.transform::value_choices(dataname, "ONTRTFL"),
                                selected = "Y", fixed = TRUE
                              ),
                              add_total = TRUE,

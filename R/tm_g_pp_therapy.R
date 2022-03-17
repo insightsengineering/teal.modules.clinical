@@ -228,25 +228,26 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ATIREL} column of the
-#' ADCM dataset.
-#' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDECOD} column of the
-#' ADCM dataset.
-#' @param cmdose ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSE} column of the
-#' ADCM dataset.
-#' @param cmtrt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMTRT} column of the ADCM dataset.
-#' @param cmdosu ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSU} column of the
-#' ADCM dataset.
-#' @param cmroute ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMROUTE} column of the
-#' ADCM dataset.
-#' @param cmdosfrq ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSFRQ} column of the
-#' ADCM dataset.
-#' @param cmstdy ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMSTDY} column of the
-#' ADCM dataset.
-#' @param cmendy ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMENDY} column of the
-#' ADCM dataset.
-#' @param cmindc ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMINDC} column of the
-#' ADCM dataset.
+#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ATIREL} column of the ADCM dataset.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDECOD} column of the ADCM dataset.
+#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSE} column of the ADCM dataset.
+#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMTRT} column of the ADCM dataset.
+#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSU} column of the ADCM dataset.
+#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMROUTE} column of the ADCM dataset.
+#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSFRQ} column of the ADCM dataset.
+#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMSTDY} column of the ADCM dataset.
+#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMENDY} column of the ADCM dataset.
+#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMINDC} column of the ADCM dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export
@@ -266,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' teal::variable_labels(
+#' teal.data::variable_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -289,7 +290,7 @@ template_therapy <- function(dataname = "ANL",
 #'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #'         ADCM$CMASTDTM <- ADCM$ASTDTM
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         teal::variable_labels(
+#'         teal.data::variable_labels(
 #'           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",
@@ -307,44 +308,44 @@ template_therapy <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       atirel = choices_selected(
-#'         choices = variable_choices(ADCM, "ATIREL"),
+#'       atirel = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "ATIREL"),
 #'         selected = c("ATIREL")
 #'       ),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'       cmdecod = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
 #'         selected = "CMDECOD"
 #'       ),
-#'       cmindc = choices_selected(
-#'         choices = variable_choices(ADCM, "CMINDC"),
+#'       cmindc = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMINDC"),
 #'         selected = "CMINDC"
 #'       ),
-#'       cmdose = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSE"),
+#'       cmdose = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDOSE"),
 #'         selected = "CMDOSE"
 #'       ),
-#'       cmtrt = choices_selected(
-#'         choices = variable_choices(ADCM, "CMTRT"),
+#'       cmtrt = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMTRT"),
 #'         selected = "CMTRT"
 #'       ),
-#'       cmdosu = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSU"),
+#'       cmdosu = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDOSU"),
 #'         selected = c("CMDOSU")
 #'       ),
-#'       cmroute = choices_selected(
-#'         choices = variable_choices(ADCM, "CMROUTE"),
+#'       cmroute = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMROUTE"),
 #'         selected = "CMROUTE"
 #'       ),
-#'       cmdosfrq = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSFRQ"),
+#'       cmdosfrq = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "CMDOSFRQ"),
 #'         selected = "CMDOSFRQ"
 #'       ),
-#'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
+#'       cmstdy = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "ASTDY"),
 #'         selected = "ASTDY"
 #'       ),
-#'       cmendy = choices_selected(
-#'         choices = variable_choices(ADCM, "AENDY"),
+#'       cmendy = teal.transform::choices_selected(
+#'         choices = teal.transform::variable_choices(ADCM, "AENDY"),
 #'         selected = "AENDY"
 #'       )
 #'     )
