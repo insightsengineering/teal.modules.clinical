@@ -31,6 +31,7 @@ Imports:
     checkmate,
     dplyr,
     DT,
+    formatable,
     ggrepel,
     grid,
     kableExtra,

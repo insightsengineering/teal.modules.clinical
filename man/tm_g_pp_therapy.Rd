@@ -113,7 +113,7 @@ ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-teal::variable_labels(
+formatable::var_labels(
   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 ) <- c(
   "Indication",
@@ -136,7 +136,7 @@ app <- init(
         ADCM$CMDOSFRQ <- "CMDOSFRQ"
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
-        teal::variable_labels(
+        formatable::var_labels(
           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
             "Indication",
             "Reported Name of Drug, Med, or Therapy",

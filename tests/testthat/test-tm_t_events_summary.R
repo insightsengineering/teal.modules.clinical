@@ -102,8 +102,8 @@ testthat::test_that("template_events_summary generates table with multiple flags
           AEDECOD = as.character(AEDECOD),
           USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
         )
-      flag_var_anl_label <- teal::variable_labels(anl[, c("A", "B", "C")], fill = FALSE)
-      flag_var_aesi_label <- teal::variable_labels(anl[, c("X", "Y")], fill = FALSE)
+      flag_var_anl_label <- formatable::var_labels(anl[, c("A", "B", "C")], fill = FALSE)
+      flag_var_aesi_label <- formatable::var_labels(anl[, c("X", "Y")], fill = FALSE)
       anl <- df_explicit_na(anl, na_level = "")
       adsl <- df_explicit_na(adsl, na_level = "")
     }),

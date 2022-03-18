@@ -17,6 +17,9 @@ upstream_repos:
   Roche/rtables:
     repo: Roche/rtables
     host: https://github.com
+  Roche/formatable:
+    repo: Roche/formatable
+    host: https://github.com
   insightsengineering/teal.widgets:
     repo: insightsengineering/teal.widgets
     host: https://github.com
