@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9016</span>
       </span>
     </div>
 
@@ -47,15 +47,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -87,8 +78,8 @@ Other releases
   parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
     <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
   <span class="va">arm_var</span>,
-  id_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, subset <span class="op">=</span> <span class="st">"USUBJID"</span><span class="op">)</span>, selected <span class="op">=</span>
-    <span class="st">"USUBJID"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  id_var <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    subset <span class="op">=</span> <span class="st">"USUBJID"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"USUBJID"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   <span class="va">llt</span>,
   add_total <span class="op">=</span> <span class="cn">TRUE</span>,
   sort_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"freq_desc"</span>, <span class="st">"alpha"</span><span class="op">)</span>,
@@ -144,10 +135,10 @@ in character or factor variables in the data.</p></dd>
 <dd><p>(<code>character</code>)<br> label of the new column <code>SMQ</code>
 created by <code><a href="https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html" class="external-link">tern::h_stack_by_baskets()</a></code>.</p></dd>
 <dt>baskets</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 object with all available choices and preselected options for Standardized/Customized queries</p></dd>
 <dt>scopes</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal::data_extract_spec()</a></code>)<br>
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 object with all available choices for the scopes of Standardized queries.</p></dd>
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
@@ -214,7 +205,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:20:15.9314 pid:2747 token:[] teal.modules.clinical Initializing tm_t_smq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-18 15:45:09.8524 pid:2747 token:[] teal.modules.clinical Initializing tm_t_smq</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

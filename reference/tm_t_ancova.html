@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9016</span>
       </span>
     </div>
 
@@ -47,15 +47,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -92,7 +83,8 @@ Other releases
   <span class="va">cov_var</span>,
   <span class="va">avisit</span>,
   <span class="va">paramcd</span>,
-  conf_level <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  conf_level <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span>
+    <span class="cn">TRUE</span><span class="op">)</span>,
   pre_output <span class="op">=</span> <span class="cn">NULL</span>,
   post_output <span class="op">=</span> <span class="cn">NULL</span>,
   basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>
@@ -120,7 +112,7 @@ second variable will be nested under the first variable.</p></dd>
 <dd><p>optional, (<code>list</code>)<br>
 If specified it must be a named list with each element corresponding to
 an arm variable in <code>ADSL</code> and the element must be another list (possibly
-with delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">teal::variable_choices()</a></code> or delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/value_choices.html" class="external-link">teal::value_choices()</a></code>
+with delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> or delayed <code><a href="https://rdrr.io/pkg/teal.transform/man/value_choices.html" class="external-link">teal.transform::value_choices()</a></code>
 with the elements named <code>ref</code> and <code>comp</code> that the defined the default
 reference and comparison arms when the arm variable is changed.</p></dd>
 <dt>aval_var</dt>
@@ -225,7 +217,7 @@ to be meaningful.</td></tr></table></div>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:19:05.9399 pid:2747 token:[] teal.modules.clinical Initializing tm_t_ancova</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-18 15:43:49.1956 pid:2747 token:[] teal.modules.clinical Initializing tm_t_ancova</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

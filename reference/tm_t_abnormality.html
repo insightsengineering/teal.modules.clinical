@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9016</span>
       </span>
     </div>
 
@@ -47,15 +47,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -90,14 +81,17 @@ Other releases
   <span class="va">by_vars</span>,
   <span class="va">grade</span>,
   abnormal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>low <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LOW"</span>, <span class="st">"LOW LOW"</span><span class="op">)</span>, high <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HIGH"</span>, <span class="st">"HIGH HIGH"</span><span class="op">)</span><span class="op">)</span>,
-  id_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, subset <span class="op">=</span> <span class="st">"USUBJID"</span><span class="op">)</span>, selected <span class="op">=</span>
-    <span class="st">"USUBJID"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  baseline_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, subset <span class="op">=</span> <span class="st">"BNRIND"</span><span class="op">)</span>,
-    selected <span class="op">=</span> <span class="st">"BNRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  treatment_flag_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, subset <span class="op">=</span> <span class="st">"ONTRTFL"</span><span class="op">)</span>,
-    selected <span class="op">=</span> <span class="st">"ONTRTFL"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  treatment_flag <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">value_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"ONTRTFL"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"Y"</span>,
-    fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  id_var <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    subset <span class="op">=</span> <span class="st">"USUBJID"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"USUBJID"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+ 
+    baseline_var <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    subset <span class="op">=</span> <span class="st">"BNRIND"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"BNRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+ 
+    treatment_flag_var <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    subset <span class="op">=</span> <span class="st">"ONTRTFL"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"ONTRTFL"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+ 
+    treatment_flag <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/value_choices.html" class="external-link">value_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="st">"ONTRTFL"</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"Y"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   add_total <span class="op">=</span> <span class="cn">TRUE</span>,
   exclude_base_abn <span class="op">=</span> <span class="cn">FALSE</span>,
   drop_arm_levels <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -130,8 +124,8 @@ second variable will be nested under the first variable.</p></dd>
 object with all available choices and preselected option for variable names
 used to split the summary by rows.</p></dd>
 <dt>grade</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or teal::data_extract_spec)<br> object with all available
-choices and preselected option for variable names that can be used to
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
+object with all available choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.</p></dd>
 <dt>abnormal</dt>
 <dd><p>(<code>named list</code>)<br> defined by user to indicate what abnormalities are to be displayed.</p></dd>
@@ -139,7 +133,7 @@ specify the abnormality grade. Variable must be factor.</p></dd>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object specifying the variable name for subject id.</p></dd>
 <dt>baseline_var</dt>
-<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal::choices_selected()</a></code> or teal::data_extract_spec)<br>
+<dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 variable for baseline abnormality grade.</p></dd>
 <dt>treatment_flag_var</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> on treatment flag variable.</p></dd>
@@ -233,7 +227,7 @@ excluded in accordance with GDSR specifications by using <code>exclude_base_abn<
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:18:58.5255 pid:2747 token:[] teal.modules.clinical Initializing tm_t_abnormality</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-18 15:43:39.7552 pid:2747 token:[] teal.modules.clinical Initializing tm_t_abnormality</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

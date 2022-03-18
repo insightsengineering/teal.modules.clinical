@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   quickstart_substitute: quickstart_substitute.html
   teal.modules.clinical: teal.modules.clinical.html
-last_built: 2022-03-16T15:17Z
+last_built: 2022-03-18T15:41Z
 urls:
   reference: https://insightsengineering.github.io/teal.modules.clinical/reference
   article: https://insightsengineering.github.io/teal.modules.clinical/articles

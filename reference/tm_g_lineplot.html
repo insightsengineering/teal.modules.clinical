@@ -24,7 +24,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9016</span>
       </span>
     </div>
 
@@ -48,15 +48,6 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -88,16 +79,21 @@ ADaM structure.</p>
   <span class="va">dataname</span>,
   parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">strata</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>,
     <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">strata</span><span class="op">)</span>, <span class="st">"ADSL"</span><span class="op">)</span>,
-  strata <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">parentname</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>,
-    <span class="st">"ACTARMCD"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"ARM"</span><span class="op">)</span>,
-  x <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"AVISIT"</span><span class="op">)</span>, <span class="st">"AVISIT"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  y <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"BASE"</span>, <span class="st">"CHG"</span>, <span class="st">"PCHG"</span><span class="op">)</span><span class="op">)</span>,
-    <span class="st">"AVAL"</span><span class="op">)</span>,
-  y_unit <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"AVALU"</span><span class="op">)</span>, <span class="st">"AVALU"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">variable_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"PARAMCD"</span><span class="op">)</span>, <span class="st">"PARAMCD"</span>, fixed <span class="op">=</span>
+ 
+    strata <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">parentname</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ACTARMCD"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"ARM"</span><span class="op">)</span>,
+  x <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="st">"AVISIT"</span><span class="op">)</span>, <span class="st">"AVISIT"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  y <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"BASE"</span>, <span class="st">"CHG"</span>, <span class="st">"PCHG"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"AVAL"</span><span class="op">)</span>,
+  y_unit <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="st">"AVALU"</span><span class="op">)</span>, <span class="st">"AVALU"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  paramcd <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="st">"PARAMCD"</span><span class="op">)</span>, <span class="st">"PARAMCD"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  param <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/value_choices.html" class="external-link">value_choices</a></span><span class="op">(</span><span class="va">dataname</span>,
+    <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>, <span class="st">"ALT"</span><span class="op">)</span>,
+  conf_level <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span>
     <span class="cn">TRUE</span><span class="op">)</span>,
-  param <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu">value_choices</span><span class="op">(</span><span class="va">dataname</span>, <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>, <span class="st">"ALT"</span><span class="op">)</span>,
-  conf_level <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   interval <span class="op">=</span> <span class="st">"mean_ci"</span>,
   mid <span class="op">=</span> <span class="st">"mean"</span>,
   whiskers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_ci_lwr"</span>, <span class="st">"mean_ci_upr"</span><span class="op">)</span>,
@@ -229,7 +225,7 @@ with default module arguments (hard coded in the module body)</p>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-16 15:18:32.9719 pid:2747 token:[] teal.modules.clinical Initializing tm_g_lineplot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-18 15:43:06.8980 pid:2747 token:[] teal.modules.clinical Initializing tm_g_lineplot</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">ui</span>, server <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
