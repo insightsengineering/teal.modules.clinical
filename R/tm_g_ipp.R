@@ -165,13 +165,13 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @inheritParams template_g_ipp
 #' @inheritParams module_arguments
-#' @param arm_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.
-#' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `avalu_var`.
-#' @param base_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param base_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `base_var`.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
@@ -266,28 +266,28 @@ tm_g_ipp <- function(label,
                      ),
                      arm_var,
                      paramcd,
-                     id_var = choices_selected(
-                       variable_choices(dataname, "USUBJID"),
+                     id_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "USUBJID"),
                        "USUBJID",
                        fixed = TRUE
                      ),
-                     visit_var = choices_selected(
-                       variable_choices(dataname, "AVISIT"),
+                     visit_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVISIT"),
                        "AVISIT",
                        fixed = TRUE
                      ),
-                     aval_var = choices_selected(
-                       variable_choices(dataname, "AVAL"),
+                     aval_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVAL"),
                        "AVAL",
                        fixed = TRUE
                      ),
-                     avalu_var = choices_selected(
-                       variable_choices(dataname, "AVALU"),
+                     avalu_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVALU"),
                        "AVALU",
                        fixed = TRUE
                      ),
-                     base_var = choices_selected(
-                       variable_choices(dataname, "BASE"),
+                     base_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "BASE"),
                        "BASE",
                        fixed = TRUE
                      ),

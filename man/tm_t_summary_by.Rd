@@ -12,8 +12,8 @@ tm_t_summary_by(
   arm_var,
   by_vars,
   summarize_vars,
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   parallel_vars = FALSE,
@@ -21,7 +21,8 @@ tm_t_summary_by(
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   numeric_stats = c("n", "mean_sd", "median", "range"),
-  denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+  denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
+    TRUE),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,

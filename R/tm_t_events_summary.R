@@ -114,7 +114,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- teal::variable_labels(anl[, flag_var_anl], fill = FALSE),
+        flag_var_anl_label <- teal.data::variable_labels(anl[, flag_var_anl], fill = FALSE),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -124,7 +124,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- teal::variable_labels(anl[, flag_var_aesi], fill = FALSE),
+        flag_var_aesi_label <- teal.data::variable_labels(anl[, flag_var_aesi], fill = FALSE),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )
@@ -431,21 +431,21 @@ template_events_summary <- function(anl_name,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_summary
-#' @param dthfl_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
 #'  the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
+#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
 #'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
 #'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event
 #'   sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
 #'   as table row names if they exist.
-#' @param flag_var_aesi ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event
 #'   special interest groups. All flag variables must be of type `logical`. Variable
 #'   labels are used as table row names if they exist.
-#' @param aeseq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr variable
+#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
 #' for adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
 #' @export
@@ -482,7 +482,7 @@ template_events_summary <- function(anl_name,
 #'     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'   )
-#'   teal::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'   variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'   dat
 #' }
 #'
@@ -527,7 +527,7 @@ template_events_summary <- function(anl_name,
 #'               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
 #'               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
 #'           )
-#'           teal::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'           variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'           dat
 #'         }
 #'         # Generating user-defined event flags.
@@ -572,20 +572,20 @@ tm_t_events_summary <- function(label,
                                 arm_var,
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
-                                dthfl_var = choices_selected(
-                                  variable_choices(parentname, "DTHFL"), "DTHFL",
+                                dthfl_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(parentname, "DTHFL"), "DTHFL",
                                   fixed = TRUE
                                 ),
-                                dcsreas_var = choices_selected(
-                                  variable_choices(parentname, "DCSREAS"), "DCSREAS",
+                                dcsreas_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(parentname, "DCSREAS"), "DCSREAS",
                                   fixed = TRUE
                                 ),
-                                llt = choices_selected(
-                                  variable_choices(dataname, "AEDECOD"), "AEDECOD",
+                                llt = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, "AEDECOD"), "AEDECOD",
                                   fixed = TRUE
                                 ),
-                                aeseq_var = choices_selected(
-                                  variable_choices(dataname, "AESEQ"), "AESEQ",
+                                aeseq_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, "AESEQ"), "AESEQ",
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,

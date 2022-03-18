@@ -10,17 +10,21 @@ tm_t_abnormality_by_worst_grade(
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
     teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd,
-  atoxgr_var = choices_selected(variable_choices(dataname, subset = "ATOXGR"), selected
-    = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var = choices_selected(variable_choices(dataname, subset =
-    "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
-  worst_low_flag_var = choices_selected(variable_choices(dataname, subset = "WGRLOFL"),
-    selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator = choices_selected(value_choices(dataname, var_choices =
-    "WGRLOFL"), selected = "Y", fixed = TRUE),
+ 
+    atoxgr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "ATOXGR"), selected = "ATOXGR", fixed = TRUE),
+ 
+    worst_high_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
+ 
+    worst_low_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
+ 
+    worst_flag_indicator = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    var_choices = "WGRLOFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -50,18 +54,19 @@ object specifying the variable name for subject id.}
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{atoxgr_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{atoxgr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option
 for variable names that can be used as Analysis Toxicity Grade.}
 
-\item{worst_high_flag_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr object with all available
-choices and preselected option for variable names that can be used as Worst High Grade flag.}
+\item{worst_high_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used as Worst High
+Grade flag.}
 
-\item{worst_low_flag_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr object with all available
-choices and preselected option for variable names that can be used as Worst Low Grade flag.}
+\item{worst_low_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.}
 
-\item{worst_flag_indicator}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr value indicating
-worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+value indicating worst grade.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

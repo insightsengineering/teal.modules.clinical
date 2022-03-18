@@ -7,7 +7,7 @@
 cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE)
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal:reexports]{teal::choices_selected()}} for details.}
+\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
 
 \item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
 shiny \code{\link[shiny]{selectInput}}.}

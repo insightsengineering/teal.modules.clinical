@@ -509,10 +509,16 @@ tm_t_coxreg <- function(label,
                         paramcd,
                         cov_var,
                         strata_var,
-                        aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                        cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
+                        aval_var = teal.transform::choices_selected(
+                          teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                          fixed = TRUE
+                        ),
+                        cnsr_var = teal.transform::choices_selected(
+                          teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                          fixed = TRUE
+                        ),
                         multivariate = TRUE,
-                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {

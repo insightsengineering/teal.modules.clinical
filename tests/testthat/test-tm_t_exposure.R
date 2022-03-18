@@ -34,7 +34,7 @@ testthat::test_that("template_exposure generates correct expressions with defaul
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = teal::variable_labels(adex["RACE"]),
+          split_label = teal.data::variable_labels(adex["RACE"]),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
@@ -83,7 +83,7 @@ testthat::test_that("template_exposure generates correct expressions with custom
           "myRACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = teal::variable_labels(myadex["myRACE"]),
+          split_label = teal.data::variable_labels(myadex["myRACE"]),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
@@ -133,7 +133,7 @@ testthat::test_that("template_exposure generates correct expressions with paramc
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = teal::variable_labels(adex["RACE"]),
+          split_label = teal.data::variable_labels(adex["RACE"]),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)

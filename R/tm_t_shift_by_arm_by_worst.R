@@ -233,12 +233,12 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        base_var,
                                        worst_flag_var,
                                        worst_flag,
-                                       treatment_flag_var = choices_selected(
-                                         variable_choices(dataname, subset = "ONTRTFL"),
+                                       treatment_flag_var = teal.transform::choices_selected(
+                                         teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                          selected = "ONTRTFL", fixed = TRUE
                                        ),
-                                       treatment_flag = choices_selected(
-                                         value_choices(dataname, "ONTRTFL"),
+                                       treatment_flag = teal.transform::choices_selected(
+                                         teal.transform::value_choices(dataname, "ONTRTFL"),
                                          selected = "Y", fixed = TRUE
                                        ),
                                        useNA = c("ifany", "no"), # nolint

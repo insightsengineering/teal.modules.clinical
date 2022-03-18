@@ -44,7 +44,7 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC1"])
+          split_label = teal.data::variable_labels(adcm["ATC1"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -120,13 +120,13 @@ testthat::test_that("template_mult_events generates correct expressions with 2 H
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC1"])
+          split_label = teal.data::variable_labels(adcm["ATC1"])
         ) %>%
         rtables::split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC2"])
+          split_label = teal.data::variable_labels(adcm["ATC2"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -208,7 +208,7 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC1"])
+          split_label = teal.data::variable_labels(adcm["ATC1"])
         ) %>%
         rtables::split_rows_by(
           "ATC2",
@@ -217,7 +217,7 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
           indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC2"])
+          split_label = teal.data::variable_labels(adcm["ATC2"])
         ) %>%
         rtables::split_rows_by(
           "ATC3",
@@ -226,7 +226,7 @@ testthat::test_that("template_mult_events generates correct expressions with 3 H
           indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC3"])
+          split_label = teal.data::variable_labels(adcm["ATC3"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -315,25 +315,25 @@ testthat::test_that("template_mult_events generates correct expressions with 4 H
           child_labels = "visible", nested = FALSE,
           indent_mod = -1L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC1"])
+          split_label = teal.data::variable_labels(adcm["ATC1"])
         ) %>%
         rtables::split_rows_by("ATC2",
           child_labels = "visible", nested = TRUE, indent_mod = 0L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC2"])
+          split_label = teal.data::variable_labels(adcm["ATC2"])
         ) %>%
         rtables::split_rows_by("ATC3",
           child_labels = "visible",
           nested = TRUE, indent_mod = 0L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC3"])
+          split_label = teal.data::variable_labels(adcm["ATC3"])
         ) %>%
         rtables::split_rows_by("ATC4",
           child_labels = "visible", nested = TRUE,
           indent_mod = 0L, split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC4"])
+          split_label = teal.data::variable_labels(adcm["ATC4"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -477,7 +477,7 @@ testthat::test_that("template_mult_events generates correct expressions with 1 H
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(adcm["ATC1"])
+          split_label = teal.data::variable_labels(adcm["ATC1"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",

@@ -13,14 +13,17 @@ tm_t_abnormality(
   by_vars,
   grade,
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
-  baseline_var = choices_selected(variable_choices(dataname, subset = "BNRIND"),
-    selected = "BNRIND", fixed = TRUE),
-  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
-    selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
-    fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+ 
+    baseline_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "BNRIND"), selected = "BNRIND", fixed = TRUE),
+ 
+    treatment_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
+ 
+    treatment_flag = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    "ONTRTFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
@@ -50,8 +53,8 @@ second variable will be nested under the first variable.}
 object with all available choices and preselected option for variable names
 used to split the summary by rows.}
 
-\item{grade}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
-choices and preselected option for variable names that can be used to
+\item{grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
 
 \item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
@@ -59,7 +62,7 @@ specify the abnormality grade. Variable must be factor.}
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{baseline_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 variable for baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}

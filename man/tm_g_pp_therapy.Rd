@@ -39,34 +39,35 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{atirel}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{ATIREL} column of the
-ADCM dataset.}
+\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ATIREL} column of the ADCM dataset.}
 
-\item{cmdecod}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMDECOD} column of the
-ADCM dataset.}
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMDECOD} column of the ADCM dataset.}
 
-\item{cmindc}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMINDC} column of the
-ADCM dataset.}
+\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMINDC} column of the ADCM dataset.}
 
-\item{cmdose}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMDOSE} column of the
-ADCM dataset.}
+\item{cmdose}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMDOSE} column of the ADCM dataset.}
 
-\item{cmtrt}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMTRT} column of the ADCM dataset.}
+\item{cmtrt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMTRT} column of the ADCM dataset.}
 
-\item{cmdosu}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMDOSU} column of the
-ADCM dataset.}
+\item{cmdosu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMDOSU} column of the ADCM dataset.}
 
-\item{cmroute}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMROUTE} column of the
-ADCM dataset.}
+\item{cmroute}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMROUTE} column of the ADCM dataset.}
 
-\item{cmdosfrq}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMDOSFRQ} column of the
-ADCM dataset.}
+\item{cmdosfrq}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMDOSFRQ} column of the ADCM dataset.}
 
-\item{cmstdy}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMSTDY} column of the
-ADCM dataset.}
+\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMSTDY} column of the ADCM dataset.}
 
-\item{cmendy}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{CMENDY} column of the
-ADCM dataset.}
+\item{cmendy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMENDY} column of the ADCM dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -113,7 +114,7 @@ ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-teal::variable_labels(
+variable_labels(
   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 ) <- c(
   "Indication",
@@ -136,7 +137,7 @@ app <- init(
         ADCM$CMDOSFRQ <- "CMDOSFRQ"
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
-        teal::variable_labels(
+        variable_labels(
           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
             "Indication",
             "Reported Name of Drug, Med, or Therapy",

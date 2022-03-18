@@ -259,7 +259,7 @@ template_g_km <- function(dataname = "ANL",
 #' ADaM structure.
 #'
 #' @inheritParams module_arguments
-#' @param facet_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
 #'
@@ -329,10 +329,19 @@ tm_g_km <- function(label,
                     paramcd,
                     strata_var,
                     facet_var,
-                    time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
-                    aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                    cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                    time_unit_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
+                      fixed = TRUE
+                    ),
+                    aval_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                      fixed = TRUE
+                    ),
+                    cnsr_var = teal.transform::choices_selected(
+                      teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                      fixed = TRUE
+                    ),
+                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(1200L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,

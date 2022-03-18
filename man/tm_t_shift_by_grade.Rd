@@ -10,19 +10,24 @@ tm_t_shift_by_grade(
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
     teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
-  visit_var = choices_selected(variable_choices(dataname, subset = "AVISIT"), selected
-    = "AVISIT", fixed = TRUE),
+ 
+    visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "AVISIT"), selected = "AVISIT", fixed = TRUE),
   paramcd,
-  worst_flag_var = choices_selected(variable_choices(dataname, subset = c("WGRLOVFL",
-    "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
-  worst_flag_indicator = choices_selected(value_choices(dataname, "WGRLOVFL"), selected
-    = "Y", fixed = TRUE),
-  anl_toxgrade_var = choices_selected(variable_choices(dataname, subset = c("ATOXGR")),
-    selected = c("ATOXGR"), fixed = TRUE),
-  base_toxgrade_var = choices_selected(variable_choices(dataname, subset =
-    c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+ 
+    worst_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
+ 
+    worst_flag_indicator = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    "WGRLOVFL"), selected = "Y", fixed = TRUE),
+ 
+    anl_toxgrade_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE),
+ 
+    base_toxgrade_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   add_total = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -48,22 +53,22 @@ and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{visit_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
-choices and preselected option for variable names that can be used as visit.}
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used as visit.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{worst_flag_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr object with all available
-choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
-\item{worst_flag_indicator}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr value indicating
-worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+value indicating worst grade.}
 
-\item{anl_toxgrade_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{anl_toxgrade_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 variable for analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{base_toxgrade_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 variable for baseline toxicity grade.}
 
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr

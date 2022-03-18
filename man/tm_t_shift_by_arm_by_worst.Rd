@@ -15,10 +15,12 @@ tm_t_shift_by_arm_by_worst(
   base_var,
   worst_flag_var,
   worst_flag,
-  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
-    selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
-    fixed = TRUE),
+ 
+    treatment_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
+ 
+    treatment_flag = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    "ONTRTFL"), selected = "Y", fixed = TRUE),
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   add_total = FALSE,

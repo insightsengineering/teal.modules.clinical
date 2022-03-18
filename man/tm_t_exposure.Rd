@@ -11,16 +11,18 @@ tm_t_exposure(
     teal.transform::datanames_input(col_by_var), "ADSL"),
   row_by_var,
   col_by_var,
-  paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),
-    selected = "TDURD"),
+  paramcd = teal.transform::choices_selected(choices =
+    teal.transform::value_choices(dataname, "PARAMCD", "PARAM"), selected = "TDURD"),
   paramcd_label = "PARAM",
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   parcat,
-  aval_var = choices_selected(variable_choices(dataname, subset = "AVAL"), selected =
-    "AVAL", fixed = TRUE),
-  avalu_var = choices_selected(variable_choices(dataname, subset = "AVALU"), selected =
-    "AVALU", fixed = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "AVAL"), selected = "AVAL", fixed = TRUE),
+ 
+    avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "AVALU"), selected = "AVALU", fixed = TRUE),
   add_total,
   na_level = "<Missing>",
   pre_output = NULL,
@@ -38,11 +40,11 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{row_by_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{row_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split rows.}
 
-\item{col_by_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{col_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split columns.}
 
@@ -55,7 +57,7 @@ the column from the dataset where the value will be used to label the argument \
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{parcat}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{parcat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 parameter category values.}
 
@@ -63,7 +65,7 @@ parameter category values.}
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{avalu_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \link[teal:reexports]{teal::data_extract_spec})\cr
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr
@@ -99,7 +101,7 @@ adsl <- synthetic_cdisc_data("latest")$adsl
 adex <- synthetic_cdisc_data("latest")$adex
 
 set.seed(1, kind = "Mersenne-Twister")
-labels <- teal::variable_labels(adex, fill = FALSE)
+labels <- variable_labels(adex, fill = FALSE)
 adex <- adex \%>\%
   distinct(USUBJID, .keep_all = TRUE) \%>\%
   mutate(
@@ -109,7 +111,7 @@ adex <- adex \%>\%
     AVALU = "Days"
   ) \%>\%
   bind_rows(adex)
-teal::variable_labels(adex) <- labels
+variable_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
@@ -117,7 +119,7 @@ app <- init(
     cdisc_dataset("ADEX", adex,
       code = 'set.seed(1, kind = "Mersenne-Twister")
       ADEX <- synthetic_cdisc_data("latest")$adex
-      labels <- teal::variable_labels(ADEX, fill = FALSE)
+      labels <- variable_labels(ADEX, fill = FALSE)
       ADEX <- ADEX \%>\%
        distinct(USUBJID, .keep_all = TRUE) \%>\%
        mutate(PARAMCD = "TDURD",
@@ -125,7 +127,7 @@ app <- init(
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
               AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      teal::variable_labels(ADEX) <- labels' # nolint
+      variable_labels(ADEX) <- labels' # nolint
     ),
     check = TRUE
   ),

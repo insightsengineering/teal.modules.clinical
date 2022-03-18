@@ -267,12 +267,12 @@ template_shift_by_grade <- function(parentname,
     substitute(
       expr = {
         column_labels <- list(
-          PARAMCD = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
-          AVISIT = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
+          PARAMCD = teal.data::variable_labels(dataname, fill = FALSE)[[paramcd]],
+          AVISIT = teal.data::variable_labels(dataname, fill = FALSE)[[visit_var]],
           ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
           BTOXGR_GP = "Baseline Grade"
         )
-        teal::variable_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        teal.data::variable_labels(dataname)[names(column_labels)] <- as.character(column_labels)
         dataname
       },
       env = list(
@@ -319,7 +319,7 @@ template_shift_by_grade <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = teal::variable_labels(dataname, fill = FALSE)[[paramcd]],
+    expr = teal.data::variable_labels(dataname, fill = FALSE)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -344,7 +344,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = teal::variable_labels(dataname, fill = FALSE)[[visit_var]],
+      expr = teal.data::variable_labels(dataname, fill = FALSE)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -375,7 +375,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = teal::variable_labels(dataname, fill = FALSE)[[by_var_gp]],
+    expr = teal.data::variable_labels(dataname, fill = FALSE)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp
@@ -456,15 +456,15 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param visit_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
-#'   choices and preselected option for variable names that can be used as visit.
-#' @param worst_flag_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr object with all available
-#'   choices and preselected option for variable names that can be used as worst flag variable.
-#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec])\cr value indicating
-#' worst grade.
-#' @param anl_toxgrade_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param visit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as visit.
+#' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as worst flag variable.
+#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' value indicating worst grade.
+#' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' variable for baseline toxicity grade.
 #'
 #' @export
@@ -532,31 +532,31 @@ tm_t_shift_by_grade <- function(label,
                                   "ADSL"
                                 ),
                                 arm_var,
-                                visit_var = choices_selected(
-                                  variable_choices(dataname, subset = "AVISIT"),
+                                visit_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, subset = "AVISIT"),
                                   selected = "AVISIT", fixed = TRUE
                                 ),
                                 paramcd,
-                                worst_flag_var = choices_selected(
-                                  variable_choices(dataname, subset = c(
+                                worst_flag_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, subset = c(
                                     "WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"
                                   )),
                                   selected = "WGRLOVFL"
                                 ),
-                                worst_flag_indicator = choices_selected(
-                                  value_choices(dataname, "WGRLOVFL"),
+                                worst_flag_indicator = teal.transform::choices_selected(
+                                  teal.transform::value_choices(dataname, "WGRLOVFL"),
                                   selected = "Y", fixed = TRUE
                                 ),
-                                anl_toxgrade_var = choices_selected(
-                                  variable_choices(dataname, subset = c("ATOXGR")),
+                                anl_toxgrade_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, subset = c("ATOXGR")),
                                   selected = c("ATOXGR"), fixed = TRUE
                                 ),
-                                base_toxgrade_var = choices_selected(
-                                  variable_choices(dataname, subset = c("BTOXGR")),
+                                base_toxgrade_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, subset = c("BTOXGR")),
                                   selected = c("BTOXGR"), fixed = TRUE
                                 ),
-                                id_var = choices_selected(
-                                  variable_choices(dataname, subset = "USUBJID"),
+                                id_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, subset = "USUBJID"),
                                   selected = "USUBJID", fixed = TRUE
                                 ),
                                 add_total = FALSE,

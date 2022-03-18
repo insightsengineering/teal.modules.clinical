@@ -168,7 +168,7 @@ template_ancova <- function(dataname = "ANL",
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = teal::variable_labels(dataname[visit_var])
+          split_label = teal.data::variable_labels(dataname[visit_var])
         ),
       env = list(
         arm_var = arm_var,
@@ -188,7 +188,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[paramcd_var])
+            split_label = teal.data::variable_labels(dataname[paramcd_var])
           ) %>%
             summarize_ancova(
               vars = aval_var,
@@ -216,7 +216,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = teal::variable_labels(dataname[paramcd_var])
+            split_label = teal.data::variable_labels(dataname[paramcd_var])
           ) %>%
             summarize_ancova(
               vars = aval_var,
@@ -399,7 +399,7 @@ tm_t_ancova <- function(label,
                         cov_var,
                         avisit,
                         paramcd,
-                        conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {

@@ -28,13 +28,14 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{mhterm}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{MHTERM} column of the ADMH dataset.}
+\item{mhterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{MHTERM} column of the ADMH dataset.}
 
-\item{mhbodsys}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{MHBODSYS} column of the
-ADMH dataset.}
+\item{mhbodsys}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{MHBODSYS} column of the ADMH dataset.}
 
-\item{mhdistat}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{MHDISTAT} column of the
-ADMH dataset.}
+\item{mhdistat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{MHDISTAT} column of the ADMH dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -52,14 +53,14 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADMH <- synthetic_cdisc_data("latest")$admh
 ADMH[["MHDISTAT"]] <- "ONGOING"
-teal::variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
                    ADMH[['MHDISTAT']] <- 'ONGOING'
-                   teal::variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
+                   variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
     check = TRUE
   ),
   modules = modules(

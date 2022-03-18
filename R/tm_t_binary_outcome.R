@@ -459,11 +459,14 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                aval_var = choices_selected(
-                                  choices = variable_choices(dataname, c("AVALC", "SEX")),
+                                aval_var = teal.transform::choices_selected(
+                                  choices = teal.transform::variable_choices(dataname, c("AVALC", "SEX")),
                                   selected = "AVALC", fixed = FALSE
                                 ),
-                                conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                conf_level = teal.transform::choices_selected(
+                                  c(0.95, 0.9, 0.8), 0.95,
+                                  keep_order = TRUE
+                                ),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,

@@ -185,7 +185,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = teal::variable_labels(dataname[hlt_new])
+              split_label = teal.data::variable_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,
@@ -274,7 +274,7 @@ template_mult_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
 #'
-#' @param seq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @export

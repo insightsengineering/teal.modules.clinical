@@ -162,7 +162,7 @@ template_summary_by <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = teal::variable_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::variable_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -372,8 +372,8 @@ tm_t_summary_by <- function(label,
                             arm_var,
                             by_vars,
                             summarize_vars,
-                            id_var = choices_selected(
-                              variable_choices(dataname, subset = "USUBJID"),
+                            id_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, subset = "USUBJID"),
                               selected = "USUBJID", fixed = TRUE
                             ),
                             paramcd = NULL,
@@ -383,7 +383,7 @@ tm_t_summary_by <- function(label,
                             useNA = c("ifany", "no"), # nolint
                             na_level = "<Missing>",
                             numeric_stats = c("n", "mean_sd", "median", "range"),
-                            denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+                            denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,

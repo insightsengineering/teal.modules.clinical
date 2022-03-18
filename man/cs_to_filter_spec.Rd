@@ -7,13 +7,13 @@
 cs_to_filter_spec(cs, multiple = FALSE)
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal:reexports]{teal::choices_selected()}} for details.}
+\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
 
 \item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
 shiny \code{\link[shiny]{selectInput}}.}
 }
 \value{
-(\code{\link[teal:reexports]{teal::filter_spec()}})
+(\code{\link[teal.transform:filter_spec]{teal.transform::filter_spec()}})
 }
 \description{
 Convert choices_selected to filter_spec

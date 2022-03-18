@@ -13,9 +13,11 @@ tm_t_logistic(
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
-  avalc_var = choices_selected(variable_choices(dataname, "AVALC"), "AVALC", fixed =
+ 
+    avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALC"), "AVALC", fixed = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -31,7 +33,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}}) or \code{NULL}\cr
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}) or \code{NULL}\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
@@ -41,7 +43,7 @@ arm_var is optional, when being NULL, no arm or treatment variable is included i
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
@@ -52,7 +54,7 @@ variable value designating the studied parameter.}
 object with all available choices and preselected option for the covariates
 variables.}
 
-\item{avalc_var}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr
+\item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis variable (categorical).}
 
 \item{conf_level}{(\code{choices_selected})\cr
