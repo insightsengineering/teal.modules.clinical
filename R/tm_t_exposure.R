@@ -234,7 +234,7 @@ template_exposure <- function(parentname,
 #' adex <- synthetic_cdisc_data("latest")$adex
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
-#' labels <- teal.data::variable_labels(adex, fill = FALSE)
+#' labels <- variable_labels(adex, fill = FALSE)
 #' adex <- adex %>%
 #'   distinct(USUBJID, .keep_all = TRUE) %>%
 #'   mutate(
@@ -244,7 +244,7 @@ template_exposure <- function(parentname,
 #'     AVALU = "Days"
 #'   ) %>%
 #'   bind_rows(adex)
-#' teal.data::variable_labels(adex) <- labels
+#' variable_labels(adex) <- labels
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -252,7 +252,7 @@ template_exposure <- function(parentname,
 #'     cdisc_dataset("ADEX", adex,
 #'       code = 'set.seed(1, kind = "Mersenne-Twister")
 #'       ADEX <- synthetic_cdisc_data("latest")$adex
-#'       labels <- teal.data::variable_labels(ADEX, fill = FALSE)
+#'       labels <- variable_labels(ADEX, fill = FALSE)
 #'       ADEX <- ADEX %>%
 #'        distinct(USUBJID, .keep_all = TRUE) %>%
 #'        mutate(PARAMCD = "TDURD",
@@ -260,7 +260,7 @@ template_exposure <- function(parentname,
 #'               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
 #'               AVALU = "Days") %>%
 #'               bind_rows(ADEX)
-#'       teal.data::variable_labels(ADEX) <- labels' # nolint
+#'       variable_labels(ADEX) <- labels' # nolint
 #'     ),
 #'     check = TRUE
 #'   ),
@@ -268,20 +268,20 @@ template_exposure <- function(parentname,
 #'     tm_t_exposure(
 #'       label = "Duration of Exposure Table",
 #'       dataname = "ADEX",
-#'       paramcd = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(adex, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(adex, "PARAMCD", "PARAM"),
 #'         selected = "TDURD"
 #'       ),
-#'       col_by_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adex, subset = c("SEX", "ARM")),
+#'       col_by_var = choices_selected(
+#'         choices = variable_choices(adex, subset = c("SEX", "ARM")),
 #'         selected = "SEX"
 #'       ),
-#'       row_by_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adex, subset = c("RACE", "REGION1", "STRATA1", "SEX")),
+#'       row_by_var = choices_selected(
+#'         choices = variable_choices(adex, subset = c("RACE", "REGION1", "STRATA1", "SEX")),
 #'         selected = "RACE"
 #'       ),
-#'       parcat = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(adex, "PARCAT2"),
+#'       parcat = choices_selected(
+#'         choices = value_choices(adex, "PARCAT2"),
 #'         selected = "Drug A"
 #'       ),
 #'       add_total = FALSE

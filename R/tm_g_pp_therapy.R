@@ -267,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' teal.data::variable_labels(
+#' variable_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -290,7 +290,7 @@ template_therapy <- function(dataname = "ANL",
 #'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #'         ADCM$CMASTDTM <- ADCM$ASTDTM
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         teal.data::variable_labels(
+#'         variable_labels(
 #'           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",
@@ -308,44 +308,44 @@ template_therapy <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       atirel = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "ATIREL"),
+#'       atirel = choices_selected(
+#'         choices = variable_choices(ADCM, "ATIREL"),
 #'         selected = c("ATIREL")
 #'       ),
-#'       cmdecod = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
+#'       cmdecod = choices_selected(
+#'         choices = variable_choices(ADCM, "CMDECOD"),
 #'         selected = "CMDECOD"
 #'       ),
-#'       cmindc = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMINDC"),
+#'       cmindc = choices_selected(
+#'         choices = variable_choices(ADCM, "CMINDC"),
 #'         selected = "CMINDC"
 #'       ),
-#'       cmdose = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMDOSE"),
+#'       cmdose = choices_selected(
+#'         choices = variable_choices(ADCM, "CMDOSE"),
 #'         selected = "CMDOSE"
 #'       ),
-#'       cmtrt = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMTRT"),
+#'       cmtrt = choices_selected(
+#'         choices = variable_choices(ADCM, "CMTRT"),
 #'         selected = "CMTRT"
 #'       ),
-#'       cmdosu = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMDOSU"),
+#'       cmdosu = choices_selected(
+#'         choices = variable_choices(ADCM, "CMDOSU"),
 #'         selected = c("CMDOSU")
 #'       ),
-#'       cmroute = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMROUTE"),
+#'       cmroute = choices_selected(
+#'         choices = variable_choices(ADCM, "CMROUTE"),
 #'         selected = "CMROUTE"
 #'       ),
-#'       cmdosfrq = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "CMDOSFRQ"),
+#'       cmdosfrq = choices_selected(
+#'         choices = variable_choices(ADCM, "CMDOSFRQ"),
 #'         selected = "CMDOSFRQ"
 #'       ),
-#'       cmstdy = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "ASTDY"),
+#'       cmstdy = choices_selected(
+#'         choices = variable_choices(ADCM, "ASTDY"),
 #'         selected = "ASTDY"
 #'       ),
-#'       cmendy = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, "AENDY"),
+#'       cmendy = choices_selected(
+#'         choices = variable_choices(ADCM, "AENDY"),
 #'         selected = "AENDY"
 #'       )
 #'     )

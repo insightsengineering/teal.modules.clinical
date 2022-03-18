@@ -157,16 +157,16 @@ app <- init(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",
-      aval_var = teal.transform::choices_selected(c("AVAL", "CHG"), "AVAL"),
-      id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+      aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
+      id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(ADQS, "PARAMCD", "PARAM"),
+      paramcd = choices_selected(
+        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
-      cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
     )
   )
 )

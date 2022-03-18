@@ -68,8 +68,8 @@ template_basic_info <- function(dataname = "ANL",
 #'       label = "Basic info",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       vars = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADSL),
+#'       vars = choices_selected(
+#'         choices = variable_choices(ADSL),
 #'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
 #'       )
 #'     )

@@ -396,22 +396,22 @@ template_tte <- function(dataname = "ANL",
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
-#'       arm_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = teal.transform::choices_selected(
-#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
-#'       strata_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
-#'       time_points = teal.transform::choices_selected(c(182, 243), 182),
-#'       event_desc_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADTTE, "EVNTDESC"),
+#'       time_points = choices_selected(c(182, 243), 182),
+#'       event_desc_var = choices_selected(
+#'         variable_choices(ADTTE, "EVNTDESC"),
 #'         "EVNTDESC",
 #'         fixed = TRUE
 #'       )

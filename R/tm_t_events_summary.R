@@ -482,7 +482,7 @@ template_events_summary <- function(anl_name,
 #'     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'   )
-#'   teal.data::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'   variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'   dat
 #' }
 #'
@@ -527,7 +527,7 @@ template_events_summary <- function(anl_name,
 #'               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
 #'               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
 #'           )
-#'           teal.data::variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'           variable_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'           dat
 #'         }
 #'         # Generating user-defined event flags.
@@ -538,18 +538,18 @@ template_events_summary <- function(anl_name,
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
 #'       dataname = "ADAE",
-#'       arm_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         choices = variable_choices("ADSL", c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
-#'       flag_var_anl = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices("ADAE", ae_anl_vars),
+#'       flag_var_anl = choices_selected(
+#'         choices = variable_choices("ADAE", ae_anl_vars),
 #'         selected = ae_anl_vars[1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE
 #'       ),
-#'       flag_var_aesi = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices("ADAE", aesi_vars),
+#'       flag_var_aesi = choices_selected(
+#'         choices = variable_choices("ADAE", aesi_vars),
 #'         selected = aesi_vars[1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE

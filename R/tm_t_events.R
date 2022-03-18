@@ -462,13 +462,13 @@ template_events <- function(dataname,
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
-#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adae, c("AETERM", "AEDECOD")),
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       llt = choices_selected(
+#'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
 #'       ),
-#'       hlt = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adae, c("AEBODSYS", "AESOC")),
+#'       hlt = choices_selected(
+#'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       add_total = TRUE,

@@ -76,28 +76,28 @@ app <- init(
       label = "Vitals",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "PARAMCD"),
+      paramcd = choices_selected(
+        choices = variable_choices(ADLB, "PARAMCD"),
         selected = "PARAMCD"
       ),
-      param = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "PARAM"),
+      param = choices_selected(
+        choices = variable_choices(ADLB, "PARAM"),
         selected = "PARAM"
       ),
-      timepoints = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "ADY"),
+      timepoints = choices_selected(
+        choices = variable_choices(ADLB, "ADY"),
         selected = "ADY"
       ),
-      anrind = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "ANRIND"),
+      anrind = choices_selected(
+        choices = variable_choices(ADLB, "ANRIND"),
         selected = "ANRIND"
       ),
-      aval = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "AVAL"),
+      aval = choices_selected(
+        choices = variable_choices(ADLB, "AVAL"),
         selected = "AVAL"
       ),
-      avalu = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADLB, "AVALU"),
+      avalu = choices_selected(
+        choices = variable_choices(ADLB, "AVALU"),
         selected = "AVALU"
       )
     )

@@ -230,9 +230,9 @@ template_summary <- function(dataname,
 #'     tm_t_summary(
 #'       label = "Demographic Table",
 #'       dataname = "ADSL",
-#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       add_total = TRUE,
-#'       summarize_vars = teal.transform::choices_selected(
+#'       summarize_vars = choices_selected(
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
 #'       ),

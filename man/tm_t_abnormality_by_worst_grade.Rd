@@ -115,12 +115,12 @@ app <- init(
     tm_t_abnormality_by_worst_grade(
       label = "Laboratory test results with highest grade post-baseline",
       dataname = "ADLB",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(adlb, "PARAMCD", "PARAM"),
+      paramcd = choices_selected(
+        choices = value_choices(adlb, "PARAMCD", "PARAM"),
         selected = c("ALT", "CRP", "IGA")
       ),
       add_total = FALSE

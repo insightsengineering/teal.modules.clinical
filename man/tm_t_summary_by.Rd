@@ -126,22 +126,22 @@ app <- init(
     tm_t_summary_by(
       label = "Summary by Row Groups Table",
       dataname = "ADLB",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adsl, c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       add_total = TRUE,
-      by_vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adlb, c("PARAM", "AVISIT")),
+      by_vars = choices_selected(
+        choices = variable_choices(adlb, c("PARAM", "AVISIT")),
         selected = c("AVISIT")
       ),
-      summarize_vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adlb, c("AVAL", "CHG")),
+      summarize_vars = choices_selected(
+        choices = variable_choices(adlb, c("AVAL", "CHG")),
         selected = c("AVAL")
       ),
       useNA = "ifany",
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(adlb, "PARAMCD", "PARAM"),
+      paramcd = choices_selected(
+        choices = value_choices(adlb, "PARAMCD", "PARAM"),
         selected = "ALT"
       )
     )

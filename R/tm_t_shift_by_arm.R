@@ -183,24 +183,24 @@ template_shift_by_arm <- function(dataname,
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         variable_choices(adsl, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
-#'       paramcd = teal.transform::choices_selected(
-#'         teal.transform::value_choices(adeg, "PARAMCD"),
+#'       paramcd = choices_selected(
+#'         value_choices(adeg, "PARAMCD"),
 #'         selected = "HR"
 #'       ),
-#'       visit_var = teal.transform::choices_selected(
-#'         teal.transform::value_choices(adeg, "AVISIT"),
+#'       visit_var = choices_selected(
+#'         value_choices(adeg, "AVISIT"),
 #'         selected = "POST-BASELINE MINIMUM"
 #'       ),
-#'       aval_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adeg, subset = "ANRIND"),
+#'       aval_var = choices_selected(
+#'         variable_choices(adeg, subset = "ANRIND"),
 #'         selected = "ANRIND", fixed = TRUE
 #'       ),
-#'       base_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adeg, subset = "BNRIND"),
+#'       base_var = choices_selected(
+#'         variable_choices(adeg, subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       useNA = "ifany"

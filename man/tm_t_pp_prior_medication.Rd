@@ -66,7 +66,7 @@ ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-teal.data::variable_labels(
+variable_labels(
   ADCM[c("CMINDC", "CMTRT", "ASTDY")]
 ) <- c(
   "Indication",
@@ -88,7 +88,7 @@ app <- init(
       ADCM$CMDOSFRQ <- "CMDOSFRQ"
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
-      teal.data::variable_labels(
+      variable_labels(
         ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
           "Indication",
           "Reported Name of Drug, Med, or Therapy",
@@ -104,20 +104,20 @@ app <- init(
       dataname = "ADCM",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      atirel = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "ATIREL"),
+      atirel = choices_selected(
+        choices = variable_choices(ADCM, "ATIREL"),
         selected = "ATIREL"
       ),
-      cmdecod = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
+      cmdecod = choices_selected(
+        choices = variable_choices(ADCM, "CMDECOD"),
         selected = "CMDECOD"
       ),
-      cmindc = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "CMINDC"),
+      cmindc = choices_selected(
+        choices = variable_choices(ADCM, "CMINDC"),
         selected = "CMINDC"
       ),
-      cmstdy = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "ASTDY"),
+      cmstdy = choices_selected(
+        choices = variable_choices(ADCM, "ASTDY"),
         selected = "ASTDY"
       )
     )

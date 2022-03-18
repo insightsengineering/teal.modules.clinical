@@ -137,18 +137,18 @@ app <- init(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       add_total = FALSE,
-      by_vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
+      by_vars = choices_selected(
+        choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
-      grade = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adlb, subset = "ANRIND"),
+      grade = choices_selected(
+        choices = variable_choices(adlb, subset = "ANRIND"),
         selected = "ANRIND",
         fixed = TRUE
       ),

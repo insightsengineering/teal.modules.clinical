@@ -487,29 +487,29 @@ template_shift_by_grade <- function(parentname,
 #'     tm_t_shift_by_grade(
 #'       label = "Grade Laboratory Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
-#'       paramcd = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(adlb, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
 #'         selected = "ALT"
 #'       ),
-#'       worst_flag_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adlb, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+#'       worst_flag_var = choices_selected(
+#'         choices = variable_choices(adlb, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
 #'         selected = c("WGRLOVFL")
 #'       ),
-#'       worst_flag_indicator = teal.transform::choices_selected(
-#'         teal.transform::value_choices(adlb, "WGRLOVFL"),
+#'       worst_flag_indicator = choices_selected(
+#'         value_choices(adlb, "WGRLOVFL"),
 #'         selected = "Y", fixed = TRUE
 #'       ),
-#'       anl_toxgrade_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adlb, subset = c("ATOXGR")),
+#'       anl_toxgrade_var = choices_selected(
+#'         choices = variable_choices(adlb, subset = c("ATOXGR")),
 #'         selected = c("ATOXGR"),
 #'         fixed = TRUE
 #'       ),
-#'       base_toxgrade_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adlb, subset = c("BTOXGR")),
+#'       base_toxgrade_var = choices_selected(
+#'         choices = variable_choices(adlb, subset = c("BTOXGR")),
 #'         selected = c("BTOXGR"),
 #'         fixed = TRUE
 #'       ),

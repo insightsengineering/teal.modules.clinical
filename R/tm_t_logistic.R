@@ -255,16 +255,16 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       arm_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADRS, c("ARM", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADRS, c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(ADRS, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
-#'       cov_var = teal.transform::choices_selected(
+#'       cov_var = choices_selected(
 #'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
 #'         selected = "SEX"
 #'       )

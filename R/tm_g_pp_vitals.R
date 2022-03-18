@@ -209,20 +209,20 @@ template_vitals <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       paramcd = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADVS, "PARAMCD"),
+#'       paramcd = choices_selected(
+#'         choices = variable_choices(ADVS, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
-#'       param = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADVS, "PARAM"),
+#'       param = choices_selected(
+#'         choices = variable_choices(ADVS, "PARAM"),
 #'         selected = "PARAM"
 #'       ),
-#'       xaxis = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADVS, "ADY"),
+#'       xaxis = choices_selected(
+#'         choices = variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
 #'       ),
-#'       aval = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADVS, "AVAL"),
+#'       aval = choices_selected(
+#'         choices = variable_choices(ADVS, "AVAL"),
 #'         selected = "AVAL"
 #'       )
 #'     )

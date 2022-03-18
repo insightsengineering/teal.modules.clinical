@@ -109,28 +109,28 @@ app <- init(
     tm_t_shift_by_arm_by_worst(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(adsl, subset = c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        variable_choices(adsl, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(adeg, "PARAMCD"),
+      paramcd = choices_selected(
+        value_choices(adeg, "PARAMCD"),
         selected = "ECGINTP"
       ),
-      worst_flag_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(adeg, c("WORS02FL", "WORS01FL")),
+      worst_flag_var = choices_selected(
+        variable_choices(adeg, c("WORS02FL", "WORS01FL")),
         selected = "WORS02FL"
       ),
-      worst_flag = teal.transform::choices_selected(
-        teal.transform::value_choices(adeg, "WORS02FL"),
+      worst_flag = choices_selected(
+        value_choices(adeg, "WORS02FL"),
         selected = "Y", fixed = TRUE
       ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(adeg, subset = "AVALC"),
+      aval_var = choices_selected(
+        variable_choices(adeg, subset = "AVALC"),
         selected = "AVALC", fixed = TRUE
       ),
-      base_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(adeg, subset = "BASEC"),
+      base_var = choices_selected(
+        variable_choices(adeg, subset = "BASEC"),
         selected = "BASEC", fixed = TRUE
       ),
       useNA = "ifany"

@@ -159,15 +159,15 @@ app <- init(
     tm_t_coxreg(
       label = "Cox Reg.",
       dataname = "ADTTE",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+      arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
       ),
-      strata_var = teal.transform::choices_selected(
+      strata_var = choices_selected(
         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
       ),
-      cov_var = teal.transform::choices_selected(
+      cov_var = choices_selected(
         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
       ),
       multivariate = TRUE
@@ -236,13 +236,13 @@ app <- init(
     tm_t_coxreg(
       label = "Cox Reg.",
       dataname = "ADTTE",
-      arm_var = teal.transform::choices_selected(c("ARMCD"), "ARMCD"),
+      arm_var = choices_selected(c("ARMCD"), "ARMCD"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
       ),
-      strata_var = teal.transform::choices_selected(c("INST"), NULL),
-      cov_var = teal.transform::choices_selected(c("SEX", "AGE"), "SEX"),
+      strata_var = choices_selected(c("INST"), NULL),
+      cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
       multivariate = TRUE
     )
   )

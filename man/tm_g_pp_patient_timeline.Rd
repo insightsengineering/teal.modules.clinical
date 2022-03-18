@@ -121,7 +121,7 @@ ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-teal.data::variable_labels(
+variable_labels(
   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 ) <- c(
   "Indication",
@@ -150,7 +150,7 @@ app <- init(
         ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
-        teal.data::variable_labels(
+        variable_labels(
           ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
             "Indication",
             "Reported Name of Drug, Med, or Therapy",
@@ -169,44 +169,44 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      cmdecod = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "CMDECOD"),
+      cmdecod = choices_selected(
+        choices = variable_choices(ADCM, "CMDECOD"),
         selected = "CMDECOD",
       ),
-      aeterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AETERM"),
+      aeterm = choices_selected(
+        choices = variable_choices(ADAE, "AETERM"),
         selected = c("AETERM")
       ),
-      aetime_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "ASTDTM"),
+      aetime_start = choices_selected(
+        choices = variable_choices(ADAE, "ASTDTM"),
         selected = c("ASTDTM")
       ),
-      aetime_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AENDTM"),
+      aetime_end = choices_selected(
+        choices = variable_choices(ADAE, "AENDTM"),
         selected = c("AENDTM")
       ),
-      dstime_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "CMASTDTM"),
+      dstime_start = choices_selected(
+        choices = variable_choices(ADCM, "CMASTDTM"),
         selected = c("CMASTDTM")
       ),
-      dstime_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "CMAENDTM"),
+      dstime_end = choices_selected(
+        choices = variable_choices(ADCM, "CMAENDTM"),
         selected = c("CMAENDTM")
       ),
-      aerelday_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "ASTDY"),
+      aerelday_start = choices_selected(
+        choices = variable_choices(ADAE, "ASTDY"),
         selected = c("ASTDY")
       ),
-      aerelday_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AENDY"),
+      aerelday_end = choices_selected(
+        choices = variable_choices(ADAE, "AENDY"),
         selected = c("AENDY")
       ),
-      dsrelday_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "ASTDY"),
+      dsrelday_start = choices_selected(
+        choices = variable_choices(ADCM, "ASTDY"),
         selected = c("ASTDY")
       ),
-      dsrelday_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADCM, "AENDY"),
+      dsrelday_end = choices_selected(
+        choices = variable_choices(ADCM, "AENDY"),
         selected = c("AENDY")
       )
     )

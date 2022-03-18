@@ -151,21 +151,21 @@ app <- init(
     tm_g_forest_tte(
       label = "Forest Survival",
       dataname = "ADTTE",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD")),
         "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
         "OS"
       ),
-      subgroup_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADSL, names(ADSL)),
+      subgroup_var = choices_selected(
+        variable_choices(ADSL, names(ADSL)),
         c("BMRKR2", "SEX")
       ),
-      strata_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADSL, c("STRATA1", "STRATA2")),
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
       plot_height = c(600, 200, 2000)

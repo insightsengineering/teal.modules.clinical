@@ -113,18 +113,18 @@ app <- init(
     tm_t_events_patyear(
       label = "AE rate adjusted for patient-years at risk Table",
       dataname = "ADAETTE",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adsl, c("ARM", "ARMCD")),
+      arm_var = choices_selected(
+        choices = variable_choices(adsl, c("ARM", "ARMCD")),
         selected = "ARMCD"
       ),
       add_total = TRUE,
-      events_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adaette, "n_events"),
+      events_var = choices_selected(
+        choices = variable_choices(adaette, "n_events"),
         selected = "n_events",
         fixed = TRUE
       ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(adaette, "PARAMCD", "PARAM"),
+      paramcd = choices_selected(
+        choices = value_choices(adaette, "PARAMCD", "PARAM"),
         selected = "AETTE1"
       )
     )

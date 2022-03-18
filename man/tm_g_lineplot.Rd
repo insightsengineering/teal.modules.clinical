@@ -140,16 +140,16 @@ app <- init(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
-      strata = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+      strata = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
-      y = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
+      y = choices_selected(
+        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
-      param = teal.transform::choices_selected(
-        teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
+      param = choices_selected(
+        value_choices(ADLB, "PARAMCD", "PARAM"),
         "ALT"
       )
     )

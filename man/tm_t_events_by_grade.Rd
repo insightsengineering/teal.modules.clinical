@@ -100,17 +100,17 @@ app <- init(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
       dataname = "ADAE",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adae, c("AETERM", "AEDECOD")),
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      llt = choices_selected(
+        choices = variable_choices(adae, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
       ),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adae, c("AEBODSYS", "AESOC")),
+      hlt = choices_selected(
+        choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
       ),
-      grade = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(adae, c("AETOXGR", "AESEV")),
+      grade = choices_selected(
+        choices = variable_choices(adae, c("AETOXGR", "AESEV")),
         selected = "AETOXGR"
       )
     )

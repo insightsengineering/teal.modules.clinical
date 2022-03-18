@@ -53,14 +53,14 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADMH <- synthetic_cdisc_data("latest")$admh
 ADMH[["MHDISTAT"]] <- "ONGOING"
-teal.data::variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+variable_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
                    ADMH[['MHDISTAT']] <- 'ONGOING'
-                   teal.data::variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
+                   variable_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
     check = TRUE
   ),
   modules = modules(
@@ -69,16 +69,16 @@ app <- init(
       dataname = "ADMH",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      mhterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADMH, c("MHTERM")),
+      mhterm = choices_selected(
+        choices = variable_choices(ADMH, c("MHTERM")),
         selected = "MHTERM"
       ),
-      mhbodsys = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADMH, "MHBODSYS"),
+      mhbodsys = choices_selected(
+        choices = variable_choices(ADMH, "MHBODSYS"),
         selected = "MHBODSYS"
       ),
-      mhdistat = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADMH, "MHDISTAT"),
+      mhdistat = choices_selected(
+        choices = variable_choices(ADMH, "MHDISTAT"),
         selected = "MHDISTAT"
       )
     )

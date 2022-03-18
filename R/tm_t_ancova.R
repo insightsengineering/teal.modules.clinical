@@ -358,25 +358,25 @@ template_ancova <- function(dataname = "ANL",
 #'     tm_t_ancova(
 #'       label = "ANCOVA table",
 #'       dataname = "ADQS",
-#'       avisit = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(adqs, "AVISIT"),
+#'       avisit = choices_selected(
+#'         choices = value_choices(adqs, "AVISIT"),
 #'         selected = "WEEK 1 DAY 8"
 #'       ),
-#'       arm_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
 #'         selected = "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       aval_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adqs, c("CHG", "AVAL")),
+#'       aval_var = choices_selected(
+#'         choices = variable_choices(adqs, c("CHG", "AVAL")),
 #'         selected = "CHG"
 #'       ),
-#'       cov_var = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+#'       cov_var = choices_selected(
+#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
 #'         selected = "STRATA1"
 #'       ),
-#'       paramcd = teal.transform::choices_selected(
-#'         choices = teal.transform::value_choices(adqs, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       )
 #'     )

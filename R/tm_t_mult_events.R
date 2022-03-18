@@ -299,14 +299,14 @@ template_mult_events <- function(dataname,
 #'     tm_t_mult_events(
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",
 #'       dataname = "ADCM",
-#'       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       seq_var = teal.transform::choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
-#'       hlt = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       seq_var = choices_selected("ASEQ", selected = "ASEQ", fixed = TRUE),
+#'       hlt = choices_selected(
+#'         choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
 #'         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
 #'       ),
-#'       llt = teal.transform::choices_selected(
-#'         choices = teal.transform::variable_choices(ADCM, c("CMDECOD")),
+#'       llt = choices_selected(
+#'         choices = variable_choices(ADCM, c("CMDECOD")),
 #'         selected = c("CMDECOD")
 #'       ),
 #'       add_total = TRUE,

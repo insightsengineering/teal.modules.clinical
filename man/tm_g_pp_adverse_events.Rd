@@ -105,28 +105,28 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      aeterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AETERM"),
+      aeterm = choices_selected(
+        choices = variable_choices(ADAE, "AETERM"),
         selected = "AETERM"
       ),
-      tox_grade = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AETOXGR"),
+      tox_grade = choices_selected(
+        choices = variable_choices(ADAE, "AETOXGR"),
         selected = "AETOXGR"
       ),
-      causality = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AEREL"),
+      causality = choices_selected(
+        choices = variable_choices(ADAE, "AEREL"),
         selected = "AEREL"
       ),
-      outcome = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AEOUT"),
+      outcome = choices_selected(
+        choices = variable_choices(ADAE, "AEOUT"),
         selected = "AEOUT"
       ),
-      action = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "AEACN"),
+      action = choices_selected(
+        choices = variable_choices(ADAE, "AEACN"),
         selected = "AEACN"
       ),
-      time = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(ADAE, "ASTDY"),
+      time = choices_selected(
+        choices = variable_choices(ADAE, "ASTDY"),
         selected = "ASTDY"
       ),
       decod = NULL

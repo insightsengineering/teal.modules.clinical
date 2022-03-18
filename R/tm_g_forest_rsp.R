@@ -250,21 +250,21 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
-#'       arm_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD")),
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = teal.transform::choices_selected(
-#'         teal.transform::value_choices(ADRS, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         "INVET"
 #'       ),
-#'       subgroup_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, names(ADSL)),
+#'       subgroup_var = choices_selected(
+#'         variable_choices(ADSL, names(ADSL)),
 #'         c("BMRKR2", "SEX")
 #'       ),
-#'       strata_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
 #'       ),
 #'       plot_height = c(600L, 200L, 2000L),

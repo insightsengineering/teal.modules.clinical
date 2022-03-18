@@ -293,21 +293,21 @@ template_g_km <- function(dataname = "ANL",
 #'     tm_g_km(
 #'       label = "KM PLOT",
 #'       dataname = "ADTTE",
-#'       arm_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = choices_selected(
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
-#'       paramcd = teal.transform::choices_selected(
-#'         teal.transform::value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'       paramcd = choices_selected(
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       strata_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
-#'       facet_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'       facet_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         NULL
 #'       )
 #'     )

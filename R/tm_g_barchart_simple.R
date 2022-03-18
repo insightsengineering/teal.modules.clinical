@@ -20,11 +20,11 @@
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
-#' adae_labels <- teal.data::variable_labels(ADAE, fill = FALSE)
+#' adae_labels <- variable_labels(ADAE, fill = FALSE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' # reinstate labels
-#' teal.data::variable_labels(ADAE) <- adae_labels
+#' variable_labels(ADAE) <- adae_labels
 #'
 #'
 #' app <- init(
@@ -32,10 +32,10 @@
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-#'               adae_labels <- teal.data::variable_labels(ADAE, fill = FALSE)
+#'               adae_labels <- variable_labels(ADAE, fill = FALSE)
 #'               ADAE <- ADAE %>%
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-#'               teal.data::variable_labels(ADAE) <- adae_labels
+#'               variable_labels(ADAE) <- adae_labels
 #'               ADAE"
 #'     ),
 #'     check = TRUE
@@ -43,10 +43,10 @@
 #'   modules = modules(
 #'     tm_g_barchart_simple(
 #'       label = "ADAE Analysis",
-#'       x = teal.transform::data_extract_spec(
+#'       x = data_extract_spec(
 #'         dataname = "ADSL",
-#'         select = teal.transform::select_spec(
-#'           choices = teal.transform::variable_choices(
+#'         select = select_spec(
+#'           choices = variable_choices(
 #'             ADSL,
 #'             c(
 #'               "ARM", "ACTARM", "SEX",
@@ -58,10 +58,10 @@
 #'         )
 #'       ),
 #'       fill = list(
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADSL",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(
+#'           select = select_spec(
+#'             choices = variable_choices(
 #'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
@@ -72,28 +72,28 @@
 #'             multiple = FALSE
 #'           )
 #'         ),
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADAE",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'           select = select_spec(
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = NULL,
 #'             multiple = FALSE
 #'           )
 #'         )
 #'       ),
 #'       x_facet = list(
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADAE",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'           select = select_spec(
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AETOXGR",
 #'             multiple = FALSE
 #'           )
 #'         ),
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADSL",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(
+#'           select = select_spec(
+#'             choices = variable_choices(
 #'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
@@ -106,18 +106,18 @@
 #'         )
 #'       ),
 #'       y_facet = list(
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADAE",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'           select = select_spec(
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AESEV",
 #'             multiple = FALSE
 #'           )
 #'         ),
-#'         teal.transform::data_extract_spec(
+#'         data_extract_spec(
 #'           dataname = "ADSL",
-#'           select = teal.transform::select_spec(
-#'             choices = teal.transform::variable_choices(
+#'           select = select_spec(
+#'             choices = variable_choices(
 #'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",

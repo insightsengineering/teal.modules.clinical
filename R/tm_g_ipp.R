@@ -217,34 +217,34 @@ template_g_ipp <- function(dataname = "ANL",
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",
-#'       arm_var = teal.transform::choices_selected(
-#'         teal.transform::value_choices(adlb, "ARMCD"),
+#'       arm_var = choices_selected(
+#'         value_choices(adlb, "ARMCD"),
 #'         "ARM A"
 #'       ),
-#'       paramcd = teal.transform::choices_selected(
-#'         teal.transform::value_choices(adlb, "PARAMCD"),
+#'       paramcd = choices_selected(
+#'         value_choices(adlb, "PARAMCD"),
 #'         "ALT"
 #'       ),
-#'       aval_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adlb, c("AVAL", "CHG")),
+#'       aval_var = choices_selected(
+#'         variable_choices(adlb, c("AVAL", "CHG")),
 #'         "AVAL"
 #'       ),
-#'       avalu_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adlb, c("AVALU")),
+#'       avalu_var = choices_selected(
+#'         variable_choices(adlb, c("AVALU")),
 #'         "AVALU",
 #'         fixed = TRUE
 #'       ),
-#'       id_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adlb, c("USUBJID")),
+#'       id_var = choices_selected(
+#'         variable_choices(adlb, c("USUBJID")),
 #'         "USUBJID",
 #'         fixed = TRUE
 #'       ),
-#'       visit_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adlb, c("AVISIT")),
+#'       visit_var = choices_selected(
+#'         variable_choices(adlb, c("AVISIT")),
 #'         "AVISIT"
 #'       ),
-#'       base_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(adlb, c("BASE")),
+#'       base_var = choices_selected(
+#'         variable_choices(adlb, c("BASE")),
 #'         "BASE",
 #'         fixed = TRUE
 #'       ),
