@@ -60,9 +60,9 @@ app <- teal::init(
     teal::cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
     check = FALSE
   ),
-  modules = list(tm_g_barchart_simple(label = "ADAE Analysis", x = teal.transform::data_extract_spec(
+  modules = list(tm_g_barchart_simple(label = "ADAE Analysis", x = ::data_extract_spec(
     dataname = "ADSL",
-    select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADSL), multiple = FALSE)
+    select = ::select_spec(choices = ::variable_choices(ADSL), multiple = FALSE)
   )))
 )
 
@@ -95,9 +95,9 @@ app <- teal::init(
     teal::cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
     check = FALSE
   ),
-  modules = list(tm_g_barchart_simple(label = "ADAE Analysis", x = teal.transform::data_extract_spec(
+  modules = list(tm_g_barchart_simple(label = "ADAE Analysis", x = ::data_extract_spec(
     dataname = "ADSL",
-    select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADSL), multiple = FALSE)
+    select = ::select_spec(choices = ::variable_choices(ADSL), multiple = FALSE)
   )))
 )
 ```
@@ -117,8 +117,8 @@ app <- teal::init(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = teal.transform::choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      summarize_vars = teal.transform::choices_selected(
+      arm_var = ::choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      summarize_vars = ::choices_selected(
         choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         selected = c("SEX", "RACE")
       )
