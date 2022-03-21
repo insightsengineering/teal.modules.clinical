@@ -512,7 +512,7 @@ tm_a_mmrm <- function(label,
                       cov_var,
                       arm_ref_comp = NULL,
                       paramcd,
-                      conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       pre_output = NULL,
@@ -520,7 +520,7 @@ tm_a_mmrm <- function(label,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_a_mmrm")
-  cov_var <- add_no_selected_choices(cov_var, multiple = TRUE)
+  cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_class(conf_level, "choices_selected")

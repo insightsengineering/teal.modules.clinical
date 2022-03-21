@@ -68,11 +68,12 @@ template_medical_history <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param mhterm
-#' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
-#' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the
-#' ADMH dataset.
-#' @param mhdistat ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHDISTAT} column of the
-#' ADMH dataset.
+#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHTERM} column of the ADMH dataset.
+#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHBODSYS} column of the ADMH dataset.
+#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHDISTAT} column of the ADMH dataset.
 #'
 #' @export
 #'

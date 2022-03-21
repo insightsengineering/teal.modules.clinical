@@ -209,16 +209,16 @@ template_exposure <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_exposure
-#' @param row_by_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param row_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split rows.
-#' @param col_by_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param col_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split columns.
-#' @param parcat ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param parcat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for
 #'   parameter category values.
-#' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec])\cr
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with the analysis unit variable.
 #' @param paramcd_label (`character`)\cr
 #'   the column from the dataset where the value will be used to label the argument `paramcd`.
@@ -304,24 +304,24 @@ tm_t_exposure <- function(label,
                           ),
                           row_by_var,
                           col_by_var,
-                          paramcd = choices_selected(
-                            choices = value_choices(dataname, "PARAMCD", "PARAM"),
+                          paramcd = teal.transform::choices_selected(
+                            choices = teal.transform::value_choices(dataname, "PARAMCD", "PARAM"),
                             selected = "TDURD"
                           ),
                           paramcd_label = "PARAM",
-                          id_var = choices_selected(
-                            variable_choices(dataname, subset = "USUBJID"),
+                          id_var = teal.transform::choices_selected(
+                            teal.transform::variable_choices(dataname, subset = "USUBJID"),
                             selected = "USUBJID",
                             fixed = TRUE
                           ),
                           parcat,
-                          aval_var = choices_selected(
-                            variable_choices(dataname, subset = "AVAL"),
+                          aval_var = teal.transform::choices_selected(
+                            teal.transform::variable_choices(dataname, subset = "AVAL"),
                             selected = "AVAL",
                             fixed = TRUE
                           ),
-                          avalu_var = choices_selected(
-                            variable_choices(dataname, subset = "AVALU"),
+                          avalu_var = teal.transform::choices_selected(
+                            teal.transform::variable_choices(dataname, subset = "AVALU"),
                             selected = "AVALU",
                             fixed = TRUE
                           ),

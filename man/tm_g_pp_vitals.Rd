@@ -33,15 +33,17 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{paramcd}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{PARAMCD} column of the
-ADVS dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAMCD} column of the ADVS dataset.}
 
-\item{param}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{PARAM} column of the ADVS dataset.}
+\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAM} column of the ADVS dataset.}
 
-\item{aval}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr \code{AVAL} column of the ADVS dataset.}
+\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVAL} column of the ADVS dataset.}
 
-\item{xaxis}{(\code{\link[teal:reexports]{teal::choices_selected()}} or \code{\link[teal:reexports]{teal::data_extract_spec()}})\cr time variable to be represented in
-the vitals plot x-axis.}
+\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+time variable to be represented in the vitals plot x-axis.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 

@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.11.9016
+Version: 0.8.11.9017
 Date: 2022-01-27
 Authors@R: c(
     person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre")),
@@ -47,6 +47,8 @@ Imports:
     stats,
     styler,
     teal.code,
+    teal.data,
+    teal.logger,
     teal.transform,
     teal.widgets,
     tern.mmrm (>= 0.0.0.9002),

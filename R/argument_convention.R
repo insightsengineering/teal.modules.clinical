@@ -118,7 +118,7 @@ NULL
 #' @param arm_ref_comp optional, (`list`)\cr
 #'   If specified it must be a named list with each element corresponding to
 #'   an arm variable in `ADSL` and the element must be another list (possibly
-#'   with delayed [teal::variable_choices()] or delayed [teal::value_choices()]
+#'   with delayed [teal.transform::variable_choices()] or delayed [teal.transform::value_choices()]
 #'   with the elements named `ref` and `comp` that the defined the default
 #'   reference and comparison arms when the arm variable is changed.
 #' @param id_var (`choices_selected` or `data_extract_spec`)\cr

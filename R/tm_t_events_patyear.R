@@ -128,9 +128,9 @@ template_events_patyear <- function(dataname,
 #' Teal module: Event rates adjusted for patient-years
 #'
 #' @inheritParams module_arguments
-#' @param avalu_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for the analysis unit variable.
-#' @param events_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all event counts.
 #'
 #' @export
@@ -193,16 +193,19 @@ tm_t_events_patyear <- function(label,
                                 arm_var,
                                 events_var,
                                 paramcd,
-                                aval_var = choices_selected(
-                                  variable_choices(dataname, "AVAL"), "AVAL",
+                                aval_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
                                   fixed = TRUE
                                 ),
-                                avalu_var = choices_selected(
-                                  variable_choices(dataname, "AVALU"), "AVALU",
+                                avalu_var = teal.transform::choices_selected(
+                                  teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
-                                conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                conf_level = teal.transform::choices_selected(
+                                  c(0.95, 0.9, 0.8), 0.95,
+                                  keep_order = TRUE
+                                ),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,

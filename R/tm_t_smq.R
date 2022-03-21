@@ -297,9 +297,9 @@ template_smq <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_smq
-#' @param baskets ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' object with all available choices and preselected options for Standardized/Customized queries
-#' @param scopes ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' object with all available choices for the scopes of Standardized queries.
 #'
 #' @export
@@ -364,8 +364,8 @@ tm_t_smq <- function(label,
                        "ADSL"
                      ),
                      arm_var,
-                     id_var = choices_selected(
-                       variable_choices(dataname, subset = "USUBJID"),
+                     id_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, subset = "USUBJID"),
                        selected = "USUBJID", fixed = TRUE
                      ),
                      llt,

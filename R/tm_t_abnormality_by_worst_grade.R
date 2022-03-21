@@ -206,15 +206,16 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
-#' choices and preselected option for variable names that can be used as Worst High Grade flag.
-#' @param worst_low_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
-#' choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec()])\cr value indicating
-#' worst grade.
+#' @param worst_high_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as Worst High
+#' Grade flag.
+#' @param worst_low_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
+#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' value indicating worst grade.
 #' @seealso [template_abnormality_by_worst_grade()]
 #'
 #' @export
@@ -271,37 +272,37 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                               "ADSL"
                                             ),
                                             arm_var,
-                                            id_var = choices_selected(
-                                              variable_choices(
+                                            id_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "USUBJID"
                                               ),
                                               selected = "USUBJID", fixed = TRUE
                                             ),
                                             paramcd,
-                                            atoxgr_var = choices_selected(
-                                              variable_choices(
+                                            atoxgr_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "ATOXGR"
                                               ),
                                               selected = "ATOXGR", fixed = TRUE
                                             ),
-                                            worst_high_flag_var = choices_selected(
-                                              variable_choices(
+                                            worst_high_flag_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "WGRHIFL"
                                               ),
                                               selected = "WGRHIFL", fixed = TRUE
                                             ),
-                                            worst_low_flag_var = choices_selected(
-                                              variable_choices(
+                                            worst_low_flag_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "WGRLOFL"
                                               ),
                                               selected = "WGRLOFL", fixed = TRUE
                                             ),
-                                            worst_flag_indicator = choices_selected(
-                                              value_choices(
+                                            worst_flag_indicator = teal.transform::choices_selected(
+                                              teal.transform::value_choices(
                                                 dataname,
                                                 var_choices = "WGRLOFL"
                                               ),

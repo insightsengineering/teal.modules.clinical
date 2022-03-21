@@ -16,9 +16,11 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = choices_selected(choices = variable_choices(dataname, c("AVALC", "SEX")),
-    selected = "AVALC", fixed = FALSE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  aval_var = teal.transform::choices_selected(choices =
+    teal.transform::variable_choices(dataname, c("AVALC", "SEX")), selected = "AVALC",
+    fixed = FALSE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
@@ -47,7 +49,7 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:reexports]{teal::variable_choices()}} or delayed \code{\link[teal:reexports]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 

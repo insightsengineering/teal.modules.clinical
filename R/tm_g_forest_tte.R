@@ -282,11 +282,17 @@ tm_g_forest_tte <- function(label,
                             subgroup_var,
                             paramcd,
                             strata_var,
-                            aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                            cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                            conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            time_unit_var = choices_selected(
-                              variable_choices(dataname, "AVALU"), "AVALU",
+                            aval_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                              fixed = TRUE
+                            ),
+                            cnsr_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                              fixed = TRUE
+                            ),
+                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            time_unit_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
                               fixed = TRUE
                             ),
                             fixed_symbol_size = TRUE,

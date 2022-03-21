@@ -7,7 +7,7 @@
 get_g_forest_obj_var_name(paramcd, input, filter_idx = 1)
 }
 \arguments{
-\item{paramcd}{\code{\link[teal:reexports]{teal::data_extract_spec()}}
+\item{paramcd}{\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}
 variable value designating the studied parameter.}
 
 \item{input}{shinyapp input}

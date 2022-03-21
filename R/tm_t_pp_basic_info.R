@@ -49,8 +49,8 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param vars ([teal::choices_selected()] or [teal::data_extract_spec()])\cr ADSL columns to be shown in
-#'  Basic Info tab.
+#' @param vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' ADSL columns to be shown in Basic Info tab.
 #'
 #' @export
 #'
