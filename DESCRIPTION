@@ -47,7 +47,6 @@ Imports:
     stats,
     styler,
     teal.code,
-    teal.data,
     teal.logger,
     teal.transform,
     teal.widgets,
@@ -59,6 +58,7 @@ Suggests:
     knitr,
     scda.2021(>= 0.1.2),
     scda(>= 0.1.2),
+    teal.data,
     testthat (>= 2.0)
 VignetteBuilder:
     knitr
