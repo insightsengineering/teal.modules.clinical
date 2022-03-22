@@ -267,12 +267,12 @@ template_shift_by_grade <- function(parentname,
     substitute(
       expr = {
         column_labels <- list(
-          PARAMCD = teal.data::variable_labels(dataname, fill = FALSE)[[paramcd]],
-          AVISIT = teal.data::variable_labels(dataname, fill = FALSE)[[visit_var]],
+          PARAMCD = formatable::var_labels(dataname, fill = FALSE)[[paramcd]],
+          AVISIT = formatable::var_labels(dataname, fill = FALSE)[[visit_var]],
           ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
           BTOXGR_GP = "Baseline Grade"
         )
-        teal.data::variable_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        formatable::var_labels(dataname)[names(column_labels)] <- as.character(column_labels)
         dataname
       },
       env = list(
@@ -319,7 +319,7 @@ template_shift_by_grade <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = teal.data::variable_labels(dataname, fill = FALSE)[[paramcd]],
+    expr = formatable::var_labels(dataname, fill = FALSE)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -344,7 +344,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = teal.data::variable_labels(dataname, fill = FALSE)[[visit_var]],
+      expr = formatable::var_labels(dataname, fill = FALSE)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -375,7 +375,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = teal.data::variable_labels(dataname, fill = FALSE)[[by_var_gp]],
+    expr = formatable::var_labels(dataname, fill = FALSE)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp

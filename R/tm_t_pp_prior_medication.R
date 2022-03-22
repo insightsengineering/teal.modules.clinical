@@ -85,7 +85,7 @@ template_prior_medication <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' variable_labels(
+#' formatable::var_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY")]
 #' ) <- c(
 #'   "Indication",
@@ -107,7 +107,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
-#'       variable_labels(
+#'       formatable::var_labels(
 #'         ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
 #'           "Indication",
 #'           "Reported Name of Drug, Med, or Therapy",

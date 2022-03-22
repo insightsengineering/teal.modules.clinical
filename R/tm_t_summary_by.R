@@ -162,7 +162,7 @@ template_summary_by <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = teal.data::variable_labels(dataname, fill = FALSE)[[by_var]],
+      expr = formatable::var_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
