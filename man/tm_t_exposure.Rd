@@ -101,7 +101,7 @@ adsl <- synthetic_cdisc_data("latest")$adsl
 adex <- synthetic_cdisc_data("latest")$adex
 
 set.seed(1, kind = "Mersenne-Twister")
-labels <- formatable::var_labels(adex, fill = FALSE)
+labels <- formatters::var_labels(adex, fill = FALSE)
 adex <- adex \%>\%
   distinct(USUBJID, .keep_all = TRUE) \%>\%
   mutate(
@@ -111,7 +111,7 @@ adex <- adex \%>\%
     AVALU = "Days"
   ) \%>\%
   bind_rows(adex)
-formatable::var_labels(adex) <- labels
+formatters::var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
@@ -119,7 +119,7 @@ app <- init(
     cdisc_dataset("ADEX", adex,
       code = 'set.seed(1, kind = "Mersenne-Twister")
       ADEX <- synthetic_cdisc_data("latest")$adex
-      labels <- formatable::var_labels(ADEX, fill = FALSE)
+      labels <- formatters::var_labels(ADEX, fill = FALSE)
       ADEX <- ADEX \%>\%
        distinct(USUBJID, .keep_all = TRUE) \%>\%
        mutate(PARAMCD = "TDURD",
@@ -127,7 +127,7 @@ app <- init(
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
               AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      formatable::var_labels(ADEX) <- labels' # nolint
+      formatters::var_labels(ADEX) <- labels' # nolint
     ),
     check = TRUE
   ),

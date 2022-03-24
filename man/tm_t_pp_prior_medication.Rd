@@ -66,7 +66,7 @@ ADCM$CMROUTE <- "CMROUTE"
 ADCM$CMDOSFRQ <- "CMDOSFRQ"
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-formatable::var_labels(
+formatters::var_labels(
   ADCM[c("CMINDC", "CMTRT", "ASTDY")]
 ) <- c(
   "Indication",
@@ -88,7 +88,7 @@ app <- init(
       ADCM$CMDOSFRQ <- "CMDOSFRQ"
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
-      formatable::var_labels(
+      formatters::var_labels(
         ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
           "Indication",
           "Reported Name of Drug, Med, or Therapy",

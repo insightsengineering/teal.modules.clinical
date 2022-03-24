@@ -334,7 +334,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' formatable::var_labels(
+#' formatters::var_labels(
 #'   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -363,7 +363,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'         ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 #'         ADCM$CMASTDTM <- ADCM$ASTDTM
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         formatable::var_labels(
+#'         formatters::var_labels(
 #'           ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",

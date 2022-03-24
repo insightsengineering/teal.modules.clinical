@@ -69,11 +69,11 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADAE <- synthetic_cdisc_data("latest")$adae
 
-adae_labels <- formatable::var_labels(ADAE, fill = FALSE)
+adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 # reinstate labels
-formatable::var_labels(ADAE) <- adae_labels
+formatters::var_labels(ADAE) <- adae_labels
 
 
 app <- init(
@@ -81,10 +81,10 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
     cdisc_dataset("ADAE", ADAE,
       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-              adae_labels <- formatable::var_labels(ADAE, fill = FALSE)
+              adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
               ADAE <- ADAE \%>\%
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-              formatable::var_labels(ADAE) <- adae_labels
+              formatters::var_labels(ADAE) <- adae_labels
               ADAE"
     ),
     check = TRUE
