@@ -114,7 +114,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- formatable::var_labels(anl[, flag_var_anl], fill = FALSE),
+        flag_var_anl_label <- formatters::var_labels(anl[, flag_var_anl], fill = FALSE),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -124,7 +124,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- formatable::var_labels(anl[, flag_var_aesi], fill = FALSE),
+        flag_var_aesi_label <- formatters::var_labels(anl[, flag_var_aesi], fill = FALSE),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )
@@ -482,7 +482,7 @@ template_events_summary <- function(anl_name,
 #'     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'   )
-#'   formatable::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'   formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'   dat
 #' }
 #'
@@ -527,7 +527,7 @@ template_events_summary <- function(anl_name,
 #'               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
 #'               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
 #'           )
-#'           formatable::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'           formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'           dat
 #'         }
 #'         # Generating user-defined event flags.

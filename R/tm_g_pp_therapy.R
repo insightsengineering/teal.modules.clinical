@@ -267,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' formatable::var_labels(
+#' formatters::var_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -290,7 +290,7 @@ template_therapy <- function(dataname = "ANL",
 #'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #'         ADCM$CMASTDTM <- ADCM$ASTDTM
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         formatable::var_labels(
+#'         formatters::var_labels(
 #'           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",
