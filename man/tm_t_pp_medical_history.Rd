@@ -53,14 +53,14 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADMH <- synthetic_cdisc_data("latest")$admh
 ADMH[["MHDISTAT"]] <- "ONGOING"
-formatable::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
                    ADMH[['MHDISTAT']] <- 'ONGOING'
-                   formatable::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
+                   formatters::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
     check = TRUE
   ),
   modules = modules(

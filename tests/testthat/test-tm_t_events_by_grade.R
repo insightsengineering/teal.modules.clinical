@@ -44,7 +44,7 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
@@ -57,7 +57,7 @@ testthat::test_that("template_events_by_grade generates standard expressions", {
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEDECOD"])
+          split_label = formatters::var_labels(adae["AEDECOD"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -144,7 +144,7 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
@@ -157,7 +157,7 @@ testthat::test_that("template_events_by_grade generates standard expressions wit
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEDECOD"])
+          split_label = formatters::var_labels(adae["AEDECOD"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -244,7 +244,7 @@ testthat::test_that("template_events_by_grade without adding total column option
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_occurrences_by_grade(
           var = "AESEV",
@@ -257,7 +257,7 @@ testthat::test_that("template_events_by_grade without adding total column option
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEDECOD"])
+          split_label = formatters::var_labels(adae["AEDECOD"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -342,7 +342,7 @@ testthat::test_that("template_events_by_grade with hlt only works", {
           indent_mod = -1L,
           split_fun = split_fun("AESEV"),
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",

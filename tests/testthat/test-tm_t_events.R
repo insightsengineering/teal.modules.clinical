@@ -44,7 +44,7 @@ testthat::test_that("template_events generates correct expressions", {
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -130,7 +130,7 @@ testthat::test_that("template_events generates correct expressions for nested co
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -270,7 +270,7 @@ testthat::test_that("template_events can generate customized table with alphabet
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -346,7 +346,7 @@ testthat::test_that("template_events can generate customized table with pruning"
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
@@ -443,7 +443,7 @@ testthat::test_that("template_events can generate customized table with pruning 
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatable::var_labels(adae["AEBODSYS"])
+          split_label = formatters::var_labels(adae["AEBODSYS"])
         ) %>%
         summarize_num_patients(
           var = "USUBJID",
