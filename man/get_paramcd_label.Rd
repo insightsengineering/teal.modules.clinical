@@ -9,7 +9,7 @@ get_paramcd_label(anl, paramcd)
 \arguments{
 \item{anl}{Analysis dataset}
 
-\item{paramcd}{\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}}
+\item{paramcd}{\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}
 variable value designating the studied parameter.}
 }
 \description{
@@ -18,3 +18,4 @@ with the paramcd value label. If there is no param value for
 the paramcd label, the paramcd value is returned. This is used
 for generating the title.
 }
+\keyword{internal}

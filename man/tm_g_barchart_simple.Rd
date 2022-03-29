@@ -15,7 +15,7 @@ tm_g_barchart_simple(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -51,11 +51,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 Categories can be defined up to four levels deep and are defined through
@@ -69,11 +69,11 @@ library(scda)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADAE <- synthetic_cdisc_data("latest")$adae
 
-adae_labels <- rtables::var_labels(ADAE)
+adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 # reinstate labels
-ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+formatters::var_labels(ADAE) <- adae_labels
 
 
 app <- init(
@@ -81,15 +81,15 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
     cdisc_dataset("ADAE", ADAE,
       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-              adae_labels <- rtables::var_labels(ADAE)
+              adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
               ADAE <- ADAE \%>\%
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-              ADAE <- do.call(rtables::var_relabel,
-                append(list(x = ADAE), as.list(adae_labels)))"
+              formatters::var_labels(ADAE) <- adae_labels
+              ADAE"
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
       x = data_extract_spec(

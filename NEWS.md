@@ -1,3 +1,20 @@
+# teal.modules.clinical 0.8.11.9019
+
+### New features
+
+* New module `tm_t_shift_by_arm_by_worst` was added for the analysis of grade laboratory abnormalities with worst flag.
+
+### Enhancements
+
+* Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
+* Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.
+* Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
+
+### Miscellaneous
+* Replaced the deprecated `rtables::var_labels` calls in the documentation examples.
+* Add import of `tern.mmrm` package and change some references after split of `tern`.
+* Adjusted package imports to take into account changes to the `teal` framework.
+
 # teal.modules.clinical 0.8.11
 
 ### Breaking changes
@@ -14,7 +31,7 @@
 * Enhanced `tm_g_pp_patient_timeline` with bold axes labels and integer values on the axis.
 * Enhanced `tm_g_ipp` to allow users not to display `AVALU` in the title nor in the y axis.
 
-## Enhancements
+### Enhancements
 * Added support for logging with the `logger` package and added info level logs upon initialization of a module.
 * Added `default_responses` argument to `tm_t_binary_outcome` and `tm_g_forest_rsp` to allow the user to specify default selected responses and possible response levels.
 * Updated `tm_t_binary_outcome` to show only the selected responses in the output table when "Show All Selected Response Categories" is checked.

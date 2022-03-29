@@ -21,7 +21,7 @@ tm_g_pp_adverse_events(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -36,23 +36,26 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{aeterm}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AETERM} column of the ADAE dataset.}
+\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AETERM} column of the ADAE dataset.}
 
-\item{tox_grade}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AETOXGR} column of the
-ADAE dataset.}
+\item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AETOXGR} column of the ADAE dataset.}
 
-\item{causality}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AEREL} column of the
-ADAE dataset.}
+\item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEREL} column of the ADAE dataset.}
 
-\item{outcome}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AEOUT} column of the
-ADAE dataset.}
+\item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEOUT} column of the ADAE dataset.}
 
-\item{action}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AEACN} column of the ADAE dataset.}
+\item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEACN} column of the ADAE dataset.}
 
-\item{time}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDY} column of the ADAE dataset.}
+\item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ASTDY} column of the ADAE dataset.}
 
-\item{decod}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AEDECOD} column of the
-ADAE dataset.}
+\item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AEDECOD} column of the ADAE dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -75,11 +78,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces a patient profile adverse events table and plot using ADaM datasets.
@@ -95,7 +98,7 @@ app <- init(
     cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_pp_adverse_events(
       label = "Adverse events",
       dataname = "ADAE",

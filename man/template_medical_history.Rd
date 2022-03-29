@@ -24,3 +24,4 @@ analysis data used in teal module.}
 \description{
 Creates medical history template.
 }
+\keyword{internal}

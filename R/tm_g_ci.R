@@ -13,6 +13,7 @@
 #'  read.
 #'
 #' @seealso [tm_g_ci()]
+#' @keywords internal
 #'
 template_g_ci <- function(dataname, # nolint
                           x_var,
@@ -21,7 +22,7 @@ template_g_ci <- function(dataname, # nolint
                           stat = c("mean", "median"),
                           conf_level = 0.95,
                           unit_var = "AVALU",
-                          ggplot2_args = teal.devel::ggplot2_args()) {
+                          ggplot2_args = teal.widgets::ggplot2_args()) {
   stat <- match.arg(stat)
 
   graph_list <- list()
@@ -130,10 +131,10 @@ template_g_ci <- function(dataname, # nolint
     )
   )
 
-  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-    teal.devel::resolve_ggplot2_args(
+  parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+    teal.widgets::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = teal.devel::ggplot2_args(
+      module_plot = teal.widgets::ggplot2_args(
         labs = list(
           title = "Confidence Interval Plot by Treatment Group",
           caption = sprintf(
@@ -196,7 +197,7 @@ template_g_ci <- function(dataname, # nolint
 #'     code = "ADSL <- synthetic_cdisc_data('latest')$adsl
 #'     ADLB <- synthetic_cdisc_data('latest')$adlb"
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_ci(
 #'       label = "Confidence Interval Plot",
 #'       x_var = data_extract_spec(
@@ -260,12 +261,12 @@ tm_g_ci <- function(label,
                     y_var,
                     color,
                     stat = c("mean", "median"),
-                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL,
-                    ggplot2_args = teal.devel::ggplot2_args()) {
+                    ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_ci")
   checkmate::assert_string(label)
   stat <- match.arg(stat)
@@ -308,27 +309,27 @@ ui_g_ci <- function(id, ...) { # nolint
   ns <- NS(id)
   args <- list(...)
 
-  teal.devel::standard_layout(
-    output = teal.devel::plot_with_settings_ui(id = ns("myplot")),
+  teal.widgets::standard_layout(
+    output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(args[c("x_var", "y_var", "color")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
+      teal.transform::data_extract_ui(
         id = ns("x_var"),
         label = "Treatment (x axis)",
         data_extract_spec = args$x_var
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("y_var"),
         label = "Analyzed Value (y axis)",
         data_extract_spec = args$y_var
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("color"),
         label = "Groups (color)",
         data_extract_spec = args$color
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
         label = "Confidence Level",
         choices = args$conf_level$choices,
@@ -343,15 +344,13 @@ ui_g_ci <- function(id, ...) { # nolint
         selected = args$stat
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
 }
 
-srv_g_ci <- function(input, # nolint
-                     output,
-                     session,
+srv_g_ci <- function(id, # nolint
                      datasets,
                      x_var,
                      y_var,
@@ -361,77 +360,76 @@ srv_g_ci <- function(input, # nolint
                      plot_width,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
+    merged_data <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(x_var = x_var, y_var = y_var, color = color)
+    )
 
-  merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(x_var = x_var, y_var = y_var, color = color)
-  )
+    validate_data <- reactive({
+      validate(
+        need(
+          length(merged_data()$columns_source$x_var) > 0,
+          "Select a treatment (x axis)."
+        )
+      )
+      validate(
+        need(
+          length(merged_data()$columns_source$y_var) > 0,
+          "Select an analyzed value (y axis)."
+        )
+      )
+      teal::validate_has_data(merged_data()$data(), min_nrow = 2)
 
-  validate_data <- reactive({
-    validate(
-      need(
-        length(merged_data()$columns_source$x_var) > 0,
-        "Select a treatment (x axis)."
+      validate(need(
+        input$conf_level >= 0 && input$conf_level <= 1,
+        "Please choose a confidence level between 0 and 1"
+      ))
+    })
+
+    list_calls <- reactive(
+      template_g_ci(
+        dataname = "ANL",
+        x_var = merged_data()$columns_source$x_var,
+        y_var = merged_data()$columns_source$y_var,
+        grp_var = if (length(merged_data()$columns_source$color) == 0) {
+          NULL
+        } else {
+          merged_data()$columns_source$color
+        },
+        stat = input$stat,
+        conf_level = as.numeric(input$conf_level),
+        ggplot2_args = ggplot2_args
       )
     )
-    validate(
-      need(
-        length(merged_data()$columns_source$y_var) > 0,
-        "Select an analyzed value (y axis)."
-      )
+
+    eval_call <- reactive({
+      validate_data()
+      teal.code::chunks_reset()
+      teal.code::chunks_push_data_merge(x = merged_data())
+      teal.code::chunks_push(list_calls())
+    })
+
+    plot_r <- reactive({
+      eval_call()
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("gg")
+    })
+
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(list(x_var, y_var, color)),
+      modal_title = label
     )
-    teal.devel::validate_has_data(merged_data()$data(), min_nrow = 2)
 
-    validate(need(
-      input$conf_level >= 0 && input$conf_level <= 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-  })
-
-  list_calls <- reactive(
-    template_g_ci(
-      dataname = "ANL",
-      x_var = merged_data()$columns_source$x_var,
-      y_var = merged_data()$columns_source$y_var,
-      grp_var = if (length(merged_data()$columns_source$color) == 0) {
-        NULL
-      } else {
-        merged_data()$columns_source$color
-      },
-      stat = input$stat,
-      conf_level = as.numeric(input$conf_level),
-      ggplot2_args = ggplot2_args
+    teal.widgets::plot_with_settings_srv(
+      id = "myplot",
+      plot_r = plot_r,
+      height = plot_height,
+      width = plot_width
     )
-  )
-
-  eval_call <- reactive({
-    validate_data()
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_data_merge(x = merged_data())
-    teal.devel::chunks_push(list_calls())
   })
-
-  plot_r <- reactive({
-    eval_call()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("gg")
-  })
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(x_var, y_var, color)),
-    modal_title = label
-  )
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = plot_r,
-    height = plot_height,
-    width = plot_width
-  )
 }

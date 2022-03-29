@@ -25,7 +25,7 @@ tm_g_pp_patient_timeline(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -41,34 +41,34 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{aeterm}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AETERM} column of the
-ADAE dataset.}
+\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AETERM} column of the ADAE dataset.}
 
-\item{cmdecod}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{cmdecod} column of the ADCM
-dataset.}
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{cmdecod} column of the ADCM dataset.}
 
-\item{aetime_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDTM} column of the AE
-start of the ADAE dataset.}
+\item{aetime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ASTDTM} column of the AE start of the ADAE dataset.}
 
-\item{aetime_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AENDTM} column of the AE
-end of the ADAE dataset.}
+\item{aetime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AENDTM} column of the AE end of the ADAE dataset.}
 
-\item{dstime_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{CMASTDTM} column of
-treatment start of the ADCM dataset.}
+\item{dstime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMASTDTM} column of treatment start of the ADCM dataset.}
 
-\item{dstime_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{CMAENDTM} column of treatment
-end of the ADCM dataset.}
+\item{dstime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{CMAENDTM} column of treatment end of the ADCM dataset.}
 
-\item{aerelday_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDY}
+\item{aerelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ASTDY} column of the ADAE dataset.}
+
+\item{aerelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
 column of the ADAE dataset.}
 
-\item{aerelday_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AENDY}
-column of the ADAE dataset.}
-
-\item{dsrelday_start}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ASTDY}
+\item{dsrelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{ASTDY}
 column of the ADCM dataset.}
 
-\item{dsrelday_end}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AENDY}
+\item{dsrelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
 column of the ADCM dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
@@ -92,11 +92,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces a patient profile timeline plot using ADaM datasets.
@@ -121,7 +121,7 @@ ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
 ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
-rtables::var_labels(
+formatters::var_labels(
   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
 ) <- c(
   "Indication",
@@ -137,30 +137,31 @@ app <- init(
     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
     cdisc_dataset("ADCM", ADCM,
       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
-      ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-      ADCM$CMDOSE <- 1
-      ADCM$CMDOSU <- "U"
-      ADCM$CMROUTE <- "CMROUTE"
-      ADCM$CMDOSFRQ <- "CMDOSFRQ"
-      ADCM$CMSTDY <- 1
-      ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-      ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
-      ADCM$CMENDY <- 500
-      ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-      ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
-      ADCM$CMASTDTM <- ADCM$ASTDTM
-      ADCM$CMAENDTM <- ADCM$AENDTM
-      rtables::var_labels(
-        ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
-          "Indication",
-          "Reported Name of Drug, Med, or Therapy",
-          "Study Day of Start of Medication",
-          "Study Day of End of Medication")',
+        ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+        ADCM$CMDOSE <- 1
+        ADCM$CMDOSU <- "U"
+        ADCM$CMROUTE <- "CMROUTE"
+        ADCM$CMDOSFRQ <- "CMDOSFRQ"
+        ADCM$CMSTDY <- 1
+        ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
+        ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+        ADCM$CMENDY <- 500
+        ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
+        ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+        ADCM$CMASTDTM <- ADCM$ASTDTM
+        ADCM$CMAENDTM <- ADCM$AENDTM
+        formatters::var_labels(
+          ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
+            "Indication",
+            "Reported Name of Drug, Med, or Therapy",
+            "Study Day of Start of Medication",
+            "Study Day of End of Medication")
+        ADCM',
       keys = adcm_keys
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_pp_patient_timeline(
       label = "Patient timeline",
       dataname_adae = "ADAE",

@@ -9,6 +9,7 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
+#' @keywords internal
 template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 dataname,
                                                 arm_var,
@@ -20,7 +21,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 worst_flag_indicator = "Y",
                                                 add_total = FALSE,
                                                 drop_arm_levels = TRUE,
-                                                basic_table_args = teal.devel::basic_table_args()) {
+                                                basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -42,7 +43,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl_labels <- rtables::var_labels(df),
+      expr = anl_labels <- formatters::var_labels(df, fill = FALSE),
       env = list(
         df = as.name(dataname)
       )
@@ -89,7 +90,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     quote(
-      expr = rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      expr = formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
     )
   )
 
@@ -126,8 +127,8 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 
   y$layout_prep <- bracket_expr(prep_list)
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(user_table = basic_table_args)
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
   )
 
   # layout start
@@ -205,15 +206,16 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param atoxgr_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
-#' choices and preselected option for variable names that can be used as Worst High Grade flag.
-#' @param worst_low_flag_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr object with all available
-#' choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal::choices_selected()] or [teal::data_extract_spec()])\cr value indicating
-#' worst grade.
+#' @param worst_high_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as Worst High
+#' Grade flag.
+#' @param worst_low_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
+#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' value indicating worst grade.
 #' @seealso [template_abnormality_by_worst_grade()]
 #'
 #' @export
@@ -236,7 +238,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory test results with highest grade post-baseline",
 #'       dataname = "ADLB",
@@ -266,41 +268,41 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             dataname,
                                             parentname = ifelse(
                                               inherits(arm_var, "data_extract_spec"),
-                                              teal.devel::datanames_input(arm_var),
+                                              teal.transform::datanames_input(arm_var),
                                               "ADSL"
                                             ),
                                             arm_var,
-                                            id_var = choices_selected(
-                                              variable_choices(
+                                            id_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "USUBJID"
                                               ),
                                               selected = "USUBJID", fixed = TRUE
                                             ),
                                             paramcd,
-                                            atoxgr_var = choices_selected(
-                                              variable_choices(
+                                            atoxgr_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "ATOXGR"
                                               ),
                                               selected = "ATOXGR", fixed = TRUE
                                             ),
-                                            worst_high_flag_var = choices_selected(
-                                              variable_choices(
+                                            worst_high_flag_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "WGRHIFL"
                                               ),
                                               selected = "WGRHIFL", fixed = TRUE
                                             ),
-                                            worst_low_flag_var = choices_selected(
-                                              variable_choices(
+                                            worst_low_flag_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
                                                 dataname,
                                                 subset = "WGRLOFL"
                                               ),
                                               selected = "WGRLOFL", fixed = TRUE
                                             ),
-                                            worst_flag_indicator = choices_selected(
-                                              value_choices(
+                                            worst_flag_indicator = teal.transform::choices_selected(
+                                              teal.transform::value_choices(
                                                 dataname,
                                                 var_choices = "WGRLOFL"
                                               ),
@@ -310,7 +312,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             drop_arm_levels = TRUE,
                                             pre_output = NULL,
                                             post_output = NULL,
-                                            basic_table_args = teal.devel::basic_table_args()) {
+                                            basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -351,7 +353,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -361,7 +363,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
   ns <- NS(id)
   a <- list(...) # module args
 
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$id_var,
     a$paramcd,
@@ -371,57 +373,57 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
     a$worst_flag_indicator
   )
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(
+      teal.transform::datanames_input(
         a[c(
           "arm_var", "id_var", "paramcd",
           "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var", "worst_flag_indicator"
         )]
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("atoxgr_var"),
         label = "Analysis toxicity grade",
         data_extract_spec = a$atoxgr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("worst_low_flag_var"),
         label = "Worst low flag variable",
         data_extract_spec = a$worst_low_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("worst_high_flag_var"),
         label = "Worst high flag variable",
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional table settings",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          optionalSelectInput(
+          teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
             label = "Value Indicating Worst Grade",
             choices = a$worst_flag_indicator$choices,
@@ -437,16 +439,14 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 #' @noRd
-srv_t_abnormality_by_worst_grade <- function(input, # nolint
-                                             output,
-                                             session,
+srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              datasets,
                                              dataname,
                                              parentname,
@@ -461,122 +461,121 @@ srv_t_abnormality_by_worst_grade <- function(input, # nolint
                                              label,
                                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      arm_var = arm_var, id_var = id_var, paramcd = paramcd,
-      atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
-      worst_low_flag_var = worst_low_flag_var
-    ),
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
-    input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
-    input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
-    input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
-
-    validate(
-      need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
-      need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-      need(
-        length(anl_m$data()[[input_paramcd_var]]) > 0,
-        "Please select at least one Laboratory parameter."
+    anl_merged <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        arm_var = arm_var, id_var = id_var, paramcd = paramcd,
+        atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
+        worst_low_flag_var = worst_low_flag_var
       ),
-      need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
-      need(input_id_var, "Please select a Subject Identifier."),
-      need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-      need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-      need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-      need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
-      need(
-        all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
-        "All grade values should be within -4:4 range."
-      )
+      merge_function = "dplyr::inner_join"
     )
 
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c(
-        "USUBJID", "STUDYID", input_paramcd_var,
-        input_atoxgr, input_worst_high_flag_var,
-        input_worst_low_flag_var
+    adsl_merged <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
+      input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
+      input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
+      input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
+
+      validate(
+        need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
+        need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
+        need(
+          length(anl_m$data()[[input_paramcd_var]]) > 0,
+          "Please select at least one Laboratory parameter."
+        ),
+        need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
+        need(input_id_var, "Please select a Subject Identifier."),
+        need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
+        need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
+        need(
+          all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
+          "All grade values should be within -4:4 range."
+        )
+      )
+
+      # validate inputs
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd_var,
+          input_atoxgr, input_worst_high_flag_var,
+          input_worst_low_flag_var
+        ),
+        arm_var = input_arm_var
+      )
+    })
+
+    call_preparation <- reactive({
+      validate_checks()
+      teal.code::chunks_reset()
+      anl_m <- anl_merged()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
+      anl_adsl <- adsl_merged()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
+
+      my_calls <- template_abnormality_by_worst_grade(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        id_var = as.vector(anl_m$columns_source$id_var),
+        paramcd = as.vector(anl_m$columns_source$paramcd),
+        atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
+        worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
+        worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
+        worst_flag_indicator = input$worst_flag_indicator,
+        add_total = input$add_total,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.code::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
+    })
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(
+        list(
+          arm_var, id_var, paramcd,
+          atoxgr_var, worst_high_flag_var, worst_low_flag_var
+        )
       ),
-      arm_var = input_arm_var
+      modal_title = "R Code for Grade Laboratory Abnormalities",
+      code_header = label
     )
   })
-
-  call_preparation <- reactive({
-    validate_checks()
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_abnormality_by_worst_grade(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      id_var = as.vector(anl_m$columns_source$id_var),
-      paramcd = as.vector(anl_m$columns_source$paramcd),
-      atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
-      worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
-      worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
-      worst_flag_indicator = input$worst_flag_indicator,
-      add_total = input$add_total,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(
-        arm_var, id_var, paramcd,
-        atoxgr_var, worst_high_flag_var, worst_low_flag_var
-      )
-    ),
-    modal_title = "R Code for Grade Laboratory Abnormalities",
-    code_header = label
-  )
 }

@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.11
+Version: 0.8.11.9019
 Date: 2022-01-27
 Authors@R: c(
     person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre")),
@@ -31,6 +31,7 @@ Imports:
     checkmate,
     dplyr,
     DT,
+    formatters,
     ggrepel,
     grid,
     kableExtra,
@@ -45,7 +46,11 @@ Imports:
     shinyWidgets,
     stats,
     styler,
-    teal.devel (>= 0.2.13),
+    teal.code,
+    teal.logger,
+    teal.transform,
+    teal.widgets,
+    tern.mmrm (>= 0.0.0.9002),
     tidyr,
     utils,
     vistime
@@ -53,6 +58,7 @@ Suggests:
     knitr,
     scda.2021(>= 0.1.2),
     scda(>= 0.1.2),
+    teal.data,
     testthat (>= 2.0)
 VignetteBuilder:
     knitr

@@ -33,7 +33,7 @@ testthat::test_that("template_summary_by generates correct expressions", {
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -88,7 +88,7 @@ testthat::test_that("template_summary_by generates correct expressions when `par
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -158,14 +158,14 @@ testthat::test_that("template_summary_by generates correct expressions when `row
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "SEX",
-          split_label = rtables::var_labels(adsl)[["SEX"]],
+          split_label = formatters::var_labels(adsl, fill = FALSE)[["SEX"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
         rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>%
         rtables::split_rows_by(
           "COUNTRY",
-          split_label = rtables::var_labels(adsl)[["COUNTRY"]],
+          split_label = formatters::var_labels(adsl, fill = FALSE)[["COUNTRY"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -215,7 +215,7 @@ testthat::test_that("template_summary_by generates correct expressions for custo
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%
@@ -270,7 +270,7 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           split_fun = split_fun,
           label_pos = "topleft"
         ) %>%

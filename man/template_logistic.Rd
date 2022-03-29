@@ -19,7 +19,7 @@ template_logistic(
   combine_comp_arms = FALSE,
   responder_val = c("CR", "PR"),
   at = NULL,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -65,11 +65,11 @@ values of the responder variable corresponding with a successful response.}
 values for the interaction variable. Otherwise the median is used.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Creates an expression for logistic regressions.
@@ -77,3 +77,4 @@ Creates an expression for logistic regressions.
 \seealso{
 \code{\link[=tm_t_logistic]{tm_t_logistic()}}
 }
+\keyword{internal}

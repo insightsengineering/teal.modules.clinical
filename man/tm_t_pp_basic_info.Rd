@@ -22,8 +22,8 @@ analysis data used in teal module.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr ADSL columns to be shown in
-Basic Info tab.}
+\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+ADSL columns to be shown in Basic Info tab.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -45,7 +45,7 @@ app <- init(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_pp_basic_info(
       label = "Basic info",
       dataname = "ADSL",

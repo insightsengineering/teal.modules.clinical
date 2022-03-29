@@ -17,7 +17,7 @@ make_barchart_simple_call(
   rotate_x_label = FALSE,
   rotate_y_label = FALSE,
   expand_y_range = 0,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -52,11 +52,11 @@ whether to rotate y-axis label by 45 degrees.}
 fraction of y-axis range to expand further up.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
 \item{yname}{(\code{NULL}, \code{character(1)})\cr
 name of the \code{yaxis} variable.}

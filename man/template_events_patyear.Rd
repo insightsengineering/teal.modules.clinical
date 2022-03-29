@@ -9,11 +9,12 @@ template_events_patyear(
   parentname,
   arm_var,
   events_var,
+  label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
   control = control_incidence_rate(),
   drop_arm_levels = TRUE,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ variable names that can be used as \code{arm_var}.}
 
 \item{events_var}{(\code{integer})\cr number of observed events.}
 
+\item{label_paramcd}{(\code{string})\cr title of table based on paramcd}
+
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
@@ -41,11 +44,11 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Template: Event rates adjusted for patient-years
@@ -53,3 +56,4 @@ Template: Event rates adjusted for patient-years
 \seealso{
 \code{\link[=tm_t_events_patyear]{tm_t_events_patyear()}}
 }
+\keyword{internal}

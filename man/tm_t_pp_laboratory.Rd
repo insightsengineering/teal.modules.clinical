@@ -31,20 +31,23 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{timepoints}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr Time variable to be represented in
-the laboratory table.}
+\item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+Time variable to be represented in the laboratory table.}
 
-\item{aval}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AVAL} column of the ADLB dataset.}
+\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVAL} column of the ADLB dataset.}
 
-\item{avalu}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AVALU} column of the ADLB dataset.}
+\item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVALU} column of the ADLB dataset.}
 
-\item{param}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{PARAM} column of the ADLB dataset.}
+\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAM} column of the ADLB dataset.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{PARAMCD} column of the
-ADLB dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAMCD} column of the ADLB dataset.}
 
-\item{anrind}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{ANRIND} column of the ADLB dataset
-with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+\item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{ANRIND} column of the ADLB dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -68,7 +71,7 @@ app <- init(
     cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_pp_laboratory(
       label = "Vitals",
       dataname = "ADLB",

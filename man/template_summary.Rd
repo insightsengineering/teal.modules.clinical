@@ -18,7 +18,7 @@ template_summary(
     "range"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -65,11 +65,11 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Template: Summary of Variables
@@ -77,3 +77,4 @@ Template: Summary of Variables
 \seealso{
 \code{\link[=tm_t_summary]{tm_t_summary()}}
 }
+\keyword{internal}

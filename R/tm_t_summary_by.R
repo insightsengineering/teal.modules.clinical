@@ -11,6 +11,7 @@
 #' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
 #'
 #' @seealso [tm_t_summary_by()]
+#' @keywords internal
 #'
 template_summary_by <- function(parentname,
                                 dataname,
@@ -30,7 +31,7 @@ template_summary_by <- function(parentname,
                                 denominator = c("N", "n", "omit"),
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
-                                basic_table_args = teal.devel::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(parentname),
     assertthat::is.string(dataname),
@@ -105,8 +106,8 @@ template_summary_by <- function(parentname,
 
   layout_list <- list()
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -161,7 +162,7 @@ template_summary_by <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = rtables::var_labels(dataname)[[by_var]],
+      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -333,7 +334,7 @@ template_summary_by <- function(parentname,
 #'     cdisc_dataset("ADLB", adlb, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",
 #'       dataname = "ADLB",
@@ -365,14 +366,14 @@ tm_t_summary_by <- function(label,
                             dataname,
                             parentname = ifelse(
                               inherits(arm_var, "data_extract_spec"),
-                              teal.devel::datanames_input(arm_var),
+                              teal.transform::datanames_input(arm_var),
                               "ADSL"
                             ),
                             arm_var,
                             by_vars,
                             summarize_vars,
-                            id_var = choices_selected(
-                              variable_choices(dataname, subset = "USUBJID"),
+                            id_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, subset = "USUBJID"),
                               selected = "USUBJID", fixed = TRUE
                             ),
                             paramcd = NULL,
@@ -382,12 +383,12 @@ tm_t_summary_by <- function(label,
                             useNA = c("ifany", "no"), # nolint
                             na_level = "<Missing>",
                             numeric_stats = c("n", "mean_sd", "median", "range"),
-                            denominator = choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+                            denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
                             post_output = NULL,
-                            basic_table_args = teal.devel::basic_table_args()) {
+                            basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary_by")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -417,8 +418,8 @@ tm_t_summary_by <- function(label,
       NULL,
       cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
     ),
-    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE),
-    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE)
+    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE, ordered = TRUE),
+    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
   )
 
   module(
@@ -436,7 +437,7 @@ tm_t_summary_by <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -444,7 +445,7 @@ tm_t_summary_by <- function(label,
 ui_summary_by <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$id_var,
     a$paramcd,
@@ -452,12 +453,12 @@ ui_summary_by <- function(id, ...) {
     a$summarize_vars
   )
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(teal.devel::table_with_settings_ui(ns("table"))),
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -467,29 +468,29 @@ ui_summary_by <- function(id, ...) {
       `if`(
         is.null(a$paramcd),
         NULL,
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("paramcd"),
           label = "Select Endpoint",
           data_extract_spec = a$paramcd,
           is_single_dataset = is_single_dataset_value
         )
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
         data_extract_spec = a$by_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
         data_extract_spec = a$summarize_vars,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
-      checkboxInput(ns("row_groups"), "Show summarize variables in row groups", value = a$row_groups),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional table settings",
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
@@ -498,7 +499,7 @@ ui_summary_by <- function(id, ...) {
             choices = c("ifany", "no"),
             selected = a$useNA
           ),
-          optionalSelectInput(
+          teal.widgets::optionalSelectInput(
             inputId = ns("denominator"),
             label = "Denominator choice",
             choices = a$denominator$choices,
@@ -536,10 +537,10 @@ ui_summary_by <- function(id, ...) {
           }
         )
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional Variables Info",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
             data_extract_spec = a$id_var,
@@ -548,7 +549,7 @@ ui_summary_by <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -556,9 +557,7 @@ ui_summary_by <- function(id, ...) {
 
 
 #' @noRd
-srv_summary_by <- function(input,
-                           output,
-                           session,
+srv_summary_by <- function(id,
                            datasets,
                            dataname,
                            parentname,
@@ -574,129 +573,128 @@ srv_summary_by <- function(input,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
-
-  vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
-  if (!is.null(paramcd)) {
-    vars[["paramcd"]] <- paramcd
-  }
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    vars,
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  # Prepare the analysis environment (filter data, check data, populate envir).
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_id_var <- as.vector(anl_m$columns_source$id_var)
-    input_by_vars <- anl_selectors()$by_vars()$select_ordered
-    input_summarize_vars <- anl_selectors()$summarize_vars()$select_ordered
-    input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
-
-    # validate inputs
-    validate(
-      need(input_arm_var, "Please select a treatment variable."),
-      need(input_id_var, "Please select a subject identifier."),
-      need(input_summarize_vars, "Please select a summarize variable."),
-      if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-        need(
-          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-          "`Select Endpoint` is not selected."
-        )
-      },
-      need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
-    )
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars, input_id_var),
-      arm_var = input_arm_var
-    )
-
-    if (input$parallel_vars) {
-      validate(need(
-        all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
-        "Summarize variables must all be numeric to display in parallel columns."
-      ))
+    vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
+    if (!is.null(paramcd)) {
+      vars[["paramcd"]] <- paramcd
     }
-  })
 
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    my_calls <- template_summary_by(
-      parentname = "ANL_ADSL",
-      dataname = "ANL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      sum_vars = anl_selectors()$summarize_vars()$select_ordered,
-      by_vars = anl_selectors()$by_vars()$select_ordered,
-      var_labels = get_var_labels(datasets, dataname, anl_selectors()$summarize_vars()$select_ordered),
-      id_var = as.vector(anl_m$columns_source$id_var),
-      na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
-      na_level = na_level,
-      numeric_stats = input$numeric_stats,
-      denominator = input$denominator,
-      add_total = input$add_total,
-      parallel_vars = input$parallel_vars,
-      row_groups = input$row_groups,
-      drop_arm_levels = input$drop_arm_levels,
-      drop_zero_levels = input$drop_zero_levels,
-      basic_table_args = basic_table_args
+    anl_selectors <- teal.transform::data_extract_multiple_srv(
+      vars,
+      datasets = datasets
     )
-    mapply(expression = my_calls, teal.devel::chunks_push)
+
+    anl_merged <- teal.transform::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
+
+    adsl_merged <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    # Prepare the analysis environment (filter data, check data, populate envir).
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_by_vars <- as.vector(anl_m$columns_source$by_vars)
+      input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+      input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
+
+      # validate inputs
+      validate(
+        need(input_arm_var, "Please select a treatment variable."),
+        need(input_id_var, "Please select a subject identifier."),
+        need(input_summarize_vars, "Please select a summarize variable."),
+        if (!all(input_summarize_vars %in% names(adsl_filtered))) {
+          need(
+            input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+            "`Select Endpoint` is not selected."
+          )
+        },
+        need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+      )
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars, input_id_var),
+        arm_var = input_arm_var
+      )
+
+      if (input$parallel_vars) {
+        validate(need(
+          all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
+          "Summarize variables must all be numeric to display in parallel columns."
+        ))
+      }
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.code::chunks_reset()
+      anl_m <- anl_merged()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
+
+      my_calls <- template_summary_by(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        sum_vars = as.vector(anl_m$columns_source$summarize_vars),
+        by_vars = as.vector(anl_m$columns_source$by_vars),
+        var_labels = get_var_labels(datasets, dataname, as.vector(anl_m$columns_source$summarize_vars)),
+        id_var = as.vector(anl_m$columns_source$id_var),
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
+        na_level = na_level,
+        numeric_stats = input$numeric_stats,
+        denominator = input$denominator,
+        add_total = input$add_total,
+        parallel_vars = input$parallel_vars,
+        row_groups = input$row_groups,
+        drop_arm_levels = input$drop_arm_levels,
+        drop_zero_levels = input$drop_zero_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.code::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
+    })
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(
+        list(arm_var, id_var, paramcd, by_vars, summarize_vars)
+      ),
+      modal_title = "Summary by Row Groups Table",
+      code_header = label
+    )
   })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, id_var, paramcd, by_vars, summarize_vars)
-    ),
-    modal_title = "Summary by Row Groups Table",
-    code_header = label
-  )
 }

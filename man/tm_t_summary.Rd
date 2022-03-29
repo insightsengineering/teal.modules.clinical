@@ -8,7 +8,7 @@ tm_t_summary(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
   summarize_vars,
   add_total = TRUE,
@@ -20,7 +20,7 @@ tm_t_summary(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -33,12 +33,12 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{summarize_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{summarize_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables that should be summarized.}
 
 \item{add_total}{(\code{logical})\cr
@@ -75,11 +75,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Teal Module: Summary of Variables
@@ -104,7 +104,7 @@ app <- init(
     code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",

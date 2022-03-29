@@ -7,17 +7,18 @@
 cs_to_des_filter(cs, dataname, multiple = FALSE, include_vars = FALSE)
 }
 \arguments{
-\item{cs}{(\code{\link[teal:choices_selected]{teal::choices_selected()}}) object to be transformed}
+\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
 
 \item{dataname}{(\code{character}) name of the data}
 
-\item{multiple}{(\code{logical}) whether allow multiple selection in the select input}
+\item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
+shiny \code{\link[shiny]{selectInput}}.}
 
 \item{include_vars}{(\code{flag})\cr whether to include the filter variables as fixed selection
 in the result. This can be useful for preserving for reuse in \code{rtables} code e.g.}
 }
 \value{
-(\code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})
+(\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})
 }
 \description{
 Convert choices_selected to data_extract_spec with only filter_spec

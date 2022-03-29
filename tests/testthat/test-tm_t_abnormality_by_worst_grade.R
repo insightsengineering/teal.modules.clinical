@@ -16,7 +16,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- rtables::var_labels(adlb)
+      anl_labels <- formatters::var_labels(adlb, fill = FALSE)
       anl <- adlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
@@ -31,7 +31,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -100,7 +100,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 
   expected <- list(
     data = quote({
-      anl_labels <- rtables::var_labels(myadlb)
+      anl_labels <- formatters::var_labels(myadlb, fill = FALSE)
       anl <- myadlb %>%
         dplyr::mutate(
           GRADE_DIR = factor(
@@ -115,7 +115,7 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      rtables::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       myadsl <- myadsl %>% dplyr::filter(ARMCD %in% arm_levels)

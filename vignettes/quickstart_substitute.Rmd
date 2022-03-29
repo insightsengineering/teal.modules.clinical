@@ -1,10 +1,10 @@
 ---
 title: "Quick start: `substitute` for NSE"
 author: "Francois Collin"
-date: "`r Sys.Date()`"
+date: "29.10.2020"
 output:
   slidy_presentation:
-    slide_level: 2 
+    slide_level: 2
     highlight: tango
     incremental: true
 vignette: >
@@ -24,7 +24,7 @@ library(magrittr)
 
 # Introduction
 
-## 
+##
 
 Considering an expression, R usually evaluates it and returns its value.
 Instead of focusing on the value, it is also possible to work with the **code**
@@ -32,7 +32,7 @@ which generated the **value**. This is where non standard evaluation, or NSE,
 starts.
 The function `substitute` is an important element of non-standard evaluation.
 For instance, if we consider `a` defined such as `a <- 5`,
-then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns 
+then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns
 the code to obtain the value: `a`.
 
 The principle on which relies `teal` is to:
@@ -141,7 +141,7 @@ eval(non_evaluated_expression)
 Note that:
 
 - `x` as an argument name in plot has been preserved, while `x` as an
- object has been replaced. 
+ object has been replaced.
 
 ## Replace an object name
 
@@ -310,7 +310,7 @@ rtables_expr
 ... but that can be arranged:
 
 ```{r, message = FALSE}
-library(teal.devel)
+library(teal)
 #' Stylish code
 #'
 #' Deparse an expression and display the code following NEST conventions.

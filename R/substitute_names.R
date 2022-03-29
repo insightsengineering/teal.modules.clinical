@@ -10,7 +10,7 @@
 #'
 #' @return The modified expression.
 #' @note This is simplified from the package `pryr` to avoid another dependency.
-#' @seealso [call_with_colon()], [substitute_names()]
+#' @seealso [substitute_names()]
 #'
 #' @examples
 #' x <- quote(a + b)
@@ -36,7 +36,7 @@ substitute_q <- function(qexpr, env) {
 #'
 #' @name substitute_names
 #' @return The modified expression.
-#' @seealso [call_with_colon()], [substitute_q()]
+#' @seealso [substitute_q()]
 #'
 #' @examples
 #' teal.modules.clinical:::substitute_names(

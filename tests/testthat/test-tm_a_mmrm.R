@@ -25,7 +25,7 @@ testthat::test_that("template_fit_mmrm works as expected when not combining comp
         df_explicit_na(na_level = "")
     }),
     fit = quote(
-      fit <- fit_mmrm(
+      fit <- tern.mmrm::fit_mmrm(
         vars = list(
           response = "AVAL", covariates = NULL,
           id = "USUBJID", arm = "ARMCD", visit = "AVISIT"
@@ -72,7 +72,7 @@ testthat::test_that("template_fit_mmrm works as expected when combining combinat
         df_explicit_na(na_level = "")
     }),
     fit = substitute(
-      expr = fit <- fit_mmrm(
+      expr = fit <- tern.mmrm::fit_mmrm(
         vars = vars,
         data = anl,
         conf_level = 0.95,
@@ -113,11 +113,11 @@ testthat::test_that("template_mmrm_tables works as expected", {
         rtables::add_colcounts() %>%
         rtables::split_rows_by("AVISIT") %>%
         append_varlabels(ANL, "AVISIT") %>%
-        summarize_lsmeans(show_relative = "increase") %>%
+        tern.mmrm::summarize_lsmeans(show_relative = "increase") %>%
         rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
-      cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+      cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
       cov_matrix
     })
   )
@@ -139,13 +139,13 @@ testthat::test_that("template_mmrm_tables works as expected when arm is not cons
     layout = quote(
       lyt <- rtables::basic_table() %>%
         rtables::split_rows_by("AVISIT") %>%
-        summarize_lsmeans(
+        tern.mmrm::summarize_lsmeans(
           arms = FALSE
         ) %>%
         rtables::append_topleft(paste0("  ", "ALBUMIN"))
     ),
     cov_matrix = quote({
-      cov_matrix <- as.rtable(fit_mmrm, type = "cov")
+      cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
       cov_matrix
     })
   )
@@ -168,7 +168,7 @@ testthat::test_that("template_mmrm_plots works as expected", {
   expected <- list(
     lsmeans_plot = substitute(
       expr = {
-        lsmeans_plot <- g_mmrm_lsmeans(
+        lsmeans_plot <- tern.mmrm::g_mmrm_lsmeans(
           fit_mmrm,
           select = select,
           width = 0.6,
@@ -202,7 +202,7 @@ testthat::test_that("template_mmrm_plots works as expected", {
       )
     ),
     diagnostic_plot = quote({
-      diagnostic_plot <- g_mmrm_diagnostic(fit_mmrm, type = "fit-residual", z_threshold = NULL)
+      diagnostic_plot <- tern.mmrm::g_mmrm_diagnostic(fit_mmrm, type = "fit-residual", z_threshold = NULL)
       diagnostic_plot
     })
   )

@@ -8,24 +8,26 @@ tm_t_exposure(
   label,
   dataname,
   parentname = ifelse(inherits(col_by_var, "data_extract_spec"),
-    teal.devel::datanames_input(col_by_var), "ADSL"),
+    teal.transform::datanames_input(col_by_var), "ADSL"),
   row_by_var,
   col_by_var,
-  paramcd = choices_selected(choices = value_choices(dataname, "PARAMCD", "PARAM"),
-    selected = "TDURD"),
+  paramcd = teal.transform::choices_selected(choices =
+    teal.transform::value_choices(dataname, "PARAMCD", "PARAM"), selected = "TDURD"),
   paramcd_label = "PARAM",
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   parcat,
-  aval_var = choices_selected(variable_choices(dataname, subset = "AVAL"), selected =
-    "AVAL", fixed = TRUE),
-  avalu_var = choices_selected(variable_choices(dataname, subset = "AVALU"), selected =
-    "AVALU", fixed = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "AVAL"), selected = "AVAL", fixed = TRUE),
+ 
+    avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "AVALU"), selected = "AVALU", fixed = TRUE),
   add_total,
   na_level = "<Missing>",
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -38,32 +40,32 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{row_by_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{row_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split rows.}
 
-\item{col_by_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{col_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split columns.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
 \item{paramcd_label}{(\code{character})\cr
 the column from the dataset where the value will be used to label the argument \code{paramcd}.}
 
-\item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{parcat}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{parcat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for
 parameter category values.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{avalu_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr
@@ -81,11 +83,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Teal module: Exposure Table for Risk management plan
@@ -99,7 +101,7 @@ adsl <- synthetic_cdisc_data("latest")$adsl
 adex <- synthetic_cdisc_data("latest")$adex
 
 set.seed(1, kind = "Mersenne-Twister")
-labels <- rtables::var_labels(adex)
+labels <- formatters::var_labels(adex, fill = FALSE)
 adex <- adex \%>\%
   distinct(USUBJID, .keep_all = TRUE) \%>\%
   mutate(
@@ -109,7 +111,7 @@ adex <- adex \%>\%
     AVALU = "Days"
   ) \%>\%
   bind_rows(adex)
-rtables::var_labels(adex) <- labels
+formatters::var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
@@ -117,7 +119,7 @@ app <- init(
     cdisc_dataset("ADEX", adex,
       code = 'set.seed(1, kind = "Mersenne-Twister")
       ADEX <- synthetic_cdisc_data("latest")$adex
-      labels <- rtables::var_labels(ADEX)
+      labels <- formatters::var_labels(ADEX, fill = FALSE)
       ADEX <- ADEX \%>\%
        distinct(USUBJID, .keep_all = TRUE) \%>\%
        mutate(PARAMCD = "TDURD",
@@ -125,11 +127,11 @@ app <- init(
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
               AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      rtables::var_labels(ADEX) <- labels' # nolint
+      formatters::var_labels(ADEX) <- labels' # nolint
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_exposure(
       label = "Duration of Exposure Table",
       dataname = "ADEX",

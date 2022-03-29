@@ -34,7 +34,7 @@ template_mmrm_tables(
   paramcd,
   show_relative = c("increase", "reduction", "none"),
   table_type = "t_mmrm_cov",
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 
 template_mmrm_plots(
@@ -42,7 +42,7 @@ template_mmrm_plots(
   lsmeans_plot = list(select = c("estimates", "contrasts"), width = 0.6, show_pval =
     FALSE),
   diagnostic_plot = list(type = "fit-residual", z_threshold = NULL),
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -103,22 +103,22 @@ variable value designating the studied parameter.}
 type of table to output.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern:g_mmrm_lsmeans]{tern::g_mmrm_lsmeans()}}}
+\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}}
 
-\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern:g_mmrm_diagnostic]{tern::g_mmrm_diagnostic()}}}
+\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 Template: Mixed Model Repeated Measurements (MMRM) analysis
@@ -133,3 +133,4 @@ Template: Mixed Model Repeated Measurements (MMRM) analysis
 \seealso{
 \code{\link[=tm_a_mmrm]{tm_a_mmrm()}}
 }
+\keyword{internal}

@@ -17,7 +17,7 @@ template_exposure(
   na_level = "<Missing>",
   aval_var,
   avalu_var,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -58,11 +58,11 @@ name of the analysis variable.}
 name of the analysis unit variable.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Template: Exposure Table for Risk management plan
@@ -70,3 +70,4 @@ Template: Exposure Table for Risk management plan
 \seealso{
 \code{\link[=tm_t_exposure]{tm_t_exposure()}}
 }
+\keyword{internal}

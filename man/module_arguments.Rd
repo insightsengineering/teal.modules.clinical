@@ -4,7 +4,7 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
@@ -13,17 +13,17 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{summarize_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{summarize_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables that should be summarized.}
 
-\item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables for stratified analysis.}
 
 \item{parentname}{(\code{character})\cr
@@ -35,7 +35,7 @@ analysis data used in teal module.}
 \item{label}{(\code{character})\cr
 menu item label of the module in the teal app.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
 \item{useNA}{(\code{character})\cr
@@ -50,40 +50,40 @@ population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
 
-\item{avisit}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr
 value of analysis visit \code{AVISIT} of interest.}
 
-\item{cov_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the covariates
 variables.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{cnsr_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the censoring
 variable.}
 
-\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
-\item{hlt}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr
 name of the variable with high level term for events.}
 
-\item{llt}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{llt}{(\code{choices_selected} or \code{data_extract_spec})\cr
 name of the variable with low level term for events.}
 
-\item{visit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option
 for variable names that can be used as \code{visit} variable. Must be a factor
 in \code{dataname}.}
 
-\item{by_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for variable names
 used to split the summary by rows.}
 
@@ -97,11 +97,11 @@ a vector of length three with \code{c(value, min, max)}. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.}
 
-\item{time_points}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{time_points}{(\code{choices_selected})\cr
 object with all available choices and preselected option for time points that
 can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the time unit
 variable.}
 
@@ -117,28 +117,28 @@ For example a title.}
 with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for variable names that can be used
 as the default subgroups.}
 
-\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
+\item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
+\item{treatment_flag}{(\code{choices_selected}] or \code{data_extract_spec})\cr value indicating on treatment
 records in \code{treatment_flag_var}.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \value{
 \code{module} object generated by the \code{\link[teal:module]{teal::module()}} function.
@@ -154,3 +154,4 @@ commonly and consistently used in the framework. For the developer it adds a
 single reference point to import the \code{roxygen} argument description with:
 \verb{@inheritParams module_arguments}
 }
+\keyword{internal}

@@ -20,11 +20,11 @@
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
-#' adae_labels <- rtables::var_labels(ADAE)
+#' adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' # reinstate labels
-#' ADAE <- do.call(rtables::var_relabel, append(list(x = ADAE), as.list(adae_labels)))
+#' formatters::var_labels(ADAE) <- adae_labels
 #'
 #'
 #' app <- init(
@@ -32,15 +32,15 @@
 #'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "ADAE <- synthetic_cdisc_data('latest')$adae
-#'               adae_labels <- rtables::var_labels(ADAE)
+#'               adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 #'               ADAE <- ADAE %>%
 #'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
-#'               ADAE <- do.call(rtables::var_relabel,
-#'                 append(list(x = ADAE), as.list(adae_labels)))"
+#'               formatters::var_labels(ADAE) <- adae_labels
+#'               ADAE"
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_barchart_simple(
 #'       label = "ADAE Analysis",
 #'       x = data_extract_spec(
@@ -145,21 +145,21 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_width = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 ggplot2_args = teal.devel::ggplot2_args()) {
+                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
   if (length(c(x, fill, x_facet, y_facet)) == 0) {
     stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
   }
-  x <- teal.devel::list_extract_spec(x, allow_null = TRUE)
-  fill <- teal.devel::list_extract_spec(fill, allow_null = TRUE)
-  x_facet <- teal.devel::list_extract_spec(x_facet, allow_null = TRUE)
-  y_facet <- teal.devel::list_extract_spec(y_facet, allow_null = TRUE)
-  teal.devel::check_no_multiple_selection(x)
-  teal.devel::check_no_multiple_selection(fill)
-  teal.devel::check_no_multiple_selection(x_facet)
-  teal.devel::check_no_multiple_selection(y_facet)
+  x <- teal.transform::list_extract_spec(x, allow_null = TRUE)
+  fill <- teal.transform::list_extract_spec(fill, allow_null = TRUE)
+  x_facet <- teal.transform::list_extract_spec(x_facet, allow_null = TRUE)
+  y_facet <- teal.transform::list_extract_spec(y_facet, allow_null = TRUE)
+  teal.transform::check_no_multiple_selection(x)
+  teal.transform::check_no_multiple_selection(fill)
+  teal.transform::check_no_multiple_selection(x_facet)
+  teal.transform::check_no_multiple_selection(y_facet)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -198,17 +198,17 @@ tm_g_barchart_simple <- function(x = NULL,
 ui_g_barchart_simple <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
-      teal.devel::plot_with_settings_ui(id = ns("myplot")),
+  is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
+      teal.widgets::plot_with_settings_ui(id = ns("myplot")),
       uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
+      teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("x"),
           label = "X variable",
           data_extract_spec = args$x,
@@ -216,7 +216,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$fill)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("fill"),
           label = "Fill",
           data_extract_spec = args$fill,
@@ -224,7 +224,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$x_facet)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("x_facet"),
           label = "Column facetting variable",
           data_extract_spec = args$x_facet,
@@ -232,15 +232,15 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       },
       if (!is.null(args$y_facet)) {
-        teal.devel::data_extract_ui(
+        teal.transform::data_extract_ui(
           id = ns("y_facet"),
           label = "Row facetting variable",
           data_extract_spec = args$y_facet,
           is_single_dataset = is_single_dataset_value
         )
       },
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional plot settings",
           if (!is.null(args$fill)) {
             radioButtons(
@@ -292,15 +292,13 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
 }
 
-srv_g_barchart_simple <- function(input,
-                                  output,
-                                  session,
+srv_g_barchart_simple <- function(id,
                                   datasets,
                                   x,
                                   fill,
@@ -310,209 +308,208 @@ srv_g_barchart_simple <- function(input,
                                   plot_width,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
+    data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
+    data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
 
-  data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
-  data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
+    selector_list <- teal.transform::data_extract_multiple_srv(data_extract, datasets)
 
-  selector_list <- teal.devel::data_extract_multiple_srv(data_extract, datasets)
-
-  reactive_select_input <- reactive({
-    selectors <- selector_list()
-    extract_names <- names(selectors)
-    for (extract in extract_names) {
-      if (is.null(selectors[[extract]]) || length(selectors[[extract]]()$select) == 0) {
-        selectors <- selectors[-which(names(selectors) == extract)]
+    reactive_select_input <- reactive({
+      selectors <- selector_list()
+      extract_names <- names(selectors)
+      for (extract in extract_names) {
+        if (is.null(selectors[[extract]]) || length(selectors[[extract]]()$select) == 0) {
+          selectors <- selectors[-which(names(selectors) == extract)]
+        }
       }
-    }
-    selectors
-  })
-
-  merged_data <- teal.devel::data_merge_srv(
-    selector_list = reactive_select_input,
-    datasets = datasets
-  )
-
-  data_chunk <- reactive({
-    validate({
-      need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+      selectors
     })
-    ANL <- merged_data()$data() # nolint
-    teal.devel::validate_has_data(ANL, 2)
-    chunk <- teal.devel::chunks$new()
-    teal.devel::chunks_push_data_merge(merged_data(), chunks = chunk)
-    chunk
-  })
 
-  count_chunk <- reactive({
-    chunk <- data_chunk()$clone(deep = TRUE)
-    groupby_vars <- r_groupby_vars()
-    groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
+    merged_data <- teal.transform::data_merge_srv(
+      selector_list = reactive_select_input,
+      datasets = datasets
+    )
 
-    # count
-    n_names <- c()
-    count_by_group <- function(groupby_vars, ...) {
-      # chunk and n_names are modified
-      n_name <- get_n_name(groupby_vars)
-      n_names <- c(n_names, n_name)
-      count_by_group_chunk(chunk, groupby_vars = groupby_vars, n_name = n_name, ...)
-    }
+    data_chunk <- reactive({
+      validate({
+        need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+      })
+      ANL <- merged_data()$data() # nolint
+      teal::validate_has_data(ANL, 2)
+      chunk <- teal.code::chunks$new()
+      teal.code::chunks_push_data_merge(merged_data(), chunks = chunk)
+      chunk
+    })
 
-    count_by_group(groupby_vars, data_name = "ANL") # may be repeated by statements below
+    count_chunk <- reactive({
+      chunk <- data_chunk()$clone(deep = TRUE)
+      groupby_vars <- r_groupby_vars()
+      groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
-    if (input$show_n) {
-      # count for each group
-      # x_name: more complicated, done below
-      if (!is.null(groupby_vars_l$fill_name)) count_by_group(groupby_vars_l$fill_name)
-      if (!is.null(groupby_vars_l$x_facet_name)) count_by_group(groupby_vars_l$x_facet_name)
-      if (!is.null(groupby_vars_l$y_facet_name)) count_by_group(groupby_vars_l$y_facet_name)
+      # count
+      n_names <- c()
+      count_by_group <- function(groupby_vars, ...) {
+        # chunk and n_names are modified
+        n_name <- get_n_name(groupby_vars)
+        n_names <- c(n_names, n_name)
+        count_by_group_chunk(chunk, groupby_vars = groupby_vars, n_name = n_name, ...)
+      }
 
-      if (!is.null(groupby_vars_l$fill_name)) add_count_str_to_column(chunk, column = groupby_vars_l$fill_name)
-      if (!is.null(groupby_vars_l$x_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$x_facet_name)
-      if (!is.null(groupby_vars_l$y_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$y_facet_name)
-    }
+      count_by_group(groupby_vars, data_name = "ANL") # may be repeated by statements below
 
-    # add label and slice(1) as all patients in the same subgroup have same n_'s
-    chunk$push(bquote({
-      attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
-      counts <- counts %>%
-        dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
-        dplyr::slice(1) %>%
-        dplyr::ungroup() %>%
-        dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
-    }))
+      if (input$show_n) {
+        # count for each group
+        # x_name: more complicated, done below
+        if (!is.null(groupby_vars_l$fill_name)) count_by_group(groupby_vars_l$fill_name)
+        if (!is.null(groupby_vars_l$x_facet_name)) count_by_group(groupby_vars_l$x_facet_name)
+        if (!is.null(groupby_vars_l$y_facet_name)) count_by_group(groupby_vars_l$y_facet_name)
 
-    # dplyr::select loses labels
-    chunk$push(teal.devel::get_anl_relabel_call(
-      columns_source = merged_data()$columns_source,
-      datasets = datasets,
-      anl_name = "counts"
-    ))
+        if (!is.null(groupby_vars_l$fill_name)) add_count_str_to_column(chunk, column = groupby_vars_l$fill_name)
+        if (!is.null(groupby_vars_l$x_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$x_facet_name)
+        if (!is.null(groupby_vars_l$y_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$y_facet_name)
+      }
 
-    teal.devel::chunks_safe_eval(chunk)
-    chunk
-  })
+      # add label and slice(1) as all patients in the same subgroup have same n_'s
+      chunk$push(bquote({
+        attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
+        counts <- counts %>%
+          dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+          dplyr::slice(1) %>%
+          dplyr::ungroup() %>%
+          dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+      }))
 
-  plot_chunk <- reactive({
-    chunk <- count_chunk()$clone(deep = TRUE)
+      # dplyr::select loses labels
+      chunk$push(teal.transform::get_anl_relabel_call(
+        columns_source = merged_data()$columns_source,
+        datasets = datasets,
+        anl_name = "counts"
+      ))
 
-    groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
+      teal.code::chunks_safe_eval(chunk)
+      chunk
+    })
 
-    chunk$push(
-      substitute(
-        env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
-        plot_title <- sprintf(
-          "Number of patients (total N = %s) for each combination of (%s)",
-          nrow(ANL),
-          groupby_vars
+    plot_chunk <- reactive({
+      chunk <- count_chunk()$clone(deep = TRUE)
+
+      groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
+
+      chunk$push(
+        substitute(
+          env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
+          plot_title <- sprintf(
+            "Number of patients (total N = %s) for each combination of (%s)",
+            nrow(ANL),
+            groupby_vars
+          )
         )
       )
-    )
 
-    all_ggplot2_args <- teal.devel::resolve_ggplot2_args(
-      user_plot = ggplot2_args,
-      module_plot = teal.devel::ggplot2_args(
-        labs = list(
-          title = quote(plot_title),
-          y = substitute(
-            column_annotation_label(counts, y_name),
-            list(y_name = get_n_name(groupby_vars))
-          )
-        ),
-        theme = list(plot.title = quote(element_text(hjust = 0.5)))
+      all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
+        user_plot = ggplot2_args,
+        module_plot = teal.widgets::ggplot2_args(
+          labs = list(
+            title = quote(plot_title),
+            y = substitute(
+              column_annotation_label(counts, y_name),
+              list(y_name = get_n_name(groupby_vars))
+            )
+          ),
+          theme = list(plot.title = quote(element_text(hjust = 0.5)))
+        )
       )
+
+      plot_call <- make_barchart_simple_call(
+        y_name = get_n_name(groupby_vars),
+        x_name = groupby_vars$x_name,
+        fill_name = groupby_vars$fill_name,
+        x_facet_name = groupby_vars$x_facet_name,
+        y_facet_name = groupby_vars$y_facet_name,
+        label_bars = input$label_bars,
+        barlayout = input$barlayout,
+        flip_axis = input$flip_axis,
+        rotate_bar_labels = input$rotate_bar_labels,
+        rotate_x_label = input$rotate_x_label,
+        rotate_y_label = input$rotate_y_label,
+        expand_y_range = input$expand_y_range,
+        ggplot2_args = all_ggplot2_args
+      )
+
+      chunk$push(plot_call)
+
+      # explicitly calling print on the plot inside the chunk evaluates
+      # the ggplot call and therefore catches errors
+      chunk$push(quote(print(plot)))
+
+      teal.code::chunks_safe_eval(chunk)
+      chunk
+    })
+
+    generate_code <- reactive({
+      chunk <- plot_chunk()
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(chunk) # set session chunks for ShowRCode
+
+      chunk
+    })
+
+    plot_r <- reactive({
+      generate_code()$get("plot")
+    })
+
+    output$table <- renderTable({
+      generate_code()$get("counts")
+    })
+
+    # reactive vars
+    # NULL: not present in UI, vs character(0): no selection
+
+    # returns named vector of non-NULL variables to group by
+    r_groupby_vars <- function() {
+      x_name <- if (is.null(x)) NULL else as.vector(merged_data()$columns_source$x)
+      fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()$columns_source$fill)
+      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()$columns_source$x_facet)
+      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
+
+      # set to NULL when empty character
+      if (identical(x_name, character(0))) x_name <- NULL
+      if (identical(fill_name, character(0))) fill_name <- NULL
+      if (identical(x_facet_name, character(0))) x_facet_name <- NULL
+      if (identical(y_facet_name, character(0))) y_facet_name <- NULL
+
+      res <- c(
+        x_name = x_name, fill_name = fill_name,
+        x_facet_name = x_facet_name, y_facet_name = y_facet_name
+      ) # c() -> NULL entries are omitted
+
+      # at least one category must be specified
+      validate(need(
+        length(res) > 0, # c() removes NULL entries
+        "Must specify at least one of x, fill, x_facet and y_facet."
+      ))
+
+      res
+    }
+
+    # Insert the plot into a plot with settings module from teal.widgets
+    teal.widgets::plot_with_settings_srv(
+      id = "myplot",
+      plot_r = plot_r,
+      height = plot_height,
+      width = plot_width
     )
 
-    plot_call <- make_barchart_simple_call(
-      y_name = get_n_name(groupby_vars),
-      x_name = groupby_vars$x_name,
-      fill_name = groupby_vars$fill_name,
-      x_facet_name = groupby_vars$x_facet_name,
-      y_facet_name = groupby_vars$y_facet_name,
-      label_bars = input$label_bars,
-      barlayout = input$barlayout,
-      flip_axis = input$flip_axis,
-      rotate_bar_labels = input$rotate_bar_labels,
-      rotate_x_label = input$rotate_x_label,
-      rotate_y_label = input$rotate_y_label,
-      expand_y_range = input$expand_y_range,
-      ggplot2_args = all_ggplot2_args
+
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(list(x, fill, x_facet, y_facet)),
+      modal_title = "Bar Chart"
     )
-
-    chunk$push(plot_call)
-
-    # explicitly calling print on the plot inside the chunk evaluates
-    # the ggplot call and therefore catches errors
-    chunk$push(quote(print(plot)))
-
-    teal.devel::chunks_safe_eval(chunk)
-    chunk
   })
-
-  generate_code <- reactive({
-    chunk <- plot_chunk()
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(chunk) # set session chunks for ShowRCode
-
-    chunk
-  })
-
-  plot_r <- reactive({
-    generate_code()$get("plot")
-  })
-
-  output$table <- renderTable({
-    generate_code()$get("counts")
-  })
-
-  # reactive vars
-  # NULL: not present in UI, vs character(0): no selection
-
-  # returns named vector of non-NULL variables to group by
-  r_groupby_vars <- function() {
-    x_name <- if (is.null(x)) NULL else as.vector(merged_data()$columns_source$x)
-    fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()$columns_source$fill)
-    x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()$columns_source$x_facet)
-    y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
-
-    # set to NULL when empty character
-    if (identical(x_name, character(0))) x_name <- NULL
-    if (identical(fill_name, character(0))) fill_name <- NULL
-    if (identical(x_facet_name, character(0))) x_facet_name <- NULL
-    if (identical(y_facet_name, character(0))) y_facet_name <- NULL
-
-    res <- c(
-      x_name = x_name, fill_name = fill_name,
-      x_facet_name = x_facet_name, y_facet_name = y_facet_name
-    ) # c() -> NULL entries are omitted
-
-    # at least one category must be specified
-    validate(need(
-      length(res) > 0, # c() removes NULL entries
-      "Must specify at least one of x, fill, x_facet and y_facet."
-    ))
-
-    res
-  }
-
-  # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = plot_r,
-    height = plot_height,
-    width = plot_width
-  )
-
-
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(x, fill, x_facet, y_facet)),
-    modal_title = "Bar Chart"
-  )
 }
 
 
@@ -563,7 +560,7 @@ make_barchart_simple_call <- function(y_name,
                                       rotate_x_label = FALSE,
                                       rotate_y_label = FALSE,
                                       expand_y_range = 0,
-                                      ggplot2_args = teal.devel::ggplot2_args()) {
+                                      ggplot2_args = teal.widgets::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
   validate(
@@ -602,7 +599,7 @@ make_barchart_simple_call <- function(y_name,
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      facet_grid(.(teal.devel::facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
     ))
   }
 
@@ -678,7 +675,7 @@ make_barchart_simple_call <- function(y_name,
     ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
   }
 
-  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(ggplot2_args)
+  parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(ggplot2_args)
   plot_args <- c(plot_args, parsed_ggplot2_args)
 
   bquote(plot <- .(call_concatenate(plot_args)))

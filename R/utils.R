@@ -46,7 +46,7 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 
 #' Get variable labels
 #'
-#' @param datasets ([`teal::FilteredData`]) Data built up by teal
+#' @param datasets (`teal::FilteredData`) Data built up by teal
 #' @param dataname (`character`) name of the dataset
 #' @param vars (`character`) Column names in the data
 #'
@@ -248,20 +248,23 @@ bracket_expr <- function(exprs) {
 
 #' Convert choices_selected to select_spec
 #'
-#' @param cs ([teal::choices_selected()]) object to be transformed
-#' @param multiple (`logical`) whether allow multiple selection in the select input
-#'
+#' @param cs (`choices_selected`) object to be transformed. See [teal.transform::choices_selected()] for details.
+#' @param multiple (\code{logical}) Whether multiple values shall be allowed in the
+#'  shiny \code{\link[shiny]{selectInput}}.
+#' @param ordered (`logical(1)`) Flags whether selection order should be tracked.
 #' @export
-#' @return ([teal::select_spec()])
-cs_to_select_spec <- function(cs, multiple = FALSE) {
+#' @return (`select_spec`)
+cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
+  checkmate::assert_flag(ordered)
 
-  select_spec(
+  teal.transform::select_spec(
     choices = cs$choices,
     selected = cs$selected,
     fixed = cs$fixed,
-    multiple = multiple
+    multiple = multiple,
+    ordered = ordered
   )
 }
 
@@ -270,7 +273,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE) {
 #' @inheritParams cs_to_select_spec
 #'
 #' @export
-#' @return ([teal::filter_spec()])
+#' @return ([teal.transform::filter_spec()])
 cs_to_filter_spec <- function(cs, multiple = FALSE) {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
@@ -281,7 +284,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
     attr(cs$choices, "var_choices")
   }
 
-  filter_spec(
+  teal.transform::filter_spec(
     vars = vars,
     choices = cs$choices,
     selected = cs$selected,
@@ -296,8 +299,8 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #' @param dataname (`character`) name of the data
 #'
 #' @export
-#' @return ([teal::data_extract_spec()])
-cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
+#' @return ([teal.transform::data_extract_spec()])
+cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -313,9 +316,9 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
   }
 
   if (inherits(cs, "choices_selected")) {
-    data_extract_spec(
+    teal.transform::data_extract_spec(
       dataname = dataname,
-      select = cs_to_select_spec(cs, multiple = multiple)
+      select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered)
     )
   } else {
     return(cs)
@@ -329,7 +332,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE) {
 #'   in the result. This can be useful for preserving for reuse in `rtables` code e.g.
 #'
 #' @export
-#' @return ([teal::data_extract_spec()])
+#' @return ([teal.transform::data_extract_spec()])
 cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALSE) {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
@@ -352,7 +355,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
       attr(cs$choices, "var_choices")
     }
     select <- if (include_vars) {
-      select_spec(
+      teal.transform::select_spec(
         choices = vars,
         selected = vars,
         fixed = TRUE
@@ -361,7 +364,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
       NULL
     }
 
-    data_extract_spec(
+    teal.transform::data_extract_spec(
       dataname = dataname,
       filter = cs_to_filter_spec(cs, multiple = multiple),
       select = select
@@ -371,7 +374,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   }
 }
 
-#' Whether object is of class [teal::choices_selected()] or [teal::data_extract_spec()]
+#' Whether object is of class [teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]
 #'
 #' @param x object to be checked
 #'
@@ -815,12 +818,13 @@ clean_description <- function(x) {
 #'
 #' Utility function for extracting paramcd for forest plots
 #'
-#' @param paramcd [`teal::data_extract_spec()`]
+#' @param paramcd [`teal.transform::data_extract_spec()`]
 #' variable value designating the studied parameter.
 #'
 #' @param input shinyapp input
 #'
 #' @param filter_idx filter section index (default 1)
+#' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
   choices <- paramcd$filter[[filter_idx]]$choices
@@ -843,12 +847,14 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 #'
 #' @param anl Analysis dataset
 #'
-#' @param paramcd [`teal::data_extract_spec()`]
+#' @param paramcd [`teal.transform::data_extract_spec()`]
 #' variable value designating the studied parameter.
-#'
+#' @keywords internal
 get_paramcd_label <- function(anl, paramcd) {
-  positions <- grep(paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),
-                    names(unlist(paramcd$filter)))
+  positions <- grep(
+    paste(unique(anl[[unlist(paramcd$filter)["vars_selected"]]]), collapse = "|"),
+    names(unlist(paramcd$filter))
+  )
   label_paramcd <- sapply(positions, function(pos) {
     if (nchar(sub(".*: ", "", names(unlist(paramcd$filter))[pos])) > 0) {
       label_paramcd <- sub(".*: ", "", names(unlist(paramcd$filter))[pos])

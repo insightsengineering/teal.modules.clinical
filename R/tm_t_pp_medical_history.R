@@ -6,6 +6,7 @@
 #' @param mhterm (`character`)\cr name of the reported name for medical history variable.
 #' @param mhbodsys (`character`)\cr name of the body system or organ class variable.
 #' @param mhdistat (`character`)\cr name of the status of the disease variable.
+#' @keywords internal
 #'
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
@@ -24,7 +25,7 @@ template_medical_history <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      labels <- rtables::var_labels(dataname)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+      labels <- formatters::var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
       result <-
@@ -67,11 +68,12 @@ template_medical_history <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param mhterm
-#' ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHTERM} column of the ADMH dataset.
-#' @param mhbodsys ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHBODSYS} column of the
-#' ADMH dataset.
-#' @param mhdistat ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{MHDISTAT} column of the
-#' ADMH dataset.
+#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHTERM} column of the ADMH dataset.
+#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHBODSYS} column of the ADMH dataset.
+#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{MHDISTAT} column of the ADMH dataset.
 #'
 #' @export
 #'
@@ -80,17 +82,17 @@ template_medical_history <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADMH <- synthetic_cdisc_data("latest")$admh
 #' ADMH[["MHDISTAT"]] <- "ONGOING"
-#' rtables::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+#' formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADMH", ADMH, code = "ADMH <- synthetic_cdisc_data('latest')$admh
 #'                    ADMH[['MHDISTAT']] <- 'ONGOING'
-#'                    rtables::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
+#'                    formatters::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_pp_medical_history(
 #'       label = "Medical history",
 #'       dataname = "ADMH",
@@ -159,55 +161,53 @@ tm_t_pp_medical_history <- function(label,
 
 ui_t_medical_history <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$mhterm,
     ui_args$mhbodsys,
     ui_args$mhdistat
   )
 
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     output = div(
       htmlOutput(outputId = ns("medical_history_table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
-      optionalSelectInput(
+      teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("mhterm"),
         label = "Select MHTERM variable:",
         data_extract_spec = ui_args$mhterm,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("mhbodsys"),
         label = "Select MHBODSYS variable:",
         data_extract_spec = ui_args$mhbodsys,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("mhdistat"),
         label = "Select MHDISTAT variable:",
         data_extract_spec = ui_args$mhdistat,
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
 }
 
 
-srv_t_medical_history <- function(input,
-                                  output,
-                                  session,
+srv_t_medical_history <- function(id,
                                   datasets,
                                   dataname,
                                   parentname,
@@ -217,96 +217,100 @@ srv_t_medical_history <- function(input,
                                   mhdistat,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
-  teal.devel::init_chunks()
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  patient_id <- reactive(input$patient_id)
+    patient_id <- reactive(input$patient_id)
 
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
-
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Medical history tab ----
-  mhist_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
-    merge_function = "dplyr::left_join"
-  )
-
-  mhist_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    validate(
-      need(
-        input[[extract_input("mhterm", dataname)]],
-        "Please select MHTERM variable."
-      ),
-      need(
-        input[[extract_input("mhbodsys", dataname)]],
-        "Please select MHBODSYS variable."
-      ),
-      need(
-        input[[extract_input("mhdistat", dataname)]],
-        "Please select MHDISTAT variable."
-      ),
-      need(
-        nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
-        "Patient has no data about medical history."
-      )
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    teal.widgets::updateOptionalSelectInput(
+      session, "patient_id",
+      choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    mhist_stack <- teal.devel::chunks$new()
-    mhist_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = mhist_stack)
-    }
-    teal.devel::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
-
-    mhist_stack_push(substitute(
-      expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_medical_history(
-      dataname = "ANL",
-      mhterm = input[[extract_input("mhterm", dataname)]],
-      mhbodsys = input[[extract_input("mhbodsys", dataname)]],
-      mhdistat = input[[extract_input("mhdistat", dataname)]]
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
-    lapply(my_calls, mhist_stack_push)
-    teal.devel::chunks_safe_eval(chunks = mhist_stack)
-    mhist_stack
-  })
 
-  output$medical_history_table <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(mhist_call())
-    teal.devel::chunks_get_var("result_kbl")
-  })
+    # Medical history tab ----
+    mhist_merged_data <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
+      merge_function = "dplyr::left_join"
+    )
 
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
-    modal_title = label
-  )
+    mhist_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+
+      validate(
+        need(
+          input[[extract_input("mhterm", dataname)]],
+          "Please select MHTERM variable."
+        ),
+        need(
+          input[[extract_input("mhbodsys", dataname)]],
+          "Please select MHBODSYS variable."
+        ),
+        need(
+          input[[extract_input("mhdistat", dataname)]],
+          "Please select MHDISTAT variable."
+        ),
+        need(
+          nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
+          "Patient has no data about medical history."
+        )
+      )
+
+      mhist_stack <- teal.code::chunks$new()
+      mhist_stack_push <- function(...) {
+        teal.code::chunks_push(..., chunks = mhist_stack)
+      }
+      teal.code::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
+
+      mhist_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_medical_history(
+        dataname = "ANL",
+        mhterm = input[[extract_input("mhterm", dataname)]],
+        mhbodsys = input[[extract_input("mhbodsys", dataname)]],
+        mhdistat = input[[extract_input("mhdistat", dataname)]]
+      )
+      lapply(my_calls, mhist_stack_push)
+      teal.code::chunks_safe_eval(chunks = mhist_stack)
+      mhist_stack
+    })
+
+    output$medical_history_table <- reactive({
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(mhist_call())
+      teal.code::chunks_get_var("result_kbl")
+    })
+
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
+      modal_title = label
+    )
+  })
 }

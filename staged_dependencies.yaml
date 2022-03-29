@@ -5,8 +5,8 @@ upstream_repos:
   insightsengineering/tern:
     repo: insightsengineering/tern
     host: https://github.com
-  insightsengineering/teal.devel:
-    repo: insightsengineering/teal.devel
+  insightsengineering/tern.mmrm:
+    repo: insightsengineering/tern.mmrm
     host: https://github.com
   insightsengineering/scda:
     repo: insightsengineering/scda
@@ -16,6 +16,24 @@ upstream_repos:
     host: https://github.com
   Roche/rtables:
     repo: Roche/rtables
+    host: https://github.com
+  insightsengineering/formatters:
+    repo: insightsengineering/formatters
+    host: https://github.com
+  insightsengineering/teal.logger:
+    repo: insightsengineering/teal.logger
+    host: https://github.com
+  insightsengineering/teal.widgets:
+    repo: insightsengineering/teal.widgets
+    host: https://github.com
+  insightsengineering/teal.code:
+    repo: insightsengineering/teal.code
+    host: https://github.com
+  insightsengineering/teal.data:
+    repo: insightsengineering/teal.data
+    host: https://github.com
+  insightsengineering/teal.transform:
+    repo: insightsengineering/teal.transform
     host: https://github.com
   insightsengineering/teal:
     repo: insightsengineering/teal

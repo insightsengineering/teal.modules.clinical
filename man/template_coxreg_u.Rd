@@ -18,7 +18,7 @@ template_coxreg_u(
   combine_comp_arms = FALSE,
   control = control_coxreg(),
   append = FALSE,
-  basic_table_args = teal.devel::basic_table_args(title =
+  basic_table_args = teal.widgets::basic_table_args(title =
     paste0("Multi-Variable Cox Regression for ", paramcd))
 )
 }
@@ -61,11 +61,11 @@ triggers the combination of comparison arms.}
 \item{append}{(\code{logical})\cr if the result should be appended to the previous one.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Creates a valid expression for Cox regression analysis.
@@ -73,3 +73,4 @@ Creates a valid expression for Cox regression analysis.
 \seealso{
 \code{\link[=tm_t_coxreg]{tm_t_coxreg()}}
 }
+\keyword{internal}

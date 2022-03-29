@@ -41,12 +41,12 @@ testthat::test_that("template_abnormality generates correct expressions with def
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
         rtables::split_rows_by("PARAM",
-          split_label = rtables::var_labels(adlb)[["PARAM"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["PARAM"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -112,13 +112,13 @@ testthat::test_that("template_abnormality generates correct expressions with cus
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
-          split_label = rtables::var_labels(adlb)[["PARAMCD"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["PARAMCD"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
@@ -183,12 +183,12 @@ testthat::test_that("template_abnormality generates correct expressions with cus
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
           "AVISIT",
-          split_label = rtables::var_labels(adlb)[["AVISIT"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%
         rtables::split_rows_by("PARAM",
-          split_label = rtables::var_labels(adlb)[["PARAM"]],
+          split_label = formatters::var_labels(adlb, fill = FALSE)[["PARAM"]],
           label_pos = "topleft",
           split_fun = trim_levels_to_map(map = map)
         ) %>%

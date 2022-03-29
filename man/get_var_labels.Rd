@@ -7,7 +7,7 @@
 get_var_labels(datasets, dataname, vars)
 }
 \arguments{
-\item{datasets}{(\code{\link[teal:FilteredData]{teal::FilteredData}}) Data built up by teal}
+\item{datasets}{(\code{teal::FilteredData}) Data built up by teal}
 
 \item{dataname}{(\code{character}) name of the dataset}
 

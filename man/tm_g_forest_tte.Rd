@@ -8,23 +8,29 @@ tm_g_forest_tte(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   subgroup_var,
   paramcd,
   strata_var,
-  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
-    = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVAL"), "AVAL", fixed = TRUE),
+ 
+    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "CNSR"), "CNSR", fixed = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
+ 
+    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALU"), "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -37,7 +43,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
@@ -46,33 +52,33 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{subgroup_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for variable names that can be used
 as the default subgroups.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{cnsr_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the censoring
 variable.}
 
-\item{conf_level}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence
 level, each within range of (0, 1).}
 
-\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the time unit
 variable.}
 
@@ -99,13 +105,13 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
 \code{title}, \code{caption}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
 with default module arguments (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces a grid style Forest plot for time-to-event data
@@ -141,7 +147,7 @@ app <- init(
     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_forest_tte(
       label = "Forest Survival",
       dataname = "ADTTE",

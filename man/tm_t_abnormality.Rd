@@ -8,26 +8,29 @@ tm_t_abnormality(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
   by_vars,
   grade,
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-  id_var = choices_selected(variable_choices(dataname, subset = "USUBJID"), selected =
-    "USUBJID", fixed = TRUE),
-  baseline_var = choices_selected(variable_choices(dataname, subset = "BNRIND"),
-    selected = "BNRIND", fixed = TRUE),
-  treatment_flag_var = choices_selected(variable_choices(dataname, subset = "ONTRTFL"),
-    selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = choices_selected(value_choices(dataname, "ONTRTFL"), selected = "Y",
-    fixed = TRUE),
+  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+ 
+    baseline_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "BNRIND"), selected = "BNRIND", fixed = TRUE),
+ 
+    treatment_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
+ 
+    treatment_flag = teal.transform::choices_selected(teal.transform::value_choices(dataname,
+    "ONTRTFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
   na_level = "<Missing>",
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -40,31 +43,31 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{by_vars}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for variable names
 used to split the summary by rows.}
 
-\item{grade}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr object with all available
-choices and preselected option for variable names that can be used to
+\item{grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices and preselected option for variable names that can be used to
 specify the abnormality grade. Variable must be factor.}
 
 \item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
 
-\item{id_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object specifying the variable name for subject id.}
 
-\item{baseline_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 variable for baseline abnormality grade.}
 
-\item{treatment_flag_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr on treatment flag variable.}
+\item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \link[teal:data_extract_spec]{teal::data_extract_spec})\cr value indicating on treatment
+\item{treatment_flag}{(\code{choices_selected}] or \code{data_extract_spec})\cr value indicating on treatment
 records in \code{treatment_flag_var}.}
 
 \item{add_total}{(\code{logical})\cr
@@ -87,11 +90,11 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 \item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Teal Module: Abnormality Summary Table
@@ -111,10 +114,8 @@ adlb <- synthetic_cdisc_data("latest")$adlb \%>\%
       AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
       TRUE ~ "Y"
     )
-  ) \%>\%
-  var_relabel(
-    ONTRTFL = "On Treatment Record Flag"
   )
+attr(adlb[["ONTRTFL"]], "label") <- "On Treatment Record Flag"
 
 app <- init(
   data = cdisc_data(
@@ -126,14 +127,13 @@ app <- init(
                     AVISIT \%in\% c('SCREENING', 'BASELINE') ~ '',
                     TRUE ~ 'Y'
                   )
-                ) \%>\%
-                var_relabel(
-                  ONTRTFL = 'On Treatment Record Flag'
-                )"
+                )
+              attr(ADLB[['ONTRTFL']], 'label') <- 'On Treatment Record Flag'
+              ADLB"
     ),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",

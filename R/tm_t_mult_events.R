@@ -6,6 +6,7 @@
 #' @param seq_var (`numeric`) \cr Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @seealso [tm_t_mult_events()]
+#' @keywords internal
 #'
 template_mult_events <- function(dataname,
                                  parentname,
@@ -16,7 +17,7 @@ template_mult_events <- function(dataname,
                                  add_total = TRUE,
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
-                                 basic_table_args = teal.devel::basic_table_args()) {
+                                 basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -93,8 +94,8 @@ template_mult_events <- function(dataname,
 
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
-  parsed_basic_table_args <- teal.devel::parse_basic_table_args(
-    teal.devel::resolve_basic_table_args(
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args
     )
   )
@@ -184,7 +185,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = rtables::var_labels(dataname[hlt_new], fill = TRUE)
+              split_label = formatters::var_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,
@@ -273,7 +274,7 @@ template_mult_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
 #'
-#' @param seq_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
+#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @export
@@ -294,7 +295,7 @@ template_mult_events <- function(dataname,
 #'       keys = adcm_keys
 #'     )
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_t_mult_events(
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",
 #'       dataname = "ADCM",
@@ -320,7 +321,7 @@ tm_t_mult_events <- function(label, # nolint
                              dataname,
                              parentname = ifelse(
                                inherits(arm_var, "data_extract_spec"),
-                               teal.devel::datanames_input(arm_var),
+                               teal.transform::datanames_input(arm_var),
                                "ADSL"
                              ),
                              arm_var,
@@ -332,7 +333,7 @@ tm_t_mult_events <- function(label, # nolint
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             basic_table_args = teal.devel::basic_table_args()) {
+                             basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_mult_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -349,7 +350,7 @@ tm_t_mult_events <- function(label, # nolint
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     seq_var = cs_to_des_select(seq_var, dataname = dataname),
-    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE),
+    hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE, ordered = TRUE),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
@@ -368,7 +369,7 @@ tm_t_mult_events <- function(label, # nolint
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.devel::get_extract_datanames(data_extract_list)
+    filters = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -376,36 +377,36 @@ tm_t_mult_events <- function(label, # nolint
 ui_t_mult_events_byterm <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
+  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
 
-  teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
-      teal.devel::table_with_settings_ui(ns("table"))
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
+      teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
-      teal.devel::data_extract_ui(
+      teal.transform::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
+      teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("hlt"),
         label = "Event High Level Term",
         data_extract_spec = a$hlt,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("llt"),
         label = "Event Low Level Term",
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
@@ -414,10 +415,10 @@ ui_t_mult_events_byterm <- function(id, ...) {
           )
         )
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           "Additional Variables Info",
-          teal.devel::data_extract_ui(
+          teal.transform::data_extract_ui(
             id = ns("seq_var"),
             label = "Analysis Sequence Number",
             data_extract_spec = a$seq_var,
@@ -426,16 +427,14 @@ ui_t_mult_events_byterm <- function(id, ...) {
         )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 #' @noRd
-srv_t_mult_events_byterm <- function(input,
-                                     output,
-                                     session,
+srv_t_mult_events_byterm <- function(id,
                                      datasets,
                                      dataname,
                                      parentname,
@@ -448,114 +447,127 @@ srv_t_mult_events_byterm <- function(input,
                                      label,
                                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
-
-  anl_selectors <- teal.devel::data_extract_multiple_srv(
-    list(
-      arm_var = arm_var,
-      seq_var = seq_var,
-      hlt = hlt,
-      llt = llt
-    ),
-    datasets = datasets
-  )
-
-  anl_merged <- teal.devel::data_merge_srv(
-    selector_list = anl_selectors,
-    datasets = datasets,
-    merge_function = "dplyr::inner_join"
-  )
-
-
-  adsl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(arm_var = arm_var),
-    anl_name = "ANL_ADSL"
-  )
-
-  validate_checks <- reactive({
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_seq_var <- as.vector(anl_m$columns_source$seq_var)
-
-    input_hlt <- anl_selectors()$hlt()$select_ordered
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    validate(need(input_arm_var, "Please select a treatment variable"))
-    validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
-
-    validate(
-      need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
-    )
-    validate(
-      need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
+    anl_selectors <- teal.transform::data_extract_multiple_srv(
+      list(
+        arm_var = arm_var,
+        seq_var = seq_var,
+        hlt = hlt,
+        llt = llt
+      ),
+      datasets = datasets
     )
 
-    # validate inputs
-    teal.devel::validate_standard_inputs(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_seq_var, input_hlt, input_llt),
-      arm_var = input_arm_var
+    anl_merged <- teal.transform::data_merge_srv(
+      selector_list = anl_selectors,
+      datasets = datasets,
+      merge_function = "dplyr::inner_join"
+    )
+
+
+    adsl_merged <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    validate_checks <- reactive({
+      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+
+      anl_m <- anl_merged()
+      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+      input_seq_var <- as.vector(anl_m$columns_source$seq_var)
+
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      validate(need(input_arm_var, "Please select a treatment variable"))
+      validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
+
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      )
+      validate(
+        need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
+      )
+
+      # validate inputs
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_arm_var),
+        anl = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_seq_var, input_hlt, input_llt),
+        arm_var = input_arm_var
+      )
+    })
+
+    # The R-code corresponding to the analysis.
+    call_preparation <- reactive({
+      validate_checks()
+
+      teal.code::chunks_reset()
+      anl_m <- anl_merged()
+      teal.code::chunks_push_data_merge(anl_m)
+      teal.code::chunks_push_new_line()
+
+      anl_adsl <- adsl_merged()
+      teal.code::chunks_push_data_merge(anl_adsl)
+      teal.code::chunks_push_new_line()
+
+      input_hlt <- as.vector(anl_m$columns_source$hlt)
+      input_llt <- as.vector(anl_m$columns_source$llt)
+
+      hlt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_hlt)
+      llt_labels <- mapply(function(x) rtables::obj_label(anl_m$data()[[x]]), input_llt)
+
+      basic_table_args$title <- ifelse(
+        is.null(basic_table_args$title),
+        paste(
+          "Concomitant Medications by",
+          paste(hlt_labels, collapse = ", "),
+          "and",
+          paste(llt_labels, collapse = ", ")
+        ),
+        basic_table_args$title
+      )
+
+      my_calls <- template_mult_events(
+        dataname = "ANL",
+        parentname = "ANL_ADSL",
+        arm_var = as.vector(anl_m$columns_source$arm_var),
+        seq_var = as.vector(anl_m$columns_source$seq_var),
+        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        llt = input_llt,
+        add_total = input$add_total,
+        event_type = event_type,
+        drop_arm_levels = input$drop_arm_levels,
+        basic_table_args = basic_table_args
+      )
+      mapply(expression = my_calls, teal.code::chunks_push)
+    })
+
+    # Outputs to render.
+    table <- reactive({
+      call_preparation()
+      teal.code::chunks_safe_eval()
+      teal.code::chunks_get_var("result")
+    })
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table
+    )
+
+    # Render R code.
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
+      modal_title = "Event Table",
+      code_header = label
     )
   })
-
-  # The R-code corresponding to the analysis.
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    anl_adsl <- adsl_merged()
-    teal.devel::chunks_push_data_merge(anl_adsl)
-    teal.devel::chunks_push_new_line()
-
-    input_hlt <- anl_selectors()$hlt()$select_ordered
-    input_llt <- as.vector(anl_m$columns_source$llt)
-
-    my_calls <- template_mult_events(
-      dataname = "ANL",
-      parentname = "ANL_ADSL",
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      seq_var = as.vector(anl_m$columns_source$seq_var),
-      hlt = if (length(input_hlt) != 0) input_hlt else NULL,
-      llt = input_llt,
-      add_total = input$add_total,
-      event_type = event_type,
-      drop_arm_levels = input$drop_arm_levels,
-      basic_table_args = basic_table_args
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  # Outputs to render.
-  table <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-    teal.devel::chunks_get_var("result")
-  })
-
-  callModule(
-    teal.devel::table_with_settings_srv,
-    id = "table",
-    table_r = table
-  )
-
-  # Render R code.
-  callModule(
-    module = teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(arm_var, seq_var, hlt, llt)),
-    modal_title = "Event Table",
-    code_header = label
-  )
 }

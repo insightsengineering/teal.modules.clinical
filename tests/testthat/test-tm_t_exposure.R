@@ -34,7 +34,7 @@ testthat::test_that("template_exposure generates correct expressions with defaul
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = rtables::var_labels(adex["RACE"], fill = TRUE),
+          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)
@@ -83,7 +83,7 @@ testthat::test_that("template_exposure generates correct expressions with custom
           "myRACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = rtables::var_labels(myadex["myRACE"], fill = TRUE),
+          split_label = formatters::var_labels(myadex["myRACE"], fill = TRUE),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "myAVAL", col_split = FALSE)
@@ -133,7 +133,7 @@ testthat::test_that("template_exposure generates correct expressions with paramc
           "RACE",
           label_pos = "topleft",
           split_fun = split_fun,
-          split_label = rtables::var_labels(adex["RACE"], fill = TRUE),
+          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
           nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(var = "AVAL", col_split = FALSE)

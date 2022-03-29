@@ -8,23 +8,31 @@ tm_t_tte(
   label,
   dataname,
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level_coxph = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-  conf_level_survfit = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+ 
+    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVAL"), "AVAL", fixed = TRUE),
+ 
+    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "CNSR"), "CNSR", fixed = TRUE),
+  conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+    keep_order = TRUE),
+  conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+    keep_order = TRUE),
   time_points,
-  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
-    = TRUE),
-  event_desc_var = choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+ 
+    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVALU"), "AVALU", fixed = TRUE),
+  event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed =
+    TRUE),
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.devel::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -37,7 +45,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
@@ -46,21 +54,21 @@ second variable will be nested under the first variable.}
 \item{arm_ref_comp}{optional, (\code{list})\cr
 If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal:variable_choices]{teal::variable_choices()}} or delayed \code{\link[teal:value_choices]{teal::value_choices()}}
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
 
-\item{strata_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{cnsr_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the censoring
 variable.}
 
@@ -70,11 +78,11 @@ for confidence level, each within range of (0, 1).}
 \item{conf_level_survfit}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
 for confidence level, each within range of (0, 1).}
 
-\item{time_points}{(\code{\link[teal:choices_selected]{teal::choices_selected()}})\cr
+\item{time_points}{(\code{choices_selected})\cr
 object with all available choices and preselected option for time points that
 can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
+\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the time unit
 variable.}
 
@@ -93,11 +101,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.devel:basic_table_args]{teal.devel::basic_table_args()}} with settings for the module table.
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
 The argument is merged with option \code{teal.basic_table_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.devel")}.}
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Teal Module: Time To Event Table Teal Module
@@ -141,7 +149,7 @@ app <- init(
     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_t_tte(
       label = "Time To Event Table",
       dataname = "ADTTE",

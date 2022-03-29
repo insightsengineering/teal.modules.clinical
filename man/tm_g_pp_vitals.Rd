@@ -18,7 +18,7 @@ tm_g_pp_vitals(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.devel::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
@@ -33,15 +33,17 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
-\item{paramcd}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{PARAMCD} column of the
-ADVS dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAMCD} column of the ADVS dataset.}
 
-\item{param}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{PARAM} column of the ADVS dataset.}
+\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{PARAM} column of the ADVS dataset.}
 
-\item{aval}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr \code{AVAL} column of the ADVS dataset.}
+\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\code{AVAL} column of the ADVS dataset.}
 
-\item{xaxis}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr time variable to be represented in
-the vitals plot x-axis.}
+\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+time variable to be represented in the vitals plot x-axis.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -64,11 +66,11 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.devel:ggplot2_args]{teal.devel::ggplot2_args()}} with settings for the module plot.
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
 The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.devel")}.}
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
 This teal module produces a patient profile vitals plot using ADaM datasets.
@@ -84,7 +86,7 @@ app <- init(
     cdisc_dataset("ADVS", ADVS, code = 'ADVS <- synthetic_cdisc_data("latest")$advs'),
     check = TRUE
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_pp_vitals(
       label = "Vitals",
       dataname = "ADVS",

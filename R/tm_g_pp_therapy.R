@@ -15,7 +15,8 @@
 #' @param cmendy (`character`)\cr name of study day of end of medication variable.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-
+#' @keywords internal
+#'
 template_therapy <- function(dataname = "ANL",
                              atirel = "ATIREL",
                              cmdecod = "CMDECOD",
@@ -29,7 +30,7 @@ template_therapy <- function(dataname = "ANL",
                              cmendy = "CMENDY",
                              patient_id,
                              font_size = 12L,
-                             ggplot2_args = teal.devel::ggplot2_args()) {
+                             ggplot2_args = teal.widgets::ggplot2_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(atirel),
@@ -111,10 +112,10 @@ template_therapy <- function(dataname = "ANL",
     ))
   )
 
-  parsed_ggplot2_args <- teal.devel::parse_ggplot2_args(
-    teal.devel::resolve_ggplot2_args(
+  parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
+    teal.widgets::resolve_ggplot2_args(
       user_plot = ggplot2_args,
-      module_plot = teal.devel::ggplot2_args(
+      module_plot = teal.widgets::ggplot2_args(
         labs = list(y = "Medication", title = paste0("Patient ID: ", patient_id)),
         theme = list(
           text = substitute(element_text(size = font), list(font = font_size)),
@@ -227,25 +228,26 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{ATIREL} column of the
-#' ADCM dataset.
-#' @param cmdecod ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDECOD} column of the
-#' ADCM dataset.
-#' @param cmdose ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSE} column of the
-#' ADCM dataset.
-#' @param cmtrt ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMTRT} column of the ADCM dataset.
-#' @param cmdosu ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSU} column of the
-#' ADCM dataset.
-#' @param cmroute ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMROUTE} column of the
-#' ADCM dataset.
-#' @param cmdosfrq ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMDOSFRQ} column of the
-#' ADCM dataset.
-#' @param cmstdy ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMSTDY} column of the
-#' ADCM dataset.
-#' @param cmendy ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMENDY} column of the
-#' ADCM dataset.
-#' @param cmindc ([teal::choices_selected()] or [teal::data_extract_spec()])\cr \code{CMINDC} column of the
-#' ADCM dataset.
+#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{ATIREL} column of the ADCM dataset.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDECOD} column of the ADCM dataset.
+#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSE} column of the ADCM dataset.
+#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMTRT} column of the ADCM dataset.
+#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSU} column of the ADCM dataset.
+#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMROUTE} column of the ADCM dataset.
+#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMDOSFRQ} column of the ADCM dataset.
+#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMSTDY} column of the ADCM dataset.
+#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMENDY} column of the ADCM dataset.
+#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' \code{CMINDC} column of the ADCM dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export
@@ -265,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #' ADCM$CMDOSFRQ <- "CMDOSFRQ"
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
-#' rtables::var_labels(
+#' formatters::var_labels(
 #'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
 #' ) <- c(
 #'   "Indication",
@@ -280,25 +282,26 @@ template_therapy <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     cdisc_dataset("ADCM", ADCM,
 #'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
-#'       ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-#'       ADCM$CMDOSE <- 1
-#'       ADCM$CMTRT <- ADCM$CMCAT
-#'       ADCM$CMDOSU <- "U"
-#'       ADCM$CMROUTE <- "CMROUTE"
-#'       ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#'       ADCM$CMASTDTM <- ADCM$ASTDTM
-#'       ADCM$CMAENDTM <- ADCM$AENDTM
-#'       rtables::var_labels(
-#'         ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
-#'           "Indication",
-#'           "Reported Name of Drug, Med, or Therapy",
-#'           "Study Day of Start of Medication",
-#'           "Study Day of End of Medication")',
+#'         ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+#'         ADCM$CMDOSE <- 1
+#'         ADCM$CMTRT <- ADCM$CMCAT
+#'         ADCM$CMDOSU <- "U"
+#'         ADCM$CMROUTE <- "CMROUTE"
+#'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
+#'         ADCM$CMASTDTM <- ADCM$ASTDTM
+#'         ADCM$CMAENDTM <- ADCM$AENDTM
+#'         formatters::var_labels(
+#'           ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
+#'             "Indication",
+#'             "Reported Name of Drug, Med, or Therapy",
+#'             "Study Day of Start of Medication",
+#'             "Study Day of End of Medication")
+#'         ADCM',
 #'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
 #'   ),
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pp_therapy(
 #'       label = "Therapy",
 #'       dataname = "ADCM",
@@ -371,7 +374,7 @@ tm_g_pp_therapy <- function(label,
                             plot_width = NULL,
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.devel::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -427,7 +430,7 @@ tm_g_pp_therapy <- function(label,
 
 ui_g_therapy <- function(id, ...) {
   ui_args <- list(...)
-  is_single_dataset_value <- teal.devel::is_single_dataset(
+  is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$atirel,
     ui_args$cmdecod,
     ui_args$cmindc,
@@ -441,100 +444,104 @@ ui_g_therapy <- function(id, ...) {
   )
 
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     output = div(
-      teal.devel::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
+      teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
-      teal.devel::plot_with_settings_ui(id = ns("therapy_plot"))
+      teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(ui_args[c(
+      teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
       )]),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select the medication decoding column:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("atirel"),
         label = "Select ATIREL variable:",
         data_extract_spec = ui_args$atirel,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmindc"),
         label = "Select CMINDC variable:",
         data_extract_spec = ui_args$cmindc,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmdose"),
         label = "Select CMDOSE variable:",
         data_extract_spec = ui_args$cmdose,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmtrt"),
         label = "Select CMTRT variable:",
         data_extract_spec = ui_args$cmtrt,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmdosu"),
         label = "Select CMDOSU variable:",
         data_extract_spec = ui_args$cmdosu,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmroute"),
         label = "Select CMROUTE variable:",
         data_extract_spec = ui_args$cmroute,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmdosfrq"),
         label = "Select CMDOSFRQ variable:",
         data_extract_spec = ui_args$cmdosfrq,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmstdy"),
         label = "Select CMSTDY variable:",
         data_extract_spec = ui_args$cmstdy,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::data_extract_ui(
+      teal.transform::data_extract_ui(
         id = ns("cmendy"),
         label = "Select CMENDY variable:",
         data_extract_spec = ui_args$cmendy,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.devel::panel_item(
+      teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
-        optionalSliderInputValMinMax(ns("font_size"), "Font Size", ui_args$font_size, ticks = FALSE, step = 1)
+        teal.widgets::optionalSliderInputValMinMax(
+          ns("font_size"),
+          "Font Size",
+          ui_args$font_size,
+          ticks = FALSE,
+          step = 1
+        )
       )
     ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    forms = teal::get_rcode_ui(ns("rcode")),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
 }
 
 
-srv_g_therapy <- function(input,
-                          output,
-                          session,
+srv_g_therapy <- function(id,
                           datasets,
                           dataname,
                           parentname,
@@ -554,161 +561,163 @@ srv_g_therapy <- function(input,
                           label,
                           ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  moduleServer(id, function(input, output, session) {
+    teal.code::init_chunks()
 
-  teal.devel::init_chunks()
+    patient_id <- reactive(input$patient_id)
 
-  patient_id <- reactive(input$patient_id)
-
-  # Init
-  patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
-  updateOptionalSelectInput(session, "patient_id", choices = patient_data_base(), selected = patient_data_base()[1])
-
-  observeEvent(patient_data_base(),
-    handlerExpr = {
-      updateOptionalSelectInput(
-        session,
-        "patient_id",
-        choices = patient_data_base(),
-        selected = if (length(patient_data_base()) == 1) {
-          patient_data_base()
-        } else {
-          intersect(patient_id(), patient_data_base())
-        }
-      )
-    },
-    ignoreInit = TRUE
-  )
-
-  # Therapy tab ----
-  therapy_merged_data <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(
-      atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
-      cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
-      cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
-    ),
-    merge_function = "dplyr::left_join"
-  )
-
-  therapy_call <- reactive({
-    validate(need(patient_id(), "Please select a patient."))
-
-    teal.devel::validate_has_data(therapy_merged_data()$data(), 1)
-
-    validate(
-      need(
-        input[[extract_input("atirel", dataname)]],
-        "Please select ATIREL variable."
-      ),
-      need(
-        input[[extract_input("cmdecod", dataname)]],
-        "Please select Medication decoding variable."
-      ),
-      need(
-        input[[extract_input("cmindc", dataname)]],
-        "Please select CMINDC variable."
-      ),
-      need(
-        input[[extract_input("cmdose", dataname)]],
-        "Please select CMDOSE variable."
-      ),
-      need(
-        input[[extract_input("cmtrt", dataname)]],
-        "Please select CMTRT variable."
-      ),
-      need(
-        input[[extract_input("cmdosu", dataname)]],
-        "Please select CMDOSU variable."
-      ),
-      need(
-        input[[extract_input("cmroute", dataname)]],
-        "Please select CMROUTE variable."
-      ),
-      need(
-        input[[extract_input("cmdosfrq", dataname)]],
-        "Please select CMDOSFRQ variable."
-      ),
-      need(
-        input[[extract_input("cmstdy", dataname)]],
-        "Please select CMSTDY variable."
-      ),
-      need(
-        input[[extract_input("cmendy", dataname)]],
-        "Please select CMENDY variable."
-      ),
-      need(
-        nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
-        "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-      )
+    # Init
+    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    teal.widgets::updateOptionalSelectInput(
+      session, "patient_id",
+      choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    therapy_stack <- teal.devel::chunks$new()
-    therapy_stack_push <- function(...) {
-      teal.devel::chunks_push(..., chunks = therapy_stack)
-    }
-    teal.devel::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
+    )
 
-    therapy_stack_push(substitute(
+    # Therapy tab ----
+    therapy_merged_data <- teal.transform::data_merge_module(
+      datasets = datasets,
+      data_extract = list(
+        atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
+        cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
+        cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
+      ),
+      merge_function = "dplyr::left_join"
+    )
+
+    therapy_call <- reactive({
+      validate(need(patient_id(), "Please select a patient."))
+
+      teal::validate_has_data(therapy_merged_data()$data(), 1)
+
+      validate(
+        need(
+          input[[extract_input("atirel", dataname)]],
+          "Please select ATIREL variable."
+        ),
+        need(
+          input[[extract_input("cmdecod", dataname)]],
+          "Please select Medication decoding variable."
+        ),
+        need(
+          input[[extract_input("cmindc", dataname)]],
+          "Please select CMINDC variable."
+        ),
+        need(
+          input[[extract_input("cmdose", dataname)]],
+          "Please select CMDOSE variable."
+        ),
+        need(
+          input[[extract_input("cmtrt", dataname)]],
+          "Please select CMTRT variable."
+        ),
+        need(
+          input[[extract_input("cmdosu", dataname)]],
+          "Please select CMDOSU variable."
+        ),
+        need(
+          input[[extract_input("cmroute", dataname)]],
+          "Please select CMROUTE variable."
+        ),
+        need(
+          input[[extract_input("cmdosfrq", dataname)]],
+          "Please select CMDOSFRQ variable."
+        ),
+        need(
+          input[[extract_input("cmstdy", dataname)]],
+          "Please select CMSTDY variable."
+        ),
+        need(
+          input[[extract_input("cmendy", dataname)]],
+          "Please select CMENDY variable."
+        ),
+        need(
+          nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
+          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
+        )
+      )
+
+      therapy_stack <- teal.code::chunks$new()
+      therapy_stack_push <- function(...) {
+        teal.code::chunks_push(..., chunks = therapy_stack)
+      }
+      teal.code::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
+
+      therapy_stack_push(substitute(
+        expr = {
+          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+        }, env = list(
+          patient_col = patient_col,
+          patient_id = patient_id()
+        )
+      ))
+
+      my_calls <- template_therapy(
+        dataname = "ANL",
+        atirel = input[[extract_input("atirel", dataname)]],
+        cmdecod = input[[extract_input("cmdecod", dataname)]],
+        cmtrt = input[[extract_input("cmtrt", dataname)]],
+        cmdosu = input[[extract_input("cmdosu", dataname)]],
+        cmroute = input[[extract_input("cmroute", dataname)]],
+        cmdosfrq = input[[extract_input("cmdosfrq", dataname)]],
+        cmstdy = input[[extract_input("cmstdy", dataname)]],
+        cmendy = input[[extract_input("cmendy", dataname)]],
+        cmindc = input[[extract_input("cmindc", dataname)]],
+        cmdose = input[[extract_input("cmdose", dataname)]],
+        patient_id = patient_id(),
+        font_size = input[["font_size"]],
+        ggplot2_args = ggplot2_args
+      )
+
+      lapply(my_calls, therapy_stack_push)
+      teal.code::chunks_safe_eval(chunks = therapy_stack)
+      therapy_stack
+    })
+
+    output$therapy_table <- DT::renderDataTable(
       expr = {
-        ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-      }, env = list(
-        patient_col = patient_col,
-        patient_id = patient_id()
-      )
-    ))
-
-    my_calls <- template_therapy(
-      dataname = "ANL",
-      atirel = input[[extract_input("atirel", dataname)]],
-      cmdecod = input[[extract_input("cmdecod", dataname)]],
-      cmtrt = input[[extract_input("cmtrt", dataname)]],
-      cmdosu = input[[extract_input("cmdosu", dataname)]],
-      cmroute = input[[extract_input("cmroute", dataname)]],
-      cmdosfrq = input[[extract_input("cmdosfrq", dataname)]],
-      cmstdy = input[[extract_input("cmstdy", dataname)]],
-      cmendy = input[[extract_input("cmendy", dataname)]],
-      cmindc = input[[extract_input("cmindc", dataname)]],
-      cmdose = input[[extract_input("cmdose", dataname)]],
-      patient_id = patient_id(),
-      font_size = input[["font_size"]],
-      ggplot2_args = ggplot2_args
+        teal.code::chunks_reset()
+        teal.code::chunks_push_chunks(therapy_call())
+        teal.code::chunks_get_var("therapy_table")
+      },
+      options = list(pageLength = input$therapy_table_rows)
     )
 
-    lapply(my_calls, therapy_stack_push)
-    teal.devel::chunks_safe_eval(chunks = therapy_stack)
-    therapy_stack
+    therapy_plot <- reactive({
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(therapy_call())
+      teal.code::chunks_get_var("therapy_plot")
+    })
+
+    teal.widgets::plot_with_settings_srv(
+      id = "therapy_plot",
+      plot_r = therapy_plot,
+      height = plot_height,
+      width = plot_width
+    )
+
+    teal::get_rcode_srv(
+      id = "rcode",
+      datasets = datasets,
+      datanames = teal.transform::get_extract_datanames(list(
+        atirel, cmdecod, cmindc, cmdose, cmtrt, cmdosu, cmdosfrq, cmroute, cmstdy, cmendy
+      )),
+      modal_title = label
+    )
   })
-
-  output$therapy_table <- DT::renderDataTable(
-    expr = {
-      teal.devel::chunks_reset()
-      teal.devel::chunks_push_chunks(therapy_call())
-      teal.devel::chunks_get_var("therapy_table")
-    },
-    options = list(pageLength = input$therapy_table_rows)
-  )
-
-  therapy_plot <- reactive({
-    teal.devel::chunks_reset()
-    teal.devel::chunks_push_chunks(therapy_call())
-    teal.devel::chunks_get_var("therapy_plot")
-  })
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "therapy_plot",
-    plot_r = therapy_plot,
-    height = plot_height,
-    width = plot_width
-  )
-
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(list(
-      atirel, cmdecod, cmindc, cmdose, cmtrt, cmdosu, cmdosfrq, cmroute, cmstdy, cmendy
-    )),
-    modal_title = label
-  )
 }
