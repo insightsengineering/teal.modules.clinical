@@ -247,6 +247,7 @@ template_patient_timeline <- function(dataname = "ANL",
               geom_label() +
               theme_void()
           } else {
+            vistime_data$event <- factor(vistime_data$event, levels = rev(levels(vistime_data$event)))
             patient_timeline_plot <- ggplot(
               vistime_data,
               aes(x = start, y = event, xend = end, yend = event, color = color)
