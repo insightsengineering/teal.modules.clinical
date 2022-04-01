@@ -37,7 +37,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["AVISIT"])
+          split_label = formatters::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
@@ -101,7 +101,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["AVISIT"])
+          split_label = formatters::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
@@ -166,7 +166,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["AVISIT"])
+          split_label = formatters::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
         rtables::split_rows_by(
           "PARAMCD",
@@ -229,7 +229,7 @@ testthat::test_that("template_ancova generates expressions with single endpoint"
           "AVISIT",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["AVISIT"])
+          split_label = formatters::var_labels(adqs["AVISIT"], fill = TRUE)
         ) %>%
         rtables::append_topleft(paste0("  ", "MYFAVORITE")) %>%
         summarize_ancova(
