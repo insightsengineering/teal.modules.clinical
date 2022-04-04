@@ -46,7 +46,7 @@ template_events_summary <- function(anl_name,
   assertthat::assert_that(
     assertthat::is.string(anl_name),
     assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
+    is.character(arm_var) && length(arm_var) %in% c(1, 2),
     assertthat::is.string(dthfl_var),
     assertthat::is.string(dcsreas_var),
     assertthat::is.flag(add_total),
@@ -78,10 +78,21 @@ template_events_summary <- function(anl_name,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = FALSE
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = FALSE
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -154,13 +165,29 @@ template_events_summary <- function(anl_name,
     layout_parent_list,
     quote(rtables::basic_table())
   )
+
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
-      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
-      env = list(arm_var = arm_var)
+      expr = rtables::split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]])
     )
   )
+  if (length(arm_var) == 2) {
+    layout_parent_list <- add_expr(
+      layout_parent_list,
+      substitute(
+        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        env = list(nested_col = arm_var[[2]])
+      )
+    )
+  }
+
+  layout_parent_list <- add_expr(
+    layout_parent_list,
+    quote(rtables::add_colcounts())
+  )
+
   if (add_total) {
     layout_parent_list <- add_expr(
       layout_parent_list,
@@ -214,9 +241,23 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- add_expr(
     layout_anl_list,
     substitute(
-      expr = rtables::split_cols_by(arm_var) %>% rtables::add_colcounts(),
-      env = list(arm_var = arm_var)
+      expr = rtables::split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]])
     )
+  )
+  if (length(arm_var) == 2) {
+    layout_anl_list <- add_expr(
+      layout_anl_list,
+      substitute(
+        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        env = list(nested_col = arm_var[[2]])
+      )
+    )
+  }
+
+  layout_anl_list <- add_expr(
+    layout_anl_list,
+    quote(rtables::add_colcounts())
   )
 
   if (add_total) {
@@ -610,7 +651,7 @@ tm_t_events_summary <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
     dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
     flag_var_anl = `if`(
@@ -821,9 +862,20 @@ srv_t_events_summary <- function(id,
       input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
-      validate(need(input_arm_var, "Please select a treatment variable"))
       validate(
-        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+        need(input_arm_var, "Please select a treatment variable"),
+        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+        if (length(input_arm_var) >= 1) {
+          need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
+        },
+        if (length(input_arm_var) == 2) {
+          need(
+            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+              "", NA
+            )),
+            "Please check nested treatment variable which needs to be a factor without NA or empty strings."
+          )
+        }
       )
 
       # validate inputs
@@ -832,7 +884,7 @@ srv_t_events_summary <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
     })
 
