@@ -46,7 +46,7 @@ testthat::test_that("template_events_summary generates minimal table", {
     ),
     layout_anl = quote(
       lyt_anl <- rtables::basic_table() %>%
-        rtables::split_cols_by("ARM") %>%
+        rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
@@ -132,7 +132,7 @@ testthat::test_that("template_events_summary generates table with multiple flags
     ),
     layout_anl = quote(
       lyt_anl <- rtables::basic_table() %>%
-        rtables::split_cols_by("ARM") %>%
+        rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::add_overall_col(label = "All Patients") %>%
         count_patients_with_event(
