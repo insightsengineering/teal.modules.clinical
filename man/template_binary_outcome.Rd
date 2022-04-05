@@ -16,6 +16,7 @@ template_binary_outcome(
   aval_var = "AVALC",
   show_rsp_cat = TRUE,
   responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
+  responder_val_levels = responder_val,
   control = list(global = list(method = "waldcc", conf_level = 0.95), unstrat =
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
@@ -54,6 +55,9 @@ name of the analysis variable.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
 translate \code{AVALC} into responder / non-responder.}
+
+\item{responder_val_levels}{(\code{character})\cr the levels of responses that will be shown in the multinomial
+response estimations.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
