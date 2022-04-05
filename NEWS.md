@@ -16,6 +16,7 @@
 * Replaced the deprecated `rtables::var_labels` calls in the documentation examples.
 * Add import of `tern.mmrm` package and change some references after split of `tern`.
 * Adjusted package imports to take into account changes to the `teal` framework.
+* Ensure consistent vertical order of `tm_g_pp_patient_timeline` output when switching between absolute and relative days.  
 
 # teal.modules.clinical 0.8.11
 
