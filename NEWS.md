@@ -9,6 +9,7 @@
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
 * Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
+* Added validation in `tm_t_abnormality_by_worst_grade` when `arm_var` is not selected.
 
 ### Bug fixes
 * Fixed a bug where an empty set of data could be processed by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.
