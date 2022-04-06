@@ -493,6 +493,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
 
       validate(
+        need(input_arm_var, "Please select a treatment variable."),
         need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
         need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
         need(
@@ -502,13 +503,16 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
         need(input_id_var, "Please select a Subject Identifier."),
         need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-        need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-        need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
         need(
           all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
           "All grade values should be within -4:4 range."
         )
+      )
+
+      validate(
+        need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
       )
 
       # validate inputs

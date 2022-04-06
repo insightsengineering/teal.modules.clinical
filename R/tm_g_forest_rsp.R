@@ -654,6 +654,7 @@ srv_g_forest_rsp <- function(id,
         )
       )
 
+      validate_has_data(anl_m$data(), min_nrow = 1)
       NULL
     })
 
