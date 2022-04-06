@@ -43,7 +43,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["PARAMCD"])
+          split_label = formatters::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -107,7 +107,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["PARAMCD"])
+          split_label = formatters::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
@@ -172,7 +172,7 @@ testthat::test_that("template_ancova generates expressions with multiple endpoin
           "PARAMCD",
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(adqs["PARAMCD"])
+          split_label = formatters::var_labels(adqs["PARAMCD"], fill = TRUE)
         ) %>%
         summarize_ancova(
           vars = "CHG",
