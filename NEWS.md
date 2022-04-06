@@ -12,11 +12,14 @@
 * Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
 
+### Bug fixes
+* Fixed a bug where an empty set of data could be processed by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.
+
 ### Miscellaneous
 * Replaced the deprecated `rtables::var_labels` calls in the documentation examples.
 * Add import of `tern.mmrm` package and change some references after split of `tern`.
 * Adjusted package imports to take into account changes to the `teal` framework.
-* Ensure consistent vertical order of `tm_g_pp_patient_timeline` output when switching between absolute and relative days.  
+* Ensure consistent vertical order of `tm_g_pp_patient_timeline` output when switching between absolute and relative days.
 
 # teal.modules.clinical 0.8.11
 
