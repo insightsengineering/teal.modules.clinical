@@ -899,13 +899,13 @@ srv_t_binary_outcome <- function(id,
       input_paramcd <- unlist(anl_m$filter_info$paramcd)["selected"]
 
       responder_val_levels <- as.character(unique(anl_merged()$data()[[input_aval_var]]))
-      if (length(responder_val_levels) == 0) responder_val_levels <- input$responders
       default_responder <- if (is.list(default_responses)) {
         default_responses[[input_paramcd]][["levels"]]
       } else {
         NULL
       }
       responder_val_levels <- union(responder_val_levels, default_responder)
+      if (length(responder_val_levels) == 0) responder_val_levels <- input$responders
 
       my_calls <- template_binary_outcome(
         dataname = "ANL",
