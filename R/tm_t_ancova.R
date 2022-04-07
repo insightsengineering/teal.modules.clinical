@@ -168,7 +168,7 @@ template_ancova <- function(dataname = "ANL",
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(dataname[visit_var])
+          split_label = formatters::var_labels(dataname[visit_var], fill = TRUE)
         ),
       env = list(
         arm_var = arm_var,
@@ -188,7 +188,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var])
+            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
             summarize_ancova(
               vars = aval_var,
@@ -216,7 +216,7 @@ template_ancova <- function(dataname = "ANL",
             paramcd_var,
             split_fun = split_fun,
             label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var])
+            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
             summarize_ancova(
               vars = aval_var,
