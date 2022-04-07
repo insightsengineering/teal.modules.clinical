@@ -53,7 +53,8 @@ template_patient_timeline <- function(dataname = "ANL",
   y <- list()
   y$chart <- list()
 
-  chart_list <- if (!relative_day) {
+  chart_list <- list()
+  if (!relative_day) {
     parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
       teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args,
@@ -78,37 +79,66 @@ template_patient_timeline <- function(dataname = "ANL",
       )
     )
 
-    add_expr(
-      list(),
-      substitute(
-        expr = {
-          posixct_origin <- "1970-01-01 00:00.00 UTC"
+    chart_list <- add_expr(
+      chart_list,
+      new_expr = quote({
+        posixct_origin <- "1970-01-01 00:00.00 UTC"
+        med_chart <- NULL
+        ae_chart <- NULL
+      })
+    )
 
-          med_chart <- NULL
-          ae_chart <- NULL
-
-          if (all(vapply(list(cmdecod_var, dstime_start_var, dstime_end_var), Negate(is.null), logical(1)))) {
+    if (all(vapply(list(cmdecod, dstime_start, dstime_end), Negate(is.null), logical(1)))) {
+      chart_list <- add_expr(
+        chart_list,
+        substitute(
+          expr = {
             med_chart <- dataname %>%
               dplyr::select(dstime_start, dstime_end, cmdecod) %>%
               dplyr::distinct()
 
             colnames(med_chart) <- c("start", "end", "event")
             med_chart$group <- "Medication"
-          }
-          if (all(vapply(list(aeterm_var, aetime_start_var, aetime_end_var), Negate(is.null), logical(1)))) {
+          },
+          env = list(
+            dataname = as.name(dataname),
+            dstime_start = `if`(length(dstime_start), as.name(dstime_start), dstime_start),
+            dstime_end = `if`(length(dstime_end), as.name(dstime_end), dstime_end),
+            cmdecod = `if`(length(cmdecod), as.name(cmdecod), cmdecod)
+          )
+        )
+      )
+    }
+
+    if (all(vapply(list(aeterm, aetime_start, aetime_end), Negate(is.null), logical(1)))) {
+      chart_list <- add_expr(
+        chart_list,
+        substitute(
+          expr = {
             ae_chart <- dataname %>%
               dplyr::select(aetime_start, aetime_end, aeterm) %>%
               dplyr::distinct()
             colnames(ae_chart) <- c("start", "end", "event")
             ae_chart$group <- "Adverse Events"
-          }
+          },
+          env = list(
+            dataname = as.name(dataname),
+            aeterm = `if`(length(aeterm), as.name(aeterm), aeterm),
+            aetime_start = `if`(length(aetime_start), as.name(aetime_start), aetime_start),
+            aetime_end = `if`(length(aetime_end), as.name(aetime_end), aetime_end)
+          )
+        )
+      )
+    }
 
+    chart_list <- add_expr(
+      chart_list,
+      substitute(
+        expr = {
           vistime_data <- dplyr::bind_rows(list(ae_chart, med_chart))
           # in some cases, dates are converted to numeric so this is a step to convert them back
           vistime_data$start <- as.POSIXct(vistime_data$start, origin = posixct_origin)
           vistime_data$end <- as.POSIXct(vistime_data$end, origin = posixct_origin)
-
-
           vistime_data <- vistime_data %>%
             dplyr::filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
             dplyr::filter(!is.na(format(.data$start))) %>%
@@ -151,23 +181,9 @@ template_patient_timeline <- function(dataname = "ANL",
           patient_timeline_plot
         },
         env = list(
-          dataname = as.name(dataname),
-          aeterm = `if`(length(aeterm), as.name(aeterm), aeterm),
-          aetime_start = `if`(length(aetime_start), as.name(aetime_start), aetime_start),
-          aetime_end = `if`(length(aetime_end), as.name(aetime_end), aetime_end),
-          dstime_start = `if`(length(dstime_start), as.name(dstime_start), dstime_start),
-          dstime_end = `if`(length(dstime_end), as.name(dstime_end), dstime_end),
-          cmdecod = `if`(length(cmdecod), as.name(cmdecod), cmdecod),
-          aeterm_var = aeterm,
-          aetime_start_var = aetime_start,
-          aetime_end_var = aetime_end,
-          dstime_start_var = dstime_start,
-          dstime_end_var = dstime_end,
-          cmdecod_var = cmdecod,
           font_size_var = font_size,
-          patient_id = patient_id,
           labs = parsed_ggplot2_args$labs,
-          themes = parsed_ggplot2_args$theme
+          themes = parsed_ggplot2_args$them
         )
       )
     )
@@ -198,30 +214,60 @@ template_patient_timeline <- function(dataname = "ANL",
       ggtheme = "classic"
     )
 
-    add_expr(
-      list(),
-      substitute(
-        expr = {
-          med_chart <- if (length(c(dsrelday_start_var, dsrelday_end_var, cmdecod)) == 3) {
-            dataname %>%
+    chart_list <- add_expr(
+      chart_list,
+      new_expr = quote({
+        med_chart <- NULL
+        ae_chart <- NULL
+      })
+    )
+
+    if (length(c(dsrelday_start, dsrelday_end, cmdecod)) == 3) {
+      chart_list <- add_expr(
+        chart_list,
+        substitute(
+          expr = {
+            med_chart <- dataname %>%
               dplyr::select(dsrelday_start_var, dsrelday_end_var, cmdecod) %>%
               dplyr::distinct() %>%
               dplyr::rename(start = dsrelday_start_var, end = dsrelday_end_var, event = cmdecod) %>%
               dplyr::mutate(group = "Medication")
-          } else {
-            NULL
-          }
+          },
+          env = list(
+            dataname = as.name(dataname),
+            cmdecod = cmdecod,
+            dsrelday_start_var = dsrelday_start,
+            dsrelday_end_var = dsrelday_end
+          )
+        )
+      )
+    }
 
-          ae_chart <- if (length(c(aerelday_start_var, aerelday_end_var, aeterm)) == 3) {
-            dataname %>%
+    if (length(c(aerelday_start, aerelday_end, aeterm)) == 3) {
+      chart_list <- add_expr(
+        chart_list,
+        substitute(
+          expr = {
+            ae_chart <- dataname %>%
               dplyr::select(aerelday_start_var, aerelday_end_var, aeterm) %>%
               dplyr::distinct() %>%
               dplyr::rename(start = aerelday_start_var, end = aerelday_end_var, event = aeterm) %>%
               dplyr::mutate(group = "Adverse Events")
-          } else {
-            NULL
-          }
+          },
+          env = list(
+            dataname = as.name(dataname),
+            aeterm = aeterm,
+            aerelday_start_var = aerelday_start,
+            aerelday_end_var = aerelday_end
+          )
+        )
+      )
+    }
 
+    chart_list <- add_expr(
+      chart_list,
+      substitute(
+        expr = {
           vistime_data <- dplyr::bind_rows(list(ae_chart, med_chart))
           vistime_data <- vistime_data %>%
             dplyr::filter(stats::complete.cases(.[, c("start", "end", "event")])) %>%
@@ -263,15 +309,6 @@ template_patient_timeline <- function(dataname = "ANL",
           patient_timeline_plot
         },
         env = list(
-          dataname = as.name(dataname),
-          aeterm = aeterm,
-          cmdecod = cmdecod,
-          aerelday_start_var = aerelday_start,
-          aerelday_end_var = aerelday_end,
-          dsrelday_start_var = dsrelday_start,
-          dsrelday_end_var = dsrelday_end,
-          font_size_var = font_size,
-          patient_id = patient_id,
           labs = parsed_ggplot2_args$labs,
           ggthemes = parsed_ggplot2_args$ggtheme,
           themes = parsed_ggplot2_args$theme
