@@ -55,6 +55,7 @@ Imports:
     utils,
     vistime
 Suggests:
+    forcats,
     knitr,
     scda.2021(>= 0.1.3),
     scda(>= 0.1.3),

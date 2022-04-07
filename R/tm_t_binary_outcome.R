@@ -6,6 +6,8 @@
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
+#' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
+#' response estimations.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
@@ -49,6 +51,7 @@ template_binary_outcome <- function(dataname,
                                     aval_var = "AVALC",
                                     show_rsp_cat = TRUE,
                                     responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
+                                    responder_val_levels = responder_val,
                                     control = list(
                                       global = list(
                                         method = "waldcc",
@@ -99,12 +102,13 @@ template_binary_outcome <- function(dataname,
     data_list,
     substitute_names(
       expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
-        dplyr::mutate(aval = factor(aval_var, levels = responder_val)),
+        dplyr::mutate(aval = factor(aval_var, levels = responder_val_levels)),
       names = list(
         aval = as.name(aval_var)
       ),
       others = list(
         responder_val = responder_val,
+        responder_val_levels = responder_val_levels,
         aval_var = as.name(aval_var)
       )
     )
@@ -682,7 +686,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Selected Response Categories"),
+        tags$label("Show All Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = ifelse(a$rsp_table, TRUE, FALSE),
@@ -892,18 +896,20 @@ srv_t_binary_outcome <- function(id,
 
       anl <- teal.code::chunks_get_var("ANL") # nolint
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_paramcd <- unlist(anl_m$filter_info$paramcd)["selected"]
 
       my_calls <- template_binary_outcome(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
+        paramcd = input_paramcd,
         ref_arm = input$ref_arm,
         comp_arm = input$comp_arm,
         compare_arm = input$compare_arms,
-        combine_comp_arms = input$combine_comp_arms,
+        combine_comp_arms = input$combine_comp_arms && input$compare_arms,
         aval_var = input_aval_var,
         responder_val = input$responders,
+        responder_val_levels = default_responses[[input_paramcd]][["levels"]],
         show_rsp_cat = input$show_rsp_cat,
         control = list(
           global = list(

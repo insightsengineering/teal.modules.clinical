@@ -1,22 +1,26 @@
 # teal.modules.clinical 0.8.12
 
 ### New features
-
 * New module `tm_t_shift_by_arm_by_worst` was added for the analysis of the laboratory abnormalities with the most severe grade flag.
 * Enhanced `tm_t_events_patyear` to include selected parameter in title of the table.
 * Enhanced `tm_t_mult_events ` to include selected parameter in title of the table.
 
 ### Enhancements
-
 * Rewrote modules to use `moduleServer` and updated calls to `teal.devel` modules which have also been written to use `moduleServer`.
 * Changed the way of obtaining of selection ordered after changes in `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or `cs_to_select_spec` to return ordered selection.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
+* `tm_t_events_summary` now allows nested `arm_var` columns matching other outputs such as `tm_t_events`.
+* Added validation in `tm_t_abnormality_by_worst_grade` when `arm_var` is not selected.
+
+### Bug fixes
+* Fixed a bug where an empty set of data could be processed by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.
+* Fixed a bug where a closed `Compare Treatments` conditional panel with a marked `Combine all comparison groups?` option conflicted with adding a column with all patients to tables in `tm_t_binary_outcome.R` and `tm_t_tte.R`.
 
 ### Miscellaneous
 * Replaced the deprecated `rtables::var_labels` calls in the documentation examples.
 * Add import of `tern.mmrm` package and change some references after split of `tern`.
 * Adjusted package imports to take into account changes to the `teal` framework.
-* Ensure consistent vertical order of `tm_g_pp_patient_timeline` output when switching between absolute and relative days.  
+* Ensure consistent vertical order of `tm_g_pp_patient_timeline` output when switching between absolute and relative days.
 
 # teal.modules.clinical 0.8.11
 
