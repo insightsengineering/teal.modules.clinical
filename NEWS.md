@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.11.9019.6
+# teal.modules.clinical 0.8.12
 
 ### New features
 
