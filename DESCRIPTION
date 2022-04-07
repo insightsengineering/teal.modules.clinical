@@ -59,7 +59,8 @@ Suggests:
     scda.2021(>= 0.1.2),
     scda(>= 0.1.2),
     teal.data,
-    testthat (>= 2.0)
+    testthat (>= 2.0),
+    forcats
 VignetteBuilder:
     knitr
 Encoding: UTF-8
