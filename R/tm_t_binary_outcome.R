@@ -6,8 +6,6 @@
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder / non-responder.
-#' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
-#' response estimations.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
@@ -51,7 +49,6 @@ template_binary_outcome <- function(dataname,
                                     aval_var = "AVALC",
                                     show_rsp_cat = TRUE,
                                     responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
-                                    responder_val_levels = responder_val,
                                     control = list(
                                       global = list(
                                         method = "waldcc",
@@ -102,13 +99,12 @@ template_binary_outcome <- function(dataname,
     data_list,
     substitute_names(
       expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
-        dplyr::mutate(aval = factor(aval_var, levels = responder_val_levels)),
+        dplyr::mutate(aval = factor(aval_var, levels = responder_val)),
       names = list(
         aval = as.name(aval_var)
       ),
       others = list(
         responder_val = responder_val,
-        responder_val_levels = responder_val_levels,
         aval_var = as.name(aval_var)
       )
     )
@@ -471,8 +467,7 @@ tm_t_binary_outcome <- function(label,
                                   c(0.95, 0.9, 0.8), 0.95,
                                   keep_order = TRUE
                                 ),
-                                default_responses =
-                                  c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
+                                default_responses = NULL,
                                 rsp_table = FALSE,
                                 add_total = FALSE,
                                 pre_output = NULL,
@@ -784,7 +779,7 @@ srv_t_binary_outcome <- function(id,
         updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
+          selected = if (length(common_rsp)) intersect(responder_choices, common_rsp) else responder_choices
         )
       }
     )
@@ -909,7 +904,6 @@ srv_t_binary_outcome <- function(id,
         combine_comp_arms = input$combine_comp_arms && input$compare_arms,
         aval_var = input_aval_var,
         responder_val = input$responders,
-        responder_val_levels = default_responses[[input_paramcd]][["levels"]],
         show_rsp_cat = input$show_rsp_cat,
         control = list(
           global = list(
