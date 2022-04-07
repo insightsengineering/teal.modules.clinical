@@ -905,7 +905,7 @@ srv_t_binary_outcome <- function(id,
       } else {
         NULL
       }
-      responder_val_levels <- union(responder_val_levels, default_responses)
+      responder_val_levels <- union(responder_val_levels, default_responder)
 
       my_calls <- template_binary_outcome(
         dataname = "ANL",
