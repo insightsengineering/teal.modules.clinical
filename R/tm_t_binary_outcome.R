@@ -903,7 +903,7 @@ srv_t_binary_outcome <- function(id,
       default_responder <- if (is.list(default_responses)) {
         default_responses[[input_paramcd]][["levels"]]
       } else {
-        default_responses
+        NULL
       }
       responder_val_levels <- union(responder_val_levels, default_responses)
 
