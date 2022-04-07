@@ -512,7 +512,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       validate(
         need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
         need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor."),
+        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor.")
       )
 
       # validate inputs
