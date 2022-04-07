@@ -21,7 +21,8 @@ tm_t_binary_outcome(
     fixed = FALSE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
-  default_responses = NULL,
+  default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
+    "Partial Response (PR)", "M"),
   rsp_table = FALSE,
   add_total = FALSE,
   pre_output = NULL,
