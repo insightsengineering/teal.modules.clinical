@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.11.9019.13
+# teal.modules.clinical 0.8.12.9000
 
 ### New features
 * New module `tm_t_shift_by_arm_by_worst` was added for the analysis of the laboratory abnormalities with the most severe grade flag.
@@ -11,6 +11,7 @@
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
 * `tm_t_events_summary` now allows nested `arm_var` columns matching other outputs such as `tm_t_events`.
 * Added validation in `tm_t_abnormality_by_worst_grade` when `arm_var` is not selected.
+* Enhanced `tm_t_binary_outcome`, all responders are included in the response table by default now.
 
 ### Bug fixes
 * Fixed a bug where an empty set of data could be processed by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.
