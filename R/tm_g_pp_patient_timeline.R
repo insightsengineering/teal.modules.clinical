@@ -183,7 +183,7 @@ template_patient_timeline <- function(dataname = "ANL",
         env = list(
           font_size_var = font_size,
           labs = parsed_ggplot2_args$labs,
-          themes = parsed_ggplot2_args$them
+          themes = parsed_ggplot2_args$theme
         )
       )
     )
