@@ -78,7 +78,7 @@ template_adverse_events <- function(dataname = "ANL",
           text = substitute(element_text(size = font), list(font = font_size[1])),
           axis.text.y = quote(element_blank()),
           axis.ticks.y = quote(element_blank()),
-          legend.position = "none",
+          legend.position = "right",
           panel.grid.minor = quote(element_line(
             size = 0.5,
             linetype = "dotted",
@@ -111,8 +111,9 @@ template_adverse_events <- function(dataname = "ANL",
         ggrepel::geom_label_repel(
           aes(label = aeterm),
           color = "black",
-          hjust = "left",
-          size = font_size_var[1] / 3.5
+          hjust = "right",
+          size = font_size_var[1] / 3.5,
+          show.legend = FALSE
         ) +
         scale_fill_manual(values = c(
           "1" = "#E2264633",
