@@ -50,7 +50,7 @@ Imports:
     teal.logger,
     teal.transform,
     teal.widgets,
-    tern.mmrm (>= 0.0.1),
+    tern.mmrm (>= 0.1.0),
     tidyr,
     utils,
     vistime
