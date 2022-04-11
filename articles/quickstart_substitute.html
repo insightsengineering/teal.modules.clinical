@@ -39,12 +39,15 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.12.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../articles/teal-modules-clinical.html">Get started</a>
+</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -58,23 +61,11 @@
 <li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
-    <li>
-      <a href="../articles/teal.modules.clinical.html">Getting started</a>
-    </li>
   </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -386,7 +377,7 @@ analysis visit in rows.</p>
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/rtables" class="external-link">rtables</a></span><span class="op">)</span>
-<span class="co">## Loading required package: formatable</span>
+<span class="co">## Loading required package: formatters</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">## Attaching package: 'dplyr'</span>
@@ -400,11 +391,6 @@ analysis visit in rows.</p>
 <span class="co">## Registered S3 method overwritten by 'tern':</span>
 <span class="co">##   method   from </span>
 <span class="co">##   tidy.glm broom</span>
-<span class="co">## </span>
-<span class="co">## Attaching package: 'tern'</span>
-<span class="co">## The following objects are masked from 'package:formatable':</span>
-<span class="co">## </span>
-<span class="co">##     var_labels, var_labels&lt;-, with_label</span>
 <span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span>
 <span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>

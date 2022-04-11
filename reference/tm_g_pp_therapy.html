@@ -23,12 +23,15 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.clinical</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.11.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.12.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/teal-modules-clinical.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -40,22 +43,10 @@
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a>
     </li>
-    <li>
-      <a href="../articles/teal.modules.clinical.html">Getting started</a>
-    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">
     <span class="fa fa-github"></span>
@@ -182,7 +173,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMDOSFRQ</span> <span class="op">&lt;-</span> <span class="st">"CMDOSFRQ"</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMASTDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">ASTDTM</span></span>
 <span class="r-in"><span class="va">ADCM</span><span class="op">$</span><span class="va">CMAENDTM</span> <span class="op">&lt;-</span> <span class="va">ADCM</span><span class="op">$</span><span class="va">AENDTM</span></span>
-<span class="r-in"><span class="fu">formatable</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/formatable/man/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="fu">formatters</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/formatters/man/var_labels.html" class="external-link">var_labels</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="va">ADCM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMINDC"</span>, <span class="st">"CMTRT"</span>, <span class="st">"ASTDY"</span>, <span class="st">"AENDY"</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="st">"Indication"</span>,</span>
@@ -205,7 +196,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in">        ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"</span>
 <span class="r-in">        ADCM$CMASTDTM &lt;- ADCM$ASTDTM</span>
 <span class="r-in">        ADCM$CMAENDTM &lt;- ADCM$AENDTM</span>
-<span class="r-in">        formatable::var_labels(</span>
+<span class="r-in">        formatters::var_labels(</span>
 <span class="r-in">          ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) &lt;- c(</span>
 <span class="r-in">            "Indication",</span>
 <span class="r-in">            "Reported Name of Drug, Med, or Therapy",</span>
@@ -266,7 +257,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-03-22 19:21:31.2069 pid:2743 token:[] teal.modules.clinical Initializing tm_g_pp_therapy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-04-11 00:22:43.1190 pid:2753 token:[] teal.modules.clinical Initializing tm_g_pp_therapy</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
