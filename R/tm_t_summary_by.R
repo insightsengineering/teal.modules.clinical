@@ -316,7 +316,7 @@ template_summary_by <- function(parentname,
 #'   TRUE regardless of the user choice when `tm_t_summary_by` is called.
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
+#'   `median`, `median_ci`, `range`, `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
 #' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
@@ -513,6 +513,7 @@ ui_summary_by <- function(id, ...) {
               "n" = "n",
               "Mean (SD)" = "mean_sd",
               "Mean 95% CI" = "mean_ci",
+              "Geometric Mean" = "geom_mean",
               "Median" = "median",
               "Median 95% CI" = "median_ci",
               "25% and 75%-ile" = "quantiles",
