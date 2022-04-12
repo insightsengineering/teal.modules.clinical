@@ -1,4 +1,5 @@
 # teal.modules.clinical 0.8.12.9001
+* Enhanced `tm_t_summary_by` module to have geometric mean in the encoding panel.
 
 ### New features
 * New module `tm_t_shift_by_arm_by_worst` was added for the analysis of the laboratory abnormalities with the most severe grade flag.
