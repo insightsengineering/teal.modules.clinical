@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.12.9000
+Version: 0.8.12.9001
 Date: 2022-04-07
 Authors@R: c(
     person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre")),
@@ -63,6 +63,7 @@ Suggests:
     testthat (>= 2.0)
 VignetteBuilder:
     knitr
+Config/Needs/website: insightsengineering/nesttemplate
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
