@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.12.9001
+# teal.modules.clinical 0.8.12.9002
 
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
