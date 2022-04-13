@@ -1,5 +1,10 @@
 # teal.modules.clinical 0.8.12.9001
 
+### Miscellaneous
+* Simplified the show R code for `tm_g_pp_patient_timeline` module.
+
+# teal.modules.clinical 0.8.12
+
 ### New features
 * New module `tm_t_shift_by_arm_by_worst` was added for the analysis of the laboratory abnormalities with the most severe grade flag.
 * Enhanced `tm_t_events_patyear` to include selected parameter in title of the table.
