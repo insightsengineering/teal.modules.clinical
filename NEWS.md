@@ -1,5 +1,9 @@
 # teal.modules.clinical 0.8.12.9002
 
+### Enhancements
+* Updated the position of the labels in the `tm_g_pp_adverse_events` plot.
+* Updated the `tm_g_pp_adverse_events` plot to render the color legend. 
+
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
 
