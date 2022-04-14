@@ -5,7 +5,7 @@
 * Updated the `tm_g_pp_adverse_events` plot to render the color legend. 
 
 ### Bug fixes
-* Updated the validation to account for the error when multiple variables were deselected in `tm_g_pp_patient_timeline` module.
+* Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
 
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
