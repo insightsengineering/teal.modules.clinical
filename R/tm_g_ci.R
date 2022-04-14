@@ -248,7 +248,7 @@ template_g_ci <- function(dataname, # nolint
 #'     )
 #'   ),
 #'   header = "Example of Confidence Interval Plot",
-#'   footer = tags$p(
+#'   footer = shiny::tags$p(
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
@@ -306,13 +306,13 @@ tm_g_ci <- function(label,
 }
 
 ui_g_ci <- function(id, ...) { # nolint
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   args <- list(...)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
         id = ns("x_var"),
@@ -337,7 +337,7 @@ ui_g_ci <- function(id, ...) { # nolint
         multiple = FALSE,
         fixed = args$conf_level$fixed
       ),
-      radioButtons(
+      shiny::radioButtons(
         inputId = ns("stat"),
         label = "Statistic to use",
         choices = c("mean", "median"),
@@ -360,7 +360,7 @@ srv_g_ci <- function(id, # nolint
                      plot_width,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     merged_data <- teal.transform::data_merge_module(
@@ -368,28 +368,28 @@ srv_g_ci <- function(id, # nolint
       data_extract = list(x_var = x_var, y_var = y_var, color = color)
     )
 
-    validate_data <- reactive({
-      validate(
-        need(
+    validate_data <- shiny::reactive({
+      shiny::validate(
+        shiny::need(
           length(merged_data()$columns_source$x_var) > 0,
           "Select a treatment (x axis)."
         )
       )
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           length(merged_data()$columns_source$y_var) > 0,
           "Select an analyzed value (y axis)."
         )
       )
       teal::validate_has_data(merged_data()$data(), min_nrow = 2)
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
     })
 
-    list_calls <- reactive(
+    list_calls <- shiny::reactive(
       template_g_ci(
         dataname = "ANL",
         x_var = merged_data()$columns_source$x_var,
@@ -405,14 +405,14 @@ srv_g_ci <- function(id, # nolint
       )
     )
 
-    eval_call <- reactive({
+    eval_call <- shiny::reactive({
       validate_data()
       teal.code::chunks_reset()
       teal.code::chunks_push_data_merge(x = merged_data())
       teal.code::chunks_push(list_calls())
     })
 
-    plot_r <- reactive({
+    plot_r <- shiny::reactive({
       eval_call()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("gg")

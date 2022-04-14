@@ -443,15 +443,15 @@ ui_g_therapy <- function(id, ...) {
     ui_args$cmendy
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
+    output = shiny::div(
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
@@ -561,19 +561,19 @@ srv_g_therapy <- function(id,
                           label,
                           ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -600,53 +600,53 @@ srv_g_therapy <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    therapy_call <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    therapy_call <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       teal::validate_has_data(therapy_merged_data()$data(), 1)
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("atirel", dataname)]],
           "Please select ATIREL variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmdecod", dataname)]],
           "Please select Medication decoding variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmindc", dataname)]],
           "Please select CMINDC variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmdose", dataname)]],
           "Please select CMDOSE variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmtrt", dataname)]],
           "Please select CMTRT variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmdosu", dataname)]],
           "Please select CMDOSU variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmroute", dataname)]],
           "Please select CMROUTE variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmdosfrq", dataname)]],
           "Please select CMDOSFRQ variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmstdy", dataname)]],
           "Please select CMSTDY variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmendy", dataname)]],
           "Please select CMENDY variable."
         ),
-        need(
+        shiny::need(
           nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
@@ -698,7 +698,7 @@ srv_g_therapy <- function(id,
       options = list(pageLength = input$therapy_table_rows)
     )
 
-    therapy_plot <- reactive({
+    therapy_plot <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(therapy_call())
       teal.code::chunks_get_var("therapy_plot")

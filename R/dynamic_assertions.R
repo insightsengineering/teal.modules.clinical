@@ -24,8 +24,8 @@ assertthat::on_failure(teal_enough_rows) <- function(call, env) {
   eval(call, envir = env)
 }
 validate_enough_rows <- function(data, min_nrow) {
-  validate(
-    need(
+  shiny::validate(
+    shiny::need(
       FALSE,
       label = paste0(
         substitute(data),
@@ -52,8 +52,8 @@ assertthat::on_failure(teal_has_element) <- function(call, env) {
   eval(call, envir = env)
 }
 validate_has_elements <- function(str, label = str) {
-  validate(
-    need(
+  shiny::validate(
+    shiny::need(
       FALSE,
       message = paste0(label, ": required variable not assigned.")
     )

@@ -256,7 +256,7 @@ tm_t_events_patyear <- function(label,
 
 #' @noRd
 ui_events_patyear <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var
@@ -264,8 +264,8 @@ ui_events_patyear <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("patyear_table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -273,7 +273,7 @@ ui_events_patyear <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
@@ -317,7 +317,7 @@ ui_events_patyear <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -330,7 +330,7 @@ ui_events_patyear <- function(id, ...) {
             multiple = FALSE,
             fixed = FALSE
           ),
-          selectInput(
+          shiny::selectInput(
             ns("time_unit_input"),
             "Analysis Unit",
             choices = NULL,
@@ -361,17 +361,17 @@ srv_events_patyear <- function(id,
                                label,
                                basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    observeEvent(anl_merged(), {
+    shiny::observeEvent(anl_merged(), {
       data <- anl_merged()$data()
       aval_unit_var <- anl_merged()$columns_source$avalu_var
       if (length(aval_unit_var) > 0) {
         choices <- stats::na.omit(unique(data[[aval_unit_var]]))
         choices <- gsub("s$", "", tolower(choices))
 
-        updateSelectInput(
+        shiny::updateSelectInput(
           session,
           "time_unit_input",
           choices = choices,
@@ -399,7 +399,7 @@ srv_events_patyear <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -419,21 +419,21 @@ srv_events_patyear <- function(id,
         arm_var = input_arm_var
       )
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level > 0 && input$conf_level < 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(
-        need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
-        need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
-        need(input$conf_method, "`CI Method` field is not selected."),
-        need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
-        need(
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
+        shiny::need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
+        shiny::need(input$conf_method, "`CI Method` field is not selected."),
+        shiny::need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
+        shiny::need(
           input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
           "`Select an Event Type Parameter is not selected."
         ),
-        need(
+        shiny::need(
           !any(is.na(anl_m$data()[[input_events_var]])),
           "`Event Variable` for selected parameter includes NA values."
         )
@@ -443,7 +443,7 @@ srv_events_patyear <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -491,7 +491,7 @@ srv_events_patyear <- function(id,
     })
 
     # Outputs to render.
-    patyear_table <- reactive({
+    patyear_table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

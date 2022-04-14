@@ -27,10 +27,10 @@
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #'
 #' ui <- fluidPage(
-#'   sliderInput("obs", "Max Age",
+#'   shiny::sliderInput("obs", "Max Age",
 #'     min = 0, max = 100, value = 100
 #'   ),
-#'   sliderInput("maxgr", "Max Grade",
+#'   shiny::sliderInput("maxgr", "Max Grade",
 #'     min = 0, max = 5, value = 5
 #'   ),
 #'   plotOutput("plot")
@@ -147,7 +147,7 @@ validate_standard_inputs <- function(adsl,
       var_name = arm_var
     )
 
-    validate(need(!("" %in% adsl[[arm_var]]), "Treatment values can not contain empty strings (i.e. '')."))
+    shiny::validate(shiny::need(!("" %in% adsl[[arm_var]]), "Treatment values can not contain empty strings (i.e. '')."))
 
     if (!missing(comp_arm)) {
       teal::validate_has_elements(comp_arm, "Comparison treatments selection is empty.")

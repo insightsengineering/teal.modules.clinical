@@ -196,16 +196,16 @@ tm_g_barchart_simple <- function(x = NULL,
 }
 
 ui_g_barchart_simple <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-      uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
+      shiny::uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
         teal.transform::data_extract_ui(
@@ -243,7 +243,7 @@ ui_g_barchart_simple <- function(id, ...) {
         teal.widgets::panel_item(
           "Additional plot settings",
           if (!is.null(args$fill)) {
-            radioButtons(
+            shiny::radioButtons(
               inputId = ns("barlayout"),
               label = "Covariate Bar Layout",
               choices = c("Side by side" = "side_by_side", "Stacked" = "stacked"),
@@ -251,37 +251,37 @@ ui_g_barchart_simple <- function(id, ...) {
               inline = TRUE
             )
           },
-          checkboxInput(
+          shiny::checkboxInput(
             ns("label_bars"),
             "Label bars",
             value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
             value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
             value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
             value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("flip_axis"),
             "Flip axes",
             value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("show_n"),
             "Show n",
             value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
           ),
-          sliderInput(
+          shiny::sliderInput(
             inputId = ns("expand_y_range"),
             label = "Y-axis range expansion (fraction on top)",
             min = 0,
@@ -308,7 +308,7 @@ srv_g_barchart_simple <- function(id,
                                   plot_width,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
@@ -316,7 +316,7 @@ srv_g_barchart_simple <- function(id,
 
     selector_list <- teal.transform::data_extract_multiple_srv(data_extract, datasets)
 
-    reactive_select_input <- reactive({
+    reactive_select_input <- shiny::reactive({
       selectors <- selector_list()
       extract_names <- names(selectors)
       for (extract in extract_names) {
@@ -332,9 +332,9 @@ srv_g_barchart_simple <- function(id,
       datasets = datasets
     )
 
-    data_chunk <- reactive({
-      validate({
-        need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+    data_chunk <- shiny::reactive({
+      shiny::validate({
+        shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
       })
       ANL <- merged_data()$data() # nolint
       teal::validate_has_data(ANL, 2)
@@ -343,7 +343,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    count_chunk <- reactive({
+    count_chunk <- shiny::reactive({
       chunk <- data_chunk()$clone(deep = TRUE)
       groupby_vars <- r_groupby_vars()
       groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
@@ -392,7 +392,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    plot_chunk <- reactive({
+    plot_chunk <- shiny::reactive({
       chunk <- count_chunk()$clone(deep = TRUE)
 
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
@@ -448,7 +448,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    generate_code <- reactive({
+    generate_code <- shiny::reactive({
       chunk <- plot_chunk()
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(chunk) # set session chunks for ShowRCode
@@ -456,11 +456,11 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    plot_r <- reactive({
+    plot_r <- shiny::reactive({
       generate_code()$get("plot")
     })
 
-    output$table <- renderTable({
+    output$table <- shiny::renderTable({
       generate_code()$get("counts")
     })
 
@@ -486,7 +486,7 @@ srv_g_barchart_simple <- function(id,
       ) # c() -> NULL entries are omitted
 
       # at least one category must be specified
-      validate(need(
+      shiny::validate(shiny::need(
         length(res) > 0, # c() removes NULL entries
         "Must specify at least one of x, fill, x_facet and y_facet."
       ))
@@ -563,8 +563,8 @@ make_barchart_simple_call <- function(y_name,
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
-  validate(
-    need(
+  shiny::validate(
+    shiny::need(
       !any(duplicated(plot_vars)),
       paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
     )

@@ -34,13 +34,13 @@
 #'       choices = arm_var$choices,
 #'       selected = arm_var$selected
 #'     ),
-#'     selectInput(
+#'     shiny::selectInput(
 #'       "ref",
 #'       "Reference Treatment",
 #'       choices = NULL,
 #'       multiple = TRUE
 #'     ),
-#'     selectInput(
+#'     shiny::selectInput(
 #'       "comp",
 #'       "Comparison Group",
 #'       choices = NULL,
@@ -48,7 +48,7 @@
 #'     )
 #'   ),
 #'   server = function(input, output, session) {
-#'     isolate({
+#'     shiny::isolate({
 #'       teal.modules.clinical:::arm_ref_comp_observer(
 #'         session,
 #'         input,
@@ -72,7 +72,7 @@ arm_ref_comp_observer <- function(session,
                                   dataname = "ADSL",
                                   arm_ref_comp,
                                   module,
-                                  on_off = reactive(TRUE)) {
+                                  on_off = shiny::reactive(TRUE)) {
   if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
     stopifnot(
       all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
@@ -88,7 +88,7 @@ arm_ref_comp_observer <- function(session,
 
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
-  observe({
+  shiny::observe({
     if (!is.null(on_off()) && on_off()) {
       arm_var <- input[[id_arm_var]]
 
@@ -114,8 +114,8 @@ arm_ref_comp_observer <- function(session,
         comp_arm <- default_settings$comp
       }
 
-      updateSelectInput(session, id_ref, selected = ref_arm, choices = arm_levels)
-      updateSelectInput(session, id_comp, selected = comp_arm, choices = arm_levels)
+      shiny::updateSelectInput(session, id_ref, selected = ref_arm, choices = arm_levels)
+      shiny::updateSelectInput(session, id_comp, selected = comp_arm, choices = arm_levels)
     }
   })
 }

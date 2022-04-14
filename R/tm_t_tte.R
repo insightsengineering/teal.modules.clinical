@@ -509,12 +509,12 @@ ui_t_tte <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]
       ),
@@ -542,33 +542,33 @@ ui_t_tte <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      div(
+      shiny::div(
         class = "arm-comp-box",
-        tags$label("Compare Treatments"),
+        shiny::tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        conditionalPanel(
+        shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          div(
-            selectInput(
+          shiny::div(
+            shiny::selectInput(
               ns("ref_arm"),
               "Reference Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            helpText("Multiple reference groups are automatically combined into a single group."),
-            selectInput(
+            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+            shiny::selectInput(
               ns("comp_arm"),
               "Comparison Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            checkboxInput(
+            shiny::checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -582,9 +582,9 @@ ui_t_tte <- function(id, ...) {
           )
         )
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       teal.widgets::optionalSelectInput(ns("time_points"),
         "Time Points",
@@ -599,16 +599,16 @@ ui_t_tte <- function(id, ...) {
         data_extract_spec = a$event_desc_var,
         is_single_dataset = is_single_dataset_value
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_item(
           "Comparison settings",
-          radioButtons(
+          shiny::radioButtons(
             ns("pval_method_coxph"),
-            label = HTML(
+            label = shiny::HTML(
               paste(
                 "p-value method for ",
-                tags$span(style = "color:darkblue", "Coxph"), # nolint
+                shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -616,12 +616,12 @@ ui_t_tte <- function(id, ...) {
             choices = c("wald", "log-rank", "likelihood"),
             selected = "log-rank"
           ),
-          radioButtons(
+          shiny::radioButtons(
             ns("ties_coxph"),
-            label = HTML(
+            label = shiny::HTML(
               paste(
                 "Ties for ",
-                tags$span(style = "color:darkblue", "Coxph"), # nolint
+                shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -631,10 +631,10 @@ ui_t_tte <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level_coxph"),
-            label = HTML(
+            label = shiny::HTML(
               paste(
                 "Confidence Level for ",
-                tags$span(style = "color:darkblue", "Coxph"), # nolint
+                shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -650,10 +650,10 @@ ui_t_tte <- function(id, ...) {
         "Additional table settings",
         teal.widgets::optionalSelectInput(
           inputId = ns("conf_level_survfit"),
-          label = HTML(
+          label = shiny::HTML(
             paste(
               "Confidence Level for ",
-              tags$span(style = "color:darkblue", "Survfit"), # nolint
+              shiny::tags$span(style = "color:darkblue", "Survfit"), # nolint
               " (KM Median Estimate & Event Free Rate)",
               sep = ""
             )
@@ -663,13 +663,13 @@ ui_t_tte <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level_survfit$fixed
         ),
-        radioButtons(
+        shiny::radioButtons(
           ns("conf_type_survfit"),
           "Confidence Level Type for Survfit",
           choices = c("plain", "log", "log-log"),
           selected = "plain"
         ),
-        sliderInput(
+        shiny::sliderInput(
           inputId = ns("probs_survfit"),
           label = "KM Estimate Percentiles",
           min = 0.01,
@@ -708,7 +708,7 @@ srv_t_tte <- function(id,
                       label,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
@@ -722,7 +722,7 @@ srv_t_tte <- function(id,
       dataname = parentname,
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
+      on_off = shiny::reactive(input$compare_arms)
     )
 
     anl_merged <- teal.transform::data_merge_module(
@@ -746,7 +746,7 @@ srv_t_tte <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -781,30 +781,30 @@ srv_t_tte <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level_coxph >= 0 && input$conf_level_coxph <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-      validate(need(
+      shiny::validate(shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      shiny::validate(shiny::need(
         checkmate::test_string(input_event_desc),
         "Event description variable should be a single column."
       ))
 
       # check that there is at least one record with no missing data
-      validate(need(
+      shiny::validate(shiny::need(
         !all(is.na(anl_m$data()[[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
 
-      validate(need(
+      shiny::validate(shiny::need(
         length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
         "`Select Endpoint` field is NULL"
       ))
@@ -814,7 +814,7 @@ srv_t_tte <- function(id,
 
     # The R-code corresponding to the analysis.
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -867,7 +867,7 @@ srv_t_tte <- function(id,
       mapply(expression = my_calls, teal.code::chunks_push)
     })
 
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

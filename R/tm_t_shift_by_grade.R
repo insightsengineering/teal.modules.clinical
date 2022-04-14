@@ -619,7 +619,7 @@ tm_t_shift_by_grade <- function(label,
 
 #' @noRd
 ui_t_shift_by_grade <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -635,8 +635,8 @@ ui_t_shift_by_grade <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
       ),
@@ -646,7 +646,7 @@ ui_t_shift_by_grade <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
@@ -680,12 +680,12 @@ ui_t_shift_by_grade <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("code_missing_baseline"),
             label = "Code missing baseline records as grade 0",
             value = a$code_missing_baseline
@@ -737,7 +737,7 @@ srv_t_shift_by_grade <- function(id,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -760,7 +760,7 @@ srv_t_shift_by_grade <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -774,15 +774,15 @@ srv_t_shift_by_grade <- function(id,
       input_anl_toxgrade_var <- as.vector(anl_m$columns_source$anl_toxgrade_var)
       input_base_toxgrade_var <- as.vector(anl_m$columns_source$base_toxgrade_var)
 
-      validate(
-        need(input_worst_flag_var, "Please select the worst flag variable."),
-        need(input_paramcd_var, "Please select Laboratory parameter."),
-        need(input_id_var, "Please select a subject identifier."),
-        need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
+      shiny::validate(
+        shiny::need(input_worst_flag_var, "Please select the worst flag variable."),
+        shiny::need(input_paramcd_var, "Please select Laboratory parameter."),
+        shiny::need(input_id_var, "Please select a subject identifier."),
+        shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
       )
 
       input_worst_flag <- anl_m$data()[[as.vector(anl_m$columns_source$worst_flag_var)]]
-      validate(need(
+      shiny::validate(shiny::need(
         any(input_worst_flag == input$worst_flag_indicator),
         "There's no positive flag, please select another flag parameter."
       ))
@@ -800,7 +800,7 @@ srv_t_shift_by_grade <- function(id,
       )
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -832,7 +832,7 @@ srv_t_shift_by_grade <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

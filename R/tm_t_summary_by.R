@@ -443,7 +443,7 @@ tm_t_summary_by <- function(label,
 
 #' @noRd
 ui_summary_by <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
@@ -455,8 +455,8 @@ ui_summary_by <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -464,7 +464,7 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       `if`(
         is.null(a$paramcd),
         NULL,
@@ -487,13 +487,13 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$summarize_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
-      checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
+      shiny::checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
+      shiny::checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
-          radioButtons(
+          shiny::checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
+          shiny::radioButtons(
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
@@ -506,7 +506,7 @@ ui_summary_by <- function(id, ...) {
             selected = a$denominator$selected,
             fixed = a$denominator$fixed
           ),
-          checkboxGroupInput(
+          shiny::checkboxGroupInput(
             ns("numeric_stats"),
             label = "Choose the statistics to display for numeric variables",
             choices = c(
@@ -522,14 +522,14 @@ ui_summary_by <- function(id, ...) {
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
-              checkboxInput(
+              shiny::checkboxInput(
                 ns("drop_arm_levels"),
                 label = "it's a BUG if you see this",
                 value = TRUE
               )
             )
           } else {
-            checkboxInput(
+            shiny::checkboxInput(
               ns("drop_arm_levels"),
               label = sprintf("Drop columns not in filtered %s", a$dataname),
               value = a$drop_arm_levels
@@ -573,7 +573,7 @@ srv_summary_by <- function(id,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
@@ -599,7 +599,7 @@ srv_summary_by <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -611,17 +611,17 @@ srv_summary_by <- function(id,
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
-      validate(
-        need(input_arm_var, "Please select a treatment variable."),
-        need(input_id_var, "Please select a subject identifier."),
-        need(input_summarize_vars, "Please select a summarize variable."),
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable."),
+        shiny::need(input_id_var, "Please select a subject identifier."),
+        shiny::need(input_summarize_vars, "Please select a summarize variable."),
         if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-          need(
+          shiny::need(
             input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
             "`Select Endpoint` is not selected."
           )
         },
-        need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+        shiny::need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
       )
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -632,7 +632,7 @@ srv_summary_by <- function(id,
       )
 
       if (input$parallel_vars) {
-        validate(need(
+        shiny::validate(shiny::need(
           all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
           "Summarize variables must all be numeric to display in parallel columns."
         ))
@@ -640,7 +640,7 @@ srv_summary_by <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -675,7 +675,7 @@ srv_summary_by <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

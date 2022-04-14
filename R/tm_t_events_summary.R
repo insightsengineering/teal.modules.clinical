@@ -690,7 +690,7 @@ tm_t_events_summary <- function(label,
 
 #' @noRd
 ui_t_events_summary <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -705,8 +705,8 @@ ui_t_events_summary <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
       ),
@@ -736,23 +736,23 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total
       ),
-      tags$label("Table Settings"),
-      checkboxInput(
+      shiny::tags$label("Table Settings"),
+      shiny::checkboxInput(
         ns("count_subj"),
         "Count patients",
         value = a$count_subj
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
         value = a$count_pt
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("count_events"),
         "Count events",
         value = a$count_events
@@ -808,7 +808,7 @@ srv_t_events_summary <- function(id,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     data_extract_vars <- list(
@@ -841,7 +841,7 @@ srv_t_events_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -862,14 +862,14 @@ srv_t_events_summary <- function(id,
       input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable"),
-        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable"),
+        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
         if (length(input_arm_var) >= 1) {
-          need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
+          shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
         },
         if (length(input_arm_var) == 2) {
-          need(
+          shiny::need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
@@ -889,7 +889,7 @@ srv_t_events_summary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -949,7 +949,7 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

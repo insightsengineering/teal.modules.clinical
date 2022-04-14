@@ -573,21 +573,21 @@ ui_t_coxreg <- function(id, ...) {
     a$cov_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      radioButtons(
+    encoding = shiny::div(
+      shiny::radioButtons(
         ns("type"),
-        label = tags$label("Type of Regression:", class = "text-primary"),
+        label = shiny::tags$label("Type of Regression:", class = "text-primary"),
         choices = c(
           "Separate models for comparison groups with one covariate at a time" = "Univariate",
           "One model with all comparison groups and covariates" = "Multivariate"
         ),
         selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]
       ),
@@ -615,21 +615,21 @@ ui_t_coxreg <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("ref_arm"),
         "Reference Group",
         choices = NULL,
         multiple = TRUE
       ),
-      selectInput(
+      shiny::selectInput(
         ns("comp_arm"),
         "Comparison Group",
         choices = NULL,
         multiple = TRUE
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Multivariate'"),
-        checkboxInput(
+        shiny::checkboxInput(
           ns("combine_comp_arms"),
           "Combine all comparison groups?"
         )
@@ -640,14 +640,14 @@ ui_t_coxreg <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Univariate'"),
-        checkboxInput(
+        shiny::checkboxInput(
           ns("interactions"),
           "Interaction terms"
         )
       ),
-      uiOutput(ns("interaction_input")),
+      shiny::uiOutput(ns("interaction_input")),
       teal.transform::data_extract_ui(
         id = ns("strata_var"),
         label = "Stratify by",
@@ -657,24 +657,24 @@ ui_t_coxreg <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          conditionalPanel(
+          shiny::conditionalPanel(
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
-            radioButtons(
+            shiny::radioButtons(
               ns("pval_method"),
-              label = p(
+              label = shiny::p(
                 "p-value method for",
-                span(style = "color:darkblue", "Coxph"),
+                shiny::span(style = "color:darkblue", "Coxph"),
                 "(Hazard Ratio)"
               ),
               choices = c("wald", "likelihood"),
               selected = "wald"
             )
           ),
-          radioButtons(
+          shiny::radioButtons(
             ns("ties"),
-            label = p(
+            label = shiny::p(
               "Ties for ",
-              span(style = "color:darkblue", "Coxph"),
+              shiny::span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),
@@ -683,9 +683,9 @@ ui_t_coxreg <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
-            label = p(
+            label = shiny::p(
               "Confidence level for ",
-              span(style = "color:darkblue", "Coxph"),
+              shiny::span(style = "color:darkblue", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),
@@ -718,7 +718,7 @@ srv_t_coxreg <- function(id,
                          label,
                          basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Observer to update reference and comparison arm input options.
@@ -752,14 +752,14 @@ srv_t_coxreg <- function(id,
       # For every numeric covariate, the numeric level for the Hazard Ration
       # estimation is proposed only if the covariate is included in the model:
       # for this purpose, a function and a UI-rendered output.
-      textInput(
+      shiny::textInput(
         session$ns(paste0("interact_", x)),
         label = paste("Hazard Ratios for", x, "at (comma delimited):"),
         value = as.character(stats::median(anl$data()[[x]]))
       )
     }
 
-    output$interaction_input <- renderUI({
+    output$interaction_input <- shiny::renderUI({
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
       if (!is.null(input$interactions) && input$interactions) {
@@ -776,7 +776,7 @@ srv_t_coxreg <- function(id,
     })
 
     ## Prepare the call evaluation environment ----
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -808,7 +808,7 @@ srv_t_coxreg <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
@@ -837,46 +837,46 @@ srv_t_coxreg <- function(id,
       } else {
         c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
       }
-      validate(need(
+      shiny::validate(shiny::need(
         all(anl_arm_n >= 2),
         "Each treatment group should have at least 2 records."
       ))
 
       # validate p-value method
       if (length(input_strata_var) > 0) {
-        validate(need(
+        shiny::validate(shiny::need(
           input$pval_method == "wald",
           "Only Wald tests are supported for models with strata."
         ))
       }
 
       if (input$type == "Multivariate") {
-        validate(need(
+        shiny::validate(shiny::need(
           input$interactions == FALSE,
           "Interaction is only supported for univariate models."
         ))
       }
 
       if (!is.null(input$interactions) && input$interactions) {
-        validate(need(
+        shiny::validate(shiny::need(
           (length(input_cov_var) > 0),
           "If interactions are selected at least one covariate should be specified."
         ))
       }
 
       if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
-        validate(need(
+        shiny::validate(shiny::need(
           all(vapply(at(), function(x) length(x) > 0, logical(1))),
           "Please specify all the interaction levels."
         ))
       }
 
-      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
       # validate covariate has at least two levels
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
             length(unique(x)) > 1
           }, logical(1))),
@@ -887,7 +887,7 @@ srv_t_coxreg <- function(id,
       NULL
     })
 
-    at <- reactive({
+    at <- shiny::reactive({
       anl_m <- anl_merged()
       input_cov_var <- as.vector(anl_m$columns_source$cov_var)
       anl <- datasets$get_data(dataname, filtered = FALSE)
@@ -965,7 +965,7 @@ srv_t_coxreg <- function(id,
     }
 
     ## generate table call with template and render table ----
-    table <- reactive({
+    table <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()

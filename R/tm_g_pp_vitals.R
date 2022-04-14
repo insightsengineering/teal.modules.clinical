@@ -302,11 +302,11 @@ ui_g_vitals <- function(id, ...) {
     ui_args$xaxis
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -320,7 +320,7 @@ ui_g_vitals <- function(id, ...) {
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      uiOutput(ns("paramcd_levels")),
+      shiny::uiOutput(ns("paramcd_levels")),
       teal.transform::data_extract_ui(
         id = ns("xaxis"),
         label = "Select vital plot x-axis:",
@@ -363,13 +363,13 @@ srv_g_vitals <- function(id,
                          label,
                          ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -377,7 +377,7 @@ srv_g_vitals <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -403,17 +403,17 @@ srv_g_vitals <- function(id,
 
     vitals_dat <- vitals_merged_data()$data()
 
-    output$paramcd_levels <- renderUI({
+    output$paramcd_levels <- shiny::renderUI({
       paramcd_var <- input[[extract_input("paramcd", dataname)]]
 
-      req(paramcd_var)
-      req(input$patient_id)
+      shiny::req(paramcd_var)
+      shiny::req(input$patient_id)
 
       vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
       paramcd_col <- vitals_dat_sub[[paramcd_var]]
       paramcd_col_levels <- unique(paramcd_col)
 
-      cur_selected <- isolate(input$paramcd_levels_vals)
+      cur_selected <- shiny::isolate(input$paramcd_levels_vals)
 
       selected <- if (length(cur_selected) > 0) {
         cur_selected
@@ -421,8 +421,8 @@ srv_g_vitals <- function(id,
         paramcd_col_levels
       }
 
-      tagList(
-        selectInput(
+      shiny::tagList(
+        shiny::selectInput(
           session$ns("paramcd_levels_vals"),
           "Select PARAMCD variable levels:",
           selected = selected,
@@ -432,29 +432,29 @@ srv_g_vitals <- function(id,
       )
     })
 
-    vitals_call <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    vitals_call <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       teal::validate_has_data(vitals_merged_data()$data(), 1)
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("paramcd", dataname)]],
           "Please select PARAMCD variable."
         ),
-        need(
+        shiny::need(
           input[["paramcd_levels_vals"]],
           "Please select PARAMCD variable levels."
         ),
-        need(
+        shiny::need(
           input[[extract_input("xaxis", dataname)]],
           "Please select Vitals x-axis variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("aval", dataname)]],
           "Please select AVAL variable."
         ),
-        need(
+        shiny::need(
           nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
@@ -491,7 +491,7 @@ srv_g_vitals <- function(id,
       vitals_stack
     })
 
-    vitals_plot <- reactive({
+    vitals_plot <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(vitals_call())
       teal.code::chunks_get_var("result_plot")

@@ -408,17 +408,17 @@ ui_g_km <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      verbatimTextOutput(outputId = ns("text")),
+      shiny::verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -450,33 +450,33 @@ ui_g_km <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      div(
+      shiny::div(
         class = "arm-comp-box",
-        tags$label("Compare Treatments"),
+        shiny::tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        conditionalPanel(
+        shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          div(
-            selectInput(
+          shiny::div(
+            shiny::selectInput(
               ns("ref_arm"),
               "Reference Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            helpText("Multiple reference groups are automatically combined into a single group."),
-            selectInput(
+            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+            shiny::selectInput(
               ns("comp_arm"),
               "Comparison Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            checkboxInput(
+            shiny::checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -490,17 +490,17 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Comparison settings",
-            radioButtons(
+            shiny::radioButtons(
               ns("pval_method_coxph"),
-              label = HTML(
+              label = shiny::HTML(
                 paste(
                   "p-value method for ",
-                  tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -508,12 +508,12 @@ ui_g_km <- function(id, ...) {
               choices = c("wald", "log-rank", "likelihood"),
               selected = "log-rank"
             ),
-            radioButtons(
+            shiny::radioButtons(
               ns("ties_coxph"),
-              label = HTML(
+              label = shiny::HTML(
                 paste(
                   "Ties for ",
-                  tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -527,17 +527,17 @@ ui_g_km <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
-          textInput(
+          shiny::textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"
           ),
-          radioButtons(
+          shiny::radioButtons(
             ns("yval"),
-            tags$label("Value on y-axis", class = "text-primary"),
+            shiny::tags$label("Value on y-axis", class = "text-primary"),
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),
-          numericInput(
+          shiny::numericInput(
             inputId = ns("font_size"),
             label = "Plot tables font size",
             value = 8,
@@ -546,13 +546,13 @@ ui_g_km <- function(id, ...) {
             step = 1,
             width = "100%"
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             inputId = ns("show_ci_ribbon"),
             label = "Show CI ribbon",
             value = FALSE,
             width = "100%"
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             inputId = ns("show_km_table"),
             label = "Show KM table",
             value = TRUE,
@@ -566,7 +566,7 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          textInput(ns("xlab"), "X-axis label", "Time"),
+          shiny::textInput(ns("xlab"), "X-axis label", "Time"),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
@@ -602,7 +602,7 @@ srv_g_km <- function(id,
                      plot_height,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms and default
@@ -616,7 +616,7 @@ srv_g_km <- function(id,
       dataname = parentname,
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
+      on_off = shiny::reactive(input$compare_arms)
     )
 
     anl_merged <- teal.transform::data_merge_module(
@@ -633,7 +633,7 @@ srv_g_km <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -673,26 +673,26 @@ srv_g_km <- function(id,
       if (length(input_xticks) == 0) {
         input_xticks <- NULL
       } else {
-        validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
-        validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
-        validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
+        shiny::validate(shiny::need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
+        shiny::validate(shiny::need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
+        shiny::validate(shiny::need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
       }
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level > 0 && input$conf_level < 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
       # validate font size
-      validate(need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
+      shiny::validate(shiny::need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
 
       NULL
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -743,7 +743,7 @@ srv_g_km <- function(id,
       mapply(expression = my_calls, teal.code::chunks_push)
     })
 
-    km_plot <- reactive({
+    km_plot <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
     })

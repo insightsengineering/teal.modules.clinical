@@ -353,13 +353,13 @@ ui_t_logistic <- function(id, ...) {
   }
 
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -373,7 +373,7 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$avalc_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("responders"),
         "Responders",
         choices = c("CR", "PR"),
@@ -381,26 +381,26 @@ ui_t_logistic <- function(id, ...) {
         multiple = TRUE
       ),
       if (!is.null(a$arm_var)) {
-        div(
+        shiny::div(
           teal.transform::data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          selectInput(
+          shiny::selectInput(
             ns("ref_arm"),
             "Reference Group",
             choices = NULL,
             multiple = TRUE
           ),
-          selectInput(
+          shiny::selectInput(
             ns("comp_arm"),
             "Comparison Group",
             choices = NULL,
             multiple = TRUE
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("combine_comp_arms"),
             "Combine all comparison groups?",
             value = FALSE
@@ -413,13 +413,13 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      uiOutput(ns("interaction_var")),
-      uiOutput(ns("interaction_input")),
+      shiny::uiOutput(ns("interaction_var")),
+      shiny::uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
-        label = p(
+        label = shiny::p(
           "Confidence level for ",
-          span(style = "color:darkblue", "Coxph"),
+          shiny::span(style = "color:darkblue", "Coxph"),
           " (Hazard Ratio)",
           sep = ""
         ),
@@ -450,7 +450,7 @@ srv_t_logistic <- function(id,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Observer to update reference and comparison arm input options.
@@ -483,23 +483,23 @@ srv_t_logistic <- function(id,
     }
 
     # Because the AVALC values depends on the selected PARAMCD.
-    observeEvent(anl_merged(), {
+    shiny::observeEvent(anl_merged(), {
       avalc_var <- anl_merged()$columns_source$avalc_var
       if (nrow(anl_merged()$data()) == 0) {
         responder_choices <- c("CR", "PR")
         responder_sel <- c("CR", "PR")
       } else {
         responder_choices <- unique(anl_merged()$data()[[avalc_var]])
-        responder_sel <- intersect(responder_choices, isolate(input$responders))
+        responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
       }
-      updateSelectInput(
+      shiny::updateSelectInput(
         session, "responders",
         choices = responder_choices,
         selected = responder_sel
       )
     })
 
-    output$interaction_var <- renderUI({
+    output$interaction_var <- shiny::renderUI({
       anl_m <- anl_merged()
       cov_var <- as.vector(anl_m$columns_source$cov_var)
       if (length(cov_var) > 0) {
@@ -515,13 +515,13 @@ srv_t_logistic <- function(id,
       }
     })
 
-    output$interaction_input <- renderUI({
+    output$interaction_input <- shiny::renderUI({
       anl_m <- anl_merged()
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
         if (is.numeric(anl_m$data()[[interaction_var]])) {
-          tagList(
-            textInput(
+          shiny::tagList(
+            shiny::textInput(
               session$ns("interaction_values"),
               label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
               value = as.character(stats::median(anl_m$data()[[interaction_var]]))
@@ -533,7 +533,7 @@ srv_t_logistic <- function(id,
       }
     })
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -565,7 +565,7 @@ srv_t_logistic <- function(id,
         min_nrow = 4
       )
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
@@ -584,28 +584,28 @@ srv_t_logistic <- function(id,
         } else {
           c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
         }
-        validate(need(
+        shiny::validate(shiny::need(
           all(anl_arm_n >= 2),
           "Each treatment group should have at least 2 records."
         ))
       }
 
-      validate(
-        need(checkmate::test_string(input_avalc_var), "Analysis variable should be a single column."),
-        need(input$responders, "`Responders` field is empty")
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_avalc_var), "Analysis variable should be a single column."),
+        shiny::need(input$responders, "`Responders` field is empty")
       )
 
       # validate interaction values
       if (interaction_flag && (is.numeric(anl_m$data()[[input_interaction_at]]))) {
-        validate(need(
+        shiny::validate(shiny::need(
           !is.na(at_values),
           "If interaction is specified the level should be entered."
         ))
       }
 
       # validate covariate has at least two levels
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           all(
             vapply(
               anl_m$data()[input_cov_var],
@@ -620,7 +620,7 @@ srv_t_logistic <- function(id,
       )
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -673,7 +673,7 @@ srv_t_logistic <- function(id,
       mapply(expression = calls, teal.code::chunks_push)
     })
 
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

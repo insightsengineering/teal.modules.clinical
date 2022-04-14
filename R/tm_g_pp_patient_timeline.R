@@ -567,11 +567,11 @@ ui_g_patient_timeline <- function(id, ...) {
     ui_args$dsrelday_end
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         ui_args[c(
           "aeterm", "cmdecod",
@@ -599,7 +599,7 @@ ui_g_patient_timeline <- function(id, ...) {
       ),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
         shiny::tagList(
-          checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
+          shiny::checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
           shiny::conditionalPanel(
             paste0("input.relday_x_axis == true"),
             ns = ns,
@@ -638,7 +638,7 @@ ui_g_patient_timeline <- function(id, ...) {
           )
         )
       } else {
-        shinyjs::hidden(checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
+        shinyjs::hidden(shiny::checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
       },
       shiny::conditionalPanel(
         paste0("input.relday_x_axis == false"),
@@ -708,13 +708,13 @@ srv_g_patient_timeline <- function(id,
                                    label,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -722,7 +722,7 @@ srv_g_patient_timeline <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -749,8 +749,8 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    patient_timeline_calls <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    patient_timeline_calls <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
       aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
@@ -771,14 +771,14 @@ srv_g_patient_timeline <- function(id,
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input$relday_x_axis ||
             (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         ),
-        need(
+        shiny::need(
           input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
           "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
           Please select the appropriate input variables."
@@ -811,14 +811,14 @@ srv_g_patient_timeline <- function(id,
         dsrelday_end
       )
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           !input$relday_x_axis ||
             (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         ),
-        need(
+        shiny::need(
           !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
           "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
           Please select the appropriate input variables."
@@ -864,7 +864,7 @@ srv_g_patient_timeline <- function(id,
       patient_timeline_stack
     })
 
-    patient_timeline_plot <- reactive({
+    patient_timeline_plot <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(patient_timeline_calls())
       teal.code::chunks_get_var("patient_timeline_plot")

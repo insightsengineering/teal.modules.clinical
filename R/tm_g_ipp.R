@@ -362,12 +362,12 @@ ui_g_ipp <- function(id, ...) {
     a$base_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]
       ),
@@ -416,22 +416,22 @@ ui_g_ipp <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",
             value = a$add_baseline_hline
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("suppress_legend"),
             "Suppress legend",
             value = a$suppress_legend
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("add_avalu"),
             "Add unit value in title/y axis",
             value = a$add_avalu
@@ -461,7 +461,7 @@ srv_g_ipp <- function(id,
                       label,
                       ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -485,7 +485,7 @@ srv_g_ipp <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -518,19 +518,19 @@ srv_g_ipp <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      validate(
-        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
       )
 
-      validate(
-        need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
       )
 
       NULL
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -575,7 +575,7 @@ srv_g_ipp <- function(id,
     })
 
     # Outputs to render.
-    get_plot <- reactive({
+    get_plot <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("plot")

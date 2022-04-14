@@ -308,15 +308,15 @@ ui_g_adverse_events <- function(id, ...) {
     ui_args$decod
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
+    output = shiny::div(
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
         "action", "time", "decod"
@@ -408,13 +408,13 @@ srv_g_adverse_events <- function(id,
                                  label,
                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -422,7 +422,7 @@ srv_g_adverse_events <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -452,35 +452,35 @@ srv_g_adverse_events <- function(id,
       )
     )
 
-    calls <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    calls <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       teal::validate_has_data(
         ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
         1
       )
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("aeterm", dataname)]],
           "Please select AETERM variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("tox_grade", dataname)]],
           "Please select AETOXGR variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("causality", dataname)]],
           "Please select AEREL variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("outcome", dataname)]],
           "Please select AEOUT variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("action", dataname)]],
           "Please select AEACN variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("time", dataname)]],
           "Please select ASTDY variable."
         )
@@ -528,7 +528,7 @@ srv_g_adverse_events <- function(id,
       options = list(pageLength = input$table_rows)
     )
 
-    chart <- reactive({
+    chart <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(calls())
       teal.code::chunks_get_var("chart")

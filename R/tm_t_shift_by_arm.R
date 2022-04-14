@@ -281,7 +281,7 @@ tm_t_shift_by_arm <- function(label,
 
 #' @noRd
 ui_shift_by_arm <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -297,8 +297,8 @@ ui_shift_by_arm <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
       )]),
@@ -332,8 +332,8 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$base_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
-      radioButtons(
+      shiny::checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
+      shiny::radioButtons(
         ns("useNA"),
         label = "Display NA counts",
         choices = c("ifany", "no"),
@@ -381,7 +381,7 @@ srv_shift_by_arm <- function(id,
                              add_total,
                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -404,7 +404,7 @@ srv_shift_by_arm <- function(id,
     )
 
     # validate inputs
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -415,17 +415,17 @@ srv_shift_by_arm <- function(id,
       input_base_var <- as.vector(anl_m$columns_source$base_var)
       input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable"),
-        need(
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable"),
+        shiny::need(
           anl_m_rowcount > 0,
           paste0(
             "Please make sure the analysis dataset is not empty or\n",
             "endpoint parameter and analysis visit are selected."
           )
         ),
-        need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-        need(input$treatment_flag, "Please select indicator value for on treatment records.")
+        shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
+        shiny::need(input$treatment_flag, "Please select indicator value for on treatment records.")
       )
 
       validate_standard_inputs(
@@ -438,7 +438,7 @@ srv_shift_by_arm <- function(id,
     })
 
     # generate r code for the analysis
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -468,7 +468,7 @@ srv_shift_by_arm <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

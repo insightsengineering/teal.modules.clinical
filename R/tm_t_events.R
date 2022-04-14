@@ -542,7 +542,7 @@ tm_t_events <- function(label,
 
 #' @noRd
 ui_t_events_byterm <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$hlt, a$llt)
 
@@ -550,8 +550,8 @@ ui_t_events_byterm <- function(id, ...) {
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -571,15 +571,15 @@ ui_t_events_byterm <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       teal.widgets::panel_item(
         "Additional table settings",
-        checkboxInput(
+        shiny::checkboxInput(
           ns("drop_arm_levels"),
           label = "Drop columns not in filtered analysis dataset",
           value = a$drop_arm_levels
         ),
-        selectInput(
+        shiny::selectInput(
           inputId = ns("sort_criteria"),
           label = "Sort Criteria",
           choices = c(
@@ -589,8 +589,8 @@ ui_t_events_byterm <- function(id, ...) {
           selected = a$sort_criteria,
           multiple = FALSE
         ),
-        helpText("Pruning Options"),
-        numericInput(
+        shiny::helpText("Pruning Options"),
+        shiny::numericInput(
           inputId = ns("prune_freq"),
           label = "Minimum Incidence Rate(%) in any of the treatment groups",
           value = a$prune_freq,
@@ -599,7 +599,7 @@ ui_t_events_byterm <- function(id, ...) {
           step = 1,
           width = "100%"
         ),
-        numericInput(
+        shiny::numericInput(
           inputId = ns("prune_diff"),
           label = "Minimum Difference Rate(%) between any of the treatment groups",
           value = a$prune_diff,
@@ -629,7 +629,7 @@ srv_t_events_byterm <- function(id,
                                 label,
                                 basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_selectors <- teal.transform::data_extract_multiple_srv(
@@ -649,7 +649,7 @@ srv_t_events_byterm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -660,14 +660,14 @@ srv_t_events_byterm <- function(id,
         as.vector(anl_m$columns_source$llt)
       )
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable"),
-        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable"),
+        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
         if (length(input_arm_var) >= 1) {
-          need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
+          shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
         },
         if (length(input_arm_var) == 2) {
-          need(
+          shiny::need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
@@ -679,12 +679,12 @@ srv_t_events_byterm <- function(id,
         input_level_term,
         "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
       )
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input$prune_freq >= 0 && input$prune_freq <= 100,
           "Please provide an Incidence Rate between 0 and 100 (%)."
         ),
-        need(
+        shiny::need(
           input$prune_diff >= 0 && input$prune_diff <= 100,
           "Please provide a Difference Rate between 0 and 100 (%)."
         )
@@ -701,7 +701,7 @@ srv_t_events_byterm <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -738,7 +738,7 @@ srv_t_events_byterm <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("pruned_and_sorted_result")
