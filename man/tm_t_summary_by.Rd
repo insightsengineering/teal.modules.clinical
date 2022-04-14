@@ -76,7 +76,7 @@ in character or factor variables in the data.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{range}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are selected.}
+\code{median}, \code{median_ci}, \code{range}, \code{geom_mean}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are selected.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference
