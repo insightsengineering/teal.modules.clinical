@@ -407,8 +407,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'             "Indication",
 #'             "Reported Name of Drug, Med, or Therapy",
 #'             "Study Day of Start of Medication",
-#'             "Study Day of End of Medication")
-#'         ADCM',
+#'             "Study Day of End of Medication")',
 #'       keys = adcm_keys
 #'     ),
 #'     check = TRUE
@@ -765,7 +764,7 @@ srv_g_patient_timeline <- function(id,
       font_size <- input[["font_size"]]
 
       ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
-      ds_chart_vars_null <- any(vapply(list(dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
+      ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
       p_timeline_data <- p_timeline_merged_data()$data()
       # time variables can not be NA
@@ -780,7 +779,7 @@ srv_g_patient_timeline <- function(id,
         ),
         need(
           input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
-          "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+          "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
           Please select the appropriate input variables."
         )
       )
@@ -820,7 +819,7 @@ srv_g_patient_timeline <- function(id,
         ),
         need(
           !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
-          "The 3 sections of the plot (Adverse Events, Dosing and Medication) do not have enough input variables.
+          "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
           Please select the appropriate input variables."
         )
       )
