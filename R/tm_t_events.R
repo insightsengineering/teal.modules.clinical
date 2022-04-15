@@ -93,8 +93,8 @@ template_events <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute(
-          expr = anl <- anl %>% dplyr::mutate(hlt_name := hlt),
-          env = list(hlt_name = as.name(hlt), hlt = hlt)
+          expr = anl <- anl %>% dplyr::mutate(`=`(hlt, as.character(hlt))),
+          env = list(hlt = as.name(hlt))
         )
       )
     }
@@ -103,8 +103,8 @@ template_events <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute(
-          expr = anl <- anl %>% dplyr::mutate(llt_name := llt),
-          env = list(llt_name = as.name(llt), llt = llt)
+          expr = anl <- anl %>% dplyr::mutate(`=`(llt, as.character(llt))),
+          env = list(llt = as.name(llt))
         )
       )
     }

@@ -110,12 +110,11 @@ template_events_summary <- function(anl_name,
     data_list,
     substitute(
       expr = anl <- anl %>% dplyr::mutate(
-        a_name := a,
+        `=`(a, as.character(a)),
         USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
       ),
       env = list(
-        a = llt,
-        a_name = as.name(llt),
+        a = as.name(llt),
         usubjid = as.name("USUBJID"),
         aeseq_var = as.name(aeseq_var)
       )
