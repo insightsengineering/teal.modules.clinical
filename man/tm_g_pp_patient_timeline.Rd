@@ -155,8 +155,7 @@ app <- init(
             "Indication",
             "Reported Name of Drug, Med, or Therapy",
             "Study Day of Start of Medication",
-            "Study Day of End of Medication")
-        ADCM',
+            "Study Day of End of Medication")',
       keys = adcm_keys
     ),
     check = TRUE
