@@ -10,6 +10,11 @@
 
 # teal.modules.clinical 0.8.12
 
+### Miscellaneous
+* Changed the input of `Covariates` in `tm_t_coxreg.R` to track user input and reflect the order in the table.
+
+# teal.modules.clinical 0.8.12
+
 ### New features
 * New module `tm_t_shift_by_arm_by_worst` was added for the analysis of the laboratory abnormalities with the most severe grade flag.
 * Enhanced `tm_t_events_patyear` to include selected parameter in title of the table.
