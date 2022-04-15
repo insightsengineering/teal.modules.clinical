@@ -88,7 +88,11 @@ template_summary <- function(dataname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(main_footer = "n represent the number of unique subject ID such that the variable have non-NA values.")
+      module_table = teal.widgets::basic_table_args(
+        main_footer =
+          "n represent the number of unique subject
+                                                    ID such that the variable have non-NA values."
+      )
     )
   )
 
