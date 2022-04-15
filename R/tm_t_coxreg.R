@@ -539,7 +539,7 @@ tm_t_coxreg <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = parentname, multiple = TRUE)
+    cov_var = cs_to_des_select(cov_var, dataname = parentname, multiple = TRUE, ordered = TRUE)
   )
 
   module(
