@@ -5,6 +5,9 @@
 * Updated the `tm_g_pp_adverse_events` plot to render the color legend. 
 * Enhanced `tm_t_summary_by` module to have geometric mean in the encoding panel.
 
+### Bug fixes
+* Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
+
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
 
