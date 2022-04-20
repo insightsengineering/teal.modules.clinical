@@ -354,6 +354,59 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
   testthat::expect_equal(result, expected)
 })
 
+testthat::test_that("template_binary_outcome can combine comparison arms when compare arms is FLASE", {
+  result <- template_binary_outcome(
+    dataname = "adrs",
+    parentname = "ADSL",
+    arm_var = "ARMCD",
+    paramcd = "BESRSPI",
+    ref_arm = "ARM A",
+    comp_arm = c("ARM B", "ARM C"),
+    compare_arm = FALSE,
+    combine_comp_arms = TRUE,
+    aval_var = "AVALC",
+    show_rsp_cat = TRUE
+  )
+
+  expected <- list(
+    data = quote({
+      anl <- adrs %>%
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        dplyr::mutate(is_rsp = AVALC %in% c(
+          "Complete Response (CR)",
+          "Partial Response (PR)"
+        )) %>%
+        dplyr::mutate(AVALC = factor(AVALC,
+          levels = c("Complete Response (CR)", "Partial Response (PR)")
+        ))
+      ADSL <- ADSL %>% # nolint
+        dplyr::mutate(ARMCD = droplevels(ARMCD)) %>%
+        df_explicit_na()
+    }),
+    layout = quote(
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+      ) %>%
+        rtables::split_cols_by(var = "ARMCD") %>%
+        rtables::add_colcounts() %>%
+        estimate_proportion(
+          vars = "is_rsp", conf_level = 0.95, method = "waldcc",
+          table_names = "prop_est"
+        ) %>%
+        estimate_multinomial_response(
+          var = "AVALC",
+          conf_level = 0.95, method = "waldcc"
+        )
+    ),
+    table = quote({
+      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
+      result
+    })
+  )
+
+  testthat::expect_equal(result, expected)
+})
+
 testthat::test_that("split_col_expr prepare the right four possible expressions", {
   result <- list(
     split_col_expr(compare = TRUE, combine = TRUE, arm_var = "ARMCD", ref = "ARM C"),
