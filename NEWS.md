@@ -1,11 +1,20 @@
-# teal.modules.clinical 0.8.12.9003
+# teal.modules.clinical 0.8.12.9006
 
 ### Enhancements
 * Updated the position of the labels in the `tm_g_pp_adverse_events` plot.
 * Updated the `tm_g_pp_adverse_events` plot to render the color legend. 
+* Enhanced `tm_t_summary_by` module to have geometric mean in the encoding panel.
+
+### Bug fixes
+* Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
 
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
+
+# teal.modules.clinical 0.8.12
+
+### Miscellaneous
+* Changed the input of `Covariates` in `tm_t_coxreg.R` to track user input and reflect the order in the table.
 
 # teal.modules.clinical 0.8.12
 
