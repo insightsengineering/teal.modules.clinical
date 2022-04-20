@@ -25,7 +25,9 @@ testthat::test_that("template_summary generates correct expressions", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+      ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::add_colcounts() %>%
         summarize_vars(
@@ -71,7 +73,9 @@ testthat::test_that("template_summary can generate customized table", {
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+      ) %>%
         rtables::split_cols_by("ARMCD") %>%
         rtables::add_overall_col("All Patients") %>%
         rtables::add_colcounts() %>%
@@ -124,7 +128,9 @@ testthat::test_that("template_summary generates correct expressions for multiple
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+      ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%
@@ -177,7 +183,9 @@ testthat::test_that("template_summary generates correct expressions for multiple
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+      ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         rtables::add_overall_col("All Patients") %>%
@@ -231,7 +239,9 @@ testthat::test_that("template_summary generates correct expressions for customiz
       adsl <- df_explicit_na(adsl, na_level = "")
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(
+        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+      ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
         rtables::add_colcounts() %>%
