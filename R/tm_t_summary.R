@@ -4,7 +4,7 @@
 #'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. All are selected by default.
+#'   `geom_mean`, `median`, `median_ci`, `quantiles` and `range`. All are selected by default.
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -194,7 +194,7 @@ template_summary <- function(dataname,
 #'   TRUE regardless of the user choice when `tm_t_summary` is called.
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
+#'   `geom_mean`, `median`, `median_ci`, `quantiles` and `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -272,7 +272,7 @@ tm_t_summary <- function(label,
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
 
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range")
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range")
   if (!all(numeric_stats %in% allowed_numeric_stats)) {
     stop("numeric_stats needs to be one of ", paste(allowed_numeric_stats, collapse = ", "))
   }
