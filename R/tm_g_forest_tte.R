@@ -576,8 +576,12 @@ srv_g_forest_tte <- function(id,
         length(anl_m$data()[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
-      shiny::validate(shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+      )
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column.")
+      )
 
       NULL
     })

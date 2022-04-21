@@ -791,7 +791,9 @@ srv_t_tte <- function(id,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      shiny::validate(shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+      )
       shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
       shiny::validate(shiny::need(
         checkmate::test_string(input_event_desc),

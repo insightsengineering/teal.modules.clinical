@@ -1,3 +1,4 @@
+
 testthat::test_that("template_events_summary generates minimal table", {
   result <- template_events_summary(
     anl_name = "adae",
@@ -13,7 +14,7 @@ testthat::test_that("template_events_summary generates minimal table", {
       anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
       anl$tmp_aefl <- "Y"
-      anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)), # styler: off
+      anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)),
         USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
       )
       anl <- df_explicit_na(anl, na_level = "")
@@ -95,7 +96,7 @@ testthat::test_that("template_events_summary generates table with multiple flags
       anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
       study_id <- unique(anl[["STUDYID"]])
       anl$tmp_aefl <- "Y"
-      anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)), # styler: off
+      anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)),
         USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
       )
       flag_var_anl_label <- formatters::var_labels(anl[, c(

@@ -645,7 +645,9 @@ ui_mmrm <- function(id, ...) {
             multiple = TRUE
           )),
           shinyjs::hidden(
-            shiny::helpText(id = ns("help_text"), "Multiple reference groups are automatically combined into a single group.")
+            shiny::helpText(
+              id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
+            )
           ),
           shinyjs::hidden(
             shiny::selectInput(
@@ -1031,7 +1033,9 @@ srv_mmrm <- function(id,
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
       shiny::validate(
-        shiny::need(encoding_inputs[[extract_input("aval_var", dataname)]], "`Analysis Variable` field is not selected"),
+        shiny::need(
+          encoding_inputs[[extract_input("aval_var", dataname)]], "`Analysis Variable` field is not selected"
+        ),
         shiny::need(
           encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
           "`Select Endpoint` field is not selected"
