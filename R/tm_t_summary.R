@@ -18,7 +18,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE,  #nolint
                              na_level = "<Missing>",
-                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
+                             numeric_stats = c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range"),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE) {
   assert_that(
@@ -346,6 +346,7 @@ ui_summary <- function(id, ...) {
                 "n" = "n",
                 "Mean (SD)" = "mean_sd",
                 "Mean 95% CI" = "mean_ci",
+                "Geometric Mean" = "geom_mean",
                 "Median" = "median",
                 "Median 95% CI" = "median_ci",
                 "25% and 75%-ile" = "quantiles",
