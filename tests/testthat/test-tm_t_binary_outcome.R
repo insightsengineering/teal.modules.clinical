@@ -354,7 +354,7 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
   testthat::expect_equal(result, expected)
 })
 
-testthat::test_that("template_binary_outcome can combine comparison arms when compare arms is FLASE", {
+testthat::test_that("template_binary_outcome can combine comparison arms when compare arms is FALSE", {
   result <- template_binary_outcome(
     dataname = "adrs",
     parentname = "ADSL",
