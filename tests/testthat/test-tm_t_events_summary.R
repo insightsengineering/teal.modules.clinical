@@ -7,17 +7,18 @@ testthat::test_that("template_events_summary generates minimal table", {
 
   expected <- list(
     data = quote({
-    anl <- adae
-    adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-    arm_levels <- levels(adsl[["ARM"]])
-    anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
-    study_id <- unique(anl[["STUDYID"]])
-    anl$tmp_aefl <- "Y"
-    anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)),
-        USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@"))
-    anl <- df_explicit_na(anl, na_level = "")
-    adsl <- df_explicit_na(adsl, na_level = "")
-}),
+      anl <- adae
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
+      study_id <- unique(anl[["STUDYID"]])
+      anl$tmp_aefl <- "Y"
+      anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)), # styler: off
+        USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
+      )
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
+    }),
     layout_parent = quote(
       lyt_parent <- rtables::basic_table() %>%
         rtables::split_cols_by(var = "ARM") %>%
@@ -88,21 +89,26 @@ testthat::test_that("template_events_summary generates table with multiple flags
 
   expected <- list(
     data = quote({
-    anl <- adae
-    adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-    arm_levels <- levels(adsl[["ARM"]])
-    anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
-    study_id <- unique(anl[["STUDYID"]])
-    anl$tmp_aefl <- "Y"
-    anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)),
-        USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@"))
-    flag_var_anl_label <- formatters::var_labels(anl[, c("A",
-        "B", "C")], fill = FALSE)
-    flag_var_aesi_label <- formatters::var_labels(anl[, c("X",
-        "Y")], fill = FALSE)
-    anl <- df_explicit_na(anl, na_level = "")
-    adsl <- df_explicit_na(adsl, na_level = "")
-}),
+      anl <- adae
+      adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+      arm_levels <- levels(adsl[["ARM"]])
+      anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
+      study_id <- unique(anl[["STUDYID"]])
+      anl$tmp_aefl <- "Y"
+      anl <- anl %>% dplyr::mutate((AEDECOD = as.character(AEDECOD)), # styler: off
+        USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@")
+      )
+      flag_var_anl_label <- formatters::var_labels(anl[, c(
+        "A",
+        "B", "C"
+      )], fill = FALSE)
+      flag_var_aesi_label <- formatters::var_labels(anl[, c(
+        "X",
+        "Y"
+      )], fill = FALSE)
+      anl <- df_explicit_na(anl, na_level = "")
+      adsl <- df_explicit_na(adsl, na_level = "")
+    }),
     layout_parent = quote(
       lyt_parent <- rtables::basic_table() %>%
         rtables::split_cols_by(var = "ARM") %>%
