@@ -105,11 +105,11 @@ template_adverse_events <- function(dataname = "ANL",
           ATOXGR == "." ~ "UNKNOWN",
           TRUE ~ ATOXGR
         )) %>%
-        ggplot(aes(
+        ggplot2::ggplot(ggplot2::aes(
           fill = ATOXGR, color = aeterm, y = aeterm, x = time
         )) +
         ggrepel::geom_label_repel(
-          aes(label = aeterm),
+          ggplot2::aes(label = aeterm),
           color = "black",
           hjust = "right",
           size = font_size_var[1] / 3.5,
@@ -125,7 +125,7 @@ template_adverse_events <- function(dataname = "ANL",
         )) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
         xlim(1, 1.2 * max(dataname[[time_var]])) +
-        geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
         labs +
         themes,
       env = list(

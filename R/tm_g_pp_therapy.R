@@ -169,21 +169,21 @@ template_therapy <- function(dataname = "ANL",
         ))
 
       therapy_plot <-
-        ggplot(data = data, aes(fill = cmindc, color = cmindc, y = CMDECOD, x = CMSTDY)) +
-        geom_segment(aes(xend = CMENDY, yend = CMDECOD), size = 2) +
-        geom_text(
+        ggplot2::ggplot(data = data, ggplot2::aes(fill = cmindc, color = cmindc, y = CMDECOD, x = CMSTDY)) +
+        ggplot2::geom_segment(ggplot2::aes(xend = CMENDY, yend = CMDECOD), size = 2) +
+        ggplot2::geom_text(
           data =
             data %>%
               dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
               dplyr::distinct(),
-          aes(x = CMSTDY, label = CMDECOD), color = "black",
+          ggplot2::aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",
           nudge_y = 0.1,
           size = font_size_var / 3.5
         ) +
         scale_y_discrete(expand = expansion(add = 1.2)) +
-        geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
         labs +
         ggtheme +
         theme

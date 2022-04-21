@@ -13,9 +13,9 @@ testthat::test_that("1. and 2. Mean and 95% CIs for mean", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = SEX,
         lty = SEX, shape = SEX
       )
@@ -54,9 +54,9 @@ testthat::test_that("3. Confidence Interval Plot (using different stratification
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = STRATA2,
         lty = STRATA2, shape = STRATA2
       )
@@ -95,9 +95,9 @@ testthat::test_that("4. Median and 95% CIs for median", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = STRATA1,
         lty = STRATA1, shape = STRATA1
       )
@@ -137,9 +137,9 @@ testthat::test_that("5. Using different alpha level", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = SEX,
         lty = SEX, shape = SEX
       )

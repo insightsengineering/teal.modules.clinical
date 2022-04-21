@@ -31,9 +31,9 @@ template_g_ci <- function(dataname, # nolint
       expr_ls = graph_list,
       new_expr = {
         substitute(
-          expr = ggplot(
+          expr = ggplot2::ggplot(
             data = ANL,
-            mapping = aes(
+            mapping = ggplot2::aes(
               x = x_var,
               y = y_var
             )
@@ -50,9 +50,9 @@ template_g_ci <- function(dataname, # nolint
       expr_ls = graph_list,
       new_expr = {
         substitute(
-          expr = ggplot(
+          expr = ggplot2::ggplot(
             data = ANL,
-            mapping = aes(
+            mapping = ggplot2::aes(
               x = x_var,
               y = y_var,
               color = grp_var,

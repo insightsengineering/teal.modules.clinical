@@ -151,15 +151,15 @@ template_patient_timeline <- function(dataname = "ANL",
               y = 0,
               label = empty_plot_label
             )
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               data = df,
-              aes(
+              ggplot2::aes(
                 x = x,
                 y = y,
                 label = label
               )
             ) +
-              geom_label() +
+              ggplot2::geom_label() +
               theme_void()
           } else {
             patient_timeline_plot <- vistime::gg_vistime(
@@ -169,7 +169,7 @@ template_patient_timeline <- function(dataname = "ANL",
               show_labels = FALSE
             ) +
               ggrepel::geom_text_repel(
-                mapping = aes(label = event),
+                mapping = ggplot2::aes(label = event),
                 size = font_size_var / 3.5,
                 color = "black",
                 direction = "x",
@@ -282,24 +282,24 @@ template_patient_timeline <- function(dataname = "ANL",
               y = 0,
               label = empty_plot_label
             )
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               data = df,
-              aes(
+              ggplot2::aes(
                 x = x,
                 y = y,
                 label = label
               )
             ) +
-              geom_label() +
+              ggplot2::geom_label() +
               theme_void()
           } else {
             vistime_data$event <- factor(vistime_data$event, levels = rev(unique(vistime_data$event)))
             vistime_data$group <- factor(vistime_data$group, levels = unique(vistime_data$group))
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               vistime_data,
-              aes(x = start, y = event, xend = end, yend = event, color = color)
+              ggplot2::aes(x = start, y = event, xend = end, yend = event, color = color)
             ) +
-              geom_segment(size = 4) +
+              ggplot2::geom_segment(size = 4) +
               facet_grid(group ~ ., scales = "free", space = "free") +
               scale_x_continuous(breaks = scales::pretty_breaks()) +
               labs +

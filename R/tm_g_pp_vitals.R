@@ -100,27 +100,27 @@ template_vitals <- function(dataname = "ANL",
         color = paramcd_levels_e
       )
 
-      result_plot <- ggplot(data = vitals, mapping = aes(x = xaxis)) + # replaced VSDY
-        geom_line(
+      result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
+        ggplot2::geom_line(
           data = vitals,
-          mapping = aes(y = aval, color = paramcd),
+          mapping = ggplot2::aes(y = aval, color = paramcd),
           size = 1.5,
           alpha = 0.5
         ) +
         scale_color_manual(
           values = vars_colors,
         ) +
-        geom_text(
+        ggplot2::geom_text(
           data = base_stats_df,
-          aes(x = x, y = y, label = label, color = color),
+          ggplot2::aes(x = x, y = y, label = label, color = color),
           alpha = 1,
           nudge_y = 2.2,
           size = font_size_var / 3.5,
           show.legend = FALSE
         ) +
-        geom_hline(
+        ggplot2::geom_hline(
           data = base_stats_df,
-          aes(yintercept = y, color = color),
+          ggplot2::aes(yintercept = y, color = color),
           linetype = 2,
           alpha = 0.5,
           size = 1,
@@ -131,13 +131,13 @@ template_vitals <- function(dataname = "ANL",
           name = "Vitals",
           minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
-        geom_text(
+        ggplot2::geom_text(
           data = data.frame(
             x = rep(max_day, length(max_aval_seq)),
             y = max_aval_seq,
             l = as.character(max_aval_seq)
           ),
-          aes(
+          ggplot2::aes(
             x = x,
             y = y,
             label = l

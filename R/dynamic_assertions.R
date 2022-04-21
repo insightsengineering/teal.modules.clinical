@@ -51,6 +51,7 @@ assertthat::on_failure(teal_has_element) <- function(call, env) {
   call[[1]] <- validate_has_elements
   eval(call, envir = env)
 }
+
 validate_has_elements <- function(str, label = str) {
   shiny::validate(
     shiny::need(

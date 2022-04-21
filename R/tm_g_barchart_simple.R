@@ -582,16 +582,16 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
   checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
-  plot_args <- list(quote(ggplot(counts)))
+  plot_args <- list(quote(ggplot2::ggplot(counts)))
 
   # aesthetic variables
   x_val_var <- if (is.null(x_name)) 0 else x_name
   plot_args <- c(
     plot_args,
     if (is.null(fill_name)) {
-      bquote(aes_string(x = .(x_val_var)))
+      bquote(ggplot2::aes_string(x = .(x_val_var)))
     } else {
-      bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
+      bquote(ggplot2::aes_string(x = .(x_val_var), fill = .(fill_name)))
     }
   )
 
@@ -616,11 +616,11 @@ make_barchart_simple_call <- function(y_name,
     # nothing to put side-by-side, so put fill to one color only
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
-      geom_col(aes_string(y = .(y_name)), position = .(position), fill = "#b6cae9")
+      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position), fill = "#b6cae9")
     ))
   } else {
     plot_args <- c(plot_args, bquote(
-      geom_col(aes_string(y = .(y_name)), position = .(position))
+      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position))
     ))
   }
 
@@ -637,7 +637,7 @@ make_barchart_simple_call <- function(y_name,
     }
 
     plot_args <- c(plot_args, bquote(
-      geom_text(aes_string(y = .(y_name), label = .(y_name)),
+      ggplot2::geom_text(ggplot2::aes_string(y = .(y_name), label = .(y_name)),
         stat = "identity",
         angle = .(if (rotate_bar_labels) 45 else 0),
         position = .(position),

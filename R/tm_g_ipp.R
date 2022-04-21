@@ -124,7 +124,7 @@ template_g_ipp <- function(dataname = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = plot <- plot + ggplot2::facet_grid(rows = vars(id)),
+        expr = plot <- plot + ggplot2::facet_grid(rows = ggplot2::vars(id)),
         env = list(id = as.name(id_var))
       )
     )
