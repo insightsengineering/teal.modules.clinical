@@ -604,7 +604,8 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Wald, without correction" = "wald",
                 "Wald, with correction" = "waldcc",
                 "Anderson-Hauck" = "ha",
-                "Newcombe" = "newcombe"
+                "Newcombe, without correction" = "newcombe",
+                "Newcombe, with correction" = "newcombecc"
               ),
               selected = ifelse(a$rsp_table, "wald", "waldcc"),
               multiple = FALSE,
