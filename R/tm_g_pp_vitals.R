@@ -41,17 +41,17 @@ template_vitals <- function(dataname = "ANL",
       module_plot = teal.widgets::ggplot2_args(
         labs = list(title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = substitute(element_text(size = font), list(font = font_size)),
-          axis.text.y = quote(element_blank()),
-          axis.ticks.y = quote(element_blank()),
-          plot.title = substitute(element_text(size = font), list(font = font_size)),
+          text = substitute(ggplot2::element_text(size = font), list(font = font_size)),
+          axis.text.y = quote(ggplot2::element_blank()),
+          axis.ticks.y = quote(ggplot2::element_blank()),
+          plot.title = substitute(ggplot2::element_text(size = font), list(font = font_size)),
           legend.position = "top",
-          panel.grid.minor = quote(element_line(
+          panel.grid.minor = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
-          panel.grid.major = quote(element_line(
+          panel.grid.major = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
@@ -107,7 +107,7 @@ template_vitals <- function(dataname = "ANL",
           size = 1.5,
           alpha = 0.5
         ) +
-        scale_color_manual(
+        ggplot2::scale_color_manual(
           values = vars_colors,
         ) +
         ggplot2::geom_text(
@@ -126,7 +126,7 @@ template_vitals <- function(dataname = "ANL",
           size = 1,
           show.legend = FALSE
         ) +
-        scale_y_continuous(
+        ggplot2::scale_y_continuous(
           breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
           name = "Vitals",
           minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)

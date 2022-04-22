@@ -74,11 +74,11 @@ template_g_ci <- function(dataname, # nolint
     add_expr(
       expr_ls = graph_list,
       new_expr = substitute(
-        expr = stat_summary(
+        expr = ggplot2::stat_summary(
           fun.data = fun,
           geom = "errorbar",
           width = .1,
-          position = position_dodge(width = .5)
+          position = ggplot2::position_dodge(width = .5)
         ),
         env = list(
           fun = switch(stat,
@@ -92,11 +92,11 @@ template_g_ci <- function(dataname, # nolint
     add_expr(
       expr_ls = graph_list,
       new_expr = substitute(
-        expr = stat_summary(
+        expr = ggplot2::stat_summary(
           fun.data = fun,
           geom = "errorbar",
           width = .1,
-          position = position_dodge(width = .5)
+          position = ggplot2::position_dodge(width = .5)
         ),
         env = list(
           fun = switch(stat,
@@ -117,10 +117,10 @@ template_g_ci <- function(dataname, # nolint
   graph_list <- add_expr(
     expr_ls = graph_list,
     new_expr = substitute(
-      expr = stat_summary(
+      expr = ggplot2::stat_summary(
         fun = fun,
         geom = "point",
-        position = position_dodge(width = .5)
+        position = ggplot2::position_dodge(width = .5)
       ),
       env = list(
         fun = switch(stat,

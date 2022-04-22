@@ -75,16 +75,16 @@ template_adverse_events <- function(dataname = "ANL",
       module_plot = teal.widgets::ggplot2_args(
         labs = list(y = "Adverse Events", title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = substitute(element_text(size = font), list(font = font_size[1])),
-          axis.text.y = quote(element_blank()),
-          axis.ticks.y = quote(element_blank()),
+          text = substitute(ggplot2::element_text(size = font), list(font = font_size[1])),
+          axis.text.y = quote(ggplot2::element_blank()),
+          axis.ticks.y = quote(ggplot2::element_blank()),
           legend.position = "right",
-          panel.grid.minor = quote(element_line(
+          panel.grid.minor = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
-          panel.grid.major = quote(element_line(
+          panel.grid.major = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
@@ -115,7 +115,7 @@ template_adverse_events <- function(dataname = "ANL",
           size = font_size_var[1] / 3.5,
           show.legend = FALSE
         ) +
-        scale_fill_manual(values = c(
+        ggplot2::scale_fill_manual(values = c(
           "1" = "#E2264633",
           "2" = "#E2264666",
           "3" = "#E2264699",
@@ -123,9 +123,9 @@ template_adverse_events <- function(dataname = "ANL",
           "5" = "#E22646FF",
           "UNKNOWN" = "#ACADB1FF"
         )) +
-        scale_y_discrete(expand = expansion(add = 1.2)) +
-        xlim(1, 1.2 * max(dataname[[time_var]])) +
-        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 1.2)) +
+        ggplot2::xlim(1, 1.2 * max(dataname[[time_var]])) +
+        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = ggplot2::position_nudge(y = -0.15)) +
         labs +
         themes,
       env = list(

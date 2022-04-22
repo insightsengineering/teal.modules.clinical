@@ -418,7 +418,7 @@ srv_g_barchart_simple <- function(id,
               list(y_name = get_n_name(groupby_vars))
             )
           ),
-          theme = list(plot.title = quote(element_text(hjust = 0.5)))
+          theme = list(plot.title = quote(ggplot2::element_text(hjust = 0.5)))
         )
       )
 
@@ -599,16 +599,16 @@ make_barchart_simple_call <- function(y_name,
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      ggplot2::facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
     ))
   }
 
   # position stacking or dodging for bars and text
   position <- if (is.null(fill_name) || (barlayout == "side_by_side")) {
     # vjust = on top, i.e. don't place below when only one filling (i.e. nothing really stacked)
-    quote(position_dodge(0.9))
+    quote(ggplot2::position_dodge(0.9))
   } else {
-    quote(position_stack(vjust = 0.5))
+    quote(ggplot2::position_stack(vjust = 0.5))
   }
 
   # draw bars
@@ -650,29 +650,29 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      guides(fill = guide_legend(title = column_annotation_label(counts, .(fill_name))))
+      ggplot2::guides(fill = ggplot2::guide_legend(title = column_annotation_label(counts, .(fill_name))))
     ))
   }
 
-  if (isTRUE(flip_axis)) plot_args <- c(plot_args, quote(coord_flip()))
+  if (isTRUE(flip_axis)) plot_args <- c(plot_args, quote(ggplot2::coord_flip()))
 
   if (expand_y_range > 0) {
-    plot_args <- c(plot_args, bquote(scale_y_continuous(
+    plot_args <- c(plot_args, bquote(ggplot2::scale_y_continuous(
       labels = scales::comma,
-      expand = expansion(c(0, .(expand_y_range)))
+      expand = ggplot2::expansion(c(0, .(expand_y_range)))
     )))
   }
 
-  if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(element_text(angle = 45, hjust = 1))
-  if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
+  if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(ggplot2::element_text(angle = 45, hjust = 1))
+  if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(ggplot2::element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
     ggplot2_args$labs[["x"]] <- substitute(
       expr = column_annotation_label(counts, x_name),
       env = list(x_name = x_name)
     )
   } else {
-    ggplot2_args$theme[["axis.text.x"]] <- quote(element_blank())
-    ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
+    ggplot2_args$theme[["axis.text.x"]] <- quote(ggplot2::element_blank())
+    ggplot2_args$theme[["axis.ticks.x"]] <- quote(ggplot2::element_blank())
   }
 
   parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(ggplot2_args)

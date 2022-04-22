@@ -62,18 +62,18 @@ template_patient_timeline <- function(dataname = "ANL",
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
           theme = list(
             plot.title = substitute(
-              element_text(hjust = 0, size = font_size_var),
+              ggplot2::element_text(hjust = 0, size = font_size_var),
               list(font_size_var = font_size)
             ),
             axis.text = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
             axis.title = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
-            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size))
+            text = substitute(ggplot2::element_text(size = font_size_var), list(font_size_var = font_size))
           )
         )
       )
@@ -160,7 +160,7 @@ template_patient_timeline <- function(dataname = "ANL",
               )
             ) +
               ggplot2::geom_label() +
-              theme_void()
+              ggplot2::theme_void()
           } else {
             patient_timeline_plot <- vistime::gg_vistime(
               vistime_data,
@@ -176,7 +176,7 @@ template_patient_timeline <- function(dataname = "ANL",
                 nudge_x = 0.5,
                 segment.size = 0.1
               ) +
-              scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
+              ggplot2::scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
           }
           patient_timeline_plot
         },
@@ -195,18 +195,18 @@ template_patient_timeline <- function(dataname = "ANL",
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
           theme = list(
             plot.title = substitute(
-              element_text(hjust = 0, size = font_size_var),
+              ggplot2::element_text(hjust = 0, size = font_size_var),
               list(font_size_var = font_size)
             ),
             axis.text = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
             axis.title = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
-            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
+            text = substitute(ggplot2::element_text(size = font_size_var), list(font_size_var = font_size)),
             legend.position = "none"
           )
         )
@@ -291,7 +291,7 @@ template_patient_timeline <- function(dataname = "ANL",
               )
             ) +
               ggplot2::geom_label() +
-              theme_void()
+              ggplot2::theme_void()
           } else {
             vistime_data$event <- factor(vistime_data$event, levels = rev(unique(vistime_data$event)))
             vistime_data$group <- factor(vistime_data$group, levels = unique(vistime_data$group))
@@ -300,8 +300,8 @@ template_patient_timeline <- function(dataname = "ANL",
               ggplot2::aes(x = start, y = event, xend = end, yend = event, color = color)
             ) +
               ggplot2::geom_segment(size = 4) +
-              facet_grid(group ~ ., scales = "free", space = "free") +
-              scale_x_continuous(breaks = scales::pretty_breaks()) +
+              ggplot2::facet_grid(group ~ ., scales = "free", space = "free") +
+              ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
               labs +
               ggthemes +
               themes

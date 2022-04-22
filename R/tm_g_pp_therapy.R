@@ -118,17 +118,17 @@ template_therapy <- function(dataname = "ANL",
       module_plot = teal.widgets::ggplot2_args(
         labs = list(y = "Medication", title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = substitute(element_text(size = font), list(font = font_size)),
-          axis.text.y = quote(element_blank()),
-          axis.ticks.y = quote(element_blank()),
-          plot.title = substitute(element_text(size = font), list(font = font_size)),
+          text = substitute(ggplot2::element_text(size = font), list(font = font_size)),
+          axis.text.y = quote(ggplot2::element_blank()),
+          axis.ticks.y = quote(ggplot2::element_blank()),
+          plot.title = substitute(ggplot2::element_text(size = font), list(font = font_size)),
           legend.position = "none",
-          panel.grid.minor = quote(element_line(
+          panel.grid.minor = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
-          panel.grid.major = quote(element_line(
+          panel.grid.major = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
@@ -182,8 +182,8 @@ template_therapy <- function(dataname = "ANL",
           nudge_y = 0.1,
           size = font_size_var / 3.5
         ) +
-        scale_y_discrete(expand = expansion(add = 1.2)) +
-        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 1.2)) +
+        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = ggplot2::position_nudge(y = -0.15)) +
         labs +
         ggtheme +
         theme
