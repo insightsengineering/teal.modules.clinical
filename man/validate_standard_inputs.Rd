@@ -56,10 +56,10 @@ ADSL <- synthetic_cdisc_data("latest")$adsl
 ADAE <- synthetic_cdisc_data("latest")$adae
 
 ui <- fluidPage(
-  sliderInput("obs", "Max Age",
+  shiny::sliderInput("obs", "Max Age",
     min = 0, max = 100, value = 100
   ),
-  sliderInput("maxgr", "Max Grade",
+  shiny::sliderInput("maxgr", "Max Grade",
     min = 0, max = 5, value = 5
   ),
   plotOutput("plot")

@@ -448,12 +448,12 @@ ui_ancova <- function(id, ...) {
     a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
       teal.transform::data_extract_ui(
         id = ns("avisit"),
@@ -479,22 +479,22 @@ ui_ancova <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("ref_arm"),
         "Reference Group",
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      helpText("Multiple reference groups are automatically combined into a single group."),
-      selectInput(
+      shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+      shiny::selectInput(
         ns("comp_arm"),
         "Comparison Group",
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("combine_comp_arms"),
         "Combine all comparison groups?",
         value = FALSE
@@ -507,7 +507,7 @@ ui_ancova <- function(id, ...) {
       ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
-        label = HTML(paste("Confidence Level")),
+        label = shiny::HTML(paste("Confidence Level")),
         a$conf_level$choices,
         a$conf_level$selected,
         multiple = FALSE,
@@ -534,7 +534,7 @@ srv_ancova <- function(id,
                        label,
                        basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
@@ -569,7 +569,7 @@ srv_ancova <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -592,46 +592,46 @@ srv_ancova <- function(id,
       do.call(what = "validate_standard_inputs", validate_args)
 
       # Other validations.
-      validate(need(
+      shiny::validate(shiny::need(
         length(input_aval_var) > 0,
         "Analysis variable cannot be empty."
       ))
-      validate(need(
+      shiny::validate(shiny::need(
         length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
         "ANCOVA table needs at least 2 arm groups to make comparisons."
       ))
       # check that there is at least one record with no missing data
-      validate(need(
+      shiny::validate(shiny::need(
         !all(is.na(anl_m$data()[[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
       all_NA_dataset <- anl_m$data() %>% # nolint
-        dplyr::group_by(!!sym(input_avisit), !!sym(input_arm_var)) %>%
-        dplyr::summarize(all_NA = all(is.na(!!sym(input_aval_var))))
-      validate(need(
+        dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
+        dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
+      shiny::validate(shiny::need(
         !any(all_NA_dataset$all_NA),
         "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
       ))
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(
+      shiny::validate(shiny::need(
         input[[extract_input("avisit", avisit$filter[[1]]$dataname, filter = TRUE)]],
         "`Analysis Visit` field cannot be empty"
       ))
 
-      validate(need(
+      shiny::validate(shiny::need(
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected."
       ))
 
       if (length(input_cov_var >= 1L)) {
         input_cov_var_dataset <- anl_filtered[input_cov_var]
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(vapply(input_cov_var_dataset, function(col) length(unique(col)) > 1L, logical(1))),
             "Selected covariates should have more than one level for showing the adjusted analysis."
           )
@@ -640,7 +640,7 @@ srv_ancova <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -681,7 +681,7 @@ srv_ancova <- function(id,
     })
 
     # Output to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

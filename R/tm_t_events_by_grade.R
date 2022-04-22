@@ -882,14 +882,14 @@ tm_t_events_by_grade <- function(label,
 
 #' @noRd
 ui_t_events_by_grade <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$hlt, a$llt, a$grade)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -915,12 +915,12 @@ ui_t_events_by_grade <- function(id, ...) {
         data_extract_spec = a$grade,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("col_by_grade"),
         "Display grade groupings in nested columns",
         value = a$col_by_grade
@@ -928,13 +928,13 @@ ui_t_events_by_grade <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          helpText("Pruning Options"),
-          numericInput(
+          shiny::helpText("Pruning Options"),
+          shiny::numericInput(
             inputId = ns("prune_freq"),
             label = "Minimum Incidence Rate(%) in any of the treatment groups",
             value = a$prune_freq,
@@ -943,7 +943,7 @@ ui_t_events_by_grade <- function(id, ...) {
             step = 1,
             width = "100%"
           ),
-          numericInput(
+          shiny::numericInput(
             inputId = ns("prune_diff"),
             label = "Minimum Difference Rate(%) between any of the treatment groups",
             value = a$prune_diff,
@@ -976,7 +976,7 @@ srv_t_events_by_grade <- function(id,
                                   drop_arm_levels,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -991,7 +991,7 @@ srv_t_events_by_grade <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
       adsl_keys <- datasets$get_keys(parentname)
@@ -1004,46 +1004,46 @@ srv_t_events_by_grade <- function(id,
       )
       input_grade <- as.vector(anl_m$columns_source$grade)
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable"),
-        need(input_grade, "Please select a grade variable")
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable"),
+        shiny::need(input_grade, "Please select a grade variable")
       )
       teal::validate_has_elements(
         input_level_term,
         "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
       )
-      validate(
-        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      shiny::validate(
+        shiny::need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
       )
       if (input$col_by_grade) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             is.factor(anl_filtered[[input_grade]]) &&
               all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
             "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
           )
         )
       } else {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             is.factor(anl_filtered[[input_grade]]),
             "Event grade variable must be a factor."
           )
         )
       }
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input$prune_freq >= 0 && input$prune_freq <= 100,
           "Please provide an Incidence Rate between 0 and 100 (%)."
         ),
-        need(
+        shiny::need(
           input$prune_diff >= 0 && input$prune_diff <= 100,
           "Please provide a Difference Rate between 0 and 100 (%)."
         )
       )
       if (input$col_by_grade) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             as.vector(anl_m$columns_source$llt),
             "Low Level Term must be present for nested grade grouping display."
           )
@@ -1061,7 +1061,7 @@ srv_t_events_by_grade <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -1122,7 +1122,7 @@ srv_t_events_by_grade <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("pruned_and_sorted_result")

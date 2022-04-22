@@ -167,13 +167,13 @@ ui_t_medical_history <- function(id, ...) {
     ui_args$mhdistat
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
-      htmlOutput(outputId = ns("medical_history_table"))
+    output = shiny::div(
+      shiny::htmlOutput(outputId = ns("medical_history_table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -217,19 +217,19 @@ srv_t_medical_history <- function(id,
                                   mhdistat,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -252,23 +252,23 @@ srv_t_medical_history <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    mhist_call <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    mhist_call <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("mhterm", dataname)]],
           "Please select MHTERM variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("mhbodsys", dataname)]],
           "Please select MHBODSYS variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("mhdistat", dataname)]],
           "Please select MHDISTAT variable."
         ),
-        need(
+        shiny::need(
           nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
           "Patient has no data about medical history."
         )
@@ -300,7 +300,7 @@ srv_t_medical_history <- function(id,
       mhist_stack
     })
 
-    output$medical_history_table <- reactive({
+    output$medical_history_table <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(mhist_call())
       teal.code::chunks_get_var("result_kbl")

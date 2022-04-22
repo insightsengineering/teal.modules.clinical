@@ -360,7 +360,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
 #' @noRd
 ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -375,8 +375,8 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c(
           "arm_var", "id_var", "paramcd",
@@ -389,7 +389,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
@@ -431,7 +431,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
             multiple = FALSE,
             fixed = a$worst_flag_indicator$fixed
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -461,7 +461,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              label,
                                              basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -480,7 +480,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -492,27 +492,27 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
       input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable."),
-        need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
-        need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-        need(
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable."),
+        shiny::need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
+        shiny::need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
+        shiny::need(
           length(anl_m$data()[[input_paramcd_var]]) > 0,
           "Please select at least one Laboratory parameter."
         ),
-        need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
-        need(input_id_var, "Please select a Subject Identifier."),
-        need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-        need(
+        shiny::need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
+        shiny::need(input_id_var, "Please select a Subject Identifier."),
+        shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
+        shiny::need(
           all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
           "All grade values should be within -4:4 range."
         )
       )
 
-      validate(
-        need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-        need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-        need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor.")
+      shiny::validate(
+        shiny::need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
+        shiny::need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
+        shiny::need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor.")
       )
 
       # validate inputs
@@ -529,7 +529,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       )
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
       teal.code::chunks_reset()
       anl_m <- anl_merged()
@@ -557,7 +557,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

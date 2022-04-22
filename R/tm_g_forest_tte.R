@@ -363,12 +363,12 @@ ui_g_forest_tte <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -394,29 +394,29 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("ref_arm"),
-        div(
+        shiny::div(
           "Reference Group",
           title = paste(
             "Multiple reference groups are automatically combined into a single group when more than one",
             "value selected."
           ),
-          icon("info-circle")
+          shiny::icon("info-circle")
         ),
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      selectInput(
+      shiny::selectInput(
         ns("comp_arm"),
-        div(
+        shiny::div(
           "Comparison Group",
           title = paste(
             "Multiple comparison groups are automatically combined into a single group when more than one",
             "value selected."
           ),
-          icon("info-circle")
+          shiny::icon("info-circle")
         ),
         choices = NULL,
         selected = NULL,
@@ -445,7 +445,7 @@ ui_g_forest_tte <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
@@ -477,7 +477,7 @@ srv_g_forest_tte <- function(id,
                              plot_width,
                              ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
@@ -519,7 +519,7 @@ srv_g_forest_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -548,8 +548,8 @@ srv_g_forest_tte <- function(id,
       validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
 
       if (length(input_subgroup_var) > 0) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
@@ -557,8 +557,8 @@ srv_g_forest_tte <- function(id,
       }
 
       if (length(input_strata_var) > 0) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
@@ -567,23 +567,27 @@ srv_g_forest_tte <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(
+      shiny::validate(shiny::need(
         length(anl_m$data()[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
-      validate(need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."))
-      validate(need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
+      )
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column.")
+      )
 
       NULL
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -622,7 +626,7 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    get_plot <- reactive({
+    get_plot <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("p")
