@@ -213,14 +213,14 @@ ui_g_laboratory <- function(id, ...) {
     ui_args$anrind
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
+    output = shiny::div(
       teal.widgets::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -264,7 +264,7 @@ ui_g_laboratory <- function(id, ...) {
         data_extract_spec = ui_args$anrind,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         inputId = ns("round_value"),
         label = "Select number of decimal places for rounding:",
         choices = NULL
@@ -289,13 +289,13 @@ srv_g_laboratory <- function(id,
                              anrind,
                              label) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -303,7 +303,7 @@ srv_g_laboratory <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -324,7 +324,7 @@ srv_g_laboratory <- function(id,
     decimal_nums <- aval_values[trunc(aval_values) != aval_values]
     max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
-    updateSelectInput(
+    shiny::updateSelectInput(
       session,
       "round_value",
       choices = seq(0, max_decimal),
@@ -344,31 +344,31 @@ srv_g_laboratory <- function(id,
       )
     )
 
-    labor_calls <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    labor_calls <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("timepoints", dataname)]],
           "Please select timepoints variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("aval", dataname)]],
           "Please select AVAL variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("avalu", dataname)]],
           "Please select AVALU variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("param", dataname)]],
           "Please select PARAM variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("paramcd", dataname)]],
           "Please select PARAMCD variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("anrind", dataname)]],
           "Please select ANRIND variable."
         )

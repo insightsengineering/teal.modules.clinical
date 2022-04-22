@@ -48,7 +48,7 @@ testthat::test_that("template_g_ipp works as expected with non-default arguments
         subtitle = "a, b, c", id_var = "SUBJID", add_baseline_hline = TRUE,
         yvar_baseline = "BASE"
       )
-      plot <- plot + ggplot2::facet_grid(rows = vars(SUBJID))
+      plot <- plot + ggplot2::facet_grid(rows = ggplot2::vars(SUBJID))
       grid::grid.newpage()
       grid::grid.draw(plot)
     })

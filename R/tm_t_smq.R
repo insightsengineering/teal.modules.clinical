@@ -424,7 +424,7 @@ tm_t_smq <- function(label,
 
 #' @noRd
 ui_t_smq <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...) # module args
 
 
@@ -438,8 +438,8 @@ ui_t_smq <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
@@ -455,7 +455,7 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("baskets"),
         label = "Select the SMQXXNAM/CQXXNAM baskets",
@@ -465,7 +465,7 @@ ui_t_smq <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
-          checkboxInput(ns(
+          shiny::checkboxInput(ns(
             "drop_arm_levels"
           ),
           "Drop arm levels not in filtered analysis dataset",
@@ -483,7 +483,7 @@ ui_t_smq <- function(id, ...) {
             data_extract_spec = a$scopes,
             is_single_dataset = is_single_dataset_value
           ),
-          selectInput(
+          shiny::selectInput(
             inputId = ns("sort_criteria"),
             label = "Sort Criteria",
             choices = c(
@@ -515,7 +515,7 @@ srv_t_smq <- function(id,
                       label,
                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_selectors <- teal.transform::data_extract_multiple_srv(
@@ -542,7 +542,7 @@ srv_t_smq <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
       anl_m <- anl_merged()
@@ -554,13 +554,13 @@ srv_t_smq <- function(id,
       input_scopes <- as.vector(anl_m$columns_source$scopes)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
-      validate(
-        need(input_id_var, "Please select a subject identifier."),
-        need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
-        need(input_baskets, "Please select the SMQ/CQ baskets."),
-        need(input_scopes, "Please select the scope variables."),
-        need(input_llt, "Please select the low level term."),
-        need(input_arm_var, "Please select the arm variable.")
+      shiny::validate(
+        shiny::need(input_id_var, "Please select a subject identifier."),
+        shiny::need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
+        shiny::need(input_baskets, "Please select the SMQ/CQ baskets."),
+        shiny::need(input_scopes, "Please select the scope variables."),
+        shiny::need(input_llt, "Please select the low level term."),
+        shiny::need(input_arm_var, "Please select the arm variable.")
       )
       # validate inputs
       validate_standard_inputs(
@@ -575,7 +575,7 @@ srv_t_smq <- function(id,
       )
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -603,7 +603,7 @@ srv_t_smq <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("pruned_and_sorted_result")

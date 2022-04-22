@@ -375,7 +375,7 @@ tm_t_mult_events <- function(label, # nolint
 
 #' @noRd
 ui_t_mult_events_byterm <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
 
@@ -383,8 +383,8 @@ ui_t_mult_events_byterm <- function(id, ...) {
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -404,11 +404,11 @@ ui_t_mult_events_byterm <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -447,7 +447,7 @@ srv_t_mult_events_byterm <- function(id,
                                      label,
                                      basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_selectors <- teal.transform::data_extract_multiple_srv(
@@ -473,7 +473,7 @@ srv_t_mult_events_byterm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -484,14 +484,14 @@ srv_t_mult_events_byterm <- function(id,
       input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
-      validate(need(input_arm_var, "Please select a treatment variable"))
-      validate(need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
+      shiny::validate(shiny::need(input_arm_var, "Please select a treatment variable"))
+      shiny::validate(shiny::need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
 
-      validate(
-        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      shiny::validate(
+        shiny::need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
       )
-      validate(
-        need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
+      shiny::validate(
+        shiny::need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
       )
 
       # validate inputs
@@ -505,7 +505,7 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -550,7 +550,7 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

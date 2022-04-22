@@ -196,16 +196,16 @@ tm_g_barchart_simple <- function(x = NULL,
 }
 
 ui_g_barchart_simple <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-      uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
+      shiny::uiOutput(ns("table"), style = "overflow-y:scroll; max-height: 250px")
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
       if (!is.null(args$x)) {
         teal.transform::data_extract_ui(
@@ -243,7 +243,7 @@ ui_g_barchart_simple <- function(id, ...) {
         teal.widgets::panel_item(
           "Additional plot settings",
           if (!is.null(args$fill)) {
-            radioButtons(
+            shiny::radioButtons(
               inputId = ns("barlayout"),
               label = "Covariate Bar Layout",
               choices = c("Side by side" = "side_by_side", "Stacked" = "stacked"),
@@ -251,37 +251,37 @@ ui_g_barchart_simple <- function(id, ...) {
               inline = TRUE
             )
           },
-          checkboxInput(
+          shiny::checkboxInput(
             ns("label_bars"),
             "Label bars",
             value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_bar_labels"),
             "Rotate bar labels",
             value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_x_label"),
             "Rotate x label",
             value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("rotate_y_label"),
             "Rotate y label",
             value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("flip_axis"),
             "Flip axes",
             value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
           ),
-          checkboxInput(
+          shiny::checkboxInput(
             ns("show_n"),
             "Show n",
             value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
           ),
-          sliderInput(
+          shiny::sliderInput(
             inputId = ns("expand_y_range"),
             label = "Y-axis range expansion (fraction on top)",
             min = 0,
@@ -308,7 +308,7 @@ srv_g_barchart_simple <- function(id,
                                   plot_width,
                                   ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
@@ -316,7 +316,7 @@ srv_g_barchart_simple <- function(id,
 
     selector_list <- teal.transform::data_extract_multiple_srv(data_extract, datasets)
 
-    reactive_select_input <- reactive({
+    reactive_select_input <- shiny::reactive({
       selectors <- selector_list()
       extract_names <- names(selectors)
       for (extract in extract_names) {
@@ -332,9 +332,9 @@ srv_g_barchart_simple <- function(id,
       datasets = datasets
     )
 
-    data_chunk <- reactive({
-      validate({
-        need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+    data_chunk <- shiny::reactive({
+      shiny::validate({
+        shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
       })
       ANL <- merged_data()$data() # nolint
       teal::validate_has_data(ANL, 2)
@@ -343,7 +343,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    count_chunk <- reactive({
+    count_chunk <- shiny::reactive({
       chunk <- data_chunk()$clone(deep = TRUE)
       groupby_vars <- r_groupby_vars()
       groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
@@ -392,7 +392,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    plot_chunk <- reactive({
+    plot_chunk <- shiny::reactive({
       chunk <- count_chunk()$clone(deep = TRUE)
 
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
@@ -418,7 +418,7 @@ srv_g_barchart_simple <- function(id,
               list(y_name = get_n_name(groupby_vars))
             )
           ),
-          theme = list(plot.title = quote(element_text(hjust = 0.5)))
+          theme = list(plot.title = quote(ggplot2::element_text(hjust = 0.5)))
         )
       )
 
@@ -448,7 +448,7 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    generate_code <- reactive({
+    generate_code <- shiny::reactive({
       chunk <- plot_chunk()
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(chunk) # set session chunks for ShowRCode
@@ -456,11 +456,11 @@ srv_g_barchart_simple <- function(id,
       chunk
     })
 
-    plot_r <- reactive({
+    plot_r <- shiny::reactive({
       generate_code()$get("plot")
     })
 
-    output$table <- renderTable({
+    output$table <- shiny::renderTable({
       generate_code()$get("counts")
     })
 
@@ -486,7 +486,7 @@ srv_g_barchart_simple <- function(id,
       ) # c() -> NULL entries are omitted
 
       # at least one category must be specified
-      validate(need(
+      shiny::validate(shiny::need(
         length(res) > 0, # c() removes NULL entries
         "Must specify at least one of x, fill, x_facet and y_facet."
       ))
@@ -563,8 +563,8 @@ make_barchart_simple_call <- function(y_name,
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   # c() filters out NULL
   plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
-  validate(
-    need(
+  shiny::validate(
+    shiny::need(
       !any(duplicated(plot_vars)),
       paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
     )
@@ -582,16 +582,16 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
   checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
-  plot_args <- list(quote(ggplot(counts)))
+  plot_args <- list(quote(ggplot2::ggplot(counts)))
 
   # aesthetic variables
   x_val_var <- if (is.null(x_name)) 0 else x_name
   plot_args <- c(
     plot_args,
     if (is.null(fill_name)) {
-      bquote(aes_string(x = .(x_val_var)))
+      bquote(ggplot2::aes_string(x = .(x_val_var)))
     } else {
-      bquote(aes_string(x = .(x_val_var), fill = .(fill_name)))
+      bquote(ggplot2::aes_string(x = .(x_val_var), fill = .(fill_name)))
     }
   )
 
@@ -599,16 +599,16 @@ make_barchart_simple_call <- function(y_name,
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      ggplot2::facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
     ))
   }
 
   # position stacking or dodging for bars and text
   position <- if (is.null(fill_name) || (barlayout == "side_by_side")) {
     # vjust = on top, i.e. don't place below when only one filling (i.e. nothing really stacked)
-    quote(position_dodge(0.9))
+    quote(ggplot2::position_dodge(0.9))
   } else {
-    quote(position_stack(vjust = 0.5))
+    quote(ggplot2::position_stack(vjust = 0.5))
   }
 
   # draw bars
@@ -616,11 +616,11 @@ make_barchart_simple_call <- function(y_name,
     # nothing to put side-by-side, so put fill to one color only
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
-      geom_col(aes_string(y = .(y_name)), position = .(position), fill = "#b6cae9")
+      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position), fill = "#b6cae9")
     ))
   } else {
     plot_args <- c(plot_args, bquote(
-      geom_col(aes_string(y = .(y_name)), position = .(position))
+      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position))
     ))
   }
 
@@ -637,7 +637,7 @@ make_barchart_simple_call <- function(y_name,
     }
 
     plot_args <- c(plot_args, bquote(
-      geom_text(aes_string(y = .(y_name), label = .(y_name)),
+      ggplot2::geom_text(ggplot2::aes_string(y = .(y_name), label = .(y_name)),
         stat = "identity",
         angle = .(if (rotate_bar_labels) 45 else 0),
         position = .(position),
@@ -650,29 +650,29 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      guides(fill = guide_legend(title = column_annotation_label(counts, .(fill_name))))
+      ggplot2::guides(fill = ggplot2::guide_legend(title = column_annotation_label(counts, .(fill_name))))
     ))
   }
 
-  if (isTRUE(flip_axis)) plot_args <- c(plot_args, quote(coord_flip()))
+  if (isTRUE(flip_axis)) plot_args <- c(plot_args, quote(ggplot2::coord_flip()))
 
   if (expand_y_range > 0) {
-    plot_args <- c(plot_args, bquote(scale_y_continuous(
+    plot_args <- c(plot_args, bquote(ggplot2::scale_y_continuous(
       labels = scales::comma,
-      expand = expansion(c(0, .(expand_y_range)))
+      expand = ggplot2::expansion(c(0, .(expand_y_range)))
     )))
   }
 
-  if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(element_text(angle = 45, hjust = 1))
-  if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(element_text(angle = 45, hjust = 1))
+  if (isTRUE(rotate_x_label)) ggplot2_args$theme[["axis.text.x"]] <- quote(ggplot2::element_text(angle = 45, hjust = 1))
+  if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(ggplot2::element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
     ggplot2_args$labs[["x"]] <- substitute(
       expr = column_annotation_label(counts, x_name),
       env = list(x_name = x_name)
     )
   } else {
-    ggplot2_args$theme[["axis.text.x"]] <- quote(element_blank())
-    ggplot2_args$theme[["axis.ticks.x"]] <- quote(element_blank())
+    ggplot2_args$theme[["axis.text.x"]] <- quote(ggplot2::element_blank())
+    ggplot2_args$theme[["axis.ticks.x"]] <- quote(ggplot2::element_blank())
   }
 
   parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(ggplot2_args)

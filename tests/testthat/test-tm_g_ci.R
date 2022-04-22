@@ -13,23 +13,23 @@ testthat::test_that("1. and 2. Mean and 95% CIs for mean", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = SEX,
         lty = SEX, shape = SEX
       )
     ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun.data = stat_mean_ci,
         geom = "errorbar",
         width = 0.1,
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun = mean,
         geom = "point",
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
       ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
@@ -54,23 +54,23 @@ testthat::test_that("3. Confidence Interval Plot (using different stratification
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = STRATA2,
         lty = STRATA2, shape = STRATA2
       )
     ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun.data = stat_mean_ci,
         geom = "errorbar",
         width = 0.1,
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun = mean,
         geom = "point",
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
       ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
@@ -95,23 +95,23 @@ testthat::test_that("4. Median and 95% CIs for median", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = STRATA1,
         lty = STRATA1, shape = STRATA1
       )
     ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun.data = stat_median_ci,
         geom = "errorbar",
         width = 0.1,
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun = median,
         geom = "point",
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
       ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
@@ -137,23 +137,23 @@ testthat::test_that("5. Using different alpha level", {
   )
 
   expected <- quote({
-    gg <- ggplot(
+    gg <- ggplot2::ggplot(
       data = ANL,
-      mapping = aes(
+      mapping = ggplot2::aes(
         x = ARMCD, y = AVAL, color = SEX,
         lty = SEX, shape = SEX
       )
     ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun.data = function(x) stat_mean_ci(x, conf_level = 0.9),
         geom = "errorbar",
         width = 0.1,
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
-      stat_summary(
+      ggplot2::stat_summary(
         fun = mean,
         geom = "point",
-        position = position_dodge(width = 0.5)
+        position = ggplot2::position_dodge(width = 0.5)
       ) +
       ggplot2::labs(
         title = "Confidence Interval Plot by Treatment Group",
