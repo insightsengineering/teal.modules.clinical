@@ -106,11 +106,7 @@ template_summary_by <- function(parentname,
 
   layout_list <- list()
 
-  table_title <- if (length(sum_vars) > 1) {
-    paste("Summary Table for", paste(sum_vars, collapse = ", "))
-  } else {
-    paste("Summary Table for", sum_vars)
-  }
+  table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
