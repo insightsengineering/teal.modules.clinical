@@ -106,9 +106,12 @@ template_summary_by <- function(parentname,
 
   layout_list <- list()
 
+  table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.widgets::basic_table_args(title = table_title)
     )
   )
 
