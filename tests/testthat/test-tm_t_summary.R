@@ -37,7 +37,7 @@ testthat::test_that("template_summary generates correct expressions", {
           na_level = "<Missing>",
           denom = "N_col",
           .stats = c(
-            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean","count_fraction"
+            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean", "count_fraction"
           )
         )
     ),
@@ -89,7 +89,7 @@ testthat::test_that("template_summary can generate customized table", {
           na_level = "<Missing>",
           denom = "N_col",
           .stats = c(
-            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean","count"
+            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean", "count"
           )
         )
     ),
