@@ -4,7 +4,7 @@
 #'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. All are selected by default.
+#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. All are selected by default.
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -19,7 +19,9 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE, # nolint
                              na_level = "<Missing>",
-                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"),
+                             numeric_stats = c(
+                               "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
+                             ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
@@ -35,7 +37,10 @@ template_summary <- function(dataname,
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(numeric_stats, c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"))
+  checkmate::assert_subset(
+    numeric_stats,
+    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
+  )
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -261,7 +266,9 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
-                         numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"),
+                         numeric_stats = c(
+                           "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
+                         ),
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
