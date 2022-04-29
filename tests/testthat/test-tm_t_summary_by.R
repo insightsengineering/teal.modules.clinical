@@ -28,7 +28,7 @@ testthat::test_that("template_summary_by generates correct expressions", {
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>%
         rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -83,7 +83,7 @@ testthat::test_that("template_summary_by generates correct expressions when `par
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Summary Table for AVAL, CHG by AVISIT") %>%
         rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -153,7 +153,7 @@ testthat::test_that("template_summary_by generates correct expressions when `row
       }
     ),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Summary Table for AVAL by SEX, COUNTRY") %>%
         rtables::split_cols_by("ARM") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -210,7 +210,7 @@ testthat::test_that("template_summary_by generates correct expressions for custo
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>%
         rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -265,7 +265,7 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>%
         rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", first = FALSE)) %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
