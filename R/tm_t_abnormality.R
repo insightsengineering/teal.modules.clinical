@@ -375,7 +375,7 @@ tm_t_abnormality <- function(label,
 
 #' @noRd
 ui_t_abnormality <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -390,8 +390,8 @@ ui_t_abnormality <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
       ),
@@ -401,7 +401,7 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
@@ -414,7 +414,7 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$grade,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("exclude_base_abn"),
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
@@ -422,7 +422,7 @@ ui_t_abnormality <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          checkboxInput(
+          shiny::checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -485,11 +485,11 @@ srv_t_abnormality <- function(id,
                               na_level,
                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Update UI choices depending on selection of previous options
-    observeEvent(input$grade, {
+    shiny::observeEvent(input$grade, {
       anl <- datasets$get_data(dataname, filtered = FALSE)
 
       validate_has_elements(input$grade, "Please select a grade variable")
@@ -520,7 +520,7 @@ srv_t_abnormality <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -532,14 +532,14 @@ srv_t_abnormality <- function(id,
       input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
       input_treatment_flag_var <- as.vector(anl_m$columns_source$treatment_flag_var)
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable."),
-        need(input_grade, "Please select a grade variable."),
-        need(input_by_vars, "Please select a Row By Variable."),
-        need(input_id_var, "Please select a subject identifier."),
-        need(input_baseline_var, "Please select a baseline grade variable."),
-        need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-        need(input$treatment_flag, "Please select indicator value for on treatment records.")
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable."),
+        shiny::need(input_grade, "Please select a grade variable."),
+        shiny::need(input_by_vars, "Please select a Row By Variable."),
+        shiny::need(input_id_var, "Please select a subject identifier."),
+        shiny::need(input_baseline_var, "Please select a baseline grade variable."),
+        shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
+        shiny::need(input$treatment_flag, "Please select indicator value for on treatment records.")
       )
       # validate inputs
       validate_standard_inputs(
@@ -551,7 +551,7 @@ srv_t_abnormality <- function(id,
       )
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -595,7 +595,7 @@ srv_t_abnormality <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

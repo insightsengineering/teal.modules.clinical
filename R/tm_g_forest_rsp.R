@@ -377,12 +377,12 @@ ui_g_forest_rsp <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -396,7 +396,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("responders"),
         "Responders",
         choices = c("CR", "PR"),
@@ -409,29 +409,29 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("ref_arm"),
-        div(
+        shiny::div(
           "Reference Group",
           title = paste(
             "Multiple reference groups are automatically combined into a single group when more than one",
             "value selected."
           ),
-          icon("info-circle")
+          shiny::icon("info-circle")
         ),
         choices = NULL,
         selected = NULL,
         multiple = TRUE
       ),
-      selectInput(
+      shiny::selectInput(
         ns("comp_arm"),
-        div(
+        shiny::div(
           "Comparison Group",
           title = paste(
             "Multiple comparison groups are automatically combined into a single group when more than one",
             "value selected."
           ),
-          icon("info-circle")
+          shiny::icon("info-circle")
         ),
         choices = NULL,
         selected = NULL,
@@ -460,7 +460,7 @@ ui_g_forest_rsp <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
+          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
         )
       )
     ),
@@ -485,7 +485,7 @@ srv_g_forest_rsp <- function(id,
                              label,
                              default_responses,
                              ggplot2_args) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     stopifnot(is_cdisc_data(datasets))
 
     teal.code::init_chunks()
@@ -526,7 +526,7 @@ srv_g_forest_rsp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    observeEvent(
+    shiny::observeEvent(
       eventExpr = c(
         input[[extract_input("aval_var", "ADRS")]],
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
@@ -556,7 +556,7 @@ srv_g_forest_rsp <- function(id,
             unique(anl_merged()$data()[[aval_var]])
           }
         }
-        updateSelectInput(
+        shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
           selected = intersect(responder_choices, common_rsp)
@@ -565,7 +565,7 @@ srv_g_forest_rsp <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -591,16 +591,16 @@ srv_g_forest_rsp <- function(id,
       teal::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
         )
       }
       if (length(input_strata_var) > 0) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
@@ -608,8 +608,8 @@ srv_g_forest_rsp <- function(id,
       }
 
       if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(unlist(lapply(default_responses, function(x) {
               if (is.list(x) & "levels" %in% names(x)) {
                 lvls <- x$levels
@@ -629,8 +629,8 @@ srv_g_forest_rsp <- function(id,
       }
 
       if (is.list(default_responses)) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(
               grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
                 names(unlist(default_responses)) %in% names(default_responses)
@@ -640,15 +640,15 @@ srv_g_forest_rsp <- function(id,
         )
       }
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(
-        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-        need(input$responders, "`Responders` field is empty."),
-        need(
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
+        shiny::need(input$responders, "`Responders` field is empty."),
+        shiny::need(
           input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
           "`Select Endpoint` is not selected."
         )
@@ -659,7 +659,7 @@ srv_g_forest_rsp <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()

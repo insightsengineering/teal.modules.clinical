@@ -62,18 +62,18 @@ template_patient_timeline <- function(dataname = "ANL",
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Absolute Study Dates"),
           theme = list(
             plot.title = substitute(
-              element_text(hjust = 0, size = font_size_var),
+              ggplot2::element_text(hjust = 0, size = font_size_var),
               list(font_size_var = font_size)
             ),
             axis.text = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
             axis.title = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
-            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size))
+            text = substitute(ggplot2::element_text(size = font_size_var), list(font_size_var = font_size))
           )
         )
       )
@@ -151,16 +151,16 @@ template_patient_timeline <- function(dataname = "ANL",
               y = 0,
               label = empty_plot_label
             )
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               data = df,
-              aes(
+              ggplot2::aes(
                 x = x,
                 y = y,
                 label = label
               )
             ) +
-              geom_label() +
-              theme_void()
+              ggplot2::geom_label() +
+              ggplot2::theme_void()
           } else {
             patient_timeline_plot <- vistime::gg_vistime(
               vistime_data,
@@ -169,14 +169,14 @@ template_patient_timeline <- function(dataname = "ANL",
               show_labels = FALSE
             ) +
               ggrepel::geom_text_repel(
-                mapping = aes(label = event),
+                mapping = ggplot2::aes(label = event),
                 size = font_size_var / 3.5,
                 color = "black",
                 direction = "x",
                 nudge_x = 0.5,
                 segment.size = 0.1
               ) +
-              scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
+              ggplot2::scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
           }
           patient_timeline_plot
         },
@@ -195,18 +195,18 @@ template_patient_timeline <- function(dataname = "ANL",
           labs = list(title = paste0("Patient ID: ", patient_id), x = "Relative Study Days", y = ""),
           theme = list(
             plot.title = substitute(
-              element_text(hjust = 0, size = font_size_var),
+              ggplot2::element_text(hjust = 0, size = font_size_var),
               list(font_size_var = font_size)
             ),
             axis.text = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
             axis.title = substitute(
-              element_text(size = font_size_var, face = "bold", colour = "black"),
+              ggplot2::element_text(size = font_size_var, face = "bold", colour = "black"),
               list(font_size_var = font_size)
             ),
-            text = substitute(element_text(size = font_size_var), list(font_size_var = font_size)),
+            text = substitute(ggplot2::element_text(size = font_size_var), list(font_size_var = font_size)),
             legend.position = "none"
           )
         )
@@ -282,26 +282,26 @@ template_patient_timeline <- function(dataname = "ANL",
               y = 0,
               label = empty_plot_label
             )
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               data = df,
-              aes(
+              ggplot2::aes(
                 x = x,
                 y = y,
                 label = label
               )
             ) +
-              geom_label() +
-              theme_void()
+              ggplot2::geom_label() +
+              ggplot2::theme_void()
           } else {
             vistime_data$event <- factor(vistime_data$event, levels = rev(unique(vistime_data$event)))
             vistime_data$group <- factor(vistime_data$group, levels = unique(vistime_data$group))
-            patient_timeline_plot <- ggplot(
+            patient_timeline_plot <- ggplot2::ggplot(
               vistime_data,
-              aes(x = start, y = event, xend = end, yend = event, color = color)
+              ggplot2::aes(x = start, y = event, xend = end, yend = event, color = color)
             ) +
-              geom_segment(size = 4) +
-              facet_grid(group ~ ., scales = "free", space = "free") +
-              scale_x_continuous(breaks = scales::pretty_breaks()) +
+              ggplot2::geom_segment(size = 4) +
+              ggplot2::facet_grid(group ~ ., scales = "free", space = "free") +
+              ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
               labs +
               ggthemes +
               themes
@@ -566,11 +566,11 @@ ui_g_patient_timeline <- function(id, ...) {
     ui_args$dsrelday_end
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         ui_args[c(
           "aeterm", "cmdecod",
@@ -598,7 +598,7 @@ ui_g_patient_timeline <- function(id, ...) {
       ),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
         shiny::tagList(
-          checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
+          shiny::checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
           shiny::conditionalPanel(
             paste0("input.relday_x_axis == true"),
             ns = ns,
@@ -637,7 +637,7 @@ ui_g_patient_timeline <- function(id, ...) {
           )
         )
       } else {
-        shinyjs::hidden(checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
+        shinyjs::hidden(shiny::checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
       },
       shiny::conditionalPanel(
         paste0("input.relday_x_axis == false"),
@@ -707,13 +707,13 @@ srv_g_patient_timeline <- function(id,
                                    label,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -721,7 +721,7 @@ srv_g_patient_timeline <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -748,8 +748,8 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    patient_timeline_calls <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    patient_timeline_calls <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
       aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
@@ -770,14 +770,14 @@ srv_g_patient_timeline <- function(id,
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input$relday_x_axis ||
             (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         ),
-        need(
+        shiny::need(
           input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
           "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
           Please select the appropriate input variables."
@@ -810,14 +810,14 @@ srv_g_patient_timeline <- function(id,
         dsrelday_end
       )
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           !input$relday_x_axis ||
             (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         ),
-        need(
+        shiny::need(
           !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
           "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
           Please select the appropriate input variables."
@@ -863,7 +863,7 @@ srv_g_patient_timeline <- function(id,
       patient_timeline_stack
     })
 
-    patient_timeline_plot <- reactive({
+    patient_timeline_plot <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(patient_timeline_calls())
       teal.code::chunks_get_var("patient_timeline_plot")

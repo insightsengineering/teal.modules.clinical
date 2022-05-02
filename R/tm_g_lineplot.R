@@ -142,7 +142,7 @@ template_g_lineplot <- function(dataname = "ANL",
       caption = ggplot2_args_caption,
       y_lab = ggplot2_args_ylab,
       legend_title = ggplot2_args_legend_title,
-      ggtheme = theme_minimal(),
+      ggtheme = ggplot2::theme_minimal(),
       control = control_summarize_vars(conf_level = conf_level),
       subtitle_add_paramcd = FALSE,
       subtitle_add_unit = FALSE
@@ -342,16 +342,16 @@ ui_g_lineplot <- function(id, ...) {
     a$y_unit
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      verbatimTextOutput(outputId = ns("text")),
+      shiny::verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
@@ -377,7 +377,7 @@ ui_g_lineplot <- function(id, ...) {
         data_extract_spec = a$x,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("mid"),
         "Midpoint Statistic",
         choices = c(
@@ -397,7 +397,7 @@ ui_g_lineplot <- function(id, ...) {
         ),
         selected = "mean_ci"
       ),
-      checkboxInput(
+      shiny::checkboxInput(
         ns("incl_screen"),
         "Include screening visit",
         value = TRUE
@@ -419,13 +419,13 @@ ui_g_lineplot <- function(id, ...) {
             a$mid_point_size,
             ticks = FALSE
           ),
-          checkboxGroupInput(
+          shiny::checkboxGroupInput(
             ns("whiskers"),
             "Whiskers to display",
             choices = c("Lower", "Upper"),
             selected = c("Lower", "Upper")
           ),
-          radioButtons(
+          shiny::radioButtons(
             ns("mid_type"),
             label = "Plot type",
             choices = c(
@@ -458,7 +458,7 @@ ui_g_lineplot <- function(id, ...) {
             a$table_font_size,
             ticks = FALSE
           ),
-          checkboxGroupInput(
+          shiny::checkboxGroupInput(
             ns("table"),
             label = "Choose the statistics to display in the table",
             choices = c(
@@ -500,7 +500,7 @@ srv_g_lineplot <- function(id,
                            plot_width,
                            ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -509,7 +509,7 @@ srv_g_lineplot <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -536,25 +536,25 @@ srv_g_lineplot <- function(id,
       }
 
       # Validate whiskers
-      validate(need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
+      shiny::validate(shiny::need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
 
       # Validate interval
-      validate(need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
+      shiny::validate(shiny::need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level > 0 && input$conf_level < 1,
         "Please choose a confidence level between 0 and 1"
       ))
 
-      validate(need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
-      validate(need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
+      shiny::validate(shiny::need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
 
       NULL
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -591,7 +591,7 @@ srv_g_lineplot <- function(id,
       mapply(expression = my_calls, teal.code::chunks_push)
     })
 
-    line_plot <- reactive({
+    line_plot <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
     })

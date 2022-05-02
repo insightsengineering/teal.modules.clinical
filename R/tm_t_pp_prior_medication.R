@@ -199,14 +199,14 @@ ui_t_prior_medication <- function(id, ...) {
     ui_args$cmstdy
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
+    output = shiny::div(
       teal.widgets::get_dt_rows(ns("prior_medication_table"), ns("prior_medication_table_rows")),
       DT::DTOutput(outputId = ns("prior_medication_table"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -257,13 +257,13 @@ srv_t_prior_medication <- function(id,
                                    cmstdy,
                                    label) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -271,7 +271,7 @@ srv_t_prior_medication <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -294,23 +294,23 @@ srv_t_prior_medication <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    pmed_call <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    pmed_call <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("atirel", dataname)]],
           "Please select ATIREL variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmdecod", dataname)]],
           "Please select Medication decoding variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmindc", dataname)]],
           "Please select CMINDC variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("cmstdy", dataname)]],
           "Please select CMSTDY variable."
         )

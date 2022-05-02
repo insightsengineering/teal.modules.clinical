@@ -15,7 +15,7 @@ tm_t_summary(
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
-    "range"),
+    "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -52,7 +52,8 @@ in character or factor variables in the data.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{quantiles} and \code{range}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are selected.}
+\code{median}, \code{median_ci}, \code{quantiles}, \code{range} and \code{geom_mean}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are
+selected.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference

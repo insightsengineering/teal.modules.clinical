@@ -14,7 +14,7 @@ arm_ref_comp_observer(
   dataname = "ADSL",
   arm_ref_comp,
   module,
-  on_off = reactive(TRUE)
+  on_off = shiny::reactive(TRUE)
 )
 }
 \arguments{
@@ -60,13 +60,13 @@ shinyApp(
       choices = arm_var$choices,
       selected = arm_var$selected
     ),
-    selectInput(
+    shiny::selectInput(
       "ref",
       "Reference Treatment",
       choices = NULL,
       multiple = TRUE
     ),
-    selectInput(
+    shiny::selectInput(
       "comp",
       "Comparison Group",
       choices = NULL,
@@ -74,7 +74,7 @@ shinyApp(
     )
   ),
   server = function(input, output, session) {
-    isolate({
+    shiny::isolate({
       teal.modules.clinical:::arm_ref_comp_observer(
         session,
         input,

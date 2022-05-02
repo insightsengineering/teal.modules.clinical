@@ -381,7 +381,7 @@ tm_t_exposure <- function(label,
 
 #' @noRd
 ui_t_exposure <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -396,8 +396,8 @@ ui_t_exposure <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
       )]),
@@ -425,7 +425,7 @@ ui_t_exposure <- function(id, ...) {
         data_extract_spec = a$row_by_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
@@ -473,7 +473,7 @@ srv_t_exposure <- function(id,
                            label,
                            basic_table_args = basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
@@ -496,7 +496,7 @@ srv_t_exposure <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
       anl_m <- anl_merged()
@@ -510,15 +510,15 @@ srv_t_exposure <- function(id,
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
 
-      validate(
-        need(input_row_by_var, "Please select a row by variable."),
-        need(input_aval_var, "Please select an analysis variable."),
-        need(input_avalu_var, "Please select an analysis unit variable."),
-        need(
+      shiny::validate(
+        shiny::need(input_row_by_var, "Please select a row by variable."),
+        shiny::need(input_aval_var, "Please select an analysis variable."),
+        shiny::need(input_avalu_var, "Please select an analysis unit variable."),
+        shiny::need(
           input[[extract_input("parcat", parcat$filter[[1]]$dataname, filter = TRUE)]],
           "Please select a parameter category value."
         ),
-        need(
+        shiny::need(
           input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
           "Please select a parameter value."
         ),
@@ -543,7 +543,7 @@ srv_t_exposure <- function(id,
       NULL
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -590,7 +590,7 @@ srv_t_exposure <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

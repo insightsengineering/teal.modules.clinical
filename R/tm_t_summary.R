@@ -4,7 +4,7 @@
 #'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. All are selected by default.
+#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. All are selected by default.
 #' @inheritParams template_arguments
 #'
 #' @seealso [tm_t_summary()]
@@ -19,7 +19,9 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              na.rm = FALSE, # nolint
                              na_level = "<Missing>",
-                             numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
+                             numeric_stats = c(
+                               "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
+                             ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
@@ -35,7 +37,10 @@ template_summary <- function(dataname,
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(numeric_stats, c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"))
+  checkmate::assert_subset(
+    numeric_stats,
+    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
+  )
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -206,7 +211,8 @@ template_summary <- function(dataname,
 #'   TRUE regardless of the user choice when `tm_t_summary` is called.
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles` and `range`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
+#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
+#'   selected.
 #' @inheritParams module_arguments
 #'
 #' @export
@@ -260,7 +266,9 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
-                         numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"),
+                         numeric_stats = c(
+                           "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
+                         ),
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
@@ -272,7 +280,10 @@ tm_t_summary <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(numeric_stats, c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"))
+  checkmate::assert_subset(
+    numeric_stats,
+    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
+  )
   useNA <- match.arg(useNA) # nolint
   numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)
@@ -309,15 +320,15 @@ tm_t_summary <- function(label,
 
 #' @noRd
 ui_summary <- function(id, ...) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$summarize_vars)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -325,7 +336,7 @@ ui_summary <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
@@ -335,19 +346,20 @@ ui_summary <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          radioButtons(
+          shiny::radioButtons(
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
             selected = a$useNA
           ),
-          checkboxGroupInput(
+          shiny::checkboxGroupInput(
             ns("numeric_stats"),
             label = "Choose the statistics to display for numeric variables",
             choices = c(
               "n" = "n",
               "Mean (SD)" = "mean_sd",
               "Mean 95% CI" = "mean_ci",
+              "Geometric Mean" = "geom_mean",
               "Median" = "median",
               "Median 95% CI" = "median_ci",
               "25% and 75%-ile" = "quantiles",
@@ -355,7 +367,7 @@ ui_summary <- function(id, ...) {
             ),
             selected = c("n", "mean_sd", "median", "range")
           ),
-          radioButtons(
+          shiny::radioButtons(
             ns("denominator"),
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
@@ -363,14 +375,14 @@ ui_summary <- function(id, ...) {
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
-              checkboxInput(
+              shiny::checkboxInput(
                 ns("drop_arm_levels"),
                 label = "it's a BUG if you see this",
                 value = TRUE
               )
             )
           } else {
-            checkboxInput(
+            shiny::checkboxInput(
               ns("drop_arm_levels"),
               label = sprintf("Drop columns not in filtered %s", a$dataname),
               value = a$drop_arm_levels
@@ -398,7 +410,7 @@ srv_summary <- function(id,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     choices_classes <- sapply(
@@ -433,7 +445,7 @@ srv_summary <- function(id,
     )
 
     # validate inputs
-    validate_checks <- reactive({
+    validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -441,19 +453,19 @@ srv_summary <- function(id,
       input_arm_var <- anl_merged()$columns_source$arm_var
       input_summarize_vars <- anl_merged()$columns_source$summarize_vars
 
-      validate(
-        need(input_arm_var, "Please select a treatment variable"),
-        need(input_summarize_vars, "Please select a summarize variable"),
-        need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+      shiny::validate(
+        shiny::need(input_arm_var, "Please select a treatment variable"),
+        shiny::need(input_summarize_vars, "Please select a summarize variable"),
+        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
         if (length(input_arm_var) == 2) {
-          need(
+          shiny::need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
         },
-        need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+        shiny::need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
       )
 
       validate_standard_inputs(
@@ -466,7 +478,7 @@ srv_summary <- function(id,
     })
 
     # generate r code for the analysis
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -498,7 +510,7 @@ srv_summary <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")
