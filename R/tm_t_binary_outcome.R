@@ -533,11 +533,11 @@ ui_t_binary_outcome <- function(id, ...) {
     a$strata_var
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -545,7 +545,7 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
+      shiny::selectInput(
         ns("responders"),
         "Responders",
         choices = NULL,
@@ -558,33 +558,33 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      div(
+      shiny::div(
         class = "arm-comp-box",
-        tags$label("Compare Treatments"),
+        shiny::tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        conditionalPanel(
+        shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          div(
-            selectInput(
+          shiny::div(
+            shiny::selectInput(
               ns("ref_arm"),
               "Reference Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            helpText("Multiple reference groups are automatically combined into a single group."),
-            selectInput(
+            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+            shiny::selectInput(
               ns("comp_arm"),
               "Comparison Group",
               choices = NULL,
               selected = NULL,
               multiple = TRUE
             ),
-            checkboxInput(
+            shiny::checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -592,7 +592,7 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
@@ -604,7 +604,8 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Wald, without correction" = "wald",
                 "Wald, with correction" = "waldcc",
                 "Anderson-Hauck" = "ha",
-                "Newcombe" = "newcombe"
+                "Newcombe, without correction" = "newcombe",
+                "Newcombe, with correction" = "newcombecc"
               ),
               selected = ifelse(a$rsp_table, "wald", "waldcc"),
               multiple = FALSE,
@@ -622,7 +623,7 @@ ui_t_binary_outcome <- function(id, ...) {
               multiple = FALSE,
               fixed = FALSE
             ),
-            tags$label("Odds Ratio Estimation"),
+            shiny::tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
               inputId = ns("u_odds_ratio"), value = TRUE, size = "mini"
             )
@@ -656,9 +657,9 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       teal.widgets::panel_item(
         "Additional table settings",
@@ -686,7 +687,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Response Categories"),
+        shiny::tags$label("Show All Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = ifelse(a$rsp_table, TRUE, FALSE),
@@ -722,7 +723,7 @@ srv_t_binary_outcome <- function(id,
                                  rsp_table,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
@@ -736,7 +737,7 @@ srv_t_binary_outcome <- function(id,
       dataname = parentname,
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
+      on_off = shiny::reactive(input$compare_arms)
     )
 
     anl_merged <- teal.transform::data_merge_module(
@@ -751,7 +752,7 @@ srv_t_binary_outcome <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    observeEvent(
+    shiny::observeEvent(
       c(
         input[[extract_input("aval_var", "ADRS")]],
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
@@ -781,7 +782,7 @@ srv_t_binary_outcome <- function(id,
             unique(anl_merged()$data()[[aval_var]])
           }
         }
-        updateSelectInput(
+        shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
           selected = intersect(responder_choices, common_rsp)
@@ -789,7 +790,7 @@ srv_t_binary_outcome <- function(id,
       }
     )
 
-    validate_check <- reactive({
+    validate_check <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
       anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
 
@@ -818,9 +819,9 @@ srv_t_binary_outcome <- function(id,
 
       teal::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
 
-      validate(
+      shiny::validate(
         if (length(input_strata_var) >= 1L) {
-          need(
+          shiny::need(
             sum(
               vapply(
                 anl_m$data()[input_strata_var],
@@ -835,9 +836,9 @@ srv_t_binary_outcome <- function(id,
         }
       )
 
-      validate(
+      shiny::validate(
         if (length(input_strata_var) >= 1L) {
-          need(
+          shiny::need(
             sum(
               vapply(
                 anl_m$data()[input_strata_var],
@@ -854,14 +855,14 @@ srv_t_binary_outcome <- function(id,
         }
       )
 
-      validate(
-        need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-        need(input$responders, "`Responders` field is empty")
+      shiny::validate(
+        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
+        shiny::need(input$responders, "`Responders` field is empty")
       )
 
       if (is.list(default_responses)) {
-        validate(
-          need(
+        shiny::validate(
+          shiny::need(
             all(
               grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
                 gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)
@@ -871,7 +872,7 @@ srv_t_binary_outcome <- function(id,
         )
       }
 
-      validate(need(
+      shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
@@ -879,13 +880,13 @@ srv_t_binary_outcome <- function(id,
       NULL
     })
 
-    call_preparation <- reactive({
+    call_preparation <- shiny::reactive({
       validate_check()
       teal.code::chunks_reset()
 
       anl_m <- anl_merged()
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      req(input$responders %in% anl_m$data()[[input_aval_var]])
+      shiny::req(input$responders %in% anl_m$data()[[input_aval_var]])
 
       teal.code::chunks_push_data_merge(anl_m)
       teal.code::chunks_push_new_line()
@@ -942,7 +943,7 @@ srv_t_binary_outcome <- function(id,
     })
 
     # Outputs to render.
-    table <- reactive({
+    table <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")

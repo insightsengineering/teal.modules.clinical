@@ -3,8 +3,6 @@
 #' Provides teal modules for the standard clinical trials outputs.
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
-#' @import ggplot2
-#' @import shiny
 #' @import teal
 #' @import tern
 #' @importFrom magrittr %>%
@@ -26,5 +24,6 @@ if (getRversion() >= "2.15.1") {
 
 #' Avoiding R CMD check notes
 #' @importFrom methods is
+#' @importFrom rlang .data
 #' @noRd
 NULL

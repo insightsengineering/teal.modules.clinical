@@ -5,6 +5,8 @@
 * Updated the `tm_g_pp_adverse_events` plot to render the color legend. 
 * Enhanced `tm_t_summary_by` module to have geometric mean in the encoding panel.
 * Updated and added a footnote to `tm_t_summary` module.
+* Enhanced `tm_t_summary` module to have geometric mean in the encoding panel.
+* Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Newcombe method
 * Updated `tm_t_summary` to display the checkboxes for numeric variables statistics when numeric variables are present in the choices only.
 
 ### Bug fixes

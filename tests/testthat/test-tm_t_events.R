@@ -243,11 +243,12 @@ testthat::test_that("template_events can generate customized table with alphabet
       adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
       adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
       adsl <- df_explicit_na(adsl, na_level = "")
-      anl <- anl %>% dplyr::mutate(AEBODSYS = as.character(AEBODSYS))
-      anl <- anl %>% dplyr::mutate(AEDECOD = as.character(AEDECOD))
-      anl <- anl %>% df_explicit_na(
-        omit_columns = setdiff(names(anl), c("AEBODSYS", "AEDECOD"))
-      )
+      anl <- anl %>% dplyr::mutate(`:=`(AEBODSYS, as.character(AEBODSYS)))
+      anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)))
+      anl <- anl %>% df_explicit_na(omit_columns = setdiff(
+        names(anl),
+        c("AEBODSYS", "AEDECOD")
+      ))
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(

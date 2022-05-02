@@ -29,7 +29,7 @@ testthat::test_that("template_g_lineplot works as expected with default argument
         subtitle = "", caption = NULL,
         y_lab = "AVAL Mean Values for",
         legend_title = NULL,
-        ggtheme = theme_minimal(),
+        ggtheme = ggplot2::theme_minimal(),
         control = control_summarize_vars(conf_level = 0.95),
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE
@@ -79,7 +79,7 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
         title = "Plot of Median and 90% Median Confidence Interval of CHG by Visit",
         subtitle = "", caption = NULL, y_lab = "CHG Median Values for",
         legend_title = NULL,
-        ggtheme = theme_minimal(),
+        ggtheme = ggplot2::theme_minimal(),
         control = control_summarize_vars(conf_level = 0.9),
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE

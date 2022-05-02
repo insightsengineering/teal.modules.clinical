@@ -75,16 +75,16 @@ template_adverse_events <- function(dataname = "ANL",
       module_plot = teal.widgets::ggplot2_args(
         labs = list(y = "Adverse Events", title = paste0("Patient ID: ", patient_id)),
         theme = list(
-          text = substitute(element_text(size = font), list(font = font_size[1])),
-          axis.text.y = quote(element_blank()),
-          axis.ticks.y = quote(element_blank()),
+          text = substitute(ggplot2::element_text(size = font), list(font = font_size[1])),
+          axis.text.y = quote(ggplot2::element_blank()),
+          axis.ticks.y = quote(ggplot2::element_blank()),
           legend.position = "right",
-          panel.grid.minor = quote(element_line(
+          panel.grid.minor = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
-          panel.grid.major = quote(element_line(
+          panel.grid.major = quote(ggplot2::element_line(
             size = 0.5,
             linetype = "dotted",
             colour = "grey"
@@ -105,17 +105,17 @@ template_adverse_events <- function(dataname = "ANL",
           ATOXGR == "." ~ "UNKNOWN",
           TRUE ~ ATOXGR
         )) %>%
-        ggplot(aes(
+        ggplot2::ggplot(ggplot2::aes(
           fill = ATOXGR, color = aeterm, y = aeterm, x = time
         )) +
         ggrepel::geom_label_repel(
-          aes(label = aeterm),
+          ggplot2::aes(label = aeterm),
           color = "black",
           hjust = "right",
           size = font_size_var[1] / 3.5,
           show.legend = FALSE
         ) +
-        scale_fill_manual(values = c(
+        ggplot2::scale_fill_manual(values = c(
           "1" = "#E2264633",
           "2" = "#E2264666",
           "3" = "#E2264699",
@@ -123,9 +123,9 @@ template_adverse_events <- function(dataname = "ANL",
           "5" = "#E22646FF",
           "UNKNOWN" = "#ACADB1FF"
         )) +
-        scale_y_discrete(expand = expansion(add = 1.2)) +
-        xlim(1, 1.2 * max(dataname[[time_var]])) +
-        geom_point(color = "black", size = 2, shape = 24, position = position_nudge(y = -0.15)) +
+        ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 1.2)) +
+        ggplot2::xlim(1, 1.2 * max(dataname[[time_var]])) +
+        ggplot2::geom_point(color = "black", size = 2, shape = 24, position = ggplot2::position_nudge(y = -0.15)) +
         labs +
         themes,
       env = list(
@@ -308,15 +308,15 @@ ui_g_adverse_events <- function(id, ...) {
     ui_args$decod
   )
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = div(
+    output = shiny::div(
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
+    encoding = shiny::div(
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
         "action", "time", "decod"
@@ -408,13 +408,13 @@ srv_g_adverse_events <- function(id,
                                  label,
                                  ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    patient_id <- reactive(input$patient_id)
+    patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -422,7 +422,7 @@ srv_g_adverse_events <- function(id,
       selected = patient_data_base()[1]
     )
 
-    observeEvent(patient_data_base(),
+    shiny::observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -452,35 +452,35 @@ srv_g_adverse_events <- function(id,
       )
     )
 
-    calls <- reactive({
-      validate(need(patient_id(), "Please select a patient."))
+    calls <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       teal::validate_has_data(
         ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
         1
       )
 
-      validate(
-        need(
+      shiny::validate(
+        shiny::need(
           input[[extract_input("aeterm", dataname)]],
           "Please select AETERM variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("tox_grade", dataname)]],
           "Please select AETOXGR variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("causality", dataname)]],
           "Please select AEREL variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("outcome", dataname)]],
           "Please select AEOUT variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("action", dataname)]],
           "Please select AEACN variable."
         ),
-        need(
+        shiny::need(
           input[[extract_input("time", dataname)]],
           "Please select ASTDY variable."
         )
@@ -528,7 +528,7 @@ srv_g_adverse_events <- function(id,
       options = list(pageLength = input$table_rows)
     )
 
-    chart <- reactive({
+    chart <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(calls())
       teal.code::chunks_get_var("chart")
