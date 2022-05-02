@@ -401,6 +401,19 @@ srv_summary <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
+    choices_classes <- sapply(
+      summarize_vars$select$choices,
+      function(x)
+        inherits(datasets$get_data(summarize_vars$dataname)[[x]], "numeric") |
+        inherits(datasets$get_data(summarize_vars$dataname)[[x]], "integer")
+    )
+
+    if (any(choices_classes)) {
+      shinyjs::show("numeric_stats")
+    } else {
+      shinyjs::hide("numeric_stats")
+    }
+
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = datasets
