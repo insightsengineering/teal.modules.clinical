@@ -403,9 +403,10 @@ srv_summary <- function(id,
 
     choices_classes <- sapply(
       summarize_vars$select$choices,
-      function(x)
+      function(x) {
         inherits(datasets$get_data(summarize_vars$dataname)[[x]], "numeric") |
-        inherits(datasets$get_data(summarize_vars$dataname)[[x]], "integer")
+          inherits(datasets$get_data(summarize_vars$dataname)[[x]], "integer")
+      }
     )
 
     if (any(choices_classes)) {
