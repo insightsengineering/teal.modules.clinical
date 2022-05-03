@@ -147,7 +147,6 @@ validate_standard_inputs <- function(adsl,
       var_name = arm_var
     )
 
-    # shiny::validate(shiny::need(!("" %in% adsl[[arm_var]]), "Treatment values can not contain empty strings (i.e. '')."))
     validate_arm(adsl[[arm_var]])
 
     if (!missing(comp_arm)) {
