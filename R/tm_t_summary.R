@@ -413,20 +413,6 @@ srv_summary <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    choices_classes <- sapply(
-      summarize_vars$select$choices,
-      function(x) {
-        inherits(datasets$get_data(summarize_vars$dataname)[[x]], "numeric") |
-          inherits(datasets$get_data(summarize_vars$dataname)[[x]], "integer")
-      }
-    )
-
-    if (any(choices_classes)) {
-      shinyjs::show("numeric_stats")
-    } else {
-      shinyjs::hide("numeric_stats")
-    }
-
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = datasets
@@ -443,6 +429,23 @@ srv_summary <- function(id,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
+
+    observeEvent(anl_merged()$columns_source$summarize_vars, {
+      choices_classes <- sapply(
+        anl_merged()$columns_source$summarize_vars,
+        function(x) {
+          summarize_var_data <- datasets$get_data(summarize_vars$dataname)[[x]]
+          inherits(summarize_var_data, "numeric") |
+            inherits(summarize_var_data, "integer")
+        }
+      )
+
+      if (any(choices_classes)) {
+        shinyjs::show("numeric_stats")
+      } else {
+        shinyjs::hide("numeric_stats")
+      }
+    })
 
     # validate inputs
     validate_checks <- shiny::reactive({
