@@ -7,7 +7,7 @@
 * Updated and added a footnote to `tm_t_summary` module.
 * Enhanced `tm_t_summary` module to have geometric mean in the encoding panel.
 * Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Newcombe method
-* Updated `tm_t_summary` to display the checkboxes for numeric variables statistics when numeric variables are selected only.
+* Updated `tm_t_summary` to display the checkboxes for numeric variables statistics only when numeric variables are part of the selected.
 
 ### Bug fixes
 * Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
