@@ -147,7 +147,8 @@ validate_standard_inputs <- function(adsl,
       var_name = arm_var
     )
 
-    shiny::validate(shiny::need(!("" %in% adsl[[arm_var]]), "Treatment values can not contain empty strings (i.e. '')."))
+    #shiny::validate(shiny::need(!("" %in% adsl[[arm_var]]), "Treatment values can not contain empty strings (i.e. '')."))
+    validate_arm(adsl[[arm_var]])
 
     if (!missing(comp_arm)) {
       teal::validate_has_elements(comp_arm, "Comparison treatments selection is empty.")
@@ -164,4 +165,21 @@ validate_standard_inputs <- function(adsl,
       )
     }
   }
+}
+
+#' Check if vector is valid as to be used as a treatment arm variable
+#'
+#' @details A validate error is returned if the vector is not a factor with a more detailed
+#'   error message if any of the entries are empty strings
+#' @param arm_vec vector to be validated
+#' @keywords internal
+#'
+validate_arm <- function(arm_vec) {
+  shiny::validate(
+    shiny::need(
+      all(trimws(as.character(arm_vec)) != ""),
+      "Treatment values cannot contain empty strings"
+    )
+  )
+  shiny::validate(shiny::need(is.factor(arm_vec), "Treatment variable is not a factor"))
 }
