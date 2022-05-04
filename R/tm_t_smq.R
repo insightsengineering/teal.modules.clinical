@@ -537,8 +537,7 @@ srv_t_smq <- function(id,
 
     adsl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
-      data_extract = list(arm_var),
-      input_id = c("arm_var"),
+      data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
