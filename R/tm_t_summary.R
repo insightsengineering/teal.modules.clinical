@@ -430,6 +430,23 @@ srv_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
+    observeEvent(anl_merged()$columns_source$summarize_vars, {
+      choices_classes <- sapply(
+        anl_merged()$columns_source$summarize_vars,
+        function(x) {
+          summarize_var_data <- datasets$get_data(summarize_vars$dataname)[[x]]
+          inherits(summarize_var_data, "numeric") |
+            inherits(summarize_var_data, "integer")
+        }
+      )
+
+      if (any(choices_classes)) {
+        shinyjs::show("numeric_stats")
+      } else {
+        shinyjs::hide("numeric_stats")
+      }
+    })
+
     # validate inputs
     validate_checks <- shiny::reactive({
       adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
