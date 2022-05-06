@@ -1208,7 +1208,7 @@ srv_mmrm <- function(id,
         optimizer = input$optimizer,
         parallel = input$parallel
       )
-      mapply(expression = my_calls, fit_stack_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), fit_stack_push)
       teal.code::chunks_safe_eval(chunks = fit_stack)
       fit_stack
     })
@@ -1289,7 +1289,7 @@ srv_mmrm <- function(id,
           basic_table_args = basic_table_args
         )
 
-        mapply(expression = res, table_stack_push)
+        mapply(expression = res, id = paste(names(res), "call", sep = "_"), table_stack_push)
         teal.code::chunks_push_chunks(table_stack)
         teal.code::chunks_safe_eval()
       }
@@ -1349,10 +1349,11 @@ srv_mmrm <- function(id,
           diagnostic_plot = diagnostic_plot,
           ggplot2_args = ggplot2_args
         )
-        mapply(expression = res, plot_stack_push)
+        mapply(expression = res, id = paste(names(res), "call", sep = "_"), plot_stack_push)
         teal.code::chunks_push_chunks(plot_stack)
         teal.code::chunks_safe_eval()
       }
+
       teal.code::chunks_push_chunks(fit_stack)
       # Depending on the plot function type, produce different code.
       switch(output_function,
