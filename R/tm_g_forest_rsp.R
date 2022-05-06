@@ -693,7 +693,7 @@ srv_g_forest_rsp <- function(id,
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
 
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("p")

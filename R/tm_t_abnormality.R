@@ -591,7 +591,7 @@ srv_t_abnormality <- function(id,
         basic_table_args = basic_table_args,
         tbl_title = tbl_title
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.
