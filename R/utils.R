@@ -36,12 +36,15 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
   n_column <- `if`(is.null(n_column), get_n_name(groupby_vars = column), n_column)
   checkmate::assert_string(column)
 
-  chunk$push(substitute(
-    counts <- counts %>% dplyr::mutate(
-      column_name := paste0(column_name, " (n = ", n_column_name, ")")
+  chunk$push(
+    substitute(
+      counts <- counts %>% dplyr::mutate(
+        column_name := paste0(column_name, " (n = ", n_column_name, ")")
+      ),
+      env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
     ),
-    env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
-  ))
+    id = paste0(column, "_add_count_str_to_column_call")
+  )
 }
 
 #' Get variable labels

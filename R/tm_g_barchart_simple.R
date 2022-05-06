@@ -372,21 +372,27 @@ srv_g_barchart_simple <- function(id,
       }
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      chunk$push(bquote({
-        attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
-        counts <- counts %>%
-          dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
-          dplyr::slice(1) %>%
-          dplyr::ungroup() %>%
-          dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
-      }))
+      chunk$push(
+        bquote({
+          attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
+          counts <- counts %>%
+            dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+            dplyr::slice(1) %>%
+            dplyr::ungroup() %>%
+            dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+        }),
+        id = "add_label_call"
+      )
 
       # dplyr::select loses labels
-      chunk$push(teal.transform::get_anl_relabel_call(
-        columns_source = merged_data()$columns_source,
-        datasets = datasets,
-        anl_name = "counts"
-      ))
+      chunk$push(
+        teal.transform::get_anl_relabel_call(
+          columns_source = merged_data()$columns_source,
+          datasets = datasets,
+          anl_name = "counts"
+        ),
+        id = "get_anl_relabel_call"
+      )
 
       teal.code::chunks_safe_eval(chunk)
       chunk
@@ -405,7 +411,8 @@ srv_g_barchart_simple <- function(id,
             nrow(ANL),
             groupby_vars
           )
-        )
+        ),
+        id = "plot_title_call"
       )
 
       all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
@@ -438,11 +445,11 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      chunk$push(plot_call)
+      chunk$push(plot_call, id = "plot_call")
 
       # explicitly calling print on the plot inside the chunk evaluates
       # the ggplot call and therefore catches errors
-      chunk$push(quote(print(plot)))
+      chunk$push(quote(print(plot)), "print_plot_call")
 
       teal.code::chunks_safe_eval(chunk)
       chunk
@@ -693,10 +700,13 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
   checkmate::assert_character(groupby_vars)
 
   n_name <- `if`(is.null(n_name), get_n_name(groupby_vars), n_name)
-  chunk$push(bquote({
-    counts <- .(as.symbol(data_name)) %>%
-      dplyr::group_by_at(.(groupby_vars)) %>%
-      dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
-      dplyr::ungroup()
-  }))
+  chunk$push(
+    bquote({
+      counts <- .(as.symbol(data_name)) %>%
+        dplyr::group_by_at(.(groupby_vars)) %>%
+        dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
+        dplyr::ungroup()
+    }),
+    id = paste(c(groupby_vars, "count_by_group_chunk_call"), collapse = "_")
+  )
 }
