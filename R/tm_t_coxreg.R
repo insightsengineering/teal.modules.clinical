@@ -985,7 +985,7 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args)
+        expr <- call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args)
         mapply(
           expression = expr,
           id = paste(names(expr), "call", sep = "_"),
@@ -1001,7 +1001,7 @@ srv_t_coxreg <- function(id,
         )
         teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
         lapply(input$comp_arm, function(x) {
-          expr = call_template(x, anl_m, paramcd, multivariate, NULL)
+          expr <- call_template(x, anl_m, paramcd, multivariate, NULL)
           mapply(expression = expr, id = paste(names(expr), "call", sep = "_"), teal.code::chunks_push)
         })
         teal.code::chunks_push(

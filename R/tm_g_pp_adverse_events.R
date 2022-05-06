@@ -519,7 +519,7 @@ srv_g_adverse_events <- function(id,
 
       lapply(
         names(calls),
-        function (call_name) {
+        function(call_name) {
           teal.code::chunks_push(expression = calls[[call_name]], id = paste0(call_name, "_call"), chunks = stack)
         }
       )
