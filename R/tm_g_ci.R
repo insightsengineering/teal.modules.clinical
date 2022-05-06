@@ -409,7 +409,10 @@ srv_g_ci <- function(id, # nolint
       validate_data()
       teal.code::chunks_reset()
       teal.code::chunks_push_data_merge(x = merged_data())
-      teal.code::chunks_push(list_calls())
+      teal.code::chunks_push(
+        expression = list_calls(),
+        id = "plot_call"
+      )
     })
 
     plot_r <- shiny::reactive({
