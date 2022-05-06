@@ -280,14 +280,17 @@ srv_t_medical_history <- function(id,
       }
       teal.code::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
 
-      mhist_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      mhist_stack_push(
+        expression = substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       my_calls <- template_medical_history(
         dataname = "ANL",
@@ -295,7 +298,11 @@ srv_t_medical_history <- function(id,
         mhbodsys = input[[extract_input("mhbodsys", dataname)]],
         mhdistat = input[[extract_input("mhdistat", dataname)]]
       )
-      lapply(my_calls, mhist_stack_push)
+      mapply(
+        expression = my_calls,
+        id = paste(names(my_calls), "call", sep = "_"),
+        mhist_stack_push
+      )
       teal.code::chunks_safe_eval(chunks = mhist_stack)
       mhist_stack
     })
