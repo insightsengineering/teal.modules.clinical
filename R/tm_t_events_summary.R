@@ -928,24 +928,31 @@ srv_t_events_summary <- function(id,
         count_events = input$count_events
       )
 
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(
+        expression = my_calls,
+        id = paste(names(my_calls), "call", sep = "_"),
+        teal.code::chunks_push
+      )
 
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
-      teal.code::chunks_push(substitute(
-        expr = {
-          rtables::main_title(result) <- title
-          rtables::main_footer(result) <- footer
-          rtables::prov_footer(result) <- p_footer
-          rtables::subtitles(result) <- subtitle
-          result
-        },
-        env = list(
-          title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
-          footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-          p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-          subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
-        )
-      ))
+      teal.code::chunks_push(
+        expression = substitute(
+          expr = {
+            rtables::main_title(result) <- title
+            rtables::main_footer(result) <- footer
+            rtables::prov_footer(result) <- p_footer
+            rtables::subtitles(result) <- subtitle
+            result
+          },
+          env = list(
+            title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
+            footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+            p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+            subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+          )
+        ),
+        id = "meta_info_call"
+      )
     })
 
     # Outputs to render.
