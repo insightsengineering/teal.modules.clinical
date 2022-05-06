@@ -831,14 +831,17 @@ srv_g_patient_timeline <- function(id,
 
       teal.code::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
 
-      time_line_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      time_line_stack_push(
+        expression = substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       patient_timeline_calls <- template_patient_timeline(
         dataname = "ANL",
@@ -857,8 +860,11 @@ srv_g_patient_timeline <- function(id,
         patient_id = patient_id(),
         ggplot2_args = ggplot2_args
       )
-
-      lapply(patient_timeline_calls, time_line_stack_push)
+      mapply(
+        expression = patient_timeline_calls,
+        id = paste(names(patient_timeline_calls), "call", sep = "_"),
+        time_line_stack_push
+      )
       teal.code::chunks_safe_eval(chunks = patient_timeline_stack)
       patient_timeline_stack
     })
