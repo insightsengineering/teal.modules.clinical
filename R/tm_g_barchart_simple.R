@@ -707,6 +707,6 @@ count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name =
         dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
         dplyr::ungroup()
     }),
-    id = paste(c(groupby_vars, "count_by_group_chunk_call"), collapse = "_")
+    id = paste(c(groupby_vars, "counts_group_by_at_call"), collapse = "_")
   )
 }
