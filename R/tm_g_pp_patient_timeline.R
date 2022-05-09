@@ -860,9 +860,10 @@ srv_g_patient_timeline <- function(id,
         patient_id = patient_id(),
         ggplot2_args = ggplot2_args
       )
+      # patient_timeline_calls is a list containing one object
       mapply(
         expression = patient_timeline_calls,
-        id = paste(names(patient_timeline_calls), "call", sep = "_"),
+        id = "patient_timeline_plot",
         time_line_stack_push
       )
       teal.code::chunks_safe_eval(chunks = patient_timeline_stack)
