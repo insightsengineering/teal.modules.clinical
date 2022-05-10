@@ -863,7 +863,7 @@ srv_g_patient_timeline <- function(id,
       # patient_timeline_calls is a list containing one object
       mapply(
         expression = patient_timeline_calls,
-        id = "patient_timeline_plot",
+        id = "patient_timeline_plot_call",
         time_line_stack_push
       )
       teal.code::chunks_safe_eval(chunks = patient_timeline_stack)
