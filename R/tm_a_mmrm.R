@@ -1051,7 +1051,6 @@ srv_mmrm <- function(id,
         "`Reference Group` and `Comparison Group` cannot have common values"
       )
       validate_checks()
-
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
     })
 

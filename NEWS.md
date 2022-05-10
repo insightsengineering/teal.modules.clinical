@@ -14,6 +14,7 @@
 
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
+* Improved validation if treatment variable is not a factor.
 
 # teal.modules.clinical 0.8.12
 
