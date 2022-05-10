@@ -490,9 +490,7 @@ srv_shift_by_arm_by_worst <- function(id,
         basic_table_args = basic_table_args
       )
 
-
-
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.

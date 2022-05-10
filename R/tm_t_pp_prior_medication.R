@@ -322,14 +322,17 @@ srv_t_prior_medication <- function(id,
       }
       teal.code::chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
 
-      pmed_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      pmed_stack_push(
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       my_calls <- template_prior_medication(
         dataname = "ANL",
@@ -339,7 +342,7 @@ srv_t_prior_medication <- function(id,
         cmstdy = input[[extract_input("cmstdy", dataname)]]
       )
 
-      lapply(my_calls, pmed_stack_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), pmed_stack_push)
       teal.code::chunks_safe_eval(pmed_stack)
       pmed_stack
     })

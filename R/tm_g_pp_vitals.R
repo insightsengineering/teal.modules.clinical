@@ -466,14 +466,17 @@ srv_g_vitals <- function(id,
       }
       teal.code::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
 
-      vitals_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      vitals_stack_push(
+        expression = substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       my_calls <- template_vitals(
         dataname = "ANL",
@@ -486,7 +489,7 @@ srv_g_vitals <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      lapply(my_calls, vitals_stack_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), vitals_stack_push)
       teal.code::chunks_safe_eval(chunks = vitals_stack)
       vitals_stack
     })

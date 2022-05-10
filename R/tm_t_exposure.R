@@ -586,7 +586,7 @@ srv_t_exposure <- function(id,
         avalu_var <- input_avalu_var,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.

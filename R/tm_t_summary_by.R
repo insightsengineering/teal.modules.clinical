@@ -675,7 +675,7 @@ srv_summary_by <- function(id,
         drop_zero_levels = input$drop_zero_levels,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.

@@ -828,7 +828,7 @@ srv_t_shift_by_grade <- function(id,
         code_missing_baseline = input$code_missing_baseline,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.
