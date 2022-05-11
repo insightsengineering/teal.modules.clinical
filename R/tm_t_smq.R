@@ -598,7 +598,7 @@ srv_t_smq <- function(id,
         id_var = as.vector(anl_m$columns_source$id_var),
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.

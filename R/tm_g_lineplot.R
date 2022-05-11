@@ -588,7 +588,7 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     line_plot <- shiny::reactive({

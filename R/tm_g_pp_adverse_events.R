@@ -491,14 +491,16 @@ srv_g_adverse_events <- function(id,
 
       teal.code::chunks_push_data_merge(ae_merged_data(), chunks = stack)
 
-      stack$push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      stack$push(
+        substitute(
+          expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
+          env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "filter_patient_id_call"
+      )
 
 
       calls <- template_adverse_events(
@@ -515,7 +517,12 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      lapply(calls, teal.code::chunks_push, chunks = stack)
+      lapply(
+        names(calls),
+        function(call_name) {
+          teal.code::chunks_push(expression = calls[[call_name]], id = paste0(call_name, "_call"), chunks = stack)
+        }
+      )
       teal.code::chunks_safe_eval(chunks = stack)
       stack
     })

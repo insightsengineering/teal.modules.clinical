@@ -985,8 +985,10 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
+        expr <- call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args)
         mapply(
-          expr = call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args),
+          expression = expr,
+          id = paste(names(expr), "call", sep = "_"),
           teal.code::chunks_push
         )
         teal.code::chunks_safe_eval()
@@ -997,26 +999,30 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        teal.code::chunks_push(quote(result <- list()))
+        teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
         lapply(input$comp_arm, function(x) {
-          mapply(expr = call_template(x, anl_m, paramcd, multivariate, NULL), teal.code::chunks_push)
+          expr <- call_template(x, anl_m, paramcd, multivariate, NULL)
+          mapply(expression = expr, id = paste(names(expr), "call", sep = "_"), teal.code::chunks_push)
         })
-        teal.code::chunks_push(substitute(
-          expr = {
-            final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
-            rtables::main_title(final_table) <- title
-            rtables::main_footer(final_table) <- footer
-            rtables::prov_footer(final_table) <- p_footer
-            rtables::subtitles(final_table) <- subtitle
-            final_table
-          },
-          env = list(
-            title = all_basic_table_args$title,
-            footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-            p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-            subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
-          )
-        ))
+        teal.code::chunks_push(
+          expression = substitute(
+            expr = {
+              final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
+              rtables::main_title(final_table) <- title
+              rtables::main_footer(final_table) <- footer
+              rtables::prov_footer(final_table) <- p_footer
+              rtables::subtitles(final_table) <- subtitle
+              final_table
+            },
+            env = list(
+              title = all_basic_table_args$title,
+              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+              p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+              subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+            )
+          ),
+          id = "rbindl_rtables_call"
+        )
         teal.code::chunks_safe_eval()
         teal.code::chunks_get_var("final_table")
       }

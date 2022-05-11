@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.12.9010
+# teal.modules.clinical 0.8.12.9011
 
 ### Enhancements
 * Updated the position of the labels in the `tm_g_pp_adverse_events` plot.
@@ -14,6 +14,7 @@
 
 ### Miscellaneous
 * Simplified the show R code for `tm_g_pp_patient_timeline` module.
+* Added names to the `id` parameter of `chunks$push` in all modules.
 * Improved validation if treatment variable is not a factor.
 
 # teal.modules.clinical 0.8.12

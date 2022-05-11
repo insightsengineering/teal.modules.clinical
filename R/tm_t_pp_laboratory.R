@@ -382,14 +382,17 @@ srv_g_laboratory <- function(id,
 
       teal.code::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
 
-      labor_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      labor_stack_push(
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       labor_calls <- template_laboratory(
         dataname = "ANL",
@@ -402,7 +405,11 @@ srv_g_laboratory <- function(id,
         round_value = as.integer(input$round_value)
       )
 
-      lapply(labor_calls, labor_stack_push)
+      mapply(
+        expression = labor_calls,
+        id = paste(names(labor_calls), "call", sep = "_"),
+        labor_stack_push
+      )
       teal.code::chunks_safe_eval(chunks = labor_stack)
       labor_stack
     })

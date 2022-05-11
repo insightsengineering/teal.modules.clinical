@@ -658,14 +658,17 @@ srv_g_therapy <- function(id,
       }
       teal.code::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
 
-      therapy_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      therapy_stack_push(
+        expression = substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       my_calls <- template_therapy(
         dataname = "ANL",
@@ -684,7 +687,11 @@ srv_g_therapy <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      lapply(my_calls, therapy_stack_push)
+      mapply(
+        expression = my_calls,
+        id = paste(names(my_calls), "call", sep = "_"),
+        therapy_stack_push
+      )
       teal.code::chunks_safe_eval(chunks = therapy_stack)
       therapy_stack
     })

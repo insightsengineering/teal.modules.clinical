@@ -206,20 +206,23 @@ srv_t_basic_info <- function(id,
       }
       teal.code::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
 
-      call_stack_push(substitute(
-        expr = {
-          ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-        }, env = list(
-          patient_col = patient_col,
-          patient_id = patient_id()
-        )
-      ))
+      call_stack_push(
+        expression = substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        id = "patient_id_filter_call"
+      )
 
       my_calls <- template_basic_info(
         dataname = "ANL",
         vars = input[[extract_input("vars", dataname)]]
       )
-      lapply(my_calls, call_stack_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), call_stack_push)
       teal.code::chunks_safe_eval(chunks = call_stack)
       call_stack
     })

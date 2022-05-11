@@ -939,7 +939,7 @@ srv_t_binary_outcome <- function(id,
         add_total = input$add_total,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, teal.code::chunks_push)
+      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
     # Outputs to render.
