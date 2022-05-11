@@ -3,14 +3,18 @@ Title: Teal Modules for Standard Clinical Outputs
 Version: 0.8.12.9010
 Date: 2022-04-07
 Authors@R: c(
-    person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre")),
-    person("Adrian", "Waddell", , "adrian.waddell@roche.com", role = "aut"),
+    person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
+    person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
+    person("Konrad", "Pagacz", , "konrad.pagacz@contractors.roche.com", role = "aut"),
+    person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
+    person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
-    person("Yuyao", "Song", , "yuyao.song@roche.com", role = "aut"),
-    person("Chendi", "Liao", , "chendi.liao@roche.com", role = "aut"),
-    person("Mark", "Rothe", role = "aut"),
-    person("Xiao", "Yu Mo", role = "aut"),
-    person("Roche", role = c("cph", "fnd"))
+    person("Pawel", "Rucki", , "pawel.rucki@roche.com", role = "aut"),
+    person("Nikolas", "Burkoff", , "nikolas.burkoff@roche.com", role = "aut"),
+    person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
+    person("Vaakesan", "Sundrelingam", role = "ctb"),
+    person("Francois", "Collin", role = "ctb"),
+    person("Imanol", "Zubizarreta", role = "ctb")
   )
 Description: Provides teal modules for the standard clinical trials
     outputs.  The teal modules add an encoding panel to interactively
