@@ -4,10 +4,10 @@ Version: 0.8.12.9011
 Date: 2022-04-07
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
+    person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
     person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
     person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
     person("Konrad", "Pagacz", , "konrad.pagacz@contractors.roche.com", role = "aut"),
-    person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
     person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
     person("Pawel", "Rucki", , "pawel.rucki@roche.com", role = "aut"),
