@@ -413,7 +413,6 @@ srv_summary <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    #validate(need())
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = datasets
@@ -460,12 +459,15 @@ srv_summary <- function(id,
       shiny::validate(
         shiny::need(
           length(unique(anl_m$data()$USUBJID)) == nrow(anl_m$data()),
-          "Please choose an analysis dataset with unique USUBJID identifiers only"
+          paste0(
+            "Please choose an analysis dataset where each row represents a different subject, ",
+            "i.e. USUBJID is different in each row"
+          )
         ),
         shiny::need(input_arm_var, "Please select a treatment variable"),
         shiny::need(input_summarize_vars, "Please select a summarize variable"),
         shiny::need(
-          !any(sapply(anl_m$data()[,input_summarize_vars], function(x) inherits(x, c("Date", "POSIXt")))),
+          !any(vapply(anl_m$data()[, input_summarize_vars], inherits, c("Date", "POSIXt"), FUN.VALUE = logical(1))),
           "Date and POSIXt variables are not supported, please select other variables"
         ),
         shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
