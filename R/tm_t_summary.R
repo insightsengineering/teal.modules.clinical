@@ -457,8 +457,19 @@ srv_summary <- function(id,
       input_summarize_vars <- anl_merged()$columns_source$summarize_vars
 
       shiny::validate(
+        shiny::need(
+          length(unique(anl_m$data()$USUBJID)) == nrow(anl_m$data()),
+          paste0(
+            "Please choose an analysis dataset where each row represents a different subject, ",
+            "i.e. USUBJID is different in each row"
+          )
+        ),
         shiny::need(input_arm_var, "Please select a treatment variable"),
         shiny::need(input_summarize_vars, "Please select a summarize variable"),
+        shiny::need(
+          !any(vapply(anl_m$data()[, input_summarize_vars], inherits, c("Date", "POSIXt"), FUN.VALUE = logical(1))),
+          "Date and POSIXt variables are not supported, please select other variables"
+        ),
         shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
         if (length(input_arm_var) == 2) {
           shiny::need(
