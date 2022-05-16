@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.12.9011
+# teal.modules.clinical 0.8.12.9012
 
 ### Enhancements
 * Updated the position of the labels in the `tm_g_pp_adverse_events` plot.
@@ -8,6 +8,7 @@
 * Enhanced `tm_t_summary` module to have geometric mean in the encoding panel.
 * Updated `tm_t_binary_outcome` to enable an option to apply a continuity correction in the Newcombe method
 * Updated `tm_t_summary` to display the checkboxes for numeric variables statistics only when numeric variables are part of the selected.
+* Updated `tm_t_summary` validations to warn users when using a dataset with non unique identifiers or when selecting variables with non supported types (i.e. `Date`, `POSIXt`).
 
 ### Bug fixes
 * Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
