@@ -26,7 +26,7 @@ testthat::test_that("template_summary generates correct expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+        main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values."
       ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::add_colcounts() %>%
@@ -76,7 +76,7 @@ testthat::test_that("template_summary can generate customized table", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+        main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values."
       ) %>%
         rtables::split_cols_by("ARMCD") %>%
         rtables::add_overall_col("All Patients") %>%
@@ -133,7 +133,7 @@ testthat::test_that("template_summary generates correct expressions for multiple
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+        main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values."
       ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
@@ -190,7 +190,7 @@ testthat::test_that("template_summary generates correct expressions for multiple
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+        main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values."
       ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
@@ -248,7 +248,7 @@ testthat::test_that("template_summary generates correct expressions for customiz
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        main_footer = "n represent the number of unique subject ID such that the variable have non-NA values."
+        main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values."
       ) %>%
         rtables::split_cols_by("ARM") %>%
         rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>%
