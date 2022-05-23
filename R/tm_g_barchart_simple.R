@@ -344,7 +344,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     count_chunk <- shiny::reactive({
-      chunk <- data_chunk()$clone(deep = TRUE)
+      chunk <- teal.code::chunks_deep_clone(data_chunk())
       groupby_vars <- r_groupby_vars()
       groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
@@ -399,7 +399,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     plot_chunk <- shiny::reactive({
-      chunk <- count_chunk()$clone(deep = TRUE)
+      chunk <- teal.code::chunks_deep_clone(count_chunk())
 
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
