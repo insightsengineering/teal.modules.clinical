@@ -325,8 +325,8 @@ tm_t_summary <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  checkmate::assert_logical(add_total, len = 1)
-  checkmate::assert_logical(exclude_missing, len = 1)
+  checkmate::assertFlag(add_total)
+  checkmate::assertFlag(exclude_missing)
 
   args <- as.list(environment())
 
