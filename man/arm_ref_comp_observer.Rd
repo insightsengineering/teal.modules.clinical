@@ -7,6 +7,7 @@
 arm_ref_comp_observer(
   session,
   input,
+  output,
   id_ref,
   id_comp,
   id_arm_var,
@@ -14,13 +15,16 @@ arm_ref_comp_observer(
   dataname = "ADSL",
   arm_ref_comp,
   module,
-  on_off = shiny::reactive(TRUE)
+  on_off = shiny::reactive(TRUE),
+  output_id = "arms_buckets"
 )
 }
 \arguments{
 \item{session}{(\code{environment}) shiny session}
 
 \item{input}{(\code{character}) shiny input}
+
+\item{output}{(\code{character}) shiny input}
 
 \item{id_ref}{(\code{character}) id of reference Treatment input ui element}
 
@@ -41,6 +45,8 @@ to produce more informative error messages)}
 
 \item{on_off}{(\code{logical}) A reactive that can be used to
 stop the whole observer if FALSE.}
+
+\item{output_id}{(\code{character}) name of the UI id that the output will be written to.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -60,24 +66,14 @@ shinyApp(
       choices = arm_var$choices,
       selected = arm_var$selected
     ),
-    shiny::selectInput(
-      "ref",
-      "Reference Treatment",
-      choices = NULL,
-      multiple = TRUE
-    ),
-    shiny::selectInput(
-      "comp",
-      "Comparison Group",
-      choices = NULL,
-      multiple = TRUE
-    )
+    uiOutput("arms_buckets"),
   ),
   server = function(input, output, session) {
     shiny::isolate({
       teal.modules.clinical:::arm_ref_comp_observer(
         session,
         input,
+        output,
         id_ref = "ref",
         id_comp = "comp",
         id_arm_var = "arm",
