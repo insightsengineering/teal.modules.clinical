@@ -24,7 +24,8 @@ template_summary <- function(dataname,
                              ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
-                             basic_table_args = teal.widgets::basic_table_args()) {
+                             basic_table_args = teal.widgets::basic_table_args(),
+                             exclude_missing = TRUE) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -34,7 +35,8 @@ template_summary <- function(dataname,
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.flag(exclude_missing)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
@@ -59,6 +61,36 @@ template_summary <- function(dataname,
       )
     )
   )
+
+  if (exclude_missing) {
+    data_list <- if (length(arm_var) == 1) {
+      add_expr(
+        data_list,
+        substitute(
+          expr = anl <- anl %>%
+            dplyr::filter(!arm %in% na_level),
+          env = list(
+            arm = as.name(arm_var[[1]]),
+            na_level = na_level
+          )
+        )
+      )
+    } else {
+      add_expr(
+        data_list,
+        substitute(
+          expr = anl <- anl %>%
+            dplyr::filter(!arm %in% na_level & !arm_2 %in% na_level),
+          env = list(
+            arm = as.name(arm_var[[1]]),
+            arm_2 = as.name(arm_var[[2]]),
+            na_level = na_level
+          )
+        )
+      )
+    }
+  }
+
   data_list <- add_expr(
     data_list,
     prepare_arm_levels(
@@ -242,6 +274,7 @@ template_summary <- function(dataname,
 #'       dataname = "ADSL",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       add_total = TRUE,
+#'       exclude_missing = TRUE,
 #'       summarize_vars = choices_selected(
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
@@ -273,7 +306,8 @@ tm_t_summary <- function(label,
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
-                         basic_table_args = teal.widgets::basic_table_args()) {
+                         basic_table_args = teal.widgets::basic_table_args(),
+                         exclude_missing = TRUE) {
   logger::log_info("Initializing tm_t_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -291,6 +325,8 @@ tm_t_summary <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  checkmate::assert_logical(add_total, len = 1)
+  checkmate::assert_logical(exclude_missing, len = 1)
 
   args <- as.list(environment())
 
@@ -337,6 +373,7 @@ ui_summary <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      shiny::checkboxInput(ns("exclude_missing"), "Exclude <Missing> column", value = a$exclude_missing),
       teal.transform::data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
@@ -404,9 +441,7 @@ srv_summary <- function(id,
                         parentname,
                         arm_var,
                         summarize_vars,
-                        add_total,
                         na_level,
-                        drop_arm_levels,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
@@ -518,7 +553,8 @@ srv_summary <- function(id,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
         drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        exclude_missing = input$exclude_missing
       )
       mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
