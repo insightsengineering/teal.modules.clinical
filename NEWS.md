@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.12.9016
+# teal.modules.clinical 0.8.12.9017
 
 ### Enhancements
 * Updated the position of the labels in the `tm_g_pp_adverse_events` plot.
