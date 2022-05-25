@@ -9,7 +9,8 @@ testthat::test_that("template_summary generates correct expressions", {
     var_labels = character(),
     na.rm = FALSE,
     denominator = "N",
-    drop_arm_levels = TRUE
+    drop_arm_levels = TRUE,
+    exclude_missing = FALSE
   )
   expected <- list(
     data = quote({
@@ -60,7 +61,8 @@ testthat::test_that("template_summary can generate customized table", {
     var_labels = c(RACE = "Race"),
     na.rm = TRUE,
     denominator = "omit",
-    drop_arm_levels = FALSE
+    drop_arm_levels = FALSE,
+    exclude_missing = FALSE
   )
   expected <- list(
     data = quote({
@@ -112,7 +114,8 @@ testthat::test_that("template_summary generates correct expressions for multiple
     var_labels = character(),
     na.rm = FALSE,
     denominator = "N",
-    drop_arm_levels = TRUE
+    drop_arm_levels = TRUE,
+    exclude_missing = FALSE
   )
   expected <- list(
     data = quote({
@@ -169,7 +172,8 @@ testthat::test_that("template_summary generates correct expressions for multiple
     var_labels = character(),
     na.rm = FALSE,
     denominator = "N",
-    drop_arm_levels = TRUE
+    drop_arm_levels = TRUE,
+    exclude_missing = FALSE
   )
   expected <- list(
     data = quote({
@@ -227,7 +231,8 @@ testthat::test_that("template_summary generates correct expressions for customiz
     na.rm = FALSE,
     numeric_stats = c("n"),
     denominator = "N",
-    drop_arm_levels = TRUE
+    drop_arm_levels = TRUE,
+    exclude_missing = FALSE
   )
   expected <- list(
     data = quote({
