@@ -18,6 +18,7 @@
 #'   to produce more informative error messages)
 #' @param on_off (`logical`) A reactive that can be used to
 #'   stop the whole observer if FALSE.
+#' @param input_id (`character`) unique id that the buckets will be referenced with.
 #' @param output_id (`character`) name of the UI id that the output will be written to.
 #'
 #' @keywords internal
@@ -66,6 +67,7 @@ arm_ref_comp_observer <- function(session,
                                   arm_ref_comp,
                                   module,
                                   on_off = shiny::reactive(TRUE),
+                                  input_id = "buckets",
                                   output_id = "arms_buckets") {
   if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
     stopifnot(
@@ -109,7 +111,7 @@ arm_ref_comp_observer <- function(session,
       }
 
       teal.widgets::draggable_buckets(
-        session$ns("buckets"),
+        session$ns(input_id),
         "Groups",
         arm_levels,
         c("Ref", "Comp")

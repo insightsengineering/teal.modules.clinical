@@ -16,6 +16,7 @@ arm_ref_comp_observer(
   arm_ref_comp,
   module,
   on_off = shiny::reactive(TRUE),
+  input_id = "buckets",
   output_id = "arms_buckets"
 )
 }
@@ -45,6 +46,8 @@ to produce more informative error messages)}
 
 \item{on_off}{(\code{logical}) A reactive that can be used to
 stop the whole observer if FALSE.}
+
+\item{input_id}{(\code{character}) unique id that the buckets will be referenced with.}
 
 \item{output_id}{(\code{character}) name of the UI id that the output will be written to.}
 }
