@@ -26,6 +26,7 @@
 
 ### Miscellaneous
 * Added a `pkgdown` template to the documentation.
+* Updated package authors.
 
 # teal.modules.clinical 0.8.12
 
