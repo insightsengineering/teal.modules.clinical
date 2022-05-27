@@ -454,8 +454,7 @@ srv_t_logistic <- function(id,
         datasets = datasets,
         dataname = parentname,
         arm_ref_comp = arm_ref_comp,
-        module = "tm_t_logistic",
-        output_id = "arms_buckets"
+        module = "tm_t_logistic"
       )
     }
 

@@ -113,8 +113,8 @@ arm_ref_comp_observer <- function(session,
       teal.widgets::draggable_buckets(
         session$ns(input_id),
         "Groups",
-        arm_levels,
-        c("Ref", "Comp")
+        character(),
+        list("Ref" = ref_arm, "Comp" = comp_arm)
       )
     }
   })
