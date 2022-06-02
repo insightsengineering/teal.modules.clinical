@@ -374,7 +374,7 @@ srv_g_laboratory <- function(id,
         )
       )
 
-      labor_stack <- teal.code::chunks$new()
+      labor_stack <- teal.code::chunks_new()
       labor_stack$reset()
       labor_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = labor_stack)

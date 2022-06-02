@@ -824,7 +824,7 @@ srv_g_patient_timeline <- function(id,
         )
       )
 
-      patient_timeline_stack <- teal.code::chunks$new()
+      patient_timeline_stack <- teal.code::chunks_new()
       time_line_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = patient_timeline_stack)
       }
