@@ -1176,7 +1176,7 @@ srv_mmrm <- function(id,
     # Fit the MMRM, once the user clicks on the start button.
     mmrm_fit <- shiny::eventReactive(input$button_start, {
       # Create a private stack for this function only.
-      fit_stack <- teal.code::chunks$new()
+      fit_stack <- teal.code::chunks_new()
       fit_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = fit_stack)
       }
@@ -1262,7 +1262,7 @@ srv_mmrm <- function(id,
       fit_stack <- mmrm_fit()
       fit <- teal.code::chunks_get_var("fit", chunks = fit_stack)
       # Start new private stack for the table code.
-      table_stack <- teal.code::chunks$new()
+      table_stack <- teal.code::chunks_new()
 
       table_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = table_stack)
@@ -1325,7 +1325,7 @@ srv_mmrm <- function(id,
       fit <- teal.code::chunks_get_var("fit", fit_stack)
 
       # Start new private stack for the plot code.
-      plot_stack <- teal.code::chunks$new()
+      plot_stack <- teal.code::chunks_new()
       plot_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = plot_stack)
       }

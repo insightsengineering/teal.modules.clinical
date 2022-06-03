@@ -274,7 +274,7 @@ srv_t_medical_history <- function(id,
         )
       )
 
-      mhist_stack <- teal.code::chunks$new()
+      mhist_stack <- teal.code::chunks_new()
       mhist_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = mhist_stack)
       }

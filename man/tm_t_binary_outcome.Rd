@@ -2,10 +2,7 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Teal Module: Binary Outcome Table
-
-This module produces a binary outcome response summary
-table, with the option to match the STREAM template \code{RSPT01}.}
+\title{Teal Module: Binary Outcome Table}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -99,8 +96,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 an \code{\link[teal:module]{teal::module()}} object
 }
 \description{
-Teal Module: Binary Outcome Table
-
 This module produces a binary outcome response summary
 table, with the option to match the STREAM template \code{RSPT01}.
 }

@@ -652,7 +652,7 @@ srv_g_therapy <- function(id,
         )
       )
 
-      therapy_stack <- teal.code::chunks$new()
+      therapy_stack <- teal.code::chunks_new()
       therapy_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = therapy_stack)
       }

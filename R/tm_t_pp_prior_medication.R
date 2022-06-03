@@ -316,7 +316,7 @@ srv_t_prior_medication <- function(id,
         )
       )
 
-      pmed_stack <- teal.code::chunks$new()
+      pmed_stack <- teal.code::chunks_new()
       pmed_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = pmed_stack)
       }

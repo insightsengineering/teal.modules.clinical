@@ -200,7 +200,7 @@ srv_t_basic_info <- function(id,
         )
       )
 
-      call_stack <- teal.code::chunks$new()
+      call_stack <- teal.code::chunks_new()
       call_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = call_stack)
       }

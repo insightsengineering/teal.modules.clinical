@@ -350,8 +350,9 @@ template_binary_outcome <- function(dataname,
 
 #' @title Teal Module: Binary Outcome Table
 #'
-#' This module produces a binary outcome response summary
-#' table, with the option to match the STREAM template `RSPT01`.
+#' @description
+#'   This module produces a binary outcome response summary
+#'   table, with the option to match the STREAM template `RSPT01`.
 #'
 #' @inheritParams module_arguments
 #' @param default_responses (`list` or `character`) \cr defines
