@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.12.9018.1
+# teal.modules.clinical 0.8.12.9018.2
 
 ### Enhancements
 #### `tm_g_pp_adverse_events`
