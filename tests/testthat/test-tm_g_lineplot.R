@@ -34,6 +34,7 @@ testthat::test_that("template_g_lineplot works as expected with default argument
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE
       )
+      result
     })
   )
   testthat::expect_equal(result, expected)
@@ -84,6 +85,7 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE
       )
+      result
     })
   )
   testthat::expect_equal(result, expected)
