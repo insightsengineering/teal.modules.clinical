@@ -27,6 +27,9 @@ testthat::test_that("template_smq generates correct expressions with default arg
         smq_varlabel = "Standardized MedDRA Query",
         keys = unique(c("STUDYID", "USUBJID", c("ARMCD", "SEX"), "AEDECOD"))
       )
+      if (nrow(anl) == 0) {
+        stop("Analysis dataset contains only missing values")
+      }
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       adsl <- df_explicit_na(adsl, na_level = "<Missing>")
     }),
@@ -107,6 +110,9 @@ testthat::test_that("template_smq generates correct expressions with custom argu
         smq_varlabel = "mylabel",
         keys = unique(c("STUDYID", "myUSUBJID", "myARMCD", "myAEDECOD"))
       )
+      if (nrow(anl) == 0) {
+        stop("Analysis dataset contains only missing values")
+      }
       anl <- df_explicit_na(anl, na_level = "<Missing>")
       myadsl <- df_explicit_na(myadsl, na_level = "<Missing>")
     }),

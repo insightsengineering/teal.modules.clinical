@@ -486,7 +486,7 @@ srv_g_adverse_events <- function(id,
         )
       )
 
-      stack <- teal.code::chunks$new()
+      stack <- teal.code::chunks_new()
       stack$reset()
 
       teal.code::chunks_push_data_merge(ae_merged_data(), chunks = stack)
