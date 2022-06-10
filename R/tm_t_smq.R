@@ -97,6 +97,15 @@ template_smq <- function(dataname,
 
   data_list <- add_expr(
     data_list,
+    quote(
+      if (nrow(anl) == 0) {
+        stop("Analysis dataset contains only missing values")
+      }
+    )
+  )
+
+  data_list <- add_expr(
+    data_list,
     substitute(
       anl <- df_explicit_na(
         dataname,

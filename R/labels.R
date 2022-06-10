@@ -13,6 +13,7 @@
 #' teal.modules.clinical:::column_annotation_label(data, "cyl")
 #' teal.modules.clinical:::column_annotation_label(data, "cyl", omit_raw_name = TRUE)
 #' \dontrun{
+#' ANL <- scda::synthetic_cdisc_data("latest")$adsl
 #' teal.modules.clinical:::column_annotation_label(ANL, "ACTARM")
 #' }
 #' @keywords internal

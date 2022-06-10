@@ -460,7 +460,7 @@ srv_g_vitals <- function(id,
         )
       )
 
-      vitals_stack <- teal.code::chunks$new()
+      vitals_stack <- teal.code::chunks_new()
       vitals_stack_push <- function(...) {
         teal.code::chunks_push(..., chunks = vitals_stack)
       }

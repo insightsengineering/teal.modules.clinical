@@ -465,7 +465,7 @@ srv_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    observeEvent(anl_merged()$columns_source$summarize_vars, {
+    shiny::observeEvent(anl_merged()$columns_source$summarize_vars, {
       choices_classes <- sapply(
         anl_merged()$columns_source$summarize_vars,
         function(x) {
