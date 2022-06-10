@@ -59,8 +59,8 @@
 arm_ref_comp_observer <- function(session,
                                   input,
                                   output,
-                                  id_ref,
-                                  id_comp,
+                                  id_ref = "Ref",
+                                  id_comp = "Comp",
                                   id_arm_var,
                                   datasets,
                                   dataname = "ADSL",
@@ -110,11 +110,14 @@ arm_ref_comp_observer <- function(session,
         comp_arm <- default_settings$comp
       }
 
+      buckets <- list(ref_arm, comp_arm)
+      names(buckets) <- c(id_ref, id_comp)
+
       teal.widgets::draggable_buckets(
         session$ns(input_id),
-        "Groups",
-        character(),
-        list("Ref" = ref_arm, "Comp" = comp_arm)
+        label = "Groups",
+        elements = character(),
+        buckets = buckets
       )
     }
   })
