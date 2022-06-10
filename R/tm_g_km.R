@@ -461,20 +461,12 @@ ui_g_km <- function(id, ...) {
         shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
           shiny::div(
-            shiny::selectInput(
-              ns("ref_arm"),
-              "Reference Group",
-              choices = NULL,
-              selected = NULL,
-              multiple = TRUE
-            ),
-            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
-            shiny::selectInput(
-              ns("comp_arm"),
-              "Comparison Group",
-              choices = NULL,
-              selected = NULL,
-              multiple = TRUE
+            shiny::uiOutput(
+              ns("arms_buckets"),
+              title = paste(
+                "Multiple reference groups are automatically combined into a single group when more than one",
+                "value selected."
+              )
             ),
             shiny::checkboxInput(
               ns("combine_comp_arms"),
@@ -608,9 +600,9 @@ srv_g_km <- function(id,
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
-      session, input,
-      id_ref = "ref_arm", # from UI
-      id_comp = "comp_arm", # from UI
+      session,
+      input,
+      output,
       id_arm_var = extract_input("arm_var", parentname),
       datasets = datasets,
       dataname = parentname,
@@ -664,7 +656,7 @@ srv_g_km <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
       if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+        validate_args <- append(validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
       }
 
       do.call(what = "validate_standard_inputs", validate_args)
@@ -720,8 +712,8 @@ srv_g_km <- function(id,
       my_calls <- template_g_km(
         dataname = "ANL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         compare_arm = input$compare_arms,
         combine_comp_arms = input$combine_comp_arms,
         aval_var = as.vector(anl_m$columns_source$aval_var),
