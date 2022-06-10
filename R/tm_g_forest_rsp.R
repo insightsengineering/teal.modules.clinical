@@ -409,33 +409,12 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
-        ns("ref_arm"),
-        shiny::div(
-          "Reference Group",
-          title = paste(
-            "Multiple reference groups are automatically combined into a single group when more than one",
-            "value selected."
-          ),
-          shiny::icon("info-circle")
-        ),
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
-      shiny::selectInput(
-        ns("comp_arm"),
-        shiny::div(
-          "Comparison Group",
-          title = paste(
-            "Multiple comparison groups are automatically combined into a single group when more than one",
-            "value selected."
-          ),
-          shiny::icon("info-circle")
-        ),
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
+      shiny::uiOutput(
+        ns("arms_buckets"),
+        title = paste(
+          "Multiple reference groups are automatically combined into a single group when more than one",
+          "value selected."
+        )
       ),
       teal.transform::data_extract_ui(
         id = ns("subgroup_var"),
@@ -493,9 +472,9 @@ srv_g_forest_rsp <- function(id,
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
-      session, input,
-      id_ref = "ref_arm",
-      id_comp = "comp_arm",
+      session,
+      input,
+      output,
       id_arm_var = extract_input("arm_var", parentname),
       datasets = datasets,
       dataname = parentname,
@@ -584,7 +563,7 @@ srv_g_forest_rsp <- function(id,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
         arm_var = input_arm_var
       )
-      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      validate_args <- append(validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
 
       do.call(what = "validate_standard_inputs", validate_args)
 
@@ -682,8 +661,8 @@ srv_g_forest_rsp <- function(id,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         obj_var_name = obj_var_name,
         aval_var = as.vector(anl_m$columns_source$aval_var),
         responders = input$responders,
