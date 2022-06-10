@@ -550,8 +550,8 @@ srv_t_logistic <- function(id,
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var),
         arm_var = input_arm_var,
-        ref_arm = unlist(input$buckets[[1]]$elements),
-        comp_arm = unlist(input$buckets[[2]]$elements),
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         min_nrow = 4
       )
 
@@ -570,9 +570,9 @@ srv_t_logistic <- function(id,
 
         arm_n <- base::table(anl_m$data()[[input_arm_var]])
         anl_arm_n <- if (input$combine_comp_arms) {
-          c(sum(arm_n[unlist(input$buckets[[1]]$elements)]), sum(arm_n[unlist(input$buckets[[2]]$elements)]))
+          c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
         } else {
-          c(sum(arm_n[unlist(input$buckets[[1]]$elements)]), arm_n[unlist(input$buckets[[2]]$elements)])
+          c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
         }
         shiny::validate(shiny::need(
           all(anl_arm_n >= 2),
@@ -650,8 +650,8 @@ srv_t_logistic <- function(id,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
         interaction_var = if (interaction_flag) interaction_var else NULL,
-        ref_arm = unlist(input$buckets[[1]]$elements),
-        comp_arm = unlist(input$buckets[[2]]$elements),
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
         topleft = paramcd,
         conf_level = as.numeric(input$conf_level),
