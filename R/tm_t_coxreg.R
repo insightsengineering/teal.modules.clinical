@@ -615,18 +615,7 @@ ui_t_coxreg <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
-        ns("ref_arm"),
-        "Reference Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
-      shiny::selectInput(
-        ns("comp_arm"),
-        "Comparison Group",
-        choices = NULL,
-        multiple = TRUE
-      ),
+      shiny::uiOutput(ns("arms_buckets")),
       shiny::conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Multivariate'"),
         shiny::checkboxInput(
@@ -725,8 +714,7 @@ srv_t_coxreg <- function(id,
     arm_ref_comp_observer(
       session,
       input,
-      id_ref = "ref_arm",
-      id_comp = "comp_arm",
+      output,
       id_arm_var = extract_input("arm_var", parentname),
       datasets = datasets,
       dataname = parentname,
@@ -798,8 +786,8 @@ srv_t_coxreg <- function(id,
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var),
         arm_var = input_arm_var,
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         min_nrow = 4
       )
 
@@ -833,9 +821,9 @@ srv_t_coxreg <- function(id,
 
       arm_n <- base::table(anl_m$data()[[input_arm_var]])
       anl_arm_n <- if (input$combine_comp_arms) {
-        c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+        c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
       } else {
-        c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+        c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
       }
       shiny::validate(shiny::need(
         all(anl_arm_n >= 2),
@@ -921,7 +909,7 @@ srv_t_coxreg <- function(id,
       arm_var <- as.vector(anl$columns_source$arm_var)
       cnsr_var <- as.vector(anl$columns_source$cnsr_var)
       aval_var <- as.vector(anl$columns_source$aval_var)
-      ref_arm <- input$ref_arm
+      ref_arm <- unlist(input$buckets$Ref)
       combine_comp_arms <- input$combine_comp_arms
       control <- control_coxreg(
         pval_method = input$pval_method,
@@ -985,7 +973,7 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        expr <- call_template(input$comp_arm, anl_m, paramcd, multivariate, all_basic_table_args)
+        expr <- call_template(unlist(input$buckets$Comp), anl_m, paramcd, multivariate, all_basic_table_args)
         mapply(
           expression = expr,
           id = paste(names(expr), "call", sep = "_"),
@@ -1000,7 +988,7 @@ srv_t_coxreg <- function(id,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
         teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
-        lapply(input$comp_arm, function(x) {
+        lapply(unlist(input$buckets$Comp), function(x) {
           expr <- call_template(x, anl_m, paramcd, multivariate, NULL)
           mapply(expression = expr, id = paste(names(expr), "call", sep = "_"), teal.code::chunks_push)
         })
