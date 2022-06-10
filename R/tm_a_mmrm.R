@@ -1017,7 +1017,8 @@ srv_mmrm <- function(id,
           } else {
             input[[x]]
           }
-      })
+        }
+      )
       names(encoding_inputs) <- sync_inputs
 
       adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)

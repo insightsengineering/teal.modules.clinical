@@ -523,7 +523,8 @@ srv_g_forest_tte <- function(id,
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
-      validate_args <- append(validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
+      validate_args <- append(
+        validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
 
       if (length(input_subgroup_var) > 0) {
         shiny::validate(
