@@ -45,8 +45,6 @@
 #'         session,
 #'         input,
 #'         output,
-#'         id_ref = "ref",
-#'         id_comp = "comp",
 #'         id_arm_var = "arm",
 #'         datasets = ds,
 #'         arm_ref_comp = arm_ref_comp,
