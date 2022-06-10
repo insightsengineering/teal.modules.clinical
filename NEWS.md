@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.8.13.9000
 
+### Enhancements
+* Implemented a new widget that allows dragging and dropping to select comparison groups.
+
 # teal.modules.clinical 0.8.13
 
 ### Enhancements
