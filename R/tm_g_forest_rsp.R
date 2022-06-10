@@ -563,7 +563,10 @@ srv_g_forest_rsp <- function(id,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
         arm_var = input_arm_var
       )
-      validate_args <- append(validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
+      validate_args <- append(
+        validate_args,
+        list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
+      )
 
       do.call(what = "validate_standard_inputs", validate_args)
 

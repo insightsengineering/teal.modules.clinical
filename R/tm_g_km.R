@@ -656,7 +656,10 @@ srv_g_km <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
       if (input$compare_arms) {
-        validate_args <- append(validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp)))
+        validate_args <- append(
+          validate_args,
+          list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
+        )
       }
 
       do.call(what = "validate_standard_inputs", validate_args)
