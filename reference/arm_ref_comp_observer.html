@@ -12,7 +12,7 @@ Updates the reference and comparison Treatments when the selected Treatment vari
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,14 +66,17 @@ Updates the reference and comparison Treatments when the selected Treatment vari
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">arm_ref_comp_observer</span><span class="op">(</span>
   <span class="va">session</span>,
   <span class="va">input</span>,
-  <span class="va">id_ref</span>,
-  <span class="va">id_comp</span>,
+  <span class="va">output</span>,
+  id_ref <span class="op">=</span> <span class="st">"Ref"</span>,
+  id_comp <span class="op">=</span> <span class="st">"Comp"</span>,
   <span class="va">id_arm_var</span>,
   <span class="va">datasets</span>,
   dataname <span class="op">=</span> <span class="st">"ADSL"</span>,
   <span class="va">arm_ref_comp</span>,
   <span class="va">module</span>,
-  on_off <span class="op">=</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span>
+  on_off <span class="op">=</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span>,
+  input_id <span class="op">=</span> <span class="st">"buckets"</span>,
+  output_id <span class="op">=</span> <span class="st">"arms_buckets"</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -82,6 +85,8 @@ Updates the reference and comparison Treatments when the selected Treatment vari
     <dl><dt>session</dt>
 <dd><p>(<code>environment</code>) shiny session</p></dd>
 <dt>input</dt>
+<dd><p>(<code>character</code>) shiny input</p></dd>
+<dt>output</dt>
 <dd><p>(<code>character</code>) shiny input</p></dd>
 <dt>id_ref</dt>
 <dd><p>(<code>character</code>) id of reference Treatment input ui element</p></dd>
@@ -103,6 +108,10 @@ to produce more informative error messages)</p></dd>
 <dt>on_off</dt>
 <dd><p>(<code>logical</code>) A reactive that can be used to
 stop the whole observer if FALSE.</p></dd>
+<dt>input_id</dt>
+<dd><p>(<code>character</code>) unique id that the buckets will be referenced with.</p></dd>
+<dt>output_id</dt>
+<dd><p>(<code>character</code>) name of the UI id that the output will be written to.</p></dd>
 </dl></div>
 
     <div class="section level2">
@@ -122,26 +131,14 @@ stop the whole observer if FALSE.</p></dd>
 <span class="r-in">      choices <span class="op">=</span> <span class="va">arm_var</span><span class="op">$</span><span class="va">choices</span>,</span>
 <span class="r-in">      selected <span class="op">=</span> <span class="va">arm_var</span><span class="op">$</span><span class="va">selected</span></span>
 <span class="r-in">    <span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="st">"ref"</span>,</span>
-<span class="r-in">      <span class="st">"Reference Treatment"</span>,</span>
-<span class="r-in">      choices <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span class="r-in">      multiple <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in">    <span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="st">"comp"</span>,</span>
-<span class="r-in">      <span class="st">"Comparison Group"</span>,</span>
-<span class="r-in">      choices <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span class="r-in">      multiple <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in">    <span class="op">)</span></span>
+<span class="r-in">    <span class="fu">uiOutput</span><span class="op">(</span><span class="st">"arms_buckets"</span><span class="op">)</span>,</span>
 <span class="r-in">  <span class="op">)</span>,</span>
 <span class="r-in">  server <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">    <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/isolate.html" class="external-link">isolate</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in">      <span class="fu">teal.modules.clinical</span><span class="fu">:::</span><span class="fu">arm_ref_comp_observer</span><span class="op">(</span></span>
 <span class="r-in">        <span class="va">session</span>,</span>
 <span class="r-in">        <span class="va">input</span>,</span>
-<span class="r-in">        id_ref <span class="op">=</span> <span class="st">"ref"</span>,</span>
-<span class="r-in">        id_comp <span class="op">=</span> <span class="st">"comp"</span>,</span>
+<span class="r-in">        <span class="va">output</span>,</span>
 <span class="r-in">        id_arm_var <span class="op">=</span> <span class="st">"arm"</span>,</span>
 <span class="r-in">        datasets <span class="op">=</span> <span class="va">ds</span>,</span>
 <span class="r-in">        arm_ref_comp <span class="op">=</span> <span class="va">arm_ref_comp</span>,</span>
