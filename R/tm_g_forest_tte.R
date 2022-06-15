@@ -398,7 +398,7 @@ ui_g_forest_tte <- function(id, ...) {
         ns("arms_buckets"),
         title = paste(
           "Multiple reference groups are automatically combined into a single group when more than one",
-          "value selected."
+          "value is selected."
         )
       ),
       teal.transform::data_extract_ui(
