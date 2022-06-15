@@ -157,7 +157,6 @@ validate_standard_inputs <- function(adsl,
     }
 
     if (!missing(comp_arm) && !missing(ref_arm)) {
-      teal::validate_no_intersection(comp_arm, ref_arm, "Reference and comparison treatments cannot overlap.")
       teal::validate_in(
         c(comp_arm, ref_arm), adsl[[arm_var]],
         "Current ADSL data does not have observations from the reference and comparison treatments."

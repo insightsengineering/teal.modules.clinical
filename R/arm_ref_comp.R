@@ -5,6 +5,7 @@
 #'
 #' @param session (`environment`) shiny session
 #' @param input (`character`) shiny input
+#' @param output (`character`) shiny input
 #' @param id_ref (`character`) id of reference Treatment input ui element
 #' @param id_comp (`character`) id of comparison group input ui element
 #' @param id_arm_var (`character`) id of Treatment variable input ui element
@@ -17,6 +18,8 @@
 #'   to produce more informative error messages)
 #' @param on_off (`logical`) A reactive that can be used to
 #'   stop the whole observer if FALSE.
+#' @param input_id (`character`) unique id that the buckets will be referenced with.
+#' @param output_id (`character`) name of the UI id that the output will be written to.
 #'
 #' @keywords internal
 #'
@@ -34,26 +37,14 @@
 #'       choices = arm_var$choices,
 #'       selected = arm_var$selected
 #'     ),
-#'     shiny::selectInput(
-#'       "ref",
-#'       "Reference Treatment",
-#'       choices = NULL,
-#'       multiple = TRUE
-#'     ),
-#'     shiny::selectInput(
-#'       "comp",
-#'       "Comparison Group",
-#'       choices = NULL,
-#'       multiple = TRUE
-#'     )
+#'     uiOutput("arms_buckets"),
 #'   ),
 #'   server = function(input, output, session) {
 #'     shiny::isolate({
 #'       teal.modules.clinical:::arm_ref_comp_observer(
 #'         session,
 #'         input,
-#'         id_ref = "ref",
-#'         id_comp = "comp",
+#'         output,
 #'         id_arm_var = "arm",
 #'         datasets = ds,
 #'         arm_ref_comp = arm_ref_comp,
@@ -65,14 +56,17 @@
 #' }
 arm_ref_comp_observer <- function(session,
                                   input,
-                                  id_ref,
-                                  id_comp,
+                                  output,
+                                  id_ref = "Ref",
+                                  id_comp = "Comp",
                                   id_arm_var,
                                   datasets,
                                   dataname = "ADSL",
                                   arm_ref_comp,
                                   module,
-                                  on_off = shiny::reactive(TRUE)) {
+                                  on_off = shiny::reactive(TRUE),
+                                  input_id = "buckets",
+                                  output_id = "arms_buckets") {
   if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
     stopifnot(
       all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
@@ -88,7 +82,7 @@ arm_ref_comp_observer <- function(session,
 
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
-  shiny::observe({
+  output[[output_id]] <- renderUI({
     if (!is.null(on_off()) && on_off()) {
       arm_var <- input[[id_arm_var]]
 
@@ -114,8 +108,15 @@ arm_ref_comp_observer <- function(session,
         comp_arm <- default_settings$comp
       }
 
-      shiny::updateSelectInput(session, id_ref, selected = ref_arm, choices = arm_levels)
-      shiny::updateSelectInput(session, id_comp, selected = comp_arm, choices = arm_levels)
+      buckets <- list(ref_arm, comp_arm)
+      names(buckets) <- c(id_ref, id_comp)
+
+      teal.widgets::draggable_buckets(
+        session$ns(input_id),
+        label = "Groups",
+        elements = character(),
+        buckets = buckets
+      )
     }
   })
 }

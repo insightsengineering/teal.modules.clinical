@@ -637,25 +637,10 @@ ui_mmrm <- function(id, ...) {
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          shinyjs::hidden(shiny::selectInput(
-            ns("ref_arm"),
-            "Reference Group",
-            choices = NULL,
-            selected = NULL,
-            multiple = TRUE
-          )),
+          shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
           shinyjs::hidden(
             shiny::helpText(
               id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
-            )
-          ),
-          shinyjs::hidden(
-            shiny::selectInput(
-              ns("comp_arm"),
-              "Comparison Group",
-              choices = NULL,
-              selected = NULL,
-              multiple = TRUE
             )
           ),
           shinyjs::hidden(
@@ -888,8 +873,8 @@ srv_mmrm <- function(id,
       extract_input("aval_var", dataname),
       extract_input("paramcd", dataname, filter = TRUE),
       extract_input("arm_var", parentname),
-      "ref_arm",
-      "comp_arm",
+      "Ref",
+      "Comp",
       "combine_comp_arms",
       extract_input("visit_var", dataname),
       extract_input("cov_var", dataname),
@@ -906,22 +891,20 @@ srv_mmrm <- function(id,
     shiny::observeEvent(adsl_merged()$columns_source$arm_var, {
       arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
       if (length(arm_var) == 0) {
-        shinyjs::hide("ref_arm")
-        shinyjs::hide("comp_arm")
+        shinyjs::hide("arms_buckets")
         shinyjs::hide("help_text")
         shinyjs::hide("combine_comp_arms")
       } else {
-        shinyjs::show("ref_arm")
-        shinyjs::show("comp_arm")
+        shinyjs::show("arms_buckets")
         shinyjs::show("help_text")
         shinyjs::show("combine_comp_arms")
       }
     })
 
     arm_ref_comp_observer(
-      session, input,
-      id_ref = "ref_arm",
-      id_comp = "comp_arm",
+      session,
+      input,
+      output,
       id_arm_var = extract_input("arm_var", parentname), # From UI.
       datasets = datasets,
       dataname = parentname,
@@ -1026,7 +1009,16 @@ srv_mmrm <- function(id,
       shinyjs::disable("button_start")
       disable_r_code(TRUE)
 
-      encoding_inputs <- lapply(sync_inputs, function(x) input[[x]])
+      encoding_inputs <- lapply(
+        sync_inputs,
+        function(x) {
+          if (x %in% c("Ref", "Comp")) {
+            unlist(input$buckets[[x]])
+          } else {
+            input[[x]]
+          }
+        }
+      )
       names(encoding_inputs) <- sync_inputs
 
       adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
@@ -1044,11 +1036,6 @@ srv_mmrm <- function(id,
         shiny::need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
         shiny::need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
         shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
-      )
-      teal::validate_no_intersection(
-        encoding_inputs[["comp_arm"]],
-        encoding_inputs[["ref_arm"]],
-        "`Reference Group` and `Comparison Group` cannot have common values"
       )
       validate_checks()
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
@@ -1148,8 +1135,8 @@ srv_mmrm <- function(id,
         anl = anl_filtered,
         anlvars = anlvars,
         arm_var = input_arm_var,
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         min_nrow = 10,
         need_arm = FALSE
       )
@@ -1195,8 +1182,8 @@ srv_mmrm <- function(id,
         dataname = "ANL",
         aval_var = as.vector(anl_m$columns_source$aval_var),
         arm_var = input[[extract_input("arm_var", parentname)]],
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
         id_var = as.vector(anl_m$columns_source$id_var),
         visit_var = as.vector(anl_m$columns_source$visit_var),
@@ -1280,7 +1267,7 @@ srv_mmrm <- function(id,
           dataname = "ANL",
           fit_name = "fit",
           arm_var = input[[extract_input("arm_var", parentname)]],
-          ref_arm = input$ref_arm,
+          ref_arm = unlist(input$buckets$Ref),
           visit_var = as.vector(anl_m$columns_source$visit_var),
           paramcd = paramcd,
           show_relative = input$t_mmrm_lsmeans_show_relative,

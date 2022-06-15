@@ -394,33 +394,12 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
-        ns("ref_arm"),
-        shiny::div(
-          "Reference Group",
-          title = paste(
-            "Multiple reference groups are automatically combined into a single group when more than one",
-            "value selected."
-          ),
-          shiny::icon("info-circle")
-        ),
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
-      shiny::selectInput(
-        ns("comp_arm"),
-        shiny::div(
-          "Comparison Group",
-          title = paste(
-            "Multiple comparison groups are automatically combined into a single group when more than one",
-            "value selected."
-          ),
-          shiny::icon("info-circle")
-        ),
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
+      shiny::uiOutput(
+        ns("arms_buckets"),
+        title = paste(
+          "Multiple reference groups are automatically combined into a single group when more than one",
+          "value is selected."
+        )
       ),
       teal.transform::data_extract_ui(
         id = ns("subgroup_var"),
@@ -485,8 +464,7 @@ srv_g_forest_tte <- function(id,
     arm_ref_comp_observer(
       session,
       input,
-      id_ref = "ref_arm",
-      id_comp = "comp_arm",
+      output,
       id_arm_var = extract_input("arm_var", parentname),
       datasets = datasets,
       dataname = parentname,
@@ -545,7 +523,9 @@ srv_g_forest_tte <- function(id,
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
-      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+      validate_args <- append(
+        validate_args, list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
+      )
 
       if (length(input_subgroup_var) > 0) {
         shiny::validate(
@@ -610,8 +590,8 @@ srv_g_forest_tte <- function(id,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         obj_var_name = obj_var_name,
         aval_var = as.vector(anl_m$columns_source$aval_var),
         cnsr_var = as.vector(anl_m$columns_source$cnsr_var),

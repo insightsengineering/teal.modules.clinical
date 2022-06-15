@@ -388,18 +388,7 @@ ui_t_logistic <- function(id, ...) {
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          shiny::selectInput(
-            ns("ref_arm"),
-            "Reference Group",
-            choices = NULL,
-            multiple = TRUE
-          ),
-          shiny::selectInput(
-            ns("comp_arm"),
-            "Comparison Group",
-            choices = NULL,
-            multiple = TRUE
-          ),
+          uiOutput(ns("arms_buckets")),
           shiny::checkboxInput(
             ns("combine_comp_arms"),
             "Combine all comparison groups?",
@@ -458,8 +447,7 @@ srv_t_logistic <- function(id,
       arm_ref_comp_observer(
         session,
         input,
-        id_ref = "ref_arm",
-        id_comp = "comp_arm",
+        output,
         id_arm_var = extract_input("arm_var", parentname),
         datasets = datasets,
         dataname = parentname,
@@ -560,8 +548,8 @@ srv_t_logistic <- function(id,
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avalc_var, input_cov_var),
         arm_var = input_arm_var,
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         min_nrow = 4
       )
 
@@ -580,9 +568,9 @@ srv_t_logistic <- function(id,
 
         arm_n <- base::table(anl_m$data()[[input_arm_var]])
         anl_arm_n <- if (input$combine_comp_arms) {
-          c(sum(arm_n[input$ref_arm]), sum(arm_n[input$comp_arm]))
+          c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
         } else {
-          c(sum(arm_n[input$ref_arm]), arm_n[input$comp_arm])
+          c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
         }
         shiny::validate(shiny::need(
           all(anl_arm_n >= 2),
@@ -660,8 +648,8 @@ srv_t_logistic <- function(id,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
         interaction_var = if (interaction_flag) interaction_var else NULL,
-        ref_arm = input$ref_arm,
-        comp_arm = input$comp_arm,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
         topleft = paramcd,
         conf_level = as.numeric(input$conf_level),
