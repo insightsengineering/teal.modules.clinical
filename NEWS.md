@@ -1,6 +1,7 @@
 # teal.modules.clinical 0.8.13.9002
 
 ### Enhancements
+* Reverted missing data checkbox in tm_t_summary (encoding and filtering should be seperate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 
 # teal.modules.clinical 0.8.13
