@@ -407,7 +407,9 @@ srv_summary <- function(id,
                         parentname,
                         arm_var,
                         summarize_vars,
+                        add_total,
                         na_level,
+                        drop_arm_levels,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
