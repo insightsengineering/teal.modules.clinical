@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,54 +86,87 @@
     <dl><dt>label</dt>
 <dd><p>(<code>character</code>)<br>
 menu item label of the module in the teal app.</p></dd>
+
+
 <dt>dataname</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
+
+
 <dt>parentname</dt>
 <dd><p>(<code>character</code>)<br>
 parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
+
+
 <dt>patient_col</dt>
 <dd><p>(<code>character</code>)<br> patient ID column to be used.</p></dd>
+
+
 <dt>aeterm</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AETERM</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>tox_grade</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AETOXGR</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>causality</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AEREL</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>outcome</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AEOUT</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>action</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AEACN</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>time</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>ASTDY</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>decod</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br><code>AEDECOD</code> column of the ADAE dataset.</p></dd>
+
+
 <dt>font_size</dt>
 <dd><p>(<code>numeric</code>)<br> numeric vector of length 3 for current, min and max font size values.</p></dd>
+
+
 <dt>plot_height</dt>
 <dd><p>optional, (<code>numeric</code>)<br>
 a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></dd>
+
+
 <dt>plot_width</dt>
 <dd><p>optional, (<code>numeric</code>)<br>
 a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></dd>
+
+
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed before the output to put the output into context.
 For example a title.</p></dd>
+
+
 <dt>post_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
+
+
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>)<br>
 object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
 The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
+
 </dl></div>
 
     <div class="section level2">
@@ -183,7 +216,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-15 14:19:40.2020 pid:1169 token:[] teal.modules.clinical Initializing tm_g_pp_adverse_events</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-17 20:48:48.9937 pid:1166 token:[] teal.modules.clinical Initializing tm_g_pp_adverse_events</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

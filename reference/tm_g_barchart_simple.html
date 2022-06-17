@@ -14,7 +14,7 @@ it is ignored."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,41 +85,62 @@ it is ignored.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>(<code>data_extract_spec</code>)<br> variable on the x-axis.</p></dd>
+
+
 <dt>fill</dt>
 <dd><p>(<code>data_extract_spec</code>)<br> grouping variable assigned to the bar colors.</p></dd>
+
+
 <dt>x_facet</dt>
 <dd><p>(<code>data_extract_spec</code>)<br> faceting groups on the row dimension.</p></dd>
+
+
 <dt>y_facet</dt>
 <dd><p>(<code>data_extract_spec</code>)<br> faceting groups on the col dimension.</p></dd>
+
+
 <dt>label</dt>
 <dd><p>(<code>character</code>)<br>
 menu item label of the module in the teal app.</p></dd>
+
+
 <dt>plot_options</dt>
 <dd><p>(<code>list</code>)<br> list of plot options.</p></dd>
+
+
 <dt>plot_height</dt>
 <dd><p>optional, (<code>numeric</code>)<br>
 a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
 the main plot and renders a slider on the plot to interactively adjust the plot
 height.</p></dd>
+
+
 <dt>plot_width</dt>
 <dd><p>optional, (<code>numeric</code>)<br>
 a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></dd>
+
+
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed before the output to put the output into context.
 For example a title.</p></dd>
+
+
 <dt>post_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
+
+
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>)<br>
 object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
 The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
+
 </dl></div>
 
     <div class="section level2">
@@ -242,7 +263,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-15 14:19:11.6899 pid:1169 token:[] teal.modules.clinical Initializing tm_g_barchart_simple</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-17 20:48:19.0855 pid:1166 token:[] teal.modules.clinical Initializing tm_g_barchart_simple</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

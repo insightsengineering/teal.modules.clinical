@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,34 +85,60 @@
     <dl><dt>dataname</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
+
+
 <dt>paramcd</dt>
 <dd><p>(<code>character</code>)<br>
 variable value designating the studied parameter.</p></dd>
+
+
 <dt>arm_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable names that can be used as <code>arm_var</code>.</p></dd>
+
+
 <dt>arm_levels</dt>
 <dd><p>(<code>character</code>)<br> vector of all arm variable levels.</p></dd>
+
+
 <dt>avalu_first</dt>
 <dd><p>(<code>string</code>)<br><code>avalu</code> value.</p></dd>
+
+
 <dt>paramcd_first</dt>
 <dd><p>(<code>string</code>)<br><code>paramcd</code> value.</p></dd>
+
+
 <dt>aval_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the analysis variable.</p></dd>
+
+
 <dt>avalu_var</dt>
 <dd><p>(<code>string</code>)<br> variable name designating the unit of the analysis variable.</p></dd>
+
+
 <dt>id_var</dt>
 <dd><p>(<code>character</code>)<br>
 the variable name for subject id.</p></dd>
+
+
 <dt>visit_var</dt>
 <dd><p>(<code>string</code>)<br> variable name designating the visit timepoint variable.</p></dd>
+
+
 <dt>base_var</dt>
 <dd><p>(<code>string</code>)<br> variable name designating the baseline values of analysis variable.</p></dd>
+
+
 <dt>add_baseline_hline</dt>
 <dd><p>(<code>flag</code>)<br> adds horizontal line at baseline y-value on plot</p></dd>
+
+
 <dt>separate_by_obs</dt>
 <dd><p>(<code>flag</code>)<br> creates multi panel plots when TRUE</p></dd>
+
+
 <dt>ggplot2_args</dt>
 <dd><p>optional, (<code>ggplot2_args</code>)<br>
 object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
@@ -121,10 +147,15 @@ For this module, this argument will only accept <code>ggplot2_args</code> object
 No other elements would be taken into account. The argument is merged with option <code>teal.ggplot2_args</code> and
 with default module arguments (hard coded in the module body).</p>
 <p>For more details, see the vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
+
+
 <dt>suppress_legend</dt>
 <dd><p>(<code>flag</code>)<br> allow user to suppress legend</p></dd>
+
+
 <dt>add_avalu</dt>
 <dd><p>(<code>flag</code>)<br> allow user to not display value unit in the plot.</p></dd>
+
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

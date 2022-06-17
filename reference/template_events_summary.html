@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,51 +82,76 @@
     <dl><dt>anl_name</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
+
+
 <dt>parentname</dt>
 <dd><p>(<code>character</code>)<br>
 parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
+
+
 <dt>arm_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable names that can be used as <code>arm_var</code>.</p></dd>
+
+
 <dt>dthfl_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable for subject death flag from <code>parentname</code>. Records with `"Y"`` are summarized in
 the table row for "Total number of deaths".</p></dd>
+
+
 <dt>dcsreas_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable for study discontinuation reason from <code>parentname</code>. Records with <code>"ADVERSE EVENTS"</code>
 are summarized in the table row for "Total number of patients withdrawn from study due to an AE".</p></dd>
+
+
 <dt>flag_var_anl</dt>
 <dd><p>(<code>character</code>)<br>
 flag variable from <code>dataset</code> used to count adverse event sub-groups (e.g. Serious
 events, Related events, etc.). Variable labels are used as table row names if they exist.</p></dd>
+
+
 <dt>flag_var_aesi</dt>
 <dd><p>(<code>character</code>)<br>
 flag variable from <code>dataset</code> used to count adverse event special interest groups.
 All flag variables must be of type <code>logical</code>. Variable labels are used as table
 row names if they exist.</p></dd>
+
+
 <dt>aeseq_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable for adverse events sequence number from <code>dataset</code>. Used for counting total
 number of events.</p></dd>
+
+
 <dt>llt</dt>
 <dd><p>(<code>character</code>)<br>
 name of the variable with low level term for events.</p></dd>
+
+
 <dt>add_total</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to include column with total number of patients.</p></dd>
+
+
 <dt>count_subj</dt>
 <dd><p>(<code>logical</code>)<br> w
 whether to show count of unique subjects based on <code>USUBJID</code>. Only applies if event flag
 variables are provided.</p></dd>
+
+
 <dt>count_pt</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to show count of unique preferred terms based on <code>llt</code>. Only applies if event
 flag variables are provided.</p></dd>
+
+
 <dt>count_events</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to show count of events based on <code>aeseq_var</code>. Only applies if event flag variables
 are provided.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

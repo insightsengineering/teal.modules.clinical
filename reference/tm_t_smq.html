@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,61 +87,92 @@
     <dl><dt>label</dt>
 <dd><p>(<code>character</code>)<br>
 menu item label of the module in the teal app.</p></dd>
+
+
 <dt>dataname</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
+
+
 <dt>parentname</dt>
 <dd><p>(<code>character</code>)<br>
 parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
+
+
 <dt>arm_var</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object with all available choices
 and preselected option for variable names that can be used as <code>arm_var</code>.
 It defines the grouping variable(s) in the results table. If there are two elements selected for <code>arm_var</code>,
 second variable will be nested under the first variable.</p></dd>
+
+
 <dt>id_var</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 object specifying the variable name for subject id.</p></dd>
+
+
 <dt>llt</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br>
 name of the variable with low level term for events.</p></dd>
+
+
 <dt>add_total</dt>
 <dd><p>(<code>logical</code>)<br>
 whether to include column with total number of patients.</p></dd>
+
+
 <dt>sort_criteria</dt>
 <dd><p>(<code>character</code>)<br> how to sort the final table. Default option <code>freq_desc</code> sorts
 by decreasing total number of patients with event. Alternative option <code>alpha</code> sorts events
 alphabetically.</p></dd>
+
+
 <dt>drop_arm_levels</dt>
 <dd><p>(<code>logical</code>)<br> drop the unused <code>arm_var</code> levels.
 When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
 <code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></dd>
+
+
 <dt>na_level</dt>
 <dd><p>(<code>string</code>)<br> used to replace all <code>NA</code> or empty values
 in character or factor variables in the data.</p></dd>
+
+
 <dt>smq_varlabel</dt>
 <dd><p>(<code>character</code>)<br> label of the new column <code>SMQ</code>
 created by <code><a href="https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html" class="external-link">tern::h_stack_by_baskets()</a></code>.</p></dd>
+
+
 <dt>baskets</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 object with all available choices and preselected options for Standardized/Customized queries</p></dd>
+
+
 <dt>scopes</dt>
 <dd><p>(<code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 object with all available choices for the scopes of Standardized queries.</p></dd>
+
+
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed before the output to put the output into context.
 For example a title.</p></dd>
+
+
 <dt>post_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed after the output to put the output into context. For example
 the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
+
+
 <dt>basic_table_args</dt>
 <dd><p>optional, (<code>basic_table_args</code>)<br>
 object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code> with settings for the module table.
 The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
+
 </dl></div>
 
     <div class="section level2">
@@ -193,7 +224,7 @@ The argument is merged with option <code>teal.basic_table_args</code> and with d
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-15 14:21:14.6358 pid:1169 token:[] teal.modules.clinical Initializing tm_t_smq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-06-17 20:50:25.8793 pid:1166 token:[] teal.modules.clinical Initializing tm_t_smq</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,73 +92,118 @@
     <dl><dt>dataname</dt>
 <dd><p>(<code>character</code>)<br>
 analysis data used in teal module.</p></dd>
+
+
 <dt>arm_var</dt>
 <dd><p>(<code>character</code>)<br>
 variable names that can be used as <code>arm_var</code>.</p></dd>
+
+
 <dt>ref_arm</dt>
 <dd><p>(<code>character</code>)<br>
 the level of reference arm in case of arm comparison.</p></dd>
+
+
 <dt>comp_arm</dt>
 <dd><p>(<code>character</code>)<br>
 the level of comparison arm in case of arm comparison.</p></dd>
+
+
 <dt>compare_arm</dt>
 <dd><p>(<code>logical</code>)<br>
 triggers the comparison between study arms.</p></dd>
+
+
 <dt>combine_comp_arms</dt>
 <dd><p>(<code>logical</code>)<br>
 triggers the combination of comparison arms.</p></dd>
+
+
 <dt>aval_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the analysis variable.</p></dd>
+
+
 <dt>cnsr_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the censoring variable.</p></dd>
+
+
 <dt>xticks</dt>
 <dd><p>(<code>numeric</code>, <code>number</code>, or <code>NULL</code>)<br>
 numeric vector of ticks or single number with spacing
 between ticks on the x axis.
 If <code>NULL</code> (default), <code><a href="https://rdrr.io/pkg/labeling/man/extended.html" class="external-link">labeling::extended()</a></code> is used to determine
 an optimal tick position on the x axis.</p></dd>
+
+
 <dt>strata_var</dt>
 <dd><p>(<code>character</code>)<br>
 names of the variables for stratified analysis.</p></dd>
+
+
 <dt>time_points</dt>
 <dd><p>(<code>character</code>)<br>
 time points that can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_timepoint.html" class="external-link">tern::surv_timepoint()</a></code>.</p></dd>
+
+
 <dt>facet_var</dt>
 <dd><p>(<code>character</code>)<br>
 object with all available choices and preselected option
 for variable names that can be used for facet plotting.</p></dd>
+
+
 <dt>font_size</dt>
 <dd><p>(<code>number</code>) <br> font size to be used.</p></dd>
+
+
 <dt>conf_level</dt>
 <dd><p>(<code>numeric</code>)<br>
 value for the confidence level within the range of (0, 1).</p></dd>
+
+
 <dt>ties</dt>
 <dd><p>(<code>string</code>)<br> among <code>exact</code> (equivalent to <code>DISCRETE</code> in SAS),
 <code>efron</code> and <code>breslow</code>, see <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code>.
 Note: there is no equivalent of SAS <code>EXACT</code> method in R.</p></dd>
+
+
 <dt>xlab</dt>
 <dd><p>(<code>string</code>)<br> label of x-axis.</p></dd>
+
+
 <dt>time_unit_var</dt>
 <dd><p>(<code>character</code>)<br>
 name of the variable representing time units.</p></dd>
+
+
 <dt>yval</dt>
 <dd><p>(<code>string</code>)<br> value of y-axis. Should be either
 <code>Survival</code> (default) or <code>Failure</code> probability.</p></dd>
+
+
 <dt>pval_method</dt>
 <dd><p>(<code>string</code>)<br> the method used for estimation of p.values;
 <code>wald</code> (default) or <code>likelihood</code>.</p></dd>
+
+
 <dt>annot_surv_med</dt>
 <dd><p>(<code>flag</code>)<br> compute and add the annotation table
 on the Kaplan-Meier curve estimating the median survival time per group.</p></dd>
+
+
 <dt>annot_coxph</dt>
 <dd><p>(<code>flag</code>)<br> add the annotation table from a <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
+
+
 <dt>ci_ribbon</dt>
 <dd><p>(<code>flag</code>)<br> draw the confidence interval around the Kaplan-Meier curve.</p></dd>
+
+
 <dt>title</dt>
 <dd><p>(<code>character</code>)<br>
 title of the output.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
