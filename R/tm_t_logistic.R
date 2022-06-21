@@ -165,7 +165,8 @@ template_logistic <- function(dataname,
   model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "")))
 
   y$model <- substitute(
-    expr = mod <- model_pipe,
+    expr = mod <- model_pipe %>%
+      df_explicit_na(na_level = "_NA_"),
     env = list(model_pipe = pipe_expr(model_list))
   )
 
@@ -193,7 +194,8 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       result <- expr_basic_table_args %>%
-        summarize_logistic(conf_level = conf_level) %>%
+        summarize_logistic(conf_level = conf_level,
+                           drop_and_remove_str = "_NA_") %>%
         rtables::append_topleft(topleft) %>%
         rtables::build_table(df = mod)
       result
