@@ -18,8 +18,7 @@ template_summary(
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
-  basic_table_args = teal.widgets::basic_table_args(),
-  exclude_missing = TRUE
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{

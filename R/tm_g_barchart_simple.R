@@ -338,7 +338,7 @@ srv_g_barchart_simple <- function(id,
       })
       ANL <- merged_data()$data() # nolint
       teal::validate_has_data(ANL, 2)
-      chunk <- teal.code::chunks$new()
+      chunk <- teal.code::chunks_new()
       teal.code::chunks_push_data_merge(merged_data(), chunks = chunk)
       chunk
     })
