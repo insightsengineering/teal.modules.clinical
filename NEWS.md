@@ -22,6 +22,10 @@
 * Improved the validation if treatment variable is not a factor.
 
 ### Bug fixes
+* Fixed `summarize_logistic` implementation that was broken by empty string error 
+  that was recently reinstated in `rtables` upstream. `_NA_` is the new standard 
+  flag to allow it to pivot over empty entries in data frames.
+* Took out `@title` from `tm_t_binary_outcome.R` that was producing a warning.
 * Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
 
 ### Miscellaneous

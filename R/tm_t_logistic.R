@@ -193,8 +193,10 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       result <- expr_basic_table_args %>%
-        summarize_logistic(conf_level = conf_level,
-                           drop_and_remove_str = "_NA_") %>%
+        summarize_logistic(
+          conf_level = conf_level,
+          drop_and_remove_str = "_NA_"
+        ) %>%
         rtables::append_topleft(topleft) %>%
         rtables::build_table(df = mod)
       result
