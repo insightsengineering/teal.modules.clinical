@@ -180,6 +180,7 @@ template_abnormality <- function(parentname,
         var = grade,
         abnormal = abnormal,
         variables = list(id = id_var, baseline = baseline_var),
+        .indent_mods = 4L,
         exclude_base_abn = exclude_base_abn
       ) %>%
         append_varlabels(dataname, grade, indent = indent_space),
