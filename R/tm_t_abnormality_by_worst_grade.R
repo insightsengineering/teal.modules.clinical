@@ -176,7 +176,8 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
         ) %>%
         count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
-          variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR")
+          variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR"),
+          .indent_mods = 4L
         ) %>%
         rtables::append_topleft("    Highest Grade"),
       env = list(

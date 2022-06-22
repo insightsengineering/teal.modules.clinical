@@ -71,7 +71,8 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             id = "USUBJID",
             param = "PARAMCD",
             grade_dir = "GRADE_DIR"
-          )
+          ),
+          .indent_mods = 4L
         ) %>%
         rtables::append_topleft("    Highest Grade")
     ),
@@ -155,7 +156,8 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
             id = "USUBJID",
             param = "myPARAMCD",
             grade_dir = "GRADE_DIR"
-          )
+          ),
+          .indent_mods = 4L
         ) %>%
         rtables::append_topleft("    Highest Grade")
     ),

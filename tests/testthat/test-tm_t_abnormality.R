@@ -54,6 +54,7 @@ testthat::test_that("template_abnormality generates correct expressions with def
           var = "ANRIND",
           abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
           variables = list(id = "USUBJID", baseline = "BNRIND"),
+          .indent_mods = 4L,
           exclude_base_abn = FALSE
         ) %>%
         append_varlabels(adlb, "ANRIND", indent = 2L)
@@ -126,6 +127,7 @@ testthat::test_that("template_abnormality generates correct expressions with cus
           var = "MYANRIND",
           abnormal = list(Low = "LOW", Medium = "MEDIUM"),
           variables = list(id = "USUBJID", baseline = "MYBASELINE"),
+          .indent_mods = 4L,
           exclude_base_abn = TRUE
         ) %>%
         append_varlabels(adlb, "MYANRIND", indent = 2L)
@@ -196,6 +198,7 @@ testthat::test_that("template_abnormality generates correct expressions with cus
           var = "ANRIND",
           abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
           variables = list(id = "USUBJID", baseline = "BNRIND"),
+          .indent_mods = 4L,
           exclude_base_abn = FALSE
         ) %>%
         append_varlabels(adlb, "ANRIND", indent = 2L)

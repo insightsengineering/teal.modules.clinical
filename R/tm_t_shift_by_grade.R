@@ -424,7 +424,8 @@ template_shift_by_grade <- function(parentname,
       expr = count_occurrences(
         vars = count_var,
         denom = "n",
-        drop = TRUE
+        drop = TRUE,
+        .indent_mods = 4L
       ) %>%
         append_varlabels(dataname, count_var, indent = indent),
       env = list(
