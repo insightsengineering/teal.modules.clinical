@@ -102,7 +102,7 @@ template_logistic <- function(dataname,
     substitute(
       expr = ANL <- df %>% # nolint
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        df_explicit_na(na_level = ""),
+        df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
@@ -162,7 +162,7 @@ template_logistic <- function(dataname,
     )
   }
 
-  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "")))
+  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "_NA_")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,
@@ -193,7 +193,10 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       result <- expr_basic_table_args %>%
-        summarize_logistic(conf_level = conf_level) %>%
+        summarize_logistic(
+          conf_level = conf_level,
+          drop_and_remove_str = "_NA_"
+        ) %>%
         rtables::append_topleft(topleft) %>%
         rtables::build_table(df = mod)
       result
