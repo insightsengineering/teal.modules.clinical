@@ -44,4 +44,4 @@ See package vignettes `browseVignettes(package = "teal.modules.clinical")` for u
 
 ## Acknowledgment
 
-This package is a result of a joint efforts by many developers and stakeholders. We would like to thank everyone who contributed so far!
+This package is the result of the joint efforts of many developers and stakeholders. We would like to thank everyone who has contributed so far!
