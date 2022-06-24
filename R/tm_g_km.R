@@ -418,6 +418,14 @@ ui_g_km <- function(id, ...) {
       )
     ),
     encoding = shiny::div(
+      ### Reporter
+      div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
@@ -580,6 +588,7 @@ ui_g_km <- function(id, ...) {
 #'
 srv_g_km <- function(id,
                      datasets,
+                     reporter,
                      dataname,
                      parentname,
                      paramcd,
@@ -762,5 +771,33 @@ srv_g_km <- function(id,
       ),
       modal_title = label
     )
+
+    ### REPORTER
+    card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+      card$set_name("KM Module")
+      card$append_text("tm_g_km", "header2")
+      card$append_text("Kamplan Meier Plot", "header3")
+      card$append_text("Filter State", "header3")
+      card$append_fs(datasets)
+      card$append_text("Encoding", "header3")
+      # card$append_encodings()
+      card$append_text("Main Element", "header3")
+      card$append_plot(km_plot())
+      if (!comment == "") {
+        card$append_text("Comment", "header3")
+        card$append_text(comment)
+      }
+      card$append_text("Show R Code", "header3")
+      card$append_src(paste(get_rcode(chunks = session$userData[[session$ns(character(0))]]$chunks,
+                                      datasets = datasets,
+                                      title = "",
+                                      description = ""), collapse = "\n"))
+      card
+    }
+
+    teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+    teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+    teal.reporter::reset_report_button_srv("resetButton", reporter)
+    ###
   })
 }
