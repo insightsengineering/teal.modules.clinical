@@ -331,6 +331,14 @@ ui_summary <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
       teal.transform::data_extract_ui(
@@ -403,6 +411,7 @@ ui_summary <- function(id, ...) {
 #' @noRd
 srv_summary <- function(id,
                         datasets,
+                        reporter,
                         dataname,
                         parentname,
                         arm_var,
@@ -546,5 +555,35 @@ srv_summary <- function(id,
       modal_title = "R Code for the current Summary Table",
       code_header = label
     )
+
+    ### REPORTER
+    card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+      card$set_name("Table Module")
+      card$append_text("tm_t_summary", "header2")
+      card$append_text("Summary Table", "header3")
+      card$append_text("Filter State", "header3")
+      card$append_fs(datasets)
+      card$append_text("Encoding", "header3")
+      enc <- lapply(c(extract_input("arm_var", dataname = "ADSL", filter = FALSE)), function(x) input[[x]])
+      names(enc) <- c("ARM")
+      card$append_encodings(enc)
+      card$append_text("Main Element", "header3")
+      card$append_table(table())
+      if (!comment == "") {
+        card$append_text("Comment", "header3")
+        card$append_text(comment)
+      }
+      card$append_text("Show R Code", "header3")
+      card$append_src(paste(get_rcode(chunks = session$userData[[session$ns(character(0))]]$chunks,
+                                      datasets = datasets,
+                                      title = "",
+                                      description = ""), collapse = "\n"))
+      card
+    }
+
+    teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+    teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+    teal.reporter::reset_report_button_srv("resetButton", reporter)
+    ###
   })
 }
