@@ -595,12 +595,12 @@ ui_mmrm <- function(id, ...) {
     ),
     encoding = shiny::div(
       ### Reporter
-      div(
+      shiny::tags$div(
         teal.reporter::add_card_button_ui(ns("addReportCard")),
         teal.reporter::download_report_button_ui(ns("downloadButton")),
         teal.reporter::reset_report_button_ui(ns("resetButton"))
       ),
-      tags$br(),
+      shiny::tags$br(),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
@@ -1432,10 +1432,12 @@ srv_mmrm <- function(id,
         card$append_text(comment)
       }
       card$append_text("Show R Code", "header3")
-      card$append_src(paste(get_rcode(chunks = session$userData[[session$ns(character(0))]]$chunks,
-                                      datasets = datasets,
-                                      title = "",
-                                      description = ""), collapse = "\n"))
+      card$append_src(paste(get_rcode(
+        chunks = session$userData[[session$ns(character(0))]]$chunks,
+        datasets = datasets,
+        title = "",
+        description = ""
+      ), collapse = "\n"))
       card
     }
 

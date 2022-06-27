@@ -7,7 +7,7 @@
 
 # teal.modules.clinical 0.8.13
 
-### Enhancementsed
+### Enhancements
 #### `tm_g_pp_adverse_events`
 * Updated the position of the labels.
 * Updated the plot to render the color legend.
