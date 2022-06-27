@@ -3,10 +3,11 @@
 ### Enhancements
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
+* Added the `teal.reporter` functionality to the `tm_t_summary`, `tm_g_km`, `tm_t_events`, `tm_t_tte` and `tm_a_mmrm` modules.
 
 # teal.modules.clinical 0.8.13
 
-### Enhancements
+### Enhancementsed
 #### `tm_g_pp_adverse_events`
 * Updated the position of the labels.
 * Updated the plot to render the color legend.
