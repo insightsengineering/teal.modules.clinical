@@ -774,7 +774,7 @@ srv_g_km <- function(id,
 
     ### REPORTER
     card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
-      card$set_name("KM Module")
+      card$set_name("Kamplan Meier Plot")
       card$append_text("tm_g_km", "header2")
       card$append_text("Kamplan Meier Plot", "header3")
       card$append_text("Filter State", "header3")

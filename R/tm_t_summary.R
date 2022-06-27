@@ -558,7 +558,7 @@ srv_summary <- function(id,
 
     ### REPORTER
     card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
-      card$set_name("Table Module")
+      card$set_name("Summary Table")
       card$append_text("tm_t_summary", "header2")
       card$append_text("Summary Table", "header3")
       card$append_text("Filter State", "header3")
