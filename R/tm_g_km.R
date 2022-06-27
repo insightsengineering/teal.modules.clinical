@@ -779,8 +779,6 @@ srv_g_km <- function(id,
       card$append_text("Kamplan Meier Plot", "header3")
       card$append_text("Filter State", "header3")
       card$append_fs(datasets)
-      card$append_text("Encoding", "header3")
-      # card$append_encodings()
       card$append_text("Main Element", "header3")
       card$append_plot(km_plot())
       if (!comment == "") {

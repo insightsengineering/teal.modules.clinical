@@ -563,10 +563,6 @@ srv_summary <- function(id,
       card$append_text("Summary Table", "header3")
       card$append_text("Filter State", "header3")
       card$append_fs(datasets)
-      card$append_text("Encoding", "header3")
-      enc <- lapply(c(extract_input("arm_var", dataname = "ADSL", filter = FALSE)), function(x) input[[x]])
-      names(enc) <- c("ARM")
-      card$append_encodings(enc)
       card$append_text("Main Element", "header3")
       card$append_table(table())
       if (!comment == "") {
