@@ -422,6 +422,7 @@ srv_summary <- function(id,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -557,31 +558,32 @@ srv_summary <- function(id,
     )
 
     ### REPORTER
-    card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
-      card$set_name("Summary Table")
-      card$append_text("tm_t_summary", "header2")
-      card$append_text("Summary Table", "header3")
-      card$append_text("Filter State", "header3")
-      card$append_fs(datasets)
-      card$append_text("Main Element", "header3")
-      card$append_table(table())
-      if (!comment == "") {
-        card$append_text("Comment", "header3")
-        card$append_text(comment)
+    if (with_reporter) {
+      card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+        card$set_name("Summary Table")
+        card$append_text("Summary Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        card$append_table(table())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = session$userData[[session$ns(character(0))]]$chunks,
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
       }
-      card$append_text("Show R Code", "header3")
-      card$append_src(paste(get_rcode(
-        chunks = session$userData[[session$ns(character(0))]]$chunks,
-        datasets = datasets,
-        title = "",
-        description = ""
-      ), collapse = "\n"))
-      card
-    }
 
-    teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-    teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-    teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
     ###
   })
 }

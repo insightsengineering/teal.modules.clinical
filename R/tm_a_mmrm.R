@@ -823,6 +823,7 @@ srv_mmrm <- function(id,
                      basic_table_args,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -1414,36 +1415,42 @@ srv_mmrm <- function(id,
     )
 
     ### REPORTER
-    card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
-      card$set_name("MMRM")
-      card$append_text("tm_a_mmrm", "header2")
-      card$append_text("Mixed Model Repeated Measurements (MMRM) analysis", "header3")
-      card$append_text("Filter State", "header3")
-      card$append_fs(datasets)
-      card$append_text("Main Element", "header3")
-      if (!is.null(mmrm_table())) {
-        card$append_table(mmrm_table())
+    if (with_reporter) {
+      card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+        card$set_name("MMRM")
+        card$append_text("Mixed Model Repeated Measurements (MMRM) analysis", "header2")
+        card$append_text(
+          paste0("Mixed Models procedure analyzes results from repeated measures designs",
+                 "in which the outcome is continuous and measured at fixed time points"),
+          "header3"
+        )
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        if (!is.null(mmrm_table())) {
+          card$append_table(mmrm_table())
+        }
+        if (!is.null(mmrm_plot_reactive())) {
+          card$append_plot(mmrm_plot_reactive())
+        }
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = session$userData[[session$ns(character(0))]]$chunks,
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
       }
-      if (!is.null(mmrm_plot_reactive())) {
-        card$append_plot(mmrm_plot_reactive())
-      }
-      if (!comment == "") {
-        card$append_text("Comment", "header3")
-        card$append_text(comment)
-      }
-      card$append_text("Show R Code", "header3")
-      card$append_src(paste(get_rcode(
-        chunks = session$userData[[session$ns(character(0))]]$chunks,
-        datasets = datasets,
-        title = "",
-        description = ""
-      ), collapse = "\n"))
-      card
-    }
 
-    teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-    teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-    teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
     ###
   })
 }
