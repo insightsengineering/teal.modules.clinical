@@ -789,7 +789,7 @@ srv_g_km <- function(id,
         }
         card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
-          chunks =  teal.code::get_chunks_object(parent_idx = 1L),
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
           datasets = datasets,
           title = "",
           description = ""
