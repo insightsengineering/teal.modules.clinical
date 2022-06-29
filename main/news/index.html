@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9006</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -60,11 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.13.9005" id="tealmodulesclinical-08139005">teal.modules.clinical 0.8.13.9005<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139005"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.13.9006" id="tealmodulesclinical-08139006">teal.modules.clinical 0.8.13.9006<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139006"></a></h2>
 <div class="section level4">
-<h4 id="enhancements-0-8-13-9005">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9005"></a></h4>
+<h4 id="enhancements-0-8-13-9006">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9006"></a></h4>
 <ul><li>Reverted missing data checkbox in <code>tm_t_summary</code> (encoding and filtering should be separate).</li>
 <li>Implemented a new widget that allows dragging and dropping to select comparison groups.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-8-13-9006">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13-9006"></a></h4>
+<ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented graph from being shown.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -99,7 +97,7 @@
 <div class="section level4">
 <h4 id="bug-fixes-0-8-13">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13"></a></h4>
 <ul><li>Fixed <code>summarize_logistic</code> implementation that was broken by empty string error that was recently reinstated in <code>rtables</code> upstream. <code>_NA_</code> is the new standard flag to allow it to pivot over empty entries in data frames.</li>
-<li>Took out <code><a href="https://github.com/title" class="external-link">@title</a></code> from <code>tm_t_binary_outcome.R</code> that was producing a warning.</li>
+<li>Took out <code>@title</code> from <code>tm_t_binary_outcome.R</code> that was producing a warning.</li>
 <li>Updated the validation to account for the error when multiple variables are not selected in <code>tm_g_pp_patient_timeline</code> module.</li>
 </ul></div>
 <div class="section level4">

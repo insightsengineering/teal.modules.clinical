@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9006</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,12 +51,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -140,11 +134,11 @@ The choice was made to focus on <code>substitute</code>.</p>
 <h3 id="principle">Principle<a class="anchor" aria-label="anchor" href="#principle"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span>
-<span class="va">non_evaluated_expression</span>
-<span class="co">## a + b</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span>
-<span class="co">## Error in eval(non_evaluated_expression): object 'b' not found</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span></span>
+<span><span class="va">non_evaluated_expression</span></span>
+<span><span class="co">## a + b</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span>
+<span><span class="co">## Error in eval(non_evaluated_expression): object 'b' not found</span></span></code></pre></div>
 <p>What happened?</p>
 <ul>
 <li>
@@ -156,22 +150,22 @@ non defined objects.</li>
 expression can run without error (below).</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span>
-<span class="co">## [1] 6</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span>
+<span><span class="co">## [1] 6</span></span></code></pre></div>
 <p>Now, the function name <code>substitute</code> is for a reason. Not
 only returning the expression, it also <strong>operates
 substitutions</strong> of some terms within a given expression.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu">fun</span><span class="op">(</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">non_evaluated_expression</span>
-<span class="co">## 5 + -2</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span>
-<span class="co">## [1] 3</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu">fun</span><span class="op">(</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">non_evaluated_expression</span></span>
+<span><span class="co">## 5 + -2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span>
+<span><span class="co">## [1] 3</span></span></code></pre></div>
 <p>What happened?</p>
 <ul>
 <li>the objects <code>a</code> and <code>b</code> exist in the function
@@ -190,14 +184,14 @@ containing objects. If the expression submitted in
 the terms within the expression will be substituted with provided
 values:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">5</span>, b <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">non_evaluated_expression</span>
-<span class="co">## 5 + 5</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span>
-<span class="co">## [1] 10</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">5</span>, b <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">non_evaluated_expression</span></span>
+<span><span class="co">## 5 + 5</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span>
+<span><span class="co">## [1] 10</span></span></code></pre></div>
 <p>What happened?</p>
 <ul>
 <li>The environment in which the values of <code>a</code> and
@@ -210,13 +204,13 @@ values were substituted (argument <code>env</code>).</li>
 </ul>
 <p>With a slightly more elaborated expression:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, text <span class="op">=</span> <span class="st">"A graph"</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">non_evaluated_expression</span>
-<span class="co">## plot(x = 0:10, y = exp(0:10), main = "A graph")</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, text <span class="op">=</span> <span class="st">"A graph"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">non_evaluated_expression</span></span>
+<span><span class="co">## plot(x = 0:10, y = exp(0:10), main = "A graph")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Note that:</p>
 <ul>
@@ -231,45 +225,45 @@ values were substituted (argument <code>env</code>).</li>
 <p>In formulas, character strings are not accepted, how to operate the
 substitution?</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Error expected:</span>
-<span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">Sepal.Length</span>,
-    y <span class="op">=</span> <span class="va">Sepal.Width</span>,
-    text <span class="op">=</span> <span class="st">"Iris, again ..."</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="co">## Error in eval(expr, envir, enclos): object 'Sepal.Length' not found</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Error expected:</span></span>
+<span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">Sepal.Length</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">Sepal.Width</span>,</span>
+<span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">## Error in eval(expr, envir, enclos): object 'Sepal.Length' not found</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Error expected:</span>
-<span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="st">"Sepal.Length"</span>,
-    y <span class="op">=</span> <span class="st">"Sepal.Width"</span>,
-    text <span class="op">=</span> <span class="st">"Iris, again ..."</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="va">plot_expr</span>
-<span class="co">## plot("Sepal.Width" ~ "Sepal.Length", data = iris, main = "Iris, again ...")</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span>
-<span class="co">## Error in terms.formula(formula, data = data): invalid term in model formula</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Error expected:</span></span>
+<span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="st">"Sepal.Length"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Sepal.Width"</span>,</span>
+<span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">plot_expr</span></span>
+<span><span class="co">## plot("Sepal.Width" ~ "Sepal.Length", data = iris, main = "Iris, again ...")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span>
+<span><span class="co">## Error in terms.formula(formula, data = data): invalid term in model formula</span></span></code></pre></div>
 <p>The object names have a special <code>name</code> <em>class</em>;
 <code>as.names</code> coerces a character string to an object name
 (alternatively, <code>as.symbol</code> provides identical result):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,
-    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,
-    text <span class="op">=</span> <span class="st">"Iris, again ..."</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="va">plot_expr</span>
-<span class="co">## plot(Sepal.Width ~ Sepal.Length, data = iris, main = "Iris, again ...")</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,</span>
+<span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">plot_expr</span></span>
+<span><span class="co">## plot(Sepal.Width ~ Sepal.Length, data = iris, main = "Iris, again ...")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -283,43 +277,43 @@ However, <code>df</code> in the expression is then replaced directly by
 the value of the object provided and not the expression generating the
 dataframe: the pipeline is working but not humanly readable.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span>
-<span class="va">short_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>
-<span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    df <span class="op">=</span> <span class="va">short_iris</span>,
-    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,
-    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,
-    text <span class="op">=</span> <span class="st">"Iris, again ..."</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="va">short_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span>
+<span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">short_iris</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,</span>
+<span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plot_expr</span>
-<span class="co">## list(Sepal.Length = c(5.1, 4.9, 4.7, 4.6, 5, 5.4), Sepal.Width = c(3.5, </span>
-<span class="co">## 3, 3.2, 3.1, 3.6, 3.9), Petal.Length = c(1.4, 1.4, 1.3, 1.5, </span>
-<span class="co">## 1.4, 1.7), Petal.Width = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.4), Species = c(1L, </span>
-<span class="co">## 1L, 1L, 1L, 1L, 1L)) %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., </span>
-<span class="co">##     main = "Iris, again ...")</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">plot_expr</span></span>
+<span><span class="co">## list(Sepal.Length = c(5.1, 4.9, 4.7, 4.6, 5, 5.4), Sepal.Width = c(3.5, </span></span>
+<span><span class="co">## 3, 3.2, 3.1, 3.6, 3.9), Petal.Length = c(1.4, 1.4, 1.3, 1.5, </span></span>
+<span><span class="co">## 1.4, 1.7), Petal.Width = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.4), Species = c(1L, </span></span>
+<span><span class="co">## 1L, 1L, 1L, 1L, 1L)) %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., </span></span>
+<span><span class="co">##     main = "Iris, again ...")</span></span></code></pre></div>
 <p>How can we replace the value by the expression generating this
 value?</p>
 <p>That is pretty much the topic of the vignette:
 <code>substitute</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>,
-    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,
-    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,
-    text <span class="op">=</span> <span class="st">"Iris, again ..."</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="va">plot_expr</span>
-<span class="co">## iris %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., main = "Iris, again ...")</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">.</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"Sepal.Width"</span><span class="op">)</span>,</span>
+<span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">plot_expr</span></span>
+<span><span class="co">## iris %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., main = "Iris, again ...")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -366,92 +360,92 @@ report in columns the lab test result per study arm, as values
 analysis visit in rows.</p>
 <p>The data can be prepared as follows:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span>
-<span class="co">## </span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/rtables" class="external-link">rtables</a></span><span class="op">)</span>
-<span class="co">## Loading required package: formatters</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="co">## </span>
-<span class="co">## Attaching package: 'dplyr'</span>
-<span class="co">## The following objects are masked from 'package:stats':</span>
-<span class="co">## </span>
-<span class="co">##     filter, lag</span>
-<span class="co">## The following objects are masked from 'package:base':</span>
-<span class="co">## </span>
-<span class="co">##     intersect, setdiff, setequal, union</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/tern" class="external-link">tern</a></span><span class="op">)</span>
-<span class="co">## Registered S3 method overwritten by 'tern':</span>
-<span class="co">##   method   from </span>
-<span class="co">##   tidy.glm broom</span>
-<span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span>
-<span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>
-    <span class="va">PARAM</span> <span class="op">==</span> <span class="st">"Alanine Aminotransferase Measurement"</span> <span class="op">&amp;</span>
-      <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
-  <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/roche/rtables" class="external-link">rtables</a></span><span class="op">)</span></span>
+<span><span class="co">## Loading required package: formatters</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'dplyr'</span></span>
+<span><span class="co">## The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     filter, lag</span></span>
+<span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/tern" class="external-link">tern</a></span><span class="op">)</span></span>
+<span><span class="co">## Registered S3 method overwritten by 'tern':</span></span>
+<span><span class="co">##   method   from </span></span>
+<span><span class="co">##   tidy.glm broom</span></span>
+<span><span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span></span>
+<span><span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
+<span>    <span class="va">PARAM</span> <span class="op">==</span> <span class="st">"Alanine Aminotransferase Measurement"</span> <span class="op">&amp;</span></span>
+<span>      <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p>And the <code>rtables</code> expression is obtained as:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-  expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span>
-      vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
-      varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">adlb_f</span><span class="op">)</span>,
-    arm <span class="op">=</span> <span class="st">"ARM"</span>,
-    visit <span class="op">=</span> <span class="st">"AVISIT"</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span></span>
+<span>      vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,</span>
+<span>      varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">adlb_f</span><span class="op">)</span>,</span>
+<span>    arm <span class="op">=</span> <span class="st">"ARM"</span>,</span>
+<span>    visit <span class="op">=</span> <span class="st">"AVISIT"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The expression is valid … :</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">rtables_expr</span><span class="op">)</span>
-<span class="co">##                        A: Drug X                  B: Placebo        </span>
-<span class="co">##                  Value         Change        Value         Change   </span>
-<span class="co">## ————————————————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                                        </span>
-<span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
-<span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
-<span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">rtables_expr</span><span class="op">)</span></span>
+<span><span class="co">##                        A: Drug X                  B: Placebo        </span></span>
+<span><span class="co">##                  Value         Change        Value         Change   </span></span>
+<span><span class="co">## ————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## WEEK 1 DAY 8                                                        </span></span>
+<span><span class="co">##   n               134           134           134           134     </span></span>
+<span><span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span></span>
+<span><span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span></span>
+<span><span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></span></code></pre></div>
 <p>… but not easily readable …:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rtables_expr</span>
-<span class="co">## basic_table() %&gt;% split_cols_by("ARM", split_fun = drop_split_levels) %&gt;% </span>
-<span class="co">##     split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;% </span>
-<span class="co">##     split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c("Value", </span>
-<span class="co">##         "Change")) %&gt;% summarize_colvars() %&gt;% build_table(df = adlb_f)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rtables_expr</span></span>
+<span><span class="co">## basic_table() %&gt;% split_cols_by("ARM", split_fun = drop_split_levels) %&gt;% </span></span>
+<span><span class="co">##     split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;% </span></span>
+<span><span class="co">##     split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c("Value", </span></span>
+<span><span class="co">##         "Change")) %&gt;% summarize_colvars() %&gt;% build_table(df = adlb_f)</span></span></code></pre></div>
 <p>… but that can be arranged:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">teal</span><span class="op">)</span>
-<span class="co">#' Stylish code</span>
-<span class="co">#'</span>
-<span class="co">#' Deparse an expression and display the code following NEST conventions.</span>
-<span class="co">#'</span>
-<span class="co">#' @param expr (`call`)\cr or possibly understood as so.</span>
-<span class="co">#'</span>
-<span class="va">styled_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">expr</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">styler</span><span class="fu">:::</span><span class="fu"><a href="https://styler.r-lib.org/reference/print.vertical.html" class="external-link">print.vertical</a></span><span class="op">(</span>
-    <span class="fu">styler</span><span class="fu">::</span><span class="fu"><a href="https://styler.r-lib.org/reference/style_text.html" class="external-link">style_text</a></span><span class="op">(</span>text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">expr</span><span class="op">)</span><span class="op">)</span>,
-    colored <span class="op">=</span> <span class="cn">FALSE</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-<span class="co">#'</span>
-<span class="co">#' @examples</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">rtables_expr</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars() %&gt;%</span>
-<span class="co">##   build_table(df = adlb_f)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">teal</span><span class="op">)</span></span>
+<span><span class="co">#' Stylish code</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' Deparse an expression and display the code following NEST conventions.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @param expr (`call`)\cr or possibly understood as so.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="va">styled_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">expr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">styler</span><span class="fu">:::</span><span class="fu"><a href="https://styler.r-lib.org/reference/print.vertical.html" class="external-link">print.vertical</a></span><span class="op">(</span></span>
+<span>    <span class="fu">styler</span><span class="fu">::</span><span class="fu"><a href="https://styler.r-lib.org/reference/style_text.html" class="external-link">style_text</a></span><span class="op">(</span>text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">expr</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    colored <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @examples</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">rtables_expr</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars() %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb_f)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="substitute-in-a-function">
@@ -461,46 +455,46 @@ analysis visit in rows.</p>
 function, this way the <code>rtables</code> pipelines are
 <em>programmatically</em> obtained:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,
-                         <span class="va">arm</span>,
-                         <span class="va">visit</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span>
-        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
-        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
-    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,
-      arm <span class="op">=</span> <span class="va">arm</span>,
-      visit <span class="op">=</span> <span class="va">visit</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars() %&gt;%</span>
-<span class="co">##   build_table(df = adlb_f)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">##                        A: Drug X                  B: Placebo        </span>
-<span class="co">##                  Value         Change        Value         Change   </span>
-<span class="co">## ————————————————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                                        </span>
-<span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
-<span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
-<span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,</span>
+<span>                         <span class="va">arm</span>,</span>
+<span>                         <span class="va">visit</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span></span>
+<span>        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,</span>
+<span>        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
+<span>    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,</span>
+<span>      arm <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>      visit <span class="op">=</span> <span class="va">visit</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars() %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb_f)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">##                        A: Drug X                  B: Placebo        </span></span>
+<span><span class="co">##                  Value         Change        Value         Change   </span></span>
+<span><span class="co">## ————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## WEEK 1 DAY 8                                                        </span></span>
+<span><span class="co">##   n               134           134           134           134     </span></span>
+<span><span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span></span>
+<span><span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span></span>
+<span><span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></span></code></pre></div>
 <ul>
 <li>The same results as before are obtained …</li>
 <li>while, fine tuning is easier.</li>
@@ -509,27 +503,27 @@ can be changed, which is an expected feature in teal module encoding
 panel.</li>
 </ul>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISITN"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">## Split var [AVISITN] was not character or factor. Converting to factor</span>
-<span class="co">##                         ARM A                       ARM B          </span>
-<span class="co">##                 Value         Change        Value         Change   </span>
-<span class="co">## ———————————————————————————————————————————————————————————————————</span>
-<span class="co">## 1                                                                  </span>
-<span class="co">##   n              134           134           134           134     </span>
-<span class="co">##   Mean (SD)   19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
-<span class="co">##   Median         19.2          -0.5          20.1          -0.7    </span>
-<span class="co">##   Min - Max   8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARMCD", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISITN", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars() %&gt;%</span>
-<span class="co">##   build_table(df = adlb_f)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISITN"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">## Split var [AVISITN] was not character or factor. Converting to factor</span></span>
+<span><span class="co">##                         ARM A                       ARM B          </span></span>
+<span><span class="co">##                 Value         Change        Value         Change   </span></span>
+<span><span class="co">## ———————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## 1                                                                  </span></span>
+<span><span class="co">##   n              134           134           134           134     </span></span>
+<span><span class="co">##   Mean (SD)   19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span></span>
+<span><span class="co">##   Median         19.2          -0.5          20.1          -0.7    </span></span>
+<span><span class="co">##   Min - Max   8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARMCD", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISITN", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars() %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb_f)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="chain-expressions-in-a-pipeline">Chain expressions in a pipeline<a class="anchor" aria-label="anchor" href="#chain-expressions-in-a-pipeline"></a>
@@ -537,33 +531,33 @@ panel.</li>
 <p>It is also possible to manipulate expressions, for instance,
 expressions might be chained in a pipeline.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' Expressions as a pipeline</span>
-<span class="co">#'</span>
-<span class="co">#' Accepts expressions to be chained using the `magrittr` pipeline-flavor.</span>
-<span class="co">#' @param ... (`call`)\cr or object which can be interpreted as so.</span>
-<span class="co">#'    (e.g. `name`)</span>
-<span class="co">#'</span>
-<span class="va">pipe_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>
-    <span class="va">exprs</span>,
-    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-      <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">x</span>, collapse <span class="op">=</span> <span class="st">" "</span><span class="op">)</span>
-    <span class="op">}</span>
-  <span class="op">)</span>
-  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">exprs</span><span class="op">)</span>
-  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">exprs</span>, collapse <span class="op">=</span> <span class="st">" %&gt;% "</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">str2lang</a></span><span class="op">(</span><span class="va">exprs</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="co">#' @examples</span>
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span>
-  expr1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,
-  expr2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">head</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">result</span>
-<span class="co">## df %&gt;% head</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' Expressions as a pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' Accepts expressions to be chained using the `magrittr` pipeline-flavor.</span></span>
+<span><span class="co">#' @param ... (`call`)\cr or object which can be interpreted as so.</span></span>
+<span><span class="co">#'    (e.g. `name`)</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="va">pipe_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>    <span class="va">exprs</span>,</span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">x</span>, collapse <span class="op">=</span> <span class="st">" "</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">exprs</span><span class="op">)</span></span>
+<span>  <span class="va">exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">exprs</span>, collapse <span class="op">=</span> <span class="st">" %&gt;% "</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">str2lang</a></span><span class="op">(</span><span class="va">exprs</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' @examples</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span></span>
+<span>  expr1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,</span>
+<span>  expr2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">head</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">## df %&gt;% head</span></span></code></pre></div>
 <ul>
 <li>Expressions can be arranged in a list, this way, it is possible to
 have <strong>conditional</strong> editing of expressions.</li>
@@ -575,95 +569,95 @@ when the default value is changed</strong>.</li>
 code with <code>Show R Code</code>:</li>
 </ul>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,
-                         <span class="va">arm</span>,
-                         <span class="va">visit</span>,
-                         <span class="va">.stats</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="co"># The rtables layout is decomposed into a list of expressions.</span>
-  <span class="va">lyt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-  <span class="co"># 1. First the columns and rows:</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span>
-        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
-        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-      <span class="op">)</span>,
-    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      arm <span class="op">=</span> <span class="va">arm</span>,
-      visit <span class="op">=</span> <span class="va">visit</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-  <span class="co"># 2. The analyze layer which depends on the use of .stats.</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">analyze</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.stats</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>,
-      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-  <span class="co"># 3. And finishing with rtables::build_table.</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">build</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span>
-  <span class="co"># As previously demonstrated, expressions can be manipulated and</span>
-  <span class="co"># chained in a pipeline.</span>
-  <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span><span class="va">lyt</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,</span>
+<span>                         <span class="va">arm</span>,</span>
+<span>                         <span class="va">visit</span>,</span>
+<span>                         <span class="va">.stats</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># The rtables layout is decomposed into a list of expressions.</span></span>
+<span>  <span class="va">lyt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="co"># 1. First the columns and rows:</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span></span>
+<span>        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,</span>
+<span>        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      arm <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>      visit <span class="op">=</span> <span class="va">visit</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="co"># 2. The analyze layer which depends on the use of .stats.</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">analyze</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.stats</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># 3. And finishing with rtables::build_table.</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">build</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="co"># As previously demonstrated, expressions can be manipulated and</span></span>
+<span>  <span class="co"># chained in a pipeline.</span></span>
+<span>  <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span><span class="va">lyt</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <ul>
 <li>First application with standard statistics:</li>
 </ul>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars() %&gt;%</span>
-<span class="co">##   build_table(df = adlb_f)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">##                        A: Drug X                  B: Placebo        </span>
-<span class="co">##                  Value         Change        Value         Change   </span>
-<span class="co">## ————————————————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                                        </span>
-<span class="co">##   n               134           134           134           134     </span>
-<span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span>
-<span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span>
-<span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars() %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb_f)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">##                        A: Drug X                  B: Placebo        </span></span>
+<span><span class="co">##                  Value         Change        Value         Change   </span></span>
+<span><span class="co">## ————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## WEEK 1 DAY 8                                                        </span></span>
+<span><span class="co">##   n               134           134           134           134     </span></span>
+<span><span class="co">##   Mean (SD)    19.3 (4.0)    -0.5 (5.9)    20.2 (4.0)    0.1 (6.0)  </span></span>
+<span><span class="co">##   Median          19.2          -0.5          20.1          -0.7    </span></span>
+<span><span class="co">##   Min - Max    8.9 - 27.3   -12.5 - 19.7   5.8 - 28.8   -12.3 - 17.4</span></span></code></pre></div>
 <ul>
 <li>Then with statistics specifications:</li>
 </ul>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>
-  df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>,
-  .stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars(.stats = c("n", "mean_sd")) %&gt;%</span>
-<span class="co">##   build_table(df = adlb_f)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="co">##                       A: Drug X                B: Placebo      </span>
-<span class="co">##                  Value        Change       Value       Change  </span>
-<span class="co">## ———————————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                                   </span>
-<span class="co">##   n               134          134          134          134   </span>
-<span class="co">##   Mean (SD)    19.3 (4.0)   -0.5 (5.9)   20.2 (4.0)   0.1 (6.0)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
+<span>  .stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars(.stats = c("n", "mean_sd")) %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb_f)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">##                       A: Drug X                B: Placebo      </span></span>
+<span><span class="co">##                  Value        Change       Value       Change  </span></span>
+<span><span class="co">## ———————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## WEEK 1 DAY 8                                                   </span></span>
+<span><span class="co">##   n               134          134          134          134   </span></span>
+<span><span class="co">##   Mean (SD)    19.3 (4.0)   -0.5 (5.9)   20.2 (4.0)   0.1 (6.0)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="including-pre-processing">Including pre-processing<a class="anchor" aria-label="anchor" href="#including-pre-processing"></a>
@@ -675,97 +669,97 @@ single function.</p>
 section:</li>
 </ul>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,
-                         <span class="va">paramcd</span>,
-                         <span class="va">arm</span>,
-                         <span class="va">visit</span>,
-                         <span class="va">.stats</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="co"># y is a list which will collect two expressions:</span>
-  <span class="co"># 1. y$data with the preprocessing steps.</span>
-  <span class="co"># 2. y$rtables the table layout and build.</span>
-  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-  <span class="co"># 1. Preprocessing ---</span>
-  <span class="va">y</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>
-        <span class="va">PARAMCD</span> <span class="op">==</span> <span class="va">paramcd</span> <span class="op">&amp;</span>
-          <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span>
-      <span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,
-      paramcd <span class="op">=</span> <span class="va">paramcd</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-  <span class="co"># 2. rtables layout ---</span>
-  <span class="va">lyt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span>
-        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,
-        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span>
-      <span class="op">)</span>,
-    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      arm <span class="op">=</span> <span class="va">arm</span>,
-      visit <span class="op">=</span> <span class="va">visit</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">analyze</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.stats</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>,
-      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">lyt</span><span class="op">$</span><span class="va">build</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span>
-  <span class="va">y</span><span class="op">$</span><span class="va">rtables</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span><span class="va">lyt</span><span class="op">)</span>
-  <span class="co"># Finally returns y as a list with two expressions.</span>
-  <span class="va">y</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,</span>
+<span>                         <span class="va">paramcd</span>,</span>
+<span>                         <span class="va">arm</span>,</span>
+<span>                         <span class="va">visit</span>,</span>
+<span>                         <span class="va">.stats</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># y is a list which will collect two expressions:</span></span>
+<span>  <span class="co"># 1. y$data with the preprocessing steps.</span></span>
+<span>  <span class="co"># 2. y$rtables the table layout and build.</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="co"># 1. Preprocessing ---</span></span>
+<span>  <span class="va">y</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
+<span>        <span class="va">PARAMCD</span> <span class="op">==</span> <span class="va">paramcd</span> <span class="op">&amp;</span></span>
+<span>          <span class="va">ARMCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span>, <span class="st">"ARM B"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"WEEK 1 DAY 8"</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,</span>
+<span>      paramcd <span class="op">=</span> <span class="va">paramcd</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="co"># 2. rtables layout ---</span></span>
+<span>  <span class="va">lyt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    expr <span class="op">=</span> <span class="fu"><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">basic_table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by.html" class="external-link">split_cols_by</a></span><span class="op">(</span><span class="va">arm</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_rows_by.html" class="external-link">split_rows_by</a></span><span class="op">(</span><span class="va">visit</span>, split_fun <span class="op">=</span> <span class="va">drop_split_levels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://roche.github.io/rtables/reference/split_cols_by_multivar.html" class="external-link">split_cols_by_multivar</a></span><span class="op">(</span></span>
+<span>        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVAL"</span>, <span class="st">"CHG"</span><span class="op">)</span>,</span>
+<span>        varlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value"</span>, <span class="st">"Change"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>    env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      arm <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>      visit <span class="op">=</span> <span class="va">visit</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">analyze</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.stats</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tern/man/summarize_colvars.html" class="external-link">summarize_colvars</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>.stats <span class="op">=</span> <span class="va">.stats</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">lyt</span><span class="op">$</span><span class="va">build</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://roche.github.io/rtables/reference/build_table.html" class="external-link">build_table</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">y</span><span class="op">$</span><span class="va">rtables</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipe_expr.html">pipe_expr</a></span><span class="op">(</span><span class="va">lyt</span><span class="op">)</span></span>
+<span>  <span class="co"># Finally returns y as a list with two expressions.</span></span>
+<span>  <span class="va">y</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>It is now possible to modify the studied parameter
 (<code>PARAMCD</code>) in addition to the study arm and visit variables
 names.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span>
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>
-  df <span class="op">=</span> <span class="va">adlb</span>, paramcd <span class="op">=</span> <span class="st">"CRP"</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>,
-  .stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adlb</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">adlb</span>, paramcd <span class="op">=</span> <span class="st">"CRP"</span>, arm <span class="op">=</span> <span class="st">"ARM"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
+<span>  .stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The two expressions are consistent:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>
-<span class="co">## adlb &lt;- adlb %&gt;% filter(PARAMCD == "CRP" &amp; ARMCD %in% c(</span>
-<span class="co">##   "ARM A",</span>
-<span class="co">##   "ARM B"</span>
-<span class="co">## ) &amp; AVISIT == "WEEK 1 DAY 8")</span>
-<span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">rtables</span><span class="op">)</span>
-<span class="co">## basic_table() %&gt;%</span>
-<span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span>
-<span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span>
-<span class="co">##     "Value",</span>
-<span class="co">##     "Change"</span>
-<span class="co">##   )) %&gt;%</span>
-<span class="co">##   summarize_colvars(.stats = c("n", "mean_sd")) %&gt;%</span>
-<span class="co">##   build_table(df = adlb)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">## adlb &lt;- adlb %&gt;% filter(PARAMCD == "CRP" &amp; ARMCD %in% c(</span></span>
+<span><span class="co">##   "ARM A",</span></span>
+<span><span class="co">##   "ARM B"</span></span>
+<span><span class="co">## ) &amp; AVISIT == "WEEK 1 DAY 8")</span></span>
+<span><span class="fu"><a href="../reference/styled_expr.html">styled_expr</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">rtables</span><span class="op">)</span></span>
+<span><span class="co">## basic_table() %&gt;%</span></span>
+<span><span class="co">##   split_cols_by("ARM", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_rows_by("AVISIT", split_fun = drop_split_levels) %&gt;%</span></span>
+<span><span class="co">##   split_cols_by_multivar(vars = c("AVAL", "CHG"), varlabels = c(</span></span>
+<span><span class="co">##     "Value",</span></span>
+<span><span class="co">##     "Change"</span></span>
+<span><span class="co">##   )) %&gt;%</span></span>
+<span><span class="co">##   summarize_colvars(.stats = c("n", "mean_sd")) %&gt;%</span></span>
+<span><span class="co">##   build_table(df = adlb)</span></span></code></pre></div>
 <p>The two expressions can be executed and return the
 <code>rtables</code>:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result_exec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="va">eval</span>, <span class="va">result</span><span class="op">)</span>
-<span class="va">result_exec</span><span class="op">$</span><span class="va">rtables</span>
-<span class="co">##                      A: Drug X              B: Placebo      </span>
-<span class="co">##                  Value      Change       Value      Change  </span>
-<span class="co">## ————————————————————————————————————————————————————————————</span>
-<span class="co">## WEEK 1 DAY 8                                                </span>
-<span class="co">##   n               134         134         134         134   </span>
-<span class="co">##   Mean (SD)    1.0 (0.2)   0.1 (0.3)   1.0 (0.2)   0.0 (0.3)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result_exec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="va">eval</span>, <span class="va">result</span><span class="op">)</span></span>
+<span><span class="va">result_exec</span><span class="op">$</span><span class="va">rtables</span></span>
+<span><span class="co">##                      A: Drug X              B: Placebo      </span></span>
+<span><span class="co">##                  Value      Change       Value      Change  </span></span>
+<span><span class="co">## ————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## WEEK 1 DAY 8                                                </span></span>
+<span><span class="co">##   n               134         134         134         134   </span></span>
+<span><span class="co">##   Mean (SD)    1.0 (0.2)   0.1 (0.3)   1.0 (0.2)   0.0 (0.3)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="in-a-nutshell-1">In a nutshell<a class="anchor" aria-label="anchor" href="#in-a-nutshell-1"></a>
