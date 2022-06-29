@@ -4,6 +4,9 @@
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 
+### Bug fixes
+* Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
+
 # teal.modules.clinical 0.8.13
 
 ### Enhancements
