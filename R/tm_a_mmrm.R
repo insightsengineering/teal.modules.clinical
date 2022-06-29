@@ -666,7 +666,7 @@ ui_mmrm <- function(id, ...) {
           shiny::selectInput(
             ns("cor_struct"),
             "Correlation Structure",
-            choices = c("unstructured", "random-quadratic", "random-slope", "compound-symmetry"),
+            choices = c("unstructured"),
             selected = "unstructured",
             multiple = FALSE
           ),
@@ -683,13 +683,10 @@ ui_mmrm <- function(id, ...) {
             "Optimization Algorithm",
             choices = c(
               "automatic",
-              "nloptwrap_neldermead",
-              "nloptwrap_bobyqa",
-              "nlminbwrap",
-              "bobyqa",
-              "neldermead",
-              "nmkbw",
-              "optimx_lbfgsb"
+              "L-BFGS-B",
+              "BFGS",
+              "CG",
+              "nlminb"
             ),
             selected = NULL,
             multiple = FALSE
