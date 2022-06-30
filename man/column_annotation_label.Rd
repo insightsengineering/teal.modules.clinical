@@ -21,13 +21,12 @@ Get full label, useful for annotating plots
 }
 \examples{
 data <- mtcars
-teal.modules.clinical:::column_annotation_label(data, "cyl")
+column_annotation_label(data, "cyl")
 attr(data[["cyl"]], "label") <- "Cylinder"
-teal.modules.clinical:::column_annotation_label(data, "cyl")
-teal.modules.clinical:::column_annotation_label(data, "cyl", omit_raw_name = TRUE)
+column_annotation_label(data, "cyl")
+column_annotation_label(data, "cyl", omit_raw_name = TRUE)
 \dontrun{
 ANL <- scda::synthetic_cdisc_data("latest")$adsl
-teal.modules.clinical:::column_annotation_label(ANL, "ACTARM")
+column_annotation_label(ANL, "ACTARM")
 }
 }
-\keyword{internal}
