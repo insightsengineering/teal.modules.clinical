@@ -1416,7 +1416,8 @@ srv_mmrm <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
         card$set_name("MMRM")
         card$append_text("Mixed Model Repeated Measurements (MMRM) analysis", "header2")
         card$append_text(

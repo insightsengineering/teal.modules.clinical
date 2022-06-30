@@ -891,7 +891,8 @@ srv_t_tte <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(card = teal.reporter::TealReportCard$new(), comment) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
         card$set_name("Time To Event Table")
         card$append_text("Time To Event Table", "header2")
         card$append_text("Filter State", "header3")
