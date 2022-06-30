@@ -8,15 +8,15 @@
 #'
 #' @examples
 #' data <- mtcars
-#' teal.modules.clinical:::column_annotation_label(data, "cyl")
+#' column_annotation_label(data, "cyl")
 #' attr(data[["cyl"]], "label") <- "Cylinder"
-#' teal.modules.clinical:::column_annotation_label(data, "cyl")
-#' teal.modules.clinical:::column_annotation_label(data, "cyl", omit_raw_name = TRUE)
+#' column_annotation_label(data, "cyl")
+#' column_annotation_label(data, "cyl", omit_raw_name = TRUE)
 #' \dontrun{
 #' ANL <- scda::synthetic_cdisc_data("latest")$adsl
-#' teal.modules.clinical:::column_annotation_label(ANL, "ACTARM")
+#' column_annotation_label(ANL, "ACTARM")
 #' }
-#' @keywords internal
+#' @export
 column_annotation_label <- function(dataset, column, omit_raw_name = FALSE) {
   checkmate::assert_data_frame(dataset)
   checkmate::assert_string(column)

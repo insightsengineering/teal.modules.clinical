@@ -32,6 +32,7 @@ reference:
       - call_concatenate
       - clean_description
       - color_lab_values
+      - column_annotation_label
       - cs_to_des_filter
       - cs_to_des_select
       - cs_to_filter_spec
