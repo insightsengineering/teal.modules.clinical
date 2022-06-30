@@ -122,7 +122,6 @@ ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
   dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
   dplyr::mutate(
-    USUBJID = as.factor(USUBJID),
     AVISIT = as.factor(AVISIT),
     AVISITN = rank(AVISITN) \%>\%
       as.factor() \%>\%
@@ -145,7 +144,6 @@ app <- init(
               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
               dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
               dplyr::mutate(
-                USUBJID = as.factor(USUBJID),
                 AVISIT = as.factor(AVISIT),
                 AVISITN = rank(AVISITN) \%>\%
                   as.factor() \%>\%
