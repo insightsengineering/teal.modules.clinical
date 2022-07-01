@@ -3,6 +3,7 @@
 ### Enhancements
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
+* Added the `teal.reporter` functionality to the `tm_t_summary`, `tm_g_km`, `tm_t_events`, `tm_t_tte` and `tm_a_mmrm` modules.
 
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
