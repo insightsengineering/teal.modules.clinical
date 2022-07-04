@@ -570,6 +570,14 @@ ui_g_patient_timeline <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         ui_args[c(
@@ -688,6 +696,7 @@ ui_g_patient_timeline <- function(id, ...) {
 
 srv_g_patient_timeline <- function(id,
                                    datasets,
+                                   reporter,
                                    dataname_adae,
                                    dataname_adcm,
                                    parentname,
@@ -707,6 +716,8 @@ srv_g_patient_timeline <- function(id,
                                    label,
                                    ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -870,7 +881,7 @@ srv_g_patient_timeline <- function(id,
       patient_timeline_stack
     })
 
-    patient_timeline_plot <- shiny::reactive({
+    plot_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(patient_timeline_calls())
       teal.code::chunks_get_var("patient_timeline_plot")
@@ -878,7 +889,7 @@ srv_g_patient_timeline <- function(id,
 
     teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
-      plot_r = patient_timeline_plot,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width
     )
@@ -891,5 +902,35 @@ srv_g_patient_timeline <- function(id,
       )),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Patient Profile Timeline Plot")
+        card$append_text("Patient Profile Timeline Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        card$append_plot(plot_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

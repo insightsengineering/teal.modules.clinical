@@ -312,6 +312,14 @@ ui_g_ci <- function(id, ...) { # nolint
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
@@ -352,6 +360,7 @@ ui_g_ci <- function(id, ...) { # nolint
 
 srv_g_ci <- function(id, # nolint
                      datasets,
+                     reporter,
                      x_var,
                      y_var,
                      color,
@@ -360,6 +369,7 @@ srv_g_ci <- function(id, # nolint
                      plot_width,
                      ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -434,5 +444,36 @@ srv_g_ci <- function(id, # nolint
       height = plot_height,
       width = plot_width
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("CI Plot")
+        card$append_text("CI Plot", "header2")
+        card$append_text("Confidence Interval Plot", "header3")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        card$append_plot(plot_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
