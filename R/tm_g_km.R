@@ -781,7 +781,7 @@ srv_g_km <- function(id,
         card$append_text("Kaplan Meier Plot", "header2")
         card$append_text("Non-parametric method used to estimate the survival function from lifetime data", "header3")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
         card$append_plot(km_plot())
         if (!comment == "") {
