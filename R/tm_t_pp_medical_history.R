@@ -37,14 +37,7 @@ template_medical_history <- function(dataname = "ANL",
         dplyr::distinct() %>%
         `colnames<-`(labels)
 
-      result_without_mhbodsys <- result[, -1]
-      result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
-
-      result_kbl <- result_kbl %>%
-        kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
-        kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
-
-      result_kbl
+      result
     }, env = list(
       dataname = as.name(dataname),
       mhbodsys = as.name(mhbodsys),
@@ -170,7 +163,7 @@ ui_t_medical_history <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      shiny::htmlOutput(outputId = ns("medical_history_table"))
+      shiny::dataTableOutput(outputId = ns("medical_history_table"))
     ),
     encoding = shiny::div(
       ### Reporter
@@ -324,12 +317,7 @@ srv_t_medical_history <- function(id,
       teal.code::chunks_get_var("result")
     })
 
-    output$medical_history_table <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(mhist_call())
-      teal.code::chunks_get_var("result_kbl")
-    })
-
+    output$medical_history_table <- shiny::renderDataTable(table_r())
 
     teal::get_rcode_srv(
       id = "rcode",
