@@ -459,6 +459,14 @@ ui_summary_by <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
       teal.transform::data_extract_ui(
@@ -563,6 +571,7 @@ ui_summary_by <- function(id, ...) {
 #' @noRd
 srv_summary_by <- function(id,
                            datasets,
+                           reporter,
                            dataname,
                            parentname,
                            arm_var,
@@ -577,6 +586,8 @@ srv_summary_by <- function(id,
                            label,
                            basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -700,5 +711,34 @@ srv_summary_by <- function(id,
       modal_title = "Summary by Row Groups Table",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Summarize Variables by Row Groups Table")
+        card$append_text("Summarize Variables by Row Groups Table", "header2")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Main Element", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

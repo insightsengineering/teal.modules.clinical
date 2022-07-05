@@ -125,6 +125,14 @@ ui_t_basic_info <- function(id, ...) {
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("vars")]),
       teal.widgets::optionalSelectInput(
@@ -149,11 +157,14 @@ ui_t_basic_info <- function(id, ...) {
 
 srv_t_basic_info <- function(id,
                              datasets,
+                             reporter,
                              dataname,
                              patient_col,
                              vars,
                              label) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -227,12 +238,14 @@ srv_t_basic_info <- function(id,
       call_stack
     })
 
+    table_r <- reactive({
+      teal.code::chunks_reset()
+      teal.code::chunks_push_chunks(basic_info_call())
+      teal.code::chunks_get_var("result")
+    })
+
     output$basic_info_table <- DT::renderDataTable(
-      expr = {
-        teal.code::chunks_reset()
-        teal.code::chunks_push_chunks(basic_info_call())
-        teal.code::chunks_get_var("result")
-      },
+      expr = table_r(),
       options = list(pageLength = input$basic_info_table_rows)
     )
 
@@ -242,5 +255,35 @@ srv_t_basic_info <- function(id,
       datanames = teal.transform::get_extract_datanames(list(vars)),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Patient Profile Basic Info Table")
+        card$append_text("Patient Profile Basic Info Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Main Element", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

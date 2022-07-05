@@ -161,7 +161,7 @@ template_shift_by_arm_by_worst <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm
+#' Teal Module: Shift by Arm by Worst
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm_by_worst
@@ -309,6 +309,14 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var",
@@ -388,6 +396,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
 #' @noRd
 srv_shift_by_arm_by_worst <- function(id,
                                       datasets,
+                                      reporter,
                                       dataname,
                                       parentname,
                                       arm_var,
@@ -401,6 +410,8 @@ srv_shift_by_arm_by_worst <- function(id,
                                       add_total,
                                       basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -494,7 +505,7 @@ srv_shift_by_arm_by_worst <- function(id,
     })
 
     # Outputs to render.
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")
@@ -502,7 +513,7 @@ srv_shift_by_arm_by_worst <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     # Render R code.
@@ -513,5 +524,35 @@ srv_shift_by_arm_by_worst <- function(id,
       modal_title = "R Code for Shift Table by Arm",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Shift by Arm by Worst Table")
+        card$append_text("Shift by Arm by Worst Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Main Element", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
