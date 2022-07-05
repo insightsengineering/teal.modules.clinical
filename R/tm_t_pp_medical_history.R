@@ -321,7 +321,7 @@ srv_t_medical_history <- function(id,
     table_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(mhist_call())
-      teal.code::chunks_get_var("result_without_mhbodsys")
+      teal.code::chunks_get_var("result")
     })
 
     output$medical_history_table <- shiny::reactive({
@@ -329,6 +329,7 @@ srv_t_medical_history <- function(id,
       teal.code::chunks_push_chunks(mhist_call())
       teal.code::chunks_get_var("result_kbl")
     })
+
 
     teal::get_rcode_srv(
       id = "rcode",
@@ -346,7 +347,7 @@ srv_t_medical_history <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_table(as.data.frame(table_r()))
+        card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
