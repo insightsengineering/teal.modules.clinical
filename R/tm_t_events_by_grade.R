@@ -889,6 +889,14 @@ ui_t_events_by_grade <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
       teal.transform::data_extract_ui(
@@ -964,6 +972,7 @@ ui_t_events_by_grade <- function(id, ...) {
 #' @noRd
 srv_t_events_by_grade <- function(id,
                                   datasets,
+                                  reporter,
                                   dataname,
                                   parentname,
                                   label,
@@ -976,6 +985,8 @@ srv_t_events_by_grade <- function(id,
                                   drop_arm_levels,
                                   basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -1122,7 +1133,7 @@ srv_t_events_by_grade <- function(id,
     })
 
     # Outputs to render.
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("pruned_and_sorted_result")
@@ -1130,7 +1141,7 @@ srv_t_events_by_grade <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     # Render R code.
@@ -1143,5 +1154,35 @@ srv_t_events_by_grade <- function(id,
       modal_title = "AE by Grade Table",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Events by Grade Table")
+        card$append_text("Events by Grade Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Main Element", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
