@@ -775,7 +775,7 @@ srv_t_events_byterm <- function(id,
         card$set_name("Events by Term Table")
         card$append_text("Events by Term Table", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
         card$append_table(table_r())
         if (!comment == "") {

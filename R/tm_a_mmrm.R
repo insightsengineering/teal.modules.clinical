@@ -1364,7 +1364,7 @@ srv_mmrm <- function(id,
       )
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "mmrm_plot",
       plot_r = plot_r,
       height = plot_height,
@@ -1428,13 +1428,13 @@ srv_mmrm <- function(id,
           "header3"
         )
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
         if (!is.null(table_r())) {
           card$append_table(table_r())
         }
         if (!is.null(plot_r())) {
-          card$append_plot(plot_r())
+          card$append_plot(plot_r(), dim = pws$dim())
         }
         if (!comment == "") {
           card$append_text("Comment", "header3")

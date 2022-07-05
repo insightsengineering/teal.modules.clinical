@@ -896,7 +896,7 @@ srv_t_tte <- function(id,
         card$set_name("Time To Event Table")
         card$append_text("Time To Event Table", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
         card$append_table(table_r())
         if (!comment == "") {

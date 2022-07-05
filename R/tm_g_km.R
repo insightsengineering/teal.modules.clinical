@@ -755,9 +755,8 @@ srv_g_km <- function(id,
       teal.code::chunks_safe_eval()
     })
 
-
     # Insert the plot into a plot with settings module from teal.widgets
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = plot_r,
       height = plot_height,
@@ -783,7 +782,7 @@ srv_g_km <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_plot(plot_r())
+        card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

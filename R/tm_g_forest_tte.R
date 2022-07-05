@@ -623,7 +623,7 @@ srv_g_forest_tte <- function(id,
       teal.code::chunks_get_var("p")
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = plot_r,
       height = plot_height,
@@ -647,9 +647,9 @@ srv_g_forest_tte <- function(id,
         card$set_name("Forest Survival Plot")
         card$append_text("Forest Survival Plot", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_plot(plot_r())
+        card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

@@ -887,7 +887,7 @@ srv_g_patient_timeline <- function(id,
       teal.code::chunks_get_var("patient_timeline_plot")
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
       plot_r = plot_r,
       height = plot_height,
@@ -910,9 +910,9 @@ srv_g_patient_timeline <- function(id,
         card$set_name("Patient Profile Timeline Plot")
         card$append_text("Patient Profile Timeline Plot", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
+        card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_plot(plot_r())
+        card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
