@@ -750,7 +750,7 @@ srv_g_km <- function(id,
       mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
-    km_plot <- shiny::reactive({
+    plot_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
     })
@@ -759,7 +759,7 @@ srv_g_km <- function(id,
     # Insert the plot into a plot with settings module from teal.widgets
     teal.widgets::plot_with_settings_srv(
       id = "myplot",
-      plot_r = km_plot,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width
     )
@@ -783,7 +783,7 @@ srv_g_km <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_plot(km_plot())
+        card$append_plot(plot_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
