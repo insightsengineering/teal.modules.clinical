@@ -428,8 +428,10 @@ srv_g_laboratory <- function(id,
     table_r <- reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(labor_calls())
-      list(html = teal.code::chunks_get_var("labor_table_html"),
-           raw = teal.code::chunks_get_var("labor_table_raw"))
+      list(
+        html = teal.code::chunks_get_var("labor_table_html"),
+        raw = teal.code::chunks_get_var("labor_table_raw")
+      )
     })
 
     output$lab_values_table <- DT::renderDataTable(
