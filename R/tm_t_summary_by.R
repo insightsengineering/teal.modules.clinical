@@ -690,7 +690,7 @@ srv_summary_by <- function(id,
     })
 
     # Outputs to render.
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")
@@ -698,7 +698,7 @@ srv_summary_by <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     # Render R code.

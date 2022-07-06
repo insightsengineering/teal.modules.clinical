@@ -428,11 +428,12 @@ srv_g_laboratory <- function(id,
     table_r <- reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(labor_calls())
-      teal.code::chunks_get_var("labor_table_html")
+      list(html = teal.code::chunks_get_var("labor_table_html"),
+           raw = teal.code::chunks_get_var("labor_table_raw"))
     })
 
     output$lab_values_table <- DT::renderDataTable(
-      expr = table_r(),
+      expr = table_r()$html,
       escape = FALSE,
       options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
     )
@@ -453,7 +454,7 @@ srv_g_laboratory <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Main Element", "header3")
-        card$append_table(table_r())
+        card$append_table(table_r()$raw)
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
