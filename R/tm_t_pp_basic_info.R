@@ -238,7 +238,7 @@ srv_t_basic_info <- function(id,
       call_stack
     })
 
-    table_r <- reactive({
+    table_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(basic_info_call())
       teal.code::chunks_get_var("result")

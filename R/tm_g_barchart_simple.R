@@ -398,7 +398,7 @@ srv_g_barchart_simple <- function(id,
       chunk$push(
         teal.transform::get_anl_relabel_call(
           columns_source = merged_data()$columns_source,
-          datasets = sapply(datasets$datanames(), function(x) reactive(datasets$get_data(x, filtered = TRUE))),
+          datasets = sapply(datasets$datanames(), function(x) shiny::reactive(datasets$get_data(x, filtered = TRUE))),
           anl_name = "counts"
         ),
         id = "get_anl_relabel_call"

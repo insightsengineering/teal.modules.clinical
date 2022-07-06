@@ -425,7 +425,7 @@ srv_g_laboratory <- function(id,
       labor_stack
     })
 
-    table_r <- reactive({
+    table_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(labor_calls())
       list(

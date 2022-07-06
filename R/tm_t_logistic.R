@@ -399,7 +399,7 @@ ui_t_logistic <- function(id, ...) {
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          uiOutput(ns("arms_buckets")),
+          shiny::uiOutput(ns("arms_buckets")),
           shiny::checkboxInput(
             ns("combine_comp_arms"),
             "Combine all comparison groups?",

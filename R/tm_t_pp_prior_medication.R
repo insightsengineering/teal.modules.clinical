@@ -358,7 +358,7 @@ srv_t_prior_medication <- function(id,
       pmed_stack
     })
 
-    table_r <- reactive({
+    table_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(pmed_call())
       teal.code::chunks_get_var("result")
