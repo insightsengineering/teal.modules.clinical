@@ -388,7 +388,7 @@ srv_g_barchart_simple <- function(id,
       chunk$push(
         teal.transform::get_anl_relabel_call(
           columns_source = merged_data()$columns_source,
-          datasets = datasets,
+          datasets = sapply(datasets$datanames(), function(x) reactive(datasets$get_data(x, filtered = TRUE))),
           anl_name = "counts"
         ),
         id = "get_anl_relabel_call"
@@ -415,15 +415,17 @@ srv_g_barchart_simple <- function(id,
         id = "plot_title_call"
       )
 
+      y_lab <- substitute(
+        column_annotation_label(counts, y_name),
+        list(y_name = get_n_name(groupby_vars))
+      )
+
       all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
         user_plot = ggplot2_args,
         module_plot = teal.widgets::ggplot2_args(
           labs = list(
             title = quote(plot_title),
-            y = substitute(
-              column_annotation_label(counts, y_name),
-              list(y_name = get_n_name(groupby_vars))
-            )
+            y = y_lab
           ),
           theme = list(plot.title = quote(ggplot2::element_text(hjust = 0.5)))
         )

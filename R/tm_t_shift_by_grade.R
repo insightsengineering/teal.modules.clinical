@@ -424,7 +424,8 @@ template_shift_by_grade <- function(parentname,
       expr = count_occurrences(
         vars = count_var,
         denom = "n",
-        drop = TRUE
+        drop = TRUE,
+        .indent_mods = 4L
       ) %>%
         append_varlabels(dataname, count_var, indent = indent),
       env = list(
@@ -609,7 +610,6 @@ tm_t_shift_by_grade <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        code_missing_baseline,
         basic_table_args = basic_table_args
       )
     ),
@@ -733,7 +733,6 @@ srv_t_shift_by_grade <- function(id,
                                  add_total,
                                  drop_arm_levels,
                                  na_level,
-                                 input_code_missing_baseline,
                                  label,
                                  basic_table_args) {
   stopifnot(is_cdisc_data(datasets))

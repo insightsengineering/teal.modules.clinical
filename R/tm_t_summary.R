@@ -24,8 +24,7 @@ template_summary <- function(dataname,
                              ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
-                             basic_table_args = teal.widgets::basic_table_args(),
-                             exclude_missing = TRUE) {
+                             basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -35,8 +34,7 @@ template_summary <- function(dataname,
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.flag(exclude_missing)
+    assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
@@ -62,34 +60,6 @@ template_summary <- function(dataname,
     )
   )
 
-  if (exclude_missing) {
-    data_list <- if (length(arm_var) == 1) {
-      add_expr(
-        data_list,
-        substitute(
-          expr = anl <- anl %>%
-            dplyr::filter(!arm %in% na_level),
-          env = list(
-            arm = as.name(arm_var[[1]]),
-            na_level = na_level
-          )
-        )
-      )
-    } else {
-      add_expr(
-        data_list,
-        substitute(
-          expr = anl <- anl %>%
-            dplyr::filter(!arm %in% na_level & !arm_2 %in% na_level),
-          env = list(
-            arm = as.name(arm_var[[1]]),
-            arm_2 = as.name(arm_var[[2]]),
-            na_level = na_level
-          )
-        )
-      )
-    }
-  }
 
   data_list <- add_expr(
     data_list,
@@ -274,7 +244,6 @@ template_summary <- function(dataname,
 #'       dataname = "ADSL",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       add_total = TRUE,
-#'       exclude_missing = TRUE,
 #'       summarize_vars = choices_selected(
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
@@ -306,8 +275,7 @@ tm_t_summary <- function(label,
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
-                         basic_table_args = teal.widgets::basic_table_args(),
-                         exclude_missing = TRUE) {
+                         basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -326,7 +294,6 @@ tm_t_summary <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   checkmate::assertFlag(add_total)
-  checkmate::assertFlag(exclude_missing)
 
   args <- as.list(environment())
 
@@ -364,6 +331,14 @@ ui_summary <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
       teal.transform::data_extract_ui(
@@ -373,7 +348,6 @@ ui_summary <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      shiny::checkboxInput(ns("exclude_missing"), "Exclude <Missing> column", value = a$exclude_missing),
       teal.transform::data_extract_ui(
         id = ns("summarize_vars"),
         label = "Summarize Variables",
@@ -437,14 +411,18 @@ ui_summary <- function(id, ...) {
 #' @noRd
 srv_summary <- function(id,
                         datasets,
+                        reporter,
                         dataname,
                         parentname,
                         arm_var,
                         summarize_vars,
+                        add_total,
                         na_level,
+                        drop_arm_levels,
                         label,
                         basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -553,8 +531,7 @@ srv_summary <- function(id,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
         drop_arm_levels = input$drop_arm_levels,
-        basic_table_args = basic_table_args,
-        exclude_missing = input$exclude_missing
+        basic_table_args = basic_table_args
       )
       mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
@@ -579,5 +556,35 @@ srv_summary <- function(id,
       modal_title = "R Code for the current Summary Table",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Summary Table")
+        card$append_text("Summary Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        card$append_table(table())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

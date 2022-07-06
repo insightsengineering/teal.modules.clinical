@@ -93,7 +93,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           split_label = formatters::var_labels(anl, fill = FALSE)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "USUBJID", .stats = c("unique_count")) %>%
-        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
+        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE, .indent_mods = 4L) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({
@@ -202,7 +202,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
           split_label = formatters::var_labels(anl, fill = FALSE)[["ATOXGR_GP"]]
         ) %>%
         summarize_num_patients(var = "MYUSUBJID", .stats = c("unique_count")) %>%
-        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE) %>%
+        count_occurrences(vars = "BTOXGR_GP", denom = "n", drop = TRUE, .indent_mods = 4L) %>%
         append_varlabels(anl, "BTOXGR_GP", indent = 3L)
     ),
     table = quote({

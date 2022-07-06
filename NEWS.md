@@ -1,7 +1,12 @@
-# teal.modules.clinical 0.8.13.9002
+# teal.modules.clinical 0.8.13.9010
 
 ### Enhancements
+* Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
+* Added the `teal.reporter` functionality to the `tm_t_summary`, `tm_g_km`, `tm_t_events`, `tm_t_tte` and `tm_a_mmrm` modules.
+
+### Bug fixes
+* Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
 
 # teal.modules.clinical 0.8.13
 
@@ -27,6 +32,10 @@
 * Improved the validation if treatment variable is not a factor.
 
 ### Bug fixes
+* Fixed `summarize_logistic` implementation that was broken by empty string error 
+  that was recently reinstated in `rtables` upstream. `_NA_` is the new standard 
+  flag to allow it to pivot over empty entries in data frames.
+* Took out `@title` from `tm_t_binary_outcome.R` that was producing a warning.
 * Updated the validation to account for the error when multiple variables are not selected in `tm_g_pp_patient_timeline` module.
 
 ### Miscellaneous
