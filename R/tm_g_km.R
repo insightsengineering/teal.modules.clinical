@@ -418,6 +418,14 @@ ui_g_km <- function(id, ...) {
       )
     ),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
@@ -580,6 +588,7 @@ ui_g_km <- function(id, ...) {
 #'
 srv_g_km <- function(id,
                      datasets,
+                     reporter,
                      dataname,
                      parentname,
                      paramcd,
@@ -594,6 +603,7 @@ srv_g_km <- function(id,
                      plot_height,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -762,5 +772,36 @@ srv_g_km <- function(id,
       ),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Kaplan Meier Plot")
+        card$append_text("Kaplan Meier Plot", "header2")
+        card$append_text("Non-parametric method used to estimate the survival function from lifetime data", "header3")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets)
+        card$append_text("Main Element", "header3")
+        card$append_plot(km_plot())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

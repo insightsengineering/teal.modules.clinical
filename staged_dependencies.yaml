@@ -23,6 +23,9 @@ upstream_repos:
   insightsengineering/teal.logger:
     repo: insightsengineering/teal.logger
     host: https://github.com
+  insightsengineering/teal.reporter:
+    repo: insightsengineering/teal.reporter
+    host: https://github.com
   insightsengineering/teal.widgets:
     repo: insightsengineering/teal.widgets
     host: https://github.com
