@@ -14,12 +14,12 @@ testthat::test_that("template_medical_history - non-default parameters", {
   testthat::expect_silent(res <- template_medical_history("anl", "mhterm", "mhbodsys", "mhdistat"))
   expected <- list(
     table = quote({
-      labels <- formatters::var_labels(anl, fill = FALSE)[c("mhbodsys",
-                                                            "mhterm", "mhdistat")]
+      labels <- formatters::var_labels(anl, fill = FALSE)[c("mhbodsys", "mhterm", "mhdistat")]
       mhbodsys_label <- labels["mhbodsys"]
-      result <- anl %>% dplyr::select(mhbodsys, mhterm, mhdistat) %>%
-        dplyr::arrange(mhbodsys) %>% dplyr::mutate_if(is.character,
-                                                      as.factor) %>%
+      result <- anl %>%
+        dplyr::select(mhbodsys, mhterm, mhdistat) %>%
+        dplyr::arrange(mhbodsys) %>%
+        dplyr::mutate_if(is.character, as.factor) %>%
         dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         dplyr::distinct() %>%
         `colnames<-`(labels)
@@ -27,5 +27,5 @@ testthat::test_that("template_medical_history - non-default parameters", {
     })
   )
 
-  testthat::expect_equal(res, expected)
+  testthat::expect_equal(res$table, expected$table)
 })

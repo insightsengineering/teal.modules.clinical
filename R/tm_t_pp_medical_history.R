@@ -28,8 +28,7 @@ template_medical_history <- function(dataname = "ANL",
       labels <- formatters::var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
-      result <-
-        dataname %>%
+      result <- dataname %>%
         dplyr::select(mhbodsys, mhterm, mhdistat) %>%
         dplyr::arrange(mhbodsys) %>%
         dplyr::mutate_if(is.character, as.factor) %>%
