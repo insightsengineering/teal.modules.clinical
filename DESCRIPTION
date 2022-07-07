@@ -42,6 +42,7 @@ Imports:
     logger (>= 0.2.0),
     magrittr,
     methods,
+    nestcolor,
     rlang,
     rmarkdown,
     rtables (>= 0.5.1),

@@ -8,6 +8,9 @@
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
 
+### Miscellaneous
+* Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
+
 # teal.modules.clinical 0.8.13
 
 ### Enhancements
