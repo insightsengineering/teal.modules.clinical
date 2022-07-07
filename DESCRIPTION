@@ -70,14 +70,16 @@ Suggests:
 VignetteBuilder:
     knitr
 Remotes:
-    insightsengineering/teal.code@*release
-    insightsengineering/teal.reporter@*release
-    insightsengineering/teal.transform@*release
-    insightsengineering/teal.mmrm@*release
-    insightsengineering/teal.data@*release
-    insightsengineering/teal.logger@*release
-    insightsengineering/teal.widgets@*release
-    insightsengineering/scda@*release
+    insightsengineering/tern@*release,
+    insightsengineering/teal@*release,
+    insightsengineering/teal.code@*release,
+    insightsengineering/teal.reporter@*release,
+    insightsengineering/teal.transform@*release,
+    insightsengineering/tern.mmrm@*release,
+    insightsengineering/teal.data@*release,
+    insightsengineering/teal.logger@*release,
+    insightsengineering/teal.widgets@*release,
+    insightsengineering/scda@*release,
     insightsengineering/scda.2021@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Encoding: UTF-8
