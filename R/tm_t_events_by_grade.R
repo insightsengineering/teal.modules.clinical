@@ -1163,7 +1163,7 @@ srv_t_events_by_grade <- function(id,
         card$append_text("Events by Grade Table", "header2")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
-        card$append_text("Main Element", "header3")
+        card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")

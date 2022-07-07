@@ -718,7 +718,7 @@ srv_ancova <- function(id,
         card$append_text("Analysis of Covariance", "header3")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
-        card$append_text("Main Element", "header3")
+        card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")

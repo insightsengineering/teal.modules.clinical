@@ -617,7 +617,7 @@ srv_g_ipp <- function(id,
         card$append_text("Individual Patient Plot", "header2")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
-        card$append_text("Main Element", "header3")
+        card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")

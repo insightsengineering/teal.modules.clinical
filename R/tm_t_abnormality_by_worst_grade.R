@@ -603,7 +603,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         card$append_text("Laboratory test results with highest grade post-baseline Table", "header3")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
-        card$append_text("Main Element", "header3")
+        card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")

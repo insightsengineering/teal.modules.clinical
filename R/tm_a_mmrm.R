@@ -1429,11 +1429,12 @@ srv_mmrm <- function(id,
         )
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
-        card$append_text("Main Element", "header3")
         if (!is.null(table_r())) {
+          card$append_text("Table", "header3")
           card$append_table(table_r())
         }
         if (!is.null(plot_r())) {
+          card$append_text("Plot", "header3")
           card$append_plot(plot_r(), dim = pws$dim())
         }
         if (!comment == "") {
