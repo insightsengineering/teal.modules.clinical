@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.13.9010
+Version: 0.8.13.9012
 Date: 2022-06-09
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
@@ -42,6 +42,7 @@ Imports:
     logger (>= 0.2.0),
     magrittr,
     methods,
+    nestcolor,
     rlang,
     rmarkdown,
     rtables (>= 0.5.1),
@@ -69,6 +70,18 @@ Suggests:
     testthat (>= 2.0)
 VignetteBuilder:
     knitr
+Remotes:
+    insightsengineering/scda.2021@*release,
+    insightsengineering/scda@*release,
+    insightsengineering/teal.code@*release,
+    insightsengineering/teal.data@*release,
+    insightsengineering/teal.logger@*release,
+    insightsengineering/teal.reporter@*release,
+    insightsengineering/teal.transform@*release,
+    insightsengineering/teal.widgets@*release,
+    insightsengineering/teal@*release,
+    insightsengineering/tern.mmrm@*release,
+    insightsengineering/tern@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Encoding: UTF-8
 Language: en-US

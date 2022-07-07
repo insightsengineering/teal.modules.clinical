@@ -29,16 +29,18 @@ Most of the modules in `teal.modules.clinical` use functions from the R package 
 
 ## Installation
 
-It is recommended that you [create and use a Github PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to install the latest version of this package. Once you have the PAT, run the following:
+For releases from August 2022 it is recommended that you [create and use a Github PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to install the latest version of this package. Once you have the PAT, run the following:
 
 ```r
 Sys.setenv(GITHUB_PAT = "your_access_token_here")
-if (!require("devtools")) install.packages("devtools")
-devtools::install_github("insightsengineering/teal.modules.clinical@*release", dependencies = FALSE)
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("insightsengineering/teal.modules.clinical@*release")
 ```
 
 You might need to manually install all of the package dependencies before installing this package as without
 the `dependencies = FALSE` argument to `install_github` it may produce an error.
+
+A stable release of all `NEST` packages from June 2022 is also available [here](https://github.com/insightsengineering/depository#readme).
 
 See package vignettes `browseVignettes(package = "teal.modules.clinical")` for usage of this package.
 
