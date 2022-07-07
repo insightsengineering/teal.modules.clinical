@@ -83,7 +83,7 @@ template_vitals <- function(dataname = "ANL",
       paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
       len_paramcd_levels_e <- length(paramcd_levels_e)
 
-      all_colors <- stats::setNames(color_palette(length(full_vita)), full_vita)
+      all_colors <- stats::setNames(nestcolor::color_palette(length(full_vita), "stream"), full_vita)
       vars_colors <- all_colors[provided_vita]
       names(vars_colors) <- provided_vita
 
