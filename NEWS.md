@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9012
+# teal.modules.clinical 0.8.13.9013
 
 ### Enhancements
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
