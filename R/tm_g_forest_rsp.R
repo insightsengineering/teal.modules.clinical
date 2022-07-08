@@ -473,7 +473,7 @@ srv_g_forest_rsp <- function(id,
                              label,
                              default_responses,
                              ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
+  checkmate::assert_true(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
