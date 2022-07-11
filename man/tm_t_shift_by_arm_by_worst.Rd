@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm_by_worst.R
 \name{tm_t_shift_by_arm_by_worst}
 \alias{tm_t_shift_by_arm_by_worst}
-\title{Teal Module: Shift by Arm}
+\title{Teal Module: Shift by Arm by Worst}
 \usage{
 tm_t_shift_by_arm_by_worst(
   label,
@@ -88,7 +88,7 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: Shift by Arm
+Teal Module: Shift by Arm by Worst
 }
 \examples{
 

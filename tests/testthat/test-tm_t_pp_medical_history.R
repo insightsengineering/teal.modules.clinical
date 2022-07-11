@@ -16,21 +16,22 @@ testthat::test_that("template_medical_history - non-default parameters", {
     table = quote({
       labels <- formatters::var_labels(anl, fill = FALSE)[c("mhbodsys", "mhterm", "mhdistat")]
       mhbodsys_label <- labels["mhbodsys"]
-      result <- anl %>%
-        dplyr::select(mhbodsys, mhterm, mhdistat) %>%
+      result_raw <- anl %>% dplyr::select(mhbodsys, mhterm, mhdistat) %>%
         dplyr::arrange(mhbodsys) %>%
         dplyr::mutate_if(is.character, as.factor) %>%
         dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         dplyr::distinct() %>%
         `colnames<-`(labels)
-      result_without_mhbodsys <- result[, -1]
-      result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
-      result_kbl <- result_kbl %>%
-        kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
-        kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
-      result_kbl
+      result <- rtables::basic_table() %>%
+        rtables::split_cols_by_multivar(colnames(result_raw)[2:3]) %>%
+        rtables::split_rows_by(colnames(result_raw)[1], split_fun = rtables::drop_split_levels) %>%
+        rtables::split_rows_by(colnames(result_raw)[2],
+                               split_fun = rtables::drop_split_levels, child_labels = "hidden") %>%
+        rtables::analyze_colvars(function(x) x[seq_along(x)]) %>%
+        rtables::build_table(result_raw)
+      result
     })
   )
 
-  testthat::expect_equal(res, expected)
+  testthat::expect_equal(res$table, expected$table)
 })

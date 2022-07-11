@@ -37,7 +37,7 @@
 #'       choices = arm_var$choices,
 #'       selected = arm_var$selected
 #'     ),
-#'     uiOutput("arms_buckets"),
+#'     shiny::uiOutput("arms_buckets"),
 #'   ),
 #'   server = function(input, output, session) {
 #'     shiny::isolate({
@@ -82,7 +82,7 @@ arm_ref_comp_observer <- function(session,
 
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
-  output[[output_id]] <- renderUI({
+  output[[output_id]] <- shiny::renderUI({
     if (!is.null(on_off()) && on_off()) {
       arm_var <- input[[id_arm_var]]
 

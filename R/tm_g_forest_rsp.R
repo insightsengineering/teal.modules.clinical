@@ -382,6 +382,14 @@ ui_g_forest_rsp <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
@@ -451,6 +459,7 @@ ui_g_forest_rsp <- function(id, ...) {
 
 srv_g_forest_rsp <- function(id,
                              datasets,
+                             reporter,
                              dataname,
                              parentname,
                              arm_var,
@@ -464,9 +473,10 @@ srv_g_forest_rsp <- function(id,
                              label,
                              default_responses,
                              ggplot2_args) {
-  shiny::moduleServer(id, function(input, output, session) {
-    stopifnot(is_cdisc_data(datasets))
+  checkmate::assert_true(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
+  shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
     # Setup arm variable selection, default reference arms, and default
@@ -641,7 +651,7 @@ srv_g_forest_rsp <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    plot_r <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -681,9 +691,9 @@ srv_g_forest_rsp <- function(id,
       teal.code::chunks_get_var("p")
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
-      plot_r = call_preparation,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width
     )
@@ -696,5 +706,35 @@ srv_g_forest_rsp <- function(id,
       ),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Forest Response Plot")
+        card$append_text("Forest Response Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r(), dim = pws$dim())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

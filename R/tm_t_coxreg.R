@@ -578,6 +578,14 @@ ui_t_coxreg <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::radioButtons(
         ns("type"),
         label = shiny::tags$label("Type of Regression:", class = "text-primary"),
@@ -695,6 +703,7 @@ ui_t_coxreg <- function(id, ...) {
 #' @noRd
 srv_t_coxreg <- function(id,
                          datasets,
+                         reporter,
                          dataname,
                          parentname,
                          arm_var,
@@ -707,6 +716,8 @@ srv_t_coxreg <- function(id,
                          label,
                          basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -955,7 +966,7 @@ srv_t_coxreg <- function(id,
     }
 
     ## generate table call with template and render table ----
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       validate_checks()
 
       teal.code::chunks_reset()
@@ -1018,7 +1029,7 @@ srv_t_coxreg <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     teal::get_rcode_srv(
@@ -1030,5 +1041,35 @@ srv_t_coxreg <- function(id,
       modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Cox Regression Table")
+        card$append_text("Cox Regression Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
