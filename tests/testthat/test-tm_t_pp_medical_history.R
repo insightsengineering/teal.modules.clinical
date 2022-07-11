@@ -34,6 +34,5 @@ testthat::test_that("template_medical_history - non-default parameters", {
       result
     })
   )
-
   testthat::expect_equal(res$table, expected$table)
 })
