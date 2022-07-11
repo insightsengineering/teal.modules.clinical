@@ -28,13 +28,24 @@ template_medical_history <- function(dataname = "ANL",
       labels <- formatters::var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
-      result <- dataname %>%
+      result_raw <-
+        dataname %>%
         dplyr::select(mhbodsys, mhterm, mhdistat) %>%
         dplyr::arrange(mhbodsys) %>%
         dplyr::mutate_if(is.character, as.factor) %>%
         dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         dplyr::distinct() %>%
         `colnames<-`(labels)
+
+      result <- rtables::basic_table() %>%
+        rtables::split_cols_by_multivar(colnames(result_raw)[2:3]) %>%
+        rtables::split_rows_by(colnames(result_raw)[1],
+                               split_fun = rtables::drop_split_levels) %>%
+        rtables::split_rows_by(colnames(result_raw)[2],
+                               split_fun = rtables::drop_split_levels,
+                               child_labels = "hidden") %>%
+        rtables::analyze_colvars(function(x) x[1:length(x)]) %>%
+        rtables::build_table(result_raw)
 
       result
     }, env = list(
@@ -162,7 +173,7 @@ ui_t_medical_history <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      shiny::dataTableOutput(outputId = ns("medical_history_table"))
+      teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = shiny::div(
       ### Reporter
@@ -316,7 +327,10 @@ srv_t_medical_history <- function(id,
       teal.code::chunks_get_var("result")
     })
 
-    output$medical_history_table <- shiny::renderDataTable(table_r())
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table_r
+    )
 
     teal::get_rcode_srv(
       id = "rcode",
