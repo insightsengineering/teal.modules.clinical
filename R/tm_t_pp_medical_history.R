@@ -39,10 +39,12 @@ template_medical_history <- function(dataname = "ANL",
 
       result <- rtables::basic_table() %>%
         rtables::split_cols_by_multivar(colnames(result_raw)[2:3]) %>%
-        rtables::split_rows_by(colnames(result_raw)[1],
+        rtables::split_rows_by(
+          colnames(result_raw)[1],
           split_fun = rtables::drop_split_levels
         ) %>%
-        rtables::split_rows_by(colnames(result_raw)[2],
+        rtables::split_rows_by(
+          colnames(result_raw)[2],
           split_fun = rtables::drop_split_levels,
           child_labels = "hidden"
         ) %>%
