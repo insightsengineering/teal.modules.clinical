@@ -193,6 +193,7 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
+#' library(nestcolor)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADVS <- synthetic_cdisc_data("latest")$advs
 #'

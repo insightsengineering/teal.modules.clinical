@@ -254,6 +254,7 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
+#' library(nestcolor)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADCM <- synthetic_cdisc_data("latest")$adcm
