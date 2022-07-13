@@ -368,6 +368,14 @@ ui_g_ipp <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]
@@ -448,6 +456,7 @@ ui_g_ipp <- function(id, ...) {
 
 srv_g_ipp <- function(id,
                       datasets,
+                      reporter,
                       dataname,
                       parentname,
                       arm_var,
@@ -462,6 +471,8 @@ srv_g_ipp <- function(id,
                       label,
                       ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -576,16 +587,16 @@ srv_g_ipp <- function(id,
     })
 
     # Outputs to render.
-    get_plot <- shiny::reactive({
+    plot_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("plot")
     })
 
     # Insert the plot into a plot with settings module from teal.widgets
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
-      plot_r = get_plot,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width
     )
@@ -598,5 +609,35 @@ srv_g_ipp <- function(id,
       ),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Individual Patient Plot")
+        card$append_text("Individual Patient Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r(), dim = pws$dim())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

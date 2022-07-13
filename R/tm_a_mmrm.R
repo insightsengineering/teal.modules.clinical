@@ -1236,7 +1236,7 @@ srv_mmrm <- function(id,
       output_title
     })
 
-    mmrm_table <- shiny::reactive({
+    table_r <- shiny::reactive({
       shiny::validate(
         shiny::need(
           !state_has_changed(),
@@ -1300,7 +1300,7 @@ srv_mmrm <- function(id,
 
     # Endpoint:
     # Plot outputs.
-    mmrm_plot_reactive <- shiny::reactive({
+    plot_r <- shiny::reactive({
       shiny::validate(
         shiny::need(
           !state_has_changed(),
@@ -1361,9 +1361,9 @@ srv_mmrm <- function(id,
       )
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "mmrm_plot",
-      plot_r = mmrm_plot_reactive,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width,
       show_hide_signal = shiny::reactive(show_plot_rv())
@@ -1371,7 +1371,7 @@ srv_mmrm <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "mmrm_table",
-      table_r = mmrm_table,
+      table_r = table_r,
       show_hide_signal = shiny::reactive(!show_plot_rv())
     )
 
@@ -1425,13 +1425,14 @@ srv_mmrm <- function(id,
           "header3"
         )
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
-        card$append_text("Main Element", "header3")
-        if (!is.null(mmrm_table())) {
-          card$append_table(mmrm_table())
+        card$append_fs(datasets$get_filter_state())
+        if (!is.null(table_r())) {
+          card$append_text("Table", "header3")
+          card$append_table(table_r())
         }
-        if (!is.null(mmrm_plot_reactive())) {
-          card$append_plot(mmrm_plot_reactive())
+        if (!is.null(plot_r())) {
+          card$append_text("Plot", "header3")
+          card$append_plot(plot_r(), dim = pws$dim())
         }
         if (!comment == "") {
           card$append_text("Comment", "header3")

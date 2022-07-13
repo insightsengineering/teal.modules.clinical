@@ -69,7 +69,7 @@ shinyApp(
       choices = arm_var$choices,
       selected = arm_var$selected
     ),
-    uiOutput("arms_buckets"),
+    shiny::uiOutput("arms_buckets"),
   ),
   server = function(input, output, session) {
     shiny::isolate({

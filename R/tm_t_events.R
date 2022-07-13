@@ -748,7 +748,7 @@ srv_t_events_byterm <- function(id,
     })
 
     # Outputs to render.
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("pruned_and_sorted_result")
@@ -756,7 +756,7 @@ srv_t_events_byterm <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     # Render R code.
@@ -775,9 +775,9 @@ srv_t_events_byterm <- function(id,
         card$set_name("Events by Term Table")
         card$append_text("Events by Term Table", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
-        card$append_text("Main Element", "header3")
-        card$append_table(table())
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

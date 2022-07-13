@@ -369,6 +369,14 @@ ui_g_forest_tte <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
@@ -443,6 +451,7 @@ ui_g_forest_tte <- function(id, ...) {
 
 srv_g_forest_tte <- function(id,
                              datasets,
+                             reporter,
                              dataname,
                              parentname,
                              arm_var,
@@ -457,6 +466,8 @@ srv_g_forest_tte <- function(id,
                              plot_width,
                              ggplot2_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -607,15 +618,15 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    get_plot <- shiny::reactive({
+    plot_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("p")
     })
 
-    teal.widgets::plot_with_settings_srv(
+    pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
-      plot_r = get_plot,
+      plot_r = plot_r,
       height = plot_height,
       width = plot_width
     )
@@ -629,5 +640,35 @@ srv_g_forest_tte <- function(id,
       modal_title = "R Code for the Current Time-to-Event Forest Plot",
       code_header = "Time-to-Event Forest Plot"
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Forest Survival Plot")
+        card$append_text("Forest Survival Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r(), dim = pws$dim())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
