@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9014</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -60,19 +54,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.13.9011" id="tealmodulesclinical-08139011">teal.modules.clinical 0.8.13.9011<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139011"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.13.9014" id="tealmodulesclinical-08139014">teal.modules.clinical 0.8.13.9014<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139014"></a></h2>
 <div class="section level4">
-<h4 id="enhancements-0-8-13-9011">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9011"></a></h4>
+<h4 id="enhancements-0-8-13-9014">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9014"></a></h4>
 <ul><li>Reverted missing data checkbox in <code>tm_t_summary</code> (encoding and filtering should be separate).</li>
 <li>Implemented a new widget that allows dragging and dropping to select comparison groups.</li>
-<li>Added the <code>teal.reporter</code> functionality to the <code>tm_t_summary</code>, <code>tm_g_km</code>, <code>tm_t_events</code>, <code>tm_t_tte</code> and <code>tm_a_mmrm</code> modules.</li>
+<li>Added the <code>teal.reporter</code> functionality to all modules.</li>
+<li>Enhanced the <code>tm_t_pp_medical_history</code> module to use the <code>table_with_settings</code> module and return the <code>rtables</code> object.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-8-13-9011">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13-9011"></a></h4>
+<h4 id="bug-fixes-0-8-13-9014">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13-9014"></a></h4>
 <ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented graph from being shown.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-13-9011">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-13-9011"></a></h4>
+<h4 id="miscellaneous-0-8-13-9014">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-13-9014"></a></h4>
 <ul><li>Added <code>nestcolor</code> dependency and replaced deprecated function <code><a href="https://rdrr.io/pkg/tern/man/color_palette.html" class="external-link">tern::color_palette</a></code> with <code><a href="https://rdrr.io/pkg/nestcolor/man/color_palette.html" class="external-link">nestcolor::color_palette</a></code>
 </li>
 </ul></div>
