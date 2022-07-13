@@ -869,7 +869,7 @@ srv_t_tte <- function(id,
       mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
     })
 
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")
@@ -877,7 +877,7 @@ srv_t_tte <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     teal::get_rcode_srv(
@@ -896,9 +896,9 @@ srv_t_tte <- function(id,
         card$set_name("Time To Event Table")
         card$append_text("Time To Event Table", "header2")
         card$append_text("Filter State", "header3")
-        card$append_fs(datasets)
-        card$append_text("Main Element", "header3")
-        card$append_table(table())
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

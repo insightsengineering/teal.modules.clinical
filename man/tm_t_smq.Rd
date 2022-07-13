@@ -86,7 +86,7 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: \code{SMQ} Table
+Adverse Events Table by Standardized \code{MedDRA} Query.
 }
 \examples{
 library(scda)

@@ -392,6 +392,14 @@ ui_t_abnormality <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
@@ -471,6 +479,7 @@ ui_t_abnormality <- function(id, ...) {
 #' @noRd
 srv_t_abnormality <- function(id,
                               datasets,
+                              reporter,
                               dataname,
                               parentname,
                               abnormal,
@@ -486,6 +495,8 @@ srv_t_abnormality <- function(id,
                               na_level,
                               basic_table_args) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -596,7 +607,7 @@ srv_t_abnormality <- function(id,
     })
 
     # Outputs to render.
-    table <- shiny::reactive({
+    table_r <- shiny::reactive({
       call_preparation()
       teal.code::chunks_safe_eval()
       teal.code::chunks_get_var("result")
@@ -604,7 +615,7 @@ srv_t_abnormality <- function(id,
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table
+      table_r = table_r
     )
 
     # Render R code.
@@ -617,5 +628,35 @@ srv_t_abnormality <- function(id,
       modal_title = "R Code for Abnormality Table",
       code_header = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Abnormality Summary Table")
+        card$append_text("Abnormality Summary Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }

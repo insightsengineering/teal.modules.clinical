@@ -28,7 +28,7 @@ template_medical_history <- function(dataname = "ANL",
       labels <- formatters::var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
-      result <-
+      result_raw <-
         dataname %>%
         dplyr::select(mhbodsys, mhterm, mhdistat) %>%
         dplyr::arrange(mhbodsys) %>%
@@ -37,14 +37,21 @@ template_medical_history <- function(dataname = "ANL",
         dplyr::distinct() %>%
         `colnames<-`(labels)
 
-      result_without_mhbodsys <- result[, -1]
-      result_kbl <- kableExtra::kable(result_without_mhbodsys, table.attr = "style='width:100%;'")
+      result <- rtables::basic_table() %>%
+        rtables::split_cols_by_multivar(colnames(result_raw)[2:3]) %>%
+        rtables::split_rows_by(
+          colnames(result_raw)[1],
+          split_fun = rtables::drop_split_levels
+        ) %>%
+        rtables::split_rows_by(
+          colnames(result_raw)[2],
+          split_fun = rtables::drop_split_levels,
+          child_labels = "hidden"
+        ) %>%
+        rtables::analyze_colvars(function(x) x[seq_along(x)]) %>%
+        rtables::build_table(result_raw)
 
-      result_kbl <- result_kbl %>%
-        kableExtra::pack_rows(index = table(droplevels(result[[mhbodsys_label]]))) %>%
-        kableExtra::kable_styling(bootstrap_options = c("basic"), full_width = TRUE)
-
-      result_kbl
+      result
     }, env = list(
       dataname = as.name(dataname),
       mhbodsys = as.name(mhbodsys),
@@ -170,9 +177,17 @@ ui_t_medical_history <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      shiny::htmlOutput(outputId = ns("medical_history_table"))
+      teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = shiny::div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
@@ -209,6 +224,7 @@ ui_t_medical_history <- function(id, ...) {
 
 srv_t_medical_history <- function(id,
                                   datasets,
+                                  reporter,
                                   dataname,
                                   parentname,
                                   patient_col,
@@ -217,6 +233,8 @@ srv_t_medical_history <- function(id,
                                   mhdistat,
                                   label) {
   stopifnot(is_cdisc_data(datasets))
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -307,11 +325,16 @@ srv_t_medical_history <- function(id,
       mhist_stack
     })
 
-    output$medical_history_table <- shiny::reactive({
+    table_r <- shiny::reactive({
       teal.code::chunks_reset()
       teal.code::chunks_push_chunks(mhist_call())
-      teal.code::chunks_get_var("result_kbl")
+      teal.code::chunks_get_var("result")
     })
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table_r
+    )
 
     teal::get_rcode_srv(
       id = "rcode",
@@ -319,5 +342,35 @@ srv_t_medical_history <- function(id,
       datanames = teal.transform::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
       modal_title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Patient Medical History Table")
+        card$append_text("Patient Medical History Table", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_text("Show R Code", "header3")
+        card$append_src(paste(get_rcode(
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          datasets = datasets,
+          title = "",
+          description = ""
+        ), collapse = "\n"))
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
