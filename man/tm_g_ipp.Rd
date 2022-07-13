@@ -112,6 +112,7 @@ ADaM structure.
 \examples{
 library(dplyr)
 library(scda)
+library(nestcolor)
 
 adsl <- synthetic_cdisc_data("latest")$adsl \%>\% slice(1:20)
 adlb <- synthetic_cdisc_data("latest")$adlb

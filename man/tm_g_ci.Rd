@@ -67,6 +67,7 @@ The module generates the R code and returns the corresponding output.
 \examples{
 
 library(scda)
+library(nestcolor)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADLB <- synthetic_cdisc_data("latest")$adlb
 
