@@ -103,6 +103,7 @@ This teal module produces a patient profile timeline plot using ADaM datasets.
 }
 \examples{
 library(scda)
+library(nestcolor)
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADAE <- synthetic_cdisc_data("latest")$adae
 ADCM <- synthetic_cdisc_data("latest")$adcm

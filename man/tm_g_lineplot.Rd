@@ -126,6 +126,7 @@ ADaM structure.
 \examples{
 
 library(scda)
+library(nestcolor)
 
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADLB <- synthetic_cdisc_data("latest")$adlb

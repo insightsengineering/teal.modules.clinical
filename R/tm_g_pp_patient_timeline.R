@@ -355,6 +355,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
+#' library(nestcolor)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADAE <- synthetic_cdisc_data("latest")$adae
 #' ADCM <- synthetic_cdisc_data("latest")$adcm

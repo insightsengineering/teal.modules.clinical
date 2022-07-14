@@ -187,6 +187,7 @@ template_g_ci <- function(dataname, # nolint
 #' @examples
 #'
 #' library(scda)
+#' library(nestcolor)
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADLB <- synthetic_cdisc_data("latest")$adlb
 #'
