@@ -662,7 +662,8 @@ make_barchart_simple_call <- function(y_name,
 
   if (!is.null(getOption("ggplot2.discrete.colour"))) {
     plot_args <- c(plot_args, bquote(
-      ggplot2::scale_fill_manual(values = getOption("ggplot2.discrete.colour"))))
+      ggplot2::scale_fill_manual(values = getOption("ggplot2.discrete.colour"))
+    ))
   }
 
   # draw bars
@@ -671,13 +672,14 @@ make_barchart_simple_call <- function(y_name,
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
       ggplot2::geom_col(ggplot2::aes_string(
-        y = .(y_name)),
-        position = .(position),
-        fill = ifelse(
-          !is.null(getOption("ggplot2.discrete.colour")),
-          getOption("ggplot2.discrete.colour")[1],
-          "#b6cae9"
-        )
+        y = .(y_name)
+      ),
+      position = .(position),
+      fill = ifelse(
+        !is.null(getOption("ggplot2.discrete.colour")),
+        getOption("ggplot2.discrete.colour")[1],
+        "#b6cae9"
+      )
       )
     ))
   } else {
