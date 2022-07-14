@@ -11,6 +11,7 @@
 
 ### Miscellaneous
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
+* Implemented `nestcolor` in all examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 
 # teal.modules.clinical 0.8.13
 

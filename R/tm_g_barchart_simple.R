@@ -660,12 +660,25 @@ make_barchart_simple_call <- function(y_name,
     quote(ggplot2::position_stack(vjust = 0.5))
   }
 
+  if (!is.null(getOption("ggplot2.discrete.colour"))) {
+    plot_args <- c(plot_args, bquote(
+      ggplot2::scale_fill_manual(values = getOption("ggplot2.discrete.colour"))))
+  }
+
   # draw bars
   if (is.null(fill_name)) {
     # nothing to put side-by-side, so put fill to one color only
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
-      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position), fill = "#b6cae9")
+      ggplot2::geom_col(ggplot2::aes_string(
+        y = .(y_name)),
+        position = .(position),
+        fill = ifelse(
+          !is.null(getOption("ggplot2.discrete.colour")),
+          getOption("ggplot2.discrete.colour")[1],
+          "#b6cae9"
+        )
+      )
     ))
   } else {
     plot_args <- c(plot_args, bquote(
