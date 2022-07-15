@@ -5,13 +5,13 @@
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.
 * Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return the `rtables` object.
+* Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
 
 ### Miscellaneous
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
-* Implemented `nestcolor` in all examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 
 # teal.modules.clinical 0.8.13
 
