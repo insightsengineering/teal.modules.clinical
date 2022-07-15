@@ -669,11 +669,11 @@ make_barchart_simple_call <- function(y_name,
         y = .(y_name)
       ),
       position = .(position),
-      fill = ifelse(
+      fill = .(ifelse(
         !is.null(getOption("ggplot2.discrete.colour")),
         getOption("ggplot2.discrete.colour")[1],
         "#b6cae9"
-      )
+      ))
       )
     ))
   } else {
