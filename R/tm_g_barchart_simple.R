@@ -660,12 +660,6 @@ make_barchart_simple_call <- function(y_name,
     quote(ggplot2::position_stack(vjust = 0.5))
   }
 
-  if (!is.null(getOption("ggplot2.discrete.colour"))) {
-    plot_args <- c(plot_args, bquote(
-      ggplot2::scale_fill_manual(values = getOption("ggplot2.discrete.colour"))
-    ))
-  }
-
   # draw bars
   if (is.null(fill_name)) {
     # nothing to put side-by-side, so put fill to one color only
