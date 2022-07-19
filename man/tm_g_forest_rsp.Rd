@@ -115,6 +115,7 @@ This teal module produces a grid style Forest plot for response data with ADaM s
 
 library(scda)
 library(dplyr)
+library(nestcolor)
 
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%

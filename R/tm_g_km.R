@@ -268,6 +268,7 @@ template_g_km <- function(dataname = "ANL",
 #' @examples
 #'
 #' library(scda)
+#' library(nestcolor)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
