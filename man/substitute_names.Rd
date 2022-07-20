@@ -36,15 +36,15 @@ In addition it can also do other standard substitutions on the right-hand side.
 }
 \section{Functions}{
 \itemize{
-\item \code{h_subst_lhs_names}: Helper function to just substitute the top-level names on the left-hand side in a
+\item \code{h_subst_lhs_names()}: Helper function to just substitute the top-level names on the left-hand side in a
 quoted expression.
 
-\item \code{substitute_lhs_names}: recursively substitutes all names on the left-hand sides in a quoted expression.
+\item \code{substitute_lhs_names()}: recursively substitutes all names on the left-hand sides in a quoted expression.
 
-\item \code{substitute_rhs}: substitutes on the right-hand side in a quoted expression.
+\item \code{substitute_rhs()}: substitutes on the right-hand side in a quoted expression.
 Note that this is just a synonym for \code{\link[=substitute_q]{substitute_q()}}.
-}}
 
+}}
 \examples{
 teal.modules.clinical:::substitute_names(
   mutate(a = a + b, b = c + d),

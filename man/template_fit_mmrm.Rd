@@ -125,11 +125,11 @@ Template: Mixed Model Repeated Measurements (MMRM) analysis
 }
 \section{Functions}{
 \itemize{
-\item \code{template_mmrm_tables}: 
+\item \code{template_mmrm_tables()}: 
 
-\item \code{template_mmrm_plots}: 
+\item \code{template_mmrm_plots()}: 
+
 }}
-
 \seealso{
 \code{\link[=tm_a_mmrm]{tm_a_mmrm()}}
 }

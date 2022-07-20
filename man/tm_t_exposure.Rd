@@ -17,11 +17,9 @@ tm_t_exposure(
   id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   parcat,
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "AVAL"), selected = "AVAL", fixed = TRUE),
- 
-    avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "AVALU"), selected = "AVALU", fixed = TRUE),
   add_total,
   na_level = "<Missing>",

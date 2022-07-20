@@ -14,17 +14,15 @@ tm_g_forest_tte(
   subgroup_var,
   paramcd,
   strata_var,
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVAL"), "AVAL", fixed = TRUE),
- 
-    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "CNSR"), "CNSR", fixed = TRUE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
- 
-    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
+  time_unit_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
+    "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
   plot_width = c(980L, 500L, 2000L),

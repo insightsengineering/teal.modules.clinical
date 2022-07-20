@@ -12,8 +12,7 @@ tm_g_forest_rsp(
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALC"), "AVALC", fixed = TRUE),
   subgroup_var,
   strata_var,

@@ -14,14 +14,12 @@ tm_g_km(
   paramcd,
   strata_var,
   facet_var,
- 
-    time_unit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  time_unit_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
+    "AVALU", fixed = TRUE),
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVAL"), "AVAL", fixed = TRUE),
- 
-    cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "CNSR"), "CNSR", fixed = TRUE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),

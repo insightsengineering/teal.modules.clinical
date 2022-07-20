@@ -12,16 +12,15 @@ tm_t_events_summary(
   arm_var,
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
- 
-    dthfl_var = teal.transform::choices_selected(teal.transform::variable_choices(parentname,
+  dthfl_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
     "DTHFL"), "DTHFL", fixed = TRUE),
- 
-    dcsreas_var = teal.transform::choices_selected(teal.transform::variable_choices(parentname,
+  dcsreas_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
     "DCSREAS"), "DCSREAS", fixed = TRUE),
   llt = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AEDECOD"), "AEDECOD", fixed = TRUE),
- 
-    aeseq_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aeseq_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AESEQ"), "AESEQ", fixed = TRUE),
   add_total = TRUE,
   count_subj = TRUE,

@@ -12,11 +12,9 @@ tm_t_events_patyear(
   arm_var,
   events_var,
   paramcd,
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVAL"), "AVAL", fixed = TRUE),
- 
-    avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALU"), "AVALU", fixed = TRUE),
   add_total = TRUE,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =

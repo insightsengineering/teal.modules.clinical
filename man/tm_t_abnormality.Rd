@@ -15,15 +15,15 @@ tm_t_abnormality(
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
   id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
- 
-    baseline_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "BNRIND"), selected = "BNRIND", fixed = TRUE),
- 
-    treatment_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
- 
-    treatment_flag = teal.transform::choices_selected(teal.transform::value_choices(dataname,
-    "ONTRTFL"), selected = "Y", fixed = TRUE),
+  baseline_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
+    "BNRIND"), selected = "BNRIND", fixed = TRUE),
+  treatment_flag_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
+    "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
+  treatment_flag =
+    teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
+    selected = "Y", fixed = TRUE),
   add_total = TRUE,
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,

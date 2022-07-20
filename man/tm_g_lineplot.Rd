@@ -9,8 +9,7 @@ tm_g_lineplot(
   dataname,
   parentname = ifelse(inherits(strata, "data_extract_spec"),
     teal.transform::datanames_input(strata), "ADSL"),
- 
-    strata = teal.transform::choices_selected(teal.transform::variable_choices(parentname,
+  strata = teal.transform::choices_selected(teal.transform::variable_choices(parentname,
     c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
   x = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVISIT"), "AVISIT", fixed = TRUE),
