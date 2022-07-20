@@ -10,22 +10,21 @@ tm_t_shift_by_grade(
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
     teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
- 
-    visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "AVISIT"), selected = "AVISIT", fixed = TRUE),
   paramcd,
- 
-    worst_flag_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
- 
-    worst_flag_indicator = teal.transform::choices_selected(teal.transform::value_choices(dataname,
-    "WGRLOVFL"), selected = "Y", fixed = TRUE),
- 
-    anl_toxgrade_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE),
- 
-    base_toxgrade_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
+  worst_flag_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
+    c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
+  worst_flag_indicator =
+    teal.transform::choices_selected(teal.transform::value_choices(dataname, "WGRLOVFL"),
+    selected = "Y", fixed = TRUE),
+  anl_toxgrade_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
+    c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE),
+  base_toxgrade_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
+    c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
   id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   add_total = FALSE,

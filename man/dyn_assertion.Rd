@@ -24,11 +24,11 @@ Verifies assertions for dynamic outputs.
 }
 \section{Functions}{
 \itemize{
-\item \code{teal_enough_rows}: the dataset is large enough.
+\item \code{teal_enough_rows()}: the dataset is large enough.
 
-\item \code{teal_has_element}: the element exist.
+\item \code{teal_has_element()}: the element exist.
+
 }}
-
 \examples{
 
 library(assertthat)

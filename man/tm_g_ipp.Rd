@@ -13,17 +13,13 @@ tm_g_ipp(
   paramcd,
   id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "USUBJID"), "USUBJID", fixed = TRUE),
- 
-    visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVISIT"), "AVISIT", fixed = TRUE),
- 
-    aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVAL"), "AVAL", fixed = TRUE),
- 
-    avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALU"), "AVALU", fixed = TRUE),
- 
-    base_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+  base_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "BASE"), "BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
