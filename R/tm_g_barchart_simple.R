@@ -535,7 +535,6 @@ srv_g_barchart_simple <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Barchart Plot")
         card$append_text("Barchart Plot", "header2")
-        card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
@@ -543,7 +542,6 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
           chunks = teal.code::get_chunks_object(parent_idx = 1L),
           datasets = datasets,

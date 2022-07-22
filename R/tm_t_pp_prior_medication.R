@@ -381,7 +381,6 @@ srv_t_prior_medication <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Prior Medication Table")
         card$append_text("Patient Prior Medication Table", "header2")
-        card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
@@ -389,7 +388,6 @@ srv_t_prior_medication <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
           chunks = teal.code::get_chunks_object(parent_idx = 1L),
           datasets = datasets,
