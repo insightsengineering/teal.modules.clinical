@@ -384,11 +384,7 @@ ui_g_forest_rsp <- function(id, ...) {
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = shiny::div(
       ### Reporter
-      shiny::tags$div(
-        teal.reporter::add_card_button_ui(ns("addReportCard")),
-        teal.reporter::download_report_button_ui(ns("downloadButton")),
-        teal.reporter::reset_report_button_ui(ns("resetButton"))
-      ),
+      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       shiny::tags$br(),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
@@ -722,17 +718,14 @@ srv_g_forest_rsp <- function(id,
           card$append_text(comment)
         }
         card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          chunks = teal.code::get_chunks_object(parent_idx = 2L),
           datasets = datasets,
           title = "",
           description = ""
         ), collapse = "\n"))
         card
       }
-
-      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-      teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
   })

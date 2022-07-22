@@ -1434,7 +1434,7 @@ srv_mmrm <- function(id,
           card$append_text(comment)
         }
         card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
+          chunks = teal.code::get_chunks_object(parent_idx = 1L),
           datasets = datasets,
           title = "",
           description = ""
