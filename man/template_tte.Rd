@@ -6,7 +6,7 @@
 \usage{
 template_tte(
   dataname = "ANL",
-  parentname = "ADSL_FILTERED",
+  parentname = "ADSL",
   arm_var = "ARM",
   paramcd,
   ref_arm = NULL,
