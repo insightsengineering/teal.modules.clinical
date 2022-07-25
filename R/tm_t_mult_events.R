@@ -386,7 +386,6 @@ ui_t_mult_events_byterm <- function(id, ...) {
     encoding = shiny::div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      shiny::tags$br(),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
