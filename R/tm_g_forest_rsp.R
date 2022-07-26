@@ -23,7 +23,7 @@
 #' @keywords internal
 #'
 template_forest_rsp <- function(dataname = "ANL",
-                                parentname = "ADSL_FILTERED",
+                                parentname = "ADSL",
                                 arm_var,
                                 ref_arm = NULL,
                                 comp_arm = NULL,
