@@ -6,7 +6,7 @@
 \usage{
 template_forest_rsp(
   dataname = "ANL",
-  parentname = "ADSL_FILTERED",
+  parentname = "ADSL",
   arm_var,
   ref_arm = NULL,
   comp_arm = NULL,
