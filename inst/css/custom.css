@@ -1,0 +1,17 @@
+/* teal.modules.clinical custom css */
+
+.bg-orange {
+  background-color: orange;
+}
+
+.text-dark {
+  color: black;
+}
+
+.overflow-y-scroll {
+  overflow-y:scroll
+}
+
+.max-h-250 {
+  max-height: 250px
+}

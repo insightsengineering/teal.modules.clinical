@@ -501,7 +501,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "p-value method for ",
-                  shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  shiny::tags$span(class = "text-primary", "Coxph"), # nolint
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -514,7 +514,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "Ties for ",
-                  shiny::tags$span(style = "color:darkblue", "Coxph"), # nolint
+                  shiny::tags$span(class = "text-primary", "Coxph"), # nolint
                   " (Hazard Ratio)",
                   sep = ""
                 )
