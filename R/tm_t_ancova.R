@@ -17,7 +17,7 @@
 #' @keywords internal
 #'
 template_ancova <- function(dataname = "ANL",
-                            parentname = "ADSL_FILTERED",
+                            parentname = "ADSL",
                             arm_var,
                             ref_arm = NULL,
                             comp_arm = NULL,

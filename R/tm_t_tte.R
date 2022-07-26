@@ -46,7 +46,7 @@ control_tte <- function(surv_time = list(
 #' @keywords internal
 #'
 template_tte <- function(dataname = "ANL",
-                         parentname = "ADSL_FILTERED",
+                         parentname = "ADSL",
                          arm_var = "ARM",
                          paramcd,
                          ref_arm = NULL,
