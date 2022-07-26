@@ -595,12 +595,7 @@ ui_mmrm <- function(id, ...) {
     ),
     encoding = shiny::div(
       ### Reporter
-      shiny::tags$div(
-        teal.reporter::add_card_button_ui(ns("addReportCard")),
-        teal.reporter::download_report_button_ui(ns("downloadButton")),
-        teal.reporter::reset_report_button_ui(ns("resetButton"))
-      ),
-      shiny::tags$br(),
+      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
@@ -1424,7 +1419,6 @@ srv_mmrm <- function(id,
           ),
           "header3"
         )
-        card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
@@ -1438,19 +1432,15 @@ srv_mmrm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          chunks = teal.code::get_chunks_object(parent_idx = 2L),
           datasets = datasets,
           title = "",
           description = ""
         ), collapse = "\n"))
         card
       }
-
-      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-      teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
   })
