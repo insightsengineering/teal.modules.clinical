@@ -32,18 +32,14 @@ call_concatenate <- function(args, bin_op = "+") {
 }
 
 # needs columns like n_, n_ARM etc. to get count from
-add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- `if`(is.null(n_column), get_n_name(groupby_vars = column), n_column)
+count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars = column)) {
   checkmate::assert_string(column)
 
-  chunk$push(
-    substitute(
-      counts <- counts %>% dplyr::mutate(
-        column_name := paste0(column_name, " (n = ", n_column_name, ")")
-      ),
-      env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
+  substitute_names(
+    expr = counts <- counts %>% dplyr::mutate(
+      column_name = paste0(column_name, " (n = ", n_column_name, ")")
     ),
-    id = paste0(column, "_add_count_str_to_column_call")
+    names = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
   )
 }
 

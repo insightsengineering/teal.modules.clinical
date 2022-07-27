@@ -348,13 +348,14 @@ ui_g_ci <- function(id, ...) { # nolint
         selected = args$stat
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
 }
 
 srv_g_ci <- function(id, # nolint
+                     data,
                      datasets,
                      reporter,
                      x_var,
@@ -367,11 +368,17 @@ srv_g_ci <- function(id, # nolint
   stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
       data_extract = list(x_var = x_var, y_var = y_var, color = color)
+    )
+
+    initial_q <- reactive(
+      eval_code(
+        object = new_quosure(env = data),
+        code = as.expression(merged_data()$expr),
+        name = "merge expression"
+      )
     )
 
     validate_data <- shiny::reactive({
@@ -387,7 +394,7 @@ srv_g_ci <- function(id, # nolint
           "Select an analyzed value (y axis)."
         )
       )
-      teal::validate_has_data(merged_data()$data(), min_nrow = 2)
+      teal::validate_has_data(initial_q()[["ANL"]], min_nrow = 2)
 
       shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
@@ -413,26 +420,12 @@ srv_g_ci <- function(id, # nolint
 
     eval_call <- shiny::reactive({
       validate_data()
-      teal.code::chunks_reset()
-      teal.code::chunks_push_data_merge(x = merged_data())
-      teal.code::chunks_push(
-        expression = list_calls(),
-        id = "plot_call"
-      )
+      eval_code(initial_q(), list_calls(), name = "plot_call")
     })
 
-    plot_r <- shiny::reactive({
-      eval_call()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("gg")
-    })
+    plot_r <- shiny::reactive(eval_call()[["gg"]])
 
-    teal::get_rcode_srv(
-      id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(x_var, y_var, color)),
-      modal_title = label
-    )
+    teal.widgets::verbatim_popup_srv(id = "rcode", verbatim_content = reactive(get_code(eval_call())), title = label)
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -455,12 +448,7 @@ srv_g_ci <- function(id, # nolint
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(get_code(eval_call()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
