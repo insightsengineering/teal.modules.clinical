@@ -438,13 +438,14 @@ ui_g_forest_tte <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 srv_g_forest_tte <- function(id,
+                             data,
                              datasets,
                              reporter,
                              dataname,
@@ -460,12 +461,9 @@ srv_g_forest_tte <- function(id,
                              plot_height,
                              plot_width,
                              ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
@@ -489,7 +487,8 @@ srv_g_forest_tte <- function(id,
         cnsr_var = cnsr_var,
         time_unit_var = time_unit_var
       ),
-      datasets = datasets
+      datasets = data,
+      join_keys = attr(data, "join_keys")
     )
 
     anl_merged <- teal.transform::data_merge_srv(
@@ -504,9 +503,17 @@ srv_g_forest_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
+    anl_merged_q <- reactive({
+      q <- new_quosure(env = data, code = attr(data, "code"))
+      q1 <- eval_code(q, as.expression(anl_merged()$expr))
+      eval_code(q1, as.expression(adsl_merged()$expr))
+    })
+
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
+      anl <- q1[["ANL"]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -560,7 +567,7 @@ srv_g_forest_tte <- function(id,
       ))
 
       shiny::validate(shiny::need(
-        length(anl_m$data()[[input_paramcd]]) > 0,
+        length(anl[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
       shiny::validate(
@@ -574,19 +581,11 @@ srv_g_forest_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    plot_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -609,15 +608,11 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      eval_code(q1, as.expression(my_calls), name = "g_forest_tte call")
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("p")
-    })
+    plot_r <- shiny::reactive(plot_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -626,14 +621,10 @@ srv_g_forest_tte <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var)
-      ),
-      modal_title = "R Code for the Current Time-to-Event Forest Plot",
-      code_header = "Time-to-Event Forest Plot"
+      verbatim_content = reactive(teal.code::get_code(plot_q())),
+      title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
     ### REPORTER
@@ -642,19 +633,14 @@ srv_g_forest_tte <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Forest Survival Plot")
         card$append_text("Forest Survival Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

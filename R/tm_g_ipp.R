@@ -443,13 +443,14 @@ ui_g_ipp <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 srv_g_ipp <- function(id,
+                      data,
                       datasets,
                       reporter,
                       dataname,
@@ -464,12 +465,12 @@ srv_g_ipp <- function(id,
                       plot_height,
                       plot_width,
                       label,
-                      ggplot2_args) {
+                      ggplot2_args,
+                      filter_panel_api) {
   stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
 
     anl_merged <- teal.transform::data_merge_module(
       datasets = datasets,
@@ -491,10 +492,19 @@ srv_g_ipp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
+
+    anl_merged_q <- reactive({
+      q <- new_quosure(env = data, code = attr(data, "code"))
+      q1 <- eval_code(q, as.expression(anl_merged()$expr))
+      eval_code(q1, as.expression(adsl_merged()$expr))
+    })
+
+
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
 
       anl_m <- anl_merged()
       input_arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -537,19 +547,12 @@ srv_g_ipp <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    plot_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
 
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- q1[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -578,15 +581,11 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      eval_code(q1, as.expression(my_calls), name = "h_g_ipp call")
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("plot")
-    })
+    plot_r <- shiny::reactive(plot_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -596,13 +595,10 @@ srv_g_ipp <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, aval_var, avalu_var, id_var, paramcd, base_var, visit_var)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(plot_q())),
+      title = label
     )
 
     ### REPORTER
@@ -611,19 +607,14 @@ srv_g_ipp <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Individual Patient Plot")
         card$append_text("Individual Patient Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
