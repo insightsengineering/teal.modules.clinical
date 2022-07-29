@@ -414,7 +414,7 @@ ui_t_logistic <- function(id, ...) {
         inputId = ns("conf_level"),
         label = shiny::p(
           "Confidence level for ",
-          shiny::span(style = "color:darkblue", "Coxph"),
+          shiny::span(class = "text-primary", "Coxph"),
           " (Hazard Ratio)",
           sep = ""
         ),
