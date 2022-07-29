@@ -789,7 +789,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -797,6 +797,7 @@ ui_mmrm <- function(id, ...) {
 
 #' @noRd
 srv_mmrm <- function(id,
+                     data,
                      datasets,
                      reporter,
                      dataname,
@@ -814,11 +815,8 @@ srv_mmrm <- function(id,
                      plot_width,
                      basic_table_args,
                      ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
     disable_r_code <- shiny::reactiveVal(FALSE)
@@ -858,6 +856,12 @@ srv_mmrm <- function(id,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
+
+    anl_merged_q <- reactive({
+      q1 <- new_quosure(data, code = attr(data, "code"))
+      q2 <- eval_code(q1, as.expression(anl_merged()$expr))
+      eval_code(q2, as.expression(adsl_merged()$expr))
+    })
 
     # Initially hide the output title because there is no output yet.
     shinyjs::hide("mmrm_title")
@@ -908,8 +912,7 @@ srv_mmrm <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname), # From UI.
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_mmrm"
     )
@@ -1098,8 +1101,9 @@ srv_mmrm <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- anl_merged_q()[["ANL"]]
+      anl_filtered <- anl_merged_q()[["ANL"]]
+      anl_data <- anl_merged_q()[["ANL"]]
 
       anl_m <- anl_merged()
       if (!is.null(input[[extract_input("arm_var", parentname)]])) {
@@ -1143,9 +1147,6 @@ srv_mmrm <- function(id,
         need_arm = FALSE
       )
 
-
-      anl_data <- anl_m$data()
-
       Map(
         function(visit_df, visit_name) {
           dup <- any(duplicated(visit_df[[input_id_var]]))
@@ -1164,20 +1165,8 @@ srv_mmrm <- function(id,
     # Connector:
     # Fit the MMRM, once the user clicks on the start button.
     mmrm_fit <- shiny::eventReactive(input$button_start, {
-      # Create a private stack for this function only.
-      fit_stack <- teal.code::chunks_new()
-      fit_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = fit_stack)
-      }
-
-      teal.code::chunks_reset(chunks = fit_stack)
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m, chunks = fit_stack)
-      teal.code::chunks_push_new_line(chunks = fit_stack)
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl, chunks = fit_stack)
-      teal.code::chunks_push_new_line(chunks = fit_stack)
 
       my_calls <- template_fit_mmrm(
         parentname = "ANL_ADSL",
@@ -1196,9 +1185,7 @@ srv_mmrm <- function(id,
         optimizer = input$optimizer,
         parallel = input$parallel
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), fit_stack_push)
-      teal.code::chunks_safe_eval(chunks = fit_stack)
-      fit_stack
+      eval_code(q1, as.expression(my_calls))
     })
 
     output$mmrm_title <- shiny::renderText({
@@ -1231,7 +1218,7 @@ srv_mmrm <- function(id,
       output_title
     })
 
-    table_r <- shiny::reactive({
+    table_q <- shiny::reactive({
       shiny::validate(
         shiny::need(
           !state_has_changed(),
@@ -1245,57 +1232,35 @@ srv_mmrm <- function(id,
       if (!isTRUE(grepl("^t_", output_function))) {
         return(NULL)
       }
-      # Reset global chunks. Needs to be done here so nothing yet in environment.
-      teal.code::chunks_reset()
       # Get the fit stack while evaluating the fit code at the same time.
-      fit_stack <- mmrm_fit()
-      fit <- teal.code::chunks_get_var("fit", chunks = fit_stack)
-      # Start new private stack for the table code.
-      table_stack <- teal.code::chunks_new()
-
-      table_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = table_stack)
-      }
+      q1 <- mmrm_fit()
+      fit <- q1[["fit"]]
 
       anl_m <- anl_merged()
 
-      ANL <- teal.code::chunks_get_var("ANL", chunks = fit_stack) # nolint
-      ANL_ADSL <- teal.code::chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
+      ANL <- q1[["ANL"]]
+      ANL_ADSL <- q1[["ANL_ADSL"]]
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
-      mmrm_table <- function(table_type) {
-        res <- template_mmrm_tables(
-          parentname = "ANL_ADSL",
-          dataname = "ANL",
-          fit_name = "fit",
-          arm_var = input[[extract_input("arm_var", parentname)]],
-          ref_arm = unlist(input$buckets$Ref),
-          visit_var = as.vector(anl_m$columns_source$visit_var),
-          paramcd = paramcd,
-          show_relative = input$t_mmrm_lsmeans_show_relative,
-          table_type = table_type,
-          basic_table_args = basic_table_args
-        )
-
-        mapply(expression = res, id = paste(names(res), "call", sep = "_"), table_stack_push)
-        teal.code::chunks_push_chunks(table_stack)
-        teal.code::chunks_safe_eval()
-      }
-      teal.code::chunks_push_chunks(fit_stack)
-      mmrm_table(output_function)
-
-      # Depending on the table function type, produce different code
-      switch(output_function,
-        t_mmrm_lsmeans = teal.code::chunks_get_var("lsmeans_table"),
-        t_mmrm_diagnostic = teal.code::chunks_get_var("diagnostic_table"),
-        t_mmrm_fixed = teal.code::chunks_get_var("fixed_effects"),
-        t_mmrm_cov = teal.code::chunks_get_var("cov_matrix")
+      mmrm_table <- template_mmrm_tables(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        fit_name = "fit",
+        arm_var = input[[extract_input("arm_var", parentname)]],
+        ref_arm = unlist(input$buckets$Ref),
+        visit_var = as.vector(anl_m$columns_source$visit_var),
+        paramcd = paramcd,
+        show_relative = input$t_mmrm_lsmeans_show_relative,
+        table_type = output_function,
+        basic_table_args = basic_table_args
       )
+
+      eval_code(q1, as.expression(mmrm_table))
     })
 
     # Endpoint:
     # Plot outputs.
-    plot_r <- shiny::reactive({
+    plot_q <- shiny::reactive({
       shiny::validate(
         shiny::need(
           !state_has_changed(),
@@ -1309,50 +1274,57 @@ srv_mmrm <- function(id,
       if (!isTRUE(grepl("^g_", output_function))) {
         return(NULL)
       }
-      teal.code::chunks_reset()
-      fit_stack <- mmrm_fit()
-      fit <- teal.code::chunks_get_var("fit", fit_stack)
 
-      # Start new private stack for the plot code.
-      plot_stack <- teal.code::chunks_new()
-      plot_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = plot_stack)
-      }
+      q1 <- mmrm_fit()
+      fit <- q1[["fit"]]
 
-      lsmeans_args <- list(
-        select = input$g_mmrm_lsmeans_select,
-        width = input$g_mmrm_lsmeans_width,
-        show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
-      )
-      diagnostic_args <- list(
-        type = input$g_mmrm_diagnostic_type,
-        z_threshold = input$g_mmrm_diagnostic_z_threshold
-      )
-
-      mmrm_plot <- function(lsmeans_plot = lsmeans_args,
-                            diagnostic_plot = diagnostic_args) {
-        res <- template_mmrm_plots(
-          "fit",
-          lsmeans_plot = lsmeans_plot,
-          diagnostic_plot = diagnostic_plot,
-          ggplot2_args = ggplot2_args
+      lsmeans_args <- if (output_function == "g_mmrm_lsmeans") {
+        list(
+          select = input$g_mmrm_lsmeans_select,
+          width = input$g_mmrm_lsmeans_width,
+          show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
         )
-        mapply(expression = res, id = paste(names(res), "call", sep = "_"), plot_stack_push)
-        teal.code::chunks_push_chunks(plot_stack)
-        teal.code::chunks_safe_eval()
       }
 
-      teal.code::chunks_push_chunks(fit_stack)
-      # Depending on the plot function type, produce different code.
-      switch(output_function,
-        g_mmrm_lsmeans = {
-          mmrm_plot(diagnostic_plot = NULL)
-          teal.code::chunks_get_var("lsmeans_plot")
-        },
-        g_mmrm_diagnostic = {
-          mmrm_plot(lsmeans_plot = NULL)
-          teal.code::chunks_get_var("diagnostic_plot")
-        }
+      diagnostic_args <- if (output_function == "g_mmrm_diagnostic") {
+        list(
+          type = input$g_mmrm_diagnostic_type,
+          z_threshold = input$g_mmrm_diagnostic_z_threshold
+        )
+      }
+
+      mmrm_plot_expr <- template_mmrm_plots(
+        fit_name = "fit",
+        lsmeans_plot = lsmeans_args,
+        diagnostic_plot = diagnostic_args,
+        ggplot2_args = ggplot2_args
+      )
+      eval_code(q1, as.expression(mmrm_plot_expr))
+    })
+
+    all_code <- shiny::reactive({
+      if (!is.null(plot_q()) && !is.null(table_q())) {
+        join(plot_q(), table_q())
+      } else if (!is.null(plot_q())) {
+        plot_q()
+      } else {
+        table_q()
+      }
+    })
+
+    table_r <- shiny::reactive({
+      switch(input$output_function,
+        t_mmrm_lsmeans = table_q()[["lsmeans_table"]],
+        t_mmrm_diagnostic = table_q()[["diagnostic_table"]],
+        t_mmrm_fixed = table_q()[["fixed_effects"]],
+        t_mmrm_cov = table_q()[["cov_matrix"]]
+      )
+    })
+
+    plot_r <- shiny::reactive({
+      switch(input$output_function,
+        g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
+        g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
       )
     })
 
@@ -1376,7 +1348,7 @@ srv_mmrm <- function(id,
       # First reassign reactive sources:
       fit_stack <- try(mmrm_fit(), silent = TRUE)
       result <- if (!inherits(fit_stack, "try-error")) {
-        fit <- teal.code::chunks_get_var("fit", chunks = fit_stack)
+        fit <- fit_stack[["fit"]]
         if (input$optimizer == "automatic") {
           selected <- attr(fit$fit, "optimizer")
           paste("Optimizer used:", selected)
@@ -1397,13 +1369,10 @@ srv_mmrm <- function(id,
     })
 
     # Show R code once button is pressed.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(arm_var, paramcd, id_var, visit_var, cov_var, aval_var)),
-      modal_title = "R Code for the Current MMRM Analysis",
-      code_header = label,
-      disable_buttons = disable_r_code
+      verbatim_content = reactive(teal.code::get_code(all_code())),
+      title = "R Code for the Current MMRM Analysis"
     )
 
     ### REPORTER

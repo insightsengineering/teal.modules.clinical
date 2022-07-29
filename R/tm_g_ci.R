@@ -404,7 +404,7 @@ srv_g_ci <- function(id, # nolint
 
     plot_q <- shiny::reactive({
       validate_data()
-      template_g_ci(
+      list_calls <- template_g_ci(
         dataname = "ANL",
         x_var = merged_data()$columns_source$x_var,
         y_var = merged_data()$columns_source$y_var,
@@ -417,14 +417,14 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-      eval_code(initial_q(), list_calls(), name = "plot_call")
+      eval_code(initial_q(), list_calls, name = "plot_call")
     })
 
-    plot_r <- shiny::reactive(eval_call()[["gg"]])
+    plot_r <- shiny::reactive(plot_q()[["gg"]])
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(eval_call())),
+      verbatim_content = reactive(teal.code::get_code(plot_q())),
       title = label
     )
 
@@ -449,7 +449,7 @@ srv_g_ci <- function(id, # nolint
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(eval_call()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
