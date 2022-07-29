@@ -655,7 +655,7 @@ ui_t_coxreg <- function(id, ...) {
               ns("pval_method"),
               label = shiny::p(
                 "p-value method for",
-                shiny::span(style = "color:darkblue", "Coxph"),
+                shiny::span(class = "text-primary", "Coxph"),
                 "(Hazard Ratio)"
               ),
               choices = c("wald", "likelihood"),
@@ -666,7 +666,7 @@ ui_t_coxreg <- function(id, ...) {
             ns("ties"),
             label = shiny::p(
               "Ties for ",
-              shiny::span(style = "color:darkblue", "Coxph"),
+              shiny::span(class = "text-primary", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),
@@ -677,7 +677,7 @@ ui_t_coxreg <- function(id, ...) {
             inputId = ns("conf_level"),
             label = shiny::p(
               "Confidence level for ",
-              shiny::span(style = "color:darkblue", "Coxph"),
+              shiny::span(class = "text-primary", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),

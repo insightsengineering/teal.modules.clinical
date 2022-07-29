@@ -586,204 +586,205 @@ ui_mmrm <- function(id, ...) {
     a$aval_var
   )
 
-  teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(
-      shiny::textOutput(ns("null_input_msg")),
-      shiny::h3(shiny::textOutput(ns("mmrm_title"))),
-      teal.widgets::table_with_settings_ui(ns("mmrm_table")),
-      teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
+  shiny::tagList(
+    shiny::singleton(
+      shiny::tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
-    encoding = shiny::div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
-      shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Model Settings",
-          teal.transform::data_extract_ui(
-            id = ns("aval_var"),
-            label = "Analysis Variable",
-            data_extract_spec = a$aval_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("paramcd"),
-            label = "Select Endpoint",
-            data_extract_spec = a$paramcd,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("visit_var"),
-            label = "Visit Variable",
-            data_extract_spec = a$visit_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("cov_var"),
-            label = "Covariates",
-            data_extract_spec = a$cov_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          shinyjs::hidden(
-            teal.transform::data_extract_ui(
-              id = ns("split_covariates"),
-              label = "Split Covariates",
-              data_extract_spec = a$split_covariates,
-              is_single_dataset = is_single_dataset_value
-            )
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("arm_var"),
-            label = "Select Treatment Variable",
-            data_extract_spec = a$arm_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
-          shinyjs::hidden(
-            shiny::helpText(
-              id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
-            )
-          ),
-          shinyjs::hidden(
-            shiny::checkboxInput(
-              ns("combine_comp_arms"),
-              "Combine all comparison groups?",
-              value = FALSE
-            )
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("id_var"),
-            label = "Subject Identifier",
-            data_extract_spec = a$id_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          shiny::selectInput(
-            ns("weights_emmeans"),
-            "Weights for LS means",
-            choices = c("proportional", "equal"),
-            selected = "proportional",
-            multiple = FALSE
-          ),
-          shiny::selectInput(
-            ns("cor_struct"),
-            "Correlation Structure",
-            choices = c("unstructured"),
-            selected = "unstructured",
-            multiple = FALSE
-          ),
-          teal.widgets::optionalSelectInput(
-            ns("conf_level"),
-            "Confidence Level",
-            a$conf_level$choices,
-            a$conf_level$selected,
-            multiple = FALSE,
-            fixed = a$conf_level$fixed
-          ),
-          shiny::selectInput(
-            ns("optimizer"),
-            "Optimization Algorithm",
-            choices = c(
-              "automatic",
-              "L-BFGS-B",
-              "BFGS",
-              "CG",
-              "nlminb"
-            ),
-            selected = NULL,
-            multiple = FALSE
-          ),
-          # Additional option for "automatic" optimizer.
-          shiny::checkboxInput(
-            ns("parallel"),
-            "Parallel Computing",
-            value = TRUE
-          ),
-          # Show here which automatic optimizer was used in the end.
-          shiny::textOutput(ns("optimizer_selected")),
-          collapsed = FALSE # Start with having this panel opened.
-        )
+    teal.widgets::standard_layout(
+      output = teal.widgets::white_small_well(
+        shiny::textOutput(ns("null_input_msg")),
+        shiny::h3(shiny::textOutput(ns("mmrm_title"))),
+        teal.widgets::table_with_settings_ui(ns("mmrm_table")),
+        teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
       ),
-      shiny::tags$style(".btn.disabled { color: grey; background-color: white; }"),
-      shiny::actionButton(
-        ns("button_start"),
-        "Fit Model",
-        icon = shiny::icon("calculator"),
-        width = "100%",
-        class = "btn action-button",
-        style = "color: black; background-color: orange;"
-      ),
-      shiny::br(),
-      shiny::br(),
-      shiny::radioButtons(
-        ns("output_function"),
-        "Output Type",
-        choices = c(
-          "LS means table" = "t_mmrm_lsmeans",
-          "LS means plots" = "g_mmrm_lsmeans",
-          "Covariance estimate" = "t_mmrm_cov",
-          "Fixed effects" = "t_mmrm_fixed",
-          "Fit statistics" = "t_mmrm_diagnostic",
-          "Diagnostic plots" = "g_mmrm_diagnostic"
-        ),
-        selected = "t_mmrm_lsmeans"
-      ),
-      shiny::conditionalPanel(
-        condition = paste0(
-          "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
-          "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
-          "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
-        ),
+      encoding = shiny::div(
+        ### Reporter
+        teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+        ###
+        shiny::tags$label("Encodings", class = "text-primary"),
+        teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
-            "Output Settings",
-            # Additional option for LS means table.
+            "Model Settings",
+            teal.transform::data_extract_ui(
+              id = ns("aval_var"),
+              label = "Analysis Variable",
+              data_extract_spec = a$aval_var,
+              is_single_dataset = is_single_dataset_value
+            ),
+            teal.transform::data_extract_ui(
+              id = ns("paramcd"),
+              label = "Select Endpoint",
+              data_extract_spec = a$paramcd,
+              is_single_dataset = is_single_dataset_value
+            ),
+            teal.transform::data_extract_ui(
+              id = ns("visit_var"),
+              label = "Visit Variable",
+              data_extract_spec = a$visit_var,
+              is_single_dataset = is_single_dataset_value
+            ),
+            teal.transform::data_extract_ui(
+              id = ns("cov_var"),
+              label = "Covariates",
+              data_extract_spec = a$cov_var,
+              is_single_dataset = is_single_dataset_value
+            ),
+            shinyjs::hidden(
+              teal.transform::data_extract_ui(
+                id = ns("split_covariates"),
+                label = "Split Covariates",
+                data_extract_spec = a$split_covariates,
+                is_single_dataset = is_single_dataset_value
+              )
+            ),
+            teal.transform::data_extract_ui(
+              id = ns("arm_var"),
+              label = "Select Treatment Variable",
+              data_extract_spec = a$arm_var,
+              is_single_dataset = is_single_dataset_value
+            ),
+            shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
+            shinyjs::hidden(
+              shiny::helpText(
+                id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
+              )
+            ),
+            shinyjs::hidden(
+              shiny::checkboxInput(
+                ns("combine_comp_arms"),
+                "Combine all comparison groups?",
+                value = FALSE
+              )
+            ),
+            teal.transform::data_extract_ui(
+              id = ns("id_var"),
+              label = "Subject Identifier",
+              data_extract_spec = a$id_var,
+              is_single_dataset = is_single_dataset_value
+            ),
             shiny::selectInput(
-              ns("t_mmrm_lsmeans_show_relative"),
-              "Show Relative Change",
-              choices = c("reduction", "increase", "none"),
-              selected = "reduction",
+              ns("weights_emmeans"),
+              "Weights for LS means",
+              choices = c("proportional", "equal"),
+              selected = "proportional",
               multiple = FALSE
             ),
-            shiny::checkboxGroupInput(
-              ns("g_mmrm_lsmeans_select"),
-              "LS means plots",
+            shiny::selectInput(
+              ns("cor_struct"),
+              "Correlation Structure",
+              choices = c("unstructured"),
+              selected = "unstructured",
+              multiple = FALSE
+            ),
+            teal.widgets::optionalSelectInput(
+              ns("conf_level"),
+              "Confidence Level",
+              a$conf_level$choices,
+              a$conf_level$selected,
+              multiple = FALSE,
+              fixed = a$conf_level$fixed
+            ),
+            shiny::selectInput(
+              ns("optimizer"),
+              "Optimization Algorithm",
               choices = c(
-                "Estimates" = "estimates",
-                "Contrasts" = "contrasts"
+                "automatic",
+                "L-BFGS-B",
+                "BFGS",
+                "CG",
+                "nlminb"
               ),
-              selected = c("estimates", "contrasts"),
-              inline = TRUE
+              selected = NULL,
+              multiple = FALSE
             ),
-            shiny::sliderInput(
-              ns("g_mmrm_lsmeans_width"),
-              "CI bar width",
-              min = 0.1,
-              max = 1,
-              value = 0.6
-            ),
+            # Additional option for "automatic" optimizer.
             shiny::checkboxInput(
-              ns("g_mmrm_lsmeans_contrasts_show_pval"),
-              "Show contrasts p-values",
-              value = FALSE
+              ns("parallel"),
+              "Parallel Computing",
+              value = TRUE
             ),
-            # Additional options for diagnostic plots.
-            shiny::radioButtons(
-              ns("g_mmrm_diagnostic_type"),
-              "Diagnostic plot type",
-              choices = c(
-                "Fitted vs. Residuals" = "fit-residual",
-                "Normal Q-Q Plot of Residuals" = "q-q-residual"
+            # Show here which automatic optimizer was used in the end.
+            shiny::textOutput(ns("optimizer_selected")),
+            collapsed = FALSE # Start with having this panel opened.
+          )
+        ),
+        shiny::actionButton(
+          ns("button_start"),
+          "Fit Model",
+          icon = shiny::icon("calculator"),
+          width = "100%",
+          class = "btn action-button text-dark bg-orange mb-4"
+        ),
+        shiny::radioButtons(
+          ns("output_function"),
+          "Output Type",
+          choices = c(
+            "LS means table" = "t_mmrm_lsmeans",
+            "LS means plots" = "g_mmrm_lsmeans",
+            "Covariance estimate" = "t_mmrm_cov",
+            "Fixed effects" = "t_mmrm_fixed",
+            "Fit statistics" = "t_mmrm_diagnostic",
+            "Diagnostic plots" = "g_mmrm_diagnostic"
+          ),
+          selected = "t_mmrm_lsmeans"
+        ),
+        shiny::conditionalPanel(
+          condition = paste0(
+            "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
+            "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
+            "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
+          ),
+          teal.widgets::panel_group(
+            teal.widgets::panel_item(
+              "Output Settings",
+              # Additional option for LS means table.
+              shiny::selectInput(
+                ns("t_mmrm_lsmeans_show_relative"),
+                "Show Relative Change",
+                choices = c("reduction", "increase", "none"),
+                selected = "reduction",
+                multiple = FALSE
               ),
-              selected = NULL
-            ),
-            shiny::sliderInput(
-              ns("g_mmrm_diagnostic_z_threshold"),
-              "Label observations above this threshold",
-              min = 0.1,
-              max = 10,
-              value = 3
+              shiny::checkboxGroupInput(
+                ns("g_mmrm_lsmeans_select"),
+                "LS means plots",
+                choices = c(
+                  "Estimates" = "estimates",
+                  "Contrasts" = "contrasts"
+                ),
+                selected = c("estimates", "contrasts"),
+                inline = TRUE
+              ),
+              shiny::sliderInput(
+                ns("g_mmrm_lsmeans_width"),
+                "CI bar width",
+                min = 0.1,
+                max = 1,
+                value = 0.6
+              ),
+              shiny::checkboxInput(
+                ns("g_mmrm_lsmeans_contrasts_show_pval"),
+                "Show contrasts p-values",
+                value = FALSE
+              ),
+              # Additional options for diagnostic plots.
+              shiny::radioButtons(
+                ns("g_mmrm_diagnostic_type"),
+                "Diagnostic plot type",
+                choices = c(
+                  "Fitted vs. Residuals" = "fit-residual",
+                  "Normal Q-Q Plot of Residuals" = "q-q-residual"
+                ),
+                selected = NULL
+              ),
+              shiny::sliderInput(
+                ns("g_mmrm_diagnostic_z_threshold"),
+                "Label observations above this threshold",
+                min = 0.1,
+                max = 10,
+                value = 3
+              )
             )
           )
         )
