@@ -212,96 +212,52 @@ ui_g_barchart_simple <- function(id, ...) {
       ),
       encoding = shiny::div(
         ### Reporter
-        shiny::tags$div(
-          teal.reporter::add_card_button_ui(ns("addReportCard")),
-          teal.reporter::download_report_button_ui(ns("downloadButton")),
-          teal.reporter::reset_report_button_ui(ns("resetButton"))
-        ),
-        shiny::tags$br(),
-        ###
-        shiny::tags$label("Encodings", class = "text-primary"),
-        teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
-        if (!is.null(args$x)) {
-          teal.transform::data_extract_ui(
-            id = ns("x"),
-            label = "X variable",
-            data_extract_spec = args$x,
-            is_single_dataset = is_single_dataset_value
-          )
-        },
-        if (!is.null(args$fill)) {
-          teal.transform::data_extract_ui(
-            id = ns("fill"),
-            label = "Fill",
-            data_extract_spec = args$fill,
-            is_single_dataset = is_single_dataset_value
-          )
-        },
-        if (!is.null(args$x_facet)) {
-          teal.transform::data_extract_ui(
-            id = ns("x_facet"),
-            label = "Column facetting variable",
-            data_extract_spec = args$x_facet,
-            is_single_dataset = is_single_dataset_value
-          )
-        },
-        if (!is.null(args$y_facet)) {
-          teal.transform::data_extract_ui(
-            id = ns("y_facet"),
-            label = "Row facetting variable",
-            data_extract_spec = args$y_facet,
-            is_single_dataset = is_single_dataset_value
-          )
-        },
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Additional plot settings",
-            if (!is.null(args$fill)) {
-              shiny::radioButtons(
-                inputId = ns("barlayout"),
-                label = "Covariate Bar Layout",
-                choices = c("Side by side" = "side_by_side", "Stacked" = "stacked"),
-                selected = if (args$plot_options$stacked) "stacked" else "side_by_side",
-                inline = TRUE
-              )
-            },
-            shiny::checkboxInput(
-              ns("label_bars"),
-              "Label bars",
-              value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
-            ),
-            shiny::checkboxInput(
-              ns("rotate_bar_labels"),
-              "Rotate bar labels",
-              value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
-            ),
-            shiny::checkboxInput(
-              ns("rotate_x_label"),
-              "Rotate x label",
-              value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
-            ),
-            shiny::checkboxInput(
-              ns("rotate_y_label"),
-              "Rotate y label",
-              value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
-            ),
-            shiny::checkboxInput(
-              ns("flip_axis"),
-              "Flip axes",
-              value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
-            ),
-            shiny::checkboxInput(
-              ns("show_n"),
-              "Show n",
-              value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
-            ),
-            shiny::sliderInput(
-              inputId = ns("expand_y_range"),
-              label = "Y-axis range expansion (fraction on top)",
-              min = 0,
-              max = 1,
-              value = 0.5,
-              step = 0.1
+      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+      ###
+      shiny::tags$label("Encodings", class = "text-primary"),
+      teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
+      if (!is.null(args$x)) {
+        teal.transform::data_extract_ui(
+          id = ns("x"),
+          label = "X variable",
+          data_extract_spec = args$x,
+          is_single_dataset = is_single_dataset_value
+        )
+      },
+      if (!is.null(args$fill)) {
+        teal.transform::data_extract_ui(
+          id = ns("fill"),
+          label = "Fill",
+          data_extract_spec = args$fill,
+          is_single_dataset = is_single_dataset_value
+        )
+      },
+      if (!is.null(args$x_facet)) {
+        teal.transform::data_extract_ui(
+          id = ns("x_facet"),
+          label = "Column facetting variable",
+          data_extract_spec = args$x_facet,
+          is_single_dataset = is_single_dataset_value
+        )
+      },
+      if (!is.null(args$y_facet)) {
+        teal.transform::data_extract_ui(
+          id = ns("y_facet"),
+          label = "Row facetting variable",
+          data_extract_spec = args$y_facet,
+          is_single_dataset = is_single_dataset_value
+        )
+      },
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
+          "Additional plot settings",
+          if (!is.null(args$fill)) {
+            shiny::radioButtons(
+              inputId = ns("barlayout"),
+              label = "Covariate Bar Layout",
+              choices = c("Side by side" = "side_by_side", "Stacked" = "stacked"),
+              selected = if (args$plot_options$stacked) "stacked" else "side_by_side",
+              inline = TRUE
             )
           )
         )
@@ -541,7 +497,6 @@ srv_g_barchart_simple <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Barchart Plot")
         card$append_text("Barchart Plot", "header2")
-        card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
@@ -549,19 +504,15 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          chunks = teal.code::get_chunks_object(parent_idx = 2L),
           datasets = datasets,
           title = "",
           description = ""
         ), collapse = "\n"))
         card
       }
-
-      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-      teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
   })

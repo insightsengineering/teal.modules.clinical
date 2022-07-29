@@ -599,10 +599,145 @@ ui_mmrm <- function(id, ...) {
       ),
       encoding = shiny::div(
         ### Reporter
-        shiny::tags$div(
-          teal.reporter::add_card_button_ui(ns("addReportCard")),
-          teal.reporter::download_report_button_ui(ns("downloadButton")),
-          teal.reporter::reset_report_button_ui(ns("resetButton"))
+      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+      ###
+      shiny::tags$label("Encodings", class = "text-primary"),
+      teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
+          "Model Settings",
+          teal.transform::data_extract_ui(
+            id = ns("aval_var"),
+            label = "Analysis Variable",
+            data_extract_spec = a$aval_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("paramcd"),
+            label = "Select Endpoint",
+            data_extract_spec = a$paramcd,
+            is_single_dataset = is_single_dataset_value
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("visit_var"),
+            label = "Visit Variable",
+            data_extract_spec = a$visit_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("cov_var"),
+            label = "Covariates",
+            data_extract_spec = a$cov_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          shinyjs::hidden(
+            teal.transform::data_extract_ui(
+              id = ns("split_covariates"),
+              label = "Split Covariates",
+              data_extract_spec = a$split_covariates,
+              is_single_dataset = is_single_dataset_value
+            )
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("arm_var"),
+            label = "Select Treatment Variable",
+            data_extract_spec = a$arm_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
+          shinyjs::hidden(
+            shiny::helpText(
+              id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
+            )
+          ),
+          shinyjs::hidden(
+            shiny::checkboxInput(
+              ns("combine_comp_arms"),
+              "Combine all comparison groups?",
+              value = FALSE
+            )
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("id_var"),
+            label = "Subject Identifier",
+            data_extract_spec = a$id_var,
+            is_single_dataset = is_single_dataset_value
+          ),
+          shiny::selectInput(
+            ns("weights_emmeans"),
+            "Weights for LS means",
+            choices = c("proportional", "equal"),
+            selected = "proportional",
+            multiple = FALSE
+          ),
+          shiny::selectInput(
+            ns("cor_struct"),
+            "Correlation Structure",
+            choices = c("unstructured"),
+            selected = "unstructured",
+            multiple = FALSE
+          ),
+          teal.widgets::optionalSelectInput(
+            ns("conf_level"),
+            "Confidence Level",
+            a$conf_level$choices,
+            a$conf_level$selected,
+            multiple = FALSE,
+            fixed = a$conf_level$fixed
+          ),
+          shiny::selectInput(
+            ns("optimizer"),
+            "Optimization Algorithm",
+            choices = c(
+              "automatic",
+              "L-BFGS-B",
+              "BFGS",
+              "CG",
+              "nlminb"
+            ),
+            selected = NULL,
+            multiple = FALSE
+          ),
+          # Additional option for "automatic" optimizer.
+          shiny::checkboxInput(
+            ns("parallel"),
+            "Parallel Computing",
+            value = TRUE
+          ),
+          # Show here which automatic optimizer was used in the end.
+          shiny::textOutput(ns("optimizer_selected")),
+          collapsed = FALSE # Start with having this panel opened.
+        )
+      ),
+      shiny::tags$style(".btn.disabled { color: grey; background-color: white; }"),
+      shiny::actionButton(
+        ns("button_start"),
+        "Fit Model",
+        icon = shiny::icon("calculator"),
+        width = "100%",
+        class = "btn action-button",
+        style = "color: black; background-color: orange;"
+      ),
+      shiny::br(),
+      shiny::br(),
+      shiny::radioButtons(
+        ns("output_function"),
+        "Output Type",
+        choices = c(
+          "LS means table" = "t_mmrm_lsmeans",
+          "LS means plots" = "g_mmrm_lsmeans",
+          "Covariance estimate" = "t_mmrm_cov",
+          "Fixed effects" = "t_mmrm_fixed",
+          "Fit statistics" = "t_mmrm_diagnostic",
+          "Diagnostic plots" = "g_mmrm_diagnostic"
+        ),
+        selected = "t_mmrm_lsmeans"
+      ),
+      shiny::conditionalPanel(
+        condition = paste0(
+          "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
+          "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
+          "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
         ),
         shiny::tags$br(),
         ###
@@ -1428,7 +1563,6 @@ srv_mmrm <- function(id,
           ),
           "header3"
         )
-        card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
@@ -1442,19 +1576,15 @@ srv_mmrm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_text("Show R Code", "header3")
         card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 1L),
+          chunks = teal.code::get_chunks_object(parent_idx = 2L),
           datasets = datasets,
           title = "",
           description = ""
         ), collapse = "\n"))
         card
       }
-
-      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
-      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
-      teal.reporter::reset_report_button_srv("resetButton", reporter)
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
   })
