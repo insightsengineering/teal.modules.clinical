@@ -15,3 +15,12 @@
 .max-h-250 {
   max-height: 250px
 }
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.btn.disabled {
+  color: grey;
+  background-color: white;
+}

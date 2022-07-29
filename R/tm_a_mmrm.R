@@ -709,16 +709,13 @@ ui_mmrm <- function(id, ...) {
             collapsed = FALSE # Start with having this panel opened.
           )
         ),
-        shiny::tags$style(".btn.disabled { color: grey; background-color: white; }"),
         shiny::actionButton(
           ns("button_start"),
           "Fit Model",
           icon = shiny::icon("calculator"),
           width = "100%",
-          class = "btn action-button text-dark bg-orange"
+          class = "btn action-button text-dark bg-orange mb-4"
         ),
-        shiny::br(),
-        shiny::br(),
         shiny::radioButtons(
           ns("output_function"),
           "Output Type",
