@@ -451,7 +451,6 @@ ui_g_ipp <- function(id, ...) {
 
 srv_g_ipp <- function(id,
                       data,
-                      datasets,
                       reporter,
                       dataname,
                       parentname,
@@ -467,13 +466,12 @@ srv_g_ipp <- function(id,
                       label,
                       ggplot2_args,
                       filter_panel_api) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         aval_var = aval_var,
@@ -483,22 +481,22 @@ srv_g_ipp <- function(id,
         visit_var = visit_var,
         base_var = base_var
       ),
-      merge_function = "dplyr::inner_join"
+      merge_function = "dplyr::inner_join",
+      join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var, id_var = id_var),
       anl_name = "ANL_ADSL"
     )
-
 
     anl_merged_q <- reactive({
       q <- new_quosure(env = data, code = attr(data, "code"))
       q1 <- eval_code(q, as.expression(anl_merged()$expr))
       eval_code(q1, as.expression(adsl_merged()$expr))
     })
-
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({

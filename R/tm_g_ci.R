@@ -356,7 +356,6 @@ ui_g_ci <- function(id, ...) { # nolint
 
 srv_g_ci <- function(id, # nolint
                      data,
-                     datasets,
                      reporter,
                      x_var,
                      y_var,
@@ -403,7 +402,8 @@ srv_g_ci <- function(id, # nolint
       ))
     })
 
-    list_calls <- shiny::reactive(
+    plot_q <- shiny::reactive({
+      validate_data()
       template_g_ci(
         dataname = "ANL",
         x_var = merged_data()$columns_source$x_var,
@@ -417,10 +417,6 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-    )
-
-    eval_call <- shiny::reactive({
-      validate_data()
       eval_code(initial_q(), list_calls(), name = "plot_call")
     })
 

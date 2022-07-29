@@ -455,7 +455,6 @@ ui_g_forest_rsp <- function(id, ...) {
 
 srv_g_forest_rsp <- function(id,
                              data,
-                             datasets,
                              reporter,
                              dataname,
                              parentname,
@@ -481,8 +480,7 @@ srv_g_forest_rsp <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte"
     )

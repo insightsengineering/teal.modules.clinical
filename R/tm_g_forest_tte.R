@@ -446,7 +446,6 @@ ui_g_forest_tte <- function(id, ...) {
 
 srv_g_forest_tte <- function(id,
                              data,
-                             datasets,
                              reporter,
                              dataname,
                              parentname,
@@ -471,8 +470,7 @@ srv_g_forest_tte <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_g_forest_tte"
     )
@@ -491,14 +489,16 @@ srv_g_forest_tte <- function(id,
       join_keys = attr(data, "join_keys")
     )
 
-    anl_merged <- teal.transform::data_merge_srv(
+    anl_merged <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
-      datasets = datasets,
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
     )

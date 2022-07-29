@@ -60,30 +60,35 @@ arm_ref_comp_observer <- function(session,
                                   id_ref = "Ref",
                                   id_comp = "Comp",
                                   id_arm_var,
-                                  datasets,
-                                  dataname = "ADSL",
+                                  data,
                                   arm_ref_comp,
                                   module,
                                   on_off = shiny::reactive(TRUE),
                                   input_id = "buckets",
                                   output_id = "arms_buckets") {
   if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
-    stopifnot(
-      all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
-    )
+    # if server_args are resolved before being passed to the module how it could be possible for arm_ref to be delayed?
+    stop("delayed object") # temporary stop to notify that delayed_data somehow got to this place
+    #stopifnot(
+    #  all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
+    #)
     # when a delayed object is used for arm_ref_comp, the entire FilteredData
     # object must be passed to resolve it
-    arm_ref_comp <- teal.transform::resolve_delayed(arm_ref_comp, datasets)
+    #arm_ref_comp <- teal.transform::resolve_delayed(arm_ref_comp, datasets)
   }
-
-  df <- datasets$get_data(dataname, filtered = FALSE)
-
-  check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
 
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
   output[[output_id]] <- shiny::renderUI({
     if (!is.null(on_off()) && on_off()) {
+      df <- if (shiny::is.reactive(data)) {
+        data()
+      } else {
+        data
+      }
+
+      check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
+
       arm_var <- input[[id_arm_var]]
 
       # validations here don't produce nice UI message (it's observe and not render output) but it prevent red errors
@@ -97,7 +102,6 @@ arm_ref_comp_observer <- function(session,
       } else {
         unique(arm)
       }
-
       default_settings <- arm_ref_comp[[arm_var]]
 
       if (is.null(default_settings)) {
@@ -150,29 +154,17 @@ check_arm_ref_comp <- function(x, df_to_check, module) {
     }
 
 
-    Map(function(xi, var) {
-      if (!is.list(xi)) {
-        stop(
-          msg, "definition for Treatment variable ",
-          var, " list element needs to be lists with ref and comp elements"
-        )
+    Map(
+      x, vars,
+      f = function(xi, var) {
+        if (!checkmate::check_list(xi) || !setequal(names(xi), c("comp", "ref"))) {
+          stop(
+            msg, "definition for Treatment variable ",
+            var, " list element needs to be lists with ref and comp elements"
+          )
+        }
       }
-
-      rc <- names(xi)
-      if (is.null(rc) || !identical(sort(rc), c("comp", "ref"))) {
-        stop(msg, "definition for Treatment variable ", var, " nested list needs to have the elements ref and comp")
-      }
-
-
-      arm_levels <- unlist(xi)
-
-      if (!all(arm_levels %in% df_to_check[[var]])) {
-        stop(
-          msg, "definition for Treatment variable ",
-          var, " refers to treatment levels that do not exist in the data"
-        )
-      }
-    }, x, vars)
+    )
   }
 
   invisible(TRUE)
