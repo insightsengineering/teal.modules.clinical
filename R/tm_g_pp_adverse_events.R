@@ -445,19 +445,21 @@ srv_g_adverse_events <- function(id,
     # Adverse events tab ----
     anl_merged <- teal.transform::merge_expression_module(
       datasets = data,
-      data_extract = Filter(length, list(
-        aeterm = aeterm,
-        tox_grade = tox_grade,
-        causality = causality,
-        outcome = outcome,
-        action = action,
-        time = time,
-        decod = decod
-      )),
+      data_extract = Filter(Negate(is.null),
+        list(
+          aeterm = aeterm,
+          tox_grade = tox_grade,
+          causality = causality,
+          outcome = outcome,
+          action = action,
+          time = time,
+          decod = decod
+        )
+      ),
       join_keys = attr(data, "join_keys")
     )
 
-    anl_merged_q <- reactive(eval_code(new_quosure(data, code = attr(data, "code")), as.expression(anl_merged()$expr)))
+    anl_merged_q <- reactive(eval_code(new_quosure(data), as.expression(anl_merged()$expr)))
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))

@@ -512,7 +512,7 @@ srv_g_forest_rsp <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data, code = attr(data, "code"))
+      q <- new_quosure(env = data)
       q1 <- eval_code(q, as.expression(anl_merged()$expr))
       eval_code(q1, as.expression(adsl_merged()$expr))
     })

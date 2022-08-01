@@ -343,18 +343,18 @@ srv_g_barchart_simple <- function(id,
       join_keys = attr(data, "join_keys")
     )
 
-    data_q <- shiny::reactive({
+    merged_data_q <- shiny::reactive({
       shiny::validate({
         shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
       })
-      quo <- new_quosure(env = data, code = attr(data, "code"))
+      quo <- new_quosure(env = data)
       quo <- eval_code(quo, as.expression(merged_data()$expr))
       teal::validate_has_data(quo[["ANL"]], 2)
       quo
     })
 
     count_chunk <- shiny::reactive({
-      quo <- data_q()
+      quo <- merged_data_q()
       groupby_vars <- r_groupby_vars()
 
       # count

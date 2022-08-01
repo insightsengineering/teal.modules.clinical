@@ -520,9 +520,7 @@ srv_g_lineplot <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_merged_q <- reactive({
-      eval_code(new_quosure(data, code = attr(data, "code")), anl_merged()$expr)
-    })
+    anl_merged_q <- reactive(eval_code(new_quosure(data), anl_merged()$expr))
 
     validate_checks <- shiny::reactive({
       adsl_filtered <- anl_merged_q()[[parentname]]

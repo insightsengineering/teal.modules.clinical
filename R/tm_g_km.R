@@ -632,7 +632,7 @@ srv_g_km <- function(id,
 
     anl_merged_q <- reactive({
       eval_code(
-        teal.code::new_quosure(env = data, code = attr(data, "code")),
+        teal.code::new_quosure(data),
         code = as.expression(anl_merged()$expr)
       )
     })

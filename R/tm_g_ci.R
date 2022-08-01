@@ -367,18 +367,19 @@ srv_g_ci <- function(id, # nolint
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-    initial_q <- reactive(
-      eval_code(
-        object = new_quosure(env = data),
-        code = as.expression(merged_data()$expr),
-        name = "merge expression"
-      )
-    )
 
     merged_data <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       join_keys = attr(data, "join_keys")
+    )
+
+    merged_data_q <- reactive(
+      eval_code(
+        object = new_quosure(data),
+        code = as.expression(merged_data()$expr),
+        name = "merge expression"
+      )
     )
 
     validate_data <- shiny::reactive({
@@ -394,7 +395,7 @@ srv_g_ci <- function(id, # nolint
           "Select an analyzed value (y axis)."
         )
       )
-      teal::validate_has_data(initial_q()[["ANL"]], min_nrow = 2)
+      teal::validate_has_data(merged_data_q()[["ANL"]], min_nrow = 2)
 
       shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
@@ -417,7 +418,7 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-      eval_code(initial_q(), list_calls, name = "plot_call")
+      eval_code(merged_data_q(), list_calls, name = "plot_call")
     })
 
     plot_r <- shiny::reactive(output_q()[["gg"]])

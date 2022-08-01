@@ -861,7 +861,7 @@ srv_mmrm <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q1 <- new_quosure(data, code = attr(data, "code"))
+      q1 <- new_quosure(data)
       q2 <- eval_code(q1, as.expression(anl_merged()$expr))
       eval_code(q2, as.expression(adsl_merged()$expr))
     })
