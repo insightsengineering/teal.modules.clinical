@@ -799,8 +799,8 @@ ui_mmrm <- function(id, ...) {
 #' @noRd
 srv_mmrm <- function(id,
                      data,
-                     datasets,
                      reporter,
+                     filter_panel_api,
                      dataname,
                      parentname,
                      arm_var,
@@ -839,8 +839,8 @@ srv_mmrm <- function(id,
       )
     })
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -849,12 +849,14 @@ srv_mmrm <- function(id,
         split_covariates = split_covariates,
         aval_var = aval_var
       ),
+      join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var),
+      join_keys = attr(data, "join_keys"),
       anl_name = "ANL_ADSL"
     )
 
@@ -1027,8 +1029,8 @@ srv_mmrm <- function(id,
       )
       names(encoding_inputs) <- sync_inputs
 
-      adsl_filtered <- datasets$get_data("ADSL", filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- anl_merged_q()[["ADSL"]]
+      anl_filtered <- anl_merged_q()[[dataname]]
 
       shiny::validate(
         shiny::need(
@@ -1389,7 +1391,7 @@ srv_mmrm <- function(id,
           ),
           "header3"
         )
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_Api$get_filter_state())
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
           card$append_table(table_r())
@@ -1402,12 +1404,7 @@ srv_mmrm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_code()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

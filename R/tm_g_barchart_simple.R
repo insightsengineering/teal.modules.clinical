@@ -311,14 +311,14 @@ ui_g_barchart_simple <- function(id, ...) {
 srv_g_barchart_simple <- function(id,
                                   data,
                                   reporter,
+                                  filter_panel_api,
                                   x,
                                   fill,
                                   x_facet,
                                   y_facet,
                                   plot_height,
                                   plot_width,
-                                  ggplot2_args,
-                                  filter_panel_api) {
+                                  ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
@@ -403,7 +403,7 @@ srv_g_barchart_simple <- function(id,
       )
     })
 
-    plot_chunk <- shiny::reactive({
+    output_q <- shiny::reactive({
       quo1 <- count_chunk()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
@@ -456,9 +456,9 @@ srv_g_barchart_simple <- function(id,
       eval_code(quo3, code = quote(print(plot)), name = "print_plot_call")
     })
 
-    plot_r <- shiny::reactive(plot_chunk()[["plot"]])
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
-    output$table <- shiny::renderTable(plot_chunk()[["counts"]])
+    output$table <- shiny::renderTable(output_q()[["counts"]])
 
     # reactive vars
     # NULL: not present in UI, vs character(0): no selection
@@ -500,7 +500,7 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(plot_chunk())),
+      verbatim_content = reactive(teal.code::get_code(output_q())),
       title = "Bar Chart"
     )
 
@@ -517,7 +517,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(plot_chunk()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

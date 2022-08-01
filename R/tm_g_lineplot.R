@@ -171,8 +171,8 @@ template_g_lineplot <- function(dataname = "ANL",
     graph_list,
     substitute(
       expr = {
-        result <- plot_call
-        result
+        plot <- plot_call
+        plot
       },
       env = list(plot_call = plot_call)
     )
@@ -482,7 +482,7 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -493,8 +493,9 @@ ui_g_lineplot <- function(id, ...) {
 #' @noRd
 #'
 srv_g_lineplot <- function(id,
-                           datasets,
+                           data,
                            reporter,
+                           filter_panel_api,
                            dataname,
                            parentname,
                            paramcd,
@@ -507,21 +508,25 @@ srv_g_lineplot <- function(id,
                            plot_height,
                            plot_width,
                            ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
+      join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
+    anl_merged_q <- reactive({
+      eval_code(new_quosure(data, code = attr(data, "code")), anl_merged()$expr)
+    })
+
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- anl_merged_q()[[parentname]]
+      anl_filtered <- anl_merged_q()[[dataname]]
 
       anl_m <- anl_merged()
       input_strata <- as.vector(anl_m$columns_source$strata)
@@ -564,21 +569,18 @@ srv_g_lineplot <- function(id,
       NULL
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
 
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- q1[["ANL"]]
       teal::validate_has_data(ANL, 2)
 
       whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
       input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
       input_interval <- input$interval
-      input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
+      input_param <- as.character(unique(ANL[[as.vector(anl_m$columns_source$param)]]))
 
       my_calls <- template_g_lineplot(
         dataname = "ANL",
@@ -598,13 +600,10 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      eval_code(q1, as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-    })
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -614,13 +613,10 @@ srv_g_lineplot <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(strata, paramcd, y, x, y_unit, param)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -629,19 +625,14 @@ srv_g_lineplot <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Line Plot")
         card$append_text("Line Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_rcode(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

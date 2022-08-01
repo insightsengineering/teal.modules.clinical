@@ -357,14 +357,14 @@ ui_g_ci <- function(id, ...) { # nolint
 srv_g_ci <- function(id, # nolint
                      data,
                      reporter,
+                     filter_panel_api,
                      x_var,
                      y_var,
                      color,
                      label,
                      plot_height,
                      plot_width,
-                     ggplot2_args,
-                     filter_panel_api) {
+                     ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
     initial_q <- reactive(
@@ -402,7 +402,7 @@ srv_g_ci <- function(id, # nolint
       ))
     })
 
-    plot_q <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_data()
       list_calls <- template_g_ci(
         dataname = "ANL",
@@ -420,11 +420,11 @@ srv_g_ci <- function(id, # nolint
       eval_code(initial_q(), list_calls, name = "plot_call")
     })
 
-    plot_r <- shiny::reactive(plot_q()[["gg"]])
+    plot_r <- shiny::reactive(output_q()[["gg"]])
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(plot_q())),
+      verbatim_content = reactive(teal.code::get_code(output_q())),
       title = label
     )
 
@@ -449,7 +449,7 @@ srv_g_ci <- function(id, # nolint
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

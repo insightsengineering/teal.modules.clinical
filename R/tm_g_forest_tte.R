@@ -447,6 +447,7 @@ ui_g_forest_tte <- function(id, ...) {
 srv_g_forest_tte <- function(id,
                              data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              parentname,
                              arm_var,
@@ -581,7 +582,7 @@ srv_g_forest_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    plot_q <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
       q1 <- anl_merged_q()
@@ -612,7 +613,7 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive(plot_q()[["p"]])
+    plot_r <- shiny::reactive(output_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -623,7 +624,7 @@ srv_g_forest_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(plot_q())),
+      verbatim_content = reactive(teal.code::get_code(output_q())),
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
@@ -640,7 +641,7 @@ srv_g_forest_tte <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

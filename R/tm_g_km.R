@@ -585,6 +585,7 @@ ui_g_km <- function(id, ...) {
 srv_g_km <- function(id,
                      data,
                      reporter,
+                     filter_panel_api,
                      dataname,
                      parentname,
                      paramcd,
@@ -597,8 +598,7 @@ srv_g_km <- function(id,
                      label,
                      time_unit_var,
                      plot_height,
-                     plot_width,
-                     filter_panel_api) {
+                     plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
 
@@ -702,7 +702,7 @@ srv_g_km <- function(id,
       NULL
     })
 
-    plot_q <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
       q1 <- anl_merged_q()
@@ -751,7 +751,7 @@ srv_g_km <- function(id,
       eval_code(q1, as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(plot_q()[["plot"]])
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -763,7 +763,7 @@ srv_g_km <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(plot_q())),
+      verbatim_content = reactive(teal.code::get_code(output_q())),
       title = label
     )
 
@@ -781,7 +781,7 @@ srv_g_km <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(plot_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
