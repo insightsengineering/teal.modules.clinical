@@ -11,8 +11,7 @@ arm_ref_comp_observer(
   id_ref = "Ref",
   id_comp = "Comp",
   id_arm_var,
-  datasets,
-  dataname = "ADSL",
+  data,
   arm_ref_comp,
   module,
   on_off = shiny::reactive(TRUE),
@@ -33,10 +32,6 @@ arm_ref_comp_observer(
 
 \item{id_arm_var}{(\code{character}) id of Treatment variable input ui element}
 
-\item{datasets}{(\code{FilteredData}) object from the module}
-
-\item{dataname}{(\code{character}) dataset name}
-
 \item{arm_ref_comp}{(\code{unknown}) Treatment reference and compare variables provided as a
 nested list where each Treatment variable corresponds a list specifying the default levels for the
 reference and comparison treatments.}
@@ -50,6 +45,10 @@ stop the whole observer if FALSE.}
 \item{input_id}{(\code{character}) unique id that the buckets will be referenced with.}
 
 \item{output_id}{(\code{character}) name of the UI id that the output will be written to.}
+
+\item{datasets}{(\code{FilteredData}) object from the module}
+
+\item{dataname}{(\code{character}) dataset name}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
