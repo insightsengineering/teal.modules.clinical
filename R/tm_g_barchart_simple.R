@@ -337,7 +337,7 @@ srv_g_barchart_simple <- function(id,
       selectors
     })
 
-    merged_data <- teal.transform::merge_expression_srv(
+    merge_inputs <- teal.transform::merge_expression_srv(
       selector_list = reactive_select_input,
       datasets = data,
       join_keys = attr(data, "join_keys")
@@ -348,7 +348,7 @@ srv_g_barchart_simple <- function(id,
         shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
       })
       quo <- new_quosure(env = data)
-      quo <- eval_code(quo, as.expression(merged_data()$expr))
+      quo <- eval_code(quo, as.expression(merge_inputs()$expr))
       teal::validate_has_data(quo[["ANL"]], 2)
       quo
     })
@@ -395,7 +395,7 @@ srv_g_barchart_simple <- function(id,
       eval_code(
         quo3,
         teal.transform::get_anl_relabel_call(
-          columns_source = merged_data()$columns_source,
+          columns_source = merge_inputs()$columns_source,
           datasets = data,
           anl_name = "counts"
         ),
@@ -465,10 +465,10 @@ srv_g_barchart_simple <- function(id,
 
     # returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      x_name <- if (is.null(x)) NULL else as.vector(merged_data()$columns_source$x)
-      fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()$columns_source$fill)
-      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()$columns_source$x_facet)
-      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
+      x_name <- if (is.null(x)) NULL else as.vector(merge_inputs()$columns_source$x)
+      fill_name <- if (is.null(fill)) NULL else as.vector(merge_inputs()$columns_source$fill)
+      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merge_inputs()$columns_source$x_facet)
+      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merge_inputs()$columns_source$y_facet)
 
       # set to NULL when empty character
       if (identical(x_name, character(0))) x_name <- NULL
