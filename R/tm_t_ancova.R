@@ -510,7 +510,7 @@ ui_ancova <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -518,8 +518,9 @@ ui_ancova <- function(id, ...) {
 
 #' @noRd
 srv_ancova <- function(id,
-                       datasets,
+                       data,
                        reporter,
+                       filter_panel_api,
                        dataname,
                        parentname,
                        arm_var,
@@ -530,7 +531,6 @@ srv_ancova <- function(id,
                        avisit,
                        label,
                        basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
@@ -543,14 +543,13 @@ srv_ancova <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_ancova"
     )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         aval_var = aval_var,
@@ -558,19 +557,28 @@ srv_ancova <- function(id,
         avisit = avisit,
         paramcd = paramcd
       ),
-      merge_function = "dplyr::inner_join"
+      merge_function = "dplyr::inner_join",
+      join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
+      anl_name = "ANL_ADSL",
+      join_keys = attr(data, "join_keys")
     )
+
+    anl_merged_q <- reactive({
+      q <- new_quosure(env = data)
+      q1 <- eval_code(q, as.expression(anl_merged()$expr))
+      eval_code(q1, as.expression(adsl_merged()$expr))
+    })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -604,11 +612,11 @@ srv_ancova <- function(id,
       ))
       # check that there is at least one record with no missing data
       shiny::validate(shiny::need(
-        !all(is.na(anl_m$data()[[input_aval_var]])),
+        !all(is.na(q1[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- anl_m$data() %>% # nolint
+      all_NA_dataset <- q1[["ANL"]] %>% # nolint
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -642,22 +650,17 @@ srv_ancova <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_table <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
       anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
 
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- q1[["ANL"]] # nolint
       label_paramcd <- get_paramcd_label(ANL, paramcd)
       input_aval <- as.vector(anl_m$columns_source$aval_var)
-      label_aval <- if (length(input_aval) != 0) attributes(anl_m$data()[[input_aval]])$label else NULL
+      label_aval <- if (length(input_aval) != 0) attributes(q1[["ANL"]][[input_aval]])$label else NULL
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
@@ -679,14 +682,12 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      eval_code(q1, as.expression(my_calls), name = "tm_t_ancova call")
     })
 
     # Output to render.
     table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
+      output_table()[["result"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -695,13 +696,10 @@ srv_ancova <- function(id,
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, aval_var, cov_var, avisit, paramcd)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_table())),
+      title = label
     )
 
     ### REPORTER
@@ -711,19 +709,14 @@ srv_ancova <- function(id,
         card$set_name("ANCOVA")
         card$append_text("ANCOVA", "header2")
         card$append_text("Analysis of Covariance", "header3")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

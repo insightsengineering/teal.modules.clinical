@@ -839,7 +839,7 @@ srv_mmrm <- function(id,
       )
     })
 
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -853,7 +853,7 @@ srv_mmrm <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       join_keys = attr(data, "join_keys"),
@@ -862,8 +862,8 @@ srv_mmrm <- function(id,
 
     anl_merged_q <- reactive({
       q1 <- new_quosure(data)
-      q2 <- eval_code(q1, as.expression(anl_merged()$expr))
-      eval_code(q2, as.expression(adsl_merged()$expr))
+      q2 <- eval_code(q1, as.expression(anl_merge_inputs()$expr))
+      eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Initially hide the output title because there is no output yet.
@@ -897,8 +897,8 @@ srv_mmrm <- function(id,
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
 
-    shiny::observeEvent(adsl_merged()$columns_source$arm_var, {
-      arm_var <- as.vector(adsl_merged()$columns_source$arm_var)
+    shiny::observeEvent(adsl_merge_inputs()$columns_source$arm_var, {
+      arm_var <- as.vector(adsl_merge_inputs()$columns_source$arm_var)
       if (length(arm_var) == 0) {
         shinyjs::hide("arms_buckets")
         shinyjs::hide("help_text")
@@ -1108,20 +1108,20 @@ srv_mmrm <- function(id,
       anl_filtered <- anl_merged_q()[["ANL"]]
       anl_data <- anl_merged_q()[["ANL"]]
 
-      anl_m <- anl_merged()
+      anl_m_inputs <- anl_merge_inputs()
       if (!is.null(input[[extract_input("arm_var", parentname)]])) {
-        input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+        input_arm_var <- as.vector(anl_m_inputs$columns_source$arm_var)
       } else {
         input_arm_var <- NULL
       }
-      input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+      input_visit_var <- as.vector(anl_m_inputs$columns_source$visit_var)
 
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
+      input_aval_var <- as.vector(anl_m_inputs$columns_source$aval_var)
+      input_id_var <- as.vector(anl_m_inputs$columns_source$id_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
       # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
-      input_cov_var <- as.vector(anl_m$columns_source$split_covariates)
+      input_cov_var <- as.vector(anl_m_inputs$columns_source$split_covariates)
       covariate_parts <- split_interactions(input_cov_var)
 
       all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
@@ -1169,18 +1169,18 @@ srv_mmrm <- function(id,
     # Fit the MMRM, once the user clicks on the start button.
     mmrm_fit <- shiny::eventReactive(input$button_start, {
       q1 <- anl_merged_q()
-      anl_m <- anl_merged()
+      anl_m_inputs <- anl_merge_inputs()
 
       my_calls <- template_fit_mmrm(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        aval_var = as.vector(anl_m$columns_source$aval_var),
+        aval_var = as.vector(anl_m_inputs$columns_source$aval_var),
         arm_var = input[[extract_input("arm_var", parentname)]],
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
-        id_var = as.vector(anl_m$columns_source$id_var),
-        visit_var = as.vector(anl_m$columns_source$visit_var),
+        id_var = as.vector(anl_m_inputs$columns_source$id_var),
+        visit_var = as.vector(anl_m_inputs$columns_source$visit_var),
         cov_var = input[[extract_input("cov_var", dataname)]],
         conf_level = as.numeric(input$conf_level),
         cor_struct = input$cor_struct,
@@ -1239,7 +1239,7 @@ srv_mmrm <- function(id,
       q1 <- mmrm_fit()
       fit <- q1[["fit"]]
 
-      anl_m <- anl_merged()
+      anl_m_inputs <- anl_merge_inputs()
 
       ANL <- q1[["ANL"]]
       ANL_ADSL <- q1[["ANL_ADSL"]]
@@ -1251,7 +1251,7 @@ srv_mmrm <- function(id,
         fit_name = "fit",
         arm_var = input[[extract_input("arm_var", parentname)]],
         ref_arm = unlist(input$buckets$Ref),
-        visit_var = as.vector(anl_m$columns_source$visit_var),
+        visit_var = as.vector(anl_m_inputs$columns_source$visit_var),
         paramcd = paramcd,
         show_relative = input$t_mmrm_lsmeans_show_relative,
         table_type = output_function,
