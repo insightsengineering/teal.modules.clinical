@@ -538,9 +538,8 @@ srv_t_logistic <- function(id,
     })
 
     validate_checks <- shiny::reactive({
-      q1 <- merged$anl_q_r()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)
@@ -626,9 +625,8 @@ srv_t_logistic <- function(id,
 
     output_q <- shiny::reactive({
       validate_checks()
-      q1 <- merged$anl_q_r()
 
-      ANL <- q1[["ANL"]] # nolint
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
@@ -642,7 +640,7 @@ srv_t_logistic <- function(id,
       } else {
         unlist(as_num(input$interaction_values))
       }
-      at_flag <- interaction_flag && is.numeric(anl_q_r()[["ANL"]][[interaction_var]])
+      at_flag <- interaction_flag && is.numeric(merged$anl_q_r()[["ANL"]][[interaction_var]])
 
       cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
 
@@ -664,7 +662,7 @@ srv_t_logistic <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(q1, as.expression(calls), name = "summarize_logistic call")
+      eval_code(merged$anl_q_r(), as.expression(calls), name = "summarize_logistic call")
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])
