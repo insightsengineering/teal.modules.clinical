@@ -462,7 +462,7 @@ srv_t_logistic <- function(id,
       )
     }
 
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var, paramcd = paramcd, avalc_var = avalc_var, cov_var = cov_var),
@@ -470,7 +470,7 @@ srv_t_logistic <- function(id,
     )
 
     if (!is.null(arm_var)) {
-      adsl_merged <- teal.transform::merge_expression_module(
+      adsl_merged_input <- teal.transform::merge_expression_module(
         datasets = data,
         join_keys = attr(data, "join_keys"),
         data_extract = list(arm_var = arm_var),
@@ -480,18 +480,22 @@ srv_t_logistic <- function(id,
 
     anl_merged_q <- reactive({
       q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged()$expr))
-      eval_code(q1, as.expression(adsl_merged()$expr))
+      q1 <- eval_code(q, as.expression(anl_merged_input()$expr))
+      eval_code(q1, as.expression(adsl_merged_input()$expr))
     })
 
+    merged <- list(anl_input_r = anl_merged_input,
+                   adsl_input_r = adsl_merged_input,
+                   anl_q_r = anl_merged_q)
+
     # Because the AVALC values depends on the selected PARAMCD.
-    shiny::observeEvent(anl_merged(), {
-      avalc_var <- anl_merged()$columns_source$avalc_var
-      if (nrow(anl_merged_q()[["ANL"]]) == 0) {
+    shiny::observeEvent(merged$anl_input_r(), {
+      avalc_var <- merged$anl_input_r()$columns_source$avalc_var
+      if (nrow(merged$anl_q_r()[["ANL"]]) == 0) {
         responder_choices <- c("CR", "PR")
         responder_sel <- c("CR", "PR")
       } else {
-        responder_choices <- unique(anl_merged_q()[["ANL"]][[avalc_var]])
+        responder_choices <- unique(merged$anl_q_r()[["ANL"]][[avalc_var]])
         responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
       }
       shiny::updateSelectInput(
@@ -502,8 +506,7 @@ srv_t_logistic <- function(id,
     })
 
     output$interaction_var <- shiny::renderUI({
-      anl_m <- anl_merged()
-      cov_var <- as.vector(anl_m$columns_source$cov_var)
+      cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
           session$ns("interaction_var"),
@@ -518,15 +521,14 @@ srv_t_logistic <- function(id,
     })
 
     output$interaction_input <- shiny::renderUI({
-      anl_m <- anl_merged()
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
-        if (is.numeric(anl_merged_q()[["ANL"]][[interaction_var]])) {
+        if (is.numeric(merged$anl_q_r()[["ANL"]][[interaction_var]])) {
           shiny::tagList(
             shiny::textInput(
               session$ns("interaction_values"),
               label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
-              value = as.character(stats::median(anl_merged_q()[["ANL"]][[interaction_var]]))
+              value = as.character(stats::median(merged$anl_q_r()[["ANL"]][[interaction_var]]))
             )
           )
         }
@@ -536,14 +538,13 @@ srv_t_logistic <- function(id,
     })
 
     validate_checks <- shiny::reactive({
-      q1 <- anl_merged_q()
+      q1 <- merged$anl_q_r()
       adsl_filtered <- q1[[parentname]]
       anl_filtered <- q1[[dataname]]
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_interaction_var <- input$interaction_var
 
@@ -581,7 +582,7 @@ srv_t_logistic <- function(id,
 
         do.call(what = "validate_standard_inputs", validate_args)
 
-        arm_n <- base::table(anl_merged_q()[["ANL"]][[input_arm_var]])
+        arm_n <- base::table(merged$anl_q_r()[["ANL"]][[input_arm_var]])
         anl_arm_n <- if (input$combine_comp_arms) {
           c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
         } else {
@@ -599,7 +600,7 @@ srv_t_logistic <- function(id,
       )
 
       # validate interaction values
-      if (interaction_flag && (is.numeric(anl_merged_q()[["ANL"]][[input_interaction_at]]))) {
+      if (interaction_flag && (is.numeric(merged$anl_q_r()[["ANL"]][[input_interaction_at]]))) {
         shiny::validate(shiny::need(
           !is.na(at_values),
           "If interaction is specified the level should be entered."
@@ -611,7 +612,7 @@ srv_t_logistic <- function(id,
         shiny::need(
           all(
             vapply(
-              anl_merged_q()[["ANL"]][input_cov_var],
+              merged$anl_q_r()[["ANL"]][input_cov_var],
               FUN = function(x) {
                 length(unique(x)) > 1
               },
@@ -625,9 +626,8 @@ srv_t_logistic <- function(id,
 
     output_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_merged_q()
+      q1 <- merged$anl_q_r()
 
-      anl_m <- anl_merged()
       ANL <- q1[["ANL"]] # nolint
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
@@ -642,14 +642,14 @@ srv_t_logistic <- function(id,
       } else {
         unlist(as_num(input$interaction_values))
       }
-      at_flag <- interaction_flag && is.numeric(anl_merged_q()[["ANL"]][[interaction_var]])
+      at_flag <- interaction_flag && is.numeric(anl_q_r()[["ANL"]][[interaction_var]])
 
-      cov_var <- as.vector(anl_m$columns_source$cov_var)
+      cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
 
       calls <- template_logistic(
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        aval_var = as.vector(anl_m$columns_source$avalc_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+        aval_var = as.vector(merged$anl_input_r()$columns_source$avalc_var),
         paramcd = paramcd,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
