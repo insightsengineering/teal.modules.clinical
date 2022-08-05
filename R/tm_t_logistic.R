@@ -479,9 +479,9 @@ srv_t_logistic <- function(id,
     }
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged_input()$expr))
-      eval_code(q1, as.expression(adsl_merged_input()$expr))
+      new_quosure(env = data) %>%
+      eval_code(as.expression(anl_merged_input()$expr)) %>%
+      eval_code(as.expression(adsl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input,

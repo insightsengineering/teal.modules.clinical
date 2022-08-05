@@ -210,7 +210,7 @@ ui_t_medical_history <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -218,8 +218,9 @@ ui_t_medical_history <- function(id, ...) {
 
 
 srv_t_medical_history <- function(id,
-                                  datasets,
+                                  data,
                                   reporter,
+                                  filter_panel_api,
                                   dataname,
                                   parentname,
                                   patient_col,
@@ -227,16 +228,13 @@ srv_t_medical_history <- function(id,
                                   mhbodsys,
                                   mhdistat,
                                   label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
@@ -259,11 +257,16 @@ srv_t_medical_history <- function(id,
     )
 
     # Medical history tab ----
-    mhist_merged_data <- teal.transform::data_merge_module(
+    merge_input_r <- teal.transform::merge_expression_module(
       datasets = datasets,
       data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
       merge_function = "dplyr::left_join"
     )
+
+    merge_q_r <- reactive({
+      new_quosure(env = data) %>%
+      eval_code(as.expression(merge_input_r()$expr))
+    })
 
     mhist_call <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))

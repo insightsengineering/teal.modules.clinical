@@ -740,8 +740,8 @@ srv_t_coxreg <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      eval_code(q, as.expression(anl_merged_input()$expr))
+      new_quosure(env = data) %>%
+      eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input,

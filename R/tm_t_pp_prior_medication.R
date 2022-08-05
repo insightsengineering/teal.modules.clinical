@@ -301,8 +301,8 @@ srv_t_prior_medication <- function(id,
     )
 
     merge_q_r <- reactive({
-      q <- new_quosure(env = data)
-      eval_code(q, as.expression(merge_input_r()$expr))
+      new_quosure(env = data) %>%
+      eval_code(as.expression(merge_input_r()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -346,7 +346,7 @@ srv_t_prior_medication <- function(id,
           )
         ),
         name = "patient_id_filter_call"
-      ) |>
+      ) %>%
       eval_code(as.expression(my_calls), name = "call")
     })
 
