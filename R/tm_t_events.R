@@ -643,14 +643,14 @@ srv_t_events_byterm <- function(id,
       join_keys = attr(data, "join_keys")
     )
 
-    anl_merged <- teal.transform::merge_expression_srv(
+    anl_merged_input <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
       datasets = data,
       merge_function = "dplyr::inner_join",
       join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
@@ -658,21 +658,24 @@ srv_t_events_byterm <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged()$expr))
-      eval_code(q1, as.expression(adsl_merged()$expr))
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
     })
 
-    validate_checks <- shiny::reactive({
-      q1 <- anl_merged_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+    merged <- list(anl_input_r = anl_merged_input,
+                   adsl_input_r = adsl_merged_input,
+                   anl_q_r = anl_merged_q
+                   )
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
-        as.vector(anl_m$columns_source$hlt),
-        as.vector(anl_m$columns_source$llt)
+        as.vector(merged$anl_input_r()$columns_source$hlt),
+        as.vector(merged$anl_input_r()$columns_source$llt)
       )
 
       shiny::validate(
@@ -718,21 +721,17 @@ srv_t_events_byterm <- function(id,
     # The R-code corresponding to the analysis.
     output_table <- shiny::reactive({
       validate_checks()
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
 
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
-      anl_adsl <- adsl_merged()
-      ANL <- q1[["ANL"]] # nolint
-
-      input_hlt <- as.vector(anl_m$columns_source$hlt)
-      input_llt <- as.vector(anl_m$columns_source$llt)
-      label_hlt <- if (length(input_hlt) != 0) attributes(q1[["ANL"]][[input_hlt]])$label else NULL
-      label_llt <- if (length(input_llt) != 0) attributes(q1[["ANL"]][[input_llt]])$label else NULL
+      input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
+      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
+      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
+      label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
 
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,
@@ -746,7 +745,7 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(q1, as.expression(my_calls), name = "tm_t_events call")
+      eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_events call")
     })
 
     # Outputs to render.

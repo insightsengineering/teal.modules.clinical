@@ -548,7 +548,7 @@ srv_ancova <- function(id,
       module = "tm_ancova"
     )
 
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -561,7 +561,7 @@ srv_ancova <- function(id,
       join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
@@ -569,21 +569,24 @@ srv_ancova <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged()$expr))
-      eval_code(q1, as.expression(adsl_merged()$expr))
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
     })
+
+    merged <- list(anl_input_r = anl_merged_input,
+                   adsl_input_r = adsl_merged_input,
+                   anl_q_r = anl_merged_q
+    )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      q1 <- anl_merged_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       input_avisit <- unlist(avisit$filter)["vars_selected"]
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -612,11 +615,11 @@ srv_ancova <- function(id,
       ))
       # check that there is at least one record with no missing data
       shiny::validate(shiny::need(
-        !all(is.na(q1[["ANL"]][[input_aval_var]])),
+        !all(is.na(merged$anl_q_r()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- q1[["ANL"]] %>% # nolint
+      all_NA_dataset <- merged$anl_q_r()[["ANL"]] %>% # nolint
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -652,28 +655,24 @@ srv_ancova <- function(id,
     # The R-code corresponding to the analysis.
     output_table <- shiny::reactive({
       validate_checks()
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
 
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
-      anl_adsl <- adsl_merged()
-
-      ANL <- q1[["ANL"]] # nolint
       label_paramcd <- get_paramcd_label(ANL, paramcd)
-      input_aval <- as.vector(anl_m$columns_source$aval_var)
-      label_aval <- if (length(input_aval) != 0) attributes(q1[["ANL"]][[input_aval]])$label else NULL
+      input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      label_aval <- if (length(input_aval) != 0) attributes(ANL[[input_aval]])$label else NULL
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
       my_calls <- template_ancova(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
+        aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
         label_aval = label_aval,
-        cov_var = as.vector(anl_m$columns_source$cov_var),
+        cov_var = as.vector(merged$anl_input_r()$columns_source$cov_var),
         paramcd_levels = paramcd_levels,
         paramcd_var = unlist(paramcd$filter)["vars_selected"],
         label_paramcd = label_paramcd,
@@ -682,7 +681,7 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      eval_code(q1, as.expression(my_calls), name = "tm_t_ancova call")
+      eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_ancova call")
     })
 
     # Output to render.
