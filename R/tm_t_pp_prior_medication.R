@@ -242,7 +242,7 @@ ui_t_prior_medication <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -250,8 +250,9 @@ ui_t_prior_medication <- function(id, ...) {
 
 
 srv_t_prior_medication <- function(id,
-                                   datasets,
+                                   data,
                                    reporter,
+                                   filter_panel_api,
                                    dataname,
                                    parentname,
                                    patient_col,
@@ -260,16 +261,14 @@ srv_t_prior_medication <- function(id,
                                    cmindc,
                                    cmstdy,
                                    label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
 
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -294,13 +293,19 @@ srv_t_prior_medication <- function(id,
     )
 
     # Prior medication tab ----
-    pmed_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
       merge_function = "dplyr::left_join"
     )
 
-    pmed_call <- shiny::reactive({
+    merge_q_r <- reactive({
+      q <- new_quosure(env = data)
+      eval_code(q, as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       shiny::validate(
@@ -322,24 +327,6 @@ srv_t_prior_medication <- function(id,
         )
       )
 
-      pmed_stack <- teal.code::chunks_new()
-      pmed_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = pmed_stack)
-      }
-      teal.code::chunks_push_data_merge(pmed_merged_data(), chunks = pmed_stack)
-
-      pmed_stack_push(
-        substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
-      )
-
       my_calls <- template_prior_medication(
         dataname = "ANL",
         atirel = input[[extract_input("atirel", dataname)]],
@@ -348,27 +335,32 @@ srv_t_prior_medication <- function(id,
         cmstdy = input[[extract_input("cmstdy", dataname)]]
       )
 
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), pmed_stack_push)
-      teal.code::chunks_safe_eval(pmed_stack)
-      pmed_stack
+      eval_code(
+        merge_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        name = "patient_id_filter_call"
+      ) |>
+      eval_code(as.expression(my_calls), name = "call")
     })
 
-    table_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(pmed_call())
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     output$prior_medication_table <- DT::renderDataTable(
       expr = table_r(),
       options = list(pageLength = input$prior_medication_table_rows)
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(atirel, cmdecod, cmindc, cmstdy)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     if (with_reporter) {
@@ -376,7 +368,7 @@ srv_t_prior_medication <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Prior Medication Table")
         card$append_text("Patient Prior Medication Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
