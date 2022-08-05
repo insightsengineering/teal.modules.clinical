@@ -151,22 +151,20 @@ ui_t_basic_info <- function(id, ...) {
 
 
 srv_t_basic_info <- function(id,
-                             datasets,
+                             data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              patient_col,
                              vars,
                              label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[dataname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -191,13 +189,19 @@ srv_t_basic_info <- function(id,
     )
 
     # Basic Info tab ----
-    binf_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(vars = vars),
       merge_function = "dplyr::left_join"
     )
 
-    basic_info_call <- shiny::reactive({
+    merge_q_r <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       shiny::validate(
         shiny::need(
@@ -206,14 +210,14 @@ srv_t_basic_info <- function(id,
         )
       )
 
-      call_stack <- teal.code::chunks_new()
-      call_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = call_stack)
-      }
-      teal.code::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+      my_calls <- template_basic_info(
+        dataname = "ANL",
+        vars = input[[extract_input("vars", dataname)]]
+      )
 
-      call_stack_push(
-        expression = substitute(
+      eval_code(
+        merge_q_r(),
+        substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
@@ -221,34 +225,22 @@ srv_t_basic_info <- function(id,
             patient_id = patient_id()
           )
         ),
-        id = "patient_id_filter_call"
-      )
-
-      my_calls <- template_basic_info(
-        dataname = "ANL",
-        vars = input[[extract_input("vars", dataname)]]
-      )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), call_stack_push)
-      teal.code::chunks_safe_eval(chunks = call_stack)
-      call_stack
+        name = "patient_id_filter_call"
+      ) %>%
+      eval_code(as.expression(my_calls), name = "call")
     })
 
-    table_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(basic_info_call())
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
       options = list(pageLength = input$basic_info_table_rows)
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(vars)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -257,7 +249,7 @@ srv_t_basic_info <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Basic Info Table")
         card$append_text("Patient Profile Basic Info Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
