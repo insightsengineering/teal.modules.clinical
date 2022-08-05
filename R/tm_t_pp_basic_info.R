@@ -143,7 +143,7 @@ ui_t_basic_info <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -227,7 +227,7 @@ srv_t_basic_info <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-      eval_code(as.expression(my_calls), name = "call")
+        eval_code(as.expression(my_calls), name = "call")
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])
@@ -256,12 +256,7 @@ srv_t_basic_info <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

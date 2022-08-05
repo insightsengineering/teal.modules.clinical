@@ -741,11 +741,13 @@ srv_t_coxreg <- function(id,
 
     anl_merged_q <- reactive({
       new_quosure(env = data) %>%
-      eval_code(as.expression(anl_merged_input()$expr))
+        eval_code(as.expression(anl_merged_input()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input,
-                   anl_q_r = anl_merged_q)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      anl_q_r = anl_merged_q
+    )
 
     ## render conditional strata levels input UI  ----
     open_textinput <- function(x, dataset) {
@@ -983,27 +985,31 @@ srv_t_coxreg <- function(id,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
         eval_code(merged$anl_q_r(), quote(result <- list()), name = "result_initiation_call") |>
-        eval_code(as.expression(lapply(unlist(input$buckets$Comp),
-                                       function(x) { call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)}))) |>
-        eval_code(
-          substitute(
-            expr = {
-              result <- rtables::rbindl_rtables(result, check_headers = TRUE)
-              rtables::main_title(result) <- title
-              rtables::main_footer(result) <- footer
-              rtables::prov_footer(result) <- p_footer
-              rtables::subtitles(result) <- subtitle
-              result
-            },
-            env = list(
-              title = all_basic_table_args$title,
-              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-              p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-              subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
-            )
-          ),
-          name = "rbindl_rtables_call"
-        )
+          eval_code(as.expression(lapply(
+            unlist(input$buckets$Comp),
+            function(x) {
+              call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
+            }
+          ))) |>
+          eval_code(
+            substitute(
+              expr = {
+                result <- rtables::rbindl_rtables(result, check_headers = TRUE)
+                rtables::main_title(result) <- title
+                rtables::main_footer(result) <- footer
+                rtables::prov_footer(result) <- p_footer
+                rtables::subtitles(result) <- subtitle
+                result
+              },
+              env = list(
+                title = all_basic_table_args$title,
+                footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+                p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+                subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+              )
+            ),
+            name = "rbindl_rtables_call"
+          )
       }
     })
 
@@ -1033,12 +1039,7 @@ srv_t_coxreg <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

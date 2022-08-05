@@ -480,13 +480,15 @@ srv_t_logistic <- function(id,
 
     anl_merged_q <- reactive({
       new_quosure(env = data) %>%
-      eval_code(as.expression(anl_merged_input()$expr)) %>%
-      eval_code(as.expression(adsl_merged_input()$expr))
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input,
-                   adsl_input_r = adsl_merged_input,
-                   anl_q_r = anl_merged_q)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
 
     # Because the AVALC values depends on the selected PARAMCD.
     shiny::observeEvent(merged$anl_input_r(), {

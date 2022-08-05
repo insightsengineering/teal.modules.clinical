@@ -413,8 +413,9 @@ srv_g_barchart_simple <- function(id,
           "Number of patients (total N = %s) for each combination of (%s)",
           nrow(ANL),
           groupby_vars
-        )),
-        name = "plot_title_call"
+        )
+      ),
+      name = "plot_title_call"
       )
 
       y_lab <- substitute(

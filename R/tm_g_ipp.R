@@ -469,7 +469,6 @@ srv_g_ipp <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     anl_merged <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(

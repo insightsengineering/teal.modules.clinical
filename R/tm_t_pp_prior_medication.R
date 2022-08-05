@@ -264,7 +264,6 @@ srv_t_prior_medication <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
@@ -302,7 +301,7 @@ srv_t_prior_medication <- function(id,
 
     merge_q_r <- reactive({
       new_quosure(env = data) %>%
-      eval_code(as.expression(merge_input_r()$expr))
+        eval_code(as.expression(merge_input_r()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -347,7 +346,7 @@ srv_t_prior_medication <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-      eval_code(as.expression(my_calls), name = "call")
+        eval_code(as.expression(my_calls), name = "call")
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])
@@ -375,12 +374,7 @@ srv_t_prior_medication <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
