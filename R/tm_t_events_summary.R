@@ -815,7 +815,6 @@ srv_t_events_summary <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
@@ -854,9 +853,11 @@ srv_t_events_summary <- function(id,
         eval_code(as.expression(adsl_merged_input()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input,
-                   adsl_input_r = adsl_merged_input,
-                   anl_q_r = anl_merged_q)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
 
     validate_checks <- shiny::reactive({
       adsl_filtered <- data[[parentname]]()
