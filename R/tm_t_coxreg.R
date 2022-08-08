@@ -978,7 +978,8 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        expr <- call_template(unlist(input$buckets$Comp), merged$anl_input_r(), paramcd, multivariate, all_basic_table_args)
+        expr <- call_template(unlist(input$buckets$Comp), merged$anl_input_r(),
+                              paramcd, multivariate, all_basic_table_args)
         eval_code(merged$anl_q_r(), as.expression(expr), name = "call")
       } else {
         main_title <- paste0("Cox Regression for ", paramcd)
