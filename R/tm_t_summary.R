@@ -490,7 +490,8 @@ srv_summary <- function(id,
         shiny::need(input_summarize_vars, "Please select a summarize variable"),
         shiny::need(
           !any(vapply(anl_filtered[, input_summarize_vars], inherits, c("Date", "POSIXt"),
-                      FUN.VALUE = logical(1))),
+            FUN.VALUE = logical(1)
+          )),
           "Date and POSIXt variables are not supported, please select other variables"
         ),
         shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
@@ -517,10 +518,12 @@ srv_summary <- function(id,
     # generate r code for the analysis
     output_q <- shiny::reactive({
       validate_checks()
-browser()
+
       sum_vars <- merged$anl_input_r()$columns_source$summarize_vars
-      var_labels <- vapply(data[[dataname]](),
-                           function(c) if (!is.null(l <- attr(c, "label"))) l else NA_character_, character(1))
+      var_labels <- vapply(
+        data[[dataname]](),
+        function(c) if (!is.null(l <- attr(c, "label"))) l else NA_character_, character(1)
+      )
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",

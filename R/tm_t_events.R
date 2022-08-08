@@ -663,10 +663,11 @@ srv_t_events_byterm <- function(id,
         eval_code(as.expression(adsl_merged_input()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input,
-                   adsl_input_r = adsl_merged_input,
-                   anl_q_r = anl_merged_q
-                   )
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
 
     validate_checks <- shiny::reactive({
       adsl_filtered <- data[[parentname]]()
@@ -751,7 +752,7 @@ srv_t_events_byterm <- function(id,
     # Outputs to render.
     table_r <- shiny::reactive({
       output_table()[["pruned_and_sorted_result"]]
-      })
+    })
 
     teal.widgets::table_with_settings_srv(
       id = "table",

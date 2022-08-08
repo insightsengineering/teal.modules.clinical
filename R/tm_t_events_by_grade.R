@@ -1005,9 +1005,10 @@ srv_t_events_by_grade <- function(id,
         eval_code(as.expression(adsl_merged_input()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input,
-                   adsl_input_r = adsl_merged_input,
-                   anl_q_r = anl_merged_q
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
     )
 
     validate_checks <- shiny::reactive({
