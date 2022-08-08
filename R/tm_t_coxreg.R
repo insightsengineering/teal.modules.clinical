@@ -989,13 +989,13 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        eval_code(merged$anl_q_r(), quote(result <- list()), name = "result_initiation_call") |>
+        eval_code(merged$anl_q_r(), quote(result <- list()), name = "result_initiation_call") %>%
           eval_code(as.expression(lapply(
             unlist(input$buckets$Comp),
             function(x) {
               call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
             }
-          ))) |>
+          ))) %>%
           eval_code(
             substitute(
               expr = {
