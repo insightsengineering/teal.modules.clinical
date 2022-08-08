@@ -420,21 +420,16 @@ srv_summary <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_selectors <- teal.transform::data_extract_multiple_srv(
-      list(arm_var = arm_var, summarize_vars = summarize_vars),
-      datasets = data
-    )
-
-    anl_merged_input <- teal.transform::merge_expression_srv(
-      selector_list = anl_selectors,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      id = "anl_merge",
       datasets = data,
+      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
       join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_merged_input <- teal.transform::merge_expression_module(
+      id = "adsl_merge",
       datasets = data,
       join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var),
@@ -545,11 +540,7 @@ srv_summary <- function(id,
 
     # Outputs to render.
     table_r <- shiny::reactive(output_q()[["result"]])
-
-    teal.widgets::table_with_settings_srv(
-      id = "table",
-      table_r = table_r
-    )
+    teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
