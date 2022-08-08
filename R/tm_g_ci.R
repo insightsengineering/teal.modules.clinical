@@ -367,7 +367,6 @@ srv_g_ci <- function(id, # nolint
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-
     merged_data <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x_var = x_var, y_var = y_var, color = color),

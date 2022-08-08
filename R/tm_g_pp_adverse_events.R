@@ -445,7 +445,8 @@ srv_g_adverse_events <- function(id,
     # Adverse events tab ----
     anl_merged <- teal.transform::merge_expression_module(
       datasets = data,
-      data_extract = Filter(Negate(is.null),
+      data_extract = Filter(
+        Negate(is.null),
         list(
           aeterm = aeterm,
           tox_grade = tox_grade,

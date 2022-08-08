@@ -689,7 +689,7 @@ ui_t_coxreg <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -697,8 +697,9 @@ ui_t_coxreg <- function(id, ...) {
 
 #' @noRd
 srv_t_coxreg <- function(id,
-                         datasets,
+                         data,
                          reporter,
+                         filter_panel_api,
                          dataname,
                          parentname,
                          arm_var,
@@ -710,26 +711,23 @@ srv_t_coxreg <- function(id,
                          arm_ref_comp,
                          label,
                          basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Observer to update reference and comparison arm input options.
     arm_ref_comp_observer(
       session,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_coxreg"
     )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -741,15 +739,25 @@ srv_t_coxreg <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
+    anl_merged_q <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
     ## render conditional strata levels input UI  ----
-    open_textinput <- function(x, anl) {
+    open_textinput <- function(x, dataset) {
       # For every numeric covariate, the numeric level for the Hazard Ration
       # estimation is proposed only if the covariate is included in the model:
       # for this purpose, a function and a UI-rendered output.
       shiny::textInput(
         session$ns(paste0("interact_", x)),
         label = paste("Hazard Ratios for", x, "at (comma delimited):"),
-        value = as.character(stats::median(anl$data()[[x]]))
+        value = as.character(stats::median(dataset[[x]]))
       )
     }
 
@@ -757,32 +765,28 @@ srv_t_coxreg <- function(id,
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
       if (!is.null(input$interactions) && input$interactions) {
-        anl_m <- anl_merged()
-        input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-
-        anl <- datasets$get_data(dataname, filtered = FALSE)
-        cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+        input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+        dataset <- merged$anl_g_r()[[dataname]]
+        cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
         interaction_var <- input_cov_var[cov_is_numeric]
         if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-          lapply(interaction_var, open_textinput, anl = anl_m)
+          lapply(interaction_var, open_textinput, dataset = dataset)
         }
       }
     })
 
     ## Prepare the call evaluation environment ----
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_strata_var <- as.vector(merged$anl_input_r()$columns_source$strata_var)
+      input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      input_cnsr_var <- as.vector(merged$anl_input_r()$columns_source$cnsr_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-      anl <- datasets$get_data(dataname, filtered = FALSE)
-      cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+      cov_is_numeric <- vapply(anl_filtered[input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
 
       # validate inputs
@@ -825,7 +829,7 @@ srv_t_coxreg <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      arm_n <- base::table(anl_m$data()[[input_arm_var]])
+      arm_n <- base::table(merged$anl_q_r()[["ANL"]][[input_arm_var]])
       anl_arm_n <- if (input$combine_comp_arms) {
         c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
       } else {
@@ -873,7 +877,7 @@ srv_t_coxreg <- function(id,
       # validate covariate has at least two levels
       shiny::validate(
         shiny::need(
-          all(vapply(anl_m$data()[input_cov_var], FUN = function(x) {
+          all(vapply(merged$anl_q_r()[["ANL"]][input_cov_var], FUN = function(x) {
             length(unique(x)) > 1
           }, logical(1))),
           "All covariate needs to have at least two levels"
@@ -884,10 +888,8 @@ srv_t_coxreg <- function(id,
     })
 
     at <- shiny::reactive({
-      anl_m <- anl_merged()
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
-      anl <- datasets$get_data(dataname, filtered = FALSE)
-      cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+      cov_is_numeric <- vapply(data[[dataname]]()[input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
       if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
         res <- lapply(
@@ -924,52 +926,49 @@ srv_t_coxreg <- function(id,
         interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
       )
 
-      if (multivariate) {
-        template_coxreg_m(
-          dataname = "ANL",
-          cov_var = cov_var,
-          at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm,
-          paramcd = paramcd,
-          strata_var = strata_var,
-          combine_comp_arms = combine_comp_arms,
-          control = control,
-          basic_table_args = basic_table_args
-        )
-      } else {
-        template_coxreg_u(
-          dataname = "ANL",
-          cov_var = cov_var,
-          at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm,
-          paramcd = paramcd,
-          strata_var = strata_var,
-          combine_comp_arms = combine_comp_arms,
-          control = control,
-          append = TRUE,
-          basic_table_args = basic_table_args
-        )
-      }
+      lapply(comp_arm, function(comp_a) {
+        if (multivariate) {
+          template_coxreg_m(
+            dataname = "ANL",
+            cov_var = cov_var,
+            at = at,
+            arm_var = arm_var,
+            cnsr_var = cnsr_var,
+            aval_var = aval_var,
+            ref_arm = ref_arm,
+            comp_arm = comp_a,
+            paramcd = paramcd,
+            strata_var = strata_var,
+            combine_comp_arms = combine_comp_arms,
+            control = control,
+            basic_table_args = basic_table_args
+          )
+        } else {
+          template_coxreg_u(
+            dataname = "ANL",
+            cov_var = cov_var,
+            at = at,
+            arm_var = arm_var,
+            cnsr_var = cnsr_var,
+            aval_var = aval_var,
+            ref_arm = ref_arm,
+            comp_arm = comp_a,
+            paramcd = paramcd,
+            strata_var = strata_var,
+            combine_comp_arms = combine_comp_arms,
+            control = control,
+            append = TRUE,
+            basic_table_args = basic_table_args
+          )
+        }
+      })
     }
 
     ## generate table call with template and render table ----
-    table_r <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
 
@@ -979,62 +978,55 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        expr <- call_template(unlist(input$buckets$Comp), anl_m, paramcd, multivariate, all_basic_table_args)
-        mapply(
-          expression = expr,
-          id = paste(names(expr), "call", sep = "_"),
-          teal.code::chunks_push
-        )
-        teal.code::chunks_safe_eval()
-        teal.code::chunks_get_var("result")
+        expr <- call_template(unlist(input$buckets$Comp), merged$anl_input_r(),
+                              paramcd, multivariate, all_basic_table_args)
+        eval_code(merged$anl_q_r(), as.expression(expr), name = "call")
       } else {
         main_title <- paste0("Cox Regression for ", paramcd)
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
-        lapply(unlist(input$buckets$Comp), function(x) {
-          expr <- call_template(x, anl_m, paramcd, multivariate, NULL)
-          mapply(expression = expr, id = paste(names(expr), "call", sep = "_"), teal.code::chunks_push)
-        })
-        teal.code::chunks_push(
-          expression = substitute(
-            expr = {
-              final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
-              rtables::main_title(final_table) <- title
-              rtables::main_footer(final_table) <- footer
-              rtables::prov_footer(final_table) <- p_footer
-              rtables::subtitles(final_table) <- subtitle
-              final_table
-            },
-            env = list(
-              title = all_basic_table_args$title,
-              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-              p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-              subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
-            )
-          ),
-          id = "rbindl_rtables_call"
-        )
-        teal.code::chunks_safe_eval()
-        teal.code::chunks_get_var("final_table")
+        eval_code(merged$anl_q_r(), quote(result <- list()), name = "result_initiation_call") |>
+          eval_code(as.expression(lapply(
+            unlist(input$buckets$Comp),
+            function(x) {
+              call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
+            }
+          ))) |>
+          eval_code(
+            substitute(
+              expr = {
+                result <- rtables::rbindl_rtables(result, check_headers = TRUE)
+                rtables::main_title(result) <- title
+                rtables::main_footer(result) <- footer
+                rtables::prov_footer(result) <- p_footer
+                rtables::subtitles(result) <- subtitle
+                result
+              },
+              env = list(
+                title = all_basic_table_args$title,
+                footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+                p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+                subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+              )
+            ),
+            name = "rbindl_rtables_call"
+          )
       }
     })
+
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, strata_var, aval_var, cnsr_var, cov_var)
-      ),
-      modal_title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model"
     )
 
     ### REPORTER
@@ -1043,19 +1035,14 @@ srv_t_coxreg <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Cox Regression Table")
         card$append_text("Cox Regression Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
