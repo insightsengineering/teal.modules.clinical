@@ -926,42 +926,40 @@ srv_t_coxreg <- function(id,
         interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
       )
 
-      lapply(comp_arm, function(comp_a) {
-        if (multivariate) {
-          template_coxreg_m(
-            dataname = "ANL",
-            cov_var = cov_var,
-            at = at,
-            arm_var = arm_var,
-            cnsr_var = cnsr_var,
-            aval_var = aval_var,
-            ref_arm = ref_arm,
-            comp_arm = comp_a,
-            paramcd = paramcd,
-            strata_var = strata_var,
-            combine_comp_arms = combine_comp_arms,
-            control = control,
-            basic_table_args = basic_table_args
-          )
-        } else {
-          template_coxreg_u(
-            dataname = "ANL",
-            cov_var = cov_var,
-            at = at,
-            arm_var = arm_var,
-            cnsr_var = cnsr_var,
-            aval_var = aval_var,
-            ref_arm = ref_arm,
-            comp_arm = comp_a,
-            paramcd = paramcd,
-            strata_var = strata_var,
-            combine_comp_arms = combine_comp_arms,
-            control = control,
-            append = TRUE,
-            basic_table_args = basic_table_args
-          )
-        }
-      })
+      if (multivariate) {
+        template_coxreg_m(
+          dataname = "ANL",
+          cov_var = cov_var,
+          at = at,
+          arm_var = arm_var,
+          cnsr_var = cnsr_var,
+          aval_var = aval_var,
+          ref_arm = ref_arm,
+          comp_arm = comp_arm,
+          paramcd = paramcd,
+          strata_var = strata_var,
+          combine_comp_arms = combine_comp_arms,
+          control = control,
+          basic_table_args = basic_table_args
+        )
+      } else {
+        template_coxreg_u(
+          dataname = "ANL",
+          cov_var = cov_var,
+          at = at,
+          arm_var = arm_var,
+          cnsr_var = cnsr_var,
+          aval_var = aval_var,
+          ref_arm = ref_arm,
+          comp_arm = comp_arm,
+          paramcd = paramcd,
+          strata_var = strata_var,
+          combine_comp_arms = combine_comp_arms,
+          control = control,
+          append = TRUE,
+          basic_table_args = basic_table_args
+        )
+      }
     }
 
     ## generate table call with template and render table ----
@@ -989,13 +987,18 @@ srv_t_coxreg <- function(id,
           user_table = basic_table_args,
           module_table = teal.widgets::basic_table_args(title = main_title)
         )
-        eval_code(merged$anl_q_r(), quote(result <- list()), name = "result_initiation_call") %>%
-          eval_code(as.expression(lapply(
-            unlist(input$buckets$Comp),
-            function(x) {
-              call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
-            }
-          ))) %>%
+
+        merged$anl_q_r() %>%
+          eval_code(quote(result <- list()), name = "result_initiation_call") %>%
+          eval_code(
+            as.expression(lapply(
+              unlist(input$buckets$Comp),
+              function(x) {
+                call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
+              }
+            )),
+            "Model fitting and table generation"
+          ) %>%
           eval_code(
             substitute(
               expr = {
