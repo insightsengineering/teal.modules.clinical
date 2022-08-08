@@ -770,7 +770,7 @@ srv_t_coxreg <- function(id,
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
         interaction_var <- input_cov_var[cov_is_numeric]
         if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-          lapply(interaction_var, open_textinput, dataset = dataset) # Should be unfiltered
+          lapply(interaction_var, open_textinput, dataset = dataset)
         }
       }
     })
@@ -926,40 +926,42 @@ srv_t_coxreg <- function(id,
         interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
       )
 
-      if (multivariate) {
-        template_coxreg_m(
-          dataname = "ANL",
-          cov_var = cov_var,
-          at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm,
-          paramcd = paramcd,
-          strata_var = strata_var,
-          combine_comp_arms = combine_comp_arms,
-          control = control,
-          basic_table_args = basic_table_args
-        )
-      } else {
-        template_coxreg_u(
-          dataname = "ANL",
-          cov_var = cov_var,
-          at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
-          ref_arm = ref_arm,
-          comp_arm = comp_arm,
-          paramcd = paramcd,
-          strata_var = strata_var,
-          combine_comp_arms = combine_comp_arms,
-          control = control,
-          append = TRUE,
-          basic_table_args = basic_table_args
-        )
-      }
+      lapply(comp_arm, function(comp_a) {
+        if (multivariate) {
+          template_coxreg_m(
+            dataname = "ANL",
+            cov_var = cov_var,
+            at = at,
+            arm_var = arm_var,
+            cnsr_var = cnsr_var,
+            aval_var = aval_var,
+            ref_arm = ref_arm,
+            comp_arm = comp_a,
+            paramcd = paramcd,
+            strata_var = strata_var,
+            combine_comp_arms = combine_comp_arms,
+            control = control,
+            basic_table_args = basic_table_args
+          )
+        } else {
+          template_coxreg_u(
+            dataname = "ANL",
+            cov_var = cov_var,
+            at = at,
+            arm_var = arm_var,
+            cnsr_var = cnsr_var,
+            aval_var = aval_var,
+            ref_arm = ref_arm,
+            comp_arm = comp_a,
+            paramcd = paramcd,
+            strata_var = strata_var,
+            combine_comp_arms = combine_comp_arms,
+            control = control,
+            append = TRUE,
+            basic_table_args = basic_table_args
+          )
+        }
+      })
     }
 
     ## generate table call with template and render table ----
