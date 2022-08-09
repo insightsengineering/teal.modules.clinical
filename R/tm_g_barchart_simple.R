@@ -321,31 +321,16 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-    data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
-    data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
 
-    selector_list <- teal.transform::data_extract_multiple_srv(data_extract, data, join_keys = attr(data, "join_keys"))
-
-    reactive_select_input <- shiny::reactive({
-      selectors <- selector_list()
-      extract_names <- names(selectors)
-      for (extract in extract_names) {
-        if (is.null(selectors[[extract]]) || length(selectors[[extract]]()$select) == 0) {
-          selectors <- selectors[-which(names(selectors) == extract)]
-        }
-      }
-      selectors
-    })
-
-    merge_inputs <- teal.transform::merge_expression_srv(
-      selector_list = reactive_select_input,
+    merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = attr(data, "join_keys")
+      join_keys = attr(data, "join_keys"),
+      data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     )
 
     merged_data_q <- shiny::reactive({
       shiny::validate({
-        shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+        shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
       quo <- new_quosure(env = data)
       quo <- eval_code(quo, as.expression(merge_inputs()$expr))
@@ -353,7 +338,7 @@ srv_g_barchart_simple <- function(id,
       quo
     })
 
-    count_chunk <- shiny::reactive({
+    count_q <- shiny::reactive({
       quo <- merged_data_q()
       groupby_vars <- r_groupby_vars()
 
@@ -404,7 +389,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     output_q <- shiny::reactive({
-      quo1 <- count_chunk()
+      quo1 <- count_q()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       quo2 <- eval_code(quo1, substitute(
