@@ -450,7 +450,7 @@ srv_summary <- function(id,
 
     shiny::observeEvent(merged$anl_input_r()$columns_source$summarize_vars, {
       choices_classes <- sapply(
-        merged$anl_input_r()$columns_source$summarize_vars,
+        names(merged$anl_input_r()$columns_source$summarize_vars),
         function(x) {
           summarize_var_data <- data[[summarize_vars$dataname]]()[[x]]
           inherits(summarize_var_data, "numeric") |
@@ -470,8 +470,10 @@ srv_summary <- function(id,
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
 
-      input_arm_var <- merged$anl_input_r()$columns_source$arm_var
-      input_summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
+      # we take names of the columns source as they match names of the input data in merge_datasets
+      # if we use $arm_var they might be renamed to <selector id>.arm_var
+      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
+      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
 
       shiny::validate(
         shiny::need(
