@@ -715,7 +715,7 @@ ui_t_shift_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -723,8 +723,9 @@ ui_t_shift_by_grade <- function(id, ...) {
 
 #' @noRd
 srv_t_shift_by_grade <- function(id,
-                                 datasets,
+                                 data,
                                  reporter,
+                                 filter_panel_api,
                                  dataname,
                                  parentname,
                                  arm_var,
@@ -739,14 +740,12 @@ srv_t_shift_by_grade <- function(id,
                                  na_level,
                                  label,
                                  basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(
         arm_var = arm_var,
         visit_var = visit_var,
@@ -759,25 +758,37 @@ srv_t_shift_by_grade <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    anl_merged_q <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
+    })
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_visit_var <- as.vector(anl_m$columns_source$visit_var)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+
+      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
+      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
+      input_visit_var <- names(merged$anl_input_r()$columns_source$visit_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_paramcd_var <- anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]
-      input_worst_flag_var <- as.vector(anl_m$columns_source$worst_flag_var)
-      input_anl_toxgrade_var <- as.vector(anl_m$columns_source$anl_toxgrade_var)
-      input_base_toxgrade_var <- as.vector(anl_m$columns_source$base_toxgrade_var)
+      input_paramcd_var <- merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$paramcd)]]
+      input_worst_flag_var <- names(merged$anl_input_r()$columns_source$worst_flag_var)
+      input_anl_toxgrade_var <- names(merged$anl_input_r()$columns_source$anl_toxgrade_var)
+      input_base_toxgrade_var <- names(merged$anl_input_r()$columns_source$base_toxgrade_var)
 
       shiny::validate(
         shiny::need(input_worst_flag_var, "Please select the worst flag variable."),
@@ -786,7 +797,7 @@ srv_t_shift_by_grade <- function(id,
         shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
       )
 
-      input_worst_flag <- anl_m$data()[[as.vector(anl_m$columns_source$worst_flag_var)]]
+      input_worst_flag <- merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$worst_flag_var)[1]]]
       shiny::validate(shiny::need(
         any(input_worst_flag == input$worst_flag_indicator),
         "There's no positive flag, please select another flag parameter."
@@ -805,27 +816,19 @@ srv_t_shift_by_grade <- function(id,
       )
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
 
       my_calls <- template_shift_by_grade(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        visit_var = as.vector(anl_m$columns_source$visit_var),
-        id_var = as.vector(anl_m$columns_source$id_var),
-        worst_flag_var = as.vector(anl_m$columns_source$worst_flag_var),
+        arm_var = names(merged$anl_input_r()$columns_source$arm_var),
+        visit_var = names(merged$anl_input_r()$columns_source$visit_var),
+        id_var = names(merged$anl_input_r()$columns_source$id_var),
+        worst_flag_var = names(merged$anl_input_r()$columns_source$worst_flag_var),
         worst_flag_indicator = input$worst_flag_indicator,
-        anl_toxgrade_var = as.vector(anl_m$columns_source$anl_toxgrade_var),
-        base_toxgrade_var = as.vector(anl_m$columns_source$base_toxgrade_var),
+        anl_toxgrade_var = names(merged$anl_input_r()$columns_source$anl_toxgrade_var),
+        base_toxgrade_var = names(merged$anl_input_r()$columns_source$base_toxgrade_var),
         paramcd = unlist(paramcd$filter)["vars_selected"],
         drop_arm_levels = input$drop_arm_levels,
         add_total = input$add_total,
@@ -833,15 +836,12 @@ srv_t_shift_by_grade <- function(id,
         code_missing_baseline = input$code_missing_baseline,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+
+      eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_shift_by_grade call")
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -849,17 +849,10 @@ srv_t_shift_by_grade <- function(id,
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(
-          arm_var, id_var, paramcd, worst_flag_var,
-          anl_toxgrade_var, base_toxgrade_var
-        )
-      ),
-      modal_title = "R Code for Grade Laboratory Abnormalities",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -868,19 +861,14 @@ srv_t_shift_by_grade <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Grade Summary Table")
         card$append_text("Grade Summary Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
