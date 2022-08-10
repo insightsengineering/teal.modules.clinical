@@ -518,7 +518,7 @@ srv_summary <- function(id,
 
       sum_vars <- merged$anl_input_r()$columns_source$summarize_vars
       var_labels <- vapply(
-        data[[dataname]](),
+        data[[dataname]]()[, sum_vars, drop = FALSE],
         function(c) if (!is.null(l <- attr(c, "label"))) l else NA_character_, character(1)
       )
       my_calls <- template_summary(

@@ -556,7 +556,7 @@ ui_summary_by <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -565,8 +565,9 @@ ui_summary_by <- function(id, ...) {
 
 #' @noRd
 srv_summary_by <- function(id,
-                           datasets,
+                           data,
                            reporter,
+                           filter_panel_api,
                            dataname,
                            parentname,
                            arm_var,
@@ -580,44 +581,52 @@ srv_summary_by <- function(id,
                            drop_zero_levels,
                            label,
                            basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
 
     vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
     if (!is.null(paramcd)) {
       vars[["paramcd"]] <- paramcd
     }
 
-    anl_selectors <- teal.transform::data_extract_multiple_srv(
-      vars,
-      datasets = datasets
-    )
-
-    anl_merged <- teal.transform::data_merge_srv(
+    anl_selectors <- teal.transform::data_extract_multiple_srv(vars, datasets = data)
+    anl_merged_input <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
-      datasets = datasets,
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      id = "adsl_merge",
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
+    anl_merged_q <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_by_vars <- as.vector(anl_m$columns_source$by_vars)
-      input_summarize_vars <- as.vector(anl_m$columns_source$summarize_vars)
+      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
+      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
+      input_by_vars <- names(merged$anl_input_r()$columns_source$by_vars)
+      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_var)
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
@@ -650,26 +659,21 @@ srv_summary_by <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
+      summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
+      var_labels <- vapply(
+        data[[dataname]]()[, summarize_vars, drop = FALSE],
+        function(c) if (!is.null(l <- attr(c, "label"))) l else NA_character_, character(1)
+      )
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        sum_vars = as.vector(anl_m$columns_source$summarize_vars),
-        by_vars = as.vector(anl_m$columns_source$by_vars),
-        var_labels = get_var_labels(datasets, dataname, as.vector(anl_m$columns_source$summarize_vars)),
-        id_var = as.vector(anl_m$columns_source$id_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+        sum_vars = summarize_vars,
+        by_vars = as.vector(merged$anl_input_r()$columns_source$by_vars),
+        var_labels = var_labels,
+        id_var = as.vector(merged$anl_input_r()$columns_source$id_var),
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
@@ -681,15 +685,12 @@ srv_summary_by <- function(id,
         drop_zero_levels = input$drop_zero_levels,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+
+      eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -697,14 +698,10 @@ srv_summary_by <- function(id,
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, id_var, paramcd, by_vars, summarize_vars)
-      ),
-      modal_title = "Summary by Row Groups Table",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -713,19 +710,14 @@ srv_summary_by <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Summarize Variables by Row Groups Table")
         card$append_text("Summarize Variables by Row Groups Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
