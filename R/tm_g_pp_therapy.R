@@ -538,7 +538,7 @@ ui_g_therapy <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -546,8 +546,9 @@ ui_g_therapy <- function(id, ...) {
 
 
 srv_g_therapy <- function(id,
-                          datasets,
+                          data,
                           reporter,
+                          filter_panel_api,
                           dataname,
                           parentname,
                           patient_col,
@@ -565,16 +566,13 @@ srv_g_therapy <- function(id,
                           plot_width,
                           label,
                           ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
@@ -597,8 +595,9 @@ srv_g_therapy <- function(id,
     )
 
     # Therapy tab ----
-    therapy_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(
         atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
         cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
@@ -607,10 +606,17 @@ srv_g_therapy <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    therapy_call <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
+    anl_q_r <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr))
+    })
 
-      teal::validate_has_data(therapy_merged_data()$data(), 1)
+    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_q_r)
+
+    output_q <- shiny::reactive({
+      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
+      anl_filtered <- merged$anl_q_r()[["ANL"]]
+      teal::validate_has_data(anl_filtered, 1)
 
       shiny::validate(
         shiny::need(
@@ -654,27 +660,9 @@ srv_g_therapy <- function(id,
           "Please select CMENDY variable."
         ),
         shiny::need(
-          nrow(therapy_merged_data()$data()[input$patient_id == therapy_merged_data()$data()[patient_col], ]) > 0,
+          nrow(anl_filtered[input$patient_id == anl_filtered[, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
-      )
-
-      therapy_stack <- teal.code::chunks_new()
-      therapy_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = therapy_stack)
-      }
-      teal.code::chunks_push_data_merge(therapy_merged_data(), chunks = therapy_stack)
-
-      therapy_stack_push(
-        expression = substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
       )
 
       my_calls <- template_therapy(
@@ -694,29 +682,29 @@ srv_g_therapy <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      mapply(
-        expression = my_calls,
-        id = paste(names(my_calls), "call", sep = "_"),
-        therapy_stack_push
-      )
-      teal.code::chunks_safe_eval(chunks = therapy_stack)
-      therapy_stack
+      eval_code(
+        merged$anl_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        name = "patient_id_filter_call"
+      ) %>%
+        eval_code(as.expression(my_calls), name = "patient_call")
     })
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        teal.code::chunks_reset()
-        teal.code::chunks_push_chunks(therapy_call())
-        teal.code::chunks_get_var("therapy_table")
+        output_q()[["therapy_table"]]
       },
       options = list(pageLength = input$therapy_table_rows)
     )
 
-    plot_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(therapy_call())
-      teal.code::chunks_get_var("therapy_plot")
-    })
+    plot_r <- shiny::reactive(output_q()[["therapy_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "therapy_plot",
@@ -725,13 +713,10 @@ srv_g_therapy <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(
-        atirel, cmdecod, cmindc, cmdose, cmtrt, cmdosu, cmdosfrq, cmroute, cmstdy, cmendy
-      )),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -740,19 +725,14 @@ srv_g_therapy <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Therapy Plot")
         card$append_text("Patient Profile Therapy Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
