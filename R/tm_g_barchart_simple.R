@@ -321,7 +321,6 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   shiny::moduleServer(id, function(input, output, session) {
-
     merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = attr(data, "join_keys"),

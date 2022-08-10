@@ -518,7 +518,9 @@ srv_g_lineplot <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_merged_q <- reactive({new_quosure(data) %>% eval_code(as.expression(anl_merged_input()$expr))})
+    anl_merged_q <- reactive({
+      new_quosure(data) %>% eval_code(as.expression(anl_merged_input()$expr))
+    })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
 
