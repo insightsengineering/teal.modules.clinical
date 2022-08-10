@@ -511,28 +511,27 @@ srv_g_lineplot <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
-    anl_merged_q <- reactive(eval_code(new_quosure(data), anl_merged()$expr))
+    anl_merged_q <- reactive({new_quosure(data) %>% eval_code(as.expression(anl_merged_input()$expr))})
+
+    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- anl_merged_q()[[parentname]]
-      anl_filtered <- anl_merged_q()[[dataname]]
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_strata <- as.vector(anl_m$columns_source$strata)
-      input_x_var <- as.vector(anl_m$columns_source$x)
-      input_y <- as.vector(anl_m$columns_source$y)
+      input_strata <- names(merged$anl_input_r()$columns_source$strata)
+      input_x_var <- names(merged$anl_input_r()$columns_source$x)
+      input_y <- names(merged$anl_input_r()$columns_source$y)
       input_param <- unlist(param$filter)["vars_selected"]
-      input_paramcd <- as.vector(anl_m$columns_source$paramcd)
-      input_y_unit <- as.vector(anl_m$columns_source$y_unit)
+      input_paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
+      input_y_unit <- names(merged$anl_input_r()$columns_source$y_unit)
 
       # validate inputs
       validate_args <- list(
@@ -569,24 +568,21 @@ srv_g_lineplot <- function(id,
 
     output_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
-
-      ANL <- q1[["ANL"]]
+      ANL <- merged$anl_q_r()[["ANL"]]
       teal::validate_has_data(ANL, 2)
 
       whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
       input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
       input_interval <- input$interval
-      input_param <- as.character(unique(ANL[[as.vector(anl_m$columns_source$param)]]))
+      input_param <- as.character(unique(ANL[[names(merged$anl_input_r()$columns_source$param)[1]]]))
 
       my_calls <- template_g_lineplot(
         dataname = "ANL",
-        strata = as.vector(anl_m$columns_source$strata),
-        y = as.vector(anl_m$columns_source$y),
-        x = as.vector(anl_m$columns_source$x),
-        paramcd = as.vector(anl_m$columns_source$paramcd),
-        y_unit = as.vector(anl_m$columns_source$y_unit),
+        strata = names(merged$anl_input_r()$columns_source$strata),
+        y = names(merged$anl_input_r()$columns_source$y),
+        x = names(merged$anl_input_r()$columns_source$x),
+        paramcd = names(merged$anl_input_r()$columns_source$paramcd),
+        y_unit = names(merged$anl_input_r()$columns_source$y_unit),
         conf_level = as.numeric(input$conf_level),
         incl_screen = input$incl_screen,
         mid = input$mid,
@@ -598,7 +594,7 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      eval_code(q1, as.expression(my_calls))
+      eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(output_q()[["plot"]])
