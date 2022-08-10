@@ -443,7 +443,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -469,8 +469,9 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merged <- teal.transform::data_merge_module(
+    anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(
         arm_var = arm_var, id_var = id_var, paramcd = paramcd,
         atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
@@ -479,11 +480,18 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
+    adsl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
+
+    anl_merged_q <- reactive({
+      new_quosure(env = data) %>%
+        eval_code(as.expression(anl_merged_input()$expr)) %>%
+        eval_code(as.expression(adsl_merged_input()$expr))
+    })
 
     merged <- list(
       anl_input_r = anl_merged_input,
