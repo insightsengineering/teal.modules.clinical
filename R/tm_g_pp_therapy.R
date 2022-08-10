@@ -615,8 +615,7 @@ srv_g_therapy <- function(id,
 
     output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      anl_filtered <- merged$anl_q_r()[["ANL"]]
-      teal::validate_has_data(anl_filtered, 1)
+      teal::validate_has_data(merged$anl_q_r()[["ANL"]], 1)
 
       shiny::validate(
         shiny::need(
@@ -660,7 +659,7 @@ srv_g_therapy <- function(id,
           "Please select CMENDY variable."
         ),
         shiny::need(
-          nrow(anl_filtered[input$patient_id == anl_filtered[, patient_col], ]) > 0,
+          nrow(merged$anl_q_r()[["ANL"]][input$patient_id == merged$anl_q_r()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )

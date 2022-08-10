@@ -445,8 +445,7 @@ srv_g_vitals <- function(id,
 
     output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      anl <- merged$anl_q_r()[["ANL"]]
-      teal::validate_has_data(anl, 1)
+      teal::validate_has_data(merged$anl_q_r()[["ANL"]], 1)
 
       shiny::validate(
         shiny::need(
@@ -466,7 +465,7 @@ srv_g_vitals <- function(id,
           "Please select AVAL variable."
         ),
         shiny::need(
-          nrow(anl[input$patient_id == anl[, patient_col], ]) > 0,
+          nrow(merged$anl_q_r()[["ANL"]][input$patient_id == merged$anl_q_r()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -478,7 +477,7 @@ srv_g_vitals <- function(id,
         xaxis = input[[extract_input("xaxis", dataname)]],
         aval = input[[extract_input("aval", dataname)]],
         patient_id = patient_id(),
-        font_size = input$`font_size`,
+        font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
 
