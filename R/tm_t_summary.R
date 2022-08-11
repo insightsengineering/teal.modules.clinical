@@ -469,6 +469,7 @@ srv_summary <- function(id,
     validate_checks <- shiny::reactive({
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
+      anl <- merged$anl_q_r()[["ANL"]]
 
       # we take names of the columns source as they match names of the input data in merge_datasets
       # if we use $arm_var they might be renamed to <selector id>.arm_var
@@ -477,7 +478,7 @@ srv_summary <- function(id,
 
       shiny::validate(
         shiny::need(
-          length(unique(anl_filtered$USUBJID)) == nrow(anl_filtered),
+          length(unique(anl$USUBJID)) == nrow(anl_filtered),
           paste0(
             "Please choose an analysis dataset where each row represents a different subject, ",
             "i.e. USUBJID is different in each row"
