@@ -662,10 +662,8 @@ srv_summary_by <- function(id,
     output_q <- shiny::reactive({
       validate_checks()
       summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
-      var_labels <- vapply(
-        data[[dataname]]()[, summarize_vars, drop = FALSE],
-        function(c) if (!is.null(l <- attr(c, "label"))) l else NA_character_, character(1)
-      )
+      var_labels <- formatters::var_labels(data[[dataname]]()[, summarize_vars, drop = FALSE])
+
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",
         dataname = "ANL",
