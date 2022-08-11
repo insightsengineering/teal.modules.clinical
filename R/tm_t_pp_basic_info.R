@@ -205,14 +205,14 @@ srv_t_basic_info <- function(id,
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       shiny::validate(
         shiny::need(
-          input[[extract_input("vars", dataname)]],
+          merge_input_r()$columns_source$vars,
           "Please select basic info variables."
         )
       )
 
       my_calls <- template_basic_info(
         dataname = "ANL",
-        vars = input[[extract_input("vars", dataname)]]
+        vars = merge_input_r()$columns_source$vars
       )
 
       eval_code(

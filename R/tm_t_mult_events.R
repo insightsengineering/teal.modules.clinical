@@ -520,8 +520,8 @@ srv_t_mult_events_byterm <- function(id,
       q1 <- merged_data_q()
       anl_m <- anl_merge_inputs()
 
-      input_hlt <- as.vector(anl_m$columns_source$hlt)
-      input_llt <- as.vector(anl_m$columns_source$llt)
+      input_hlt <- names(anl_m$columns_source$hlt)
+      input_llt <- names(anl_m$columns_source$llt)
 
       hlt_labels <- mapply(function(x) rtables::obj_label(q1[["ANL"]][[x]]), input_hlt)
       llt_labels <- mapply(function(x) rtables::obj_label(q1[["ANL"]][[x]]), input_llt)
@@ -540,8 +540,8 @@ srv_t_mult_events_byterm <- function(id,
       my_calls <- template_mult_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        seq_var = as.vector(anl_m$columns_source$seq_var),
+        arm_var = names(anl_m$columns_source$arm_var),
+        seq_var = names(anl_m$columns_source$seq_var),
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = input_llt,
         add_total = input$add_total,
