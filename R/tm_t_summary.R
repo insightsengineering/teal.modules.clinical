@@ -478,7 +478,7 @@ srv_summary <- function(id,
 
       shiny::validate(
         shiny::need(
-          length(unique(anl$USUBJID)) == nrow(anl_filtered),
+          length(unique(anl$USUBJID)) == nrow(anl),
           paste0(
             "Please choose an analysis dataset where each row represents a different subject, ",
             "i.e. USUBJID is different in each row"
