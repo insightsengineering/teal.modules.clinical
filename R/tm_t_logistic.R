@@ -450,17 +450,15 @@ srv_t_logistic <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
-    if (!is.null(arm_var)) {
-      arm_ref_comp_observer(
-        session,
-        input,
-        output,
-        id_arm_var = extract_input("arm_var", parentname),
-        data = data[[parentname]],
-        arm_ref_comp = arm_ref_comp,
-        module = "tm_t_logistic"
-      )
-    }
+    arm_ref_comp_observer(
+      session,
+      input,
+      output,
+      id_arm_var = extract_input("arm_var", parentname),
+      data = data[[parentname]],
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_logistic"
+    )
 
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
@@ -469,14 +467,12 @@ srv_t_logistic <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    if (!is.null(arm_var)) {
-      adsl_merged_input <- teal.transform::merge_expression_module(
-        datasets = data,
-        join_keys = attr(data, "join_keys"),
-        data_extract = list(arm_var = arm_var),
-        anl_name = "ANL_ADSL"
-      )
-    }
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
 
     anl_merged_q <- reactive({
       new_quosure(env = data) %>%
@@ -642,14 +638,14 @@ srv_t_logistic <- function(id,
       } else {
         unlist(as_num(input$interaction_values))
       }
-      at_flag <- interaction_flag && is.numeric(merged$anl_q_r()[["ANL"]][[interaction_var]])
+      at_flag <- interaction_flag && is.numeric(ANL[[interaction_var]])
 
-      cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+      cov_var <- names(merged$anl_input_r()$columns_source$cov_var)
 
       calls <- template_logistic(
         dataname = "ANL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        aval_var = as.vector(merged$anl_input_r()$columns_source$avalc_var),
+        arm_var = names(merged$anl_input_r()$columns_source$arm_var),
+        aval_var = names(merged$anl_input_r()$columns_source$avalc_var),
         paramcd = paramcd,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
