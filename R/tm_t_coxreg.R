@@ -786,7 +786,8 @@ srv_t_coxreg <- function(id,
       input_cnsr_var <- as.vector(merged$anl_input_r()$columns_source$cnsr_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-      cov_is_numeric <- vapply(anl_filtered[input_cov_var], is.numeric, logical(1))
+      anl <- merged$anl_q_r()[["ANL"]]
+      cov_is_numeric <- vapply(anl[input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
 
       # validate inputs
@@ -829,7 +830,7 @@ srv_t_coxreg <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      arm_n <- base::table(merged$anl_q_r()[["ANL"]][[input_arm_var]])
+      arm_n <- base::table(anl[[input_arm_var]])
       anl_arm_n <- if (input$combine_comp_arms) {
         c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
       } else {
@@ -877,7 +878,7 @@ srv_t_coxreg <- function(id,
       # validate covariate has at least two levels
       shiny::validate(
         shiny::need(
-          all(vapply(merged$anl_q_r()[["ANL"]][input_cov_var], FUN = function(x) {
+          all(vapply(anl[input_cov_var], FUN = function(x) {
             length(unique(x)) > 1
           }, logical(1))),
           "All covariate needs to have at least two levels"
