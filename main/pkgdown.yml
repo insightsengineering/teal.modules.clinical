@@ -1,10 +1,10 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5
+pandoc: '2.18'
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   quickstart_substitute: quickstart_substitute.html
   teal-modules-clinical: teal-modules-clinical.html
-last_built: 2022-07-13T08:26Z
+last_built: 2022-08-15T16:29Z
 urls:
   reference: https://insightsengineering.github.io/teal.modules.clinical/main/reference
   article: https://insightsengineering.github.io/teal.modules.clinical/main/articles
