@@ -1,6 +1,7 @@
 # teal.modules.clinical 0.8.13.9019
 
 ### Enhancements
+* Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.

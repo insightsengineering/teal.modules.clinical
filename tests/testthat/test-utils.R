@@ -87,7 +87,7 @@ testthat::test_that("add_expr manages expression list which can be used by pipe_
   testthat::expect_identical(result, expected)
 })
 
-adrs <- synthetic_cdisc_data("rcd_2021_05_05")$adrs
+adrs <- synthetic_cdisc_data("rcd_2022_02_28")$adrs
 expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
