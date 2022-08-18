@@ -1,5 +1,5 @@
 library(scda)
-adlb <- synthetic_cdisc_data("rcd_2021_05_05")$adlb
+adlb <- synthetic_cdisc_data("rcd_2022_02_28")$adlb
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT", AVISIT == "BASELINE") # nolint
 
 # Test correspond to sections in the TLG catalog.
