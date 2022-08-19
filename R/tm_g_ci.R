@@ -136,10 +136,18 @@ template_g_ci <- function(dataname, # nolint
       user_plot = ggplot2_args,
       module_plot = teal.widgets::ggplot2_args(
         labs = list(
-          title = "",
-          caption = "",
-          x = "",
-          y = "",
+          title = "Confidence Interval Plot by Treatment Group",
+          caption = sprintf(
+            "%s and %i%% CIs for %s are displayed.",
+            switch(stat,
+              mean = "Mean",
+              median = "Median"
+            ),
+            100 * conf_level,
+            stat
+          ),
+          x = "Treatment Group",
+          y = "Value",
           color = "",
           lty = "",
           shape = ""
@@ -394,23 +402,15 @@ srv_g_ci <- function(id, # nolint
       x <- merged_data()$columns_source$x_var
       y <- merged_data()$columns_source$y_var
       color <- merged_data()$columns_source$color
-      ggplot2_args$labs <- list(
-        title = paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x)),
-        caption = sprintf(
-          "%s and %i%% CIs for %s are displayed.",
-          switch(input$stat,
-            mean = "Mean",
-            median = "Median"
-          ),
-          100 * as.numeric(input$conf_level),
-          input$stat
-        ),
-        x = datasets$get_varlabels(attr(x, "dataname"), x),
-        y = paste(merged_data()$filter_info$y_var[[1]]$selected[[1]], datasets$get_varlabels(attr(y, "dataname"), y)),
-        color = datasets$get_varlabels(attr(color, "dataname"), color),
-        lty = datasets$get_varlabels(attr(color, "dataname"), color),
-        shape = datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x))
+      ggplot2_args$labs$x <- datasets$get_varlabels(attr(x, "dataname"), x)
+      ggplot2_args$labs$y <- paste(
+        merged_data()$filter_info$y_var[[1]]$selected[[1]],
+        datasets$get_varlabels(attr(y, "dataname"), y)
       )
+      ggplot2_args$labs$color <- datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$lty <- datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$shape <- datasets$get_varlabels(attr(color, "dataname"), color)
 
       template_g_ci(
         dataname = "ANL",
