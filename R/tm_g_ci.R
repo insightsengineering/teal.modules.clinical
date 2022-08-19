@@ -136,17 +136,13 @@ template_g_ci <- function(dataname, # nolint
       user_plot = ggplot2_args,
       module_plot = teal.widgets::ggplot2_args(
         labs = list(
-          title = "Confidence Interval Plot by Treatment Group",
-          caption = sprintf(
-            "%s and %i%% CIs for %s are displayed.",
-            switch(stat,
-              mean = "Mean",
-              median = "Median"
-            ),
-            100 * conf_level,
-            stat
-          ),
-          x = "Treatment Group"
+          title = "",
+          caption = "",
+          x = "",
+          y = "",
+          color = "",
+          lty = "",
+          shape = ""
         ),
         theme = list()
       )
@@ -394,22 +390,38 @@ srv_g_ci <- function(id, # nolint
         "Please choose a confidence level between 0 and 1"
       ))
     })
+    list_calls <- shiny::reactive({
+      x <- merged_data()$columns_source$x_var
+      y <- merged_data()$columns_source$y_var
+      color <- merged_data()$columns_source$color
+      ggplot2_args$labs <- list(
+        title = paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x)),
+        caption = sprintf("%s and %i%% CIs for %s are displayed.",
+          switch(input$stat, mean = "Mean", median = "Median"),
+          100 * as.numeric(input$conf_level),
+          input$stat
+        ),
+        x = datasets$get_varlabels(attr(x, "dataname"), x),
+        y = paste(merged_data()$filter_info$y_var[[1]]$selected[[1]], datasets$get_varlabels(attr(y, "dataname"), y)),
+        color = datasets$get_varlabels(attr(color, "dataname"), color),
+        lty = datasets$get_varlabels(attr(color, "dataname"), color),
+        shape = datasets$get_varlabels(attr(color, "dataname"), color)
+      )
 
-    list_calls <- shiny::reactive(
       template_g_ci(
         dataname = "ANL",
-        x_var = merged_data()$columns_source$x_var,
-        y_var = merged_data()$columns_source$y_var,
-        grp_var = if (length(merged_data()$columns_source$color) == 0) {
+        x_var = x,
+        y_var = y,
+        grp_var = if (length(color) == 0) {
           NULL
         } else {
-          merged_data()$columns_source$color
+          color
         },
         stat = input$stat,
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-    )
+    })
 
     eval_call <- shiny::reactive({
       validate_data()
