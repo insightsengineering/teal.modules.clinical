@@ -396,8 +396,12 @@ srv_g_ci <- function(id, # nolint
       color <- merged_data()$columns_source$color
       ggplot2_args$labs <- list(
         title = paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x)),
-        caption = sprintf("%s and %i%% CIs for %s are displayed.",
-          switch(input$stat, mean = "Mean", median = "Median"),
+        caption = sprintf(
+          "%s and %i%% CIs for %s are displayed.",
+          switch(input$stat,
+            mean = "Mean",
+            median = "Median"
+          ),
           100 * as.numeric(input$conf_level),
           input$stat
         ),
