@@ -634,9 +634,8 @@ srv_t_events_byterm <- function(id,
                                 label,
                                 basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
       datasets = data,
@@ -772,7 +771,9 @@ srv_t_events_byterm <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Events by Term Table")
         card$append_text("Events by Term Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

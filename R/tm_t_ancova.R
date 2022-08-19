@@ -532,7 +532,7 @@ srv_ancova <- function(id,
                        label,
                        basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     teal.code::init_chunks()
 
@@ -709,7 +709,9 @@ srv_ancova <- function(id,
         card$set_name("ANCOVA")
         card$append_text("ANCOVA", "header2")
         card$append_text("Analysis of Covariance", "header3")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

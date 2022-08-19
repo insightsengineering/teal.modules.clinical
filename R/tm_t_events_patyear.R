@@ -366,7 +366,7 @@ srv_events_patyear <- function(id,
                                label,
                                basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     shiny::observeEvent(anl_merged_q(), {
       data <- merged$anl_q_r()[["ANL"]]
@@ -521,7 +521,9 @@ srv_events_patyear <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Event Rates Adjusted For Patient-Years Table")
         card$append_text("Event Rates Adjusted For Patient-Years Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

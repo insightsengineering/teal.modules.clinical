@@ -406,7 +406,7 @@ srv_shift_by_arm_by_worst <- function(id,
                                       add_total,
                                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
@@ -520,7 +520,9 @@ srv_shift_by_arm_by_worst <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Shift by Arm by Worst Table")
         card$append_text("Shift by Arm by Worst Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

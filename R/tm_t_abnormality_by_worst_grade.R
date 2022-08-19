@@ -467,7 +467,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              label,
                                              basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
@@ -593,7 +593,9 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         card$set_name("Laboratory Test Results Table")
         card$append_text("Laboratory Test Results Table", "header2")
         card$append_text("Laboratory test results with highest grade post-baseline Table", "header3")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

@@ -66,17 +66,6 @@ arm_ref_comp_observer <- function(session,
                                   on_off = shiny::reactive(TRUE),
                                   input_id = "buckets",
                                   output_id = "arms_buckets") {
-  if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
-    # if server_args are resolved before being passed to the module how it could be possible for arm_ref to be delayed?
-    stop("delayed object") # temporary stop to notify that delayed_data somehow got to this place
-    # stopifnot(
-    #  all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
-    # )
-    # when a delayed object is used for arm_ref_comp, the entire FilteredData
-    # object must be passed to resolve it
-    # arm_ref_comp <- teal.transform::resolve_delayed(arm_ref_comp, datasets)
-  }
-
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
   output[[output_id]] <- shiny::renderUI({

@@ -366,6 +366,7 @@ srv_g_ci <- function(id, # nolint
                      plot_width,
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     merged_data <- teal.transform::merge_expression_module(
       datasets = data,
@@ -442,7 +443,9 @@ srv_g_ci <- function(id, # nolint
         card$set_name("CI Plot")
         card$append_text("CI Plot", "header2")
         card$append_text("Confidence Interval Plot", "header3")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

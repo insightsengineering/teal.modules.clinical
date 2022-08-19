@@ -817,6 +817,8 @@ srv_mmrm <- function(id,
                      basic_table_args,
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
+
   shiny::moduleServer(id, function(input, output, session) {
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
@@ -1104,8 +1106,8 @@ srv_mmrm <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- anl_merged_q()[["ANL"]]
-      anl_filtered <- anl_merged_q()[["ANL"]]
+      adsl_filtered <- anl_merged_q()[[parentname]]
+      anl_filtered <- anl_merged_q()[[dataname]]
       anl_data <- anl_merged_q()[["ANL"]]
 
       anl_m_inputs <- anl_merge_inputs()
@@ -1391,7 +1393,9 @@ srv_mmrm <- function(id,
           ),
           "header3"
         )
-        card$append_fs(filter_panel_Api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
           card$append_table(table_r())

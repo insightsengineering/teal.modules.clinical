@@ -294,10 +294,8 @@ srv_g_laboratory <- function(id,
                              anrind,
                              label) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
@@ -438,7 +436,9 @@ srv_g_laboratory <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Laboratory Table")
         card$append_text("Patient Profile Laboratory Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r()$raw)
         if (!comment == "") {

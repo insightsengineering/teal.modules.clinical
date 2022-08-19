@@ -582,7 +582,7 @@ srv_summary_by <- function(id,
                            label,
                            basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
 
     vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
@@ -708,7 +708,9 @@ srv_summary_by <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Summarize Variables by Row Groups Table")
         card$append_text("Summarize Variables by Row Groups Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

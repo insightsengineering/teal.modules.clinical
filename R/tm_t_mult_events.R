@@ -452,7 +452,7 @@ srv_t_mult_events_byterm <- function(id,
                                      label,
                                      basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     anl_merge_inputs <- teal.transform::merge_expression_module(
       id = "anl_merge",
@@ -570,7 +570,9 @@ srv_t_mult_events_byterm <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Multiple Events by Term Table")
         card$append_text("Multiple Events by Term Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

@@ -600,6 +600,7 @@ srv_g_km <- function(id,
                      plot_height,
                      plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
 
     # Setup arm variable selection, default reference arms and default
@@ -774,7 +775,9 @@ srv_g_km <- function(id,
         card$set_name("Kaplan Meier Plot")
         card$append_text("Kaplan Meier Plot", "header2")
         card$append_text("Non-parametric method used to estimate the survival function from lifetime data", "header3")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

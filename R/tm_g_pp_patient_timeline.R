@@ -713,7 +713,7 @@ srv_g_patient_timeline <- function(id,
                                    label,
                                    ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -889,7 +889,9 @@ srv_g_patient_timeline <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Timeline Plot")
         card$append_text("Patient Profile Timeline Plot", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

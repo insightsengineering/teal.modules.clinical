@@ -741,7 +741,7 @@ srv_t_shift_by_grade <- function(id,
                                  label,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
@@ -861,7 +861,9 @@ srv_t_shift_by_grade <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Grade Summary Table")
         card$append_text("Grade Summary Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

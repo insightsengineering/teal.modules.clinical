@@ -159,7 +159,7 @@ srv_t_basic_info <- function(id,
                              vars,
                              label) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -249,7 +249,9 @@ srv_t_basic_info <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Basic Info Table")
         card$append_text("Patient Profile Basic Info Table", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

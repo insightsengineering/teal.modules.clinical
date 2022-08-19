@@ -567,7 +567,7 @@ srv_g_therapy <- function(id,
                           label,
                           ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -724,7 +724,9 @@ srv_g_therapy <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Therapy Plot")
         card$append_text("Patient Profile Therapy Plot", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
