@@ -740,8 +740,8 @@ srv_t_coxreg <- function(id,
     )
 
     anl_merged_q <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(
@@ -981,7 +981,7 @@ srv_t_coxreg <- function(id,
           unlist(input$buckets$Comp), merged$anl_input_r(),
           paramcd, multivariate, all_basic_table_args
         )
-        eval_code(merged$anl_q_r(), as.expression(expr), name = "call")
+        teal.code::eval_code(merged$anl_q_r(), as.expression(expr), name = "call")
       } else {
         main_title <- paste0("Cox Regression for ", paramcd)
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
@@ -990,8 +990,8 @@ srv_t_coxreg <- function(id,
         )
 
         merged$anl_q_r() %>%
-          eval_code(quote(result <- list()), name = "result_initiation_call") %>%
-          eval_code(
+          teal.code::eval_code(quote(result <- list()), name = "result_initiation_call") %>%
+          teal.code::eval_code(
             as.expression(lapply(
               unlist(input$buckets$Comp),
               function(x) {
@@ -1000,7 +1000,7 @@ srv_t_coxreg <- function(id,
             )),
             "Model fitting and table generation"
           ) %>%
-          eval_code(
+          teal.code::eval_code(
             substitute(
               expr = {
                 result <- rtables::rbindl_rtables(result, check_headers = TRUE)

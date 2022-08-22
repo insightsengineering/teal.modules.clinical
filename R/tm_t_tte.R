@@ -738,9 +738,9 @@ srv_t_tte <- function(id,
     )
 
     merged_q <- reactive({
-      quo <- new_quosure(data)
-      quo1 <- eval_code(quo, as.expression(anl_merge_inputs()$expr))
-      eval_code(quo1, as.expression(adsl_merge_inputs()$expr))
+      quo <- teal.code::new_quosure(data)
+      quo1 <- teal.code::eval_code(quo, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(quo1, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
@@ -861,7 +861,7 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     table_r <- shiny::reactive(output_q()[["table"]])

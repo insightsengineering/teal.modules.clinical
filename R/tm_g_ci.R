@@ -375,8 +375,8 @@ srv_g_ci <- function(id, # nolint
     )
 
     merged_data_q <- reactive(
-      eval_code(
-        object = new_quosure(data),
+      teal.code::eval_code(
+        object = teal.code::new_quosure(data),
         code = as.expression(merged_data()$expr),
         name = "merge expression"
       )
@@ -418,7 +418,7 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-      eval_code(merged_data_q(), list_calls, name = "plot_call")
+      teal.code::eval_code(merged_data_q(), list_calls, name = "plot_call")
     })
 
     plot_r <- shiny::reactive(output_q()[["gg"]])

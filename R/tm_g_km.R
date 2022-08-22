@@ -632,7 +632,7 @@ srv_g_km <- function(id,
     )
 
     anl_merged_q <- reactive({
-      eval_code(
+      teal.code::eval_code(
         teal.code::new_quosure(data),
         code = as.expression(anl_merged()$expr)
       )
@@ -749,7 +749,7 @@ srv_g_km <- function(id,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(output_q()[["plot"]])

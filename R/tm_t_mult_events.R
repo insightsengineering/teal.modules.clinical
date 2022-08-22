@@ -477,9 +477,9 @@ srv_t_mult_events_byterm <- function(id,
     )
 
     merged_data_q <- reactive({
-      q1 <- new_quosure(data)
-      q2 <- eval_code(q1, as.expression(anl_merge_inputs()$expr))
-      eval_code(q2, as.expression(adsl_merge_inputs()$expr))
+      q1 <- teal.code::new_quosure(data)
+      q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
@@ -549,7 +549,7 @@ srv_t_mult_events_byterm <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     # Outputs to render.

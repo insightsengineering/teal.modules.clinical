@@ -430,9 +430,9 @@ srv_shift_by_arm_by_worst <- function(id,
     )
 
     anl_merged_q <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(anl_merged_input()$expr)) %>%
-        eval_code(as.expression(adsl_merged_input()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
 
     merged <- list(
@@ -496,7 +496,7 @@ srv_shift_by_arm_by_worst <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_shift_by_arm_by_worst call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_shift_by_arm_by_worst call")
     })
 
     # Outputs to render.

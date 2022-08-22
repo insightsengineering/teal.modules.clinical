@@ -460,7 +460,7 @@ srv_g_adverse_events <- function(id,
       join_keys = attr(data, "join_keys")
     )
 
-    anl_merged_q <- reactive(eval_code(new_quosure(data), as.expression(anl_merged()$expr)))
+    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_quosure(data), as.expression(anl_merged()$expr)))
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
@@ -497,7 +497,7 @@ srv_g_adverse_events <- function(id,
         )
       )
 
-      q2 <- eval_code(
+      q2 <- teal.code::eval_code(
         q1,
         substitute(
           expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
@@ -524,7 +524,7 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      eval_code(q2, as.expression(calls))
+      teal.code::eval_code(q2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
       expr = outputs_q()[["table"]],

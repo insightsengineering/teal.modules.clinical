@@ -350,8 +350,8 @@ srv_g_laboratory <- function(id,
     )
 
     merge_q_r <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(merge_input_r()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -395,7 +395,7 @@ srv_g_laboratory <- function(id,
         round_value = as.integer(input$round_value)
       )
 
-      eval_code(
+      teal.code::eval_code(
         merge_q_r(),
         substitute(
           expr = {
@@ -407,7 +407,7 @@ srv_g_laboratory <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-        eval_code(as.expression(labor_calls))
+        teal.code::eval_code(as.expression(labor_calls))
     })
 
     table_r <- shiny::reactive({

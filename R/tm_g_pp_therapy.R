@@ -607,8 +607,8 @@ srv_g_therapy <- function(id,
     )
 
     anl_q_r <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_q_r)
@@ -681,7 +681,7 @@ srv_g_therapy <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      eval_code(
+      teal.code::eval_code(
         merged$anl_q_r(),
         substitute(
           expr = {
@@ -693,7 +693,7 @@ srv_g_therapy <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-        eval_code(as.expression(my_calls), name = "patient_call")
+        teal.code::eval_code(as.expression(my_calls), name = "patient_call")
     })
 
     output$therapy_table <- DT::renderDataTable(

@@ -332,8 +332,8 @@ srv_g_barchart_simple <- function(id,
       shiny::validate({
         shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- new_quosure(env = data)
-      quo <- eval_code(quo, as.expression(merge_inputs()$expr))
+      quo <- teal.code::new_quosure(env = data)
+      quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
       teal::validate_has_data(quo[["ANL"]], 2)
       quo
     })
@@ -356,10 +356,10 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      quo2 <- eval_code(quo, code = count_exprs, name = "groupvar counts")
+      quo2 <- teal.code::eval_code(quo, code = count_exprs, name = "groupvar counts")
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      quo3 <- eval_code(
+      quo3 <- teal.code::eval_code(
         quo2,
         as.expression(
           c(
@@ -377,7 +377,7 @@ srv_g_barchart_simple <- function(id,
       )
 
       # dplyr::select loses labels
-      eval_code(
+      teal.code::eval_code(
         quo3,
         teal.transform::get_anl_relabel_call(
           columns_source = merge_inputs()$columns_source,
@@ -392,7 +392,7 @@ srv_g_barchart_simple <- function(id,
       quo1 <- count_q()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      quo2 <- eval_code(quo1, substitute(
+      quo2 <- teal.code::eval_code(quo1, substitute(
         env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
         plot_title <- sprintf(
           "Number of patients (total N = %s) for each combination of (%s)",
@@ -435,11 +435,11 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- eval_code(quo2, code = plot_call, name = "plot_call")
+      quo3 <- teal.code::eval_code(quo2, code = plot_call, name = "plot_call")
 
       # explicitly calling print on the plot inside the chunk evaluates
       # the ggplot call and therefore catches errors
-      eval_code(quo3, code = quote(print(plot)), name = "print_plot_call")
+      teal.code::eval_code(quo3, code = quote(print(plot)), name = "print_plot_call")
     })
 
     plot_r <- shiny::reactive(output_q()[["plot"]])

@@ -527,9 +527,9 @@ srv_t_abnormality <- function(id,
     )
 
     anl_merged_q <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(anl_merged_input()$expr)) %>%
-        eval_code(as.expression(adsl_merged_input()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
 
     merged <- list(
@@ -601,7 +601,7 @@ srv_t_abnormality <- function(id,
         tbl_title = tbl_title
       )
 
-      eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_abnormality call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_abnormality call")
     })
 
     # Outputs to render.

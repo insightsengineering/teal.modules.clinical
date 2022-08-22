@@ -752,9 +752,9 @@ srv_t_binary_outcome <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged()$expr))
-      eval_code(q1, as.expression(adsl_merged()$expr))
+      q <- teal.code::new_quosure(env = data)
+      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })
 
     shiny::observeEvent(
@@ -945,7 +945,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(q1, as.expression(my_calls), name = "tm_t_binary_outcome call")
+      teal.code::eval_code(q1, as.expression(my_calls), name = "tm_t_binary_outcome call")
     })
 
     # Outputs to render.

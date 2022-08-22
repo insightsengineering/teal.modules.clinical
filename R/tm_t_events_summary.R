@@ -848,9 +848,9 @@ srv_t_events_summary <- function(id,
     )
 
     anl_merged_q <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(anl_merged_input()$expr)) %>%
-        eval_code(as.expression(adsl_merged_input()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
 
     merged <- list(
@@ -937,11 +937,11 @@ srv_t_events_summary <- function(id,
       )
 
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
-      eval_code(
+      teal.code::eval_code(
         merged$anl_q_r(),
         as.expression(my_calls)
       ) %>%
-        eval_code(
+        teal.code::eval_code(
           substitute(
             expr = {
               rtables::main_title(result) <- title

@@ -519,7 +519,7 @@ srv_g_lineplot <- function(id,
     )
 
     anl_merged_q <- reactive({
-      new_quosure(data) %>% eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_quosure(data) %>% teal:code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
@@ -596,7 +596,7 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(output_q()[["plot"]])

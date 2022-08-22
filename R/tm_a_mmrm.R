@@ -864,8 +864,8 @@ srv_mmrm <- function(id,
 
     anl_merged_q <- reactive({
       q1 <- new_quosure(data)
-      q2 <- eval_code(q1, as.expression(anl_merge_inputs()$expr))
-      eval_code(q2, as.expression(adsl_merge_inputs()$expr))
+      q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Initially hide the output title because there is no output yet.
@@ -1190,7 +1190,7 @@ srv_mmrm <- function(id,
         optimizer = input$optimizer,
         parallel = input$parallel
       )
-      eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     output$mmrm_title <- shiny::renderText({
@@ -1260,7 +1260,7 @@ srv_mmrm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      eval_code(q1, as.expression(mmrm_table))
+      teal.code::eval_code(q1, as.expression(mmrm_table))
     })
 
     # Endpoint:
@@ -1304,7 +1304,7 @@ srv_mmrm <- function(id,
         diagnostic_plot = diagnostic_args,
         ggplot2_args = ggplot2_args
       )
-      eval_code(q1, as.expression(mmrm_plot_expr))
+      teal.code::eval_code(q1, as.expression(mmrm_plot_expr))
     })
 
     all_code <- shiny::reactive({

@@ -505,9 +505,9 @@ srv_g_forest_tte <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- new_quosure(env = data)
-      q1 <- eval_code(q, as.expression(anl_merged()$expr))
-      eval_code(q1, as.expression(adsl_merged()$expr))
+      q <- teal.code::new_quosure(env = data)
+      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })
 
     validate_checks <- shiny::reactive({
@@ -609,7 +609,7 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      eval_code(q1, as.expression(my_calls), name = "g_forest_tte call")
+      teal.code::eval_code(q1, as.expression(my_calls), name = "g_forest_tte call")
     })
 
     # Outputs to render.

@@ -755,8 +755,8 @@ srv_g_patient_timeline <- function(id,
     )
 
     merge_q_r <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(merge_input_r()$expr))
+      tea.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -853,7 +853,7 @@ srv_g_patient_timeline <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      eval_code(
+      teal.code::eval_code(
         merge_q_r(),
         substitute(
           expr = {
@@ -865,7 +865,7 @@ srv_g_patient_timeline <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-        eval_code(as.expression(patient_timeline_calls), name = "patient_timeline_plot_call")
+        teal.code::eval_code(as.expression(patient_timeline_calls), name = "patient_timeline_plot_call")
     })
 
     plot_r <- shiny::reactive(output_q()[["patient_timeline_plot"]])

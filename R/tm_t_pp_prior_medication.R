@@ -300,8 +300,8 @@ srv_t_prior_medication <- function(id,
     )
 
     merge_q_r <- reactive({
-      new_quosure(env = data) %>%
-        eval_code(as.expression(merge_input_r()$expr))
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -334,7 +334,7 @@ srv_t_prior_medication <- function(id,
         cmstdy = input[[extract_input("cmstdy", dataname)]]
       )
 
-      eval_code(
+      teal.code::eval_code(
         merge_q_r(),
         substitute(
           expr = {
@@ -346,7 +346,7 @@ srv_t_prior_medication <- function(id,
         ),
         name = "patient_id_filter_call"
       ) %>%
-        eval_code(as.expression(my_calls), name = "call")
+        teal.code::eval_code(as.expression(my_calls), name = "call")
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])
