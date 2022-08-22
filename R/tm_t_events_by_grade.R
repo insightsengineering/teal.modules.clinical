@@ -983,8 +983,6 @@ srv_t_events_by_grade <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),

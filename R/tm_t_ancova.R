@@ -534,8 +534,6 @@ srv_ancova <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     arm_ref_comp_observer(

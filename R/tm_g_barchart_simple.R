@@ -516,7 +516,7 @@ srv_g_barchart_simple <- function(id,
 
 
 
-# Helper functions for chunks ----
+# Helper functions for quosure ----
 
 #' `ggplot2` call to generate simple barchart
 #'
