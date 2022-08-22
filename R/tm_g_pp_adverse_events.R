@@ -448,14 +448,17 @@ srv_g_adverse_events <- function(id,
     # Adverse events tab ----
     ae_merged_data <- teal.transform::data_merge_module(
       datasets = datasets,
-      data_extract = list(
-        aeterm = aeterm,
-        tox_grade = tox_grade,
-        causality = causality,
-        outcome = outcome,
-        action = action,
-        time = time,
-        decod = decod
+      data_extract = Filter(
+        Negate(is.null),
+        list(
+          aeterm = aeterm,
+          tox_grade = tox_grade,
+          causality = causality,
+          outcome = outcome,
+          action = action,
+          time = time,
+          decod = decod
+        )
       )
     )
 
