@@ -530,8 +530,10 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
 
       shiny::validate(
         shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_arm_var]]), "Treatment variable should be a factor."),
-        shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
-                    "Parameter variable should be a factor."),
+        shiny::need(
+          is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
+          "Parameter variable should be a factor."
+        ),
         shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
       )
 
@@ -568,7 +570,8 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       )
 
       teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls),
-                name = "tm_t_abnormality_by_worst_grade call")
+        name = "tm_t_abnormality_by_worst_grade call"
+      )
     })
 
     # Outputs to render.
