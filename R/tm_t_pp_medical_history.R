@@ -210,7 +210,7 @@ ui_t_medical_history <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -218,8 +218,9 @@ ui_t_medical_history <- function(id, ...) {
 
 
 srv_t_medical_history <- function(id,
-                                  datasets,
+                                  data,
                                   reporter,
+                                  filter_panel_api,
                                   dataname,
                                   parentname,
                                   patient_col,
@@ -227,16 +228,13 @@ srv_t_medical_history <- function(id,
                                   mhbodsys,
                                   mhdistat,
                                   label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
@@ -259,13 +257,19 @@ srv_t_medical_history <- function(id,
     )
 
     # Medical history tab ----
-    mhist_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = attr(data, "join_keys"),
       data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
       merge_function = "dplyr::left_join"
     )
 
-    mhist_call <- shiny::reactive({
+    merge_q_r <- reactive({
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       shiny::validate(
@@ -282,27 +286,9 @@ srv_t_medical_history <- function(id,
           "Please select MHDISTAT variable."
         ),
         shiny::need(
-          nrow(mhist_merged_data()$data()[mhist_merged_data()$data()[[patient_col]] == patient_id(), ]) > 0,
+          nrow(merge_q_r()[["ANL"]][merge_q_r()[["ANL"]][[patient_col]] == patient_id(), ]) > 0,
           "Patient has no data about medical history."
         )
-      )
-
-      mhist_stack <- teal.code::chunks_new()
-      mhist_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = mhist_stack)
-      }
-      teal.code::chunks_push_data_merge(mhist_merged_data(), chunks = mhist_stack)
-
-      mhist_stack_push(
-        expression = substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
       )
 
       my_calls <- template_medical_history(
@@ -311,31 +297,33 @@ srv_t_medical_history <- function(id,
         mhbodsys = input[[extract_input("mhbodsys", dataname)]],
         mhdistat = input[[extract_input("mhdistat", dataname)]]
       )
-      mapply(
-        expression = my_calls,
-        id = paste(names(my_calls), "call", sep = "_"),
-        mhist_stack_push
-      )
-      teal.code::chunks_safe_eval(chunks = mhist_stack)
-      mhist_stack
+
+      teal.code::eval_code(
+        merge_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        ),
+        name = "patient_id_filter_call"
+      ) %>%
+        teal.code::eval_code(as.expression(my_calls), name = "call")
     })
 
-    table_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(mhist_call())
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(mhterm, mhbodsys, mhdistat)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -344,19 +332,16 @@ srv_t_medical_history <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Medical History Table")
         card$append_text("Patient Medical History Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

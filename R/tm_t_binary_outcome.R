@@ -698,7 +698,7 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -706,8 +706,9 @@ ui_t_binary_outcome <- function(id, ...) {
 
 #' @noRd
 srv_t_binary_outcome <- function(id,
-                                 datasets,
+                                 data,
                                  reporter,
+                                 filter_panel_api,
                                  dataname,
                                  parentname,
                                  paramcd,
@@ -720,12 +721,9 @@ srv_t_binary_outcome <- function(id,
                                  default_responses,
                                  rsp_table,
                                  basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
@@ -733,24 +731,31 @@ srv_t_binary_outcome <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
-      merge_function = "dplyr::inner_join"
+      merge_function = "dplyr::inner_join",
+      join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
+      join_keys = attr(data, "join_keys"),
       anl_name = "ANL_ADSL"
     )
+
+    anl_merged_q <- reactive({
+      q <- teal.code::new_quosure(env = data)
+      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+    })
 
     shiny::observeEvent(
       c(
@@ -758,6 +763,7 @@ srv_t_binary_outcome <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
+        anl <- anl_merged_q()[["ANL"]]
         aval_var <- anl_merged()$columns_source$aval_var
         sel_param <- if (is.list(default_responses)) {
           default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
@@ -773,13 +779,13 @@ srv_t_binary_outcome <- function(id,
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
               sel_param$levels
             } else {
-              union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+              union(unique(anl[[aval_var]]), sel_param$levels)
             }
           } else {
-            unique(anl_merged()$data()[[aval_var]])
+            unique(anl[[aval_var]])
           }
         }
         shiny::updateSelectInput(
@@ -791,8 +797,10 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+      anl <- q1[["ANL"]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -820,14 +828,14 @@ srv_t_binary_outcome <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID", input_paramcd))
 
       shiny::validate(
         if (length(input_strata_var) >= 1L) {
           shiny::need(
             sum(
               vapply(
-                anl_m$data()[input_strata_var],
+                anl[input_strata_var],
                 FUN = function(x) {
                   length(unique(x)) > 1
                 },
@@ -844,9 +852,9 @@ srv_t_binary_outcome <- function(id,
           shiny::need(
             sum(
               vapply(
-                anl_m$data()[input_strata_var],
+                anl[input_strata_var],
                 FUN = function(strata) {
-                  tab <- base::table(strata, anl_m$data()[[input_arm_var]])
+                  tab <- base::table(strata, anl[[input_arm_var]])
                   tab_logic <- tab != 0L
                   sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
                 },
@@ -883,26 +891,20 @@ srv_t_binary_outcome <- function(id,
       NULL
     })
 
-    call_preparation <- shiny::reactive({
+    output_table <- shiny::reactive({
       validate_check()
-      teal.code::chunks_reset()
 
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
+      anl <- q1[["ANL"]]
+
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      shiny::req(input$responders %in% anl_m$data()[[input_aval_var]])
+      shiny::req(input$responders %in% anl[[input_aval_var]])
 
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      anl <- teal.code::chunks_get_var("ANL") # nolint
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_paramcd <- unlist(anl_m$filter_info$paramcd)["selected"]
 
-      responder_val_levels <- as.character(unique(anl_merged()$data()[[input_aval_var]]))
+      responder_val_levels <- as.character(unique(anl[[input_aval_var]]))
       final_responder <- if (is.list(default_responses)) {
         default_responses[[input_paramcd]][["levels"]]
       } else {
@@ -942,15 +944,12 @@ srv_t_binary_outcome <- function(id,
         add_total = input$add_total,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+
+      teal.code::eval_code(q1, as.expression(my_calls), name = "tm_t_binary_outcome call")
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_table()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -958,14 +957,12 @@ srv_t_binary_outcome <- function(id,
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, aval_var, strata_var)
-      ),
-      modal_title = "Binary Outcome",
-      code_header = label
+      verbatim_content = reactive({
+        teal.code::get_code(output_table())
+      }),
+      title = label
     )
 
     ### REPORTER
@@ -974,19 +971,16 @@ srv_t_binary_outcome <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Binary Outcome Table")
         card$append_text("Binary Outcome Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
