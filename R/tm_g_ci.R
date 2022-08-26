@@ -412,15 +412,22 @@ srv_g_ci <- function(id, # nolint
       x <- merged_data()$columns_source$x_var
       y <- merged_data()$columns_source$y_var
       color <- merged_data()$columns_source$color
-      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x))
-      ggplot2_args$labs$x <- datasets$get_varlabels(attr(x, "dataname"), x)
+
+      x_label <- attr(data[[attr(x, "dataname")]](), "label")
+      y_label <- attr(data[[attr(y, "dataname")]](), "label")
+      color_label <- attr(data[[attr(color, "dataname")]](), "label")
+
+      browser()
+
+      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
+      ggplot2_args$labs$x <- x_label
       ggplot2_args$labs$y <- paste(
         merged_data()$filter_info$y_var[[1]]$selected[[1]],
-        datasets$get_varlabels(attr(y, "dataname"), y)
+        y_label
       )
-      ggplot2_args$labs$color <- datasets$get_varlabels(attr(color, "dataname"), color)
-      ggplot2_args$labs$lty <- datasets$get_varlabels(attr(color, "dataname"), color)
-      ggplot2_args$labs$shape <- datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$color <- color_label
+      ggplot2_args$labs$lty <- color_label
+      ggplot2_args$labs$shape <- color_label
       list_calls <- template_g_ci(
         dataname = "ANL",
         x_var = x,
