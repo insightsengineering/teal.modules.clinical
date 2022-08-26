@@ -413,9 +413,9 @@ srv_g_ci <- function(id, # nolint
       y <- merged_data()$columns_source$y_var
       color <- merged_data()$columns_source$color
 
-      x_label <- attr(data[[attr(x, "dataname")]]()[, x, drop = FALSE], "label")
-      y_label <- attr(data[[attr(y, "dataname")]]()[, y, drop = FALSE], "label")
-      color_label <- attr(data[[attr(color, "dataname")]]()[, color, drop = FALSE], "label")
+      x_label <- attr(data[[attr(x, "dataname")]]()[, x, drop = FALSE][[1]], "label")
+      y_label <- attr(data[[attr(y, "dataname")]]()[, y, drop = FALSE][[1]], "label")
+      color_label <- attr(data[[attr(color, "dataname")]]()[, color, drop = FALSE][[1]], "label")
 
       ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
       ggplot2_args$labs$x <- x_label
