@@ -491,7 +491,7 @@ srv_t_abnormality <- function(id,
                               na_level,
                               basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
     # Update UI choices depending on selection of previous options
     shiny::observeEvent(input$grade, {

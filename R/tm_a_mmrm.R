@@ -817,7 +817,7 @@ srv_mmrm <- function(id,
                      basic_table_args,
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
 
   shiny::moduleServer(id, function(input, output, session) {
     # Reactive responsible for sending a disable/enable signal

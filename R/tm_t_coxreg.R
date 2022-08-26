@@ -712,7 +712,7 @@ srv_t_coxreg <- function(id,
                          label,
                          basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
     arm_ref_comp_observer(

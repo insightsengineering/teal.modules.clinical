@@ -366,7 +366,7 @@ srv_events_patyear <- function(id,
                                label,
                                basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelApi")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
     shiny::observeEvent(anl_merged_q(), {
       data <- merged$anl_q_r()[["ANL"]]
