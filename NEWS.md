@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9019
+# teal.modules.clinical 0.8.13.9020
 
 ### Breking changes
 
@@ -13,6 +13,7 @@
 * Added the `teal.reporter` functionality to all modules.
 * Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return the `rtables` object.
 * Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
+* Added more descriptive title/labels to `tm_g_ci`.
 
 ### Bug fixes
 

@@ -146,7 +146,11 @@ template_g_ci <- function(dataname, # nolint
             100 * conf_level,
             stat
           ),
-          x = "Treatment Group"
+          x = "Treatment Group",
+          y = "Value",
+          color = "",
+          lty = "",
+          shape = ""
         ),
         theme = list()
       )
@@ -405,14 +409,26 @@ srv_g_ci <- function(id, # nolint
 
     output_q <- shiny::reactive({
       validate_data()
+      x <- merged_data()$columns_source$x_var
+      y <- merged_data()$columns_source$y_var
+      color <- merged_data()$columns_source$color
+      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x))
+      ggplot2_args$labs$x <- datasets$get_varlabels(attr(x, "dataname"), x)
+      ggplot2_args$labs$y <- paste(
+        merged_data()$filter_info$y_var[[1]]$selected[[1]],
+        datasets$get_varlabels(attr(y, "dataname"), y)
+      )
+      ggplot2_args$labs$color <- datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$lty <- datasets$get_varlabels(attr(color, "dataname"), color)
+      ggplot2_args$labs$shape <- datasets$get_varlabels(attr(color, "dataname"), color)
       list_calls <- template_g_ci(
         dataname = "ANL",
-        x_var = merged_data()$columns_source$x_var,
-        y_var = merged_data()$columns_source$y_var,
-        grp_var = if (length(merged_data()$columns_source$color) == 0) {
+        x_var = x,
+        y_var = y,
+        grp_var = if (length(color) == 0) {
           NULL
         } else {
-          merged_data()$columns_source$color
+          color
         },
         stat = input$stat,
         conf_level = as.numeric(input$conf_level),
