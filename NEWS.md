@@ -11,6 +11,7 @@
 
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
+* Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 
 ### Miscellaneous
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
