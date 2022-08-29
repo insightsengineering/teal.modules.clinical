@@ -31,7 +31,11 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      formatters::var_labels(anl) <- c(
+        anl_labels,
+        GRADE_DIR = "Direction of Abnormality",
+        GRADE_ANL = "Highest Grade"
+      )
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -116,7 +120,11 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
         ) %>%
         dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>%
         droplevels()
-      formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      formatters::var_labels(anl) <- c(
+        anl_labels,
+        GRADE_DIR = "Direction of Abnormality",
+        GRADE_ANL = "Highest Grade"
+      )
       anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
       arm_levels <- levels(anl[["ARMCD"]])
       myadsl <- myadsl %>% dplyr::filter(ARMCD %in% arm_levels)
