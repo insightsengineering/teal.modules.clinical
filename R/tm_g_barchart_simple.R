@@ -344,7 +344,6 @@ srv_g_barchart_simple <- function(id,
 
       # count
       count_by_group <- function(groupby_vars, data_name) {
-        # chunk and n_names are modified
         n_name <- get_n_name(groupby_vars)
         count_by_group_expr(groupby_vars = groupby_vars, data_name = data_name)
       }
@@ -389,10 +388,9 @@ srv_g_barchart_simple <- function(id,
     })
 
     output_q <- shiny::reactive({
-      quo1 <- count_q()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      quo2 <- teal.code::eval_code(quo1, substitute(
+      quo2 <- teal.code::eval_code(count_q(), substitute(
         env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
         plot_title <- sprintf(
           "Number of patients (total N = %s) for each combination of (%s)",
@@ -437,7 +435,7 @@ srv_g_barchart_simple <- function(id,
 
       quo3 <- teal.code::eval_code(quo2, code = plot_call, name = "plot_call")
 
-      # explicitly calling print on the plot inside the chunk evaluates
+      # explicitly calling print on the plot inside the quosure evaluates
       # the ggplot call and therefore catches errors
       teal.code::eval_code(quo3, code = quote(print(plot)), name = "print_plot_call")
     })
@@ -697,7 +695,7 @@ get_n_name <- function(groupby_vars) {
   paste0("n_", paste(groupby_vars, collapse = "_"))
 }
 
-# chunk that counts by specified group
+# expression that counts by specified group
 # n_name: name of column to add counts to, by default determined from groupby_vars
 count_by_group_expr <- function(groupby_vars, data_name = "counts") {
   checkmate::assert_character(groupby_vars)
