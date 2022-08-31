@@ -755,7 +755,7 @@ srv_g_patient_timeline <- function(id,
     )
 
     merge_q_r <- reactive({
-      tea.code::new_quosure(env = data) %>%
+      teal.code::new_quosure(env = data) %>%
         teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 
