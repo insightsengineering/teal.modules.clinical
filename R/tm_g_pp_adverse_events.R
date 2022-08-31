@@ -397,6 +397,7 @@ ui_g_adverse_events <- function(id, ...) {
 
 srv_g_adverse_events <- function(id,
                                  data,
+                                 filter_panel_api,
                                  reporter,
                                  dataname,
                                  parentname,
