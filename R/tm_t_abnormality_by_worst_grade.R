@@ -90,7 +90,11 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     quote(
-      expr = formatters::var_labels(anl) <- c(anl_labels, "Direction of Abnormality", "Highest Grade")
+      expr = formatters::var_labels(anl) <- c(
+        anl_labels,
+        GRADE_DIR = "Direction of Abnormality",
+        GRADE_ANL = "Highest Grade"
+      )
     )
   )
 

@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9020
+# teal.modules.clinical 0.8.13.9021
 
 ### Breking changes
 
@@ -18,6 +18,7 @@
 ### Bug fixes
 
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
+* Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 
 ### Miscellaneous
 
