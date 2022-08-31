@@ -863,7 +863,7 @@ srv_mmrm <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q1 <- new_quosure(data)
+      q1 <- teal.code::new_quosure(data)
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
