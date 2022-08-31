@@ -784,24 +784,18 @@ srv_t_shift_by_grade <- function(id,
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_visit_var <- names(merged$anl_input_r()$columns_source$visit_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_paramcd_var <- merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$paramcd)]]
+      input_paramcd_var <- names(merged$anl_input_r()$columns_source$paramcd)
+      input_paramcd <- unlist(merged$anl_input_r()$filter_info$paramcd[[1]]$selected)
       input_worst_flag_var <- names(merged$anl_input_r()$columns_source$worst_flag_var)
       input_anl_toxgrade_var <- names(merged$anl_input_r()$columns_source$anl_toxgrade_var)
       input_base_toxgrade_var <- names(merged$anl_input_r()$columns_source$base_toxgrade_var)
 
       shiny::validate(
         shiny::need(input_worst_flag_var, "Please select the worst flag variable."),
-        shiny::need(input_paramcd_var, "Please select Laboratory parameter."),
+        shiny::need(input_paramcd, "Please select Laboratory parameter."),
         shiny::need(input_id_var, "Please select a subject identifier."),
         shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
       )
-
-      input_worst_flag <- merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$worst_flag_var)[1]]]
-      shiny::validate(shiny::need(
-        any(input_worst_flag == input$worst_flag_indicator),
-        "There's no positive flag, please select another flag parameter."
-      ))
 
       # validate inputs
       validate_standard_inputs(
@@ -809,7 +803,7 @@ srv_t_shift_by_grade <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c(
-          "USUBJID", "STUDYID", input_visit_var, input_paramcd, input_worst_flag_var,
+          "USUBJID", "STUDYID", input_visit_var, input_paramcd_var, input_worst_flag_var,
           input_anl_toxgrade_var, input_base_toxgrade_var
         ),
         arm_var = input_arm_var
