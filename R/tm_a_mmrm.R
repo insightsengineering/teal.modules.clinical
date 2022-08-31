@@ -1377,6 +1377,7 @@ srv_mmrm <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = reactive(teal.code::get_code(all_code())),
+      disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )
 
