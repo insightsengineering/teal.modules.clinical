@@ -11,8 +11,7 @@ arm_ref_comp_observer(
   id_ref = "Ref",
   id_comp = "Comp",
   id_arm_var,
-  datasets,
-  dataname = "ADSL",
+  data,
   arm_ref_comp,
   module,
   on_off = shiny::reactive(TRUE),
@@ -33,9 +32,8 @@ arm_ref_comp_observer(
 
 \item{id_arm_var}{(\code{character}) id of Treatment variable input ui element}
 
-\item{datasets}{(\code{FilteredData}) object from the module}
-
-\item{dataname}{(\code{character}) dataset name}
+\item{data}{(\code{reactive} or \code{data.frame}) dataset used to validate Treatment reference inputs and
+set \code{id_ref} input.}
 
 \item{arm_ref_comp}{(\code{unknown}) Treatment reference and compare variables provided as a
 nested list where each Treatment variable corresponds a list specifying the default levels for the

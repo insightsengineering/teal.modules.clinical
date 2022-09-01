@@ -15,13 +15,13 @@ testthat::test_that("validate_arm throws shiny error if arm_vec is not a factor"
 
 testthat::test_that("validate_arm throws specific shiny error if arm_vec has just whitespace strings", {
   testthat::expect_error(
-    validate_arm(c("A", "   ")),
+    validate_arm(as.factor(c("A", "   "))),
     "Treatment values cannot contain empty strings",
     class = "shiny.silent.error"
   )
 
   testthat::expect_error(
-    validate_arm(c("A", "")),
+    validate_arm(as.factor(c("A", ""))),
     "Treatment values cannot contain empty strings",
     class = "shiny.silent.error"
   )

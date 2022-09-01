@@ -14,7 +14,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
       lyt <- grid::grid.layout(nrow = nlevels(ANL$SEX), ncol = 1) %>%
         grid::viewport(layout = .) %>%
         grid::pushViewport()
-      result <- mapply(
+      plot_list <- mapply(
         df = split(anl, f = anl$SEX), nrow = seq_along(levels(anl$SEX)),
         FUN = function(df_i, nrow_i) {
           if (nrow(df_i) == 0) {
@@ -55,8 +55,8 @@ testthat::test_that("template_g_km works as expected with default arguments", {
           }
         }, SIMPLIFY = FALSE
       )
-      km_grobs <- tern::stack_grobs(grobs = result)
-      km_grobs
+      plot <- tern::stack_grobs(grobs = plot_list)
+      plot
     })
   )
   testthat::expect_equal(result, expected)

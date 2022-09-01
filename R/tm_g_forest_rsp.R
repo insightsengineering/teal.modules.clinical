@@ -447,15 +447,16 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 srv_g_forest_rsp <- function(id,
-                             datasets,
+                             data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              parentname,
                              arm_var,
@@ -469,12 +470,9 @@ srv_g_forest_rsp <- function(id,
                              label,
                              default_responses,
                              ggplot2_args) {
-  checkmate::assert_true(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
@@ -482,8 +480,7 @@ srv_g_forest_rsp <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte"
     )
@@ -496,20 +493,29 @@ srv_g_forest_rsp <- function(id,
         paramcd = paramcd,
         aval_var = aval_var
       ),
-      datasets = datasets
+      datasets = data,
+      join_keys = attr(data, "join_keys")
     )
 
-    anl_merged <- teal.transform::data_merge_srv(
+    anl_merged <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
-      datasets = datasets,
-      merge_function = "dplyr::inner_join"
+      datasets = data,
+      merge_function = "dplyr::inner_join",
+      join_keys = attr(data, "join_keys")
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
+      join_keys = attr(data, "join_keys"),
       anl_name = "ANL_ADSL"
     )
+
+    anl_merged_q <- reactive({
+      q <- teal.code::new_quosure(env = data)
+      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+    })
 
     shiny::observeEvent(
       eventExpr = c(
@@ -517,9 +523,15 @@ srv_g_forest_rsp <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
+        req(anl_merged_q())
+        anl <- anl_merged_q()[["ANL"]]
         aval_var <- anl_merged()$columns_source$aval_var
+
+        paramcd_level <- unlist(anl_merged()$filter_info$paramcd[[1]]$selected)
+        if (length(paramcd_level) == 0) return(NULL)
+
         sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+          default_responses[[paramcd_level]]
         } else {
           default_responses
         }
@@ -532,13 +544,13 @@ srv_g_forest_rsp <- function(id,
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)) > 1) {
+            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
               sel_param$levels
             } else {
-              union(unique(anl_merged()$data()[[aval_var]]), sel_param$levels)
+              union(anl[[aval_var]], sel_param$levels)
             }
           } else {
-            unique(anl_merged()$data()[[aval_var]])
+            unique(anl[[aval_var]])
           }
         }
         shiny::updateSelectInput(
@@ -551,8 +563,11 @@ srv_g_forest_rsp <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      req(anl_merged_q())
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
+      anl <- q1[["ANL"]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -576,7 +591,7 @@ srv_g_forest_rsp <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal::validate_one_row_per_id(anl_m$data(), key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(q1[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
         shiny::validate(
@@ -603,7 +618,7 @@ srv_g_forest_rsp <- function(id,
                 lvls <- x$levels
                 all(x$rsp %in% lvls)
               } else {
-                lvls <- unique(anl_merged()$data()[[input$`aval_var-dataset_ADRS_singleextract-select`]])
+                lvls <- unique(anl[[input$`aval_var-dataset_ADRS_singleextract-select`]])
                 if ("rsp" %in% names(x)) {
                   all(x$rsp %in% lvls)
                 } else {
@@ -642,24 +657,15 @@ srv_g_forest_rsp <- function(id,
         )
       )
 
-      validate_has_data(anl_m$data(), min_nrow = 1)
+      validate_has_data(q1[["ANL"]], min_nrow = 1)
       NULL
     })
 
     # The R-code corresponding to the analysis.
-    plot_r <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -681,11 +687,11 @@ srv_g_forest_rsp <- function(id,
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
 
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("p")
+      teal.code::eval_code(q1, as.expression(my_calls), name = "g_forest_rsp call")
     })
+
+    plot_r <- reactive(output_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -694,13 +700,10 @@ srv_g_forest_rsp <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, subgroup_var, strata_var)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -709,19 +712,16 @@ srv_g_forest_rsp <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Forest Response Plot")
         card$append_text("Forest Response Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
