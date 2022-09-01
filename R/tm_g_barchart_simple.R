@@ -334,13 +334,13 @@ srv_g_barchart_simple <- function(id,
       })
       quo <- teal.code::new_quosure(env = data)
       quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
-      teal::validate_has_data(quo[["ANL"]], 2)
       quo
     })
 
     count_q <- shiny::reactive({
       req(merged_data_q())
       quo <- merged_data_q()
+      teal::validate_has_data(quo[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
 
       # count

@@ -523,10 +523,15 @@ srv_g_forest_rsp <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
+        req(anl_merged_q())
         anl <- anl_merged_q()[["ANL"]]
         aval_var <- anl_merged()$columns_source$aval_var
+
+        paramcd_level <- unlist(anl_merged()$filter_info$paramcd[[1]]$selected)
+        if (length(paramcd_level) == 0) return(NULL)
+
         sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+          default_responses[[paramcd_level]]
         } else {
           default_responses
         }
@@ -558,6 +563,7 @@ srv_g_forest_rsp <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      req(anl_merged_q())
       q1 <- anl_merged_q()
       adsl_filtered <- q1[[parentname]]
       anl_filtered <- q1[[dataname]]
