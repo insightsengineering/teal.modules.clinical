@@ -759,8 +759,9 @@ srv_t_binary_outcome <- function(id,
       ),
       handlerExpr = {
         aval_var <- anl_merged()$columns_source$aval_var
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]]]
+        paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+        sel_param <- if (is.list(default_responses) && (!is.null(paramcd))) {
+          default_responses[[paramcd]]
         } else {
           default_responses
         }
