@@ -11,6 +11,7 @@
 
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
+* Fixed bug in `tm_g_forest_rsp` when endpoint was deselected.
 * Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 * Fixed bug in the `tm_t_binary_outcome`, crashed the app when deselecting all `paramcd`.
 
