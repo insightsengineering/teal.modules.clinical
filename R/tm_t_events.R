@@ -127,11 +127,11 @@ template_events <- function(dataname,
   # Start layout steps.
   layout_list <- list()
 
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Event Summary by Term : ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Event Summary by Term : ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Event Summary by Term : ", label_hlt, " and ", label_llt)
   } else {
     "Event Summary by Term"

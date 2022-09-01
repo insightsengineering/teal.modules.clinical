@@ -570,7 +570,7 @@ srv_g_lineplot <- function(id,
 
     output_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q_r()[["ANL"]]
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))

@@ -1243,8 +1243,8 @@ srv_mmrm <- function(id,
 
       anl_m_inputs <- anl_merge_inputs()
 
-      ANL <- q1[["ANL"]]
-      ANL_ADSL <- q1[["ANL_ADSL"]]
+      ANL <- q1[["ANL"]] # nolint
+      ANL_ADSL <- q1[["ANL_ADSL"]] # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       mmrm_table <- template_mmrm_tables(

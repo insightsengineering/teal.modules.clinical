@@ -467,7 +467,7 @@ srv_g_adverse_events <- function(id,
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       anl_m <- anl_merged()
       q1 <- anl_merged_q()
-      ANL <- q1[["ANL"]]
+      ANL <- q1[["ANL"]] # nolint
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 

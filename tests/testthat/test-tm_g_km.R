@@ -97,4 +97,3 @@ testthat::test_that("template_g_km gives correct data expression when we want to
   })
   testthat::expect_equal(result$data, expected_data)
 })
-
