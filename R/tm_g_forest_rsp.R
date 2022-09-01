@@ -528,7 +528,9 @@ srv_g_forest_rsp <- function(id,
         aval_var <- anl_merged()$columns_source$aval_var
 
         paramcd_level <- unlist(anl_merged()$filter_info$paramcd[[1]]$selected)
-        if (length(paramcd_level) == 0) return(NULL)
+        if (length(paramcd_level) == 0) {
+          return(NULL)
+        }
 
         sel_param <- if (is.list(default_responses)) {
           default_responses[[paramcd_level]]
